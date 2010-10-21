@@ -1,0 +1,566 @@
+img{ cursor:pointer; }
+a{ cursor:pointer; }
+
+.column-danger-code { width: 4%; }
+tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
+.plus-column { font-weight : bolder; width: 10px; padding: 5px; }
+.column-danger-designation {  }
+.sans_puce { list-style-type: none; }
+.noPadding { padding: 0 !important;}
+.radioPictoCategorie {float:left; margin-right:5%; margin-bottom:5%;}
+.radioPictoCategorie img {vertical-align:middle; max-width:48px;}
+
+/* -- Boutons choix affichage enlarging -- */
+#choseEnlarging{display: inline; vertical-align: top; margin-bottom:12px; margin-left:10px;}
+#choseEnlarging span{margin:0 10px;}
+#choseEnlarging span#rightEnlarging {height:19px; width:32px;background:url(../../medias/images/Divers/btn_rightEnlarging.png);display:inline-block;cursor:pointer;}
+#choseEnlarging div#enlarging{display:inline-block;}
+#choseEnlarging div#enlarging.ui-slider-horizontal {width:100px;}
+#choseEnlarging span#leftEnlarging {height:19px; width:32px;background:url(../../medias/images/Divers/btn_leftEnlarging.png);display:inline-block;cursor:pointer;}
+/* -- END Boutons choix affichage enlarging -- */
+
+.titleInput{font-size:1.3em;}
+div.inside{overflow: hidden; padding: 5px;}
+/* -- Fiche Droite --*/
+.partieDroite { 
+	border-left:1px solid #CCCCCC; 
+	padding-left : 0.5%;
+}
+/* -- END Fiche Droite --*/
+
+/* -- Listes format grille -- */
+.listeEnLigne li { float: left; padding:5px; width:30.15%; margin: 0; border-right:1px solid #DFDFDF; }
+
+.containerElement td { border:1px solid #DFDFDF; border-top:none; border-bottom:none;}
+.containerElement .nomInfoElement { border-right:none; padding-bottom:0.5em; padding-top:0.5em; vertical-align: middle;}
+.containerElement .deuxPoints { border:none; text-align: center; padding: 0 !important; vertical-align: middle;}
+.containerElement .valeurInfoElement { border-left:none; text-align: right; vertical-align: middle;}
+.containerElement .pagination { border:1px solid #DFDFDF;}
+
+.containerElement p { padding:5px;}
+
+.element { padding : 5%;}
+
+.nomElement { text-align: center; font-weight: bold;}
+.edited { background-color: #F3F3F3;}
+
+.photoElement { text-align: center;}
+.photoElement img { max-width: 100%;}
+
+.cbColumnLarge { width: 10%;}
+.cbNbUserGroup { width: 15%;}
+
+/* -- END Listes format grille -- */
+
+/* -- Boutons SELECT EDIT --*/
+.boutonInfos {
+	float: right;
+	text-align: center;
+	display: block;
+	width: 80px;
+	margin-top: 3%;
+	margin-right:3%;
+}
+.boutonInfos img{
+	vertical-align: middle;
+	padding-right:5px;
+}
+
+#boutonAvanceRisque:hover { cursor:pointer; color:#8B0304; }
+
+/* -- END Boutons SELECT EDIT -- */
+
+#filAriane {
+	margin:15px 0px 5px 0px;
+	font-size:12px;
+}
+
+/* -- Boutons choix affichage -- */
+#choixAffichage {
+	display:inline;
+	margin:5px 0px;
+}
+
+#choixAffichage span.textAffichage {
+	text-decoration:underline;
+}
+
+#choixAffichage a.selectedAffichage {
+	font-weight:bold;
+	color:#000000;
+	text-decoration:none;
+}
+
+#choixAffichage a:hover.selectedAffichage {
+	cursor:auto;
+}
+
+#choixAffichage a {
+	text-decoration:none;
+	color:#000000;
+}
+
+#choixAffichage a:hover {
+	text-decoration:none;
+	font-weight:bold;
+	cursor:pointer;
+}
+/* -- END Boutons choix affichage -- */
+
+
+.textPagination{
+	text-align: right;
+	width: 5%;
+}
+
+.flechePere{
+	float: left;
+	height: 26px;
+	margin-left:5px;
+	width:25px;
+	cursor:pointer;
+}
+
+.nomFeuilleArbre
+{
+	cursor:pointer;
+}
+.nomNoeudArbre
+{
+	cursor:pointer;
+}
+.test
+{
+	cursor:move;
+}
+
+.postbox .handlediv {
+	margin-left:20px;
+}
+
+/* -- Menu AJOUTER -- */
+.favorite-action {
+	float:right;
+	margin: 1px;
+	position:relative;
+}
+
+.favorite-first {
+	-webkit-border-radius:12px 12px 12px 12px;
+	-moz-border-radius:12px 12px 12px 12px;
+	border-radius:12px 12px 12px 12px;
+	background: url("../../medias/image/fav.png") repeat-x scroll left center #797979;
+	border-color: #777777 #777777 #666666 !important;
+	border-style:solid;
+	border-width:1px;
+	line-height:15px;
+	padding:3px 30px 4px 12px;
+	width:70px;
+}
+
+.favorite-first a:hover {
+	cursor:default;
+	color:#DDDDDD!important;
+}
+
+.favorite-inside {
+	-webkit-border-radius:0 0 12px 12px;
+	-moz-border-radius:0 0 12px 12px;
+	border-radius:0 0 12px 12px;
+	background-color: #797979;
+	border-color: #797979;
+	border-style:solid;
+	border-width:1px;
+	display:none;
+	margin:0;
+	padding:0 1px 6px;
+	position:absolute;
+	z-index:11;
+}
+
+.favorite-inside a {
+	padding:3px 5px 3px 10px;
+}
+
+.favorite-inside a:hover {
+	text-decoration: underline;
+}
+
+.favorite-toggle {
+	background: url("../../medias/images/Divers/fav-arrow.gif") no-repeat scroll 0 -4px transparent;
+	height:22px;
+	position:relative;
+	right:0;
+	top:1px;
+	width:28px;
+	cursor:pointer;
+}
+
+.favorite-actions .slide-down {
+	-webkit-border-radius:12px 12px 0 0;
+	-moz-border-radius:12px 12px 0 0;
+	border-radius:12px 12px 0 0;
+	border-bottom-color: #626262;
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+}
+
+.favorite-actions {
+	float:right;
+	margin: 1px;
+	position:relative;
+}
+
+.favorite-actions a {
+	display:block;
+	font-size:11px;
+	text-decoration:none;
+	color: #DDDDDD;
+}
+
+.favorite-actions a:hover {
+	color: #FFFFFF;
+}
+/* -- END Menu AJOUTER -- */
+
+/* -- Liste catégorie danger -- */
+.expander{
+	display: none;
+}
+
+.aFils .expander{
+	display: inline;
+}
+
+.actionButtonList{
+	width: 20%;
+}
+
+.infoList{
+	width: 20%;
+}
+/* -- END Liste catégorie danger -- */
+
+/* -- Galery photo -- */
+ul.thumbs li
+{
+	display: inline;
+}
+ul.thumbs img
+{
+	max-width: 15%;
+}
+div.galeryPhoto
+{
+	width: 100%;
+}
+div.slideshow a
+{
+	text-decoration: none;
+}
+div.slideshow img
+{
+	max-width: 100%;
+	margin-bottom: 3px;
+}
+.bottom.pagination
+{
+	background-color: transparent;
+	border: 0;
+	padding: 10px;
+}
+.bottom.pagination a
+{
+	margin: 3px;
+}
+.caption-container
+{
+	float:right;
+	background-color:#F5F5F5;
+	padding:10px;
+}
+.caption-container img
+{
+	vertical-align:middle;
+}
+.pictureDeletion, .pictureDefaultSelection
+{
+	cursor:pointer;
+}
+.galeryPhoto .navigation
+{
+	text-align:center;
+}
+/* -- END Galery photo -- */
+
+/* -- Veille référentiel -- */
+
+.listeCreationVeille li
+{
+	display: inline;
+	margin-right: 60px;
+}
+.veille-reponse-titre
+{
+	font-weight:bold;
+}
+.veille-reponse-extraitTexte
+{
+	border:1px solid #000000;
+	background-color:#FFFFCC;
+	text-align:justify;
+	font-size:11px;
+	margin:0px 24px;
+	padding:3px;
+}
+.veille-response-container
+{
+
+}
+.veille-reponse-response
+{
+	font-size:14px;
+	margin:0px 0px 9px 0px;
+}
+.veille-response
+{
+	margin:0px 12px 0px 0px;
+}
+.veille-response-input
+{
+	width:50px;
+}
+.veille-right-menu li
+{
+	border:1px solid #E3E3E3;
+	color:#21759B;
+	background-color:#F2F1EF;
+	font-size:11px;
+}
+
+.observationTropLongue
+{
+	vertical-align: top;
+}
+/* -- END Veille référentiel -- */
+
+/* -- Partie droite -- */
+.titleDiv /* bientôt à enlever*/
+{
+	font-size: 1.3em;
+	font-weight: bold;
+}
+.titleInfo
+{
+	font-size: 1.3em;
+	font-weight: bold;
+	border: none !important;
+	background-color: transparent !important;
+}
+.mainInfos2
+{
+	text-align: center;
+}
+/* -- END Partie droite -- */
+
+/* -- Risques -- */
+
+.risqueInfo
+{
+	-webkit-border-radius:12px;
+	-moz-border-radius:12px;
+	border-radius:12px;
+}
+.risque2Info, .Seuil_2
+{
+	color: white;
+	background-color: green;
+}
+.risque3Info, .Seuil_3
+{
+	color: white;
+	background-color: blue;
+}
+.risque4Info, .Seuil_4
+{
+	color: white;
+	background-color: orange;
+}
+.risque5Info, .Seuil_5
+{
+	color: white;
+	background-color: red;
+}
+.risque6Info, .Seuil_6
+{
+	color: white;
+	background-color: black;
+}
+.risque2Text
+{
+	color: green;
+}
+.risque3Text
+{
+	color: blue;
+}
+.risque4Text
+{
+	color: orange;
+}
+.risque5Text
+{
+	color: red;
+}
+.risque6Text
+{
+	font-size : 1.7em;
+	font-weight : bolder;
+	color: black;
+}
+
+.columnQuotation,
+.columnNomDanger,
+.columnEtat
+{
+	width: 16%;
+	padding: 1px !important;
+	vertical-align : middle !important;
+}
+
+.columnDescriptionDanger,
+.columnCommentaireRisque
+{
+	width: 26%;
+	padding: 1px !important;
+	vertical-align : middle !important;
+}
+
+.columnQuotation,
+th.columnNomDanger,
+th.columnEtat,
+th.columnDescriptionDanger,
+th.columnCommentaireRisque
+{
+	text-align: center !important;
+}
+
+.explicationVariable
+{
+	border:1px solid #000000;
+	background-color:#FFFFCC;
+	text-align:justify;
+	font-size:11px;
+	margin:1% 24px;
+	padding:3px;
+}
+/* -- END Risques -- */
+
+/* -- Tabs -- */
+.eva_tabs_panel
+{
+	border-color:#DFDFDF;
+	border-style:solid;
+	border-width:1px;
+	overflow:auto;
+	padding:0.5em 0.9em;
+	margin:2px 5px 5px;
+}
+
+ul.eva_tabs
+{
+	margin-top:12px;
+}
+
+ul.eva_tabs li
+{
+	border-style:solid solid none;
+	-webkit-border-radius:3px 3px 0 0;
+	-moz-border-radius:3px 3px 0 0;
+	border-radius:3px 3px 0 0;
+	padding:5px 8px;
+	border-color:#DFDFDF;
+	background-color : #E6E6E6;
+	border-width:1px 1px 0;
+	margin-bottom:3px;
+	margin-top:12px;
+}
+
+ul.eva_tabs li label
+{
+	font-weight:bold;
+	text-decoration:none;
+}
+
+ul.eva_tabs li.selected_tab
+{
+	background-color : #F6F6F6;
+}
+
+ul.eva_tabs_button li
+{
+	-webkit-border-radius:1em;
+	-moz-border-radius:1em;
+	border-radius:1em;
+	background-color:#F6F6F6;
+}
+
+ul.eva_tabs_button 
+{
+	margin-bottom:8px;
+}
+
+ul.eva_tabs_button li label
+{
+	padding-bottom:3px;
+}
+/* -- END Tabs -- */
+
+/* -- Sliders -- */
+.sliderValue
+{
+	border:0 none !important;
+	background:none !important;
+	font-weight:bold;
+}
+.slider_variable
+{
+	width: 100px;
+}
+/* -- END Sliders -- */
+
+/* -- Setup -- */
+#evariskSetup
+{
+	width: 98%;
+}
+#evariskSetup td
+{
+	border-bottom : solid 10px transparent;
+}
+
+.setupTitle
+{
+	width: 20%;
+}
+
+.cbSetup
+{
+	float: left;
+}
+.cbEPISetup
+{
+	margin-left: 5%;
+}
+/* -- END Setup -- */
+
+/* -- Upload -- */
+.thumbnailUpload
+{
+	max-width: 200px;
+}
+.thumbnailUpload img
+{
+	width: 100%;
+}
+/* -- END Upload -- */
