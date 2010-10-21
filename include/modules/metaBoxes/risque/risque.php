@@ -460,7 +460,7 @@
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
-			$formRisque = $formRisque . '<br />' . '<div id="divDescription">' . EvaDisplayInput::afficherInput($type='textarea', $id='descriptionFormRisque', $contenuInput, $contenuAide='', $labelInput . ' : ', $nomChamps='description', $grise=false, DESCRIPTION_RISQUE_OBLIGATOIRE, $taille = 3, $classe='', $limitation='', $width='100%', $script='') . '</div>';
+			$formRisque = $formRisque . '<br />' . '<div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput($type='textarea', $id='descriptionFormRisque', $contenuInput, $contenuAide='', $labelInput . ' : ', $nomChamps='description', $grise=false, DESCRIPTION_RISQUE_OBLIGATOIRE, $taille = 3, $classe='', $limitation='', $width='100%', $script='') . '</div>';
 		}
 		
 		{//Bouton enregistrer

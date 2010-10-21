@@ -253,4 +253,88 @@ class Arborescence {
 			$wpdb->query($sql);
 		}
 	}
+
+
+	/**
+	*	Get all the tree for a given element
+	*
+	*	@param mixed $tableElement The element type we want to get the tree
+	*	@param integer $idElement The element identifier we want to get the tree
+	*
+	*	@see completeTreeRecursive()
+	*
+	*	@return array $completeTree An array with the tree for the element we are on (with all the descendant)
+	*/
+	static function completeTree($tableElement, $idElement)
+	{
+		$completeTree = array();
+
+		$racine = Arborescence::getElement($tableElement,$idElement);
+		$idTable = $tableElement . '-' . $idElement;
+
+		$elements = Arborescence::getFils(TABLE_GROUPEMENT, $racine, "nom ASC");
+		$subElements = EvaGroupement::getUnitesDuGroupement($racine->id);
+		$sousTable = TABLE_UNITE_TRAVAIL;
+
+		/*	add the actual element	*/
+		$completeTree[$tableElement.'-'.$idElement]['table'] = TABLE_GROUPEMENT;
+		$completeTree[$tableElement.'-'.$idElement]['id'] = $racine->id;
+		$completeTree[$tableElement.'-'.$idElement]['nom'] = $racine->nom;
+		$completeTree[$tableElement.'-'.$idElement]['content'] = array();
+
+		if((count($elements) > 0) || (count($subElements) > 0))
+		{
+			$completeTree[$tableElement.'-'.$idElement]['content'] = Arborescence::completeTreeRecursive($elements, $racine, $tableElement);
+		}
+
+		return $completeTree;
+	}
+
+	/**
+	*	Get recursively the risqs for an element. (NB: this method is called by bilanParUnite())
+	*	
+	*	@param mixed $elementsFils An object with the different children of the element we are looking for the risqs
+	*	@param mixed $elementPere An object with the parent of the element we are looking for the risqs
+	*	@param mixed $table The element type we want to get descendant and risqs
+	*	@param mixed $idTable An identifier for the array to keep the link between all elements
+	*
+	*	@param array $sousElements An array with all sub elements (with they risqs) for a given element
+	*/
+	static function completeTreeRecursive($elementsFils, $elementPere, $table, $idTable = '')
+	{
+		$sousElements = $sousElementsEnfants = array();
+
+		if(count($elementsFils) != 0)
+		{
+			foreach ($elementsFils as $element )
+			{
+				$idTable = $element->id;
+				$sousElements[$idTable]['table'] = TABLE_GROUPEMENT;
+				$sousElements[$idTable]['id'] = $element->id;
+				$sousElements[$idTable]['nom'] = $element->nom;
+				$sousElements[$idTable]['content'] = array();
+
+				$elements_fils = Arborescence::getFils(TABLE_GROUPEMENT, $element, "nom ASC");
+				$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
+				$trouveElement = count($elements_fils) + count($subElements);			
+				if($trouveElement)
+				{
+					$sousElements[$idTable]['content'] = Arborescence::completeTreeRecursive($elements_fils, $element, $table, $idTable);
+				}
+			}
+		}
+
+		$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
+		$i = 0;
+		foreach($subElements as $subElement)
+		{
+			$sousElements[$idTable][$i]['table'] = TABLE_UNITE_TRAVAIL;
+			$sousElements[$idTable][$i]['id'] = $subElement->id;
+			$sousElements[$idTable][$i]['nom'] = $subElement->nom;
+			$i++;
+		}
+
+		return $sousElements;
+	}
+
 }

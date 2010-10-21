@@ -478,6 +478,15 @@ class evaUserGroup
 		return $status;
 	}
 
+	/**
+	*	Delete a bind between a users group and an element
+	*
+	*	@param integer $groupId The identifier of the group we want to unbind
+	*	@param integer $elementId The identifier of the element (in its table) we want to unbind
+	*	@param string $elementTable The table of the element we want to unbind
+	*
+	*	@return array $status An array containing the result of the method
+	*/
 	function deleteBind($groupId, $elementId, $elementTable)
 	{
 		global $wpdb;
@@ -528,6 +537,34 @@ class evaUserGroup
 	}
 
 	/**
+	*	Get informations about the different group binded to an element
+	*
+	*	@param integer $elementId The identifier of the element (in its table) we want to bind
+	*	@param string $elementTable The table of the element we want to bind
+	*
+	*	@return array $groups An array containing the groups informations
+	*/
+	function getBindGroupsWithInformations($elementId, $elementTable)
+	{
+		$groups = array();
+
+		$bindGroups = evaUserGroup::getBindGroups($elementId, $elementTable);
+		foreach($bindGroups as $indexBind => $groupDefinition)
+		{
+			$groupeInfos = evaUserGroup::getUserGroup($groupDefinition->id_group);
+			foreach($groupeInfos as $index => $groupe)
+			{
+				$groups[$groupDefinition->id_group]['name'] = $groupe->user_group_name;
+				$groups[$groupDefinition->id_group]['description'] = $groupe->user_group_description;
+				$groups[$groupDefinition->id_group]['userNumber'] = $groupe->TOTALUSERNUMBER;
+			}
+		}
+
+		return $groups;
+	}
+
+
+	/**
 	*	Get the user number affected to a work unit or a group
 	*
 	*	@param integer $elementId The identifier of the element (in its table) we want to bind
@@ -561,6 +598,14 @@ class evaUserGroup
 		return $totalUserInWorkUnit;
 	}
 
+	/**
+	*	Output a combo box with the different groups that are available to be binded to an element
+	*
+	*	@param mixed $tableElement The element type we want to get the group list for
+	*	@param integer $idElement The element identifier we want to get the group list for
+	*
+	*	@return mixed The entire html code to output
+	*/
 	function afficheListeGroupeUtilisateurNonAffecte($tableElement, $idElement)
 	{
 		$listeGroupes = array();
@@ -595,6 +640,15 @@ class evaUserGroup
 		return EvaDisplayInput::afficherComboBox($listeGroupes, 'groupesUtilisateursNonAssocies', __('Groupes', 'evarisk') . '&nbsp;:', 'groupesUtilisateursNonAssocies', '', '', $tabValue, $tabDisplay);
 	}
 
+	/**
+	*	Output a table with the different groups binded to an element
+	*
+	*	@param mixed $tableElement The element type we want to get the group list for
+	*	@param integer $idElement The element identifier we want to get the group list for
+	*	@param boolean $noScript Define if all datatable options must be shown or just the table
+	*
+	*	@return mixed $groupesUtilisateursMetaBox The entire html code to output
+	*/
 	function afficheListeGroupe($tableElement, $idElement, $noScript = false)
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
@@ -690,6 +744,14 @@ class evaUserGroup
 		return $groupesUtilisateursMetaBox;
 	}
 
+	/**
+	*	Create an output for the user group box
+	*
+	*	@param mixed $tableElement The element type we want to get the group list for
+	*	@param integer $idElement The element identifier we want to get the group list for
+	*
+	*	@return mixed The entire html code to output
+	*/
 	function boxGroupesUtilisateursEvaluation($tableElement, $idElement)
 	{
 		/*	Recuperation des groupes non affectes	*/

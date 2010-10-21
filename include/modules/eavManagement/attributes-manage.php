@@ -32,7 +32,7 @@ if ( !current_user_can('Evarisk_:_gerer_attributs') )
 	{
 ?>
 	<div id="evaMessage" class="updated fade below-h2" >
-		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>veille-no-reponse.gif" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
+		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>error_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
 	<script type="text/javascript" >setTimeout(function(){$('#evaMessage').remove()},5000);</script>
 <?php

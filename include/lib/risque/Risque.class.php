@@ -289,4 +289,38 @@ class Risque {
 		return $status;
 	}
 
+	/**
+	*	Get a sum of the different risqs for an element (with the subelements)
+	*
+	*	@param mixed $table The element type we want to get the risqs sum for
+	*	@param integer $elementId The element identifier we want to ger the risqs sum for
+	*
+	*	@return array $info An array with the sum of risqs
+	*/
+	static function getSommeRisque($table, $elementId)
+	{
+		$temp = Risque::getRisques($table, $elementId, "Valid");
+		if($temp != null)
+		{
+			foreach($temp as $risque)
+			{
+				$risques['"' . $risque->id . "'"][] = $risque; 
+			}
+		}
+		$sumR = 0;
+		if(isset($risques) && ($risques != null))
+		{
+			foreach($risques as $risque)
+			{
+				$idMethode = $risque[0]->id_methode;
+				$score = Risque::getScoreRisque($risque);
+				$sumR += Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+			}
+		}
+		$scoreRisqueGroupement = $sumR;
+		$info['value'] = $scoreRisqueGroupement;
+		$info['class'] = '';
+
+		return $info;
+	}
 }

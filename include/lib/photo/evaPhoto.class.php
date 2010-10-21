@@ -315,11 +315,14 @@ class EvaPhoto {
 			case TABLE_UNITE_TRAVAIL:
 				$photoDefaut = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : DEFAULT_WORKING_UNIT_PICTO;
 			break;
+			default:
+				$photoDefaut = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : '';
+			break;
 		}
 		
 		$uploadForm = evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut);
 
-		echo $uploadForm;
+		return $uploadForm;
 	}
 
 	/**
@@ -546,12 +549,12 @@ class EvaPhoto {
 		if($updateAssociationResult != 'error')
 		{
 			$messageInfo .= '
-					$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
+					$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
 		else
 		{
 			$messageInfo .= '
-					$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
+					$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
 		$messageInfo .= '
 					$("#message' . $tableElement . '_' . $idElement . '").show();
@@ -590,12 +593,12 @@ class EvaPhoto {
 			if($updateMainPhotoResult == 'ok')
 			{
 				$messageInfo .= '
-						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
+						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 			else
 			{
 				$messageInfo .= '
-						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
+						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 		}
 		elseif($isMainPicture == 'no')
@@ -603,12 +606,12 @@ class EvaPhoto {
 			if($updateMainPhotoResult == 'ok')
 			{
 				$messageInfo .= '
-						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'est plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
+						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'est plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 			else
 			{
 				$messageInfo .= '
-						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme n\&eacute;tant plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
+						$("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme n\&eacute;tant plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 		}
 
@@ -668,4 +671,40 @@ class EvaPhoto {
 		return $galleryOutput;
 	}
 
+	/**
+	*	Output the different element for a galery
+	*
+	*	@param mixed $tableElement The element type we want to show the gallery for
+	*	@param integer $idElement The element identifier we want to show the gallery for
+	*
+	*	@return mixed The code wich will be shown in source code
+	*/
+	function galleryContent($tableElement, $idElement)
+	{
+		return '<script type="text/javascript">
+					function reloadcontainer()
+					{
+						$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+						$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+							"post": "true",  
+							"table": "' . $tableElement . '",
+							"idElement": "' . $idElement . '",
+							"act": "reloadGallery"
+						});
+					}
+					function showGallery()
+					{
+						$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+						$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+							"post": "true",  
+							"table": "' . $tableElement . '",
+							"idElement": "' . $idElement . '",
+							"act": "showGallery"
+						});
+					}
+				</script>
+				<div id="message' . $tableElement . '_' . $idElement . '" ></div>
+				<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>
+				<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement) . '</div>';
+	}
 }

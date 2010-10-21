@@ -64,7 +64,7 @@ if($_POST['post'] == 'true')
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du groupement', 'evarisk') . ' "' . stripslashes($_POST['nom_groupement']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du groupement', 'evarisk') . ' "' . stripslashes($_POST['nom_groupement']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -182,27 +182,8 @@ if($_POST['post'] == 'true')
 										$(\'#leftEnlarging\').hide();
 									else
 										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
+									$(\'#partieEdition\').html(" ");
+
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
@@ -250,7 +231,7 @@ if($_POST['post'] == 'true')
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'unit&eacute; de travail', 'evarisk') . ' "' . stripslashes($_POST['nom_unite_travail']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'unit&eacute; de travail', 'evarisk') . ' "' . stripslashes($_POST['nom_unite_travail']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -373,26 +354,7 @@ if($_POST['post'] == 'true')
 									else
 										$(\'#leftEnlarging\').show();
 									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
+									$(\'#partieEdition\').html(" ");
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
@@ -479,7 +441,7 @@ if($_POST['post'] == 'true')
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la cat&eacute;gorie de dangers', 'evarisk') . ' "' . stripslashes($_POST['nom_categorie']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la cat&eacute;gorie de dangers', 'evarisk') . ' "' . stripslashes($_POST['nom_categorie']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -665,7 +627,7 @@ if($_POST['post'] == 'true')
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du danger', 'evarisk') . ' "' . stripslashes($_POST['nom_danger']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du danger', 'evarisk') . ' "' . stripslashes($_POST['nom_danger']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -830,13 +792,13 @@ if($_POST['post'] == 'true')
 						$insert = substr($insert, 0, strlen($insert) - 2);
 						$sql = "INSERT INTO " . TABLE_UTILISE_EPI . " (`ppeId`, `elementID`, `elementTable`) VALUES " . $insert;
 						if($wpdb->query($sql))
-							$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;Succ&egrave;s de l\'enregistrement</strong></p>';
+							$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;Succ&egrave;s de l\'enregistrement</strong></p>';
 						else
-							$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="noresponse" style="vertical-align:middle;" />&nbsp;Probl&egrave;me lors de l\'enregistrement</strong></p>';
+							$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;Probl&egrave;me lors de l\'enregistrement</strong></p>';
 					}
 					else
 					{
-						$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;Pas de probl&egrave;me lors de l\'enregistrement</strong></p>';
+						$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;Pas de probl&egrave;me lors de l\'enregistrement</strong></p>';
 					}
 					echo '
 						<script type="text/javascript">
@@ -887,7 +849,7 @@ if($_POST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_POST['tableElement'];
 						$idElement = $_POST['idElement'];
-						echo documentUnique::bilanRisque($tableElement, $idElement);
+						echo documentUnique::bilanRisque($tableElement, $idElement, 'ligne');
 					break;
 					case 'voirRisqueUnite' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
@@ -899,15 +861,20 @@ if($_POST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_POST['tableElement'];
 						$idElement = $_POST['idElement'];
-						echo documentUnique::prepareGenerationDocumentUnique($tableElement, $idElement);
+						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
+					break;
+					case 'voirHistoriqueDocumentUnique' :
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+						$tableElement = $_POST['tableElement'];
+						$idElement = $_POST['idElement'];
+						echo documentUnique::getDUERList($tableElement, $idElement);
 					break;
 					case 'saveDocumentUnique' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUniquePersistance.php');
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_POST['tableElement'];
 						$idElement = $_POST['idElement'];
-						echo documentUnique::prepareGenerationDocumentUnique($tableElement, $idElement);
-						// echo documentUnique::generationDocumentUnique($tableElement, $idElement, 'html');
+						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
 					break;
 				}
 				break;
@@ -915,7 +882,6 @@ if($_POST['post'] == 'true')
 				switch($_POST['act'])
 				{
 					case 'reloadVariables':
-					{
 						$idMethode = eva_tools::IsValid_Variable($_POST['idMethode']);
 						$idRisque = eva_tools::IsValid_Variable($_POST['idRisque']);
 						unset($valeurInitialVariables);
@@ -985,8 +951,38 @@ if($_POST['post'] == 'true')
 									<div id="slider-range-min' . $variable->id . '" class="slider_variable"></div>';
 							}
 						}
-						echo $affichage;
-					}
+
+						/*	START - Get the explanation picture if exist - START	*/
+						$methodExplanationPicture = '';
+						$defaultPicture = evaPhoto::getMainPhoto(TABLE_METHODE, $idMethode);
+						if(($defaultPicture != '') && (is_file(EVA_HOME_DIR . $defaultPicture)))
+						{
+							$methodExplanationPicture = '<img src="' . EVA_HOME_URL . $defaultPicture . '" alt="" style="width:80%;" />';
+						}
+						/*	END - Get the explanation picture if exist - END	*/
+
+						echo '<div class="alignleft" style="width:40%;" >' . $affichage . '</div><div class="alignright" style="width:50%;" >' . $methodExplanationPicture . '</div>';
+					break;
+					case 'defaultPictureSelection':
+						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
+					break;
+					case 'DeleteDefaultPictureSelection':
+						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto'], 'no');
+					break;
+					case 'deletePicture':
+						echo evaPhoto::deletePictureAction($_POST['table'], $_POST['idElement'], $_POST['idPicture']);
+					break;
+					case 'reloadGallery':
+						$script = 
+						'<script type="text/javascript">
+							$(document).ready(function(){
+								$(".qq-upload-list").hide();
+							});
+						</script>';
+						echo $script . evaPhoto::outputGallery($_POST['table'], $_POST['idElement']);
+					break;
+					case 'showGallery':
+						echo evaPhoto::getGallery($_POST['table'], $_POST['idElement']);
 					break;
 				}
 			break;
@@ -1162,7 +1158,7 @@ if($_POST['post'] == 'true')
 							$messageInfo = $messageInfo . '
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_POST['nom_tache']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_POST['nom_tache']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -1174,7 +1170,7 @@ if($_POST['post'] == 'true')
 							$messageInfo = $messageInfo . '
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_POST['nom_tache']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_POST['nom_tache']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -1312,7 +1308,7 @@ if($_POST['post'] == 'true')
 							$messageInfo = $messageInfo . '
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -1324,7 +1320,7 @@ if($_POST['post'] == 'true')
 							$messageInfo = $messageInfo . '
 								$(document).ready(function(){
 									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");
+									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");
 									$("#message").show();
 									setTimeout(function(){
 										$("#message").removeClass("updated");
@@ -1412,12 +1408,12 @@ if($_POST['post'] == 'true')
 						if($status != 'error')
 						{
 							$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
+								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
+								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . $_POST['tableProvenance'] . '").show();
@@ -1454,12 +1450,12 @@ if($_POST['post'] == 'true')
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
@@ -1490,12 +1486,12 @@ if($_POST['post'] == 'true')
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
@@ -1531,12 +1527,12 @@ if($_POST['post'] == 'true')
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'utilisateur a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'utilisateur a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").show();
@@ -1567,12 +1563,12 @@ if($_POST['post'] == 'true')
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs ont &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('supprim&eacute;s', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs ont &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('supprim&eacute;s', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs n\'ont pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('supprim&eacute;s', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs n\'ont pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('supprim&eacute;s', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").show();
@@ -1608,12 +1604,12 @@ if($_POST['post'] == 'true')
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
@@ -1644,12 +1640,12 @@ if($_POST['post'] == 'true')
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
 									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
@@ -1754,7 +1750,7 @@ if($_POST['post'] == 'true')
 						{
 							$messageInfo = 
 								'<span id="message" class="updated fade below-h2" style="cursor:pointer;" >
-									<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse a bien &eacute;t&eacute; enregistr&eacute;e.</strong>
+									<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse a bien &eacute;t&eacute; enregistr&eacute;e.</strong>
 								</span>
 								<script type="text/javascript" >
 									setTimeout(function(){$(\'#observationTropLongue' . $questionID . '\').html("")},5000);
@@ -1764,7 +1760,7 @@ if($_POST['post'] == 'true')
 						{
 							$messageInfo = 
 								'<span id="message" class="updated fade below-h2">
-									<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p>
+									<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p>
 								</span>
 								<script type="text/javascript" >
 									setTimeout(function(){$(\'#observationTropLongue' . $questionID . '\').html("")},5000);
@@ -1930,12 +1926,12 @@ if($_POST['post'] == 'true')
 					if($tache->getStatus() != 'error' AND $activite->getStatus() != 'error')
 					{
 						$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					else
 					{
 						$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					$messageInfo = $messageInfo . '
 								$("#message' . $_POST['tableProvenance'] . '").show();

@@ -49,6 +49,7 @@ function getMethodForm()
 				$saufMethode = '';
 				$titrePage = "Ajouter une nouvelle m&eacute;thode d'&eacute;valuation";
 			}
+
 			if(isset($_POST['nom_methode']))
 			{// On récupère le nom en cas d'import ou d'ajout de variable
 				$contenuInputTitre = $_POST['nom_methode'];
@@ -255,6 +256,17 @@ function getMethodForm()
 				});
 				</script>';
 			$methode_new = $methode_new . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', $idBouttonEnregistrer, false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+		}
+		if($postId > 0)
+		{//Galerie photo pour expliquer la méthode
+			$methode_new .= EvaDisplayDesign::ouvrirMetaboxHolder();
+			unset($postBoxes);
+			$postBox['id'] = 'galeriePhotoMethodePostBox';
+			$postBox['titre']= __('Photo explicative de la m&eacute;thode', 'evarisk');
+			$postBox['pagination'] = false;
+			$postBox['corps'] = evaPhoto::galleryContent(TABLE_METHODE, $postId);
+			$postBoxes[] = $postBox;
+			$methode_new .= EvaDisplayDesign::displayPostBoxes($postBoxes) . EvaDisplayDesign::fermerMetaboxHolder() . '<!-- /galeriePhoto -->';
 		}
 		{//Import
 			$methode_new = $methode_new .  EvaDisplayInput::afficherInput($type='FILE', $id='import', $contenuInput='', $contenuAide='', $labelInput='Importer les valeurs &eacute;quivalentes &agrave; partir d\'un .csv', $nomChamps='import', $grise=false, false, $taille=255);

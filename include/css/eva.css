@@ -121,6 +121,19 @@ div.inside{overflow: hidden; padding: 5px;}
 	cursor:pointer;
 }
 
+.nomFeuilleArbre
+{
+	cursor:pointer;
+}
+.nomNoeudArbre
+{
+	cursor:pointer;
+}
+.test
+{
+	cursor:move;
+}
+
 .postbox .handlediv {
 	margin-left:20px;
 }

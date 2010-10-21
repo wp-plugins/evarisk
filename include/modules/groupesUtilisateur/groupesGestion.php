@@ -32,7 +32,7 @@
 	{
 ?>
 	<div id="evaGroupMessage" class="updated fade below-h2" >
-		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>veille-no-reponse.gif" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
+		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>error_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
 	<script type="text/javascript" >setTimeout(function(){$('#evaGroupMessage').remove()},5000);</script>
 <?php
@@ -78,7 +78,7 @@
 		<tr>
 			<td>
 				<input type="hidden" id="groupUserList" name="groupUserList" value="<?php echo $groupUserList; ?>" />
-				<script type="text/javascript">var EVA_IMG_PICTOS_PLUGIN_URL = '<?php echo EVA_IMG_PICTOS_PLUGIN_URL; ?>'</script>
+				<script type="text/javascript">var PICTO_DELETE = '<?php echo PICTO_DELETE; ?>'</script>
 				<div id="usersManagement">
 					<h1 class="ui-widget-header" ><?php echo __('Liste des utilisateurs disponible','evarisk'); ?></h1>
 					<div id="usersList">
@@ -145,11 +145,11 @@
 											$id = $value;
 											if((isset($user_info->last_name)) && ($user_info->last_name != null) && (isset($user_info->first_name)) && ($user_info->first_name != null))
 											{
-												echo '<li id="' . $id . '_added" >' . $user_info->last_name . " " . $user_info->first_name . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'delete.PNG" alt="delete" /></li>';
+												echo '<li id="' . $id . '_added" >' . $user_info->last_name . " " . $user_info->first_name . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . PICTO_DELETE . '" alt="delete" /></li>';
 											}
 											else
 											{
-												echo '<li id="' . $id . '_added" >' . $user_info->user_nicename . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'delete.PNG" alt="delete" /></li>';
+												echo '<li id="' . $id . '_added" >' . $user_info->user_nicename . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . PICTO_DELETE . '" alt="delete" /></li>';
 											}
 
 											

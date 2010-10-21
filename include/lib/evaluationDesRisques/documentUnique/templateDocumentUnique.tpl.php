@@ -104,7 +104,7 @@
 	}
 
 $sommaireDocumentUnique = 
-	'<table summary="" cellpadding="0" cellspacing="0" class="tabsommaire" >
+	'<table summary="duer summary" cellpadding="0" cellspacing="0" class="tabsommaire" >
 		<tr>
 			<td colspan="2" class="titrePrincipalPageSommaire">' . strtoupper(__('Sommaire', 'evarisk')) . '</td>
 		</tr>
@@ -118,13 +118,16 @@ $sommaireDocumentUnique =
 		</tr>
 		<tr>
 			<td class="sousTitreSommaireDU">1.2 - ' . __('Les sources utilis&eacute;es', 'evarisk') . '</td>
-			<td class="numeroPageSousTitreSommaireDU">3</td></tr>
+			<td class="numeroPageSousTitreSommaireDU">3</td>
+		</tr>
 		<tr>
 			<td class="sousTitreSommaireDU">1.3 - ' . __('La localisation de l\'&eacute;tude: #DISPODESPLANS#', 'evarisk') . '</td>
-			<td class="numeroPageSousTitreSommaireDU">4</td></tr>
+			<td class="numeroPageSousTitreSommaireDU">4</td>
+		</tr>
 		<tr>
 			<td class="grandTtitreSommaireDU">2 - ' . __('Chapitre &eacute;valuation', 'evarisk') . '</td>
 			<td class="numeroPageGrandTitreSommaireDU">5</td>
+		</tr>
 		<tr>
 			<td class="sousTitreSommaireDU">2.1 - ' . __('D&eacute;finition d\'un risque', 'evarisk') . '</td>
 			<td class="numeroPageSousTitreSommaireDU">5</td>
@@ -192,9 +195,9 @@ $ChapitreAdministratif =
 '<div class="titrePrincipalPageDU">1 - ' . __('Chapitre administratif', 'evarisk') . '</div>
 <div class="sousTitrePrincipalPageDU">1.1 - ' . __('La m&eacute;thodologie', 'evarisk') . '</div>
 <div class="petitTitreGrasPageDu">' . __('L\'analyse des risques a &eacute;t&eacute; r&eacute;alis&eacute;e entre le #DEBUTAUDIT# et #FINAUDIT# de la fa&ccedil;on suivante', 'evarisk') . '&nbsp;:</div>
-#METHODOLOGIE#
+'.$methodologieParDefaut.'
 <div class="sousTitrePrincipalPageDU">1.2 - ' . __('Les sources utilis&eacute;es', 'evarisk') . '&nbsp;:</div>		
-#SOURCES#';
+'.$sourcesParDefaut.'';
 
 $localisationRemarques = 
 '<div class="sousTitrePrincipalPageDU">1.3 - ' . __('La localisation de l\'&eacute;tude', 'evarisk') . '</div>
@@ -229,8 +232,10 @@ $methodeEvaluationQuantification =
 $groupesUtilisateurs = 
 '<div class="sousTitrePrincipalPageDU">2.6 - ' . __('La notion de groupes utilisateurs ou de m&eacute;tiers', 'evarisk') . '</div>
 <div class="paragraphe1">' . __('Afin de conserver la polyvalence et la flexibilit&eacute; des m&eacute;tiers, nous avons attribu&eacute; des groupes utilisateurs. Il est recommand&eacute; que chaque salari&eacute; appartienne &agrave; un groupe donn&eacute; afin de pouvoir travailler dans les unit&eacute;s concern&eacute;es par ce groupe.<br/>Cette notion de groupes est d&eacute;finie par les diff&eacute;rentes sp&eacute;cificit&eacute;s de formations, d\'exp&eacute;riences, de comp&eacute;tences et des particularit&eacute;s du poste.<br/>Il se peut, lorsque certains postes sont nominatifs ou utilis&eacute;s de fa&ccedil;on exceptionnelle par une personne en particulier, que l\'on note directement le nom du salari&eacute; sur la Fiche d\'Evaluation des Risques. Ceci reste des cas &agrave; part.', 'evarisk') . '</div>
-<div class="petitTitreGrasPageDu">2.6.1 -	' . __('Les groupes de #NOMENTREPRISE#', 'evarisk') . '</div>
-#GROUPESUTILISATEURS#';
+<div class="petitTitreGrasPageDu">2.6.1 -	' . __('Les groupes d\'utilisateurs', 'evarisk') . '</div>
+#GROUPESUTILISATEURS#<br/><br/>
+<div class="petitTitreGrasPageDu">2.6.2 -	' . __('Les groupes de #NOMENTREPRISE# par affectation', 'evarisk') . '</div>
+#GROUPESUTILISATEURSAFFECTES#';
 
 $unitesDeTravail = 
 	'<div class="sousTitrePrincipalPageDU">2.7 -	' . __('L\'&eacute;tude des unit&eacute;s de travail', 'evarisk') . '</div>
@@ -249,19 +254,19 @@ $unitesDeTravail =
 			<td class="enTeteTableauExplicationNotationRisque" >' . __('Priorit&eacute;', 'evarisk') . '</td>
 		</tr>
 		<tr>
-			<td class="notationRisqueInacceptable" >' . __('81 &agrave; 100', 'evarisk') . '</td>
+			<td class="notationRisqueInacceptable" >' . __(SEUIL_BAS_INACCEPTABLE . ' &agrave; ' . SEUIL_HAUT_INACCEPTABLE, 'evarisk') . '</td>
 			<td >' . __('Risque Inacceptable', 'evarisk') . '</td>
 		</tr>
 		<tr>
-			<td class="notationRisqueATraiter" >' . __('51 &agrave; 80', 'evarisk') . '</td>
+			<td class="notationRisqueATraiter" >' . __(SEUIL_BAS_ATRAITER . ' &agrave; ' . SEUIL_HAUT_ATRAITER, 'evarisk') . '</td>
 			<td >' . __('Risque &agrave; traiter', 'evarisk') . '</td>
 		</tr>
 		<tr>
-			<td class="notationRisqueAPlanifier" >' . __('26 &agrave; 50', 'evarisk') . '</td>
+			<td class="notationRisqueAPlanifier" >' . __(SEUIL_BAS_APLANIFIER . ' &agrave; ' . SEUIL_HAUT_APLANIFIER, 'evarisk') . '</td>
 			<td >' . __('Risque &agrave; planifier', 'evarisk') . '</td>
 		</tr>
 		<tr>
-			<td class="notationRisqueFaible" >' . __('0 &agrave; 25', 'evarisk') . '</td>
+			<td class="notationRisqueFaible" >' . __(SEUIL_BAS_FAIBLE . ' &agrave; ' . SEUIL_HAUT_FAIBLE, 'evarisk') . '</td>
 			<td >' . __('Risque faible', 'evarisk') . '</td>
 		</tr>
 	</table>
@@ -280,7 +285,31 @@ $introductionRisquesUnitaires =
 	<div class="paragraphe2">' . __('Dans le tableau ci-apr&egrave;s, la colonne de gauche indique le nom de l\'unit&eacute; de travail. Le coefficient de risque unitaire est situ&eacute; dans la deuxi&egrave;me colonne et sa couleur correspond aux crit&egrave;res du paragraphe 2.8.2.', 'evarisk') . '</div>';
 
 $risquesUnitaires = 
-	'#RISQUEUNITAIRE#';
+	'<table summary="risqsLineSummary#IDTABLE#" cellpadding="0" cellspacing="0" class="widefat post fixed">
+		<thead>
+			<tr>
+				<th>' . __('&Eacute;l&eacute;ment', 'evarisk') . '</th>
+				<th>' . __('Quotation', 'evarisk') . '</th>
+				<th>' . __('Nom du danger', 'evarisk') . '</th>
+				<th>' . __('Commentaires', 'evarisk') . '</th>
+			</tr>
+		</thead>
+		
+		<tfoot>
+		</tfoot>
+		
+		<tbody>
+			#LIGNESRISQUESUNITAIRES#
+		</tbody>
+	</table>';
+
+$risquesUnitairesLignes = 
+	'<tr>
+		<td>#NOMELEMENT#</td>
+		<td style="background-color:#QUOTATIONCOLOR#;color:#QUOTATIONTEXTCOLOR#;" >#QUOTATION#</td>
+		<td>#NOMDANGER#</td>
+		<td>#COMMENTAIRE#</td>
+	</tr>';
 
 $introductionRisquesParUnite = 
 	'<div class="petitTitreGrasPageDu">2.8.5 - ' . __('Les r&eacute;sultats de la hi&eacute;rarchisation par risque total', 'evarisk') . '</div>

@@ -869,6 +869,22 @@ function evarisk_creationTables()
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(EvaVersion::getVersion('base_evarisk') <= 17)
+		{//Changement des champs contenant les groupes utilisateurs, la liste des risques par unité et de la liste des risques unitaires dans la table document unique
+			$sql = " ALTER TABLE " . TABLE_DUER . " CHANGE `codeHtmlGroupesUtilisateurs` `groupesUtilisateurs` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'A serialise array with the different users'' group'";
+			$wpdb->query($sql);
+			$sql = " ALTER TABLE " . TABLE_DUER . " CHANGE `codeHtmlRisqueUnitaire` `risquesUnitaires` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'A serialise array with the different single risqs'";
+			$wpdb->query($sql);
+			$sql = " ALTER TABLE " . TABLE_DUER . " CHANGE `codeHtmlRisquesParUnite` `risquesParUnite` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'A serialise array with the different risqs by unit'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " ADD `groupesUtilisateursAffectes` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'A serialise array with the different users'' group affected to the current element' AFTER `groupesUtilisateurs` ;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " ADD `status` ENUM( 'valid', 'moderated', 'deleted' ) NOT NULL DEFAULT 'valid' COMMENT 'The document status' AFTER `id` ;";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 ?>

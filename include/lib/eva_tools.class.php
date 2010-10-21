@@ -125,8 +125,8 @@ class eva_tools
 	}
 
 	public function slugify_noaccent($text){
-		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/","/'/");
-		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U", "&#146;");
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/");
+		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
 		if ($text == '')
 		{
 			return '';
@@ -140,8 +140,8 @@ class eva_tools
 	}
 
 	public function slugify_noaccent_no_utf8decode($text){
-		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/","/'/",'/"/');
-		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U", "&#146;","&#34;");
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/");
+		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
 		if ($text == '')
 		{
 			return '';
@@ -153,7 +153,64 @@ class eva_tools
 	  
 	  return $text;
 	}
-	
+
+	function transformeDate($date, $ajoutJour=0, $ajoutMois=0, $ajoutAnnee=0)
+	{	
+		if($date == "" OR $date == '00-00-0000')
+		{
+			$date = "NA";
+		}
+		else
+		{
+			$moisAnnee['01']['nom'] = __('Janvier', 'evarisk');
+			$moisAnnee['02']['nom'] = __('F&eacute;vrier', 'evarisk');
+			$moisAnnee['03']['nom'] = __('Mars', 'evarisk');
+			$moisAnnee['04']['nom'] = __('Avril', 'evarisk');
+			$moisAnnee['05']['nom'] = __('Mai', 'evarisk');
+			$moisAnnee['06']['nom'] = __('Juin', 'evarisk');
+			$moisAnnee['07']['nom'] = __('Juillet', 'evarisk');
+			$moisAnnee['08']['nom'] = __('Ao&uuml;t', 'evarisk');
+			$moisAnnee['09']['nom'] = __('Septembre', 'evarisk');
+			$moisAnnee['10']['nom'] = __('Octobre', 'evarisk');
+			$moisAnnee['11']['nom'] = __('Novembre', 'evarisk');
+			$moisAnnee['12']['nom'] = __('D&eactue;cembre', 'evarisk');
+			$elementDate = explode("-",$date); 
+			$annee = $elementDate[0];
+			$mois = $elementDate[1];
+			$jour = $elementDate[2];
+			$date = date('Y-m-d', mktime(0,0,0, $elementDate[1], $elementDate[2], $elementDate[0]));
+			$elementDate = explode("-",$date); 
+			$annee = $elementDate[0];
+			$mois = $elementDate[1];
+			$jour = $elementDate[2];
+			$date = $jour . ' ' . $moisAnnee[$mois]['nom'] . ' ' . $annee;
+		}
+		return $date;
+	}
+
+	function stripAccents($string)
+	{
+		$newString = str_replace(array('à', 'á', 'â', 'ã', 'ä'), 'a', $string);
+		$newString = str_replace(array('À', 'Á', 'Â', 'Ã', 'Ä'), 'A', $newString);
+		$newString = str_replace(array('é', 'è', 'ê', 'ë'), 'e', $newString);
+		$newString = str_replace(array('É', 'È', 'Ê', 'Ë'), 'E', $newString);
+		$newString = str_replace(array('ì', 'í', 'î', 'ï'), 'i', $newString);
+		$newString = str_replace(array('Ì', 'Í', 'Î', 'Ï'), 'I', $newString);
+		$newString = str_replace(array('ò', 'ó', 'ô', 'ö', 'õ'), 'o', $newString);
+		$newString = str_replace(array('Ò', 'Ó', 'Ô', 'Ö', 'Õ'), 'O', $newString);
+		$newString = str_replace(array('ù', 'ú', 'û', 'ü'), 'u', $newString);
+		$newString = str_replace(array('Ù', 'Ú', 'Û', 'Ü'), 'U', $newString);
+		$newString = str_replace(array('ý', 'ÿ'), 'y', $newString);
+		$newString = str_replace(array('Ý', 'Ÿ'), 'Y', $newString);
+		$newString = str_replace('ç', 'c', $newString);
+		$newString = str_replace('Ç', 'C', $newString);
+		$newString = str_replace('ñ', 'n', $newString);
+		$newString = str_replace('Ñ', 'N', $newString);
+		$newString = str_replace('n°', '', $newString);
+		$newString = str_replace('°', '_', $newString);
+		return $newString;
+	}
+
 	function make_recursiv_dir($dir){
 		$tab=explode('/',$dir);
 		$str='';

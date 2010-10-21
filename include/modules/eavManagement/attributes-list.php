@@ -18,7 +18,7 @@
 	{
 ?>
 	<div id="evaMessage" class="updated fade below-h2" >
-		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>veille-reponse.gif" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
+		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>success_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
 	<script type="text/javascript" >setTimeout(function(){$('#evaMessage').remove()},5000);</script>
 <?php

@@ -32,7 +32,7 @@ function evarisk_insertions($insertions = null)
 				__('manque d\'hygi&egrave;ne', 'evarisk');
 				__('soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk');
 				__('manque de formation', 'evarisk');
-				$sql = "INSERT INTO " . TABLE_CATEGORIE_DANGER . " (`id`, `nom`, `limiteGauche`, `limiteDroite`) VALUES 
+				$sql = "INSERT INTO " . TABLE_CATEGORIE_DANGER . " (id, nom, limiteGauche, limiteDroite) VALUES 
 					('2', 'Chute de plain-pied', '1', '2'),
 					('3', 'Chute de hauteur', '3', '4'),
 					('4', 'Manutention manuelle', '5', '6'),
@@ -52,7 +52,7 @@ function evarisk_insertions($insertions = null)
 					('18', 'Manque de formation', '33', '34'),
 					('19', 'Autres', '35', '36');";
 				$wpdb->query($sql);
-				$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " set `limiteDroite` = 37 WHERE `id` = 1";
+				$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " set limiteDroite = 37 WHERE id = 1";
 				$wpdb->query($sql);
 			}
 			//Danger
@@ -76,7 +76,7 @@ function evarisk_insertions($insertions = null)
 				__('Divers soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk');
 				__('Divers manque de formation', 'evarisk');
 				__('Divers autres', 'evarisk');
-				$sql = "INSERT INTO " . TABLE_DANGER . " (`id`, `id_categorie`, `nom`) VALUES 
+				$sql = "INSERT INTO " . TABLE_DANGER . " (id, id_categorie, nom) VALUES 
 					('NULL', '2', 'Divers chute de plain-pied'),
 					('NULL', '3', 'Divers chute de hauteur'),
 					('NULL', '4', 'Divers manutention manuelle'),
@@ -102,7 +102,7 @@ function evarisk_insertions($insertions = null)
 			if($insertions['methodes']['evarisk'] == 'true')
 			{
 				//M&eacute;thodes
-				$sql = "INSERT INTO " . TABLE_METHODE . " (`id`, `nom`) VALUES ('1', 'Evarisk')";
+				$sql = "INSERT INTO " . TABLE_METHODE . " (id, nom) VALUES ('1', 'Evarisk')";
 				$wpdb->query($sql);
 				//Variables
 				__('Gravite', 'evarisk');
@@ -115,7 +115,7 @@ function evarisk_insertions($insertions = null)
 				__('1 : Pr&eacute;vention r&eacute;guli&egrave;re\n2 : Formation individuelle obligatoire\n3 : Formation obligatoire non r&eacute;alis&eacute;e\n4 : Pas de formation ni de pr&eacute;vention', 'evarisk');
 				__('Protection', 'evarisk');
 				__('Protection', '1', '4', '1 : Intrins&egrave;que\n2 : Collective\n3 : Individuelle\n4 : Rien', 'evarisk');
-				$sql = "INSERT INTO " . TABLE_VARIABLE . " (`id`, `nom`, `min`, `max`, `annotation`) VALUES 
+				$sql = "INSERT INTO " . TABLE_VARIABLE . " (id, nom, min, max, annotation) VALUES 
 					('1', 'Gravite', '0', '4', '0 : Pas de blessure possible\n1 : Blessure l&eacute;g&egrave;re\n2 : ITT<5 jours ou effet r&eacute;versible\n3 : ITT>5jours ou effet irr&eacute;versible\n4 : Menace sur la vie'),
 					('2', 'Exposition', '0', '4', '0 : Jamais en contact\n1 : Rare, 1 fois par an\n2 : Inhabituelle, 1 fois par mois\n3 : Occasionnelle, 1 fois par semaine\n4 : Fr&eacute;quente, 1 fois par jour'),
 					('3', 'Occurence', '1', '4', '1 : Jamais arriv&eacute;\n2 : Est d&eacute;j&agrave; arriv&eacute; dans des circonstances exeptionnelles\n3 : D&eacute;j&agrave; produit 2 fois\n4 : Se produit tous les mois'),
@@ -123,7 +123,7 @@ function evarisk_insertions($insertions = null)
 					('5', 'Protection', '1', '4', '1 : Intrins&egrave;que\n2 : Collective\n3 : Individuelle\n4 : Rien');";
 				$wpdb->query($sql);
 				//Avoir variable
-				$sql = "INSERT INTO " . TABLE_AVOIR_VARIABLE . " (`id_methode`, `id_variable`, `ordre`, `date`) VALUES 
+				$sql = "INSERT INTO " . TABLE_AVOIR_VARIABLE . " (id_methode, id_variable, ordre, date) VALUES 
 					('1', '1', '1', '" . $dateInstallation . "'),
 					('1', '2', '2', '" . $dateInstallation . "'),
 					('1', '3', '3', '" . $dateInstallation . "'),
@@ -131,14 +131,14 @@ function evarisk_insertions($insertions = null)
 					('1', '5', '5', '" . $dateInstallation . "');";
 				$wpdb->query($sql);
 				//Avoir op&eacute;rateur
-				$sql = "INSERT INTO " . TABLE_AVOIR_OPERATEUR . " (`id_methode`, `operateur`, `ordre`, `date`) VALUES 
+				$sql = "INSERT INTO " . TABLE_AVOIR_OPERATEUR . " (id_methode, operateur, ordre, date) VALUES 
 					('1', '*', '1', '" . $dateInstallation . "'),
 					('1', '*', '2', '" . $dateInstallation . "'),
 					('1', '*', '3', '" . $dateInstallation . "'),
 					('1', '*', '4', '" . $dateInstallation . "');";
 				$wpdb->query($sql);
 				//Equivalence etalon
-				$sql = "INSERT INTO `" . TABLE_EQUIVALENCE_ETALON . "` (`id_methode`, `id_valeur_etalon`, `date`, `valeurMaxMethode`, `Status`) VALUES
+				$sql = "INSERT INTO " . TABLE_EQUIVALENCE_ETALON . " (id_methode, id_valeur_etalon, date, valeurMaxMethode, Status) VALUES
 					(1, 0, '" . $dateInstallation . "', 0, 'Valid'),
 					(1, 1, '" . $dateInstallation . "', 1, 'Valid'),
 					(1, 2, '" . $dateInstallation . "', 2, 'Valid'),
@@ -232,7 +232,7 @@ function evarisk_insertions($insertions = null)
 					$epis = substr($epis, 0, strlen($epis) - 1);
 					$epis = $epis . ";";
 					$sql = "
-						INSERT INTO `" . TABLE_EPI . "` (`id`, `name`, `path`) VALUES " . $epis;
+						INSERT INTO " . TABLE_EPI . " (id, name, path) VALUES " . $epis;
 					$wpdb->query($sql);
 				}
 			}
@@ -423,6 +423,15 @@ function evarisk_insertions($insertions = null)
 		}
 		case 16:
 		{
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 17:
+		{
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, isMainPicture, idDestination, tableDestination, photo) VALUES('', 'valid', 'yes', 1, 'wp_eva__methode', 'medias/uploads/wp_eva__methode/1/tabcoeff.gif');";
+			$wpdb->query($sql);
+			$sql = "UPDATE " . TABLE_DUER . " SET `groupesUtilisateursAffectes` = `groupesUtilisateurs` ";
+			$wpdb->query($sql);
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}

@@ -794,15 +794,6 @@ class EvaDisplayDesign {
 		$infoRacine = '';
 		switch($table)
 		{
-			case TABLE_DUER:
-				$elements = Arborescence::getFils(TABLE_GROUPEMENT, $racine, "nom ASC");
-				$sousTable = 'sousTableDUER';
-				$subElements = EvaGroupement::getUnitesDuGroupement($racine->id);
-				$divDeChargement = 'message';
-				$titreInfo = __("Quotation", 'evarisk');
-				$actionSize = 2;
-				$actions = '';
-				break;
 			case TABLE_GROUPEMENT:
 				$elements = Arborescence::getFils($table, $racine, "nom ASC");
 				$sousTable = TABLE_UNITE_TRAVAIL;
@@ -811,9 +802,6 @@ class EvaDisplayDesign {
 				$titreInfo = __("Niveau de risque", 'evarisk');
 				$actionSize = 5;
 				$actions = '
-							<td></td>
-							<td></td>
-							<td></td>
 							<td class="noPadding"  id="addMain' . $racine->id . '"><img style="max-width: 100%;" src="' . PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td>
 							<td id="addMain' . $racine->id . 'Alt"></td>
 							<td class="noPadding"  id="addSecondary' . $racine->id . '"><img style="max-width: 100%;" src="' . PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td>
@@ -827,8 +815,6 @@ class EvaDisplayDesign {
 				$titreInfo = null;
 				$actionSize = 4;
 				$actions = '
-							<td></td>
-							<td></td>
 							<td class="noPadding"  id="addMain' . $racine->id . '"><img style="max-width: 100%;" src="' . PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>
 							<td id="addMain' . $racine->id . 'Alt"></td>
 							<td class="noPadding"  id="addSecondary' . $racine->id . '"><img style="max-width: 100%;" src="' . PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td>
@@ -873,9 +859,6 @@ class EvaDisplayDesign {
 		{
 			switch($table)
 			{
-				case TABLE_DUER:
-					$subAffichage = $subElement->nom;
-					break;
 				case TABLE_GROUPEMENT:
 					$subAffichage = $subElement->nom;
 					break;
@@ -1075,7 +1058,7 @@ class EvaDisplayDesign {
 			setTimeout 
 			( 
 				function() 
-				{ 
+				{
 					$("#' . $idTable . ' tr.parent").each(function(){
 						var childNodes = $("table#' . $idTable . ' tbody tr.child-of-" + $(this).attr("id"));
 						if(childNodes.length > 0) {
@@ -1235,11 +1218,6 @@ class EvaDisplayDesign {
 				$subElements = categorieDangers::getDangersDeLaCategorie($elementPere->id);
 				$actionSize = 4;
 				break;
-			case TABLE_DUER :
-				$sousTable = 'sousTableDUER';
-				$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
-				$actionSize = 0;
-				break;
 			case TABLE_GROUPEMENT :
 				$sousTable = TABLE_UNITE_TRAVAIL;
 				$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
@@ -1264,13 +1242,15 @@ class EvaDisplayDesign {
 			switch($table)
 			{
 				case TABLE_CATEGORIE_DANGER :
-					$tdSubEdit = '<td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td><td class="noPadding" colspan=' . ($actionSize - 1) . ' id="delete-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
-					break;
-				case TABLE_DUER :
-					$tdSubEdit = '';
+					$tdSubEdit = '
+							<td></td>
+							<td></td><td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding" id="delete-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
 					break;
 				case TABLE_GROUPEMENT :
-					$tdSubEdit = '<td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding" id="delete-work-unit' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding"   colspan=' . ($actionSize - 1) . ' id="risq-leaf' . $subElement->id . '"><img src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+					$tdSubEdit = '
+							<td></td><td></td><td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td style="display:none;" class="noPadding" id="risq-leaf' . $subElement->id . '"><img src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding" id="delete-work-unit' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					break;
 				case TABLE_TACHE :
 					$tdSubEdit = '<td class="noPadding" colspan=' . $actionSize . ' id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
@@ -1282,7 +1262,6 @@ class EvaDisplayDesign {
 			switch($table)
 			{
 				case TABLE_CATEGORIE_DANGER :
-				case TABLE_DUER:
 				case TABLE_GROUPEMENT :
 				case TABLE_TACHE :
 					$subAffichage = $subElement->nom;
@@ -1296,6 +1275,10 @@ class EvaDisplayDesign {
 								$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").unbind("click");
 								$("#' . $idTable . ' #leaf-' . $subElement->id . '").unbind("click");
 								$("#' . $idTable . ' #leaf-' . $subElement->id . ' td:first-child").click(function(event){
+									if(!$(event.target).is("span"))
+										$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").click();
+								});
+								$("#' . $idTable . ' #leaf-' . $subElement->id . ' td:first-child").dblclick(function(event){
 									if(!$(event.target).is("span"))
 										$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").click();
 								});
@@ -1325,7 +1308,7 @@ class EvaDisplayDesign {
 										"expanded": expanded
 									});
 									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 								$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").click(function(){
 									$("#menu").val(\'risq\');
@@ -1353,7 +1336,7 @@ class EvaDisplayDesign {
 										"expanded": expanded
 									});
 									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 							
 								$("#' . $idTable . ' #delete-work-unit' . $subElement->id . '").click(function(){
@@ -1406,7 +1389,7 @@ class EvaDisplayDesign {
 
 							});
 						</script>';
-					$subActions = $script . $tdSubEdit;
+					$subActions = $script . $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPE_QUESTION :
 					$subAffichage = 'Q' . $subElement->id . ' : ' . ucfirst($subElement->enonce);
@@ -1426,8 +1409,8 @@ class EvaDisplayDesign {
 			}
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
 			$monCorpsSubElements = $monCorpsSubElements . $script . '
-				<tr id="leaf-' . $subElement->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' feuilleArbre">
-					<td>' . $subAffichage . '</td>';
+				<tr id="leaf-' . $subElement->id . '" class="test child-of-node-' . $idTable . '-' . $elementPere->id . ' feuilleArbre">
+					<td class="nomFeuilleArbre" >' . $subAffichage . '</td>';
 				if($titreInfo != null)
 				{
 					$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
@@ -1444,17 +1427,14 @@ class EvaDisplayDesign {
 					case TABLE_CATEGORIE_DANGER :
 						$tdAddMain = '<td class="noPadding"  id="addMain' . $element->id . '"><img style="max-width: 100%;" src="' .PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
 						$tdAddSecondary = '<td class="noPadding"  id="addSecondary' . $element->id . '"><img style="max-width: 100%;" src="' .PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdEdit = '<td class="noPadding"   id="edit-node' . $element->id . '"><img src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td class="noPadding"   id="delete-node' . $element->id . '"><img src="' .PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
-						break;
-					case TABLE_DUER :
-						$tdAddMain = '';
-						$tdAddSecondary = '';
-						$tdEdit = '';
+						$tdEdit = '<td class="noPadding"   id="edit-node' . $element->id . '"><img src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
+						$tdDelete = '<td class="noPadding"   id="delete-node' . $element->id . '"><img src="' .PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
 						break;
 					case TABLE_GROUPEMENT :
 						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '"><img style="max-width: 100%;" src="' .PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
 						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '"><img style="max-width: 100%;" src="' .PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdEdit = '<td class="noPadding"  id="edit-node' . $element->id . '"><img src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td><td class="noPadding" id="delete-node' . $element->id . '"><img src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td><td class="noPadding"   id="risq-node' . $element->id . '"><img src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td>';
+						$tdEdit = '<td class="noPadding"  id="edit-node' . $element->id . '"><img src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td><td class="noPadding" style="display:none;" id="risq-node' . $element->id . '"><img src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td>';
+						$tdDelete = '<td class="noPadding" id="delete-node' . $element->id . '"><img src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
 						break;
 					case TABLE_TACHE :
 						$tdAddMain = '<td class="noPadding"  id="addMain' . $element->id . '"><img style="max-width: 100%;" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
@@ -1470,7 +1450,6 @@ class EvaDisplayDesign {
 				switch($table)
 				{
 					case TABLE_CATEGORIE_DANGER :
-					case TABLE_DUER :
 					case TABLE_GROUPEMENT :
 					case TABLE_TACHE :
 						$affichage = $element->nom;
@@ -1482,7 +1461,7 @@ class EvaDisplayDesign {
 							$("#' . $idTable . ' #delete-node' . $element->id . '").unbind("click");
 							$("#' . $idTable . ' #node-' . $idTable . '-' . $element->id . ' td:first-child").click(function(event){
 								if(!$(event.target).is("span"))
-									$("#' . $idTable . ' #edit-node' . $element->id . '").click();
+									$("#' . $idTable . ' #risq-node' . $element->id . '").click();
 							});
 							$("#' . $idTable . ' #edit-node' . $element->id . '").click(function(){
 								$("#menu").val(\'gestiongrptut\');
@@ -1511,7 +1490,7 @@ class EvaDisplayDesign {
 									"expanded": expanded
 								});
 								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 							});
 							$("#' . $idTable . ' #risq-node' . $element->id . '").click(function(){
 								$("#menu").val(\'risq\');
@@ -1599,7 +1578,7 @@ class EvaDisplayDesign {
 									"expanded": expanded
 								});
 								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								return false;
 							});
 							
@@ -1638,15 +1617,16 @@ class EvaDisplayDesign {
 									"expanded": expanded
 								});
 								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								return false;
 							});
 						});
 					</script>';
 						$actions = $script . '
-							' . $tdEdit . '
 							' . $tdAddMain . '
-							' . $tdAddSecondary;
+							' . $tdAddSecondary . '
+							' . $tdEdit . '
+							' . $tdDelete;
 						break;
 					case TABLE_GROUPE_QUESTION :
 						$affichage = $element->code . '-' . ucfirst($element->nom);
@@ -1696,7 +1676,7 @@ class EvaDisplayDesign {
 				$class = 'child-of-node-' . $idTable . '-' . $elementPere->id . '';
 				$monCorpsTable = $monCorpsTable . '
 					<tr id="node-' . $idTable . '-' . $element->id . '" class="' . $class . ' noeudArbre parent">
-						<td>' . $affichage . '</td>
+						<td class="nomNoeudArbre" >' . $affichage . '</td>
 						' . $info .  $actions . '
 					</tr>';
 				
@@ -1707,11 +1687,6 @@ class EvaDisplayDesign {
 						$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
 						$sousTable = TABLE_DANGER;
 						$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
-						break;
-					case TABLE_DUER :
-						$elements_fils = Arborescence::getFils(TABLE_GROUPEMENT, $element, "nom ASC");
-						$sousTable = TABLE_UNITE_TRAVAIL;
-						$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
 						break;
 					case TABLE_GROUPEMENT :
 						$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
@@ -1765,52 +1740,6 @@ class EvaDisplayDesign {
 				break;
 			case TABLE_ACTIVITE :
 				$info['value'] = '';
-				$info['class'] = '';
-				break;
-			case 'sousTableDUER' :
-				$temp = Risque::getRisques(TABLE_UNITE_TRAVAIL, $elementId, "Valid");
-				if($temp != null)
-				{
-					foreach($temp as $risque)
-					{
-						$risques['"' . $risque->id . "'"][] = $risque; 
-					}
-				}
-				$sumR = 0;
-				if(isset($risques) && ($risques != null))
-				{
-					foreach($risques as $risque)
-					{
-						$idMethode = $risque[0]->id_methode;
-						$score = Risque::getScoreRisque($risque);
-						$sumR += Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
-					}
-				}
-				$scoreRisqueGroupement = $sumR;
-				$info['value'] = $scoreRisqueGroupement;
-				$info['class'] = '';
-				break;
-			case TABLE_DUER :
-				$temp = Risque::getRisques(TABLE_GROUPEMENT, $elementId, "Valid");
-				if($temp != null)
-				{
-					foreach($temp as $risque)
-					{
-						$risques['"' . $risque->id . "'"][] = $risque; 
-					}
-				}
-				$sumR = 0;
-				if(isset($risques) && ($risques != null))
-				{
-					foreach($risques as $risque)
-					{
-						$idMethode = $risque[0]->id_methode;
-						$score = Risque::getScoreRisque($risque);
-						$sumR += Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
-					}
-				}
-				$scoreRisqueGroupement = $sumR;
-				$info['value'] = $scoreRisqueGroupement;
 				$info['class'] = '';
 				break;
 			case TABLE_GROUPEMENT :
@@ -2698,70 +2627,69 @@ class EvaDisplayDesign {
 	{
 		return 
 			EvaDisplayInput::ouvrirForm('POST', 'infosGenerationDU', 'infosGenerationDU') .
-				'<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon">
-					<tr><td class="t1">&nbsp;</td><td class="t2">&nbsp;</td><td class="t3">&nbsp;</td></tr>
-					<tr><td class="m1">&nbsp;</td><td class="m2nospacing">
-					
-					<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire">
-						<tr>
-							<td ><label for="dateCreation">' . __('date de cr&eacute;ation', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'dateCreation', '#DATEFORM1#', '', '', 'dateCreation', false, false, 150, '', 'Date', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="dateDebutAudit">' . _('date de d&eacute;but d\'audit', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'dateDebutAudit', '#DATEDEBUT1#', '', '', 'dateDebutAudit', false, false, 150, '', 'Date', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="dateFinAudit">' . __('date de fin d\'audit', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'dateFinAudit', '#DATEFIN1#', '', '', 'dateFinAudit', false, false, 150, '', 'Date', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="nomEntreprise">' . __('nom de l\'entreprise', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'nomEntreprise', '#NOMENTREPRISE#', '', '', 'nomEntreprise', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="telephoneFixe">' . __('t&eacute;l&eacute;phone fixe', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'telephoneFixe', '#TELFIXE#', '', '', 'telephoneFixe', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="telephonePortable">' . __('t&eacute;l&eacute;phone portable', 'evarisk') .'</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'telephonePortable', '#TELPORTABLE#', '', '', 'telephonePortable', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="numeroFax">' . __('num&eacute;ro de fax', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'numeroFax', '#TELFAX#', '', '', 'numeroFax', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="emetteur">' . __('&eacute;metteur', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'emetteur', '#EMETTEUR#', '', '', 'emetteur', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="destinataire">' . __('destinataire', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'destinataire', '#DESTINATAIRE#', '', '', 'destinataire', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td ><label for="nomDuDocument">' . __('nom du document', 'evarisk') . '</label></td>
-							<td >' . EvaDisplayInput::afficherInput('text', 'nomDuDocument', '#NOMDOCUMENT#', '', '', 'nomDuDocument', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
-						</tr>
-						<tr>
-							<td  colspan="2" ><label for="methodologie">' . __('m&eacute;thodologie', 'evarisk') . '</label></td>
-						</tr>
-						<tr>
-							<td colspan="2" style="text-align:center;"><textarea id="methodologie" name="methodologie" class="textarea">#METHODOLOGIE#</textarea></td>
-						</tr>
-						<tr>
-							<td  colspan="2" ><label for="sources">' . __('sources', 'evarisk') . '</label></td>
-						</tr>
-						<tr>
-							<td colspan="2" style="text-align:center;"><textarea id="sources" name="sources" class="textarea14">#SOURCES#</textarea></td>
-						</tr>
-						<tr>
-							<td colspan="2"><input type="button" id="genererDUER" name="genererDUER" value="' . __('g&eacute;n&eacute;rer', 'evarisk') . '" /></td>
-						</tr>
-					</table>
-					
-					</td><td class="m3">&nbsp;</td></tr>
-					<tr><td class="b1">&nbsp;</td><td class="b2">&nbsp;</td><td class="b3">&nbsp;</td></tr>
+				'<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
+					<tr>
+						<td style="width:60%;" >
+							<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire" style="width:100%;" >
+								<tr>
+									<td ><label for="dateCreation">' . __('date de cr&eacute;ation', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'dateCreation', '#DATEFORM1#', '', '', 'dateCreation', false, false, 150, '', 'Date', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="dateDebutAudit">' . _('date de d&eacute;but d\'audit', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'dateDebutAudit', '#DATEDEBUT1#', '', '', 'dateDebutAudit', false, false, 150, '', 'Date', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="dateFinAudit">' . __('date de fin d\'audit', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'dateFinAudit', '#DATEFIN1#', '', '', 'dateFinAudit', false, false, 150, '', 'Date', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="nomEntreprise">' . __('nom de l\'entreprise', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'nomEntreprise', '#NOMENTREPRISE#', '', '', 'nomEntreprise', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="telephoneFixe">' . __('t&eacute;l&eacute;phone fixe', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'telephoneFixe', '#TELFIXE#', '', '', 'telephoneFixe', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="telephonePortable">' . __('t&eacute;l&eacute;phone portable', 'evarisk') .'</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'telephonePortable', '#TELPORTABLE#', '', '', 'telephonePortable', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="numeroFax">' . __('num&eacute;ro de fax', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'numeroFax', '#TELFAX#', '', '', 'numeroFax', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="emetteur">' . __('&eacute;metteur', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'emetteur', '#EMETTEUR#', '', '', 'emetteur', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="destinataire">' . __('destinataire', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'destinataire', '#DESTINATAIRE#', '', '', 'destinataire', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+								<tr>
+									<td ><label for="nomDuDocument">' . __('nom du document', 'evarisk') . '</label></td>
+									<td >' . EvaDisplayInput::afficherInput('text', 'nomDuDocument', '#NOMDOCUMENT#', '', '', 'nomDuDocument', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+								</tr>
+		<!-- 
+								<tr>
+									<td  colspan="2" ><label for="methodologie">' . __('m&eacute;thodologie', 'evarisk') . '</label></td>
+								</tr>
+								<tr>
+									<td colspan="2" style="text-align:center;"><textarea id="methodologie" name="methodologie" class="textarea">#METHODOLOGIE#</textarea></td>
+								</tr>
+								<tr>
+									<td  ><label for="sources">' . __('sources', 'evarisk') . '</label></td>
+									<td style="text-align:center;"><textarea id="sources" name="sources" class="textarea14" style="width:100%" ;>#SOURCES#</textarea></td>
+								</tr> 
+		-->
+								<tr>
+									<td colspan="2"><input type="button" id="genererDUER" name="genererDUER" value="' . __('g&eacute;n&eacute;rer', 'evarisk') . '" /></td>
+								</tr>
+							</table>
+						</td>
+						<td style="width:40%;" ><div style="float:right;width:80%;" id="documentUniqueResult" >&nbsp;</div></td>
+					</tr>
 				</table>' .
 			EvaDisplayInput::fermerForm('infosGenerationDU');
 	}

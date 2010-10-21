@@ -350,7 +350,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 								alert(convertAccentToJS(message));
 								statusGlobal = "error";
 							}
-							$(\'#observationTropLongue' . $field_name . '\').html(\'<div id="message" class="updated fade below-h2"><p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\\\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p></div>\');
+							$(\'#observationTropLongue' . $field_name . '\').html(\'<div id="message" class="updated fade below-h2"><p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\\\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p></div>\');
 							setTimeout(function(){$(\'#observationTropLongue' . $field_name . '\').html("")},5000);
 						}
 						else

@@ -40,7 +40,7 @@ function addUserToGroup(blocId, event)
 	}
 
 	$("<li id='" + blocId + "_added' ></li>").text(listContent).appendTo("#groupContent ol");
-	$("<img id='" + blocId + "_del' onclick='javascript:deleteUserFromGroup(\"" + blocId + "\");' src='" + EVA_IMG_PICTOS_PLUGIN_URL + "delete.PNG' alt='delete' />").appendTo("#" + blocId + "_added");
+	$("<img id='" + blocId + "_del' onclick='javascript:deleteUserFromGroup(\"" + blocId + "\");' src='" + PICTO_DELETE + "' alt='delete' />").appendTo("#" + blocId + "_added");
 	$('#'+blocId).hide();
 	$('#groupUserList').val($('#groupUserList').val() + blocId + ",");
 

@@ -4,6 +4,7 @@ include_once(EVA_CONFIG);
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php' );
 
 function getMethodsName($saufMethode = '')
 {
@@ -51,7 +52,7 @@ if (isset($_POST['act']) && $_POST['act'] == 'import')
 	if (is_uploaded_file($_FILES['import']['tmp_name'])) 
 	{
 	   echo '<span id="message" class="updated fade below-h2">
-			<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="response" style="vertical-align:middle;" />&nbsp;Le fichier a bien &eacute;t&eacute; charg&eacute;.</strong>
+			<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;Le fichier a bien &eacute;t&eacute; charg&eacute;.</strong>
 			</span>';
 		$temp = preg_replace('/\n/i', '[retourALaLigne]', file_get_contents ($_FILES['import']['tmp_name']));
 		$equivalences = explode('[retourALaLigne]', $temp);
@@ -71,7 +72,7 @@ if (isset($_POST['act']) && $_POST['act'] == 'import')
 	else 
 	{
 	   echo '<span id="message" class="updated fade below-h2">
-			<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="noresponse" style="vertical-align:middle;" />&nbsp;Le fichier n\'a pas pu &ecirc;tre charg&eacute;.</strong>
+			<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;Le fichier n\'a pas pu &ecirc;tre charg&eacute;.</strong>
 			</span>';
 	}	
 	$_POST['act'] = 'add';
