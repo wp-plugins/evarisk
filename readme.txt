@@ -70,7 +70,7 @@ Am&eacute;liorations :
 * Indicateur de chargement lors du changement d'onglet dans la box bilan de l'&eacute;valutation des risques
 * Liens de t&eacute;l&eacute;chargement des fichiers odt g&eacute;n&eacute;r&eacute;s &agrave; droite du formulaire
 * Affichage de l'historique des documents unique
-* Façon de g&eacute;n&eacute;rer le nom du document unique dans le formulaire
+* Fa&ccedil;on de g&eacute;n&eacute;rer le nom du document unique dans le formulaire
 * R&eacute;cup&eacute;ration du nom du groupement actuel pour remplir le champs nomSociete du document unique
 
 Ergonomie :
