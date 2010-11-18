@@ -1,0 +1,1286 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Evarisk v5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-07-05 16:18+0100\n"
+"PO-Revision-Date: 2010-07-05 16:19+0100\n"
+"Last-Translator: Stéphane Benoist <St.Benoist@gmail.com>\n"
+"Language-Team: Evarisk <contact@evarisk.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=n>1\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: ../include\n"
+
+#: ../include/evarisk_admin.php:15
+#: ../include/evarisk_admin.php:17
+msgid "Installation"
+msgstr "Installation"
+
+#: ../include/evarisk_admin.php:22
+#: ../include/evarisk_admin.php:24
+msgid "Accueil"
+msgstr "Accueil"
+
+#: ../include/evarisk_admin.php:27
+msgid "M&eacute;thodes d'&eacute;valuation"
+msgstr "M&eacute;thodes d'&eacute;valuation"
+
+#: ../include/evarisk_admin.php:30
+msgid "&Eacute;valuation des risques"
+msgstr "&Eacute;valuation des risques"
+
+#: ../include/evarisk_admin.php:33
+msgid "Dangers"
+msgstr "Dangers"
+
+#: ../include/evarisk_admin.php:36
+msgid "Cr&eacute;ation de r&eacute;f&eacute;renciel"
+msgstr "Cr&eacute;ation de r&eacute;f&eacute;renciel"
+
+#: ../include/evarisk_admin.php:39
+msgid "Attributs utilisateurs"
+msgstr "Attributs utilisateurs"
+
+#: ../include/evarisk_admin.php:40
+msgid "Groupe d'utilisateurs"
+msgstr "Groupe d'utilisateurs"
+
+#: ../include/evarisk_admin.php:40
+msgid "Groupes  d'utilisateurs"
+msgstr "Groupes  d'utilisateurs"
+
+#: ../include/config/config.php:35
+msgid "Nul"
+msgstr "Nul"
+
+#: ../include/config/config.php:36
+msgid "Tr&egrave;s limit&eacute;"
+msgstr "Tr&egrave;s limit&eacute;"
+
+#: ../include/config/config.php:37
+msgid "Limit&eacute;"
+msgstr "Limit&eacute;"
+
+#: ../include/config/config.php:38
+msgid "Significatif"
+msgstr "Significatif"
+
+#: ../include/config/config.php:39
+msgid "&Eacute;lev&eacute;"
+msgstr "&Eacute;lev&eacute;"
+
+#: ../include/config/config.php:40
+msgid "Tr&egrave;s &eacute;lev&eacute;"
+msgstr "Tr&egrave;s &eacute;lev&eacute;"
+
+#: ../include/config/configDroitAcces.php:5
+msgid "utiliser le plugin"
+msgstr "utiliser le plugin"
+
+#: ../include/config/configDroitAcces.php:6
+#: ../include/config/configDroitAcces.php:7
+#: ../include/config/configDroitAcces.php:8
+#: ../include/config/configDroitAcces.php:9
+#: ../include/config/configDroitAcces.php:10
+#: ../include/config/configDroitAcces.php:11
+#: ../include/config/configDroitAcces.php:12
+#: ../include/config/configDroitAcces.php:13
+#, php-format
+msgid "voir %s"
+msgstr "voir %s"
+
+#: ../include/config/configDroitAcces.php:6
+#: ../include/config/configDroitAcces.php:14
+msgid "les groupements"
+msgstr "les groupements"
+
+#: ../include/config/configDroitAcces.php:7
+msgid "son groupement"
+msgstr "son groupement"
+
+#: ../include/config/configDroitAcces.php:8
+#: ../include/config/configDroitAcces.php:15
+msgid "les unit&eacute;s de travail"
+msgstr "les unit&eacute;s de travail"
+
+#: ../include/config/configDroitAcces.php:9
+msgid "son unit&eacute; de travail"
+msgstr "son unit&eacute; de travail"
+
+#: ../include/config/configDroitAcces.php:10
+#: ../include/config/configDroitAcces.php:16
+msgid "les dangers"
+msgstr "les dangers"
+
+#: ../include/config/configDroitAcces.php:11
+msgid "les m&eacute;thodes d'&eacute;valuation"
+msgstr "les m&eacute;thodes d'&eacute;valuation"
+
+#: ../include/config/configDroitAcces.php:12
+#: ../include/config/configDroitAcces.php:18
+msgid "les risques"
+msgstr "les risques"
+
+#: ../include/config/configDroitAcces.php:13
+#: ../include/config/configDroitAcces.php:19
+msgid "les veilles"
+msgstr "les veilles"
+
+#: ../include/config/configDroitAcces.php:14
+#: ../include/config/configDroitAcces.php:15
+#: ../include/config/configDroitAcces.php:16
+#: ../include/config/configDroitAcces.php:17
+#: ../include/config/configDroitAcces.php:18
+#: ../include/config/configDroitAcces.php:19
+#, php-format
+msgid "&eacute;diter %s"
+msgstr "&eacute;diter %s"
+
+#: ../include/config/configDroitAcces.php:17
+msgid "les methodes"
+msgstr "les methodes"
+
+#: ../include/config/configDroitAcces.php:20
+#, php-format
+msgid "cr&eacute;er %s"
+msgstr "cr&eacute;er %s"
+
+#: ../include/config/configDroitAcces.php:20
+msgid "des r&eacute;f&eacute;renciels"
+msgstr "des r&eacute;f&eacute;renciels"
+
+#: ../include/config/configDroitAcces.php:21
+#: ../include/config/configDroitAcces.php:22
+#, php-format
+msgid "g&eacute;rer %s"
+msgstr "g&eacute;rer %s"
+
+#: ../include/config/configDroitAcces.php:21
+msgid "les attributs"
+msgstr "les attributs"
+
+#: ../include/config/configDroitAcces.php:22
+msgid "les groupes d'utilisateurs"
+msgstr "les groupes d'utilisateurs"
+
+#: ../include/config/configEavModel.php:7
+msgid "Champs texte"
+msgstr "Champs texte"
+
+#: ../include/config/configEavModel.php:8
+msgid "Champs texte multiligne"
+msgstr "Champs texte multiligne"
+
+#: ../include/config/configEavModel.php:9
+msgid "Nombre entier"
+msgstr "Nombre entier"
+
+#: ../include/config/configEavModel.php:10
+msgid "Nombre d&eacute;cimal"
+msgstr "Nombre d&eacute;cimal"
+
+#: ../include/config/configEavModel.php:11
+#: ../include/config/configEavModel.php:22
+msgid "Champs date"
+msgstr "Champs date"
+
+#: ../include/config/configEavModel.php:12
+msgid "Champs date + heure"
+msgstr "Champs date + heure"
+
+#: ../include/config/configEavModel.php:13
+msgid "Liste d&eacute;roulante"
+msgstr "Liste d&eacute;roulante"
+
+#: ../include/config/configEavModel.php:14
+msgid "Fichier"
+msgstr "Fichier"
+
+#: ../include/config/configEavModel.php:20
+msgid "Champs dans la table de l'entit&eacute;"
+msgstr "Champs dans la table de l'entit&eacute;"
+
+#: ../include/config/configEavModel.php:21
+msgid "Date"
+msgstr "Date"
+
+#: ../include/config/configEavModel.php:23
+msgid "Entier"
+msgstr "Entier"
+
+#: ../include/config/configEavModel.php:24
+msgid "Texte long"
+msgstr "Texte long"
+
+#: ../include/config/configEavModel.php:25
+msgid "Texte (255 char.)"
+msgstr "Texte (255 char.)"
+
+#: ../include/lib/evaDisplayDesign.class.php:37
+#: ../include/lib/evaDisplayDesign.class.php:417
+msgid "Ajouter"
+msgstr "Ajouter"
+
+#: ../include/lib/evaDisplayDesign.class.php:74
+msgid "Affichage"
+msgstr "Affichage"
+
+#: ../include/lib/evaDisplayDesign.class.php:75
+msgid "Affichage en grille"
+msgstr "Affichage en grille"
+
+#: ../include/lib/evaDisplayDesign.class.php:75
+msgid "Grille"
+msgstr "Grille"
+
+#: ../include/lib/evaDisplayDesign.class.php:76
+msgid "Affichage en liste"
+msgstr "Affichage en liste"
+
+#: ../include/lib/evaDisplayDesign.class.php:76
+msgid "Liste"
+msgstr "Liste"
+
+#: ../include/lib/evaDisplayDesign.class.php:402
+msgid "Cliquer pour remonter d'un niveau."
+msgstr "Cliquer pour remonter d'un niveau."
+
+#: ../include/lib/evaDisplayDesign.class.php:406
+msgid "Nouveau groupement"
+msgstr "Nouveau groupement"
+
+#: ../include/lib/evaDisplayDesign.class.php:407
+msgid "Nouvelle unit&eacute; de travail"
+msgstr "Nouvelle unit&eacute; de travail"
+
+#: ../include/lib/evaDisplayDesign.class.php:410
+msgid "Nouvelle cat&eacute;gorie de danger"
+msgstr "Nouvelle cat&eacute;gorie de danger"
+
+#: ../include/lib/evaDisplayDesign.class.php:411
+msgid "Nouveau danger"
+msgstr "Nouveau danger"
+
+#: ../include/lib/evaDisplayDesign.class.php:460
+msgid "Aucun groupement ni aucune unit&eacute; de travail n'existe dans"
+msgstr "Aucun groupement ni aucune unit&eacute; de travail n'existe dans"
+
+#: ../include/lib/evaDisplayDesign.class.php:461
+msgid "Ajouter un nouveau groupement"
+msgstr "Ajouter un nouveau groupement"
+
+#: ../include/lib/evaDisplayDesign.class.php:463
+msgid "Ajouter une nouvelle unit&eacute; de travail"
+msgstr "Ajouter une nouvelle unit&eacute; de travail"
+
+#: ../include/lib/evaDisplayDesign.class.php:479
+msgid "Aucune categorie ni aucun danger n'existe dans "
+msgstr "Aucune categorie ni aucun danger n'existe dans "
+
+#: ../include/lib/evaDisplayDesign.class.php:480
+msgid "Ajouter une nouvelle cat&eacute;gorie de dangers."
+msgstr "Ajouter une nouvelle cat&eacute;gorie de dangers."
+
+#: ../include/lib/evaDisplayDesign.class.php:482
+msgid "Ajouter un nouveau danger."
+msgstr "Ajouter un nouveau danger."
+
+#: ../include/lib/evaDisplayDesign.class.php:618
+msgid "S&eacute;lectionner"
+msgstr "S&eacute;lectionner"
+
+#: ../include/lib/evaDisplayDesign.class.php:714
+msgid "&Eacute;diter"
+msgstr "&Eacute;diter"
+
+#: ../include/lib/evaDisplayDesign.class.php:880
+msgid "Niveau de risque"
+msgstr "Niveau de risque"
+
+#: ../include/lib/evaDisplayDesign.class.php:884
+#: ../include/lib/evaDisplayDesign.class.php:885
+#: ../include/lib/evaDisplayDesign.class.php:896
+#: ../include/lib/evaDisplayDesign.class.php:897
+#: ../include/lib/evaDisplayDesign.class.php:1201
+#: ../include/lib/evaDisplayDesign.class.php:1202
+#: ../include/lib/evaDisplayDesign.class.php:1206
+#: ../include/lib/evaDisplayDesign.class.php:1207
+#, php-format
+msgid "Ajouter %s"
+msgstr "Ajouter %s"
+
+#: ../include/lib/evaDisplayDesign.class.php:884
+#: ../include/lib/evaDisplayDesign.class.php:1206
+msgid "un groupement"
+msgstr "un groupement"
+
+#: ../include/lib/evaDisplayDesign.class.php:885
+#: ../include/lib/evaDisplayDesign.class.php:1207
+msgid "une unit&eacute; de travail"
+msgstr "une unit&eacute; de travail"
+
+#: ../include/lib/evaDisplayDesign.class.php:896
+#: ../include/lib/evaDisplayDesign.class.php:1201
+msgid "une cat&eacute;gorie de dangers"
+msgstr "une cat&eacute;gorie de dangers"
+
+#: ../include/lib/evaDisplayDesign.class.php:897
+#: ../include/lib/evaDisplayDesign.class.php:1202
+msgid "un danger"
+msgstr "un danger"
+
+#: ../include/lib/evaDisplayDesign.class.php:907
+#: ../include/lib/evaDisplayDesign.class.php:1211
+msgid "Inserer sous le titre"
+msgstr "Inserer sous le titre"
+
+#: ../include/lib/evaDisplayDesign.class.php:908
+#: ../include/lib/evaDisplayDesign.class.php:1212
+msgid "Modifier le titre"
+msgstr "Modifier le titre"
+
+#: ../include/lib/evaDisplayDesign.class.php:1086
+msgid "Actions"
+msgstr "Actions"
+
+#: ../include/lib/evaDisplayDesign.class.php:1138
+#: ../include/lib/evaDisplayDesign.class.php:1141
+#: ../include/lib/evaDisplayDesign.class.php:1203
+#: ../include/lib/evaDisplayDesign.class.php:1208
+#, php-format
+msgid "&Eacute;diter %s"
+msgstr "&Eacute;diter %s"
+
+#: ../include/lib/evaDisplayDesign.class.php:1138
+msgid "le danger"
+msgstr "le danger"
+
+#: ../include/lib/evaDisplayDesign.class.php:1141
+msgid "l'unit&eacute; de travail"
+msgstr "l'unit&eacute; de travail"
+
+#: ../include/lib/evaDisplayDesign.class.php:1144
+#: ../include/lib/evaDisplayDesign.class.php:1213
+#, php-format
+msgid "&Eacute;ffacer %s"
+msgstr "&Eacute;ffacer %s"
+
+#: ../include/lib/evaDisplayDesign.class.php:1144
+msgid "la question"
+msgstr "la question"
+
+#: ../include/lib/evaDisplayDesign.class.php:1203
+msgid "la cat&eacute;gorie de dangers"
+msgstr "la cat&eacute;gorie de dangers"
+
+#: ../include/lib/evaDisplayDesign.class.php:1208
+msgid "le groupement"
+msgstr "le groupement"
+
+#: ../include/lib/evaDisplayDesign.class.php:1213
+msgid "le titre"
+msgstr "le titre"
+
+#: ../include/lib/eva_tools.class.php:33
+msgid "r&eacute;sultat"
+msgstr "r&eacute;sultat"
+
+#: ../include/lib/eva_tools.class.php:34
+msgid "page"
+msgstr "page"
+
+#: ../include/lib/galeriePhoto.php:36
+msgid "Le bouton de t&eacute;l&eacute;chargement devrait apparaitre"
+msgstr "Le bouton de t&eacute;l&eacute;chargement devrait apparaitre"
+
+#: ../include/lib/galeriePhoto.php:37
+msgid "D&eacute;marrer le t&eacute;l&eacute;chargement"
+msgstr "D&eacute;marrer le t&eacute;l&eacute;chargement"
+
+#: ../include/lib/galeriePhoto.php:37
+msgid "&Eacute;ffacer la file d'attente"
+msgstr "&Eacute;ffacer la file d'attente"
+
+#: ../include/lib/galeriePhoto.php:50
+msgid "Parcourir"
+msgstr "Parcourir"
+
+#: ../include/lib/eav/eav_attribute.class.php:396
+#: ../include/lib/eav/eav_attribute.class.php:432
+msgid "Le champs label est obligatoire"
+msgstr "Le champs label est obligatoire"
+
+#: ../include/lib/evaluationDesRisques/groupement/eva_groupement.class.php:217
+msgid "Unit&eacute;s"
+msgstr "Unit&eacute;s"
+
+#: ../include/lib/evaluationDesRisques/groupement/eva_groupement.class.php:221
+msgid "Sous-groupements"
+msgstr "Sous-groupements"
+
+#: ../include/lib/evaluationDesRisques/groupement/eva_groupement.class.php:225
+#: ../include/lib/evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php:162
+msgid "Employ&eacute;s"
+msgstr "Employ&eacute;s"
+
+#: ../include/lib/evaluationDesRisques/groupement/eva_groupement.class.php:229
+#: ../include/lib/evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php:166
+msgid "Employ&eacute;s &eacute;valu&eacute;s"
+msgstr "Employ&eacute;s &eacute;valu&eacute;s"
+
+#: ../include/lib/evaluationDesRisques/groupement/eva_groupement.class.php:308
+#: ../include/lib/evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php:239
+msgid "Risque"
+msgstr "Risque"
+
+#: ../include/lib/users/evaUser.class.php:67
+msgid "Informations compl&eacute;mentaires evarisk"
+msgstr "Informations compl&eacute;mentaires evarisk"
+
+#: ../include/lib/users/evaUserGroup.class.php:134
+#: ../include/lib/users/evaUserGroup.class.php:175
+msgid "Le champs Nom est obligatoire"
+msgstr "Le champs Nom est obligatoire"
+
+#: ../include/lib/users/evaUserGroup.class.php:151
+msgid "Une erreur est survenue lors de l'enregistrement"
+msgstr "Une erreur est survenue lors de l'enregistrement"
+
+#: ../include/modules/dangers/dangers.php:27
+#: ../include/modules/evaluationDesRisques/evaluationDesRisques.php:26
+msgid "sauvegard&eacute;e"
+msgstr "sauvegard&eacute;e"
+
+#: ../include/modules/dangers/dangers.php:30
+#: ../include/modules/evaluationDesRisques/evaluationDesRisques.php:29
+msgid "mise &agrave; jour"
+msgstr "mise &agrave; jour"
+
+#: ../include/modules/dangers/dangers.php:46
+#: ../include/modules/dangers/dangers.php:63
+#: ../include/modules/evaluationDesRisques/evaluationDesRisques.php:46
+#: ../include/modules/evaluationDesRisques/evaluationDesRisques.php:63
+#, php-format
+msgid "La fiche %s a correctement &eacute;t&eacute; %s"
+msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
+
+#: ../include/modules/dangers/dangers.php:47
+#: ../include/modules/dangers/categorieDangers/categorieDangers-new.php:88
+msgid "de la cat&eacute;gorie de dangers"
+msgstr "de la cat&eacute;gorie de dangers"
+
+#: ../include/modules/dangers/dangers.php:64
+#: ../include/modules/dangers/danger/danger-new.php:91
+msgid "du danger"
+msgstr "du danger"
+
+#: ../include/modules/dangers/partieGaucheDangers.php:8
+#: ../include/modules/dangers/partieGaucheDangers.php:49
+msgid "Cat&eacute;gories"
+msgstr "Cat&eacute;gories"
+
+#: ../include/modules/dangers/categorieDangers/categorieDangers-new.php:88
+#: ../include/modules/dangers/danger/danger-new.php:91
+#, php-format
+msgid "nom %s"
+msgstr "nom %s"
+
+#: ../include/modules/dangers/categorieDangers/categorieDangers-new.php:103
+#: ../include/modules/dangers/danger/danger-new.php:100
+msgid "Cat&eacute;gorie de dangers m&egrave;re"
+msgstr "Cat&eacute;gorie de dangers m&egrave;re"
+
+#: ../include/modules/dangers/categorieDangers/categorieDangers-new.php:113
+#: ../include/modules/dangers/danger/danger-new.php:110
+msgid "Description"
+msgstr "Description"
+
+#: ../include/modules/dangers/categorieDangers/categorieDangers-new.php:133
+#: ../include/modules/dangers/danger/danger-new.php:130
+msgid "Enregistrer"
+msgstr "Enregistrer"
+
+#: ../include/modules/eavManagement/attributes-list.php:1
+msgid "Attributs Utilisateur"
+msgstr "Attributs Utilisateur"
+
+#: ../include/modules/eavManagement/attributes-manage.php:11
+msgid "Cheatin&#8217; uh?"
+msgstr "Cheatin&#8217; uh?"
+
+#: ../include/modules/eavManagement/attributes-manage.php:15
+#: ../include/modules/eavManagement/attributes.php:9
+msgid "Ajouter un attribut"
+msgstr "Ajouter un attribut"
+
+#: ../include/modules/eavManagement/attributes-manage.php:16
+msgid "&larr; Retour aux attributs"
+msgstr "&larr; Retour aux attributs"
+
+#: ../include/modules/eavManagement/attributes-manage.php:33
+msgid "Label"
+msgstr "Nom de l'attribut"
+
+#: ../include/modules/eavManagement/attributes-manage.php:33
+msgid "(required)"
+msgstr "(requis)"
+
+#: ../include/modules/eavManagement/attributes-manage.php:38
+msgid "Type du champs"
+msgstr "Type du champs"
+
+#: ../include/modules/eavManagement/attributes.php:32
+msgid "Le champs Label est obligatoire"
+msgstr "Le champs Label est obligatoire"
+
+#: ../include/modules/eavManagement/attributes.php:108
+msgid "Mettre &agrave; jour"
+msgstr "Mettre &agrave; jour"
+
+#: ../include/modules/evaluationDesRisques/evaluationDesRisques.php:47
+msgid "du groupement"
+msgstr "du groupement"
+
+#: ../include/modules/evaluationDesRisques/evaluationDesRisques.php:64
+msgid "de l'unit&eacute; de travail"
+msgstr "de l'unit&eacute; de travail"
+
+#: ../include/modules/evaluationDesRisques/partieGaucheEvaluationDesRisques.php:9
+msgid "Soci&eacute;t&eacute;s"
+msgstr "Soci&eacute;t&eacute;s"
+
+#: ../include/modules/evaluationDesRisques/partieGaucheEvaluationDesRisques.php:18
+msgid "Carte"
+msgstr "Carte"
+
+#: ../include/modules/evaluationDesRisques/partieGaucheEvaluationDesRisques.php:68
+msgid "Groupements"
+msgstr "Groupements"
+
+#: ../include/modules/evaluationDesRisques/groupement/partieDroiteGroupement.php:58
+#: ../include/modules/evaluationDesRisques/uniteDeTravail/partieDroiteUniteDeTravail.php:53
+msgid "Responsables"
+msgstr "Responsables"
+
+#: ../include/modules/evaluationDesRisques/groupement/partieDroiteGroupement.php:62
+#: ../include/modules/evaluationDesRisques/uniteDeTravail/partieDroiteUniteDeTravail.php:57
+msgid "Responsable"
+msgstr "Responsable"
+
+#: ../include/modules/groupesUtilisateur/groupes.php:19
+#: ../include/modules/groupesUtilisateur/groupes.php:20
+msgid "Ajouter un groupe"
+msgstr "Ajouter un groupe"
+
+#: ../include/modules/groupesUtilisateur/groupes.php:123
+#: ../include/modules/groupesUtilisateur/groupes.php:149
+msgid "Modifier un groupe"
+msgstr "Modifier un groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:18
+msgid "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
+msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:23
+msgid "Le groupe n'&agrave; pas pu &ecirc;tre mofifi&eacute;"
+msgstr "Le groupe n'&agrave; pas pu &ecirc;tre mofifi&eacute;"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:28
+msgid "n'&agrave; pas pu &ecirc;tre supprim&eacute;"
+msgstr "n'&agrave; pas pu &ecirc;tre supprim&eacute;"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:44
+msgid "&larr; Retour aux groupes"
+msgstr "&larr; Retour aux groupes"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:60
+msgid "Informations principales"
+msgstr "Informations principales"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:63
+msgid "Nom du groupe"
+msgstr "Nom du groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:68
+msgid "Description du groupe"
+msgstr "Description du groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:75
+msgid "Utilisateurs du groupe"
+msgstr "Utilisateurs du groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:76
+msgid "Pour ajouter un utilisateur &agrave; un groupe vous pouvez le glisser dans la liste des utilisateurs du groupe ou double cliquer sur l'utilisateur"
+msgstr "Pour ajouter un utilisateur &agrave; un groupe vous pouvez le glisser dans la liste des utilisateurs du groupe ou double cliquer sur l'utilisateur"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:83
+msgid "Liste des utilisateurs disponible"
+msgstr "Liste des utilisateurs disponible"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:94
+msgid "Aucun utilisateur non affect&eacute;"
+msgstr "Aucun utilisateur non affect&eacute;"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:123
+msgid "Liste des utilisateurs du groupe"
+msgstr "Liste des utilisateurs du groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:133
+msgid "Glisser les utilisateurs ici"
+msgstr "Glisser les utilisateurs ici"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:166
+msgid "Droits des utilisateurs du groupe"
+msgstr "Droits des utilisateurs du groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:169
+msgid "Droit d'acc&egrave;s"
+msgstr "Droit d'acc&egrave;s"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:195
+msgid "&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?"
+msgstr "&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?"
+
+#: ../include/modules/groupesUtilisateur/groupesGestion.php:195
+msgid "Supprimer le groupe"
+msgstr "Supprimer le groupe"
+
+#: ../include/modules/groupesUtilisateur/groupesListe.php:1
+msgid "Groupes d'Utilisateur"
+msgstr "Groupes d'Utilisateur"
+
+#: ../include/modules/groupesUtilisateur/groupesListe.php:6
+msgid "Le groupe &agrave; &eacute;t&eacute; cr&eacute; avec succ&eacute;s"
+msgstr "Le groupe &agrave; &eacute;t&eacute; cr&eacute; avec succ&eacute;s"
+
+#: ../include/modules/groupesUtilisateur/groupesListe.php:10
+msgid "Le groupe &agrave; &eacute;t&eacute; modifi&eacute; avec succ&eacute;s"
+msgstr "Le groupe &agrave; &eacute;t&eacute; modifi&eacute; avec succ&eacute;s"
+
+#: ../include/modules/groupesUtilisateur/groupesListe.php:14
+msgid "Le groupe &agrave; &eacute;t&eacute; supprim&eacute; avec succ&eacute;s"
+msgstr "Le groupe &agrave; &eacute;t&eacute; supprim&eacute; avec succ&eacute;s"
+
+#: ../include/modules/installation/formulaireInstallation.php:26
+#: ../include/modules/installation/formulaireInstallation.php:34
+#: ../include/modules/installation/formulaireInstallation.php:47
+#: ../include/modules/installation/formulaireInstallation.php:141
+#, php-format
+msgid "Ins&eacute;rer %s"
+msgstr "Ins&eacute;rer %s"
+
+#: ../include/modules/installation/formulaireInstallation.php:26
+msgid "les cat&eacute;gories INRS"
+msgstr "les cat&eacute;gories INRS"
+
+#: ../include/modules/installation/formulaireInstallation.php:34
+msgid "un danger par d&eacute;faut dans chaque cat&eacute;gorie"
+msgstr "un danger par d&eacute;faut dans chaque cat&eacute;gorie"
+
+#: ../include/modules/installation/formulaireInstallation.php:44
+msgid "M&eacute;thodes"
+msgstr "M&eacute;thodes"
+
+#: ../include/modules/installation/formulaireInstallation.php:47
+msgid "la m&eacute;thode Evarisk"
+msgstr "la m&eacute;thode Evarisk"
+
+#: ../include/modules/installation/formulaireInstallation.php:57
+msgid "&Eacute;quipements de Protection Individuelle"
+msgstr "&Eacute;quipements de Protection Individuelle"
+
+#: ../include/modules/installation/formulaireInstallation.php:76
+#: ../include/modules/installation/insertions.php:185
+msgid "protection auditive"
+msgstr "protection auditive"
+
+#: ../include/modules/installation/formulaireInstallation.php:84
+#: ../include/modules/installation/insertions.php:186
+msgid "protection de la t&ecirc;te"
+msgstr "protection de la t&ecirc;te"
+
+#: ../include/modules/installation/formulaireInstallation.php:92
+#: ../include/modules/installation/insertions.php:187
+msgid "chaussures de s&eacute;curit&eacute;"
+msgstr "chaussures de s&eacute;curit&eacute;"
+
+#: ../include/modules/installation/formulaireInstallation.php:100
+#: ../include/modules/installation/insertions.php:188
+msgid "combinaison"
+msgstr "combinaison"
+
+#: ../include/modules/installation/formulaireInstallation.php:108
+#: ../include/modules/installation/insertions.php:189
+msgid "protection des mains"
+msgstr "protection des mains"
+
+#: ../include/modules/installation/formulaireInstallation.php:116
+#: ../include/modules/installation/insertions.php:190
+msgid "protection anti-chute"
+msgstr "protection anti-chute"
+
+#: ../include/modules/installation/formulaireInstallation.php:124
+#: ../include/modules/installation/insertions.php:191
+msgid "protection des yeux"
+msgstr "protection des yeux"
+
+#: ../include/modules/installation/formulaireInstallation.php:132
+#: ../include/modules/installation/insertions.php:192
+msgid "protection respiratoire"
+msgstr "protection respiratoire"
+
+#: ../include/modules/installation/formulaireInstallation.php:141
+msgid "les &eacute;quipements de protection individuelle"
+msgstr "les &eacute;quipements de protection individuelle"
+
+#: ../include/modules/installation/formulaireInstallation.php:212
+msgid "Installer Evarisk"
+msgstr "Installer Evarisk"
+
+#: ../include/modules/installation/insertions.php:16
+msgid "autres"
+msgstr "autres"
+
+#: ../include/modules/installation/insertions.php:17
+msgid "chute de plain-pied"
+msgstr "chute de plain-pied"
+
+#: ../include/modules/installation/insertions.php:18
+msgid "chute de hauteur"
+msgstr "chute de hauteur"
+
+#: ../include/modules/installation/insertions.php:19
+msgid "manutention manuelle"
+msgstr "manutention manuelle"
+
+#: ../include/modules/installation/insertions.php:20
+msgid "manutention m&eacute;canique"
+msgstr "manutention m&eacute;canique"
+
+#: ../include/modules/installation/insertions.php:21
+msgid "circulation, d&eacute;placements"
+msgstr "circulation, d&eacute;placements"
+
+#: ../include/modules/installation/insertions.php:22
+msgid "effondrements, chute d'objet"
+msgstr "effondrements, chute d'objet"
+
+#: ../include/modules/installation/insertions.php:23
+msgid "machines et outils"
+msgstr "machines et outils"
+
+#: ../include/modules/installation/insertions.php:24
+msgid "nuisances sonores"
+msgstr "nuisances sonores"
+
+#: ../include/modules/installation/insertions.php:25
+msgid "produits chimiques, d&eacute;chets"
+msgstr "produits chimiques, d&eacute;chets"
+
+#: ../include/modules/installation/insertions.php:26
+msgid "incendie, explosion"
+msgstr "incendie, explosion"
+
+#: ../include/modules/installation/insertions.php:27
+msgid "electricit&eacute;"
+msgstr "electricit&eacute;"
+
+#: ../include/modules/installation/insertions.php:28
+msgid "eclairage"
+msgstr "eclairage"
+
+#: ../include/modules/installation/insertions.php:29
+msgid "travail sur &eacute;cran"
+msgstr "travail sur &eacute;cran"
+
+#: ../include/modules/installation/insertions.php:30
+msgid "ambiances climatiques"
+msgstr "ambiances climatiques"
+
+#: ../include/modules/installation/insertions.php:31
+msgid "manque d'hygi&egrave;ne"
+msgstr "manque d'hygi&egrave;ne"
+
+#: ../include/modules/installation/insertions.php:32
+msgid "soci&eacute;t&eacute; ext&eacute;rieure"
+msgstr "soci&eacute;t&eacute; ext&eacute;rieure"
+
+#: ../include/modules/installation/insertions.php:33
+msgid "manque de formation"
+msgstr "manque de formation"
+
+#: ../include/modules/installation/insertions.php:60
+msgid "Divers autres"
+msgstr "Divers autres"
+
+#: ../include/modules/installation/insertions.php:61
+msgid "Divers chute de plain-pied"
+msgstr "Divers chute de plain-pied"
+
+#: ../include/modules/installation/insertions.php:62
+msgid "Divers chute de hauteur"
+msgstr "Divers chute de hauteur"
+
+#: ../include/modules/installation/insertions.php:63
+msgid "Divers manutention manuelle"
+msgstr "Divers manutention manuelle"
+
+#: ../include/modules/installation/insertions.php:64
+msgid "Divers manutention m&eacute;canique"
+msgstr "Divers manutention m&eacute;canique"
+
+#: ../include/modules/installation/insertions.php:65
+msgid "Divers circulation, d&eacute;placements"
+msgstr "Divers circulation, d&eacute;placements"
+
+#: ../include/modules/installation/insertions.php:66
+msgid "Divers effondrements, chute d'objet"
+msgstr "Divers effondrements, chute d'objet"
+
+#: ../include/modules/installation/insertions.php:67
+msgid "Divers machines et outils"
+msgstr "Divers machines et outils"
+
+#: ../include/modules/installation/insertions.php:68
+msgid "Divers nuisances sonores"
+msgstr "Divers nuisances sonores"
+
+#: ../include/modules/installation/insertions.php:69
+msgid "Divers produits chimiques, d&eacute;chets"
+msgstr "Divers produits chimiques, d&eacute;chets"
+
+#: ../include/modules/installation/insertions.php:70
+msgid "Divers incendie, explosion"
+msgstr "Divers incendie, explosion"
+
+#: ../include/modules/installation/insertions.php:71
+msgid "Divers electricit&eacute;"
+msgstr "Divers electricit&eacute;"
+
+#: ../include/modules/installation/insertions.php:72
+msgid "Divers eclairage"
+msgstr "Divers eclairage"
+
+#: ../include/modules/installation/insertions.php:73
+msgid "Divers travail sur &eacute;cran"
+msgstr "Divers travail sur &eacute;cran"
+
+#: ../include/modules/installation/insertions.php:74
+msgid "Divers ambiances climatiques"
+msgstr "Divers ambiances climatiques"
+
+#: ../include/modules/installation/insertions.php:75
+msgid "Divers manque d'hygi&egrave;ne"
+msgstr "Divers manque d'hygi&egrave;ne"
+
+#: ../include/modules/installation/insertions.php:76
+msgid "Divers soci&eacute;t&eacute; ext&eacute;rieure"
+msgstr "Divers soci&eacute;t&eacute; ext&eacute;rieure"
+
+#: ../include/modules/installation/insertions.php:77
+msgid "Divers manque de formation"
+msgstr "Divers manque de formation"
+
+#: ../include/modules/installation/insertions.php:107
+msgid "Gravite"
+msgstr "Gravite"
+
+#: ../include/modules/installation/insertions.php:108
+msgid ""
+"0 : Pas de blessure possible\\n"
+"1 : Blessure l&eacute;g&egrave;re\\n"
+"2 : ITT<5 jours ou effet r&eacute;versible\\n"
+"3 : ITT>5jours ou effet irr&eacute;versible\\n"
+"4 : Menace sur la vie"
+msgstr ""
+"0 : Pas de blessure possible\\n"
+"1 : Blessure l&eacute;g&egrave;re\\n"
+"2 : ITT<5 jours ou effet r&eacute;versible\\n"
+"3 : ITT>5jours ou effet irr&eacute;versible\\n"
+"4 : Menace sur la vie"
+
+#: ../include/modules/installation/insertions.php:109
+msgid "Exposition"
+msgstr "Exposition"
+
+#: ../include/modules/installation/insertions.php:110
+msgid ""
+"0 : Jamais en contact\\n"
+"1 : Rare, 1 fois par an\\n"
+"2 : Inhabituelle, 1 fois par mois\\n"
+"3 : Occasionnelle, 1 fois par semaine\\n"
+"4 : Fr&eacute;quente, 1 fois par jour"
+msgstr ""
+"0 : Jamais en contact\\n"
+"1 : Rare, 1 fois par an\\n"
+"2 : Inhabituelle, 1 fois par mois\\n"
+"3 : Occasionnelle, 1 fois par semaine\\n"
+"4 : Fr&eacute;quente, 1 fois par jour"
+
+#: ../include/modules/installation/insertions.php:111
+msgid "Occurence"
+msgstr "Occurence"
+
+#: ../include/modules/installation/insertions.php:112
+msgid ""
+"1 : Jamais arriv&eacute;\\n"
+"2 : Est d&eacute;j&agrave; arriv&eacute; dans des circonstances exeptionnelles\\n"
+"3 : D&eacute;j&agrave; produit 2 fois\\n"
+"4 : Se produit tous les mois"
+msgstr ""
+"1 : Jamais arriv&eacute;\\n"
+"2 : Est d&eacute;j&agrave; arriv&eacute; dans des circonstances exeptionnelles\\n"
+"3 : D&eacute;j&agrave; produit 2 fois\\n"
+"4 : Se produit tous les mois"
+
+#: ../include/modules/installation/insertions.php:113
+msgid "Formation"
+msgstr "Formation"
+
+#: ../include/modules/installation/insertions.php:114
+msgid ""
+"1 : Pr&eacute;vention r&eacute;guli&egrave;re\\n"
+"2 : Formation individuelle obligatoire\\n"
+"3 : Formation obligatoire non r&eacute;alis&eacute;e\\n"
+"4 : Pas de formation ni de pr&eacute;vention"
+msgstr ""
+"1 : Pr&eacute;vention r&eacute;guli&egrave;re\\n"
+"2 : Formation individuelle obligatoire\\n"
+"3 : Formation obligatoire non r&eacute;alis&eacute;e\\n"
+"4 : Pas de formation ni de pr&eacute;vention"
+
+#: ../include/modules/installation/insertions.php:115
+#: ../include/modules/installation/insertions.php:116
+msgid "Protection"
+msgstr "Protection"
+
+#: ../include/modules/metaBoxes/accidentDeTravail/accidentDeTravail.php:3
+msgid "Accidents de travail"
+msgstr "Accidents de travail"
+
+#: ../include/modules/metaBoxes/accidentDeTravail/accidentDeTravail.php:12
+#: ../include/modules/metaBoxes/actionCorrective/actionCorrective.php:12
+#: ../include/modules/metaBoxes/epi/epi.php:21
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:16
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:15
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: ../include/modules/metaBoxes/accidentDeTravail/accidentDeTravail.php:30
+#: ../include/modules/metaBoxes/actionCorrective/actionCorrective.php:30
+msgid "&Agrave; venir"
+msgstr "&Agrave; venir"
+
+#: ../include/modules/metaBoxes/actionCorrective/actionCorrective.php:3
+msgid "Actions correctives"
+msgstr "Actions correctives"
+
+#: ../include/modules/metaBoxes/epi/epi.php:9
+msgid "&Eacute;quipements de protection individuelle"
+msgstr "&Eacute;quipements de protection individuelle"
+
+#: ../include/modules/metaBoxes/epi/epi.php:57
+msgid "l'&eacute;l&eacute;ment"
+msgstr "l'&eacute;l&eacute;ment"
+
+#: ../include/modules/metaBoxes/epi/epi.php:59
+#, php-format
+msgid "Veuillez d'abord enregistrer %s."
+msgstr "Veuillez d'abord enregistrer %s."
+
+#: ../include/modules/metaBoxes/epi/epi.php:107
+msgid "Il n'y a pas d'EPI"
+msgstr "Il n'y a pas d'EPI"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:8
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:7
+msgid "Informations G&eacute;n&eacute;rales"
+msgstr "Informations G&eacute;n&eacute;rales"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:119
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:115
+#, php-format
+msgid "%s p&egrave;re"
+msgstr "%s p&egrave;re"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:119
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:115
+msgid "groupement"
+msgstr "groupement"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:139
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:135
+msgid "Adresse ligne 1"
+msgstr "Adresse ligne 1"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:147
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:143
+msgid "Adresse ligne 2"
+msgstr "Adresse ligne 2"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:155
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:151
+msgid "Code Postal"
+msgstr "Code Postal"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:163
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:159
+msgid "Ville"
+msgstr "Ville"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:173
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:169
+msgid "T&eacute;l&eacute;phone"
+msgstr "T&eacute;l&eacute;phone"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:181
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:177
+msgid "&Eacute;ffectif"
+msgstr "&Eacute;ffectif"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:218
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:213
+#, php-format
+msgid "Vous devez obligatoirement remplir les champs de l'adresse suivant : %s, %s et %s"
+msgstr "Vous devez obligatoirement remplir les champs de l'adresse suivant : %s, %s et %s"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:226
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:221
+#, php-format
+msgid "Vous n'avez pas donn&eacute; de nom %s"
+msgstr "Vous n'avez pas donn&eacute; de nom %s"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:226
+msgid "au groupement"
+msgstr "au groupement"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/groupement-new.php:233
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:228
+#, php-format
+msgid "%s porte d&eacute;j&agrave; ce nom"
+msgstr "%s porte d&eacute;j&agrave; ce nom"
+
+#: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/uniteTravail-new.php:221
+msgid "&agrave; l'unit&eacute; de travail"
+msgstr "&agrave; l'unit&eacute; de travail"
+
+#: ../include/modules/metaBoxes/geolocalisation/geolocalisation.php:4
+msgid "G&eacute;localisation"
+msgstr "G&eacute;localisation"
+
+#: ../include/modules/metaBoxes/risque/risque.php:13
+msgid "Risques"
+msgstr "Risques"
+
+#: ../include/modules/metaBoxes/risque/risque.php:63
+msgid "un risque"
+msgstr "un risque"
+
+#: ../include/modules/metaBoxes/risque/risque.php:105
+msgid "Quotation"
+msgstr "Quotation"
+
+#: ../include/modules/metaBoxes/risque/risque.php:107
+#, php-format
+msgid "description %s"
+msgstr "description %s"
+
+#: ../include/modules/metaBoxes/risque/risque.php:108
+#: ../include/modules/metaBoxes/risque/risque.php:241
+#, php-format
+msgid "commentaire %s"
+msgstr "commentaire %s"
+
+#: ../include/modules/metaBoxes/risque/risque.php:108
+#: ../include/modules/metaBoxes/risque/risque.php:241
+msgid "sur le risque"
+msgstr "sur le risque"
+
+#: ../include/modules/metaBoxes/risque/risque.php:109
+msgid "&Eacute;tat"
+msgstr "&Eacute;tat"
+
+#: ../include/modules/metaBoxes/risque/risque.php:202
+msgid "Cat&eacute;gorie de dangers"
+msgstr "Cat&eacute;gorie de dangers"
+
+#: ../include/modules/metaBoxes/risque/risque.php:202
+#, php-format
+msgid "choisissez %s"
+msgstr "choisissez %s"
+
+#: ../include/modules/metaBoxes/risque/risque.php:266
+msgid "M&eacute;thode d'&eacute;valuation"
+msgstr "M&eacute;thode d'&eacute;valuation"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:21
+msgid "Janvier"
+msgstr "Janvier"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:22
+msgid "F&eacute;vrier"
+msgstr "F&eacute;vrier"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:23
+msgid "Mars"
+msgstr "Mars"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:24
+msgid "Avril"
+msgstr "Avril"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:25
+msgid "Mai"
+msgstr "Mai"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:26
+msgid "Juin"
+msgstr "Juin"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:27
+msgid "Juillet"
+msgstr "Juillet"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:28
+msgid "Ao&uuml;t"
+msgstr "Ao&uuml;t"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:29
+msgid "Septembre"
+msgstr "Septembre"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:30
+msgid "Octobre"
+msgstr "Octobre"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:31
+msgid "Novembre"
+msgstr "Novembre"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/creationPDF.php:32
+msgid "D&eactue;cembre"
+msgstr "D&eactue;cembre"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:198
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:349
+msgid "Q (question)"
+msgstr "Q"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:336
+msgid "Vous n'avez pas s&eacute;l&eacute;ctionner de r&eacute;ponse"
+msgstr "Vous n'avez pas s&eacute;l&eacute;ctionner de r&eacute;ponse"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:344
+msgid "Vous n'avez pas donner de valeur &agrave; la r&eacute;ponse"
+msgstr "Vous n'avez pas donner de valeur &agrave; la r&eacute;ponse"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:349
+msgid "Vous n'avez pas donner de valeur &agrave; la r&eacute;ponse &agrave; la question"
+msgstr "Vous n'avez pas donner de valeur &agrave; la r&eacute;ponse &agrave; la question"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:380
+msgid "Observations"
+msgstr "Observations"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:382
+msgid "Date de limite de validit&eacute; de la r&eacute;ponse"
+msgstr "Date de limite de validit&eacute; de la r&eacute;ponse"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:386
+msgid "Valider cette r&eacute;ponse"
+msgstr "Valider cette r&eacute;ponse"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/formulaireReponse.php:407
+msgid "Valider le formulaire"
+msgstr "Valider le formulaire"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:11
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:23
+#, php-format
+msgid "pr&eacute;nom %s"
+msgstr "pr&eacute;nom %s"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:11
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:17
+msgid "de l'inspecteur de la veille"
+msgstr "de l'inspecteur de la veille"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:17
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:29
+#, php-format
+msgid "nom (de famille)%s"
+msgstr "nom %s"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:23
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:29
+msgid "de l'approbateur de la veille"
+msgstr "de l'approbateur de la veille"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:35
+msgid "Liste des arr&ecirc;t&eacute;s pr&eacute;fectoraux relatifs &agrave; l'installation concern&eacute;e"
+msgstr "Liste des arr&ecirc;t&eacute;s pr&eacute;fectoraux relatifs &agrave; l'installation concern&eacute;e"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:41
+msgid "Contr&ocirc;leur ayant effectu&eacute; le dernier contr&ocirc;le"
+msgstr "Contr&ocirc;leur ayant effectu&eacute; le dernier contr&ocirc;le"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:46
+msgid "Organisme ayant effectu&eacute; le dernier contr&ocirc;le"
+msgstr "Organisme ayant effectu&eacute; le dernier contr&ocirc;le"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:51
+msgid "Date du dernier contr&ocirc;le"
+msgstr "Date du dernier contr&ocirc;le"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:56
+msgid "Date du d&eacute;but de l'audit"
+msgstr "Date du d&eacute;but de l'audit"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:61
+msgid "Date de d&eacute;claration de l'installation"
+msgstr "Date de d&eacute;claration de l'installation"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:66
+msgid "Date de mise en service de l'installation"
+msgstr "Date de mise en service de l'installation"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/infoGeneraleVeille.php:71
+msgid "Grand groupe auquel appartient l'installation"
+msgstr "Grand groupe auquel appartient l'installation"
+
+#: ../include/modules/metaBoxes/veilleReglementaire/veilleReglementairePostBox.php:3
+msgid "Veille R&egrave;glementaire"
+msgstr "Veille R&egrave;glementaire"
+
+#~ msgid "T&eacute;l&eacute;charger les photos"
+#~ msgstr "T&eacute;l&eacute;charger les photos"
+
+#~ msgid "nom %s : "
+#~ msgstr "nom %s : "
+
+#~ msgid "La fiche de la cat&eacute;gorie de danger"
+#~ msgstr "La fiche de la cat&eacute;gorie de danger"
+
+#~ msgid "La fiche du danger"
+#~ msgstr "La fiche du danger"
+
+#~ msgid "salut"
+#~ msgstr "salut"
+
+#~ msgid "Cat&eacute;gorie de danger m&egrave;re : "
+#~ msgstr "Cat&eacute;gorie de danger m&egrave;re : "
+
+#~ msgid "Evarisk_:_voir_les_dangers"
+#~ msgstr "Evarisk_:_voir_les_dangers"
+
+#~ msgid "Important"
+#~ msgstr "Important"
+
+#~ msgid "La fiche"
+#~ msgstr "La fiche"
