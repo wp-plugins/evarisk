@@ -49,6 +49,9 @@ function evarisk_add_menu() {
 		// On crée le menu de gestion des attributs des utilisateurs
 		// add_submenu_page('users.php','Evarisk : ' . __('Attributs utilisateurs', 'evarisk'), __('Attributs utilisateurs', 'evarisk'), 'Evarisk_:_gerer_attributs', EVA_MODULES_PLUGIN_DIR . 'eavManagement/attributes.php');
 
+		// On crée le menu d'import d'utilisateurs
+		add_submenu_page('users.php','Evarisk : ' . __('Import d\'utilisateurs', 'evarisk'), __('Import d\'utilisateurs', 'evarisk'), 'Evarisk_:_gerer_utilisateurs', EVA_MODULES_PLUGIN_DIR . 'utilisateurs/importUtilisateurs.php');
+
 		// On crée le menu de gestion des roles utilisateurs
 		// add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : ' . __('Droits d\'acc&egrave;s', 'evarisk'), __('Droits d\'acc&egrave;s', 'evarisk'),  'Evarisk_:_gerer_droit_d_acces', EVA_MODULES_PLUGIN_DIR . 'evaRole/roles.php');
 	}

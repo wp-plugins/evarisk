@@ -369,4 +369,5 @@ class evaUser
 
 		return '<div id="chargementBox' . TABLE_LIAISON_USER_EVALUATION . '" ></div>' . $scriptEnregistrement . '<div style="float:right;margin:10px;" >' . $listeUtilisateur . '<div ><a href="' . get_bloginfo('siteurl') . '/wp-admin/user-new.php" >' . __('Ajouter un nouvel utilisateur', 'evarisk') . '</a></div></div>' . $utilisateursEvaluesDataTable;
 	}
+
 }

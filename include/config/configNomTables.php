@@ -18,7 +18,7 @@
 	// Table risque
 	DEFINE('TABLE_DUER', PREFIXE_EVARISK . "document_unique");
 	DEFINE('TABLE_RISQUE', PREFIXE_EVARISK . "risque");
-	DEFINE('TABLE_AVOIR_VALEUR', PREFIXE_EVARISK . "avoir_valeur");
+	DEFINE('TABLE_AVOIR_VALEUR', PREFIXE_EVARISK . "risque_evaluation");
 	// Tables diverses
 	DEFINE('TABLE_PHOTO', PREFIXE_EVARISK . "photo");
 	DEFINE('TABLE_ADRESSE', PREFIXE_EVARISK . "adresse");
@@ -35,8 +35,9 @@
 	DEFINE('TABLE_EPI', PREFIXE_EVARISK . "ppe");
 	DEFINE('TABLE_UTILISE_EPI', PREFIXE_EVARISK . "use_ppe");	
 	// Tables actions correctives
-	DEFINE('TABLE_TACHE', PREFIXE_EVARISK . "tache");
-	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "activite");
+	DEFINE('TABLE_TACHE', PREFIXE_EVARISK . "actions_correctives_tache");
+	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "actions_correctives_actions");
+	DEFINE('TABLE_LIAISON_TACHE_RISQUE', PREFIXE_EVARISK . "actions_correctives_tache_liaison_risque");
 	
 	// Veille référencielle
 	DEFINE('PREFIXE_VEILLE', PREFIXE_EVARISK . "veille_");
@@ -89,4 +90,13 @@
 	DEFINE('TABLE_EVA_EVALUATOR_GROUP', PREFIXE_EVARISK . "evaluators_group");
 	DEFINE('TABLE_EVA_EVALUATOR_GROUP_DETAILS', PREFIXE_EVARISK . "evaluators_group_details");
 	DEFINE('TABLE_EVA_EVALUATOR_GROUP_BIND', PREFIXE_EVARISK . "evaluators_group_bind");
+
+
+
+	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 18
+	DEFINE('TABLE_AC_TACHE', PREFIXE_EVARISK . "tache");
+	DEFINE('TABLE_AC_ACTIVITE', PREFIXE_EVARISK . "activite");
+	DEFINE('TABLE_AC_ACTION', PREFIXE_EVARISK . "actions_correctives_activite");
+	DEFINE('TABLE_AVOIR_VALEUR_OLD', PREFIXE_EVARISK . "avoir_valeur");
+
 ?>

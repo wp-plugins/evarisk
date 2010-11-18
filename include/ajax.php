@@ -400,14 +400,14 @@ if($_POST['post'] == 'true')
 										{
 											$script .= 
 										'
-										$("#avanceRisque").show();
+										$("#divDangerFormRisque").show();
 										$("#boutonAvanceRisque").children("span:first").html("-");';
 										}
 										else
 										{
 											$script .= 
 										'
-										$("#avanceRisque").hide();
+										$("#divDangerFormRisque").hide();
 										$("#boutonAvanceRisque").children("span:first").html("+");';
 										}
 							$script .= 
@@ -423,7 +423,7 @@ if($_POST['post'] == 'true')
 									})
 								</script>';
 						}
-						echo $script . EvaDisplayInput::afficherComboBox($dangers, $idSelect = 'dangerFormRisque', $labelSelect = 'Danger : ', $nameSelect = 'danger', $valeurDefaut = '', $selection = $dangers[0]->id);
+						echo $script . EvaDisplayInput::afficherComboBox($dangers, 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $dangers[0]->id);
 						break;
 					case 'save':
 					case 'update':
@@ -946,7 +946,7 @@ if($_POST['post'] == 'true')
 							{//Affichage de la variable
 								$affichage = $affichage . '
 									<span id="plusVar' . $variable->id . 'FormRisque" class="plusVariable"><img src="' . PICTO_EXPAND . '" alt=" + " title="Voir les explications" /><label for="var' . $variable->id . 'FormRisque">' . $variable->nom . ' :</label></span>
-									<input type="text" class="sliderValue" disabled="disabled" id="var' . $variable->id . 'FormRisque" name ="variables[]" />
+									<input type="text" class="sliderValue" disabled="disabled" id="var' . $variable->id . 'FormRisque" name="variables[]" />
 									<div id="explicationVariable' . $variable->id . 'FormRisque" class="explicationVariable hidden">' . nl2br($variable->annotation) . '</div>
 									<div id="slider-range-min' . $variable->id . '" class="slider_variable"></div>';
 							}
@@ -957,11 +957,11 @@ if($_POST['post'] == 'true')
 						$defaultPicture = evaPhoto::getMainPhoto(TABLE_METHODE, $idMethode);
 						if(($defaultPicture != '') && (is_file(EVA_HOME_DIR . $defaultPicture)))
 						{
-							$methodExplanationPicture = '<img src="' . EVA_HOME_URL . $defaultPicture . '" alt="" style="width:80%;" />';
+							$methodExplanationPicture = '<img src="' . EVA_HOME_URL . $defaultPicture . '" alt="" style="width:100%;" />';
 						}
 						/*	END - Get the explanation picture if exist - END	*/
 
-						echo '<div class="alignleft" style="width:40%;" >' . $affichage . '</div><div class="alignright" style="width:50%;" >' . $methodExplanationPicture . '</div>';
+						echo '<div class="alignleft" style="width:30%;" >' . $affichage . '</div><div class="alignright" style="width:70%;" >' . $methodExplanationPicture . '</div>';
 					break;
 					case 'defaultPictureSelection':
 						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
@@ -1387,7 +1387,7 @@ if($_POST['post'] == 'true')
 							</script>';
 						echo $messageInfo;
 						break;
-					case actualiserAvancement:
+					case 'actualiserAvancement':
 						$activites = $_POST['activites'];
 						$status = 'Valid';
 						foreach($activites as $idActivite => $avancementActivite)
@@ -2024,8 +2024,9 @@ if($_POST['post'] == 'true')
 						{
 							$tasksGantt = '';
 							$idDiv = $actionCorrective->getTableFrom() . $actionCorrective->getIdFrom() . '-' . TABLE_TACHE . $actionCorrective->getId();
-							echo '<div id="' . $idDiv . '-choix" class="nomAction"><span>+</span> ' . $actionCorrective->getName() . '</div>';
-							echo '<div id="' . $idDiv . '-affichage" class="affichageAction" style="display:none;"></div>';
+							echo 
+								'<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> ' . $actionCorrective->getName() . '</div>
+								<div id="' . $idDiv . '-affichage" class="affichageAction" style="display:none;"></div>';
 							$tachesDeLAction = $actionCorrective->getDescendants($actionCorrective);
 							$tachesDeLAction = array_merge(array($actionCorrective->getId() => $actionCorrective), $tachesDeLAction->getTasks());
 							unset($niveaux);

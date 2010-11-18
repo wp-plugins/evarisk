@@ -47,7 +47,7 @@ class EvaActivity extends EvaBaseActivity
 								'" . mysql_real_escape_string($cost) . "', 
 								'" . mysql_real_escape_string($progression) . "', 
 								'" . mysql_real_escape_string($status) . "', 
-								'" . date("Y-m-d H:i:s") . "')";
+								NOW())";
 		}
 		else
 		{//Update of the data base

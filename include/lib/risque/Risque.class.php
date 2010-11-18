@@ -100,20 +100,20 @@ class Risque {
 		
 		$score = eva_tools::IsValid_Variable($score);
 		$idMethode = eva_tools::IsValid_Variable($idMethode);
-		$resultat = $wpdb->get_row("SELECT tableEquivalenceEtalon1.`id_valeur_etalon` equivalenceEtalon
-			FROM `" . TABLE_EQUIVALENCE_ETALON . "` tableEquivalenceEtalon1
-			WHERE tableEquivalenceEtalon1.`valeurMaxMethode` >= " . $score . "
-			AND tableEquivalenceEtalon1.`id_methode` = " . $idMethode . "
-			AND tableEquivalenceEtalon1.`date` <= '" . $date . "'
+		$resultat = $wpdb->get_row("SELECT tableEquivalenceEtalon1.id_valeur_etalon equivalenceEtalon
+			FROM " . TABLE_EQUIVALENCE_ETALON . " tableEquivalenceEtalon1
+			WHERE tableEquivalenceEtalon1.valeurMaxMethode >= " . $score . "
+			AND tableEquivalenceEtalon1.id_methode = " . $idMethode . "
+			AND tableEquivalenceEtalon1.date <= '" . $date . "'
 			AND NOT EXISTS
 			(
 				SELECT * 
-				FROM `" . TABLE_EQUIVALENCE_ETALON . "` tableEquivalenceEtalon2
-				WHERE tableEquivalenceEtalon2.`valeurMaxMethode` >= " . $score . "
-				AND tableEquivalenceEtalon2.`id_methode` = " . $idMethode . "
-				AND tableEquivalenceEtalon2.`date` <= '" . $date . "'
-				AND tableEquivalenceEtalon2.`date` > tableEquivalenceEtalon1.`date`
-				AND tableEquivalenceEtalon2.`id_valeur_etalon` < tableEquivalenceEtalon1.`id_valeur_etalon`
+				FROM " . TABLE_EQUIVALENCE_ETALON . " tableEquivalenceEtalon2
+				WHERE tableEquivalenceEtalon2.valeurMaxMethode >= " . $score . "
+				AND tableEquivalenceEtalon2.id_methode = " . $idMethode . "
+				AND tableEquivalenceEtalon2.date <= '" . $date . "'
+				AND tableEquivalenceEtalon2.date > tableEquivalenceEtalon1.date
+				AND tableEquivalenceEtalon2.id_valeur_etalon < tableEquivalenceEtalon1.id_valeur_etalon
 			)");
 		return $resultat->equivalenceEtalon;
 	}	
@@ -124,19 +124,19 @@ class Risque {
 		
 		$quotation = eva_tools::IsValid_Variable($quotation);
 		$resultat = $wpdb->get_row( "
-			SELECT tableValeurEtalon1.`niveauSeuil` niveauSeuil
-			FROM `" . TABLE_VALEUR_ETALON . "` tableValeurEtalon1
-			WHERE tableValeurEtalon1.`valeur` >= " . $quotation . "
-			AND tableValeurEtalon1.`Status` = 'Valid'
-			AND tableValeurEtalon1.`niveauSeuil` <> 'NULL'
+			SELECT tableValeurEtalon1.niveauSeuil niveauSeuil
+			FROM " . TABLE_VALEUR_ETALON . " tableValeurEtalon1
+			WHERE tableValeurEtalon1.valeur >= " . $quotation . "
+			AND tableValeurEtalon1.Status = 'Valid'
+			AND tableValeurEtalon1.niveauSeuil <> 'NULL'
 			AND NOT EXISTS
 			(
 				SELECT * 
-				FROM `" . TABLE_VALEUR_ETALON . "` tableValeurEtalon2
-				WHERE tableValeurEtalon2.`valeur` >= " . $quotation . "
-				AND tableValeurEtalon2.`Status` = 'Valid'
-				AND tableValeurEtalon2.`niveauSeuil` <> 'NULL'
-				AND tableValeurEtalon2.`valeur` < tableValeurEtalon1.`valeur`
+				FROM " . TABLE_VALEUR_ETALON . " tableValeurEtalon2
+				WHERE tableValeurEtalon2.valeur >= " . $quotation . "
+				AND tableValeurEtalon2.Status = 'Valid'
+				AND tableValeurEtalon2.niveauSeuil <> 'NULL'
+				AND tableValeurEtalon2.valeur < tableValeurEtalon1.valeur
 			)"
 		);
 		return $resultat->niveauSeuil;
@@ -220,17 +220,18 @@ class Risque {
 	static function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description)
 	{
 		global $wpdb;
-		
+		global $current_user;
+
 		$idDanger = eva_tools::IsValid_Variable($idDanger);
 		$idMethode = eva_tools::IsValid_Variable($idMethode);
 		$tableElement = eva_tools::IsValid_Variable($tableElement);
 		$idElement = eva_tools::IsValid_Variable($idElement);
 		$description = eva_tools::IsValid_Variable($description);
 		$description = str_replace("[retourALaLigne]","\n", $description);
-		$date = date("Y-m-d H:i:s");
+
 		if($idRisque == '')
 		{//Ajout d'un risque
-			$sql = "INSERT INTO " . TABLE_RISQUE . " (`id_danger`, `id_methode`, `id_element`, `nomTableElement`, `commentaire`, `date`, `Status`) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', '" . mysql_escape_string($date) . "', 'Valid')";
+			$sql = "INSERT INTO " . TABLE_RISQUE . " (id_danger, id_methode, id_element, nomTableElement, commentaire, date, Status) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', NOW(), 'Valid')";
 			$wpdb->query($sql);
 			$idRisque = $wpdb->insert_id;
 		}
@@ -238,21 +239,21 @@ class Risque {
 		{//Mise à jour d'un risque
 			$sql = "
 				UPDATE " . TABLE_RISQUE . " 
-				SET `id_danger` = " . mysql_escape_string($idDanger) . ",
-					`id_methode` = " . mysql_escape_string($idMethode) . ",
-					`id_element` = " . mysql_escape_string($idElement) . ",
-					`nomTableElement` = '" . mysql_escape_string($tableElement) . "',
-					`commentaire` = '" . mysql_escape_string($description) . "',
-					`date` = '" . mysql_escape_string($date) . "',
-					`Status` = 'Valid' 
-				WHERE `id` = " . mysql_escape_string($idRisque);
+				SET id_danger = " . mysql_escape_string($idDanger) . ",
+					id_methode = " . mysql_escape_string($idMethode) . ",
+					id_element = " . mysql_escape_string($idElement) . ",
+					nomTableElement = '" . mysql_escape_string($tableElement) . "',
+					commentaire = '" . mysql_escape_string($description) . "',
+					date = NOW(),
+					Status = 'Valid' 
+				WHERE id = " . mysql_escape_string($idRisque);
 			$wpdb->query($sql);
-			
+
 			$sql = "
 				UPDATE " . TABLE_AVOIR_VALEUR . " 
-				SET `Status` = 'Deleted' 
-				WHERE `id_risque` = " . mysql_escape_string($idRisque) . "
-				AND `Status` = 'Valid'";
+				SET Status = 'Deleted' 
+				WHERE id_risque = " . mysql_escape_string($idRisque) . "
+				AND Status = 'Valid'";
 			$wpdb->query($sql);
 		}
 
@@ -262,10 +263,11 @@ class Risque {
 			{
 				$idVariable = eva_tools::IsValid_Variable($idVariable);
 				$valeurVariable = eva_tools::IsValid_Variable($valeurVariable);
-				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (`id_risque`, `id_variable`, `valeur`, `date`, `Status`) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_escape_string($date) . "', 'Valid')";
+				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (id_risque, id_variable, valeur, idEvaluateur, date, Status) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_real_escape_string($current_user->ID) . "', NOW(), 'Valid')";
 				$wpdb->query($sql);
 			}
 		}
+
 	}
 
 	static function deleteRisk($idRisque, $tableElement, $idElement)

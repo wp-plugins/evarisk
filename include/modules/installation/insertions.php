@@ -430,8 +430,21 @@ function evarisk_insertions($insertions = null)
 		{
 			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, isMainPicture, idDestination, tableDestination, photo) VALUES('', 'valid', 'yes', 1, 'wp_eva__methode', 'medias/uploads/wp_eva__methode/1/tabcoeff.gif');";
 			$wpdb->query($sql);
-			$sql = "UPDATE " . TABLE_DUER . " SET `groupesUtilisateursAffectes` = `groupesUtilisateurs` ";
+			$sql = "UPDATE " . TABLE_DUER . " SET groupesUtilisateursAffectes = groupesUtilisateurs ";
 			$wpdb->query($sql);
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 18:
+		{
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 19:
+		{
+			$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET idEvaluateur = '1' ";
+			$wpdb->query($sql);
+
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}

@@ -22,6 +22,7 @@
 			'Evarisk_:_gerer_attributs' => sprintf(__('g&eacute;rer %s','evarisk'), __('les attributs','evarisk')),
 			'Evarisk_:_gerer_groupes_utilisateurs' => sprintf(__('g&eacute;rer %s','evarisk'), __('les groupes d\'utilisateurs','evarisk')),
 			'Evarisk_:_gerer_droit_d_acces' => sprintf(__('g&eacute;rer %s','evarisk'), __('les droits d\'acc&egrave;s','evarisk')),
-			'Evarisk_:_gerer_groupes_evaluateurs' => sprintf(__('g&eacute;rer %s','evarisk'), __('les groupes d\'&eacute;valuateurs','evarisk'))
+			'Evarisk_:_gerer_groupes_evaluateurs' => sprintf(__('g&eacute;rer %s','evarisk'), __('les groupes d\'&eacute;valuateurs','evarisk')),
+			'Evarisk_:_gerer_utilisateurs' => sprintf(__('g&eacute;rer %s','evarisk'), __('les utilisateurs','evarisk'))
 		);
 	}

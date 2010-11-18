@@ -830,7 +830,6 @@ class EvaDisplayDesign {
 				$titreInfo = null;
 				$actionSize = 3;
 				$actions = '
-							<td></td>
 							<td class="noPadding"  id="addMain' . $racine->id . '"><img style="max-width: 100%;" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td>
 							<td id="addMain' . $racine->id . 'Alt" style="display:none;"></td>
 							<td class="noPadding"  id="addSecondary' . $racine->id . '"><img style="max-width: 100%;" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td>
@@ -1244,19 +1243,28 @@ class EvaDisplayDesign {
 				case TABLE_CATEGORIE_DANGER :
 					$tdSubEdit = '
 							<td></td>
-							<td></td><td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+							<td></td>
+							<td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
 					$tdSubDelete = '<td class="noPadding" id="delete-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
 					break;
 				case TABLE_GROUPEMENT :
 					$tdSubEdit = '
-							<td></td><td></td><td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td style="display:none;" class="noPadding" id="risq-leaf' . $subElement->id . '"><img src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+							<td></td>
+							<td></td>
+							<td style="display:none;" class="noPadding" id="risq-leaf' . $subElement->id . '"><img src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					$tdSubDelete = '<td class="noPadding" id="delete-work-unit' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					break;
 				case TABLE_TACHE :
-					$tdSubEdit = '<td class="noPadding" colspan=' . $actionSize . ' id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+					$tdSubEdit = '
+							<td></td>
+							<td></td>
+							<td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="max-width: 100%;" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 					break;
 				case TABLE_GROUPE_QUESTION :
-					$tdSubDelete = '<td></td><td></td><td id="delete-leaf-' . $subElement->id . '"><img src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '
+							<td></td>
+							<td></td>
+							<td id="delete-leaf-' . $subElement->id . '"><img src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
 					break;
 			}
 			switch($table)
@@ -1272,17 +1280,20 @@ class EvaDisplayDesign {
 								$("#' . $idTable . ' #delete-leaf' . $subElement->id . '").unbind("click");
 								$("#' . $idTable . ' #delete-work-unit' . $subElement->id . '").unbind("click");
 								$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #leaf-' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #leaf-' . $subElement->id . ' td:first-child").click(function(event){
+								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").unbind("click");
+								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").click(function(event){
 									if(!$(event.target).is("span"))
 										$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").click();
 								});
-								$("#' . $idTable . ' #leaf-' . $subElement->id . ' td:first-child").dblclick(function(event){
+								$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").unbind("click");
+								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").unbind("dblclick");
+								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").dblclick(function(event){
 									if(!$(event.target).is("span"))
 										$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").click();
 								});
 								$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").click(function(){
+									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 									$("#menu").val(\'gestiongrptut\');
 									$(\'#rightEnlarging\').show();
 									$(\'#equilize\').click();
@@ -1295,7 +1306,6 @@ class EvaDisplayDesign {
 										"partie": "right",
 										"menu": $("#menu").val(),
 										"affichage": "affichageListe",
-										"affichage": "affichageListe",
 										"expanded": expanded
 									});
 									$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
@@ -1307,10 +1317,10 @@ class EvaDisplayDesign {
 										"affichage": "affichageListe",
 										"expanded": expanded
 									});
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 								$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").click(function(){
+									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 									$("#menu").val(\'risq\');
 									$(\'#rightEnlarging\').show();
 									$(\'#equilize\').click();
@@ -1323,7 +1333,6 @@ class EvaDisplayDesign {
 										"partie": "right",
 										"menu": $("#menu").val(),
 										"affichage": "affichageListe",
-										"affichage": "affichageListe",
 										"expanded": expanded
 									});
 									$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
@@ -1335,8 +1344,6 @@ class EvaDisplayDesign {
 										"affichage": "affichageListe",
 										"expanded": expanded
 									});
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 							
 								$("#' . $idTable . ' #delete-work-unit' . $subElement->id . '").click(function(){
@@ -1410,7 +1417,7 @@ class EvaDisplayDesign {
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
 			$monCorpsSubElements = $monCorpsSubElements . $script . '
 				<tr id="leaf-' . $subElement->id . '" class="test child-of-node-' . $idTable . '-' . $elementPere->id . ' feuilleArbre">
-					<td class="nomFeuilleArbre" >' . $subAffichage . '</td>';
+					<td id="leaf-' . $subElement->id . '-name" class="nomFeuilleArbre" >' . $subAffichage . '</td>';
 				if($titreInfo != null)
 				{
 					$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
@@ -1459,11 +1466,14 @@ class EvaDisplayDesign {
 							$("#' . $idTable . ' #edit-node' . $element->id . '").unbind("click");
 							$("#' . $idTable . ' #risq-node' . $element->id . '").unbind("click");
 							$("#' . $idTable . ' #delete-node' . $element->id . '").unbind("click");
-							$("#' . $idTable . ' #node-' . $idTable . '-' . $element->id . ' td:first-child").click(function(event){
+							$("#' . $idTable . ' #node-' . $element->id . '-name").unbind("click");
+							$("#' . $idTable . ' #node-' . $idTable . '-' . $element->id . '-name").click(function(event){
 								if(!$(event.target).is("span"))
 									$("#' . $idTable . ' #risq-node' . $element->id . '").click();
 							});
 							$("#' . $idTable . ' #edit-node' . $element->id . '").click(function(){
+								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								$("#menu").val(\'gestiongrptut\');
 								$(\'#rightEnlarging\').show();
 								$(\'#equilize\').click();
@@ -1489,10 +1499,9 @@ class EvaDisplayDesign {
 									"partition": "tout",
 									"expanded": expanded
 								});
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 							});
 							$("#' . $idTable . ' #risq-node' . $element->id . '").click(function(){
+								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								$("#menu").val(\'risq\');
 								$(\'#rightEnlarging\').show();
 								$(\'#equilize\').click();
@@ -1518,7 +1527,6 @@ class EvaDisplayDesign {
 									"partition": "tout",
 									"expanded": expanded
 								});
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 							});
 							$("#' . $idTable . ' #delete-node' . $element->id . '").click(function(){
 								$("#menu").val(\'gestiongrptut\');
@@ -1676,7 +1684,7 @@ class EvaDisplayDesign {
 				$class = 'child-of-node-' . $idTable . '-' . $elementPere->id . '';
 				$monCorpsTable = $monCorpsTable . '
 					<tr id="node-' . $idTable . '-' . $element->id . '" class="' . $class . ' noeudArbre parent">
-						<td class="nomNoeudArbre" >' . $affichage . '</td>
+						<td id="node-' . $idTable . '-' . $element->id . '-name" class="nomNoeudArbre" >' . $affichage . '</td>
 						' . $info .  $actions . '
 					</tr>';
 				

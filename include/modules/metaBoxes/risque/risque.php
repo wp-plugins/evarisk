@@ -296,7 +296,7 @@
 					{
 						$categorieDangerMainPhoto = DEFAULT_DANGER_CATEGORIE_PICTO;
 						
-						/* Lorsqu'une catégorie de danger n'a pas de picto alors on affichait stoppait le script
+						/* Lorsqu'une catégorie de danger n'a pas de picto alors on stoppait le script
 						
 						
 						$selectionCategorie = $categorieRacine->id;
@@ -344,44 +344,7 @@
 		}
 		
 		$formRisque = $script . $radioGroup . $formRisque . '<div id="needDangerCategory">';
-		switch(OPTIONS_AVANCEEES_EVALUATION_RISQUE)
-		{
-			case 'collapsed':
-			{// + Avancé
-				$script = '
-					<script type="text/javascript">
-						$(document).ready(function(){
-							$("#boutonAvanceRisque").toggle(
-								function()
-								{
-									$("#avanceRisque").show();
-									$(this).children("span:first").html("-");
-								},
-								function()
-								{
-									$("#avanceRisque").hide();
-									$(this).children("span:first").html("+");
-								}
-							);
-						});
-					</script>';
-				$formRisque = $formRisque . $script . '<div id="boutonAvanceRisque" class="alignright"><span>+</span> ' . __('Avanc&eacute;', 'evarisk') . '</div><br class="clear"/>';
-				$displayDivAvanceRisque = 'none';
-				break;
-			}
-			case 'expanded':
-			{
-				$displayDivAvanceRisque = 'block';
-				break;
-			}
-			case 'invisible':
-			{
-				$displayDivAvanceRisque = 'none';
-				break;
-			}
-		}
-		$formRisque = $formRisque . '<div style="display:' . $displayDivAvanceRisque . ';" id="avanceRisque">';
-		
+
 		{//Choix du danger
 			$dangers = categorieDangers::getDangersDeLaCategorie($selectionCategorie, 'Status="Valid"');
 			if(isset($dangers[0]) && ($dangers[0]->id != null))
@@ -412,7 +375,15 @@
 				$selection = (isset($dangers[0]) && ($dangers[0]->id))?$dangers[0]->id:null;
 			}
 			if($selection != null)
-				$formRisque = $formRisque . '<div id="divDangerFormRisque">' . EvaDisplayInput::afficherComboBox($dangers, $idSelect = 'dangerFormRisque', $labelSelect = __('Dangers', 'evarisk') . ' : ', $nameSelect = 'danger', $valeurDefaut = '', $selection) . '</div><br />';
+			{
+				$nombreDeDangers = count($dangers);
+				$afficheSelecteurDanger = '';
+				if($nombreDeDangers <= 1)
+				{
+					$afficheSelecteurDanger = ' display:none; ';
+				}
+				$formRisque .= '<div  style="' . $afficheSelecteurDanger . '" id="divDangerFormRisque" >' . EvaDisplayInput::afficherComboBox($dangers, 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $selection) . '</div><br />';
+			}
 		}
 
 		{//Choix de la méthode
@@ -435,10 +406,15 @@
 				$idSelection = $methodes[0]->id;
 			}
 			$selection = MethodeEvaluation::getMethod($idSelection);
-			$formRisque = $script . $formRisque . EvaDisplayInput::afficherComboBox($methodes, $idSelect = 'methodeFormRisque', $labelSelect = __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', $nameSelect = 'methode', $valeurDefaut = '', $selection) . '<br />';
+			$nombreMethode = count($methodes);
+			$afficheSelecteurMethode = '';
+			if($nombreMethode <= 1)
+			{
+				$afficheSelecteurMethode = ' display:none; ';
+			}
+			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . $script . EvaDisplayInput::afficherComboBox($methodes, $idSelect = 'methodeFormRisque', $labelSelect = __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', $nameSelect = 'methode', $valeurDefaut = '', $selection) . '</div>';
 		}
-		$formRisque = $formRisque . '</div> <!--/avanceRisque-->';
-		
+
 		{//Evaluation des variables
 			$formRisque = $formRisque . '<script type="text/javascript">
 					$(document).ready(function(){
@@ -450,13 +426,10 @@
 		}
 		
 		{//Description
+			$contenuInput = '';
 			if($risque[0] != null)
 			{// Si l'on édite un risque, on remplit l'aire de texte avec sa description
 				$contenuInput = $risque[0]->commentaire;
-			}
-			else
-			{// Sinon on ne met rien dans l'aire de texte
-				$contenuInput = '';
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];

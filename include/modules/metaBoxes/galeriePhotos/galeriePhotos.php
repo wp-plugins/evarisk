@@ -17,8 +17,6 @@
 
 		/*	Output the gallery only if the are several picture to show OR that there is only one picture and that no default picture is selected	*/
 		$output .= evaPhoto::outputGallery($tableElement, $idElement);
-		
-		$output .= '</div>';
 
 		echo $output;
 	}

@@ -107,9 +107,9 @@
 		
 		do_meta_boxes( $pageHook, $partie . 'Side', array('tableElement'=>$tableElement, 'idElement'=>$idElement, 'idPere'=>$idPere, 'affichage'=>$affichage, 'idsFilAriane'=>$idsFilAriane, 'markers' =>$markers, 'page'=>$page, 'expanded'=>$expanded));
 		//To preserve postBoxes order
-		wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
+		wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false);
 		//To preserve postBoxes closure state
-		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
+		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false);
 		echo '</div>';
 	}
 ?>
