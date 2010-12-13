@@ -1,0 +1,25 @@
+#groupeUtilisateur fieldset{width:50%;margin:18px 0px 36px;}
+
+#sel, #sel3				{	height:100px;}
+
+/*	Drag and drop part	*/
+h1 								{ padding: .2em; margin: 0; }
+#usersManagement 	{ float:left; width: 500px; margin-right: 2em; }
+#groupContent 			{ width: 500px; float: left; }
+
+/* style the list to maximize the droppable hitarea */
+#groupContent ol 	{ margin: 0; padding: 1em 0 1em 3em; }
+#groupContent li 		{ clear:both; list-style-type:none; }
+#groupContent img 	{ float:right;cursor:pointer; }
+#usersList li			{ cursor:move;margin: 0px;padding:4px 6px; }
+
+
+.capability				{ float:left;width:50%; }
+.capability input	{ float:left;vertical-align:middle;width:15px;height:20px; }
+.capability label	{ float:left;vertical-align:middle;height:20px; }
+
+.group-role				{	clear:both;border-top:1px solid #999999; margin:12px 0px 0px 18px;	}
+.role-choice, .role-name		{	float:left; margin-right:18px;	}
+
+
+#evaUserInformation div label		{	width:15em;	}
