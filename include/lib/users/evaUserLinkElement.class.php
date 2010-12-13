@@ -69,6 +69,7 @@ class evaUserLinkElement
 			else
 			{
 				$valeurs[] = array('value'=>'');
+				$valeurs[] = array('value'=>'');
 				$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
 				$valeurs[] = array('value'=>'');
 				$lignesDeValeurs[] = $valeurs;
