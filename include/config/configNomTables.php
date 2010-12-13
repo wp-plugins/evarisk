@@ -37,7 +37,8 @@
 	// Tables actions correctives
 	DEFINE('TABLE_TACHE', PREFIXE_EVARISK . "actions_correctives_tache");
 	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "actions_correctives_actions");
-	DEFINE('TABLE_LIAISON_TACHE_RISQUE', PREFIXE_EVARISK . "actions_correctives_tache_liaison_risque");
+	DEFINE('TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "actions_correctives_suivi");
+	DEFINE('TABLE_LIAISON_TACHE_ELEMENT', PREFIXE_EVARISK . "liaison_tache_element");
 	
 	// Veille référencielle
 	DEFINE('PREFIXE_VEILLE', PREFIXE_EVARISK . "veille_");
@@ -82,14 +83,16 @@
 	DEFINE('TABLE_EVA_USER_GROUP', PREFIXE_EVARISK . "users_group");
 	DEFINE('TABLE_EVA_USER_GROUP_DETAILS', PREFIXE_EVARISK . "users_group_details");
 	DEFINE('TABLE_LIAISON_USER_GROUPS', PREFIXE_EVARISK . "users_group_bind");
-	DEFINE('TABLE_LIAISON_USER_EVALUATION', PREFIXE_EVARISK . "users_evaluation_bind");
+	DEFINE('TABLE_EVA_EVALUATOR_GROUP_BIND', PREFIXE_EVARISK . "evaluators_group_bind");
 
 	DEFINE('TABLE_EVA_ROLES', PREFIXE_EVARISK . "roles");
 	DEFINE('TABLE_EVA_USER_GROUP_ROLES_DETAILS', PREFIXE_EVARISK . "users_group_roles_details");
 
 	DEFINE('TABLE_EVA_EVALUATOR_GROUP', PREFIXE_EVARISK . "evaluators_group");
 	DEFINE('TABLE_EVA_EVALUATOR_GROUP_DETAILS', PREFIXE_EVARISK . "evaluators_group_details");
-	DEFINE('TABLE_EVA_EVALUATOR_GROUP_BIND', PREFIXE_EVARISK . "evaluators_group_bind");
+
+
+	DEFINE('TABLE_LIAISON_USER_ELEMENT', PREFIXE_EVARISK . "liaison_utilisateur_element");
 
 
 
@@ -98,5 +101,8 @@
 	DEFINE('TABLE_AC_ACTIVITE', PREFIXE_EVARISK . "activite");
 	DEFINE('TABLE_AC_ACTION', PREFIXE_EVARISK . "actions_correctives_activite");
 	DEFINE('TABLE_AVOIR_VALEUR_OLD', PREFIXE_EVARISK . "avoir_valeur");
+
+	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 25
+	DEFINE('TABLE_LIAISON_USER_EVALUATION', PREFIXE_EVARISK . "users_evaluation_bind");
 
 ?>

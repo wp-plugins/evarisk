@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iNove 1.4 Uk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-07 14:08+0900\n"
-"PO-Revision-Date: 2009-08-07 14:08+0900\n"
+"POT-Creation-Date: 2010-12-10 12:08+0100\n"
+"PO-Revision-Date: 2010-12-10 12:08+0100\n"
 "Last-Translator: mg12 <wuzhao.mail@gmail.com>\n"
 "Language-Team: Pavonine.com.ua <info@skinik.name>\n"
 "MIME-Version: 1.0\n"
@@ -16,35 +16,92 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: 404.php:8
-#: header.php:27
-msgid "RSS 2.0 - all posts"
-msgstr "RSS 2.0 - всі публікації"
+#: actualites_template.php:19
+#: archive.php:25
+#: archive.php:47
+#: archives.php:14
+#: comments.php:91
+#: functions.php:563
+#: index.php:23
+#: links.php:25
+#: single.php:10
+#: twitter.php:15
+msgid "F jS, Y"
+msgstr "F jS, Y"
 
-#: 404.php:9
-#: header.php:28
-msgid "RSS 2.0 - all comments"
-msgstr "RSS 2.0 - всі коментарі"
+#: actualites_template.php:21
+#: archive.php:49
+#: archives.php:15
+#: comments.php:95
+#: functions.php:571
+#: index.php:24
+#: links.php:26
+#: single.php:11
+#: twitter.php:16
+msgid "Edit"
+msgstr "Редагувати"
 
-#: 404.php:22
-msgid "Talker"
-msgstr "Меседжер"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "No comments"
+msgstr "Прокоментувати"
 
-#: 404.php:25
-msgid "Welcome to 404 error page!"
-msgstr "Ласкаво просимо до 404-ї сторінки!"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "1 comment"
+msgstr "1 коментар"
 
-#: 404.php:26
-msgid "Welcome to this customized error page. You've reached this page because you've clicked on a link that does not exist. This is probably our fault... but instead of showing you the basic '404 Error' page that is confusing and doesn't really explain anything, we've created this page to explain what went wrong."
-msgstr "Вітаємо Вас!<br />Невідомо як Ви сюди потрапили, але такої сторінки, яка вам потрібна або таку як Ви набрали в адресному рядку нажаль не існує.<p><b>Є такі варіанти виходу із ситуації:</b><br />1) Перейти на головну сторінку.<br />2) Перевірити адресу, яку Ви ввели.<br />3) Скористатися пошуком.</p>"
+#: actualites_template.php:22
+#: archive.php:50
+#, php-format
+msgid "% comments"
+msgstr "% коментарів"
 
-#: 404.php:27
-msgid "You can either (a) click on the 'back' button in your browser and try to navigate through our site in a different direction, or (b) click on the following link to go to homepage."
-msgstr " "
+#: actualites_template.php:22
+#: archive.php:50
+msgid "Comments off"
+msgstr ""
 
-#: 404.php:29
-msgid "Back to homepage &raquo;"
-msgstr "Повернутися на головну &raquo;"
+#: actualites_template.php:26
+#: archive.php:54
+#: index.php:28
+msgid "Read more..."
+msgstr "Далі..."
+
+#: actualites_template.php:30
+#: archive.php:58
+msgid "Categories: "
+msgstr ""
+
+#: actualites_template.php:31
+#: archive.php:59
+#: index.php:32
+#: single.php:23
+msgid "Tags: "
+msgstr ""
+
+#: actualites_template.php:36
+#: archive.php:64
+#: archives.php:39
+#: index.php:37
+#: links.php:59
+#: page.php:16
+#: single.php:61
+#: twitter.php:36
+msgid "Sorry, no posts matched your criteria."
+msgstr "Вибачте, не знайдено нічого."
+
+#: actualites_template.php:44
+#: archive.php:72
+#: index.php:45
+msgid "Newer Entries"
+msgstr "Свіжі публікації"
+
+#: actualites_template.php:45
+#: archive.php:73
+#: index.php:46
+msgid "Older Entries"
+msgstr "Старі публікації"
 
 #: archive.php:10
 msgid "Search Results"
@@ -76,19 +133,6 @@ msgstr "Публікації із теґом &#8216;%1$s&#8217;"
 msgid "Archive for %1$s"
 msgstr "Архів за  %1$s"
 
-#: archive.php:25
-#: archive.php:47
-#: archives.php:14
-#: comments.php:91
-#: functions.php:563
-#: index.php:22
-#: links.php:25
-#: page.php:8
-#: single.php:15
-#: twitter.php:15
-msgid "F jS, Y"
-msgstr "F jS, Y"
-
 #: archive.php:28
 msgid "F, Y"
 msgstr "F, Y"
@@ -105,89 +149,17 @@ msgstr "Архів автора"
 msgid "Blog Archives"
 msgstr "Архів блоґу"
 
-#: archive.php:49
-#: archives.php:15
-#: comments.php:95
-#: functions.php:571
-#: index.php:24
-#: links.php:26
-#: page.php:9
-#: single.php:17
-#: twitter.php:16
-msgid "Edit"
-msgstr "Редагувати"
-
-#: archive.php:50
-#: index.php:25
-msgid "No comments"
-msgstr "Прокоментувати"
-
-#: archive.php:50
-#: index.php:25
-msgid "1 comment"
-msgstr "1 коментар"
-
-#: archive.php:50
-#: index.php:25
-#, php-format
-msgid "% comments"
-msgstr "% коментарів"
-
-#: archive.php:50
-#: index.php:25
-msgid "Comments off"
-msgstr ""
-
-#: archive.php:54
-#: index.php:29
-msgid "Read more..."
-msgstr "Далі..."
-
-#: archive.php:58
-#: index.php:33
-#: single.php:29
-msgid "Categories: "
-msgstr ""
-
-#: archive.php:59
-#: index.php:34
-#: single.php:30
-msgid "Tags: "
-msgstr ""
-
-#: archive.php:64
-#: archives.php:39
-#: index.php:39
-#: links.php:59
-#: page.php:26
-#: single.php:68
-#: twitter.php:36
-msgid "Sorry, no posts matched your criteria."
-msgstr "Вибачте, не знайдено нічого."
-
-#: archive.php:72
-#: index.php:47
-msgid "Newer Entries"
-msgstr "Свіжі публікації"
-
-#: archive.php:73
-#: index.php:48
-msgid "Older Entries"
-msgstr "Старі публікації"
-
 #: archives.php:17
 #: comments.php:31
 #: links.php:28
-#: page.php:11
-#: single.php:19
+#: single.php:13
 #: twitter.php:18
 msgid "Leave a comment"
 msgstr "Напиши коментар"
 
 #: archives.php:18
 #: links.php:29
-#: page.php:12
-#: single.php:20
+#: single.php:14
 #: twitter.php:19
 msgid "Go to comments"
 msgstr "До коментарів"
@@ -292,18 +264,9 @@ msgstr "Підписатися на коментарі"
 msgid "Submit Comment"
 msgstr "Надіслати коментар"
 
-#: footer.php:17
-msgid "Top"
-msgstr "Вгору"
-
-#: footer.php:27
+#: footer.php:28
 msgid "Copyright &copy; "
 msgstr "&copy; "
-
-#: footer.php:39
-#, php-format
-msgid "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</a> and <a href=\"%3$s\">CSS 3</a>."
-msgstr "Тема від <a href=\"%1$s\">NeoEase</a>. Правильний <a href=\"%2$s\">XHTML 1.1</a> та <a href=\"%3$s\">CSS 3</a>."
 
 #: functions.php:180
 #: functions.php:189
@@ -391,7 +354,7 @@ msgid "Visitors"
 msgstr "Відвідувачі"
 
 #: functions.php:305
-#: sidebar.php:56
+#: sidebar.php:30
 msgid "Showcase"
 msgstr "Вітрина"
 
@@ -445,7 +408,6 @@ msgid "Email feed."
 msgstr "Email feed."
 
 #: functions.php:407
-#: sidebar.php:42
 msgid "Twitter"
 msgstr ""
 
@@ -485,6 +447,14 @@ msgstr ""
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
+#: header.php:27
+msgid "RSS 2.0 - all posts"
+msgstr "RSS 2.0 - всі публікації"
+
+#: header.php:28
+msgid "RSS 2.0 - all comments"
+msgstr "RSS 2.0 - всі коментарі"
+
 #: links.php:18
 msgid "Add link"
 msgstr ""
@@ -493,78 +463,89 @@ msgstr ""
 msgid "Edit links"
 msgstr "Редагувати посилання"
 
-#: sidebar.php:25
-msgid "Subscribe to this blog..."
-msgstr "Підписатися на цей блоґ"
-
-#: sidebar.php:25
-msgid "<abbr title=\"Really Simple Syndication\">RSS</abbr>"
-msgstr ""
-
-#: sidebar.php:28
-#: sidebar.php:29
-#: sidebar.php:30
-#: sidebar.php:31
-#: sidebar.php:32
-#: sidebar.php:33
-#: sidebar.php:34
-#: sidebar.php:35
-msgid "Subscribe with "
-msgstr "Додати до"
-
-#: sidebar.php:28
-msgid "Google"
-msgstr "Google"
-
-#: sidebar.php:29
-msgid "Youdao"
-msgstr "Youdao"
-
-#: sidebar.php:30
-msgid "Xian Guo"
-msgstr "Xian Guo"
-
-#: sidebar.php:31
-msgid "Zhua Xia"
-msgstr "Zhua Xia"
-
-#: sidebar.php:32
-msgid "My Yahoo!"
-msgstr "My Yahoo!"
-
-#: sidebar.php:33
-msgid "newsgator"
-msgstr "newsgator"
-
-#: sidebar.php:34
-msgid "Bloglines"
-msgstr "Bloglines"
-
-#: sidebar.php:35
-msgid "iNezha"
-msgstr "iNezha"
-
-#: sidebar.php:40
-msgid "Subscribe to this blog via email..."
-msgstr "RSS2Email"
-
-#: sidebar.php:40
-msgid "Email feed"
-msgstr "RSS2Email"
-
-#: sidebar.php:42
-msgid "Follow me!"
-msgstr ""
-
-#: single.php:7
-msgid "Go to homepage"
-msgstr "Прейти на головну"
-
-#: single.php:7
+#: templates/header - Copie.php:37
+#: templates/header.php:37
 msgid "Home"
 msgstr "Головна"
 
-#: templates/header.php:66
+#: templates/header - Copie.php:88
+#: templates/header.php:60
 msgid "Type text to search here..."
 msgstr ""
 
+#~ msgid "Talker"
+#~ msgstr "Меседжер"
+
+#~ msgid "Welcome to 404 error page!"
+#~ msgstr "Ласкаво просимо до 404-ї сторінки!"
+
+#~ msgid ""
+#~ "Welcome to this customized error page. You've reached this page because "
+#~ "you've clicked on a link that does not exist. This is probably our "
+#~ "fault... but instead of showing you the basic '404 Error' page that is "
+#~ "confusing and doesn't really explain anything, we've created this page to "
+#~ "explain what went wrong."
+#~ msgstr ""
+#~ "Вітаємо Вас!<br />Невідомо як Ви сюди потрапили, але такої сторінки, яка "
+#~ "вам потрібна або таку як Ви набрали в адресному рядку нажаль не існує."
+#~ "<p><b>Є такі варіанти виходу із ситуації:</b><br />1) Перейти на головну "
+#~ "сторінку.<br />2) Перевірити адресу, яку Ви ввели.<br />3) Скористатися "
+#~ "пошуком.</p>"
+
+#~ msgid ""
+#~ "You can either (a) click on the 'back' button in your browser and try to "
+#~ "navigate through our site in a different direction, or (b) click on the "
+#~ "following link to go to homepage."
+#~ msgstr " "
+
+#~ msgid "Back to homepage &raquo;"
+#~ msgstr "Повернутися на головну &raquo;"
+
+#~ msgid "Top"
+#~ msgstr "Вгору"
+
+#~ msgid ""
+#~ "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</"
+#~ "a> and <a href=\"%3$s\">CSS 3</a>."
+#~ msgstr ""
+#~ "Тема від <a href=\"%1$s\">NeoEase</a>. Правильний <a href=\"%2$s\">XHTML "
+#~ "1.1</a> та <a href=\"%3$s\">CSS 3</a>."
+
+#~ msgid "Subscribe to this blog..."
+#~ msgstr "Підписатися на цей блоґ"
+
+#~ msgid "Subscribe with "
+#~ msgstr "Додати до"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Youdao"
+#~ msgstr "Youdao"
+
+#~ msgid "Xian Guo"
+#~ msgstr "Xian Guo"
+
+#~ msgid "Zhua Xia"
+#~ msgstr "Zhua Xia"
+
+#~ msgid "My Yahoo!"
+#~ msgstr "My Yahoo!"
+
+#~ msgid "newsgator"
+#~ msgstr "newsgator"
+
+#~ msgid "Bloglines"
+#~ msgstr "Bloglines"
+
+#~ msgid "iNezha"
+#~ msgstr "iNezha"
+
+#~ msgid "Subscribe to this blog via email..."
+#~ msgstr "RSS2Email"
+
+#~ msgid "Email feed"
+#~ msgstr "RSS2Email"
+
+#~ msgid "Go to homepage"
+#~ msgstr "Прейти на головну"

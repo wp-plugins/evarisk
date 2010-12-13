@@ -1,7 +1,6 @@
 <?php
 	require_once('configDroitAcces.php');
 	require_once('configEavModel.php');
-	require_once('configLogiciel.php');
 	require_once('configNomTables.php');
 	require_once('configPagesHooks.php');
 
@@ -18,8 +17,8 @@
 	DEFINE('EVA_UPLOADS_PLUGIN_DIR', EVA_HOME_DIR . 'medias/uploads/');
 	
 	DEFINE('EVA_IMG_PLUGIN_URL', EVA_HOME_URL . 'medias/images/');
-	DEFINE('EVA_IMG_DIVERS_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'Divers/');
 	DEFINE('EVA_IMG_ICONES_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'Icones/');
+	DEFINE('EVA_IMG_DIVERS_PLUGIN_URL', EVA_IMG_ICONES_PLUGIN_URL . 'Divers/');
 	DEFINE('EVA_IMG_PICTOS_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'Pictos/');
 	DEFINE('EVA_IMG_GOOGLEMAPS_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'GoogleMapIcons/');
 	DEFINE('EVA_IMG_EPI_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'epi/');
@@ -36,14 +35,17 @@
 	/**
 	 * Risk name define variable
 	 */
-	DEFINE('EVA_RISQUE_SEUIL_1_NOM', __('Nul', 'evarisk'));
-	DEFINE('EVA_RISQUE_SEUIL_2_NOM', __('Tr&egrave;s limit&eacute;', 'evarisk'));
-	DEFINE('EVA_RISQUE_SEUIL_3_NOM', __('Limit&eacute;', 'evarisk'));
-	DEFINE('EVA_RISQUE_SEUIL_4_NOM', __('Significatif', 'evarisk'));
-	DEFINE('EVA_RISQUE_SEUIL_5_NOM', __('&Eacute;lev&eacute;', 'evarisk'));
-	DEFINE('EVA_RISQUE_SEUIL_6_NOM', __('Tr&egrave;s &eacute;lev&eacute;', 'evarisk'));
+	// DEFINE('EVA_RISQUE_SEUIL_1_NOM', __('Nul', 'evarisk'));
+	// DEFINE('EVA_RISQUE_SEUIL_2_NOM', __('Tr&egrave;s limit&eacute;', 'evarisk'));
+	// DEFINE('EVA_RISQUE_SEUIL_3_NOM', __('Limit&eacute;', 'evarisk'));
+	// DEFINE('EVA_RISQUE_SEUIL_4_NOM', __('Significatif', 'evarisk'));
+	// DEFINE('EVA_RISQUE_SEUIL_5_NOM', __('&Eacute;lev&eacute;', 'evarisk'));
+	// DEFINE('EVA_RISQUE_SEUIL_6_NOM', __('Tr&egrave;s &eacute;lev&eacute;', 'evarisk'));
+	DEFINE('EVA_RISQUE_SEUIL_1_NOM', __('Risque Faible', 'evarisk'));
+	DEFINE('EVA_RISQUE_SEUIL_2_NOM', __('Risque &agrave; planifier', 'evarisk'));
+	DEFINE('EVA_RISQUE_SEUIL_3_NOM', __('Risque &agrave; traiter', 'evarisk'));
+	DEFINE('EVA_RISQUE_SEUIL_4_NOM', __('Risque Inacceptable', 'evarisk'));
 
-	
 	DEFINE('SEUIL_BAS_INACCEPTABLE', '80');
 	DEFINE('SEUIL_HAUT_INACCEPTABLE', '100');
 	DEFINE('SEUIL_BAS_ATRAITER', '51');
@@ -53,15 +55,17 @@
 	DEFINE('SEUIL_BAS_FAIBLE', '0');
 	DEFINE('SEUIL_HAUT_FAIBLE', '47');
 		
+		
 	DEFINE('COULEUR_RISQUE_INACCEPTABLE', '#000000');
 		DEFINE('COULEUR_TEXTE_RISQUE_INACCEPTABLE', '#FFFFFF');
 	DEFINE('COULEUR_RISQUE_ATRAITER', '#FF0100');
-		DEFINE('COULEUR_TEXTE_RISQUE_INACCEPTABLE', '#000000');
+		DEFINE('COULEUR_TEXTE_RISQUE_ATRAITER', '#000000');
 	DEFINE('COULEUR_RISQUE_APLANIFIER', '#FFCD00');
-		DEFINE('COULEUR_TEXTE_RISQUE_INACCEPTABLE', '#000000');
+		DEFINE('COULEUR_TEXTE_RISQUE_APLANIFIER', '#000000');
 	DEFINE('COULEUR_RISQUE_FAIBLE', '#FFFFFF');
-		DEFINE('COULEUR_TEXTE_RISQUE_INACCEPTABLE', '#000000');
-	
+		DEFINE('COULEUR_TEXTE_RISQUE_FAIBLE', '#000000');
+
+
 	/**
 	 * Others variables
 	 */
@@ -73,6 +77,9 @@
 	DEFINE('DAY_BEFORE_TODAY_GANTT', 14);
 	DEFINE('DAY_AFTER_TODAY_GANTT', DAY_BEFORE_TODAY_GANTT);
 	DEFINE('LARGEUR_INDENTATION_GANTT_EN_EM', 1.5);
-	
+
+	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
+	require_once('configLogiciel.php');
+
 	require_once('configImages.php');
 ?>

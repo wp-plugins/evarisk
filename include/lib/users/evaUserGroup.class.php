@@ -761,7 +761,7 @@ class evaUserGroup
 		'<script type="text/javascript">
 			$(document).ready(function() {
 				$(\'#groupesUtilisateursNonAssocies\').change(function() {
-					$("#chargementBox' . TABLE_LIAISON_USER_GROUPS . '").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+					$("#chargementBox' . TABLE_LIAISON_USER_GROUPS . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 					groupeAAssocier = $(\'#groupesUtilisateursNonAssocies\').val();
 
 					$("#listeGroupesUtilisateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
@@ -777,7 +777,7 @@ class evaUserGroup
 
 			function deleteGroupeBind(idGroupe)
 			{
-				$("#chargementBox' . TABLE_LIAISON_USER_GROUPS . '").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+				$("#chargementBox' . TABLE_LIAISON_USER_GROUPS . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 				$("#listeGroupesUtilisateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post": "true", 
 					"table": "' . TABLE_LIAISON_USER_GROUPS . '",
@@ -801,7 +801,7 @@ class evaUserGroup
 			unset($valeurs);
 			$idLigne = $tableElement . $idElement . 'groupeUtilisateurs' . $groupeAffecte->id_group;
 			$idCbLigne = 'cb_' . $idLigne;
-			$valeurs[] = array('value'=>'<img src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteGroupeBind(' . $groupeAffecte->id_group . ');" />');
+			$valeurs[] = array('value'=>'<img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteGroupeBind(' . $groupeAffecte->id_group . ');" />');
 			$valeurs[] = array('value'=>$groupInformation[0]->user_group_name);
 			$valeurs[] = array('value'=>$groupInformation[0]->user_group_description);
 			$valeurs[] = array('value'=>$groupInformation[0]->TOTALUSERNUMBER);

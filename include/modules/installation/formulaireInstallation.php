@@ -172,15 +172,33 @@ $scriptCB = '
 	$lignesDeValeurs[] = $insertions;
 }
 
+
+/*	Add the autoinstall option for the executable version of the soft 	*/
+$autoLaunch = '';
+
+
 $classes = null;
 $idLignes = null;
 $formulaireInstallation = $formulaireInstallation . EvaDisplayDesign::getTable($idTable, null, $lignesDeValeurs, $classes, $idLignes);
 {//Bouton installer Evarisk
 	$allVariables = MethodeEvaluation::getAllVariables();
 	$idBouttonEnregistrer = 'installerEvarisk';
+
+/*	Autoinstall at launch if the good parameter is passe din the url	*/
+	$autoLaunch =  
+'var autoInstall = false;';
+if(STANDALONEVERSION)
+{
+	$autoLaunch =  
+'var autoInstall = true;';
+}
+
 	$scriptEnregistrement = '<script type="text/javascript">
-		$(document).ready(function() {	
-			$(\'#' . $idBouttonEnregistrer . '\').click(function() {
+		$(document).ready(function() {
+
+			' . $autoLaunch . '
+		
+			$("#' . $idBouttonEnregistrer . '").click(function() {
 				var epi = new Array();
 				epi[0] = new Array();
 				epi[0][0] = $(\'#bab\').attr("checked");
@@ -211,37 +229,50 @@ $formulaireInstallation = $formulaireInstallation . EvaDisplayDesign::getTable($
 				methodes[0][0] = $(\'#insertionMethodeEvarisk\').attr("checked");
 				methodes[0][1] = "evarisk";
 				var goOnInstall = false;
-				if(!$("#activationThemeEvarisk").is(":checked"))
+				if( !$("#activationThemeEvarisk").is(":checked") || (autoInstall))
 				{
 					goOnInstall = true;
 				}
-				else if($("#activationThemeEvarisk").is(":checked") && confirm("Etes vous sur de vouloir activer le theme Evarisk pour votre Blog?\nNB: Si vous avez un theme personnalise celui sera remplace par le theme Evarisk. Il restera disponible dans la liste des themes."))
+				else if($("#activationThemeEvarisk").is(":checked") && confirm("' . __('Etes vous sur de vouloir activer le theme Evarisk pour votre Blog?\nNB: Si vous avez un theme personnalise celui sera remplace par le theme Evarisk. Il restera disponible dans la liste des themes.', 'evarisk') . '"))
 				{
 					goOnInstall = true;
 				}
 
 				if(goOnInstall)
 				{
-					$("#installLoading").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+					$("#installLoading").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading..." />\');
+					$("#installButton").html("' . __('Installation en cours. Merci de patienter', 'evarisk') . '");
 					$("#wrap' . $idForm . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true", 
 						"nom": "installerEvarisk", 
-						"categorieDangers": $(\'#insertionCategorie\').attr("checked"),
-						"danger": $(\'#insertionDanger\').attr("checked"),
+						"categorieDangers": $("#insertionCategorie").attr("checked"),
+						"danger": $("#insertionDanger").attr("checked"),
 						"methodes": methodes,
-						"theme": $(\'#activationThemeEvarisk\').attr("checked"),
-						"EPIs": $(\'#insertionEPI\').attr("checked"),
+						"theme": $("#activationThemeEvarisk").attr("checked"),
+						"EPIs": $("#insertionEPI").attr("checked"),
 						"EPI": epi
 					});
 				}
 			});
 		});
 		</script>';
-	$formulaireInstallation = $formulaireInstallation . '<div id="installLoading" class="alignright" >&nbsp;</div>' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Installer Evarisk', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
-	$formulaireInstallation = $formulaireInstallation . '</div>';
+	$formulaireInstallation .= 
+'	<div id="installLoading" class="alignright" >&nbsp;</div>
+	<div id="installButton" class="alignright" >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Installer Evarisk', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div>
+</div>';
 }
 	
 $formulaireInstallation = $formulaireInstallation . EvaDisplayInput::fermerForm($idForm);
 echo $formulaireInstallation;
 
 echo '</div>';
+/*	Autoinstall at launch if the good parameter is passe din the url	*/
+if(STANDALONEVERSION)
+{
+	echo
+'<script type="text/javascript">
+		$(document).ready(function() {
+			$("#' . $idBouttonEnregistrer . '").click();
+		});
+</script>';
+}

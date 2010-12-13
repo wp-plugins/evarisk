@@ -281,7 +281,7 @@ class evaUser
 		'<script type="text/javascript">
 			$(document).ready(function() {
 				$(\'#utilisateursEvalues\').change(function() {
-					$("#chargementBox' . TABLE_LIAISON_USER_EVALUATION . '").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+					$("#chargementBox' . TABLE_LIAISON_USER_EVALUATION . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 					utilisateursEvaluesAAjouter = $(\'#utilisateursEvalues\').val();
 
 					$("#listeEmployesEvalues").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
@@ -297,7 +297,7 @@ class evaUser
 
 			function deleteUserEvaluationBind(idUser)
 			{
-				$("#chargementBox' . TABLE_LIAISON_USER_EVALUATION . '").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+				$("#chargementBox' . TABLE_LIAISON_USER_EVALUATION . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 				$("#listeEmployesEvalues").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post": "true", 
 					"table": "' . TABLE_LIAISON_USER_EVALUATION . '",
@@ -324,7 +324,7 @@ class evaUser
 					unset($valeurs);
 					$idLigne = $tableElement . $idElement . 'utilisateursAEvaluer' . $user_info->ID;
 					$idCbLigne = 'cb_' . $idLigne;
-					$valeurs[] = array('value'=>'<img src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteUserEvaluationBind(' . $user_info->ID . ');" />');
+					$valeurs[] = array('value'=>'<img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteUserEvaluationBind(' . $user_info->ID . ');" />');
 					if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) )
 					{
 						$valeurs[] = array('value'=>$user_info->user_lastname);

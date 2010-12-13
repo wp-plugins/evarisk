@@ -32,7 +32,9 @@ class EvaPhoto {
 			FROM " . TABLE_PHOTO . " 
 			WHERE tableDestination='" . mysql_real_escape_string($tableElement) . "' 
 				AND idDestination='" . mysql_real_escape_string($idElement) . "'
-				AND status = 'valid' ");
+				AND status = 'valid' 
+				AND " . $where . "
+			ORDER BY " . $order);
 		return $photos;
 	}
 
@@ -150,6 +152,43 @@ class EvaPhoto {
 									<img src="' . EVA_HOME_URL . $photo->photo . '" alt="' . $photo->description . '" />
 								</a>							
 								<div class="caption">';
+
+			switch($tableElement)
+			{
+				case TABLE_ACTIVITE:
+					$activite = new EvaActivity($idElement);
+					$activite->load();
+					if($activite->getidPhotoAvant() == $photo->id)
+					{
+					$gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+										-&nbsp;' . __('N\'est plus la photo avant l\'action', 'evarisk') . '
+									</div>';
+					}
+					else
+					{
+					$gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+										-&nbsp;' . __('D&eacute;finir comme photo avant l\'action', 'evarisk') . '
+									</div>';
+					}
+					if($activite->getidPhotoApres() == $photo->id)
+					{
+					$gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+										-&nbsp;' . __('N\'est plus la photo apr&egrave;s l\'action', 'evarisk') . '
+									</div>';
+					}
+					else
+					{
+					$gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+										-&nbsp;' . __('D&eacute;finir comme photo apr&egrave;s l\'action', 'evarisk') . '
+									</div>';
+					}
+					// $moreOutputOptions = '$(".slideshow").remove();';
+				break;
+				default:
+					$moreOutputOptions = '';
+				break;
+			}
+
 			if($photo->isMainPicture == 'yes')
 			{
 			$gallery .= '<div class="pictureDefaultSelection" onclick="javascript:DeleteDefaultPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
@@ -198,6 +237,47 @@ class EvaPhoto {
 					});
 				}
 
+				function setAsBeforePicture(tableElement, idElement, idPhoto)
+				{
+					$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+						"post": "true",  
+						"table": "' . TABLE_ACTIVITE . '",
+						"idElement": "' . $idElement . '",
+						"idPhoto": idPhoto,
+						"act": "setAsBeforePicture"
+					});
+				}
+				function unsetAsBeforePicture(tableElement, idElement, idPhoto)
+				{
+					$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+						"post": "true",  
+						"table": "' . TABLE_ACTIVITE . '",
+						"idElement": "' . $idElement . '",
+						"idPhoto": idPhoto,
+						"act": "unsetAsBeforePicture"
+					});
+				}
+				function setAsAfterPicture(tableElement, idElement, idPhoto)
+				{
+					$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+						"post": "true",  
+						"table": "' . TABLE_ACTIVITE . '",
+						"idElement": "' . $idElement . '",
+						"idPhoto": idPhoto,
+						"act": "setAsAfterPicture"
+					});
+				}
+				function unsetAsAfterPicture(tableElement, idElement, idPhoto)
+				{
+					$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+						"post": "true",  
+						"table": "' . TABLE_ACTIVITE . '",
+						"idElement": "' . $idElement . '",
+						"idPhoto": idPhoto,
+						"act": "unsetAsAfterPicture"
+					});
+				}
+
 				function DeleteDefaultPicture(tableElement, idElement, idPhoto)
 				{
 					$("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
@@ -212,7 +292,7 @@ class EvaPhoto {
 				function pictureDelete(idPicture)
 				{
 					if(confirm("' . __('Etes vous sur de vouloir supprimer cette photo?', 'evarisk') . '")){
-						$("#caption' . $tableElement . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+						$("#caption' . $tableElement . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 						setTimeout(function(){
 							$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 								"post": "true",  
@@ -278,6 +358,13 @@ class EvaPhoto {
 							this.fadeTo(\'fast\', 1.0);
 						}
 					});
+					setTimeout(function(){
+						' . $moreOutputOptions . '
+						if(typeof(removeSlideShowViewer) != "undefined")
+						{
+							$(".slideshow").remove();
+						}
+					},500);
 				});
 			</script>';
 		}
@@ -443,12 +530,15 @@ class EvaPhoto {
 	 *
 	 * @return string The upload form with eventually a thumbnail.
 	 */
-	function getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut)
+	function getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut, $texteBoutton = '', $onCompleteAction = '')
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'upload.php' );
 
+		$texteBoutton = ($texteBoutton == '') ? __("T&eacute;l&eacute;charger un fichier", "evarisk") : $texteBoutton;
+		$onCompleteAction = ($onCompleteAction == '') ? 'reloadcontainer();' : $onCompleteAction;
 		$actionUpload = ($actionUpload == '') ? EVA_INC_PLUGIN_URL . 'photo/uploadPhoto.php' : $actionUpload;
-		$photoDefaut = ($photoDefaut == '') ? EVA_HOME_URL . 'medias/images/Divers/blankThumbnail.png' : $photoDefaut;
+		$photoDefaut = ($photoDefaut == '') ? '' : $photoDefaut;
+		// $photoDefaut = ($photoDefaut == '') ? EVA_HOME_URL . 'medias/images/Icones/Divers/blankThumbnail.png' : $photoDefaut;
 		$repertoireDestination = ($repertoireDestination == '') ? str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/') : $repertoireDestination;
 		$multiple = $multiple ? 'true' : 'false';
 
@@ -469,12 +559,15 @@ class EvaPhoto {
 						},
 						onComplete: function(file, response){
 							//$("#thumb' . $idUpload . '").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $tableElement . "/" . $idElement  . '/" + response);
-							reloadcontainer();
+							' . $onCompleteAction . '
 						}
 					});
 
+					$("#' . $idUpload . ' .qq-upload-button").html("' . $texteBoutton . '");
+					
+					
 					$(".qq-upload-button").each(function(){
-						$(this).html("' . __("T&eacute;l&eacute;charger un fichier", "evarisk") . '");
+						// $(this).html("' . $texteBoutton . '");
 						uploader' . $idUpload . '._button = new qq.UploadButton({
 							element: uploader' . $idUpload . '._getElement("button"),
 							multiple: ' . $multiple . ',
@@ -488,11 +581,16 @@ class EvaPhoto {
 					});
 					$("#thumb' . $idUpload . '").parent().show();
 				});
-			</script> 
-			<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >
+			</script>';
+			if(($photoDefaut!='') && (is_file($photoDefaut)))
+			{
+			$formulaireUpload .= 
+			'<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >
 				<a href="' . $photoDefaut . '" target="mainPicture" ><img id="thumb' . $idUpload . '" src="' . $photoDefaut . '" class="" /></a>
-			</div>
-			<div id="' . $idUpload . '" class="divUpload">		
+			</div>';
+			}
+			$formulaireUpload .= 
+			'<div id="' . $idUpload . '" class="divUpload">		
 				<noscript>			
 					<p>Please enable JavaScript to use file uploader.</p>
 					<!-- or put a simple form for upload here -->
@@ -681,30 +779,32 @@ class EvaPhoto {
 	*/
 	function galleryContent($tableElement, $idElement)
 	{
-		return '<script type="text/javascript">
-					function reloadcontainer()
-					{
-						$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-						$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-							"post": "true",  
-							"table": "' . $tableElement . '",
-							"idElement": "' . $idElement . '",
-							"act": "reloadGallery"
-						});
-					}
-					function showGallery()
-					{
-						$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-						$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-							"post": "true",  
-							"table": "' . $tableElement . '",
-							"idElement": "' . $idElement . '",
-							"act": "showGallery"
-						});
-					}
-				</script>
-				<div id="message' . $tableElement . '_' . $idElement . '" ></div>
-				<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>
-				<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement) . '</div>';
+		return 
+'<script type="text/javascript">
+	function reloadcontainer()
+	{
+		$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+		$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			"post": "true",  
+			"table": "' . $tableElement . '",
+			"idElement": "' . $idElement . '",
+			"act": "reloadGallery"
+		});
 	}
+	function showGallery()
+	{
+		$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+		$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			"post": "true",  
+			"table": "' . $tableElement . '",
+			"idElement": "' . $idElement . '",
+			"act": "showGallery"
+		});
+	}
+</script>
+<div id="message' . $tableElement . '_' . $idElement . '" ></div>
+<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>
+<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement) . '</div>';
+	}
+
 }

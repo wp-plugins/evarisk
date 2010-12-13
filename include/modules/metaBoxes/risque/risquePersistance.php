@@ -2,6 +2,7 @@
 require_once(EVA_CONFIG );
 require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' );
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 if($_POST['act'] == 'save')
@@ -11,9 +12,29 @@ if($_POST['act'] == 'save')
 	$idMethode = eva_tools::IsValid_Variable($_POST['idMethode']);
 	$tableElement = eva_tools::IsValid_Variable($_POST['tableElement']);
 	$idElement = eva_tools::IsValid_Variable($_POST['idElement']);
+	$histo = eva_tools::IsValid_Variable($_POST['histo']);
 	$variables = $_POST['variables'];
 	$description = eva_tools::IsValid_Variable($_POST['description']);
-	Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description);
+	Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+
+	/*	Check if there are correctiv actions to link with this risk	*/
+	$actionsCorrectives = eva_tools::IsValid_Variable($_POST['actionsCorrectives']);
+	if($actionsCorrectives != '')
+	{
+		/*	Make the link between a corrective action and a risk evaluation	*/
+		$query = 
+			$wpdb->prepare(
+				"SELECT id_evaluation 
+				FROM " . TABLE_AVOIR_VALEUR . " 
+				WHERE id_risque = '%d' 
+					AND Status = 'Valid' 
+				ORDER BY id DESC 
+				LIMIT 1", 
+				$idRisque
+			);
+		$evaluation = $wpdb->get_row($query);
+		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionsCorrectives, 'after');
+	}
 }
 if($_POST['act'] == 'delete')
 {

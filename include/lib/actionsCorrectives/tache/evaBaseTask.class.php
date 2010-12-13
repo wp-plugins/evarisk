@@ -26,7 +26,13 @@ class EvaBaseTask
 	const idFrom = 'idProvenance';
 	const tableFrom = 'tableProvenance';
 	const status = 'Status';
+	const ProgressionStatus = 'ProgressionStatus';
 	const firstInsert = 'firstInsert';
+	const idCreateur = 'idCreateur';
+	const idResponsable = 'idResponsable';
+	const idSoldeur = 'idSoldeur';
+	const idSoldeurChef = 'idSoldeurChef';
+	const dateSolde = 'dateSolde';
 
 /*
  * Class variable define
@@ -85,9 +91,33 @@ class EvaBaseTask
 	 */
 	var $status;
 	/**
+	 * @var string The task progression status
+	 */
+	var $ProgressionStatus;
+	/**
 	 * @var string The task insert date
 	 */
 	var $firstInsert;
+	/**
+	 * @var string The task creator id
+	 */
+	var $idCreateur;
+	/**
+	 * @var string The person in charge of the task
+	 */
+	var $idResponsable;
+	/**
+	 * @var string The task maker
+	 */
+	var $idSoldeur;
+	/**
+	 * @var string The task maker
+	 */
+	var $idSoldeurChef;
+	/**
+	 * @var string The task maker
+	 */
+	var $dateSolde;
 	
 /*
  *	Constructor, getters and setters
@@ -109,8 +139,13 @@ class EvaBaseTask
 	 * @param string $tableFrom The identifier of the element that induces the task to set
 	 * @param string $status The status to set
 	 * @param date $firstInsert The insert date to set
+	 * @param integer $idCreateur The task creator identifier
+	 * @param integer $idResponsable The identifier of the person in charge of the task
+	 * @param integer $idSoldeur The task maker
+	 * @param string $ProgressionStatus The progression status
+	 * @param string $dateSolde
 	 */
-	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='')
+	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='')
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -126,6 +161,12 @@ class EvaBaseTask
 		$this->tableFrom = $tableFrom;
 		$this->status = $status;
 		$this->firstInsert = $firstInsert;
+		$this->idCreateur = $idCreateur;
+		$this->idResponsable = $idResponsable;
+		$this->idSoldeur = $idSoldeur;
+		$this->idSoldeurChef = $idSoldeurChef;
+		$this->ProgressionStatus = $ProgressionStatus;
+		$this->dateSolde = $dateSolde;
 	}
 	
 	/**
@@ -379,6 +420,114 @@ class EvaBaseTask
 	{
 		$this->firstInsert = $firstInsert;
 	}
+
+	/**
+	 * Returns the task creator id
+	 * @return integer The task creator id
+	 */
+	function getidCreateur()
+	{
+		return $this->idCreateur;
+	}
+
+	/**
+	 * Returns the task creator id
+	 * @param integer $idCreateur The task creator id
+	 */
+	function setidCreateur($idCreateur)
+	{
+		$this->idCreateur = $idCreateur;
+	}
+	
+	/**
+	 * Returns the task maker id
+	 * @return integer The task maker id
+	 */
+	function getidSoldeur()
+	{
+		return $this->idSoldeur;
+	}
+
+	/**
+	 * Returns the task maker id
+	 * @param integer $idCreateur The task maker id
+	 */
+	function setidSoldeur($idSoldeur)
+	{
+		$this->idSoldeur = $idSoldeur;
+	}
+	
+	/**
+	 * Returns the task maker id
+	 * @return integer The task maker id
+	 */
+	function getidSoldeurChef()
+	{
+		return $this->idSoldeurChef;
+	}
+
+	/**
+	 * Returns the task maker id
+	 * @param integer $idCreateur The task maker id
+	 */
+	function setidSoldeurChef($idSoldeurChef)
+	{
+		$this->idSoldeurChef = $idSoldeurChef;
+	}
+
+	/**
+	 * Returns the identifier of the person in charge of the task
+	 * @return integer The identifier of the person in charge of the task
+	 */
+	function getidResponsable()
+	{
+		return $this->idResponsable;
+	}
+
+	/**
+	 * Returns the identifier of the person in charge of the task
+	 * @param integer $idCreateur The identifier of the person in charge of the task
+	 */
+	function setidResponsable($idResponsable)
+	{
+		$this->idResponsable = $idResponsable;
+	}
+
+	/**
+	 * Returns the progression status, if the taks is done or not
+	 * @return string The progression status
+	 */
+	function getProgressionStatus()
+	{
+		return $this->ProgressionStatus;
+	}
+
+	/**
+	 * Returns The progression status of the task
+	 * @param string $idCreateur The progression status of the task
+	 */
+	function setProgressionStatus($ProgressionStatus)
+	{
+		$this->ProgressionStatus = $ProgressionStatus;
+	}
+
+	/**
+	 * Returns the progression status, if the taks is done or not
+	 * @return string The progression status
+	 */
+	function getdateSolde()
+	{
+		return $this->dateSolde;
+	}
+
+	/**
+	 * Returns The progression status of the task
+	 * @param string $idCreateur The progression status of the task
+	 */
+	function setdateSolde($dateSolde)
+	{
+		$this->dateSolde = $dateSolde;
+	}
 	
 /*
  * Others methods
@@ -404,6 +553,11 @@ class EvaBaseTask
 		$this->setTableFrom($wpdbTask->tableProvenance);
 		$this->setStatus($wpdbTask->Status);
 		$this->setFirstInsert($wpdbTask->firstInsert);
+		$this->setidCreateur($wpdbTask->idCreateur);
+		$this->setidResponsable($wpdbTask->idResponsable);
+		$this->setidSoldeur($wpdbTask->idSoldeur);
+		$this->setProgressionStatus($wpdbTask->ProgressionStatus);
+		$this->setdateSolde($wpdbTask->dateSolde);
 	}
 
 	/**
@@ -428,7 +582,12 @@ class EvaBaseTask
 					self::idFrom => $this->getIdFrom(),
 					self::tableFrom => $this->getTableFrom(),
 					self::status => $this->getStatus(),
-					self::firstInsert => $this->getFirstInsert()
+					self::firstInsert => $this->getFirstInsert(),
+					self::idCreateur => $this->getidCreateur(),
+					self::idResponsable => $this->getidResponsable(),
+					self::idSoldeur => $this->getidSoldeur(),
+					self::ProgressionStatus => $this->getProgressionStatus(),
+					self::dateSolde => $this->getdateSolde()
 				)
 			);
 	}

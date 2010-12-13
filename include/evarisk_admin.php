@@ -1,5 +1,6 @@
 <?php
 require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'version/EvaVersion.class.php');
 
 /**
@@ -12,7 +13,7 @@ function evarisk_add_menu() {
 	if(EvaVersion::getVersion('base_evarisk') < 1)
 	{
 		// On crée le menu principal
-		add_menu_page( 'Evarisk : ' . __('Installation', 'evarisk'), 'Evarisk', 'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php' , '', EVA_FAVICON);
+		add_menu_page( 'Evarisk : ' . __('Installation', 'evarisk'), 'Evarisk', 'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php' , '', EVA_FAVICON, 3);
 		// On propose le formulaire de création
 		add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php','Evarisk : ' . __('Installation', 'evarisk'), __('Installation', 'evarisk'),  'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php');
 	}
@@ -21,9 +22,13 @@ function evarisk_add_menu() {
 		require_once(EVA_MODULES_PLUGIN_DIR . 'installation/creationTables.php');
 		evarisk_creationTables();
 		// On crée le menu principal
-		add_menu_page( 'Evarisk : ' . __('Accueil', 'evarisk'), 'Evarisk', 'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php' , '', EVA_FAVICON);
+		add_menu_page( 'Evarisk : ' . __('Accueil', 'evarisk'), 'Evarisk', 'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php' , '', EVA_FAVICON, 3);
+
 		// On renomme l'accueil
 		add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : ' . __('Accueil', 'evarisk'), __('Accueil', 'evarisk'),  'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php');
+
+		// On renomme l'accueil
+		add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : ' . __('Options', 'evarisk'), __('Options', 'evarisk'),  'Evarisk_:_editer_les_options', EVA_MODULES_PLUGIN_DIR . '/options/options.php');
 
 		// On crée le menu des méthodes
 		add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : ' . __('M&eacute;thodes d\'&eacute;valuation', 'evarisk'), __('M&eacute;thodes d\'&eacute;valuation', 'evarisk'),  'Evarisk_:_voir_les_methodes', EVA_MODULES_PLUGIN_DIR . 'methode/methodeEvaluation.php');
@@ -41,7 +46,10 @@ function evarisk_add_menu() {
 		add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : ' . __('&Eacute;valuation des risques', 'evarisk'), __('&Eacute;valuation des risques', 'evarisk'),  'Evarisk_:_voir_les_groupements', EVA_MODULES_PLUGIN_DIR . '/evaluationDesRisques/evaluationDesRisques.php');
 
 		// On crée le menu des actions correctives
-		// add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : '.  __('Actions correctives', 'evarisk'), __('Actions correctives', 'evarisk'),  'Evarisk_:_voir_les_actions', EVA_MODULES_PLUGIN_DIR . 'actionsCorrectives/actionsCorrectives.php');
+		// if(options::getOptionValue('action_correctives_avancees') == 'oui')
+		// {
+		add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : '.  __('Actions correctives', 'evarisk'), __('Actions correctives', 'evarisk'),  'Evarisk_:_voir_les_actions', EVA_MODULES_PLUGIN_DIR . 'actionsCorrectives/actionsCorrectives.php');
+		// }
 
 		// On crée le menu de création de veille réglementaire
 		// add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/tableauDeBord/accueil.php','Evarisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk'), __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk'),  'Evarisk_:_creer_referenciel', EVA_MODULES_PLUGIN_DIR . 'veilleReglementaire/formulaireCreation.php');
@@ -78,6 +86,7 @@ function eva_add_admin_js()
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/users.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/role.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/eav.js"></script>
+	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.editable.js"></script>
 	<script type="text/javascript" src="' . EVA_PLUGIN_DIR . '../../../wp-admin/js/postbox.js"></script>
 	
 	<style type="text/css" title="currentStyle">

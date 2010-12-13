@@ -186,6 +186,7 @@ class UniteDeTravail {
 		}
 		$scoreTotal = 0;
 		$diviseur = 0;
+		$scoreToReturn = 0;
 		if(isset($risques) && ($risques != null))
 		{
 			foreach($risques as $risque)
@@ -194,15 +195,16 @@ class UniteDeTravail {
 				$score = Risque::getScoreRisque($risque);
 				$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 				$niveauSeuil = Risque::getSeuil($quotation);
-				$scoreTotal = $scoreTotal + $quotation * ($niveauSeuil - 1);
-				$diviseur = $diviseur + ($niveauSeuil - 1);
+				$scoreTotal += $quotation * ($niveauSeuil);
+				$diviseur += ($niveauSeuil);
 			}
-			return round($scoreTotal/$diviseur, 0);
+			if($diviseur > 0)
+			{
+				$scoreToReturn = round($scoreTotal/$diviseur, 0);
+			}
 		}
-		else
-		{
-			return 0;
-		}
+
+		return $scoreToReturn;
 	}
 	
 	static function getNiveauRisque($quotation)

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iNove 1.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-07 13:49+0900\n"
+"POT-Creation-Date: 2010-12-10 12:08+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: mg12 <wuzhao.mail@gmail.com>\n"
 "Language-Team: NeoEase <http://www.neoease.com/themes/>\n"
@@ -16,35 +16,92 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: 404.php:8
-#: header.php:27
-msgid "RSS 2.0 - all posts"
-msgstr "RSS2.0 (모든 글)"
+#: actualites_template.php:19
+#: archive.php:25
+#: archive.php:47
+#: archives.php:14
+#: comments.php:91
+#: functions.php:563
+#: index.php:23
+#: links.php:25
+#: single.php:10
+#: twitter.php:15
+msgid "F jS, Y"
+msgstr "F jS, Y"
 
-#: 404.php:9
-#: header.php:28
-msgid "RSS 2.0 - all comments"
-msgstr "RSS2.0 (모든 댓글)"
+#: actualites_template.php:21
+#: archive.php:49
+#: archives.php:15
+#: comments.php:95
+#: functions.php:571
+#: index.php:24
+#: links.php:26
+#: single.php:11
+#: twitter.php:16
+msgid "Edit"
+msgstr "편집"
 
-#: 404.php:22
-msgid "Talker"
-msgstr "말하는이"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "No comments"
+msgstr "댓글이 없습니다."
 
-#: 404.php:25
-msgid "Welcome to 404 error page!"
-msgstr "404 에러 페이지입니다!"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "1 comment"
+msgstr "한 개의 댓글"
 
-#: 404.php:26
-msgid "Welcome to this customized error page. You've reached this page because you've clicked on a link that does not exist. This is probably our fault... but instead of showing you the basic '404 Error' page that is confusing and doesn't really explain anything, we've created this page to explain what went wrong."
-msgstr "맞춤 에러 페이지입니다. 존재하지 않은 링크를 클릭하셨습니다. 저희의 실수 때문일 것입니다. 하지만 별 도움이 안 되는 '404 에러' 기본 페이지 대신 현재의 에러 페이지를 보여드리고 무엇이 문제인지를 알고자 합니다. "
+#: actualites_template.php:22
+#: archive.php:50
+#, php-format
+msgid "% comments"
+msgstr "% 개의 댓글"
 
-#: 404.php:27
-msgid "You can either (a) click on the 'back' button in your browser and try to navigate through our site in a different direction, or (b) click on the following link to go to homepage."
-msgstr "브라우저 창에서 '뒤로 가기' 버튼을 눌러 이 사이트의 다른 곳으로 이동해 보십시오. 아니면 홈페이지로 가는 아래 링크를 클릭하세요. "
+#: actualites_template.php:22
+#: archive.php:50
+msgid "Comments off"
+msgstr ""
 
-#: 404.php:29
-msgid "Back to homepage &raquo;"
-msgstr "홈페이지로 돌아가기  &raquo;"
+#: actualites_template.php:26
+#: archive.php:54
+#: index.php:28
+msgid "Read more..."
+msgstr "더 보기..."
+
+#: actualites_template.php:30
+#: archive.php:58
+msgid "Categories: "
+msgstr ""
+
+#: actualites_template.php:31
+#: archive.php:59
+#: index.php:32
+#: single.php:23
+msgid "Tags: "
+msgstr ""
+
+#: actualites_template.php:36
+#: archive.php:64
+#: archives.php:39
+#: index.php:37
+#: links.php:59
+#: page.php:16
+#: single.php:61
+#: twitter.php:36
+msgid "Sorry, no posts matched your criteria."
+msgstr "죄송합니다, 찾으시는 것에 맞는 글이 없습니다."
+
+#: actualites_template.php:44
+#: archive.php:72
+#: index.php:45
+msgid "Newer Entries"
+msgstr "최근 것들"
+
+#: actualites_template.php:45
+#: archive.php:73
+#: index.php:46
+msgid "Older Entries"
+msgstr "지난 것들"
 
 #: archive.php:10
 msgid "Search Results"
@@ -76,19 +133,6 @@ msgstr "&#8216;%1$s&#8217; 꼬리말(tag)이 달린 글들"
 msgid "Archive for %1$s"
 msgstr " %1$s 에 대한 글모음"
 
-#: archive.php:25
-#: archive.php:47
-#: archives.php:14
-#: comments.php:91
-#: functions.php:563
-#: index.php:22
-#: links.php:25
-#: page.php:8
-#: single.php:15
-#: twitter.php:15
-msgid "F jS, Y"
-msgstr "F jS, Y"
-
 #: archive.php:28
 msgid "F, Y"
 msgstr "F, Y"
@@ -105,89 +149,17 @@ msgstr "글쓴이의 글모음"
 msgid "Blog Archives"
 msgstr "블로그 글모음"
 
-#: archive.php:49
-#: archives.php:15
-#: comments.php:95
-#: functions.php:571
-#: index.php:24
-#: links.php:26
-#: page.php:9
-#: single.php:17
-#: twitter.php:16
-msgid "Edit"
-msgstr "편집"
-
-#: archive.php:50
-#: index.php:25
-msgid "No comments"
-msgstr "댓글이 없습니다."
-
-#: archive.php:50
-#: index.php:25
-msgid "1 comment"
-msgstr "한 개의 댓글"
-
-#: archive.php:50
-#: index.php:25
-#, php-format
-msgid "% comments"
-msgstr "% 개의 댓글"
-
-#: archive.php:50
-#: index.php:25
-msgid "Comments off"
-msgstr ""
-
-#: archive.php:54
-#: index.php:29
-msgid "Read more..."
-msgstr "더 보기..."
-
-#: archive.php:58
-#: index.php:33
-#: single.php:29
-msgid "Categories: "
-msgstr ""
-
-#: archive.php:59
-#: index.php:34
-#: single.php:30
-msgid "Tags: "
-msgstr ""
-
-#: archive.php:64
-#: archives.php:39
-#: index.php:39
-#: links.php:59
-#: page.php:26
-#: single.php:68
-#: twitter.php:36
-msgid "Sorry, no posts matched your criteria."
-msgstr "죄송합니다, 찾으시는 것에 맞는 글이 없습니다."
-
-#: archive.php:72
-#: index.php:47
-msgid "Newer Entries"
-msgstr "최근 것들"
-
-#: archive.php:73
-#: index.php:48
-msgid "Older Entries"
-msgstr "지난 것들"
-
 #: archives.php:17
 #: comments.php:31
 #: links.php:28
-#: page.php:11
-#: single.php:19
+#: single.php:13
 #: twitter.php:18
 msgid "Leave a comment"
 msgstr "댓글 남기기"
 
 #: archives.php:18
 #: links.php:29
-#: page.php:12
-#: single.php:20
+#: single.php:14
 #: twitter.php:19
 msgid "Go to comments"
 msgstr "댓글로 바로가기"
@@ -292,18 +264,9 @@ msgstr "이후 댓글을 RSS로 받기"
 msgid "Submit Comment"
 msgstr "댓글 올리기"
 
-#: footer.php:17
-msgid "Top"
-msgstr "맨 위로"
-
-#: footer.php:27
+#: footer.php:28
 msgid "Copyright &copy; "
 msgstr "저작권 &copy;"
-
-#: footer.php:39
-#, php-format
-msgid "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</a> and <a href=\"%3$s\">CSS 3</a>."
-msgstr "<a href=\"%1$s\">NeoEase</a>가 제작한 외모(theme) 사용 중. 웹표준 <a href=\"%2$s\">XHTML 1.1</a>과 <a href=\"%3$s\">CSS 3</a>.0 준수함."
 
 #: functions.php:180
 #: functions.php:189
@@ -323,6 +286,7 @@ msgid "CX:"
 msgstr "CX:"
 
 #: functions.php:204
+#, php-format
 msgid "Find <code>name=\"cx\"</code> in the <strong>Search box code</strong> of <a href=\"%1$s\">Google Custom Search Engine</a>, and type the <code>value</code> here.<br/>For example: <code>014782006753236413342:1ltfrybsbz4</code>"
 msgstr "<a href=\"%1$s\">구글 맞춤 검색엔진</a>의 <strong>검색창 코드</strong>에서 <code>name=\"cx\"</code> 찾기, 그리고 여기에 <code>값</code>을 입력하기.<br/>예: <code>014782006753236413342:1ltfrybsbz4</code>"
 
@@ -390,7 +354,7 @@ msgid "Visitors"
 msgstr "방문자"
 
 #: functions.php:305
-#: sidebar.php:56
+#: sidebar.php:30
 msgid "Showcase"
 msgstr "보여줄 것(showcase)"
 
@@ -444,7 +408,6 @@ msgid "Email feed."
 msgstr "이메일 피드"
 
 #: functions.php:407
-#: sidebar.php:42
 msgid "Twitter"
 msgstr ""
 
@@ -484,6 +447,14 @@ msgstr "상세하게 편집하기"
 msgid "Your comment is awaiting moderation."
 msgstr "올려주신 댓글을 승인 요청하였습니다. "
 
+#: header.php:27
+msgid "RSS 2.0 - all posts"
+msgstr "RSS2.0 (모든 글)"
+
+#: header.php:28
+msgid "RSS 2.0 - all comments"
+msgstr "RSS2.0 (모든 댓글)"
+
 #: links.php:18
 msgid "Add link"
 msgstr ""
@@ -492,78 +463,89 @@ msgstr ""
 msgid "Edit links"
 msgstr "편집 링크"
 
-#: sidebar.php:25
-msgid "Subscribe to this blog..."
-msgstr "이 사이트의 최신 내용을 RSS로 받아보기"
-
-#: sidebar.php:25
-msgid "<abbr title=\"Really Simple Syndication\">RSS</abbr>"
-msgstr ""
-
-#: sidebar.php:28
-#: sidebar.php:29
-#: sidebar.php:30
-#: sidebar.php:31
-#: sidebar.php:32
-#: sidebar.php:33
-#: sidebar.php:34
-#: sidebar.php:35
-msgid "Subscribe with "
-msgstr "으로 받아보기"
-
-#: sidebar.php:28
-msgid "Google"
-msgstr "Google"
-
-#: sidebar.php:29
-msgid "Youdao"
-msgstr "Youdao"
-
-#: sidebar.php:30
-msgid "Xian Guo"
-msgstr "Xian Guo"
-
-#: sidebar.php:31
-msgid "Zhua Xia"
-msgstr "자오 시앙(Zhua Xia)"
-
-#: sidebar.php:32
-msgid "My Yahoo!"
-msgstr "나의 야후!"
-
-#: sidebar.php:33
-msgid "newsgator"
-msgstr "뉴스게이터"
-
-#: sidebar.php:34
-msgid "Bloglines"
-msgstr "블로그라인"
-
-#: sidebar.php:35
-msgid "iNezha"
-msgstr "아이네짜(iNezha)"
-
-#: sidebar.php:40
-msgid "Subscribe to this blog via email..."
-msgstr "이 사이트의 최신 내용을 이메일로 받아보기"
-
-#: sidebar.php:40
-msgid "Email feed"
-msgstr "이메일 피드"
-
-#: sidebar.php:42
-msgid "Follow me!"
-msgstr ""
-
-#: single.php:7
-msgid "Go to homepage"
-msgstr "홈페이지로 가기"
-
-#: single.php:7
+#: templates/header - Copie.php:37
+#: templates/header.php:37
 msgid "Home"
 msgstr "홈페이지"
 
-#: templates/header.php:66
+#: templates/header - Copie.php:88
+#: templates/header.php:60
 msgid "Type text to search here..."
 msgstr ""
 
+#~ msgid "Talker"
+#~ msgstr "말하는이"
+
+#~ msgid "Welcome to 404 error page!"
+#~ msgstr "404 에러 페이지입니다!"
+
+#~ msgid ""
+#~ "Welcome to this customized error page. You've reached this page because "
+#~ "you've clicked on a link that does not exist. This is probably our "
+#~ "fault... but instead of showing you the basic '404 Error' page that is "
+#~ "confusing and doesn't really explain anything, we've created this page to "
+#~ "explain what went wrong."
+#~ msgstr ""
+#~ "맞춤 에러 페이지입니다. 존재하지 않은 링크를 클릭하셨습니다. 저희의 실수 "
+#~ "때문일 것입니다. 하지만 별 도움이 안 되는 '404 에러' 기본 페이지 대신 현재"
+#~ "의 에러 페이지를 보여드리고 무엇이 문제인지를 알고자 합니다. "
+
+#~ msgid ""
+#~ "You can either (a) click on the 'back' button in your browser and try to "
+#~ "navigate through our site in a different direction, or (b) click on the "
+#~ "following link to go to homepage."
+#~ msgstr ""
+#~ "브라우저 창에서 '뒤로 가기' 버튼을 눌러 이 사이트의 다른 곳으로 이동해 보"
+#~ "십시오. 아니면 홈페이지로 가는 아래 링크를 클릭하세요. "
+
+#~ msgid "Back to homepage &raquo;"
+#~ msgstr "홈페이지로 돌아가기  &raquo;"
+
+#~ msgid "Top"
+#~ msgstr "맨 위로"
+
+#~ msgid ""
+#~ "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</"
+#~ "a> and <a href=\"%3$s\">CSS 3</a>."
+#~ msgstr ""
+#~ "<a href=\"%1$s\">NeoEase</a>가 제작한 외모(theme) 사용 중. 웹표준 <a href="
+#~ "\"%2$s\">XHTML 1.1</a>과 <a href=\"%3$s\">CSS 3</a>.0 준수함."
+
+#~ msgid "Subscribe to this blog..."
+#~ msgstr "이 사이트의 최신 내용을 RSS로 받아보기"
+
+#~ msgid "Subscribe with "
+#~ msgstr "으로 받아보기"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Youdao"
+#~ msgstr "Youdao"
+
+#~ msgid "Xian Guo"
+#~ msgstr "Xian Guo"
+
+#~ msgid "Zhua Xia"
+#~ msgstr "자오 시앙(Zhua Xia)"
+
+#~ msgid "My Yahoo!"
+#~ msgstr "나의 야후!"
+
+#~ msgid "newsgator"
+#~ msgstr "뉴스게이터"
+
+#~ msgid "Bloglines"
+#~ msgstr "블로그라인"
+
+#~ msgid "iNezha"
+#~ msgstr "아이네짜(iNezha)"
+
+#~ msgid "Subscribe to this blog via email..."
+#~ msgstr "이 사이트의 최신 내용을 이메일로 받아보기"
+
+#~ msgid "Email feed"
+#~ msgstr "이메일 피드"
+
+#~ msgid "Go to homepage"
+#~ msgstr "홈페이지로 가기"

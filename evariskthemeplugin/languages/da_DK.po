@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iNove 1.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-07 14:01+0900\n"
+"POT-Creation-Date: 2010-12-10 12:07+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: mg12 <wuzhao.mail@gmail.com>\n"
 "Language-Team: NeoEase <http://www.neoease.com/themes/>\n"
@@ -16,35 +16,92 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: 404.php:8
-#: header.php:27
-msgid "RSS 2.0 - all posts"
-msgstr "RSS 2.0 - alle indl&aelig;g"
+#: actualites_template.php:19
+#: archive.php:25
+#: archive.php:47
+#: archives.php:14
+#: comments.php:91
+#: functions.php:563
+#: index.php:23
+#: links.php:25
+#: single.php:10
+#: twitter.php:15
+msgid "F jS, Y"
+msgstr "j F, Y"
 
-#: 404.php:9
-#: header.php:28
-msgid "RSS 2.0 - all comments"
-msgstr "RSS 2.0 - alle kommentare"
+#: actualites_template.php:21
+#: archive.php:49
+#: archives.php:15
+#: comments.php:95
+#: functions.php:571
+#: index.php:24
+#: links.php:26
+#: single.php:11
+#: twitter.php:16
+msgid "Edit"
+msgstr "Rediger"
 
-#: 404.php:22
-msgid "Talker"
-msgstr "Snakker"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "No comments"
+msgstr "Ingen kommentarer"
 
-#: 404.php:25
-msgid "Welcome to 404 error page!"
-msgstr "Velkommen til fejlside 404!"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "1 comment"
+msgstr "1 kommentar"
 
-#: 404.php:26
-msgid "Welcome to this customized error page. You've reached this page because you've clicked on a link that does not exist. This is probably our fault... but instead of showing you the basic '404 Error' page that is confusing and doesn't really explain anything, we've created this page to explain what went wrong."
-msgstr "Velkommen til denne tilpassede fejlside. Du har n&aring;et denne side, fordi du har klikket på et link, der ikke findes. Det er sandsynligvis vores skyld ... men i stedet for at vise dig denne normale 404 Fejlside, der er forvirrende og egentlig ikke forklare noget! Vi har oprettet denne side til at forklare, hvad der gik galt."
+#: actualites_template.php:22
+#: archive.php:50
+#, php-format
+msgid "% comments"
+msgstr "% kommentarer"
 
-#: 404.php:27
-msgid "You can either (a) click on the 'back' button in your browser and try to navigate through our site in a different direction, or (b) click on the following link to go to homepage."
-msgstr "Du kan enten (a) Klik på knappen &#101;tilbage&#101; i din browser, og pr&#248;v at navigere gennem vores site i en anden retning, eller (b), skal du klikke på f&#248;lgende link for at g&aring; til hjemmesiden."
+#: actualites_template.php:22
+#: archive.php:50
+msgid "Comments off"
+msgstr ""
 
-#: 404.php:29
-msgid "Back to homepage &raquo;"
-msgstr "Tilbage til startsiden &raquo;"
+#: actualites_template.php:26
+#: archive.php:54
+#: index.php:28
+msgid "Read more..."
+msgstr "L&aelig;s mere..."
+
+#: actualites_template.php:30
+#: archive.php:58
+msgid "Categories: "
+msgstr ""
+
+#: actualites_template.php:31
+#: archive.php:59
+#: index.php:32
+#: single.php:23
+msgid "Tags: "
+msgstr ""
+
+#: actualites_template.php:36
+#: archive.php:64
+#: archives.php:39
+#: index.php:37
+#: links.php:59
+#: page.php:16
+#: single.php:61
+#: twitter.php:36
+msgid "Sorry, no posts matched your criteria."
+msgstr "Beklager, ingen indl&aelig;g matchede dine kriterier."
+
+#: actualites_template.php:44
+#: archive.php:72
+#: index.php:45
+msgid "Newer Entries"
+msgstr "Nyere P&aring;tegninger"
+
+#: actualites_template.php:45
+#: archive.php:73
+#: index.php:46
+msgid "Older Entries"
+msgstr "&#198;ldre P&aring;tegninger"
 
 #: archive.php:10
 msgid "Search Results"
@@ -76,19 +133,6 @@ msgstr "Idl&aelig;g Tagged &#8216;%1$s&#8217;"
 msgid "Archive for %1$s"
 msgstr "Arkiv for %1$s"
 
-#: archive.php:25
-#: archive.php:47
-#: archives.php:14
-#: comments.php:91
-#: functions.php:563
-#: index.php:22
-#: links.php:25
-#: page.php:8
-#: single.php:15
-#: twitter.php:15
-msgid "F jS, Y"
-msgstr "j F, Y"
-
 #: archive.php:28
 msgid "F, Y"
 msgstr "F, Y"
@@ -105,89 +149,17 @@ msgstr "Forfatter Arkiv"
 msgid "Blog Archives"
 msgstr "Blog Arkiv"
 
-#: archive.php:49
-#: archives.php:15
-#: comments.php:95
-#: functions.php:571
-#: index.php:24
-#: links.php:26
-#: page.php:9
-#: single.php:17
-#: twitter.php:16
-msgid "Edit"
-msgstr "Rediger"
-
-#: archive.php:50
-#: index.php:25
-msgid "No comments"
-msgstr "Ingen kommentarer"
-
-#: archive.php:50
-#: index.php:25
-msgid "1 comment"
-msgstr "1 kommentar"
-
-#: archive.php:50
-#: index.php:25
-#, php-format
-msgid "% comments"
-msgstr "% kommentarer"
-
-#: archive.php:50
-#: index.php:25
-msgid "Comments off"
-msgstr ""
-
-#: archive.php:54
-#: index.php:29
-msgid "Read more..."
-msgstr "L&aelig;s mere..."
-
-#: archive.php:58
-#: index.php:33
-#: single.php:29
-msgid "Categories: "
-msgstr ""
-
-#: archive.php:59
-#: index.php:34
-#: single.php:30
-msgid "Tags: "
-msgstr ""
-
-#: archive.php:64
-#: archives.php:39
-#: index.php:39
-#: links.php:59
-#: page.php:26
-#: single.php:68
-#: twitter.php:36
-msgid "Sorry, no posts matched your criteria."
-msgstr "Beklager, ingen indl&aelig;g matchede dine kriterier."
-
-#: archive.php:72
-#: index.php:47
-msgid "Newer Entries"
-msgstr "Nyere P&aring;tegninger"
-
-#: archive.php:73
-#: index.php:48
-msgid "Older Entries"
-msgstr "&#198;ldre P&aring;tegninger"
-
 #: archives.php:17
 #: comments.php:31
 #: links.php:28
-#: page.php:11
-#: single.php:19
+#: single.php:13
 #: twitter.php:18
 msgid "Leave a comment"
 msgstr "Efterlad en kommentar"
 
 #: archives.php:18
 #: links.php:29
-#: page.php:12
-#: single.php:20
+#: single.php:14
 #: twitter.php:19
 msgid "Go to comments"
 msgstr "G&aring; til kommentarer"
@@ -292,18 +264,9 @@ msgstr "Abonner p&aring; kommentarer feed"
 msgid "Submit Comment"
 msgstr "Indsend kommentar"
 
-#: footer.php:17
-msgid "Top"
-msgstr "Top"
-
-#: footer.php:27
+#: footer.php:28
 msgid "Copyright &copy; "
 msgstr "Copyright &copy; "
-
-#: footer.php:39
-#, php-format
-msgid "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</a> and <a href=\"%3$s\">CSS 3</a>."
-msgstr "Thema af <a href=\"%1$s\">NeoEase</a>. Gyldigt <a href=\"%2$s\">XHTML 1.1</a> og <a href=\"%3$s\">CSS 3</a>."
 
 #: functions.php:180
 #: functions.php:189
@@ -391,7 +354,7 @@ msgid "Visitors"
 msgstr "Bes&oslash;gende"
 
 #: functions.php:305
-#: sidebar.php:56
+#: sidebar.php:30
 msgid "Showcase"
 msgstr "Showcase"
 
@@ -445,7 +408,6 @@ msgid "Email feed."
 msgstr "Email feed."
 
 #: functions.php:407
-#: sidebar.php:42
 msgid "Twitter"
 msgstr ""
 
@@ -485,6 +447,14 @@ msgstr "Rediger"
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
+#: header.php:27
+msgid "RSS 2.0 - all posts"
+msgstr "RSS 2.0 - alle indl&aelig;g"
+
+#: header.php:28
+msgid "RSS 2.0 - all comments"
+msgstr "RSS 2.0 - alle kommentare"
+
 #: links.php:18
 msgid "Add link"
 msgstr ""
@@ -493,78 +463,80 @@ msgstr ""
 msgid "Edit links"
 msgstr "Rediger links"
 
-#: sidebar.php:25
-msgid "Subscribe to this blog..."
-msgstr "Abonner p&aring; denne blog..."
-
-#: sidebar.php:25
-msgid "<abbr title=\"Really Simple Syndication\">RSS</abbr>"
-msgstr ""
-
-#: sidebar.php:28
-#: sidebar.php:29
-#: sidebar.php:30
-#: sidebar.php:31
-#: sidebar.php:32
-#: sidebar.php:33
-#: sidebar.php:34
-#: sidebar.php:35
-msgid "Subscribe with "
-msgstr "Abonner med"
-
-#: sidebar.php:28
-msgid "Google"
-msgstr "Google"
-
-#: sidebar.php:29
-msgid "Youdao"
-msgstr "Youdao"
-
-#: sidebar.php:30
-msgid "Xian Guo"
-msgstr "Xian Guo"
-
-#: sidebar.php:31
-msgid "Zhua Xia"
-msgstr "Zhua Xia"
-
-#: sidebar.php:32
-msgid "My Yahoo!"
-msgstr ""
-
-#: sidebar.php:33
-msgid "newsgator"
-msgstr ""
-
-#: sidebar.php:34
-msgid "Bloglines"
-msgstr ""
-
-#: sidebar.php:35
-msgid "iNezha"
-msgstr ""
-
-#: sidebar.php:40
-msgid "Subscribe to this blog via email..."
-msgstr "Abonner p&aring; denne blog via e-mail..."
-
-#: sidebar.php:40
-msgid "Email feed"
-msgstr "Email feed"
-
-#: sidebar.php:42
-msgid "Follow me!"
-msgstr ""
-
-#: single.php:7
-msgid "Go to homepage"
-msgstr "G&aring; til hjemmeside"
-
-#: single.php:7
+#: templates/header - Copie.php:37
+#: templates/header.php:37
 msgid "Home"
 msgstr "Hjem"
 
-#: templates/header.php:66
+#: templates/header - Copie.php:88
+#: templates/header.php:60
 msgid "Type text to search here..."
 msgstr ""
 
+#~ msgid "Talker"
+#~ msgstr "Snakker"
+
+#~ msgid "Welcome to 404 error page!"
+#~ msgstr "Velkommen til fejlside 404!"
+
+#~ msgid ""
+#~ "Welcome to this customized error page. You've reached this page because "
+#~ "you've clicked on a link that does not exist. This is probably our "
+#~ "fault... but instead of showing you the basic '404 Error' page that is "
+#~ "confusing and doesn't really explain anything, we've created this page to "
+#~ "explain what went wrong."
+#~ msgstr ""
+#~ "Velkommen til denne tilpassede fejlside. Du har n&aring;et denne side, "
+#~ "fordi du har klikket på et link, der ikke findes. Det er sandsynligvis "
+#~ "vores skyld ... men i stedet for at vise dig denne normale 404 Fejlside, "
+#~ "der er forvirrende og egentlig ikke forklare noget! Vi har oprettet denne "
+#~ "side til at forklare, hvad der gik galt."
+
+#~ msgid ""
+#~ "You can either (a) click on the 'back' button in your browser and try to "
+#~ "navigate through our site in a different direction, or (b) click on the "
+#~ "following link to go to homepage."
+#~ msgstr ""
+#~ "Du kan enten (a) Klik på knappen &#101;tilbage&#101; i din browser, og "
+#~ "pr&#248;v at navigere gennem vores site i en anden retning, eller (b), "
+#~ "skal du klikke på f&#248;lgende link for at g&aring; til hjemmesiden."
+
+#~ msgid "Back to homepage &raquo;"
+#~ msgstr "Tilbage til startsiden &raquo;"
+
+#~ msgid "Top"
+#~ msgstr "Top"
+
+#~ msgid ""
+#~ "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</"
+#~ "a> and <a href=\"%3$s\">CSS 3</a>."
+#~ msgstr ""
+#~ "Thema af <a href=\"%1$s\">NeoEase</a>. Gyldigt <a href=\"%2$s\">XHTML "
+#~ "1.1</a> og <a href=\"%3$s\">CSS 3</a>."
+
+#~ msgid "Subscribe to this blog..."
+#~ msgstr "Abonner p&aring; denne blog..."
+
+#~ msgid "Subscribe with "
+#~ msgstr "Abonner med"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Youdao"
+#~ msgstr "Youdao"
+
+#~ msgid "Xian Guo"
+#~ msgstr "Xian Guo"
+
+#~ msgid "Zhua Xia"
+#~ msgstr "Zhua Xia"
+
+#~ msgid "Subscribe to this blog via email..."
+#~ msgstr "Abonner p&aring; denne blog via e-mail..."
+
+#~ msgid "Email feed"
+#~ msgstr "Email feed"
+
+#~ msgid "Go to homepage"
+#~ msgstr "G&aring; til hjemmeside"

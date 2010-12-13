@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iNove 1.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-07 13:45+0900\n"
+"POT-Creation-Date: 2010-12-10 12:07+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: mg12 <wuzhao.mail@gmail.com>\n"
 "Language-Team: NeoEase <http://www.neoease.com/themes/>\n"
@@ -16,35 +16,92 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: 404.php:8
-#: header.php:27
-msgid "RSS 2.0 - all posts"
-msgstr "RSS 2.0 - kaikki artikkelit"
+#: actualites_template.php:19
+#: archive.php:25
+#: archive.php:47
+#: archives.php:14
+#: comments.php:91
+#: functions.php:563
+#: index.php:23
+#: links.php:25
+#: single.php:10
+#: twitter.php:15
+msgid "F jS, Y"
+msgstr "F jS, Y"
 
-#: 404.php:9
-#: header.php:28
-msgid "RSS 2.0 - all comments"
-msgstr "RSS 2.0 - kaikki kommentit"
+#: actualites_template.php:21
+#: archive.php:49
+#: archives.php:15
+#: comments.php:95
+#: functions.php:571
+#: index.php:24
+#: links.php:26
+#: single.php:11
+#: twitter.php:16
+msgid "Edit"
+msgstr "Muokkaa"
 
-#: 404.php:22
-msgid "Talker"
-msgstr "Puhuja"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "No comments"
+msgstr "Ei kommentteja"
 
-#: 404.php:25
-msgid "Welcome to 404 error page!"
-msgstr "Tervetuloa 404-virhesivulle!"
+#: actualites_template.php:22
+#: archive.php:50
+msgid "1 comment"
+msgstr "1 kommentti"
 
-#: 404.php:26
-msgid "Welcome to this customized error page. You've reached this page because you've clicked on a link that does not exist. This is probably our fault... but instead of showing you the basic '404 Error' page that is confusing and doesn't really explain anything, we've created this page to explain what went wrong."
-msgstr "Tervetuloa mukautetulle virhesivulle. PÃ¤Ã¤dyit tÃ¤nne, koska klikkasit virheellistÃ¤ linkkiÃ¤. Luultavasti vika on meissÃ¤... mutta sen sijaan, ettÃ¤ nÃ¤yttÃ¤isimme tavallisen 'virhe 404' sivun, joka olisi parhaimmillaankin hÃ¤mmentÃ¤vÃ¤, loimme tÃ¤mÃ¤n sivun selittÃ¤Ã¤ksemme mikÃ¤ meni pieleen."
+#: actualites_template.php:22
+#: archive.php:50
+#, php-format
+msgid "% comments"
+msgstr "% kommenttia"
 
-#: 404.php:27
-msgid "You can either (a) click on the 'back' button in your browser and try to navigate through our site in a different direction, or (b) click on the following link to go to homepage."
-msgstr "Voit joko (a) painaa selaimesi takaisin-painiketta ja yrittÃ¤Ã¤ lÃ¶ytÃ¤Ã¤ etsimÃ¤si muuta kautta, tai (b) klikata seuraavaa linkkiÃ¤ pÃ¤Ã¤stÃ¤ksesi etusivulle."
+#: actualites_template.php:22
+#: archive.php:50
+msgid "Comments off"
+msgstr "Kommentointi on suljettu"
 
-#: 404.php:29
-msgid "Back to homepage &raquo;"
-msgstr "Palaa etusivulle &raquo;"
+#: actualites_template.php:26
+#: archive.php:54
+#: index.php:28
+msgid "Read more..."
+msgstr "Lue lisää..."
+
+#: actualites_template.php:30
+#: archive.php:58
+msgid "Categories: "
+msgstr "Aiheet:"
+
+#: actualites_template.php:31
+#: archive.php:59
+#: index.php:32
+#: single.php:23
+msgid "Tags: "
+msgstr "Avainsanat:"
+
+#: actualites_template.php:36
+#: archive.php:64
+#: archives.php:39
+#: index.php:37
+#: links.php:59
+#: page.php:16
+#: single.php:61
+#: twitter.php:36
+msgid "Sorry, no posts matched your criteria."
+msgstr "Hakuehtoja vastaavia artikkeleita ei valitettavasti löytynyt."
+
+#: actualites_template.php:44
+#: archive.php:72
+#: index.php:45
+msgid "Newer Entries"
+msgstr "Uudemmat artikkelit"
+
+#: actualites_template.php:45
+#: archive.php:73
+#: index.php:46
+msgid "Older Entries"
+msgstr "Vanhemmat artikkelit"
 
 #: archive.php:10
 msgid "Search Results"
@@ -76,19 +133,6 @@ msgstr "Artikkelit jotka on merkitty avansanalla &#8216;%1$s&#8217;"
 msgid "Archive for %1$s"
 msgstr "Artikkelit ajalta %1$s"
 
-#: archive.php:25
-#: archive.php:47
-#: archives.php:14
-#: comments.php:91
-#: functions.php:563
-#: index.php:22
-#: links.php:25
-#: page.php:8
-#: single.php:15
-#: twitter.php:15
-msgid "F jS, Y"
-msgstr "F jS, Y"
-
 #: archive.php:28
 msgid "F, Y"
 msgstr "F, Y"
@@ -105,89 +149,17 @@ msgstr "Kirjoittajan arkisto"
 msgid "Blog Archives"
 msgstr "Blogin arkistot"
 
-#: archive.php:49
-#: archives.php:15
-#: comments.php:95
-#: functions.php:571
-#: index.php:24
-#: links.php:26
-#: page.php:9
-#: single.php:17
-#: twitter.php:16
-msgid "Edit"
-msgstr "Muokkaa"
-
-#: archive.php:50
-#: index.php:25
-msgid "No comments"
-msgstr "Ei kommentteja"
-
-#: archive.php:50
-#: index.php:25
-msgid "1 comment"
-msgstr "1 kommentti"
-
-#: archive.php:50
-#: index.php:25
-#, php-format
-msgid "% comments"
-msgstr "% kommenttia"
-
-#: archive.php:50
-#: index.php:25
-msgid "Comments off"
-msgstr "Kommentointi on suljettu"
-
-#: archive.php:54
-#: index.php:29
-msgid "Read more..."
-msgstr "Lue lisää..."
-
-#: archive.php:58
-#: index.php:33
-#: single.php:29
-msgid "Categories: "
-msgstr "Aiheet:"
-
-#: archive.php:59
-#: index.php:34
-#: single.php:30
-msgid "Tags: "
-msgstr "Avainsanat:"
-
-#: archive.php:64
-#: archives.php:39
-#: index.php:39
-#: links.php:59
-#: page.php:26
-#: single.php:68
-#: twitter.php:36
-msgid "Sorry, no posts matched your criteria."
-msgstr "Hakuehtoja vastaavia artikkeleita ei valitettavasti löytynyt."
-
-#: archive.php:72
-#: index.php:47
-msgid "Newer Entries"
-msgstr "Uudemmat artikkelit"
-
-#: archive.php:73
-#: index.php:48
-msgid "Older Entries"
-msgstr "Vanhemmat artikkelit"
-
 #: archives.php:17
 #: comments.php:31
 #: links.php:28
-#: page.php:11
-#: single.php:19
+#: single.php:13
 #: twitter.php:18
 msgid "Leave a comment"
 msgstr "Jätä kommentti"
 
 #: archives.php:18
 #: links.php:29
-#: page.php:12
-#: single.php:20
+#: single.php:14
 #: twitter.php:19
 msgid "Go to comments"
 msgstr "Katso kommentit"
@@ -292,18 +264,9 @@ msgstr "Tilaa kommenttien syöte"
 msgid "Submit Comment"
 msgstr "Lähetä"
 
-#: footer.php:17
-msgid "Top"
-msgstr "Alkuun"
-
-#: footer.php:27
+#: footer.php:28
 msgid "Copyright &copy; "
 msgstr "Kaikki oikeudet pidätetään  &copy; "
-
-#: footer.php:39
-#, php-format
-msgid "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</a> and <a href=\"%3$s\">CSS 3</a>."
-msgstr "Teeman tehnyt <a href=\"%1$s\">NeoEase</a>. Validiudet: <a href=\"%2$s\">XHTML 1.1</a> ja <a href=\"%3$s\">CSS 3</a>."
 
 #: functions.php:180
 #: functions.php:189
@@ -323,6 +286,7 @@ msgid "CX:"
 msgstr "CX:"
 
 #: functions.php:204
+#, php-format
 msgid "Find <code>name=\"cx\"</code> in the <strong>Search box code</strong> of <a href=\"%1$s\">Google Custom Search Engine</a>, and type the <code>value</code> here.<br/>For example: <code>014782006753236413342:1ltfrybsbz4</code>"
 msgstr "Etsi <code>name=\"cx\"</code> <strong>hakukentän koodista</strong> <a href=\"%1$s\">Googlen täsmähausta</a> ja kirjoita <code>arvo</code> tähän.<br/>Esimerkki: <code>014782006753236413342:1ltfrybsbz4"
 
@@ -390,7 +354,7 @@ msgid "Visitors"
 msgstr "Vieraat"
 
 #: functions.php:305
-#: sidebar.php:56
+#: sidebar.php:30
 msgid "Showcase"
 msgstr "Näyteikkuna"
 
@@ -444,7 +408,6 @@ msgid "Email feed."
 msgstr "Sähköpostisyöte."
 
 #: functions.php:407
-#: sidebar.php:42
 msgid "Twitter"
 msgstr ""
 
@@ -484,6 +447,14 @@ msgstr "Muokkaa"
 msgid "Your comment is awaiting moderation."
 msgstr "Kommenttisi odottaa arviointia."
 
+#: header.php:27
+msgid "RSS 2.0 - all posts"
+msgstr "RSS 2.0 - kaikki artikkelit"
+
+#: header.php:28
+msgid "RSS 2.0 - all comments"
+msgstr "RSS 2.0 - kaikki kommentit"
+
 #: links.php:18
 msgid "Add link"
 msgstr "Lisää linkki"
@@ -492,78 +463,92 @@ msgstr "Lisää linkki"
 msgid "Edit links"
 msgstr "Muokkaa linkkejä"
 
-#: sidebar.php:25
-msgid "Subscribe to this blog..."
-msgstr "Tilaa tämä blogi..."
-
-#: sidebar.php:25
-msgid "<abbr title=\"Really Simple Syndication\">RSS</abbr>"
-msgstr ""
-
-#: sidebar.php:28
-#: sidebar.php:29
-#: sidebar.php:30
-#: sidebar.php:31
-#: sidebar.php:32
-#: sidebar.php:33
-#: sidebar.php:34
-#: sidebar.php:35
-msgid "Subscribe with "
-msgstr "Tilaa"
-
-#: sidebar.php:28
-msgid "Google"
-msgstr "Google"
-
-#: sidebar.php:29
-msgid "Youdao"
-msgstr "Youdao"
-
-#: sidebar.php:30
-msgid "Xian Guo"
-msgstr "Xian Guo"
-
-#: sidebar.php:31
-msgid "Zhua Xia"
-msgstr "Zhua Xia"
-
-#: sidebar.php:32
-msgid "My Yahoo!"
-msgstr "My Yahoo!"
-
-#: sidebar.php:33
-msgid "newsgator"
-msgstr "newsgator"
-
-#: sidebar.php:34
-msgid "Bloglines"
-msgstr "Bloglines"
-
-#: sidebar.php:35
-msgid "iNezha"
-msgstr "iNezha"
-
-#: sidebar.php:40
-msgid "Subscribe to this blog via email..."
-msgstr "Tilaa tämä blogi sähköpostiin..."
-
-#: sidebar.php:40
-msgid "Email feed"
-msgstr "Sähköpostisyöte"
-
-#: sidebar.php:42
-msgid "Follow me!"
-msgstr ""
-
-#: single.php:7
-msgid "Go to homepage"
-msgstr "Mene etusivulle"
-
-#: single.php:7
+#: templates/header - Copie.php:37
+#: templates/header.php:37
 msgid "Home"
 msgstr "Etusivu"
 
-#: templates/header.php:66
+#: templates/header - Copie.php:88
+#: templates/header.php:60
 msgid "Type text to search here..."
 msgstr "Laita hakusana tähän..."
 
+#~ msgid "Talker"
+#~ msgstr "Puhuja"
+
+#~ msgid "Welcome to 404 error page!"
+#~ msgstr "Tervetuloa 404-virhesivulle!"
+
+#~ msgid ""
+#~ "Welcome to this customized error page. You've reached this page because "
+#~ "you've clicked on a link that does not exist. This is probably our "
+#~ "fault... but instead of showing you the basic '404 Error' page that is "
+#~ "confusing and doesn't really explain anything, we've created this page to "
+#~ "explain what went wrong."
+#~ msgstr ""
+#~ "Tervetuloa mukautetulle virhesivulle. PÃ¤Ã¤dyit tÃ¤nne, koska klikkasit "
+#~ "virheellistÃ¤ linkkiÃ¤. Luultavasti vika on meissÃ¤... mutta sen sijaan, "
+#~ "ettÃ¤ nÃ¤yttÃ¤isimme tavallisen 'virhe 404' sivun, joka olisi "
+#~ "parhaimmillaankin hÃ¤mmentÃ¤vÃ¤, loimme tÃ¤mÃ¤n sivun selittÃ¤Ã¤ksemme "
+#~ "mikÃ¤ meni pieleen."
+
+#~ msgid ""
+#~ "You can either (a) click on the 'back' button in your browser and try to "
+#~ "navigate through our site in a different direction, or (b) click on the "
+#~ "following link to go to homepage."
+#~ msgstr ""
+#~ "Voit joko (a) painaa selaimesi takaisin-painiketta ja yrittÃ¤Ã¤ lÃ¶ytÃ¤Ã¤ "
+#~ "etsimÃ¤si muuta kautta, tai (b) klikata seuraavaa linkkiÃ¤ pÃ¤Ã¤stÃ¤ksesi "
+#~ "etusivulle."
+
+#~ msgid "Back to homepage &raquo;"
+#~ msgstr "Palaa etusivulle &raquo;"
+
+#~ msgid "Top"
+#~ msgstr "Alkuun"
+
+#~ msgid ""
+#~ "Theme by <a href=\"%1$s\">NeoEase</a>. Valid <a href=\"%2$s\">XHTML 1.1</"
+#~ "a> and <a href=\"%3$s\">CSS 3</a>."
+#~ msgstr ""
+#~ "Teeman tehnyt <a href=\"%1$s\">NeoEase</a>. Validiudet: <a href=\"%2$s"
+#~ "\">XHTML 1.1</a> ja <a href=\"%3$s\">CSS 3</a>."
+
+#~ msgid "Subscribe to this blog..."
+#~ msgstr "Tilaa tämä blogi..."
+
+#~ msgid "Subscribe with "
+#~ msgstr "Tilaa"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Youdao"
+#~ msgstr "Youdao"
+
+#~ msgid "Xian Guo"
+#~ msgstr "Xian Guo"
+
+#~ msgid "Zhua Xia"
+#~ msgstr "Zhua Xia"
+
+#~ msgid "My Yahoo!"
+#~ msgstr "My Yahoo!"
+
+#~ msgid "newsgator"
+#~ msgstr "newsgator"
+
+#~ msgid "Bloglines"
+#~ msgstr "Bloglines"
+
+#~ msgid "iNezha"
+#~ msgstr "iNezha"
+
+#~ msgid "Subscribe to this blog via email..."
+#~ msgstr "Tilaa tämä blogi sähköpostiin..."
+
+#~ msgid "Email feed"
+#~ msgstr "Sähköpostisyöte"
+
+#~ msgid "Go to homepage"
+#~ msgstr "Mene etusivulle"

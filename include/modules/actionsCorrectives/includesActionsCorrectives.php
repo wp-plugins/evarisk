@@ -16,6 +16,10 @@
 			require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/activite-new.php');
 			if(((int)$idElement) != 0)
 			{
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'hierarchie/hierarchiePostBox.php');
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'galeriePhotos/galeriePhotos.php');
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/suiviModification.php');
 				if(file_exists(EVA_TEMPLATES_PLUGIN_DIR . 'includesActionsCorrectivesPerso.php'))
 					include_once(EVA_TEMPLATES_PLUGIN_DIR . 'includesActionsCorrectivesPerso.php');
 			}

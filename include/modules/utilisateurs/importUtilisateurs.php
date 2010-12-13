@@ -2,11 +2,12 @@
 	$separatorExample = '<span class="fieldSeparator" >[fieldSeparator]</span>';
 
 	$importAction = isset($_POST['act']) ? eva_tools::IsValid_Variable($_POST['act']) : '';
+	$userRoles = isset($_POST['userRoles']) ? eva_tools::IsValid_Variable($_POST['userRoles']) : '';
+	$fieldSeparator = isset($_POST['fieldSeparator']) ? eva_tools::IsValid_Variable($_POST['fieldSeparator']) : '';
+	$sendUserMail = isset($_POST['sendUserMail']) ? eva_tools::IsValid_Variable($_POST['sendUserMail']) : '';
+
 	if($importAction != '')
 	{
-		$userRoles = isset($_POST['userRoles']) ? eva_tools::IsValid_Variable($_POST['userRoles']) : '';
-		$fieldSeparator = isset($_POST['fieldSeparator']) ? eva_tools::IsValid_Variable($_POST['fieldSeparator']) : '';
-		$sendUserMail = isset($_POST['sendUserMail']) ? eva_tools::IsValid_Variable($_POST['sendUserMail']) : '';
 
 		$userToCreate = array();
 		$importResult = '';
@@ -193,7 +194,7 @@
 
 	<!-- 	Start of file specification part	-->
 	<h3><?php echo __('Sp&eacute;cifications pour le fichier', 'evarisk'); ?></h3>
-	<?php echo __('Vous pouvez d&eacute;finir le s&eacute;parateur de champs', 'evarisk'); ?><input type="text" name="fieldSeparator" id="fieldSeparator" value="|" />
+	<?php echo __('Vous pouvez d&eacute;finir le s&eacute;parateur de champs', 'evarisk'); ?><input type="text" name="fieldSeparator" id="fieldSeparator" value=";" />
 	<br/><br/>
 	<?php echo __('Chaque ligne de d&eacute;finition devra respecter le format ci-apr&egrave;s&nbsp;:', 'evarisk'); ?>
 	<br/><span style="font-style:italic;" ><?php echo __('Les champs identifiants et email sont obligatoires. Vous n\'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent', 'evarisk'); ?></span>
@@ -206,7 +207,7 @@
 		<tr>
 			<td><?php echo __('Vous pouvez entrer directement le utilisateurs que vous souhaitez cr&eacute;er ici.<br/>Chaques utilisateur sera s&eacute;par&eacute; par un retour &agrave; la ligne', 'evarisk'); ?></td>
 			<td rowspan="2" ><?php echo __('-&nbsp;et&nbsp;/&nbsp;ou&nbsp;-', 'evarisk'); ?></td>
-			<td><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er', 'evarisk'); ?></td>
+			<td><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)', 'evarisk'); ?></td>
 		</tr>
 		<tr>
 			<td><textarea name="userLinesToCreate" cols="70" rows="12"></textarea></td>
@@ -226,7 +227,16 @@
 						}
 						foreach ($wp_roles->get_names() as $role => $roleName)
 						{
-							echo '<option value="' . $role . '" >' . $roleName . '</option>';
+							$selected = '';
+							if(($userRoles == '') && ($role == 'subscriber'))
+							{
+								$selected = 'selected = "selected"';
+							}
+							elseif(($userRoles != '') && ($role == $userRoles))
+							{
+								$selected = 'selected = "selected"';
+							}
+							echo '<option value="' . $role . '" ' . $selected . ' >' . $roleName . '</option>';
 						}
 					?>
 				</select>

@@ -19,6 +19,7 @@
 		require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
 		require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 		
 		if(((int)$idElement) == 0)
@@ -38,11 +39,16 @@
 			{	
 				$uniteTravail = UniteDeTravail::getWorkingUnit($idElement);
 				$nomUniteTravail = $uniteTravail->nom;
-				$scoreRisqueUniteTravail = UniteDeTravail::getScoreRisque($idElement);
-				$niveauRisqueUniteTravail = UniteDeTravail::getNiveauRisque($scoreRisqueUniteTravail);
-				$seuilRisqueUniteTravail = Risque::getSeuil($scoreRisqueUniteTravail);
 				$groupementPere = EvaGroupement::getGroupement($uniteTravail->id_groupement);
 				// $responsables = UniteDeTravail::getResponsables($idElement);
+
+				$scoreRisqueUniteTravail = 0;
+				$riskAndSubRisks = documentUnique::listRisk($tableElement, $idElement);
+				foreach($riskAndSubRisks as $risk)
+				{
+					$scoreRisqueUniteTravail += $risk[1]['value'];
+				}
+				$nombreRisqueUniteTravail = count($riskAndSubRisks);
 			}
 			else
 			{
@@ -136,10 +142,8 @@
 						</div>
 						<div class="mainInfos2 alignleft" style="width: 30%">
 							<p>
-								<strong>' . __('Niveau de risque', 'evarisk') . '</strong>
-							</p>
-							<p class="risqueInfo risque' . $seuilRisqueUniteTravail . 'Info risqueInfo' . TABLE_UNITE_TRAVAIL . $idElement . '">
-								' . $niveauRisqueUniteTravail . '
+								<span class="bold" >' . __('Somme des risques', 'evarisk') . '</span>&nbsp;:&nbsp;<span id="riskSum' . $tableElement . $idElement . '" >' . $scoreRisqueUniteTravail . '</span><br/>
+								<span class="bold" >' . __('Nombre de risques', 'evarisk') . '</span>&nbsp;:&nbsp;<span id="riskNb' . $tableElement . $idElement . '" >' . $nombreRisqueUniteTravail . '</span>
 							</p>
 						</div>
 					</div>

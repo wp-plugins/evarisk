@@ -284,6 +284,44 @@ class EvaGroupement {
 		}
 	}
 	
+	static function getSommeRisque($id)
+	{
+		$scoreTotal = $nbRisque = 0;
+
+		$unites = EvaGroupement::getUnitesDescendantesDuGroupement($id);
+		if($unites != null)
+		{
+			foreach($unites as $unite)
+			{
+				$nbRisque += UniteDeTravail::getNombreRisques($unite->id);
+				$scoreTotal += UniteDeTravail::getScoreRisque($unite->id);
+			}
+		}
+
+		$temp = Risque::getRisques(TABLE_GROUPEMENT, $id, "Valid");
+		if($temp != null)
+		{
+			foreach($temp as $risque)
+			{
+				$risques['"' . $risque->id . "'"][] = $risque; 
+			}
+		}
+		$nbRisque += count($temp);
+		if(isset($risques) && ($risques != null))
+		{
+			foreach($risques as $risque)
+			{
+				$scoreTotal += Risque::getScoreRisque($risque);
+			}
+		}
+
+		unset($risqueDuGroupement);$risqueDuGroupement = array();
+		$risqueDuGroupement['nbRisque'] = $nbRisque;
+		$risqueDuGroupement['scoreTotal'] = $scoreTotal;
+
+		return $risqueDuGroupement;
+	}
+	
 	static function getNiveauRisque($quotation)
 	{
 		return Risque::getNiveauRisque(Risque::getSeuil($quotation));

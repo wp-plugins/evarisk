@@ -1,6 +1,10 @@
 <?php	
-	
+	DEFINE('STANDALONEVERSION', false);
+
 	DEFINE('AFFICHAGE_PICTO_CATEGORIE', true);
+	DEFINE('AFFICHAGE_PICTO_EVAL_RISQUE', false);
+	DEFINE('TAILLE_PICTOS_MAX', '25'); // Between 25 and 48 (if px)
+
 	/**
 	 * Géolocalisation
 	 */

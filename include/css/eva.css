@@ -1,5 +1,6 @@
 img{ cursor:pointer; }
 a{ cursor:pointer; }
+.required{ color:#FF0000;	}
 
 .column-danger-code { width: 4%; }
 tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
@@ -13,10 +14,10 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 /* -- Boutons choix affichage enlarging -- */
 #choseEnlarging{display: inline; vertical-align: top; margin-bottom:12px; margin-left:10px;}
 #choseEnlarging span{margin:0 10px;}
-#choseEnlarging span#rightEnlarging {height:19px; width:32px;background:url(../../medias/images/Divers/btn_rightEnlarging.png);display:inline-block;cursor:pointer;}
+#choseEnlarging span#rightEnlarging {height:19px; width:32px;background:url(../../medias/images/Icones/Divers/btn_rightEnlarging.png);display:inline-block;cursor:pointer;}
 #choseEnlarging div#enlarging{display:inline-block;}
 #choseEnlarging div#enlarging.ui-slider-horizontal {width:100px;}
-#choseEnlarging span#leftEnlarging {height:19px; width:32px;background:url(../../medias/images/Divers/btn_leftEnlarging.png);display:inline-block;cursor:pointer;}
+#choseEnlarging span#leftEnlarging {height:19px; width:32px;background:url(../../medias/images/Icones/Divers/btn_leftEnlarging.png);display:inline-block;cursor:pointer;}
 /* -- END Boutons choix affichage enlarging -- */
 
 .titleInput{font-size:1.3em;}
@@ -49,7 +50,7 @@ div.inside{overflow: hidden; padding: 5px;}
 
 .cbColumnLarge { width: 10%;}
 .cbNbUserGroup { width: 15%;}
-
+.icon32 img{ width:36px; }
 /* -- END Listes format grille -- */
 
 /* -- Boutons SELECT EDIT --*/
@@ -187,7 +188,7 @@ div.inside{overflow: hidden; padding: 5px;}
 }
 
 .favorite-toggle {
-	background: url("../../medias/images/Divers/fav-arrow.gif") no-repeat scroll 0 -4px transparent;
+	background: url("../../medias/images/Icones/Divers/fav-arrow.gif") no-repeat scroll 0 -4px transparent;
 	height:22px;
 	position:relative;
 	right:0;
@@ -287,6 +288,10 @@ div.slideshow img
 {
 	cursor:pointer;
 }
+.caption div
+{
+	cursor:pointer;
+}
 .galeryPhoto .navigation
 {
 	text-align:center;
@@ -374,17 +379,17 @@ div.slideshow img
 .risque2Info, .Seuil_2
 {
 	color: white;
-	background-color: green;
+	background-color: orange;
 }
 .risque3Info, .Seuil_3
 {
 	color: white;
-	background-color: blue;
+	background-color: red;
 }
 .risque4Info, .Seuil_4
 {
 	color: white;
-	background-color: orange;
+	background-color: black;
 }
 .risque5Info, .Seuil_5
 {
@@ -398,15 +403,15 @@ div.slideshow img
 }
 .risque2Text
 {
-	color: green;
+	color: orange;
 }
 .risque3Text
 {
-	color: blue;
+	color: red;
 }
 .risque4Text
 {
-	color: orange;
+	color: black;
 }
 .risque5Text
 {
@@ -428,10 +433,16 @@ div.slideshow img
 	vertical-align : middle !important;
 }
 
-.columnDescriptionDanger,
-.columnCommentaireRisque
+.columnDescriptionDanger
 {
 	width: 26%;
+	padding: 1px !important;
+	vertical-align : middle !important;
+}
+
+.columnCommentaireRisque
+{
+	width: 40%;
 	padding: 1px !important;
 	vertical-align : middle !important;
 }
@@ -565,3 +576,52 @@ ul.eva_tabs_button li label
 	width: 100%;
 }
 /* -- END Upload -- */
+
+
+/* -- Actions correctives -- */
+#informationGeneralesTache .inputCategorieMere
+{
+	margin:6px 0px;
+	width:100%;
+}
+#informationGeneralesActivite .inputCategorieMere
+{
+	margin:6px 0px;
+	width:100%;
+}
+
+#needDangerCategory .ui-tabs .ui-tabs-nav {
+	padding:0px;
+}
+#needDangerCategory .ui-tabs .ui-tabs-nav li {
+	margin:0px;
+}
+#needDangerCategory .ui-tabs .ui-tabs-nav li a {
+	padding:0.1em;
+}
+#needDangerCategory .ui-tabs .ui-tabs-panel{
+	padding:0.3em;
+}
+.fieldInfo{
+	font-style:italic;
+	font-size:10px;
+}
+#date_debut_activite, #date_fin_activite{
+	clear:both;
+}
+.pointer{
+	cursor:pointer;
+}
+.ui-slider-horizontal{
+	width:95%;
+}
+#photosActionsCorrectives li.selected img{
+	border:1px solid #000000;
+}
+.pictureThumbs{	width:80%;	}
+/* -- END Actions correctives -- */
+
+
+#divVoirRisques .dataTables_paginate{
+	margin:12px 0px;
+}

@@ -15,11 +15,11 @@
 }
 
 .treeTable tr.collapsed td .expander {
-	background-image: url(../../../medias/images/Divers/toggle-expand-dark.png);
+	background-image: url(../../../medias/images/Icones/Divers/toggle-expand-dark.png);
 }
 
 .treeTable tr.expanded td .expander {
-	background-image: url(../../../medias/images/Divers/toggle-collapse-dark.png);
+	background-image: url(../../../medias/images/Icones/Divers/toggle-collapse-dark.png);
 	font-weight:bold;
 }
 
@@ -49,11 +49,11 @@
 }
 
 .treeTable tr.collapsed.selected td .expander, .treeTable tr.collapsed.accept td .expander {
-	background-image: url(../../../medias/images/Divers/toggle-expand-dark.png);
+	background-image: url(../../../medias/images/Icones/Divers/toggle-expand-dark.png);
 }
 
 .treeTable tr.expanded.selected td .expander, .treeTable tr.expanded.accept td .expander {
-	background-image: url(../../../medias/images/Divers/toggle-collapse-dark.png);
+	background-image: url(../../../medias/images/Icones/Divers/toggle-collapse-dark.png);
 }
 
 .treeTable .ui-draggable-dragging {

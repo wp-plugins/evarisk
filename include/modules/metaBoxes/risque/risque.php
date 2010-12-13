@@ -1,14 +1,15 @@
 <?php
-	require_once(EVA_CONFIG );
+	require_once(EVA_CONFIG);
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
+	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
 	require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
-	
-	
+
+
 	if(current_user_can('Evarisk_:_voir_les_risques'))
 	{
 		$postBoxTitle = __('Risques', 'evarisk');
@@ -17,7 +18,7 @@
 		add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
 		add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
 	}
-	
+
 	function getRisquesPostBoxBody($element)
 	{
 		$tableElement = $element['tableElement'];
@@ -30,29 +31,62 @@
 							$("#divFormRisque").hide();
 							$("#divDemandeAction' . TABLE_RISQUE . '").hide();
 							$("#divSuiviAction' . TABLE_RISQUE . '").hide();
+							$("#divFicheAction' . TABLE_RISQUE . '").hide();
 							$("#ongletAjouterRisque").removeClass("selected_tab");
 							$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
 							$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+							$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
 							$("#divVoirRisques").show();
 							$("#ongletVoirLesRisques").addClass("selected_tab");
 							$("#divVoirRisques").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"reloadVoirRisque", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
 							$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
 							$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
+							$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","none");
 						});
 						$("#ongletAjouterRisque").click(function(){
-							$("#divVoirRisques").hide();
-							$("#divDemandeAction' . TABLE_RISQUE . '").hide();
-							$("#divSuiviAction' . TABLE_RISQUE . '").hide();
-							$("#ongletVoirLesRisques").removeClass("selected_tab");
-							$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-							$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-							$("#divFormRisque").show();
-							$("#ongletAjouterRisque").addClass("selected_tab");
-							$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
-							$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
+							showRiskForm();
+							$("#divVariablesFormRisque").html(\'<img src="' . PICTO_LOADING . '" />\');
+							$("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":$("#methodeFormRisque").val(), "idRisque": "0"});
+							$("#historisationContainer").hide();
 						});
 					});
+					function showRiskForm(){
+						$("#divVoirRisques").hide();
+						$("#divDemandeAction' . TABLE_RISQUE . '").hide();
+						$("#divSuiviAction' . TABLE_RISQUE . '").hide();
+						$("#divFicheAction' . TABLE_RISQUE . '").hide();
+						$("#ongletVoirLesRisques").removeClass("selected_tab");
+						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+						$("#divFormRisque").show();
+						$("#ongletAjouterRisque").addClass("selected_tab");
+						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
+						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
+						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","none");
+					}
+					$("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").click(function(){
+						$("#divFormRisque").hide();
+						$("#divVoirRisques").hide();
+						$("#divDemandeAction' . TABLE_RISQUE . '").hide();
+						$("#divSuiviAction' . TABLE_RISQUE . '").show();
+						$("#divFicheAction' . TABLE_RISQUE . '").hide();
+						$("#ongletAjouterRisque").removeClass("selected_tab");
+						$("#ongletVoirLesRisques").removeClass("selected_tab");
+						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+						$("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").addClass("selected_tab");
+						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
+						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
+						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","none");
+						$("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+
+						$("#divSuiviAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+						$("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "nom":"suiviFicheAction"});
+					});
 				</script>';
+
 			$liEditionRisque = $divEditionRisque = '';
 			if(current_user_can(eva_tools::slugify('Evarisk_:_editer_les_risques')))
 			{
@@ -60,17 +94,28 @@
 					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>';
 				$divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none">' . getFormulaireCreationRisque($tableElement, $idElement) . '</div>';
 			}
+
+			$taskList = evaActivity::activityList($tableElement, $idElement);
+			$liSuiviActionCorrective = '';
+			if(count($taskList) > 0)
+			{
+				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
+			}
+
 			$corpsPostBoxRisque = $scriptRisque . '
 				<div id="message' . TABLE_RISQUE . '" class="updated fade" style="cursor:pointer; display:none;"></div>
 				<ul class="eva_tabs eva_tabs_button">
 					<li id="ongletVoirLesRisques" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('voir %s', 'evarisk'), __('les risques', 'evarisk')))) . '</label></li>' . $liEditionRisque . '
+					' . $liSuiviActionCorrective . '
 					<li id="ongletDemandeActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="3">' . ucfirst(strtolower(__('Demande d\'action corrective', 'evarisk'))) . '</label></li>
 					<li id="ongletSuiviActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>
+					<li id="ongletFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="3">' . ucfirst(strtolower(__('Fiche d\'action corrective', 'evarisk'))) . '</label></li>
 				</ul>
 				<div id="divVoirRisques" class="eva_tabs_panel">' . getVoirRisque ($tableElement, $idElement) . '</div>' . $divEditionRisque . '
 				<div id="divDemandeAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divSuiviAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
-				<div id="divAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>';
+				<div id="divAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
+				<div id="divFicheAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>';
 		}
 		else
 		{
@@ -89,11 +134,11 @@
 		}
 		echo $corpsPostBoxRisque;
 	}
-	
+
 	/*
-	 * Création de l'affichage global
-	 */
-	function getVoirRisque ($tableElement, $idElement)
+	* Création de l'affichage global
+	*/
+	function getVoirRisque($tableElement, $idElement)
 	{
 		$temp = Risque::getRisques($tableElement, $idElement, "Valid");
 		if($temp != null)
@@ -109,15 +154,11 @@
 			$idTable = 'tableRisque' . $tableElement . $idElement;
 			$titres[] = __("Quotation", 'evarisk');
 			$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
-			// $titres[] = ucfirst(strtolower(sprintf(__("description %s", 'evarisk'), __("du danger", 'evarisk'))));
 			$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
-			$titres[] = __("&Eacute;tat", 'evarisk');
 			$titres[] = __("Actions", 'evarisk');
 			$classes[] = 'columnQuotation';
 			$classes[] = 'columnNomDanger';
-			// $classes[] = 'columnDescriptionDanger';
 			$classes[] = 'columnCommentaireRisque';
-			$classes[] = 'columnEtat';
 			$classes[] = 'columnAction';
 			
 			$scriptRisque = '';
@@ -126,15 +167,18 @@
 				foreach($risques as $risque)
 				{
 					$idligne = 'risque-' . $risque[0]->id;
-					$scriptRisque = $scriptRisque . '<script type="text/javascript">
+					$scriptRisque .= '<script type="text/javascript">
 						$(document).ready(function() {
 							$("#' . $idligne . '-edit").click(function(){
 								$("#divFormRisque").html(\'<img src="' . PICTO_LOADING . '" />\');
-								$("#ongletAjouterRisque").click();
+								showRiskForm();
 								$("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": "' . $risque[0]->id . '", "idElement":"' . $idElement . '", "tableElement":"' . $tableElement . '"});
-							});
+							});';
 							
-							$("#' . $idligne . '-demandeAction").click(function(){
+					if(options::getOptionValue('action_correctives_avancees') == 'oui')
+					{
+						$scriptRisque .= 
+							'$("#' . $idligne . '-demandeAction").click(function(){
 								$("#divFormRisque").hide();
 								$("#divVoirRisques").hide();
 								$("#ongletAjouterRisque").removeClass("selected_tab");
@@ -158,9 +202,33 @@
 							
 								$("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"suiviAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
 								$("#divSuiviAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-							});
+							});';
+					}
+					else
+					{
+						$scriptRisque .= 
+							'$("#' . $idligne . '-FAC").click(function(){
+								$("#divFormRisque").hide();
+								$("#divVoirRisques").hide();
+								$("#divDemandeAction' . TABLE_RISQUE . '").hide();
+								$("#divSuiviAction' . TABLE_RISQUE . '").hide();
+								$("#divFicheAction' . TABLE_RISQUE . '").show();
+								$("#ongletAjouterRisque").removeClass("selected_tab");
+								$("#ongletVoirLesRisques").removeClass("selected_tab");
+								$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+								$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
+								$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").addClass("selected_tab");
+								$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
+								$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
+								$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
 
-							$("#' . $idligne . '-delete").click(function(){
+								$("#divFicheAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+								$("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "nom":"ficheAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
+							});';
+					}
+
+					$scriptRisque .= 
+							'$("#' . $idligne . '-delete").click(function(){
 								if(confirm("' . __('Etes vous sur de vouloir supprimer cet enregistrement?', 'evarisk') . '\r\n' . $risque[0]->nomDanger . '\r\n\t' . nl2br($risque[0]->commentaire) . '")){
 									$("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 										{
@@ -186,11 +254,13 @@
 					unset($ligneDeValeurs);
 					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
-					// $ligneDeValeurs[] = array('value' => nl2br($risque[0]->descriptionDanger), 'class' => '');
 					$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
-					$ligneDeValeurs[] = array('value' => '', 'class' => '');
-					// $ligneDeValeurs[] = array('value' => '<img id="' . $idligne . '-demandeAction" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . _c('Demande AC|AC pour action corrective', 'evarisk') . '" title="' . __('Demande d\'action corrective', 'evarisk') . '"/><img id="' . $idligne . '-suiviAction" src="' . PICTO_LTL_SUIVI_ACTION . '" alt="' . _c('Suivi AC|AC pour action corrective', 'evarisk') . '" title="' . __('Suivi des actions correctives', 'evarisk') . '"/><img id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '"/><img id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '"/>', 'class' => '');
-					$ligneDeValeurs[] = array('value' => '<img id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '"/><img id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '"/>', 'class' => '');
+					$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Fiche d\'action corrective', 'evarisk') . '" title="' . __('Fiche d\'action corrective', 'evarisk') . '"/>';
+					if(options::getOptionValue('action_correctives_avancees') == 'oui')
+					{
+						$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-demandeAction" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . _c('Demande AC|AC pour action corrective', 'evarisk') . '" title="' . __('Demande d\'action corrective', 'evarisk') . '"/><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-suiviAction" src="' . PICTO_LTL_SUIVI_ACTION . '" alt="' . _c('Suivi AC|AC pour action corrective', 'evarisk') . '" title="' . __('Suivi des actions correctives', 'evarisk') . '"/>';
+					}
+					$ligneDeValeurs[] = array('value' => $correctiveActions . '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '"/><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '"/>', 'class' => '');
 					$lignesDeValeurs[] = $ligneDeValeurs;
 				}
 			}
@@ -204,23 +274,21 @@
 					$scoreRisque = UniteDeTravail::getScoreRisque($idElement);
 					break;
 			}
-			$seuilRisque = Risque::getSeuil($scoreRisque);
-			$niveauRisque = Risque::getNiveauRisque($seuilRisque);
+
+			$scoreRisqueUniteTravail = 0;
+			$riskAndSubRisks = documentUnique::listRisk($tableElement, $idElement);
+			foreach($riskAndSubRisks as $risk)
+			{
+				$scoreRisqueUniteTravail += $risk[1]['value'];
+			}
+			$nombreRisqueUniteTravail = count($riskAndSubRisks);
 			$scriptRisque = $scriptRisque . '
 				<script type="text/javascript">
 					$(document).ready(function() {
-						$(".risqueText' . $tableElement . $idElement .'").each(function(){
-							$(this).html("' . $niveauRisque . '");
-							for(var i = 0; i <= 100; i++)
-								$(this).removeClass("risque" + i + "Text");
-							$(this).addClass("risque' . $seuilRisque . 'Text");
-						});
-						$(".risqueInfo' . $tableElement . $idElement .'").each(function(){
-							$(this).html("' . $niveauRisque . '");
-							for(var i = 0; i <= 100; i++)
-								$(this).removeClass("risque" + i + "Info");
-							$(this).addClass("risque' . $seuilRisque . 'Info");
-						});
+						$("#riskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
+						$("#riskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
+						$("#LeftRiskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
+						$("#LeftRiskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
 					});
 				</script>';
 
@@ -230,15 +298,16 @@
 						$(document).ready(function() {
 							$("#' . $idTable . '").dataTable({
 								"sPaginationType": "full_numbers", 
-								"bAutoWidth": false, 
+								"bAutoWidth": false,
+								"bInfo": false,								
 								"aoColumns": [
 									{ "bSortable": true, "sType": "numeric"},
 									{ "bSortable": true},
 									{ "bSortable": false},
-									{ "bSortable": false},
 									{ "bSortable": false }],
 								"aaSorting": [[0,"desc"]]
 							});
+							$("#' . $idTable . ' tfoot").remove();
 						});
 					</script>';
 			}
@@ -248,11 +317,11 @@
 			return $voirRisque;
 		}	
 	}
-	
+
 	/*
-	 * Création du formulaire d'ajout/édition
-	 */
-	function getFormulaireCreationRisque ($tableElement, $idElement, $idRisque = '')
+	* Création du formulaire d'ajout/édition
+	*/
+	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '')
 	{
 		if($idRisque != '')
 		{
@@ -435,29 +504,56 @@
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
 			$formRisque = $formRisque . '<br />' . '<div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput($type='textarea', $id='descriptionFormRisque', $contenuInput, $contenuAide='', $labelInput . ' : ', $nomChamps='description', $grise=false, DESCRIPTION_RISQUE_OBLIGATOIRE, $taille = 3, $classe='', $limitation='', $width='100%', $script='') . '</div>';
 		}
-		
+
+		{//Historisation du risque
+			if($idRisque != '')
+			{
+				$formRisque .= '<div class="alignright" id="historisationContainer" ><input type="checkbox" value="non" name="historisation" id="historisation" /><label for="historisation" >' . __('Ne pas afficher dans les historiques de modifications','evarisk') . '</label></div>';
+			}
+		}
+
 		{//Bouton enregistrer
 			$allVariables = MethodeEvaluation::getAllVariables();
 			$idBouttonEnregistrer = 'enregistrerFormRisque';
 			$scriptEnregistrement = '<script type="text/javascript">
 				$(document).ready(function() {	
-					$(\'#' . $idBouttonEnregistrer . '\').click(function() {
+					$(\'#' . $idBouttonEnregistrer . '\').click(function(){
 						var variables = new Array();';
 			foreach($allVariables as $variable)
 			{
-				$scriptEnregistrement = $scriptEnregistrement . '
+				$scriptEnregistrement .= '
 						variables["' . $variable->id . '"] = $("#var' . $variable->id . 'FormRisque").val();';
 			}
-			$scriptEnregistrement = $scriptEnregistrement . '
+			$scriptEnregistrement .= '
+						var historisation = true;
+						if($("#historisation").is(":checked")){
+							historisation = false;
+						}
+						var correctivActions = "";';
+			if($idRisque != '')
+			{
+				$scriptEnregistrement .= '
+						$("#correctivActionTab input:checkbox").each(function(){
+							if( $(this).is(":checked") )
+							{
+								acValue = $(this).val();
+								correctivActions += acValue + "_ac_";
+							}
+						});
+				';
+			}
+			$scriptEnregistrement .= ';
 						$("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 							"post":"true", 
 							"table":"' . TABLE_RISQUE . '", 
 							"act":"save", 
-							"tableElement":"' . $tableElement . '",
+							"tableElement":"' . $tableElement . '", 
 							"idElement":"' . $idElement . '", 
 							"idDanger":$("#dangerFormRisque").val(), 
 							"idMethode":$("#methodeFormRisque").val(), 
-							"variables":variables,
+							"histo":historisation, 
+							"actionsCorrectives":correctivActions, 
+							"variables":variables, 
 							"description":$("#descriptionFormRisque").val(), 
 							"idRisque":$("#idRisque").val()
 						});
@@ -468,7 +564,7 @@
 					});
 				});
 				</script>';
-			$formRisque = $formRisque . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+			$formRisque .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 		}
 		
 		$formRisque = $formRisque . '</div> <!--/needDangerCategory-->';
@@ -476,4 +572,5 @@
 		
 		return $formRisque;
 	}
+
 ?>

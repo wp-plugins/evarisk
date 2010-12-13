@@ -38,6 +38,12 @@ class EvaTaskTable extends EvaBaseTask
 		unset($this->idFrom);
 		unset($this->tableFrom);
 		unset($this->firstInsert);
+		unset($this->idCreateur);
+		unset($this->idResponsable);
+		unset($this->idSoldeur);
+		unset($this->idSoldeurChef);
+		unset($this->ProgressionStatus);
+		unset($this->dateSolde);
 	}
   
 	/**
@@ -102,6 +108,12 @@ class EvaTaskTable extends EvaBaseTask
 			$idFrom = (int) eva_tools::IsValid_Variable($task->getIdFrom());
 			$tableFrom = eva_tools::IsValid_Variable($task->getTableFrom());
 			$status = eva_tools::IsValid_Variable($task->getStatus());
+			$idCreateur = eva_tools::IsValid_Variable($task->getidCreateur());
+			$idResponsable = eva_tools::IsValid_Variable($task->getidResponsable());
+			$idSoldeur = eva_tools::IsValid_Variable($task->getidSoldeur());
+			$idSoldeurChef = eva_tools::IsValid_Variable($task->getidSoldeurChef());
+			$ProgressionStatus = eva_tools::IsValid_Variable($task->getProgressionStatus());
+			$dateSolde = eva_tools::IsValid_Variable($task->getdateSolde());
 		}
     {//Query creation
       $sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -140,6 +152,30 @@ class EvaTaskTable extends EvaBaseTask
       if($status != '')
       {
         $sql = $sql . " AND " . self::status . " = '" . mysql_real_escape_string($status) . "'";
+      }
+			if($idCreateur != '')
+      {
+        $sql = $sql . " AND " . self::idCreateur . " = '" . mysql_real_escape_string($idCreateur) . "'";
+      }
+			if($idSoldeur != '')
+      {
+        $sql = $sql . " AND " . self::idSoldeur . " = '" . mysql_real_escape_string($idSoldeur) . "'";
+      }
+			if($idSoldeurChef != '')
+      {
+        $sql = $sql . " AND " . self::idSoldeurChef . " = '" . mysql_real_escape_string($idSoldeurChef) . "'";
+      }
+			if($idResponsable != '')
+      {
+        $sql = $sql . " AND " . self::idResponsable . " = '" . mysql_real_escape_string($idResponsable) . "'";
+      }
+			if($ProgressionStatus != '')
+      {
+        $sql = $sql . " AND " . self::ProgressionStatus . " IN (" . ($ProgressionStatus) . ") ";
+      }
+			if($dateSolde != '')
+      {
+        $sql = $sql . " AND " . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'";
       }
     }
     

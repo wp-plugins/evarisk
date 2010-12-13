@@ -47,7 +47,7 @@ class Arborescence {
 		return $resultat->limiteDroite;
 	}
 	
-	static function  getByLimites($table, $limiteGauche, $limiteDroite, $where='1')
+	static function getByLimites($table, $limiteGauche, $limiteDroite, $where='1')
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . "  AND Status = 'Valid' AND limiteGauche >= " . $limiteGauche . " AND limiteDroite <= " . $limiteDroite);
@@ -326,6 +326,10 @@ class Arborescence {
 
 		$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
 		$i = 0;
+		if($idTable == '')
+		{
+			$idTable = $elementPere->id;
+		}
 		foreach($subElements as $subElement)
 		{
 			$sousElements[$idTable][$i]['table'] = TABLE_UNITE_TRAVAIL;

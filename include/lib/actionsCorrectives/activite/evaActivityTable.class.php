@@ -32,9 +32,17 @@ class EvaActivityTable extends evaBaseActivity
 		unset($this->startDate);
 		unset($this->finishDate);
 		unset($this->progression);
-		unset($this->cost);
+		unset($this->cout);
 		unset($this->place);
 		unset($this->firstInsert);
+		unset($this->idCreateur);
+		unset($this->idResponsable);
+		unset($this->idSoldeur);
+		unset($this->idSoldeurChef);
+		unset($this->ProgressionStatus);
+		unset($this->dateSolde);
+		unset($this->idPhotoAvant);
+		unset($this->idPhotoApres);
 	}
 	
 	/**
@@ -92,8 +100,17 @@ class EvaActivityTable extends evaBaseActivity
 			$startDate = eva_tools::IsValid_Variable($activity->getStartDate());
 			$finishDate = eva_tools::IsValid_Variable($activity->getFinishDate());
 			$place = eva_tools::IsValid_Variable($activity->getPlace());
+			$cout = (int) eva_tools::IsValid_Variable($activity->getCout());
 			$progression = (int) eva_tools::IsValid_Variable($activity->getProgression());
 			$status = eva_tools::IsValid_Variable($activity->getStatus());
+			$idCreateur = eva_tools::IsValid_Variable($activity->getidCreateur());
+			$idResponsable = eva_tools::IsValid_Variable($activity->getidResponsable());
+			$idSoldeur = eva_tools::IsValid_Variable($activity->getidSoldeur());
+			$idSoldeurChef = eva_tools::IsValid_Variable($activity->getidSoldeurChef());
+			$idPhotoAvant = eva_tools::IsValid_Variable($activity->getidPhotoAvant());
+			$idPhotoApres = eva_tools::IsValid_Variable($activity->getidPhotoApres());
+			$ProgressionStatus = eva_tools::IsValid_Variable($activity->ProgressionStatus());
+			$dateSolde = eva_tools::IsValid_Variable($activity->dateSolde());
 		}
 		{//Query creation
 			$sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -121,6 +138,10 @@ class EvaActivityTable extends evaBaseActivity
 			{
 				$sql = $sql . " AND " . self::place . " = '" . mysql_real_escape_string($place) . "'";
 			}
+			if($cout != '')
+			{
+				$sql = $sql . " AND " . self::cout . " = '" . mysql_real_escape_string($cout) . "'";
+			}
 			if($progression != 0)
 			{
 				$sql = $sql . " AND " . self::progression . " = " . mysql_real_escape_string($progression);
@@ -129,6 +150,38 @@ class EvaActivityTable extends evaBaseActivity
 			{
 				$sql = $sql . " AND " . self::status . " = '" . mysql_real_escape_string($status) . "'";
 			}
+			if($idCreateur != '')
+      {
+        $sql = $sql . " AND " . self::idCreateur . " = '" . mysql_real_escape_string($idCreateur) . "'";
+      }
+			if($idSoldeur != '')
+      {
+        $sql = $sql . " AND " . self::idSoldeur . " = '" . mysql_real_escape_string($idSoldeur) . "'";
+      }
+			if($idSoldeurChef != '')
+      {
+        $sql = $sql . " AND " . self::idSoldeurChef . " = '" . mysql_real_escape_string($idSoldeurChef) . "'";
+      }
+			if($idResponsable != '')
+      {
+        $sql = $sql . " AND " . self::idResponsable . " = '" . mysql_real_escape_string($idResponsable) . "'";
+      }
+			if($ProgressionStatus != '')
+      {
+        $sql = $sql . " AND " . self::ProgressionStatus . " = '" . mysql_real_escape_string($ProgressionStatus) . "'";
+      }
+			if($dateSolde != '')
+      {
+        $sql = $sql . " AND " . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'";
+      }			
+			if($idPhotoAvant != '')
+      {
+        $sql = $sql . " AND " . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "'";
+      }			
+			if($idPhotoApres != '')
+      {
+        $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
+      }
 		}
 		
 		$wpdbActivities = $wpdb->get_results($sql);

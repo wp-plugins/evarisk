@@ -18,11 +18,19 @@ class EvaBaseActivity
 	const description = 'description';
 	const startDate = 'dateDebut';
 	const finishDate = 'dateFin';
-	const cost = 'cout';
+	const cout = 'cout';
 	const place = 'lieu';
 	const progression = 'avancement';
 	const status = 'Status';
 	const firstInsert = 'firstInsert';
+	const idCreateur = 'idCreateur';
+	const idResponsable = 'idResponsable';
+	const idSoldeur = 'idSoldeur';
+	const idSoldeurChef = 'idSoldeurChef';
+	const ProgressionStatus = 'ProgressionStatus';
+	const dateSolde = 'dateSolde';
+	const idPhotoAvant = 'idPhotoAvant';
+	const idPhotoApres = 'idPhotoApres';
 
 /*
  * Class variable define
@@ -57,9 +65,9 @@ class EvaBaseActivity
 	 */
 	var $place;
 	/**
-	 * @var string The activity cost
+	 * @var string The activity cout
 	 */
-	var $cost;
+	var $cout;
 	/**
 	 * @var string The activity progression
 	 */
@@ -72,6 +80,38 @@ class EvaBaseActivity
 	 * @var string The activity insert date
 	 */
 	var $firstInsert;
+	/**
+	 * @var string The task creator id
+	 */
+	var $idCreateur;
+	/**
+	 * @var string The person in charge of the task
+	 */
+	var $idResponsable;
+	/**
+	 * @var string The task maker
+	 */
+	var $idSoldeur;
+	/**
+	 * @var string The task maker
+	 */
+	var $idSoldeurChef;
+	/**
+	 * @var string The progression status
+	 */
+	var $ProgressionStatus;
+	/**
+	 * @var string The date the action was mark as done
+	 */
+	var $dateSolde;
+	/**
+	 * @var string picture before action
+	 */
+	var $idPhotoAvant;
+	/**
+	 * @var string picture after action
+	 */
+	var $idPhotoApres;
 	
 /*
  *	Constructeur et accesseurs
@@ -85,12 +125,19 @@ class EvaBaseActivity
 	 * @param date $startDate The start date to set
 	 * @param date $finishDate The finish date to set
 	 * @param string $place The place to set
-	 * @param float $cost The cost to set
+	 * @param float $cout The cout to set
 	 * @param int $progression The progression to set
 	 * @param string $status The status to set
 	 * @param date $firstInsert The insert date to set
+	 * @param integer $idCreateur The task creator identifier
+	 * @param integer $idResponsable The identifier of the person in charge of the task
+	 * @param integer $idSoldeur The task maker
+	 * @param integer $idPhotoAvant The task maker
+	 * @param integer $idPhotoApres The task maker
+	 * @param string $ProgressionStatus The progression status
+	 * @param date $dateSolde The date the action was mark as done
 	 */
-	function EvaBaseactivity($id = null, $relatedTaskId = null, $name = '',	$description = '', $startDate = '', $finishDate = '', $place = '', $cost = '', $progression = 0, $status = 'Valid', $firstInsert = '')
+	function EvaBaseactivity($id = null, $relatedTaskId = null, $name = '',	$description = '', $startDate = '', $finishDate = '', $place = '', $cout = '', $progression = 0, $status = 'Valid', $firstInsert = '', $idCreateur ='', $idResponsable ='', $idSoldeur ='', $idSoldeurChef ='',  $idPhotoAvant ='',  $idPhotoApres ='', $ProgressionStatus ='', $dateSolde ='')
 	{
 		$this->id = $id;
 		$this->relatedTaskId = $relatedTaskId;
@@ -99,10 +146,17 @@ class EvaBaseActivity
 		$this->startDate = $startDate;
 		$this->finishDate = $finishDate;
 		$this->place = $place;
-		$this->cost = $cost;
+		$this->cout = $cout;
 		$this->progression = $progression;
 		$this->status = $status;
-		$this->status = $status;
+		$this->idCreateur = $idCreateur;
+		$this->idResponsable = $idResponsable;
+		$this->idSoldeur = $idSoldeur;
+		$this->idSoldeurChef = $idSoldeurChef;
+		$this->idPhotoAvant = $idPhotoAvant;
+		$this->idPhotoApres = $idPhotoApres;
+		$this->ProgressionStatus = $ProgressionStatus;
+		$this->dateSolde = $dateSolde;
 	}
 	
 	/**
@@ -250,21 +304,21 @@ class EvaBaseActivity
 	}
 
 	/**
-	 * Returns the activity cost
-	 * @return float The cost
+	 * Returns the activity cout
+	 * @return float The cout
 	 */
-	function getCost()
+	function getCout()
 	{
-		return $this->cost;
+		return $this->cout;
 	}
 
 	/**
-	 * Set the activity cost
-	 * @param float $cost The cost to set
+	 * Set the activity cout
+	 * @param float $cout The cout to set
 	 */
-	function setCost($cost)
+	function setCout($cout)
 	{
-		$this->cost = $cost;
+		$this->cout = $cout;
 	}
 
 	/**
@@ -302,6 +356,150 @@ class EvaBaseActivity
 	{
 		$this->firstInsert = $firstInsert;
 	}
+
+	/**
+	 * Returns the action creator id
+	 * @return integer The action creator id
+	 */
+	function getidCreateur()
+	{
+		return $this->idCreateur;
+	}
+
+	/**
+	 * Returns the action creator id
+	 * @param integer $idCreateur The action creator id
+	 */
+	function setidCreateur($idCreateur)
+	{
+		$this->idCreateur = $idCreateur;
+	}
+	
+	/**
+	 * Returns the action maker id
+	 * @return integer The action maker id
+	 */
+	function getidSoldeur()
+	{
+		return $this->idSoldeur;
+	}
+
+	/**
+	 * Returns the action maker id
+	 * @param integer $idSoldeur The action maker id
+	 */
+	function setidSoldeur($idSoldeur)
+	{
+		$this->idSoldeur = $idSoldeur;
+	}
+	
+	/**
+	 * Returns the action maker id
+	 * @return integer The action maker id
+	 */
+	function getidSoldeurChef()
+	{
+		return $this->idSoldeurChef;
+	}
+
+	/**
+	 * Returns the action maker id
+	 * @param integer $idSoldeurChef The action maker id
+	 */
+	function setidSoldeurChef($idSoldeurChef)
+	{
+		$this->idSoldeurChef = $idSoldeurChef;
+	}
+
+	/**
+	 * Returns the identifier of the person in charge of the action
+	 * @return integer The identifier of the person in charge of the action
+	 */
+	function getidResponsable()
+	{
+		return $this->idResponsable;
+	}
+
+	/**
+	 * Returns the identifier of the person in charge of the action
+	 * @param integer $idResponsable The identifier of the person in charge of the action
+	 */
+	function setidResponsable($idResponsable)
+	{
+		$this->idResponsable = $idResponsable;
+	}
+
+	/**
+	 * Returns the progression status, if the action is done or not
+	 * @return string The progression status
+	 */
+	function getProgressionStatus()
+	{
+		return $this->ProgressionStatus;
+	}
+
+	/**
+	 * Returns The progression status of the action
+	 * @param string $ProgressionStatus The progression status of the action
+	 */
+	function setProgressionStatus($ProgressionStatus)
+	{
+		$this->ProgressionStatus = $ProgressionStatus;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getdateSolde()
+	{
+		return $this->dateSolde;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setdateSolde($dateSolde)
+	{
+		$this->dateSolde = $dateSolde;
+	}
+	
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getidPhotoAvant()
+	{
+		return $this->idPhotoAvant;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setidPhotoAvant($idPhotoAvant)
+	{
+		$this->idPhotoAvant = $idPhotoAvant;
+	}
+	
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getidPhotoApres()
+	{
+		return $this->idPhotoApres;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setidPhotoApres($idPhotoApres)
+	{
+		$this->idPhotoApres = $idPhotoApres;
+	}
 	
 /*
  * Others methods
@@ -320,9 +518,17 @@ class EvaBaseActivity
 		$this->setStartDate($wpdbActivity->dateDebut);
 		$this->setFinishDate($wpdbActivity->dateFin);
 		$this->setPlace($wpdbActivity->lieu);
+		$this->setCout($wpdbActivity->cout);
 		$this->setProgression($wpdbActivity->avancement);
 		$this->setStatus($wpdbActivity->Status);
 		$this->setFirstInsert($wpdbActivity->firstInsert);
+		$this->setidCreateur($wpdbActivity->idCreateur);
+		$this->setidSoldeur($wpdbActivity->idSoldeur);
+		$this->setidResponsable($wpdbActivity->idResponsable);
+		$this->setProgressionStatus($wpdbActivity->ProgressionStatus);
+		$this->setdateSolde($wpdbActivity->dateSolde);
+		$this->setidPhotoAvant($wpdbActivity->idPhotoAvant);
+		$this->setidPhotoApres($wpdbActivity->idPhotoApres);
 	}
 
 	/**
@@ -341,9 +547,17 @@ class EvaBaseActivity
 					self::startDate => $this->getStartDate(),
 					self::finishDate => $this->getFinishDate(),
 					self::place => $this->getPlace(),
+					self::cout => $this->getcout(),
 					self::progression => $this->getProgression(),
 					self::status => $this->getStatus(),
-					self::firstInsert => $this->getFirstInsert()
+					self::idCreateur => $this->getidCreateur(),
+					self::idSoldeur => $this->getidSoldeur(),
+					self::idPhotoAvant => $this->getidPhotoAvant(),
+					self::idPhotoApres => $this->getidPhotoApres(),
+					self::idResponsable => $this->getidResponsable(),
+					self::firstInsert => $this->getFirstInsert(),
+					self::ProgressionStatus => $this->ProgressionStatus(),
+					self::dateSolde => $this->dateSolde()
 				)
 			);
 	}

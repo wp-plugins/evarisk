@@ -2,8 +2,7 @@
 /*
  * @version v5.0
  */
- 
- 
+
 //Postbox definition
 $postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
 $postBoxId = 'postBoxGeneralInformation';
@@ -25,6 +24,9 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$contenuInputDescription = $tache->getDescription();
 		$idProvenance = $tache->getIdFrom();
 		$tableProvenance = $tache->getTableFrom();
+		$contenuInputResponsable = $tache->getidResponsable();
+		$contenuInputRealisateur = $tache->getidSoldeur();
+		$ProgressionStatus = $tache->getProgressionStatus();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 		$idPere = $tacheMere->id;
@@ -34,6 +36,9 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 	{
 		$contenuInputTitre = '';
 		$contenuInputDescription = '';
+		$contenuInputResponsable = '';
+		$contenuInputRealisateur = '';
+		$ProgressionStatus = '';
 		$idProvenance = 0;
 		$tableProvenance = '';
 		$idPere = $arguments['idPere'];
@@ -60,6 +65,34 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$idTitre = "nom_tache";
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
+	{//Responsable
+		$contenuAideDescription = "";
+		$labelInput = __("Responsable", 'evarisk') . ' : ';
+		$id = "responsable_tache";
+		$nomChamps = "responsable_tache";		
+
+		$tmpListeUtilisateurs = $listeUtilisateurs = $tabValue = $tabDisplay = $selectedUser = array();
+		$tmpListeUtilisateurs = evaUser::getCompleteUserList();
+		$listeUtilisateurs[0] = '';
+		$tabValue[0] = '0';
+		$tabDisplay[0] = __('Choisissez...', 'evarisk');
+		$i=1;
+		foreach($tmpListeUtilisateurs as $idUtilisateur => $informationsUtilisateurs)
+		{
+			$listeUtilisateurs[] = $informationsUtilisateurs;
+			if($idUtilisateur > 0)
+			{
+				$tabValue[$i] = $idUtilisateur;
+				$tabDisplay[$i] = $informationsUtilisateurs['user_lastname'] . ' ' . $informationsUtilisateurs['user_firstname'];
+				if($idUtilisateur == $contenuInputResponsable)
+				{
+					$selectedUser = $informationsUtilisateurs;
+				}
+				$i++;
+			}
+		}
+		$tache_new .= '<br/>' . EvaDisplayInput::afficherComboBox($listeUtilisateurs, $id, $labelInput, $nomChamps, '', $selectedUser, $tabValue, $tabDisplay);
+	}
 	{//Description
 		$contenuAideDescription = "";
 		$labelInput = __("Description", 'evarisk') . ' : ';
@@ -70,40 +103,135 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 	}
 	{//Bouton Enregistrer
 		$idBouttonEnregistrer = 'saveTache';
-		$scriptEnregistrement = '<script type="text/javascript">
+
+		/*	Check if the user in charge of the action and the maker are mandatory */
+		$idResponsableIsMandatory = options::getOptionValue('responsable_Tache_Obligatoire');
+
+		$scriptEnregistrementSave = '<script type="text/javascript">
 			$(document).ready(function() {				
-				$(\'#' . $idBouttonEnregistrer . '\').click(function() {
-					if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+				$("#' . $idBouttonEnregistrer . '").click(function() {
+					if($("#' . $idTitre . '").is(".form-input-tip"))
 					{
-						document.getElementById(\'' . $idTitre . '\').value=\'\';
-						$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+						document.getElementById("' . $idTitre . '").value="";
+						$("#' . $idTitre . '").removeClass("form-input-tip");
 					}
+
+					idResponsable = $("#responsable_tache").val();
+					idResponsableIsMandatory = "false";
+					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
+
 					valeurActuelle = $("#' . $idTitre . '").val();
           if(valeurActuelle == "")
           {
             alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
+					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
+					{
+						alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
+					}
           else
-          {            
-            $(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\': \'true\', 
-              \'table\': \'' . TABLE_TACHE . '\',
-              \'act\': $(\'#actTache\').val(),
-              \'id\': $(\'#idTache\').val(),
-              \'nom_tache\': $(\'#' . $idTitre . '\').val(),
-              \'idPere\': $(\'#idPereTache\').val(),
-              \'description\': $(\'#descriptionTache\').val(),
-              \'affichage\': $(\'#affichageTache\').val(),
-              \'idsFilAriane\': $(\'#idsFilArianeTache\').val(),
-              \'idProvenance\': $(\'#idProvenanceTache\').val(),
-              \'tableProvenance\': $(\'#tableProvenanceTache\').val()
+          {
+            $("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+              "table": "' . TABLE_TACHE . '",
+              "act": $("#actTache").val(),
+              "id": $("#idTache").val(),
+              "nom_tache": $("#' . $idTitre . '").val(),
+              "idPere": $("#idPereTache").val(),
+              "responsable_tache": $("#responsable_tache").val(),
+              "description": $("#descriptionTache").val(),
+              "affichage": $("#affichageTache").val(),
+              "idsFilAriane": $("#idsFilArianeTache").val(),
+              "idProvenance": $("#idProvenanceTache").val(),
+              "tableProvenance": $("#tableProvenanceTache").val()
             });
           }
 				});
 			});
 			</script>';
-		$tache_new = $tache_new . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+	}	
+	{//Bouton Solder
+		$idBoutton = 'taskDone';
+
+		$scriptEnregistrementDone = '<script type="text/javascript">
+			$(document).ready(function() {				
+				$("#' . $idBoutton . '").click(function() {
+					if($("#' . $idTitre . '").is(".form-input-tip"))
+					{
+						document.getElementById("' . $idTitre . '").value="";
+						$("#' . $idTitre . '").removeClass("form-input-tip");
+					}
+
+					idResponsable = $("#responsable_tache").val();
+					idResponsableIsMandatory = "false";
+					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
+
+					valeurActuelle = $("#' . $idTitre . '").val();
+          if(valeurActuelle == "")
+          {
+            alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
+          }
+					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
+					{
+						alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
+					}
+          else if(confirm(convertAccentToJS("' . __('En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments \'en-dessous\'. Etes vous sur?', 'evarisk') . '")))
+          {
+						$("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+            $("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+              "table": "' . TABLE_TACHE . '",
+              "act": "taskDone",
+              "id": $("#idTache").val(),
+              "nom_tache": $("#' . $idTitre . '").val(),
+              "idPere": $("#idPereTache").val(),
+              "responsable_tache": $("#responsable_tache").val(),
+              "description": $("#descriptionTache").val(),
+              "affichage": $("#affichageTache").val(),
+              "idsFilAriane": $("#idsFilArianeTache").val(),
+              "idProvenance": $("#idProvenanceTache").val(),
+              "tableProvenance": $("#tableProvenanceTache").val()
+            });
+          }
+				});
+			});
+			</script>';
 	}
-	$tache_new = $tache_new . EvaDisplayInput::fermerForm($idForm);
+	{//Boutons
+		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || (options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui'))
+		{
+			$tache_new .= 
+				'<div class="alignright" id="TaskSaveButton" >';
+
+			if(($saveOrUpdate != 'save') && (($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress')))
+			{
+			$tache_new .= 
+					EvaDisplayInput::afficherInput('button', $idBoutton, __('Solder la tache', 'evarisk'), null, '', $idBoutton, false, true, '', 'button-primary', '', '', $scriptEnregistrementDone, 'left');
+			}
+			elseif($saveOrUpdate == 'update')
+			{
+			$tache_new .= 
+					'<div style="float:left;" id="TaskSaveButton" >
+						<br/>
+						<div class="alignright button-primary" >' . 
+							__('Cette t&acirc;che est sold&eacute;e', 'evarisk') . 
+						'</div>
+					</div>';
+			}
+
+			$tache_new .= 
+					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') . 
+				'</div>
+				<script type="text/javascript" >$("#TaskSaveButton").children("br").remove();</script>';
+		}
+		else
+		{
+			$tache_new .= 
+				'<div class="alignright button-primary" id="TaskSaveButton" >' . 
+					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . 
+				'</div>';
+		}
+	}
+	$tache_new .= EvaDisplayInput::fermerForm($idForm);
 	echo $tache_new;
 }
+
 ?>

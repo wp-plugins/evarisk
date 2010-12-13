@@ -603,7 +603,7 @@ class evaUserEvaluatorGroup
 		'<script type="text/javascript">
 			$(document).ready(function() {
 				$(\'#groupesEvaluateursNonAssocies\').change(function() {
-					$("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+					$("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 					groupesEvaluateurAAssocier = $(\'#groupesEvaluateursNonAssocies\').val();
 
 					$("#listeGroupesEvaluateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
@@ -619,7 +619,7 @@ class evaUserEvaluatorGroup
 
 			function deleteGroupeEvaluateurBind(idGroupe, idBind)
 			{
-				$("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" />\');
+				$("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 				$("#listeGroupesEvaluateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post": "true",
 					"table": "' . TABLE_EVA_EVALUATOR_GROUP_BIND . '",
@@ -644,7 +644,7 @@ class evaUserEvaluatorGroup
 			unset($valeurs);
 			$idLigne = $tableElement . $idElement . 'groupeEvaluateur' . $groupeAffecte->id_group;
 			$idCbLigne = 'cb_' . $idLigne;
-			$valeurs[] = array('value'=>'<img src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteGroupeEvaluateurBind(\'' . $groupeAffecte->id_group . '\', \'' . $groupeAffecte->id . '\');" />');
+			$valeurs[] = array('value'=>'<img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteGroupeEvaluateurBind(\'' . $groupeAffecte->id_group . '\', \'' . $groupeAffecte->id . '\');" />');
 			$valeurs[] = array('value'=>$groupInformation[0]->evaluator_group_name);
 			$valeurs[] = array('value'=>$groupInformation[0]->evaluator_group_description);
 			$valeurs[] = array('value'=>$groupInformation[0]->TOTALUSERNUMBER);

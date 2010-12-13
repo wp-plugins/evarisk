@@ -119,6 +119,7 @@ class EvaDisplayInput {
 				$script = $script . '$(\'#' . $id . '\').datepicker("option", "changeMonth", true);';
 				$script = $script . '$(\'#' . $id . '\').datepicker("option", "changeYear", true);';
 				$script = $script . '$(\'#' . $id . '\').datepicker("option", "navigationAsDateFormat", true);';
+				$script = $script . '$(\'#ui-datepicker-div\').hide();';
 				break;
 		}
 		$script = $script . '

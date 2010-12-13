@@ -3,7 +3,7 @@ $messageInfo = '';
 
 $_POST['table'] = TABLE_TACHE;
 $titrePage = __("Actions Correctives", 'evarisk');
-$icone = EVA_ACTIONS_CORRECTIVES_ICON;
+$icone = PICTO_LTL_ACTION;
 $titreIcone = "Icone actions correctives";
 $altIcon = "Icone AC";
 $titreFilAriane= __("Actions correctives", 'evarisk');
@@ -19,3 +19,16 @@ include_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );
     $('#choixAffichage').hide();
   });
 </script>
+<?php
+	if(isset($_GET['elt']) && ($_GET['elt'] != ''))
+	{
+		echo
+			'<script type="text/javascript">
+				$(document).ready(function(){
+					setTimeout(function(){
+						$("#' . $_GET['elt'] . '").click();
+					},3000);
+				})
+			</script>';
+	}
+?>

@@ -34,7 +34,7 @@ function evarisk_creationTables()
 			$wpdb->query($sql);
 		}
 	
-		{// Various tabes
+		{// Various tables
 			// On vérifie si la table photo n'existe pas
 			if( $wpdb->get_var("show tables like '" . TABLE_PHOTO . "'") != TABLE_PHOTO) {
 				// On construit la requete SQL de création de table
@@ -625,6 +625,328 @@ function evarisk_creationTables()
 				$wpdb->query($sql);
 			}
 		}
+
+		{//	Eav model tables
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ENTITY . "'") != TABLE_ENTITY) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ENTITY . " (
+						`entity_type_id` smallint(5) unsigned NOT NULL auto_increment,
+						`entity_type_code` varchar(50) collate utf8_unicode_ci NOT NULL default '',
+						`entity_model` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`attribute_model` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`entity_table` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+						`value_table_prefix` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+						`default_attribute_set_id` smallint(5) unsigned NOT NULL default '0',
+						PRIMARY KEY  (`entity_type_id`),
+						KEY `entity_name` (`entity_type_code`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+					INSERT INTO `wp_eav__entity_type` (`entity_type_id`, `entity_type_code`, `entity_model`, `attribute_model`, `entity_table`, `value_table_prefix`, `default_attribute_set_id`) VALUES(1, 'eva_users', 'evarisk/users', '', 'users', 'users_', 1);";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ENTITY_ATTRIBUTE_LINK . "'") != TABLE_ENTITY_ATTRIBUTE_LINK) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ENTITY_ATTRIBUTE_LINK . " (
+						`entity_attribute_id` int(10) unsigned NOT NULL auto_increment,
+						`entity_type_id` smallint(5) unsigned NOT NULL default '0',
+						`attribute_set_id` smallint(5) unsigned NOT NULL default '0',
+						`attribute_group_id` smallint(5) unsigned NOT NULL default '0',
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`sort_order` smallint(6) NOT NULL default '0',
+						PRIMARY KEY  (`entity_attribute_id`),
+						UNIQUE KEY `attribute_group_id` (`attribute_group_id`,`attribute_id`),
+						KEY `attribute_set_id_3` (`attribute_set_id`,`sort_order`),
+						KEY `FK_EAV_ENTITY_ATTRIVUTE_ATTRIBUTE` (`attribute_id`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ATTRIBUTE_SET . "'") != TABLE_ATTRIBUTE_SET) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ATTRIBUTE_SET . " (
+						`attribute_set_id` smallint(5) unsigned NOT NULL auto_increment,
+						`entity_type_id` smallint(5) unsigned NOT NULL default '0',
+						`attribute_set_name` varchar(255) character set utf8 collate utf8_swedish_ci NOT NULL default '',
+						`sort_order` smallint(6) NOT NULL default '0',
+						PRIMARY KEY  (`attribute_set_id`),
+						UNIQUE KEY `entity_type_id` (`entity_type_id`,`attribute_set_name`),
+						KEY `entity_type_id_2` (`entity_type_id`,`sort_order`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+				INSERT INTO " . TABLE_ENTITY . " (`attribute_set_id`, `entity_type_id`, `attribute_set_name`, `sort_order`) VALUES(1, 1, 'evariskUserDefault', 1);";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ATTRIBUTE_OPTION_VALUE . "'") != TABLE_ATTRIBUTE_OPTION_VALUE) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ATTRIBUTE_OPTION_VALUE . " (
+						`value_id` int(10) unsigned NOT NULL auto_increment,
+						`option_id` int(10) unsigned NOT NULL default '0',
+						`value` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+						PRIMARY KEY  (`value_id`),
+						KEY `FK_ATTRIBUTE_OPTION_VALUE_OPTION` (`option_id`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Attribute option values';";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ATTRIBUTE_OPTION . "'") != TABLE_ATTRIBUTE_OPTION) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ATTRIBUTE_OPTION . " (
+						`option_id` int(10) unsigned NOT NULL auto_increment,
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`sort_order` smallint(5) unsigned NOT NULL default '0',
+						PRIMARY KEY  (`option_id`),
+						KEY `FK_ATTRIBUTE_OPTION_ATTRIBUTE` (`attribute_id`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Attributes option (for source model)';";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ATTRIBUTE_GROUP . "'") != TABLE_ATTRIBUTE_GROUP) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ATTRIBUTE_GROUP . " (
+						`attribute_group_id` smallint(5) unsigned NOT NULL auto_increment,
+						`attribute_set_id` smallint(5) unsigned NOT NULL default '0',
+						`attribute_group_name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+						`sort_order` smallint(6) NOT NULL default '0',
+						`default_id` smallint(5) unsigned default '0',
+						PRIMARY KEY  (`attribute_group_id`),
+						UNIQUE KEY `attribute_set_id` (`attribute_set_id`,`attribute_group_name`),
+						KEY `attribute_set_id_2` (`attribute_set_id`,`sort_order`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+					INSERT INTO " . TABLE_ATTRIBUTE_GROUP . " (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`) VALUES(1, 1, 'user_profile', 1, 1);";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_ATTRIBUTE . "'") != TABLE_ATTRIBUTE) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_ATTRIBUTE . " (
+						`attribute_id` smallint(5) unsigned NOT NULL auto_increment,
+						`entity_type_id` smallint(5) unsigned NOT NULL default '0',
+						`attribute_status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+						`attribute_code` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+						`attribute_model` varchar(255) collate utf8_unicode_ci default NULL,
+						`backend_model` varchar(255) collate utf8_unicode_ci default NULL,
+						`backend_type` enum('static','datetime','decimal','int','text','varchar') collate utf8_unicode_ci NOT NULL default 'static',
+						`backend_table` varchar(255) collate utf8_unicode_ci default NULL,
+						`frontend_model` varchar(255) collate utf8_unicode_ci default NULL,
+						`frontend_input` varchar(50) collate utf8_unicode_ci default NULL,
+						`frontend_label` varchar(255) collate utf8_unicode_ci default NULL,
+						`frontend_class` varchar(255) collate utf8_unicode_ci default NULL,
+						`source_model` varchar(255) collate utf8_unicode_ci default NULL,
+						`is_global` tinyint(1) unsigned NOT NULL default '1',
+						`is_visible` tinyint(1) unsigned NOT NULL default '1',
+						`is_required` tinyint(1) unsigned NOT NULL default '0',
+						`is_user_defined` tinyint(1) unsigned NOT NULL default '0',
+						`default_value` text collate utf8_unicode_ci,
+						`is_searchable` tinyint(1) unsigned NOT NULL default '0',
+						`is_filterable` tinyint(1) unsigned NOT NULL default '0',
+						`is_comparable` tinyint(1) unsigned NOT NULL default '0',
+						`is_visible_on_front` tinyint(1) unsigned NOT NULL default '0',
+						`is_html_allowed_on_front` tinyint(1) unsigned NOT NULL default '0',
+						`is_unique` tinyint(1) unsigned NOT NULL default '0',
+						`is_filterable_in_search` tinyint(1) unsigned NOT NULL default '0',
+						`used_for_sort_by` tinyint(1) unsigned NOT NULL default '0',
+						`is_configurable` tinyint(1) unsigned NOT NULL default '1',
+						`apply_to` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`position` int(11) NOT NULL,
+						`note` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`is_visible_in_advanced_search` tinyint(1) unsigned NOT NULL default '0',
+						PRIMARY KEY  (`attribute_id`),
+						UNIQUE KEY `entity_type_id` (`entity_type_id`,`attribute_code`),
+						KEY `IDX_USED_FOR_SORT_BY` (`entity_type_id`,`used_for_sort_by`),
+						KEY `IDX_USED_IN_PRODUCT_LISTING` (`entity_type_id`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+		}
+		{//	Eav users tables
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EAV_USER_DATETIME . "'") != TABLE_EAV_USER_DATETIME) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EAV_USER_DATETIME . " (
+						`value_id` int(11) NOT NULL auto_increment,
+						`entity_type_id` smallint(8) unsigned NOT NULL default '0',
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`entity_id` int(10) unsigned NOT NULL default '0',
+						`value` datetime NOT NULL default '0000-00-00 00:00:00',
+						PRIMARY KEY  (`value_id`),
+						UNIQUE KEY `IDX_ATTRIBUTE_VALUE` (`entity_id`,`attribute_id`),
+						KEY `FK_CUSTOMER_DATETIME_ENTITY_TYPE` (`entity_type_id`),
+						KEY `FK_CUSTOMER_DATETIME_ATTRIBUTE` (`attribute_id`),
+						KEY `FK_CUSTOMER_DATETIME_ENTITY` (`entity_id`),
+						KEY `IDX_VALUE` (`entity_id`,`attribute_id`,`value`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EAV_USER_DECIMAL . "'") != TABLE_EAV_USER_DECIMAL) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EAV_USER_DECIMAL . " (
+						`value_id` int(11) NOT NULL auto_increment,
+						`entity_type_id` smallint(8) unsigned NOT NULL default '0',
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`entity_id` int(10) unsigned NOT NULL default '0',
+						`value` decimal(12,4) NOT NULL default '0.0000',
+						PRIMARY KEY  (`value_id`),
+						UNIQUE KEY `IDX_ATTRIBUTE_VALUE` (`entity_id`,`attribute_id`),
+						KEY `FK_CUSTOMER_DECIMAL_ENTITY_TYPE` (`entity_type_id`),
+						KEY `FK_CUSTOMER_DECIMAL_ATTRIBUTE` (`attribute_id`),
+						KEY `FK_CUSTOMER_DECIMAL_ENTITY` (`entity_id`),
+						KEY `IDX_VALUE` (`entity_id`,`attribute_id`,`value`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EAV_USER_INT . "'") != TABLE_EAV_USER_INT) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EAV_USER_INT . " (
+						`value_id` int(11) NOT NULL auto_increment,
+						`entity_type_id` smallint(8) unsigned NOT NULL default '0',
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`entity_id` int(10) unsigned NOT NULL default '0',
+						`value` int(11) NOT NULL default '0',
+						PRIMARY KEY  (`value_id`),
+						UNIQUE KEY `IDX_ATTRIBUTE_VALUE` (`entity_id`,`attribute_id`),
+						KEY `FK_CUSTOMER_INT_ENTITY_TYPE` (`entity_type_id`),
+						KEY `FK_CUSTOMER_INT_ATTRIBUTE` (`attribute_id`),
+						KEY `FK_CUSTOMER_INT_ENTITY` (`entity_id`),
+						KEY `IDX_VALUE` (`entity_id`,`attribute_id`,`value`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EAV_USER_TEXT . "'") != TABLE_EAV_USER_TEXT) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EAV_USER_TEXT . " (
+						`value_id` int(11) NOT NULL auto_increment,
+						`entity_type_id` smallint(8) unsigned NOT NULL default '0',
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`entity_id` int(10) unsigned NOT NULL default '0',
+						`value` text collate utf8_unicode_ci NOT NULL,
+						PRIMARY KEY  (`value_id`),
+						UNIQUE KEY `IDX_ATTRIBUTE_VALUE` (`entity_id`,`attribute_id`),
+						KEY `FK_CUSTOMER_TEXT_ENTITY_TYPE` (`entity_type_id`),
+						KEY `FK_CUSTOMER_TEXT_ATTRIBUTE` (`attribute_id`),
+						KEY `FK_CUSTOMER_TEXT_ENTITY` (`entity_id`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EAV_USER_VARCHAR . "'") != TABLE_EAV_USER_VARCHAR) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EAV_USER_VARCHAR . " (
+						`value_id` int(11) NOT NULL auto_increment,
+						`entity_type_id` smallint(8) unsigned NOT NULL default '0',
+						`attribute_id` smallint(5) unsigned NOT NULL default '0',
+						`entity_id` int(10) unsigned NOT NULL default '0',
+						`value` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+						PRIMARY KEY  (`value_id`),
+						UNIQUE KEY `IDX_ATTRIBUTE_VALUE` (`entity_id`,`attribute_id`),
+						KEY `FK_CUSTOMER_VARCHAR_ENTITY_TYPE` (`entity_type_id`),
+						KEY `FK_CUSTOMER_VARCHAR_ATTRIBUTE` (`attribute_id`),
+						KEY `FK_CUSTOMER_VARCHAR_ENTITY` (`entity_id`),
+						KEY `IDX_VALUE` (`entity_id`,`attribute_id`,`value`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+		}
+		{//	Users groups tables
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP . "'") != TABLE_EVA_USER_GROUP) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EVA_USER_GROUP . " (
+						`user_group_id` smallint(5) unsigned NOT NULL auto_increment,
+						`user_group_status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+						`user_group_name` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`user_group_description` text collate utf8_unicode_ci NOT NULL,
+						PRIMARY KEY  (`user_group_id`),
+						KEY `user_group_status` (`user_group_status`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP_DETAILS . "'") != TABLE_EVA_USER_GROUP_DETAILS) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EVA_USER_GROUP_DETAILS . " (
+						`user_group_id` smallint(5) unsigned NOT NULL,
+						`user_id` bigint(20) unsigned NOT NULL,
+						PRIMARY KEY  (`user_group_id`,`user_id`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+		}
+		{//	Users roles tables
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP_ROLES_DETAILS . "'") != TABLE_EVA_USER_GROUP_ROLES_DETAILS) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EVA_USER_GROUP_ROLES_DETAILS . " (
+						`user_group_id` int(11) unsigned NOT NULL,
+						`eva_role_id` int(11) unsigned NOT NULL,
+						PRIMARY KEY  (`user_group_id`,`eva_role_id`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Liaison entre groupes d''utilisateurs et roles (profil)';";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+
+			/*	We check that table exists, if it's not the case we create it	*/
+			if( $wpdb->get_var("show tables like '" . TABLE_EVA_ROLES . "'") != TABLE_EVA_ROLES) {
+				// On construit la requete SQL de création de table
+				$sql = 
+					"CREATE TABLE IF NOT EXISTS " . TABLE_EVA_ROLES . " (
+						`eva_role_id` int(11) unsigned NOT NULL auto_increment,
+						`eva_role_status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+						`eva_role_label` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`eva_role_name` varchar(255) collate utf8_unicode_ci NOT NULL,
+						`eva_role_description` text collate utf8_unicode_ci NOT NULL,
+						`eva_role_capabilities` text collate utf8_unicode_ci NOT NULL,
+						PRIMARY KEY  (`eva_role_id`),
+						KEY `eva_role_status` (`eva_role_status`),
+						KEY `eva_role_label` (`eva_role_label`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Définition des roles pour evarisk';";
+				// Execution de la requete
+				dbDelta($sql);
+			}
+		}
 	}
 	else
 	{//Version 1 : cas particulier -- formulaire inscription
@@ -750,7 +1072,7 @@ function evarisk_creationTables()
 			$sqlCreationTable = 'CREATE TABLE ' . TABLE_LIAISON_USER_GROUPS . ' (
 					id_group INT( 10 ) NOT NULL COMMENT "Group Identifier",
 					table_element VARCHAR ( 255 ) NOT NULL COMMENT "Element data base table",
-					id_element INT( 10 ) NOT NULL COMMENT "Element identefier in the table",
+					id_element INT( 10 ) NOT NULL COMMENT "Element identifier in the table",
 					date DATETIME NOT NULL COMMENT "Date of the record",
 					Status ENUM( \'Valid\', \'Moderated\', \'Deleted\' ) NOT NULL DEFAULT \'Valid\' COMMENT "Bind status"
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT = "Table containing the bind between users group and others tables";';
@@ -853,7 +1175,7 @@ function evarisk_creationTables()
 					id int(10) unsigned NOT NULL auto_increment,
 					id_group int(10) NOT NULL COMMENT 'Group Identifier',
 					table_element varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Element data base table',
-					id_element int(10) NOT NULL COMMENT 'Element identefier in the table',
+					id_element int(10) NOT NULL COMMENT 'Element identifier in the table',
 					dateAffectation datetime NOT NULL COMMENT 'Affectation date for the evaluator group to a element',
 					affectationUserId bigint(20) NOT NULL COMMENT 'The user identifier that affect a evaluator group to an element',
 					dateDesaffectation datetime NOT NULL COMMENT 'Desaffectation date for the evaluator group to a element',
@@ -896,7 +1218,7 @@ function evarisk_creationTables()
 			evarisk_insertions();
 		}
 		if(EvaVersion::getVersion('base_evarisk') <= 19)
-		{//Rajout des champs d'affectation des taches et des actions à un responsable; Ajout de la table de liaison entre les taches et les historiques des risques
+		{//Rajout des champs d'affectation des taches et des actions à un responsable;
 		/*	Renomme la table activite en table action	*/
 			$sql = "RENAME TABLE " . TABLE_AC_ACTION . " TO " . TABLE_ACTIVITE . " ;";
 			$wpdb->query($sql);
@@ -925,18 +1247,160 @@ function evarisk_creationTables()
 			$wpdb->query($sql);
 			$sql = "ALTER TABLE " . TABLE_AVOIR_VALEUR . " ADD INDEX ( idEvaluateur ) ;";
 			$wpdb->query($sql);
-
-		/*	Ajout des champs definissant les responsables des differentes etapes de la realisation des activites */
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 20)
+		{//Ajout de la table de liaison entre les taches et les historiques des risques
+		/*	Ajout dela table de liaison entre une tache et un element du logiciel */
 			$sql = 
-				"CREATE TABLE " . TABLE_LIAISON_TACHE_RISQUE . " (
+				"CREATE TABLE " . TABLE_LIAISON_TACHE_ELEMENT . " (
 					id INT( 10 ) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-					status ENUM( 'valid', 'moderated', 'deleted' ) NOT NULL DEFAULT 'valid'
+					status ENUM( 'valid', 'moderated', 'deleted' ) NOT NULL DEFAULT 'valid',
+					date datetime NOT NULL,
 					id_tache INT( 10 ) NOT NULL,
-					id_risque INT( 10 ) NOT NULL,
-					KEY Status (id_tache),
-					KEY Status (id_risque)
+					id_element INT( 10 ) NOT NULL,
+					table_element CHAR( 255 ) NOT NULL,
+					KEY status (status),
+					KEY id_tache (id_tache),
+					KEY id_element (id_element),
+					KEY table_element (table_element)
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 			$wpdb->query($sql);
+
+		/*	Modification des types de champs pour les options (Rajout des options createur et responsable par défaut) */
+			$sql = 
+				"ALTER TABLE " . TABLE_OPTION . " CHANGE nom nom CHAR( 128 ) NOT NULL , CHANGE valeur valeur CHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 21)
+		{//Refonte de la notion des acteurs pour les actions correctives
+		/*	Suppression des champs "realisateur" des tables des actions correctives	*/
+			$sql = "ALTER TABLE " . TABLE_TACHE . " CHANGE idRealisateur idSoldeur INT(10) NOT NULL COMMENT 'The identifier of the user who close the task' ;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_ACTIVITE . " CHANGE idRealisateur idSoldeur INT(10) NOT NULL COMMENT 'The identifier of the user who close the action' ;";
+			$wpdb->query($sql);
+
+		/*	Ajout de l'identifiant de la personne qui a soldé les taches supérieur	*/	
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD idSoldeurChef INT(10) NOT NULL COMMENT 'The identifier of the user who close the task by closing parent task' AFTER idSoldeur ;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD INDEX ( idSoldeurChef );";
+			$wpdb->query($sql);
+		/*	Ajout de l'identifiant de la personne qui a soldé les taches supérieur	*/	
+			$sql = "ALTER TABLE " . TABLE_ACTIVITE . " ADD idSoldeurChef INT(10) NOT NULL COMMENT 'The identifier of the user who close the action by closing parent task' AFTER idSoldeur ;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_ACTIVITE . " ADD INDEX ( idSoldeurChef );";
+			$wpdb->query($sql);
+
+		/*	Ajout du statut solde et solde par le niveau superieur */
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD ProgressionStatus ENUM( 'inProgress', 'Done', 'DoneByChief' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'inProgress' COMMENT 'Activity status'; ";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_ACTIVITE . " ADD ProgressionStatus ENUM( 'inProgress', 'Done', 'DoneByChief' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'inProgress' COMMENT 'Activity status'; ";
+			$wpdb->query($sql);
+
+		/*	Ajout de la date ou la tache ou l'action a ete soldée */
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD dateSolde datetime NOT NULL; ";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_ACTIVITE . " ADD dateSolde datetime NOT NULL; ";
+			$wpdb->query($sql);
+
+		/*	Ajout de la table de liaison entre un utilisateur et un element du logiciel */
+			$sql = 
+				"CREATE TABLE " . TABLE_LIAISON_USER_ELEMENT . " (
+					id int(10) NOT NULL auto_increment,
+					status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					date_affectation datetime NOT NULL,
+					id_attributeur bigint(20) NOT NULL,
+					date_desAffectation datetime NOT NULL,
+					id_desAttributeur bigint(20) NOT NULL,
+					id_user bigint(20) NOT NULL,
+					id_element int(10) NOT NULL,
+					table_element char(255) collate utf8_unicode_ci NOT NULL,
+					PRIMARY KEY  (id),
+					UNIQUE KEY uniqueKey (status,id_user,id_element,table_element),
+					KEY status (status),
+					KEY id_user (id_user),
+					KEY id_element (id_element),
+					KEY table_element (table_element)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($sql);
+
+		/*	Ajout de la table de suivi de la progression d'une action */
+			$sql = 
+				"CREATE TABLE " . TABLE_ACTIVITE_SUIVI . " (
+					id int(10) unsigned NOT NULL auto_increment,
+					status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					date datetime NOT NULL,
+					id_user bigint(20) NOT NULL,
+					id_element int(10) NOT NULL,
+					table_element varchar(255) collate utf8_unicode_ci NOT NULL,
+					commentaire varchar(255) collate utf8_unicode_ci NOT NULL,
+					PRIMARY KEY  (id),
+					KEY status (status),
+					KEY id_user (id_user),
+					KEY id_element (id_element)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Allows to follow an action progress';";
+			$wpdb->query($sql);
+
+			/*	Ajout de la notion de moment dans la liaison entre une action corrective et un élément*/
+			$sql = "ALTER TABLE " . TABLE_LIAISON_TACHE_ELEMENT . " ADD  wasLinked ENUM(  'before',  'after' ) NOT NULL DEFAULT  'before' COMMENT  'Allows to know if the action was link to the element before or after it realisation' AFTER  status; ";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_LIAISON_TACHE_ELEMENT . " ADD  ADD INDEX (  wasLinked ); ";
+			$wpdb->query($sql);
+
+			/*	Changement des clés et index de la table d'évaluation des risques	*/
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " DROP INDEX  id_risque_2 , ADD UNIQUE  unique_key_evaluation (  id_risque ,  id_variable ,  date );";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " ADD id INT( 10 ) NOT NULL FIRST;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " ADD INDEX ( id );";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " CHANGE  id  id INT( 10 ) NOT NULL AUTO_INCREMENT;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " ADD PRIMARY KEY ( id );";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " DROP INDEX ( id );";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " ADD id_evaluation INT( 10 ) NOT NULL AFTER  id;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_AVOIR_VALEUR . " ADD INDEX ( id_evaluation );";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE  " . TABLE_LIAISON_TACHE_ELEMENT . " ADD UNIQUE uniqueKey ( wasLinked , id_tache , id_element , table_element ) ;";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 22)
+		{
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 23)
+		{//Ajout de l'option actions correctives avancées + Ajout des champs photos avant et après dans la table des actions corrective
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 24)
+		{//Ajout de l'option actions correctives avancées + Ajout des champs photos avant et après dans la table des actions corrective
+			$sql = "ALTER TABLE  " . TABLE_ACTIVITE . " ADD idPhotoAvant INT( 10 ) UNSIGNED NOT NULL AFTER idSoldeurChef;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_ACTIVITE . " ADD INDEX ( idPhotoAvant );";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE  " . TABLE_ACTIVITE . " ADD idPhotoApres INT( 10 ) UNSIGNED NOT NULL AFTER idPhotoAvant;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_ACTIVITE . " ADD INDEX ( idPhotoApres );";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 25)
+		{//Insertion des utilisateurs affectés a une unité de travail ou un groupement dans la table de liaison commune
 
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();

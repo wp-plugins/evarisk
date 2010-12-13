@@ -173,7 +173,7 @@ class eva_tools
 			$moisAnnee['09']['nom'] = __('Septembre', 'evarisk');
 			$moisAnnee['10']['nom'] = __('Octobre', 'evarisk');
 			$moisAnnee['11']['nom'] = __('Novembre', 'evarisk');
-			$moisAnnee['12']['nom'] = __('D&eactue;cembre', 'evarisk');
+			$moisAnnee['12']['nom'] = __('D&eacute;cembre', 'evarisk');
 			$elementDate = explode("-",$date); 
 			$annee = $elementDate[0];
 			$mois = $elementDate[1];

@@ -18,4 +18,28 @@ echo EvaDisplayInput::afficherInput('hidden', 'menu', 'gestiongrptut', '', NULL,
 
 require_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );	
 
+	if(isset($_GET['elt']) && ($_GET['elt'] != ''))
+	{
+		echo
+			'<script type="text/javascript">
+				$(document).ready(function(){
+					$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+					setTimeout(function(){
+						$("#' . $_GET['elt'] . '").click();
+					},3000);
+				})
+			</script>';
+	}
+	if(isset($_GET['risk']) && ($_GET['risk'] != ''))
+	{
+		echo
+			'<script type="text/javascript">
+				$(document).ready(function(){
+					setTimeout(function(){
+						$("#' . $_GET['risk'] . '").click();
+					},4000);
+				})
+			</script>';
+	}
+
 ?>

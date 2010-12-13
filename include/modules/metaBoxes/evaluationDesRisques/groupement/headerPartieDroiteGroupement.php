@@ -20,6 +20,7 @@
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
 		require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 
 		if(((int)$idElement) == 0)
@@ -38,11 +39,16 @@
 			{	
 				$groupement = EvaGroupement::getGroupement($idElement);
 				$nomGroupement = $groupement->nom;
-				$scoreRisqueGroupement = EvaGroupement::getScoreRisque($idElement);
-				$niveauRisqueGroupement = EvaGroupement::getNiveauRisque($scoreRisqueGroupement);
-				$seuilRisqueGroupement = Risque::getSeuil($scoreRisqueGroupement);
 				$groupementPere = Arborescence::getPere($tableElement, $groupement);
 				// $responsables[] = '';
+
+				$scoreRisqueGroupement = 0;
+				$riskAndSubRisks = documentUnique::listRisk($tableElement, $idElement);
+				foreach($riskAndSubRisks as $risk)
+				{
+					$scoreRisqueGroupement += $risk[1]['value'];
+				}
+				$nombreRisqueGroupement = count($riskAndSubRisks);
 			}
 			else
 			{
@@ -136,12 +142,10 @@
 								' . $texteResponsable . ' : <strong>' . $nomResponsables . '</strong><br />
 							</p>
 						</div>
-						<div class="mainInfos2 alignleft" style="width: 30%">
+						<div class="alignleft" style="width: 30%">
 							<p>
-								<strong>' . __('Niveau de risque', 'evarisk') . '</strong>
-							</p>
-							<p class="risqueInfo risque' . $seuilRisqueGroupement . 'Info risqueInfo' . TABLE_GROUPEMENT . $idElement . '">
-								' . $niveauRisqueGroupement . '
+								<span class="bold" >' . __('Somme des risques', 'evarisk') . '</span>&nbsp;:&nbsp;<span id="riskSum' . $tableElement . $idElement . '" >' . $scoreRisqueGroupement . '</span><br/>
+								<span class="bold" >' . __('Nombre de risques', 'evarisk') . '</span>&nbsp;:&nbsp;<span id="riskNb' . $tableElement . $idElement . '" >' . $nombreRisqueGroupement . '</span>
 							</p>
 						</div>
 					</div>

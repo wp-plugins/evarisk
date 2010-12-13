@@ -428,7 +428,7 @@ function evarisk_insertions($insertions = null)
 		}
 		case 17:
 		{
-			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, isMainPicture, idDestination, tableDestination, photo) VALUES('', 'valid', 'yes', 1, 'wp_eva__methode', 'medias/uploads/wp_eva__methode/1/tabcoeff.gif');";
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, isMainPicture, idDestination, tableDestination, photo) VALUES('', 'valid', 'yes', 1, '" . TABLE_METHODE . "', 'medias/uploads/wp_eva__methode/1/tabcoeff.gif');";
 			$wpdb->query($sql);
 			$sql = "UPDATE " . TABLE_DUER . " SET groupesUtilisateursAffectes = groupesUtilisateurs ";
 			$wpdb->query($sql);
@@ -443,6 +443,84 @@ function evarisk_insertions($insertions = null)
 		case 19:
 		{
 			$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET idEvaluateur = '1' ";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 20:
+		{
+			$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET Status = 'Moderated' WHERE Status != 'Valid' ";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'responsable_Tache_Obligatoire', 'non', 'Valid')";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'responsable_Action_Obligatoire', 'non', 'Valid');";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 21:
+		{
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'possibilite_Modifier_Tache_Soldee', 'non', 'Valid');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'possibilite_Modifier_Action_Soldee', 'non', 'Valid');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'avertir_Solde_Action_Non_100', 'oui', 'Valid');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'avertir_Solde_Tache_Ayant_Action_Non_100', 'oui', 'Valid');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'affecter_uniquement_tache_soldee_a_un_risque', 'oui', 'Valid');";
+			$wpdb->query($sql);
+
+			$sql = "SELECT GROUP_CONCAT( id ) as LIST FROM " . TABLE_AVOIR_VALEUR . " GROUP BY id_risque, DATE";
+			$listToUpdate = $wpdb->get_results($sql);
+			foreach($listToUpdate as $listID)
+			{
+				$sql = "SELECT MAX(id_evaluation) + 1 AS newId FROM " . TABLE_AVOIR_VALEUR;
+				$newId = $wpdb->get_row($sql);
+
+				$sql = $wpdb->prepare("UPDATE " . TABLE_AVOIR_VALEUR . " SET id_evaluation = '%d' WHERE id IN (" . $listID->LIST . ")", $newId->newId);
+				$wpdb->query($sql);
+			}
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 22:
+		{
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = NULL;";
+			$wpdb->query($sql);
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 1 WHERE valeur = 0;";
+			$wpdb->query($sql);
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 2 WHERE valeur = 48;";
+			$wpdb->query($sql);
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 3 WHERE valeur = 51;";
+			$wpdb->query($sql);
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 4 WHERE valeur = 80;";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 23:
+		{
+			$sql = "INSERT INTO  " . TABLE_OPTION . " (id, nom, valeur, Status) VALUES ('', 'action_correctives_avancees', 'non', 'Valid');";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 24:
+		{
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 25:
+		{
+			$sql = $wpdb->prepare("INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " SELECT '', status, date, 1, '', 0, id_user, id_element, table_element FROM " . TABLE_LIAISON_USER_EVALUATION);
 			$wpdb->query($sql);
 
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));

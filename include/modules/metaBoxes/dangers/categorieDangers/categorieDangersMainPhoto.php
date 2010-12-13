@@ -20,7 +20,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php' );
 			'<script type="text/javascript">
 				function reloadcontainer()
 				{
-					$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 					$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
@@ -30,7 +30,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php' );
 				}
 				function showGallery()
 				{
-					$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					$("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 					$("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",

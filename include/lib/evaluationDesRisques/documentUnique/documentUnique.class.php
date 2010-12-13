@@ -69,6 +69,32 @@ class documentUnique
 		return $lignesDeValeurs;
 	}
 
+	static function listRisk($tableElement, $idElement)
+	{
+		$lignesDeValeurs = array();
+
+		switch($tableElement)
+		{
+			case TABLE_GROUPEMENT:
+				/*	Recuperation des unites du groupement	*/
+				$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($idElement);
+				if(is_array($listeUnitesDeTravail))
+				{
+					foreach($listeUnitesDeTravail as $key => $uniteDefinition)
+					{
+						/*	Recuperation des risques associes a l'unite	*/
+						$lignesDeValeurs = array_merge($lignesDeValeurs, documentUnique::listeRisquePourElement($uniteDefinition['table'], $uniteDefinition['value']->id));
+					}
+				}
+			break;
+		}
+
+		/*	Recuperation des risques associes au groupement	*/
+		$lignesDeValeurs = array_merge($lignesDeValeurs, documentUnique::listeRisquePourElement($tableElement, $idElement));
+
+		return $lignesDeValeurs;
+	}
+
 	/**
 	*	Output the risqs summary for an element
 	*
@@ -82,23 +108,10 @@ class documentUnique
 	static function bilanRisque($tableElement, $idElement, $typeBilan = 'ligne', $outPut = 'html')
 	{
 		unset($titres, $classes, $idLignes, $lignesDeValeurs);
-		$lignesDeValeurs = array();
 
 		if($tableElement == TABLE_GROUPEMENT)
 		{
-			/*	Recuperation des unites du groupement	*/
-			$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($idElement);
-			if(is_array($listeUnitesDeTravail))
-			{
-				foreach($listeUnitesDeTravail as $key => $uniteDefinition)
-				{
-					/*	Recuperation des risques associes a l'unite	*/
-					$lignesDeValeurs = array_merge($lignesDeValeurs, documentUnique::listeRisquePourElement($uniteDefinition['table'], $uniteDefinition['value']->id));
-				}
-			}
-
-			/*	Recuperation des risques associes au groupement	*/
-			$lignesDeValeurs = array_merge($lignesDeValeurs, documentUnique::listeRisquePourElement($tableElement, $idElement));
+			$lignesDeValeurs = documentUnique::listRisk($tableElement, $idElement);
 
 			if($outPut == 'html')
 			{
@@ -606,7 +619,10 @@ class documentUnique
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
 				}
 			}
-			krsort($listeRisque[SEUIL_BAS_FAIBLE]);krsort($listeRisque[SEUIL_BAS_APLANIFIER]);krsort($listeRisque[SEUIL_BAS_ATRAITER]);krsort($listeRisque[SEUIL_BAS_INACCEPTABLE]);
+			if(is_array($listeRisque[SEUIL_BAS_FAIBLE]))krsort($listeRisque[SEUIL_BAS_FAIBLE]);
+			if(is_array($listeRisque[SEUIL_BAS_APLANIFIER]))krsort($listeRisque[SEUIL_BAS_APLANIFIER]);
+			if(is_array($listeRisque[SEUIL_BAS_ATRAITER]))krsort($listeRisque[SEUIL_BAS_ATRAITER]);
+			if(is_array($listeRisque[SEUIL_BAS_INACCEPTABLE]))krsort($listeRisque[SEUIL_BAS_INACCEPTABLE]);
 		}
 
 		return $listeRisque;
@@ -741,7 +757,19 @@ class documentUnique
 		}
 
 		{	/*	G&eacute;n&eacute;ration de la r&eacute;f&eacute;rence du document unique	*/
-			$referenceDUER = substr($informationDocumentUnique['emetteur'], 0, 1) . str_replace('-', '', $informationDocumentUnique['dateCreation']) . '-V' . $revisionDocumentUnique;
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT:
+					$element = 'gpt';
+				break;
+				case TABLE_UNITE_TRAVAIL:
+					$element = 'ut';
+				break;
+				default:
+					$element = $tableElement;
+				break;
+			}
+			$referenceDUER = substr($informationDocumentUnique['emetteur'], 0, 1) . str_replace('-', '', $informationDocumentUnique['dateCreation']) . '-' . $element . $idElement . '-V' . $revisionDocumentUnique;
 		}
 
 		{	/*	G&eacute;n&eacute;ration du nom du document unique si aucun nom n'a &eacute;t&eacute; envoy&eacute;	*/
@@ -1220,16 +1248,36 @@ class documentUnique
 		}
 		elseif($outputType == 'odt')
 		{
+			$documentUniqueParam['#NOMENTREPRISE#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#NOMENTREPRISE#']));
 			$odf->setVars('nomEntreprise', $documentUniqueParam['#NOMENTREPRISE#']);
+
+			$documentUniqueParam['#NOMPRENOMEMETTEUR#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMEMETTEUR#']));
 			$odf->setVars('emetteurDUER', $documentUniqueParam['#NOMPRENOMEMETTEUR#']);
+
+			$documentUniqueParam['#NOMPRENOMDESTINATAIRE#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMDESTINATAIRE#']));
 			$odf->setVars('destinataireDUER', $documentUniqueParam['#NOMPRENOMDESTINATAIRE#']);
+
+			$documentUniqueParam['#TELFIXE#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#TELFIXE#']));
 			$odf->setVars('telephone', $documentUniqueParam['#TELFIXE#']);
+
+			$documentUniqueParam['#TELMOBILE#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#TELMOBILE#']));
 			$odf->setVars('portable', $documentUniqueParam['#TELMOBILE#']);
+
+			$documentUniqueParam['#TELFAX#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#TELFAX#']));
 			$odf->setVars('fax', $documentUniqueParam['#TELFAX#']);
 
 			$odf->setVars('dateGeneration', $documentUniqueParam['#DATE#']);
 			$finAudit = '';if(($documentUniqueParam['#FINAUDIT#'] != '') && ($documentUniqueParam['#FINAUDIT#'] != $documentUniqueParam['#DEBUTAUDIT#'])){$finAudit = __(' au ', 'evarisk') . $documentUniqueParam['#FINAUDIT#'];}
 			$odf->setVars('dateAudit', $documentUniqueParam['#DEBUTAUDIT#'] . $finAudit);
+
+			$documentUniqueParam['#DISPODESPLANS#'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#']));
 			$odf->setVars('dispoDesPlans', $documentUniqueParam['#DISPODESPLANS#']);
 
 			// $odf->setVars('methodologie', $documentUniqueParam['#METHODOLOGIE#']);
@@ -1243,7 +1291,11 @@ class documentUnique
 				$userGroup = $odf->setSegment('groupesUtilisateurs');
 				foreach($listeUserGroupe AS $element)
 				{
+					$element['userGroupName'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($element['userGroupName']));
 					$element['userGroupName'] = str_replace('&nbsp;', ' ', $element['userGroupName']);
+					$element['userGroupDescription'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($element['userGroupDescription']));
 					$element['userGroupDescription'] = str_replace('&nbsp;', ' ', $element['userGroupDescription']);
 					$userGroup->nomGroupe(eva_tools::slugify_noaccent($element['userGroupName']));
 					$userGroup->descriptionGroupe(eva_tools::slugify_noaccent($element['userGroupDescription']));
@@ -1261,6 +1313,9 @@ class documentUnique
 				$userGroupAffected = $odf->setSegment('groupesUtilisateursAffectes');
 				foreach($listeUserGroupe AS $element)
 				{
+					$element['nomElement'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($element['nomElement']));
+
 					$userGroupAffected->nomElement($element['nomElement']);
 					$userGroupAffected->listeGroupes(eva_tools::slugify_noaccent($element['listeGroupes']));
 					$userGroupAffected->merge();
@@ -1274,112 +1329,124 @@ class documentUnique
 
 				/*	Risques faible	*/
 				$risque = $odf->setSegment('risq');
-				foreach($listeRisque[SEUIL_BAS_FAIBLE] AS $elements) {
-					foreach($elements AS $element) {
-						$element['nomElement'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
-						$element['quotationRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
-						$element['nomDanger'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
-						$element['commentaireRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+				if( is_array($listeRisque[SEUIL_BAS_FAIBLE]) )
+				{
+					foreach($listeRisque[SEUIL_BAS_FAIBLE] AS $elements) {
+						foreach($elements AS $element) {
+							$element['nomElement'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+							$element['quotationRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+							$element['nomDanger'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+							$element['commentaireRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
 
-						// $risque->nomElement($element['nomElement']);
-						// $risque->quotationRisque($element['quotationRisque']);
-						// $risque->nomDanger($element['nomDanger']);
-						// $risque->commentaireRisque($element['commentaireRisque']);
-						
-						$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
-						$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
-						$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
-						$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
+							// $risque->nomElement($element['nomElement']);
+							// $risque->quotationRisque($element['quotationRisque']);
+							// $risque->nomDanger($element['nomDanger']);
+							// $risque->commentaireRisque($element['commentaireRisque']);
+							
+							$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
+							$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
+							$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
+							$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
 
-						$risque->merge();
+							$risque->merge();
+						}
 					}
 				}
 				$odf->mergeSegment($risque);
 
 				/*	Risques a planifier	*/
 				$risque = $odf->setSegment('risq48');
-				foreach($listeRisque[SEUIL_BAS_APLANIFIER] AS $elements) {
-					foreach($elements AS $element) {
-						$element['nomElement'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
-						$element['quotationRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
-						$element['nomDanger'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
-						$element['commentaireRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+				if( is_array($listeRisque[SEUIL_BAS_APLANIFIER]) )
+				{
+					foreach($listeRisque[SEUIL_BAS_APLANIFIER] AS $elements) {
+						foreach($elements AS $element) {
+							$element['nomElement'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+							$element['quotationRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+							$element['nomDanger'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+							$element['commentaireRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
 
-						// $risque->nomElement($element['nomElement']);
-						// $risque->quotationRisque($element['quotationRisque']);
-						// $risque->nomDanger($element['nomDanger']);
-						// $risque->commentaireRisque($element['commentaireRisque']);
-						
-						$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
-						$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
-						$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
-						$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
+							// $risque->nomElement($element['nomElement']);
+							// $risque->quotationRisque($element['quotationRisque']);
+							// $risque->nomDanger($element['nomDanger']);
+							// $risque->commentaireRisque($element['commentaireRisque']);
+							
+							$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
+							$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
+							$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
+							$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
 
-						$risque->merge();
+							$risque->merge();
+						}
 					}
 				}
 				$odf->mergeSegment($risque);
 
 				/*	Risques a traiter	*/
 				$risque = $odf->setSegment('risq51');
-				foreach($listeRisque[SEUIL_BAS_ATRAITER] AS $elements) {
-					foreach($elements AS $element) {
-						$element['nomElement'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
-						$element['quotationRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
-						$element['nomDanger'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
-						$element['commentaireRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+				if( is_array($listeRisque[SEUIL_BAS_ATRAITER]) )
+				{
+					foreach($listeRisque[SEUIL_BAS_ATRAITER] AS $elements) {
+						foreach($elements AS $element) {
+							$element['nomElement'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+							$element['quotationRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+							$element['nomDanger'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+							$element['commentaireRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
 
-						// $risque->nomElement($element['nomElement']);
-						// $risque->quotationRisque($element['quotationRisque']);
-						// $risque->nomDanger($element['nomDanger']);
-						// $risque->commentaireRisque($element['commentaireRisque']);
-						
-						$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
-						$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
-						$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
-						$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
+							// $risque->nomElement($element['nomElement']);
+							// $risque->quotationRisque($element['quotationRisque']);
+							// $risque->nomDanger($element['nomDanger']);
+							// $risque->commentaireRisque($element['commentaireRisque']);
+							
+							$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
+							$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
+							$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
+							$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
 
-						$risque->merge();
+							$risque->merge();
+						}
 					}
 				}
 				$odf->mergeSegment($risque);
 
 				/*	Risques innacceptable	*/
 				$risque = $odf->setSegment('risq80');
-				foreach($listeRisque[SEUIL_BAS_INACCEPTABLE] AS $elements) {
-					foreach($elements AS $element) {
-						$element['nomElement'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
-						$element['quotationRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
-						$element['nomDanger'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
-						$element['commentaireRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+				if( is_array($listeRisque[SEUIL_BAS_INACCEPTABLE]) )
+				{
+					foreach($listeRisque[SEUIL_BAS_INACCEPTABLE] AS $elements) {
+						foreach($elements AS $element) {
+							$element['nomElement'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+							$element['quotationRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+							$element['nomDanger'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+							$element['commentaireRisque'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
 
-						// $risque->nomElement($element['nomElement']);
-						// $risque->quotationRisque($element['quotationRisque']);
-						// $risque->nomDanger($element['nomDanger']);
-						// $risque->commentaireRisque($element['commentaireRisque']);
-						
-						$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
-						$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
-						$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
-						$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
-				
-						$risque->merge();
+							// $risque->nomElement($element['nomElement']);
+							// $risque->quotationRisque($element['quotationRisque']);
+							// $risque->nomDanger($element['nomDanger']);
+							// $risque->commentaireRisque($element['commentaireRisque']);
+							
+							$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
+							$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
+							$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
+							$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
+					
+							$risque->merge();
+						}
 					}
 				}
 				$odf->mergeSegment($risque);
@@ -1391,9 +1458,13 @@ class documentUnique
 				$listeGroupement = documentUnique::readBilanParUnite($bilanParUnite, '', 'print');
 
 				$risqueParFiche = $odf->setSegment('risqueFiche');
-				foreach($listeGroupement AS $element) {
+				foreach($listeGroupement AS $element){
+					$element['nomElement'] = str_replace('<br />', "
+	", eva_tools::slugify_noaccent($element['nomElement']));
+
 					$risqueParFiche->nomElement($element['nomElement']);
 					$risqueParFiche->quotationTotale($element['quotationTotale']);
+
 					$risqueParFiche->merge();
 				}
 				$odf->mergeSegment($risqueParFiche);
