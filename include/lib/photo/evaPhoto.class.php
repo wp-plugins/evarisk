@@ -581,16 +581,18 @@ class EvaPhoto {
 					});
 					$("#thumb' . $idUpload . '").parent().show();
 				});
-			</script>';
-			if(($photoDefaut!='') && (is_file($photoDefaut)))
+			</script>
+			<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >';
+			if(($photoDefaut!='') && (is_file(str_replace(EVA_UPLOADS_PLUGIN_URL, EVA_UPLOADS_PLUGIN_DIR, $photoDefaut))))
 			{
 			$formulaireUpload .= 
-			'<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >
+			'
 				<a href="' . $photoDefaut . '" target="mainPicture" ><img id="thumb' . $idUpload . '" src="' . $photoDefaut . '" class="" /></a>
-			</div>';
+			';
 			}
 			$formulaireUpload .= 
-			'<div id="' . $idUpload . '" class="divUpload">		
+			'</div>
+			<div id="' . $idUpload . '" class="divUpload">		
 				<noscript>			
 					<p>Please enable JavaScript to use file uploader.</p>
 					<!-- or put a simple form for upload here -->
