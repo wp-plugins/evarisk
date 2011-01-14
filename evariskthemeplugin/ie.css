@@ -1,0 +1,16 @@
+pre {
+	word-wrap:break-word; /* Internet Explorer 5.5+ */
+}
+a span, 
+#submitbox #submit, 
+#searchbox .button, 
+#subscribe li a {
+	cursor:hand;
+}
+#menus li span { height:54px; }
+
+#menus li.actu:hover { background:url(img/li_on.jpg) 60% 40px no-repeat !important; }
+#menus li.references:hover { background:url(img/li_on.jpg) 60% 40px no-repeat !important; }
+#menus li.forum:hover { background:url(img/li_on.jpg) 60% 40px no-repeat !important; }
+#menus li.contact:hover { background:url(img/li_on.jpg) 60% 40px no-repeat !important; }
+#menus li.faq:hover { background:url(img/li_on.jpg) 60% 40px no-repeat !important; }
