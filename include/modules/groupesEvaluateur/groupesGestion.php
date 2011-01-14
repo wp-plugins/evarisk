@@ -34,7 +34,7 @@
 	<div id="evaGroupMessage" class="updated fade below-h2" >
 		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>error_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
-	<script type="text/javascript" >setTimeout(function(){$('#evaGroupMessage').remove()},5000);</script>
+	<script type="text/javascript" >setTimeout(function(){evarisk('#evaGroupMessage').remove()},5000);</script>
 <?php
 	}
 
@@ -78,7 +78,7 @@
 		<tr>
 			<td>
 				<input type="hidden" id="groupUserList" name="groupUserList" value="<?php echo $groupUserList; ?>" />
-				<script type="text/javascript">var PICTO_DELETE = '<?php echo PICTO_DELETE; ?>'</script>
+				<script type="text/javascript">var PICTO_DELETE = '<?php echo PICTO_DELETE_VSMALL; ?>'</script>
 				<div id="usersManagement">
 					<h1 class="ui-widget-header" ><?php echo __('Liste des utilisateurs disponible','evarisk'); ?></h1>
 					<div id="usersList">
@@ -145,11 +145,11 @@
 											$id = $value;
 											if((isset($user_info->last_name)) && ($user_info->last_name != null) && (isset($user_info->first_name)) && ($user_info->first_name != null))
 											{
-												echo '<li id="' . $id . '_added" >' . $user_info->last_name . " " . $user_info->first_name . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . PICTO_DELETE . '" alt="delete" /></li>';
+												echo '<li id="' . $id . '_added" >' . $user_info->last_name . " " . $user_info->first_name . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . PICTO_DELETE_VSMALL . '" alt="delete" /></li>';
 											}
 											else
 											{
-												echo '<li id="' . $id . '_added" >' . $user_info->user_nicename . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . PICTO_DELETE . '" alt="delete" /></li>';
+												echo '<li id="' . $id . '_added" >' . $user_info->user_nicename . '<img id="' . $id . '_del" onclick="javascript:deleteUserFromGroup(\'' . $id . '\');" src="' . PICTO_DELETE_VSMALL . '" alt="delete" /></li>';
 											}
 										}
 									}
@@ -166,7 +166,7 @@
 <p class="submit">
 	<input name="addgroup" type="submit" id="addgroup" class="button-primary" value="<?php echo $actionButtonLabel; ?>" />
 	<?php if(($evaUserEvaluatorGroupAction != 'add') && ($evaUserEvaluatorGroupAction != 'addevaUserEvaluatorGroup')) : ?>
-	<input onclick="javascript:if(confirm('<?php echo __('&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?','evarisk') ; ?>')){$('#act').val('del');$('#userGroupManagementForm').submit();}else{return false;}"  name="delGroup" type="submit" id="delGroup" class="button add-new-h2" value="<?php echo __('Supprimer le groupe', 'evarisk'); ?>" />
+	<input onclick="javascript:if(confirm('<?php echo __('&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?','evarisk') ; ?>')){evarisk('#act').val('del');evarisk('#userGroupManagementForm').submit();}else{return false;}"  name="delGroup" type="submit" id="delGroup" class="button add-new-h2" value="<?php echo __('Supprimer le groupe', 'evarisk'); ?>" />
 	<?php endif; ?>
 </p>
 

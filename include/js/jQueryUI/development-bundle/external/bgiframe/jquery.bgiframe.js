@@ -97,4 +97,4 @@ $.fn.bgIframe = $.fn.bgiframe = function(s) {
 	return this;
 };
 
-})(jQuery);
+})(evarisk);

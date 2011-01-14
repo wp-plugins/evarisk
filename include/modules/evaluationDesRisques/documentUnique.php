@@ -32,7 +32,6 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentU
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/galleriffic/jquery.galleriffic.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/galleriffic/jquery.opacityrollover.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/fieldSelection/jquery-fieldselection.js"></script>
-		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/uploadify/jquery.uploadify.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/fileUploader/fileuploader.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/users.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/role.js"></script>

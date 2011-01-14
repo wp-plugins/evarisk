@@ -24,18 +24,18 @@
 		$optionYesNoList['selected'] = $option->valeur;
 		$lineScript = 
 			'<script type="text/javascript">
-				$(document).ready(function(){
+				evarisk(document).ready(function(){
 					/* Apply the jEditable handlers to the table */
-					$(".' . $option->nom . '").editable( "' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					evarisk(".' . $option->nom . '").editable( "' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"data" : \'' . json_encode($optionYesNoList) . '\',
 						"type" : "select",
 						"submit" : "' . __('Sauvegarder', 'evarisk') . '",
 						"cancel" : "' . __('Annuler', 'evarisk') . '",
 						"submitdata": function ( value, settings ) {
 							return {
-								"id": $(this).parent("tr").attr("id").replace("option", ""),
+								"id": evarisk(this).parent("tr").attr("id").replace("option", ""),
 								"post" : true,
-								"optionName" : $(this).prev("td").html(),
+								"optionName" : evarisk(this).prev("td").html(),
 								"table" : "' . TABLE_OPTION . '",
 								"act" : "update"
 							};
@@ -52,8 +52,8 @@
 	}
 
 	$script = '<script type="text/javascript">
-		$(document).ready(function(){
-			$("#' . $idTable . ' tfoot").remove();
+		evarisk(document).ready(function(){
+			evarisk("#' . $idTable . ' tfoot").remove();
 		});
 	</script>';
 	

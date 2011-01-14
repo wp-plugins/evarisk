@@ -79,11 +79,11 @@ function getCategorieDangersGeneralInformationPostBoxBody($arguments)
 		if($postId!=null)
 		{
 			$saufCategorie = $categorie_danger->nom;
-			$actionValue = '$("#act").val("update")';
+			$actionValue = 'evarisk("#act").val("update")';
 		}
 		else
 		{
-			$actionValue = '$("#act").val("save")';
+			$actionValue = 'evarisk("#act").val("save")';
 		}
 		$categories = categorieDangers::getCategoriesName($saufCategorie);
 		if(count($categories) != 0)
@@ -103,7 +103,7 @@ function getCategorieDangersGeneralInformationPostBoxBody($arguments)
 		$idBouttonEnregistrer = 'save';
 		$scriptEnregistrement = '<script type="text/javascript">
 			function isSomeName(){
-				valeurActuelle = $("#nom_categorie").val();
+				valeurActuelle = evarisk("#nom_categorie").val();
 				if(valeurActuelle == "")
 				{
 					alert("' . __("Vous n'avez pas donne de nom a la categorie", 'evarisk') . '");
@@ -117,25 +117,25 @@ function getCategorieDangersGeneralInformationPostBoxBody($arguments)
 					else
 					{
 						'. $actionValue . '
-						$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_CATEGORIE_DANGER . '",
-							"act": $("#act").val(),
-							"id": $("#id").val(),
-							"nom_categorie": $("#nom_categorie").val(),
-							"categorieMere": $("#categorieMere :selected").val(),
-							"description": $("#description").val(),
-							"affichage": $("#affichage").val(),
-							"idsFilAriane": $("#idsFilAriane").val()
+							"act": evarisk("#act").val(),
+							"id": evarisk("#id").val(),
+							"nom_categorie": evarisk("#nom_categorie").val(),
+							"categorieMere": evarisk("#categorieMere :selected").val(),
+							"description": evarisk("#description").val(),
+							"affichage": evarisk("#affichage").val(),
+							"idsFilAriane": evarisk("#idsFilAriane").val()
 						});
 					}
 				}
 			}
-			$(document).ready(function() {
-				$(\'#' . $idBouttonEnregistrer . '\').click(function() {
-					if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+			evarisk(document).ready(function() {
+				evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
+					if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 					{
 						document.getElementById(\'' . $idTitre . '\').value=\'\';
-						$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+						evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 					}
 					isSomeName(\'' . $idTitre . '\');
 				});

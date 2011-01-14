@@ -516,7 +516,7 @@ $.ui.mouse.defaults = {
 	delay: 0
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Draggable 1.7.2
  *
@@ -1282,7 +1282,7 @@ $.ui.plugin.add("draggable", "zIndex", {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Droppable 1.7.2
  *
@@ -1564,7 +1564,7 @@ $.ui.ddmanager = {
 	}
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Resizable 1.7.2
  *
@@ -2364,7 +2364,7 @@ var isNumber = function(value) {
 	return !isNaN(parseInt(value, 10));
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Selectable 1.7.2
  *
@@ -2621,7 +2621,7 @@ $.extend($.ui.selectable, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Sortable 1.7.2
  *
@@ -3640,7 +3640,7 @@ $.extend($.ui.sortable, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Accordion 1.7.2
  *
@@ -4117,7 +4117,7 @@ $.extend($.ui.accordion, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Dialog 1.7.2
  *
@@ -4788,7 +4788,7 @@ $.extend($.ui.dialog.overlay.prototype, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Slider 1.7.2
  *
@@ -5346,7 +5346,7 @@ $.extend($.ui.slider, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Tabs 1.7.2
  *
@@ -6031,7 +6031,7 @@ $.extend($.ui.tabs.prototype, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Datepicker 1.7.2
  *
@@ -7667,7 +7667,7 @@ $.datepicker.version = "1.7.2";
 // Add another global to avoid noConflict issues with inline event handlers
 window.DP_jQuery = $;
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Progressbar 1.7.2
  *
@@ -7783,7 +7783,7 @@ $.extend($.ui.progressbar, {
 	}
 });
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects 1.7.2
  *
@@ -8328,7 +8328,7 @@ $.extend($.easing,
  *
  */
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Blind 1.7.2
  *
@@ -8377,7 +8377,7 @@ $.effects.blind = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Bounce 1.7.2
  *
@@ -8455,7 +8455,7 @@ $.effects.bounce = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Clip 1.7.2
  *
@@ -8509,7 +8509,7 @@ $.effects.clip = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Drop 1.7.2
  *
@@ -8559,7 +8559,7 @@ $.effects.drop = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Explode 1.7.2
  *
@@ -8638,7 +8638,7 @@ $.effects.explode = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Fold 1.7.2
  *
@@ -8694,7 +8694,7 @@ $.effects.fold = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Highlight 1.7.2
  *
@@ -8742,7 +8742,7 @@ $.effects.highlight = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Pulsate 1.7.2
  *
@@ -8798,7 +8798,7 @@ $.effects.pulsate = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Scale 1.7.2
  *
@@ -8978,7 +8978,7 @@ $.effects.size = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Shake 1.7.2
  *
@@ -9035,7 +9035,7 @@ $.effects.shake = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Slide 1.7.2
  *
@@ -9085,7 +9085,7 @@ $.effects.slide = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);
 /*
  * jQuery UI Effects Transfer 1.7.2
  *
@@ -9130,4 +9130,4 @@ $.effects.transfer = function(o) {
 	});
 };
 
-})(jQuery);
+})(evarisk);

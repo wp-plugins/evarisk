@@ -280,8 +280,24 @@ class Risque {
 		if($idRisque == '')
 		{//Ajout d'un risque
 			$sql = "INSERT INTO " . TABLE_RISQUE . " (id_danger, id_methode, id_element, nomTableElement, commentaire, date, Status) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', NOW(), 'Valid')";
-			$wpdb->query($sql);
-			$idRisque = $wpdb->insert_id;
+			$idRisque = 0;
+			if($wpdb->query($sql))
+			{
+				$idRisque = $wpdb->insert_id;
+				echo '
+<script type="text/javascript" >
+	actionMessageShow("#message' . TABLE_RISQUE . '", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
+	setTimeout(\'actionMessageHide("#message' . TABLE_RISQUE . '")\',7500);
+</script>';
+			}
+			else
+			{
+				echo '
+<script type="text/javascript" >
+	actionMessageShow("#message' . TABLE_RISQUE . '", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
+	setTimeout(\'actionMessageHide("#message' . TABLE_RISQUE . '")\',7500);
+</script>';
+			}
 		}
 		else
 		{//Mise à jour d'un risque
@@ -326,6 +342,7 @@ class Risque {
 			}
 		}
 
+		return $idRisque;
 	}
 
 	static function deleteRisk($idRisque, $tableElement, $idElement)
@@ -438,8 +455,8 @@ class Risque {
 
 					$lignesDeValeurs = (isset($lignesDeValeurs))?$lignesDeValeurs:null;
 					$script = '<script type="text/javascript">
-						$(document).ready(function(){
-							$("#' . $idTable . ' tfoot").remove();
+						evarisk(document).ready(function(){
+							evarisk("#' . $idTable . ' tfoot").remove();
 						});
 					</script>';
 
@@ -541,12 +558,138 @@ class Risque {
 
 		$lignesDeValeurs = (isset($lignesDeValeurs)) ? $lignesDeValeurs : null;
 		$script = '<script type="text/javascript">
-			$(document).ready(function(){
-				$("#' . $idTable . ' tfoot").remove();
+			evarisk(document).ready(function(){
+				evarisk("#' . $idTable . ' tfoot").remove();
 			});
 		</script>';
 
 		return '<div id="' . $idDiv . '-affichage-quotation" class="affichageAction" style="margin:6px 0px;" >' . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script) . '</div>';
+	}
+
+	function getRisqueAssociePhoto($idPicture)
+	{
+		global $wpdb;
+		$output = '';
+
+		$query = $wpdb->prepare(
+			"SELECT RISQUE.*
+			FROM " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK
+				INNER JOIN " . TABLE_RISQUE . " AS RISQUE ON ((RISQUE.id = PICTURE_LINK.idElement) AND (RISQUE.Status = 'Valid'))
+			WHERE PICTURE_LINK.idPhoto = '%d'
+				AND PICTURE_LINK.tableElement = '%s' 
+				AND PICTURE_LINK.status = 'valid' ",
+			$idPicture, TABLE_RISQUE
+		);
+		$queryResult = $wpdb->get_results($query);
+		if(count($queryResult) > 0)
+		{
+			$riskArray = array();
+			$i = 0;
+			foreach($queryResult as $risk)
+			{
+				$risque = Risque::getRisque($risk->id);
+				$score = Risque::getEquivalenceEtalon($risk->id_methode, Risque::getScoreRisque($risque), $risk->date);
+
+				$output .= '<div class="clear" id="loadRiskId' . $risk->id . '" ><span class="riskAssociatedToPicture" >-&nbsp;' . evaDanger::getDanger($risk->id_danger)->nom . '&nbsp;(' . $score . ')&nbsp;:&nbsp;' . $risk->commentaire . '</span><span id="deleteRiskId' . $risk->id . '" class="ui-icon deleteLinkBetweenRiskAndPicture alignright" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span></div>';
+			}
+
+			$script = '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk(".riskAssociatedToPicture").unbind("click");
+		evarisk(".riskAssociatedToPicture").click(function(){
+			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
+			tabChange("#divFormRisque", "#ongletAjouterRisque");
+			evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": evarisk(this).attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
+		});
+		evarisk(".deleteLinkBetweenRiskAndPicture").unbind("click");
+		evarisk(".deleteLinkBetweenRiskAndPicture").click(function(){
+			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous sur de vouloir supprimer cette liaison?', 'evarisk') . '"))){
+				evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post":"true",
+					"table":"' . TABLE_RISQUE . '",
+					"tableElement":"' . TABLE_RISQUE . '",
+					"idElement":evarisk(this).attr("id").replace("deleteRiskId", ""),
+					"act":"unAssociatePicture",
+					"idPicture":evarisk(this).parent().parent().closest("div").attr("id").replace("riskAssociatedToPicturepicture_", "").replace("_", "")
+				});
+			}
+		});
+		evarisk(".riskAssociatedToPicture").draggable({
+			start: function(event, ui){
+				draggedObjectFather = evarisk(this).parent().closest("div").attr("id").replace("riskAssociatedToPicture", "");
+			}
+		});
+	});
+</script>';
+			$output = '<fieldset class="clear" style="white-space:normal;margin:3px 12px;width:90%;" ><legend ><span style="text-decoration:underline;" >' . __('Risques associ&eacute;s &agrave; la photo', 'evarisk') . '</span>&nbsp;:&nbsp;<span class="bold" >' . __('Nom danger(Score) : Commentaire', 'evarisk') . '</span></legend>' . $output . '</fieldset>' . $script;
+		}
+		else
+		{
+			$output = '<div style="margin:3px 12px;" >' . __('Aucun risque n\'est associ&eacute; &agrave; cette photo', 'evarisk') . '</div>';
+		}
+
+		return $output;
+	}
+
+	function getRisqueNonAssociePhoto($tableElement, $idElement)
+	{
+		global $wpdb;
+		$output = '';
+
+		$query = $wpdb->prepare(
+			"SELECT RISQUE.*
+			FROM " . TABLE_RISQUE . " AS RISQUE
+			WHERE RISQUE.status = 'Valid'
+				AND RISQUE.id_element = '%s'
+				AND RISQUE.nomTableElement = '%s'
+				AND RISQUE.id NOT IN (
+					SELECT idElement 
+					FROM " . TABLE_PHOTO_LIAISON . " 
+					WHERE tableElement = '%s'
+						AND status = 'valid'
+				)",
+			$idElement, $tableElement, TABLE_RISQUE
+		);
+		$queryResult = $wpdb->get_results($query);
+		if(count($queryResult) > 0)
+		{
+			$riskArray = array();
+			$i = 0;
+			foreach($queryResult as $risk)
+			{
+				$risque = Risque::getRisque($risk->id);
+				$score = Risque::getEquivalenceEtalon($risk->id_methode, Risque::getScoreRisque($risque), $risk->date);
+
+				$output .= '<div class="clear riskAssociatedToPicture" id="loadRiskId' . $risk->id . '" >-&nbsp;' . evaDanger::getDanger($risk->id_danger)->nom . '&nbsp;(' . $score . ')&nbsp;:&nbsp;' . $risk->commentaire . '</div>';
+			}
+
+			$script = '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#seeRiskToAssociate").click(function(){
+			evarisk(".riskAssociatedToPicture").draggable();
+			evarisk("#riskToAssociate").toggle();
+		});
+	});
+</script>';
+			$output = '
+<fieldset class="clear pointer" style="white-space:normal;margin:3px 12px;width:100%;" >
+	<legend >
+		<div id="seeRiskToAssociate" class="alignleft pointer" >
+			<img id="seeRiskToAssociatePic" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" />
+			<span style="vertical-align:middle;" id="addRiskForPictureText' . $currentId . '" >' . __('Risques non associ&eacute;s &agrave; une photo', 'evarisk') . '</span>
+		</div>
+	</legend>
+	<div id="riskToAssociate" style="display:none;" >
+		<div class="clear bold" id="riskToAssociateExplanation" >-&nbsp;' . __('Nom danger(Score) : Commentaire', 'evarisk') . '</div>
+		' . $output . '
+	</div>
+</fieldset>' . $script;
+		}
+
+		return $output;
 	}
 
 }

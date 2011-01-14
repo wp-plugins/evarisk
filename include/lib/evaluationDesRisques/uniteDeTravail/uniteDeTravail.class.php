@@ -263,7 +263,7 @@ class UniteDeTravail {
 		global $wpdb;
 		
 		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid')";
-		$wpdb->query($sql);
+		return $wpdb->query($sql);
 	}
 	
 	/**
@@ -281,7 +281,7 @@ class UniteDeTravail {
 		global $wpdb;
 		
 		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "' WHERE `id`='" . $id_unite . "'";
-		$wpdb->query($sql);
+		return $wpdb->query($sql);
 	}
 	
 	/**
@@ -310,13 +310,13 @@ class UniteDeTravail {
 		{
 			echo 
 				'<script type="text/javascript">
-					$(document).ready(function(){
-						$("#message").addClass("updated");
-						$("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						$("#message").show();
+					evarisk(document).ready(function(){
+						evarisk("#message").addClass("updated");
+						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						evarisk("#message").show();
 						setTimeout(function(){
-							$("#message").removeClass("updated");
-							$("#message").hide();
+							evarisk("#message").removeClass("updated");
+							evarisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -325,13 +325,13 @@ class UniteDeTravail {
 		{
 			echo 
 				'<script type="text/javascript">
-					$(document).ready(function(){
-						$("#message").addClass("updated");
-						$("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						$("#message").show();
+					evarisk(document).ready(function(){
+						evarisk("#message").addClass("updated");
+						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						evarisk("#message").show();
 						setTimeout(function(){
-							$("#message").removeClass("updated");
-							$("#message").hide();
+							evarisk("#message").removeClass("updated");
+							evarisk("#message").hide();
 						},7500);
 					});
 				</script>';

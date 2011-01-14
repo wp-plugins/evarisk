@@ -226,4 +226,25 @@ class eva_tools
 			}
 		}
 	}
+
+	function changeAccesAuthorisation($dir)
+	{
+		$tab=explode('/',$dir);
+		$str='';
+		foreach($tab as $k => $v )
+		{
+			if((trim($v)!=''))
+			{
+				$str.='/'.trim($v);
+				if( (trim($v)!='..') &&(trim($v)!='.') )
+				{
+					if(!is_dir(substr($str,1)) && (!is_file(substr($str,1)) ) )
+					{
+						chmod(str_replace('//','/',$str), 0755);
+					}
+				}
+			}
+		}
+	}
+
 }

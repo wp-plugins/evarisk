@@ -15,10 +15,28 @@ if($_POST['act'] == 'save')
 	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['nom_unite_travail']));
 	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['groupementPere']));
 	
-	UniteDeTravail::saveNewWorkingUnit($nom, $idGroupementPere);
-	
-	$_POST['act'] = 'update';
-	$_POST['id'] = $wpdb->insert_id;
+	$groupement = EvaGroupement::getGroupement($idGroupementPere);
+	$groupementDescendant = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
+	if(count($groupementDescendant) == 0)
+	{
+		$workingUnitResult = UniteDeTravail::saveNewWorkingUnit($nom, $idGroupementPere);
+		
+		$_POST['act'] = 'update';
+		$_POST['id'] = $wpdb->insert_id;
+	}
+	else
+	{
+echo '
+<script type="text/javascript" >
+	evarisk("#message").html(\'<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="error" />' . __('Vous ne pouvez pas ajouter une unit&eacute; de travail au m&ecirc;me niveau qu\\\'un groupement', 'evarisk') . '\');
+	evarisk("#message").addClass("updated");
+	evarisk("#message").show();
+	setTimeout(function(){
+		evarisk("#message").removeClass("updated");
+		evarisk("#message").hide();
+	},7500);
+</script>';
+	}
 }
 if($_POST['act'] == 'update')
 {
@@ -54,9 +72,9 @@ if($_POST['act'] == 'update')
 		$telephone = null;
 	}
 	
-	UniteDeTravail::updateWorkingUnit($id_unite_travail, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
+	$workingUnitResult = UniteDeTravail::updateWorkingUnit($id_unite_travail, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
 }
 if($_POST['act'] == 'delete')
 {
-	UniteDeTravail::deleteWorkingUnit($_POST['id']);
+	$workingUnitResult = UniteDeTravail::deleteWorkingUnit($_POST['id']);
 }

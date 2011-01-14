@@ -398,4 +398,4 @@ $.extend($.ui.gantt, {
 	}
 });
 
-})(jQuery);
+})(evarisk);

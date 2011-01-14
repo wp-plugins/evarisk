@@ -130,7 +130,7 @@ div.inside{overflow: hidden; padding: 5px;}
 {
 	cursor:pointer;
 }
-.test
+.cursormove
 {
 	cursor:move;
 }
@@ -465,6 +465,11 @@ th.columnCommentaireRisque
 	margin:1% 24px;
 	padding:3px;
 }
+#pictureToAssociateToRisk .qq-uploader .qq-upload-button{
+	width:90% !important;
+	padding:7px;
+}
+.deleteLinkBetweenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px;	width:16px;height:16px;}
 /* -- END Risques -- */
 
 /* -- Tabs -- */
@@ -513,7 +518,7 @@ ul.eva_tabs_button li
 	-webkit-border-radius:1em;
 	-moz-border-radius:1em;
 	border-radius:1em;
-	background-color:#F6F6F6;
+	/*background-color:#F6F6F6;*/
 }
 
 ul.eva_tabs_button 
@@ -624,4 +629,9 @@ ul.eva_tabs_button li label
 
 #divVoirRisques .dataTables_paginate{
 	margin:12px 0px;
+}
+
+.riskPictureThumbs
+{
+	max-width: 20%;
 }

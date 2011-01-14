@@ -32,18 +32,18 @@
 				$idBouttonEnregistrer = 'enregistrerProvenanceTache';
 				$scriptEnregistrement = 
 					'<script type="text/javascript">
-						$(document).ready(function() {				
-							$("#' . $idBouttonEnregistrer . '").click(function() {
-								$("#savingLinkTaskElement").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-								$("#saveLinkTaskElement").hide();
-								$("#savingLinkTaskElement").show();
+						evarisk(document).ready(function() {				
+							evarisk("#' . $idBouttonEnregistrer . '").click(function() {
+								evarisk("#savingLinkTaskElement").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+								evarisk("#saveLinkTaskElement").hide();
+								evarisk("#savingLinkTaskElement").show();
 
-								$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post": "true", 
 									"table": "' . TABLE_TACHE . '",
 									"act": "updateProvenance",
 									"id": "' . $idElement . '",
-									"provenance": $("#arborescence' . $tableElement . '-' . $idElement . ' input:radio:checked").val()
+									"provenance": evarisk("#arborescence' . $tableElement . '-' . $idElement . ' input:radio:checked").val()
 								});
 							});
 						});
@@ -84,10 +84,10 @@
 			'
 			</table>
 			<script type="text/javascript" >
-				$(document).ready(
+				evarisk(document).ready(
 					function(){
-						$("#r' . TABLE_GROUPEMENT . '_-_1").hide();
-						$("#l' . TABLE_GROUPEMENT . '_-_1").hide();
+						evarisk("#r' . TABLE_GROUPEMENT . '_-_1").hide();
+						evarisk("#l' . TABLE_GROUPEMENT . '_-_1").hide();
 					}
 				);
 			</script>';

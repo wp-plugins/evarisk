@@ -53,4 +53,4 @@ $.effects.fold = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

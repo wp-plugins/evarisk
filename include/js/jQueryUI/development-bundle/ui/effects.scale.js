@@ -177,4 +177,4 @@ $.effects.size = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

@@ -10,9 +10,9 @@
 	</div>
 	<div class="metabox-holder clear">
 		<script type="text/javascript">
-			$(document).ready( function() {
-				$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-				$('.postbox h3, .postbox .handlediv').each(function(){$(this).unbind("click");});
+			evarisk(document).ready( function() {
+				evarisk('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+				evarisk('.postbox h3, .postbox .handlediv').each(function(){evarisk(this).unbind("click");});
 				postboxes.add_postbox_toggles("evaDashboard");
 				postboxes.init("evaDashboard");
 				postboxes.save_state("evaDashboard");

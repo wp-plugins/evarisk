@@ -1,8 +1,6 @@
 <?php
-	/*
-	 * Classes et fonctions pour la sauvegarde
-	 */
-	class UploadFileXhr {
+	class UploadFileXhr 
+	{
 		function save($path){
 			$input = fopen("php://input", "r");
 			$fp = fopen($path, "w");
@@ -16,12 +14,12 @@
 			return $_GET['name'];
 		}
 		function getSize(){
-			$headers = apache_request_headers();
-			return (int)$headers['Content-Length'];
+			return (int)$_SERVER['CONTENT_LENGTH'];
 		}
 	}
 
-	class UploadFileForm {	
+	class UploadFileForm 
+	{	
 	  function save($path){
 			move_uploaded_file($_FILES['qqfile']['tmp_name'], $path);
 		}
@@ -33,28 +31,36 @@
 		}
 	}
 
-	function handleUpload(){
+	function handleUpload()
+	{
 		$maxFileSize = 100 * 1024 * 1024;
-			
-		if (isset($_GET['qqfile'])){
+
+		if (isset($_GET['qqfile']))
+		{
 			$file = new UploadFileXhr();
-		} elseif (isset($_FILES['qqfile'])){
+		} 
+		elseif (isset($_FILES['qqfile']))
+		{
 			$file = new UploadFileForm();
-		} else {
+		} 
+		else 
+		{
 			return array(success=>false);
 		}	
 
 		$size = $file->getSize();
-		if ($size == 0){
+		if ($size == 0)
+		{
 			return array(success=>false, error=>"File is empty.");
 		}				
-		if ($size > $maxFileSize){
+		if ($size > $maxFileSize)
+		{
 			return array(success=>false, error=>"File is too large.");
 		}
-			
+
 		$pathinfo = pathinfo($file->getName());		
 		$ext = $pathinfo['extension'];
-		
+
 		$tempFile = $_GET['qqfile'];
 		$targetPath = $_GET['folder'];
 		$targetFile =  str_replace('//','/',$targetPath) . eva_tools::slugify($_GET['qqfile']);
@@ -78,13 +84,15 @@
 			}
 			$targetFile = str_replace('//','/',$targetPath). $nomFichierTest;
 		}
-		
+
 		// Uncomment the following line if you want to make the directory if it doesn't exist
 		if(!file_exists(str_replace('//','/',$targetPath)))
 			mkdir(str_replace('//','/',$targetPath), 0755, true);
+		eva_tools::changeAccesAuthorisation($targetPath);
 		$file->save($targetFile);
 		$fichier = str_replace(str_replace('\\', '/', EVA_HOME_DIR), '', $targetFile);
-		
+
 		return array(success=>true, "tableElement"=>$_GET['tableElement'], "idElement"=>$_GET['idElement'], "fichier"=>$fichier);
 	}
+
 ?>

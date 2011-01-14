@@ -328,6 +328,6 @@
     $.jqplot.PieTickRenderer.prototype = new $.jqplot.AxisTickRenderer();
     $.jqplot.PieTickRenderer.prototype.constructor = $.jqplot.PieTickRenderer;
     
-})(jQuery);
+})(evarisk);
     
     

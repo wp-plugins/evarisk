@@ -25,17 +25,17 @@ class EvaGoogleMaps {
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
 		return '
 			<script type="text/javascript">
-				$(document).ready(function() {	
+				evarisk(document).ready(function() {	
 					geolocPossible = true;
-					$(\'#' . $idElementHover . '\').hover(function() {
+					evarisk(\'#' . $idElementHover . '\').hover(function() {
 						geolocPossible = true;
-						$(\'#latitude\').removeClass(\'form-input-tip\');
-						$(\'#longitude\').removeClass(\'form-input-tip\');
-							$(\'#adresseUnite' . $postId . ' input\').each(function(){
-								$(this).blur();
+						evarisk(\'#latitude\').removeClass(\'form-input-tip\');
+						evarisk(\'#longitude\').removeClass(\'form-input-tip\');
+							evarisk(\'#adresseUnite' . $postId . ' input\').each(function(){
+								evarisk(this).blur();
 							});
-							$(\'#adresseUnite' . $postId . ' .form-input-tip\').each(function(){
-								if(!($(this).attr("id") == "' . $idLigne2 . '"))
+							evarisk(\'#adresseUnite' . $postId . ' .form-input-tip\').each(function(){
+								if(!(evarisk(this).attr("id") == "' . $idLigne2 . '"))
 								{
 									geolocPossible = false;
 								}
@@ -45,16 +45,16 @@ class EvaGoogleMaps {
 							if(geolocPossible)
 							{
 								geocoder = new google.maps.Geocoder();
-								geocoder.geocode({"address": $(\'#' . $idLigne1 . '\').val() + " " + $(\'#' . $idLigne2 . '\').val() + ", " + $(\'#' . $idCodePostal . '\').val() + ", " + $(\'#' . $idVille . '\').val()}, function(results, status) {
-									$(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
-									$(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
-									if($(\'#' . $idLatitude . '\').val() == 0 && $(\'#' . $idLongitude . '\').val() == 0)
+								geocoder.geocode({"address": evarisk(\'#' . $idLigne1 . '\').val() + " " + evarisk(\'#' . $idLigne2 . '\').val() + ", " + evarisk(\'#' . $idCodePostal . '\').val() + ", " + evarisk(\'#' . $idVille . '\').val()}, function(results, status) {
+									evarisk(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
+									evarisk(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
+									if(evarisk(\'#' . $idLatitude . '\').val() == 0 && evarisk(\'#' . $idLongitude . '\').val() == 0)
 									{
-										var ligne1 = $(\'#' . $idLigne1 . '\').val();
+										var ligne1 = evarisk(\'#' . $idLigne1 . '\').val();
 										ligne1 = ligne1.replace(/[\d]+[\s]?[,]?/, "");
-										geocoder.geocode({"address": ligne1 + " " + $(\'#' . $idLigne2 . '\').val() + ", " + $(\'#' . $idCodePostal . '\').val() + ", " + $(\'#' . $idVille . '\').val()}, function(results, status) {
-											$(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
-											$(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
+										geocoder.geocode({"address": ligne1 + " " + evarisk(\'#' . $idLigne2 . '\').val() + ", " + evarisk(\'#' . $idCodePostal . '\').val() + ", " + evarisk(\'#' . $idVille . '\').val()}, function(results, status) {
+											evarisk(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
+											evarisk(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
 										});
 									}
 								});
@@ -196,7 +196,7 @@ class EvaGoogleMaps {
 					}
 					$googleMap = $googleMap . '
 				}
-				$(document).ready(function(){google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});});
+				evarisk(document).ready(function(){google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});});
 				
 			</script>';
 			$googleMap = $googleMap . '<div id="' . $idGoogleMapsDiv . '" style="width: 100%; height: 300px"></div>';

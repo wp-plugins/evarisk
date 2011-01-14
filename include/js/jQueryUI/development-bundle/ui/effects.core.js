@@ -542,4 +542,4 @@ $.extend($.easing,
  *
  */
 
-})(jQuery);
+})(evarisk);

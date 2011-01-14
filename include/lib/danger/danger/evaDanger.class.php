@@ -151,13 +151,13 @@ Persistance
 		{
 			echo 
 				'<script type="text/javascript">
-					$(document).ready(function(){
-						$("#message").addClass("updated");
-						$("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>') . '");
-						$("#message").show();
+					evarisk(document).ready(function(){
+						evarisk("#message").addClass("updated");
+						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>') . '");
+						evarisk("#message").show();
 						setTimeout(function(){
-							$("#message").removeClass("updated");
-							$("#message").hide();
+							evarisk("#message").removeClass("updated");
+							evarisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -166,16 +166,61 @@ Persistance
 		{
 			echo 
 				'<script type="text/javascript">
-					$(document).ready(function(){
-						$("#message").addClass("updated");
-						$("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger n\'a pas pu &ecirc;tre supprim&eacute;', 'evarisk') . '</strong></p>') . '");
-						$("#message").show();
+					evarisk(document).ready(function(){
+						evarisk("#message").addClass("updated");
+						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger n\'a pas pu &ecirc;tre supprim&eacute;', 'evarisk') . '</strong></p>') . '");
+						evarisk("#message").show();
 						setTimeout(function(){
-							$("#message").removeClass("updated");
-							$("#message").hide();
+							evarisk("#message").removeClass("updated");
+							evarisk("#message").hide();
 						},7500);
 					});
 				</script>';
 		}
 	}
+
+	function getDangerForRiskEvaluation($selectionCategorie, $risque, $formId = '')
+	{
+		$dangerResult = array();
+		$dangerResult['list'] = '';
+		$dangerResult['script'] = '';
+
+		$dangerResult['list'] .= 
+	'<div id="needDangerCategory">';
+		$dangers = categorieDangers::getDangersDeLaCategorie($selectionCategorie, 'Status="Valid"');
+		if(isset($dangers[0]) && ($dangers[0]->id != null))
+		{
+			$dangerResult['script'] .= '
+	evarisk("#needDangerCategory").show();';
+		}
+		else
+		{
+			$dangerResult['script'] .= '
+	evarisk("#needDangerCategory").hide();';
+		}
+		if($risque[0] != null)
+		{// Si l'on édite un risque, on sélectionne le bon danger
+			$selection = $risque[0]->idDanger;
+			$selection = evaDanger::getDanger($selection);
+		}
+		else
+		{// Sinon on sélectionne le premier danger de la catégorie
+			$selection = (isset($dangers[0]) && ($dangers[0]->id)) ? $dangers[0]->id : null;
+		}
+		if($selection != null)
+		{
+			$nombreDeDangers = count($dangers);
+			$afficheSelecteurDanger = '';
+			if($nombreDeDangers <= 1)
+			{
+				$afficheSelecteurDanger = ' display:none; ';
+			}
+			$dangerResult['list'] .= '<div style="' . $afficheSelecteurDanger . '" class="clear" id="' . $formId . 'divDangerFormRisque" >' . EvaDisplayInput::afficherComboBox($dangers, $formId . 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $selection) . '</div><br />';
+		}
+		$dangerResult['list'] .= '
+	</div><!--/needDangerCategory-->';
+
+		return $dangerResult;
+	}
+
 }

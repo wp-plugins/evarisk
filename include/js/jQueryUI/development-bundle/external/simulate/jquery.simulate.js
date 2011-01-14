@@ -149,4 +149,4 @@ $.extend($.simulate, {
 	VK_DOWN: 40
 });
 
-})(jQuery);
+})(evarisk);

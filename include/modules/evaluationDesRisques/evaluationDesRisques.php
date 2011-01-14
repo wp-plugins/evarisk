@@ -22,10 +22,10 @@ require_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );
 	{
 		echo
 			'<script type="text/javascript">
-				$(document).ready(function(){
-					$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+				evarisk(document).ready(function(){
+					evarisk(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 					setTimeout(function(){
-						$("#' . $_GET['elt'] . '").click();
+						evarisk("#' . $_GET['elt'] . '").click();
 					},3000);
 				})
 			</script>';
@@ -34,9 +34,9 @@ require_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );
 	{
 		echo
 			'<script type="text/javascript">
-				$(document).ready(function(){
+				evarisk(document).ready(function(){
 					setTimeout(function(){
-						$("#' . $_GET['risk'] . '").click();
+						evarisk("#' . $_GET['risk'] . '").click();
 					},4000);
 				})
 			</script>';

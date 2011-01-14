@@ -26,8 +26,8 @@
 		if(((int)$idElement) == 0)
 		{
 			$script = '<script type="text/javascript">
-					$(document).ready(function() {
-						$("#postBoxHeaderGroupement").hide();
+					evarisk(document).ready(function() {
+						evarisk("#postBoxHeaderGroupement").hide();
 					});
 				</script>';
 			echo $script;
@@ -92,7 +92,7 @@
 			$groupsNames = EvaGroupement::getGroupementsName();
 			$groupsNames[] = "";
 			$valeurActuelleIn = 'false';
-			$valeurActuelleIn = '$("#' . $idTitreGp . '").val() in {';
+			$valeurActuelleIn = 'evarisk("#' . $idTitreGp . '").val() in {';
 			foreach($groupsNames as $groupName)
 			{
 				$valeurActuelleIn = $valeurActuelleIn . "'" . addslashes($groupName) . "':'', ";
@@ -101,34 +101,34 @@
 			$valeurActuelleIn = $valeurActuelleIn . "}";
 			$idButton = 'validChangeTitre';
 			$script = '<script type="text/javascript">
-						$(document).ready(function(){
-							$("#' . $idButton . '").hide();
-							$("#' . $idButton . '").click(function(){
-								$("#nom_groupement").val($("#' . $idTitreGp . '").val());
-								$("#save").click();
+						evarisk(document).ready(function(){
+							evarisk("#' . $idButton . '").hide();
+							evarisk("#' . $idButton . '").click(function(){
+								evarisk("#nom_groupement").val(evarisk("#' . $idTitreGp . '").val());
+								evarisk("#save").click();
 							});
 						})
 					</script>';
 			$renduPage = $renduPage . EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
 			$script = '<script type="text/javascript">
-						$(document).ready(function(){
-							$("#' . $idTitreGp . '").keyup(function(){
-								$("#nom_groupement").val($("#' . $idTitreGp . '").val());
-								if($("#nom_groupement").val() != "")
+						evarisk(document).ready(function(){
+							evarisk("#' . $idTitreGp . '").keyup(function(){
+								evarisk("#nom_groupement").val(evarisk("#' . $idTitreGp . '").val());
+								if(evarisk("#nom_groupement").val() != "")
 								{
-									$("#nom_groupement").removeClass("form-input-tip");
+									evarisk("#nom_groupement").removeClass("form-input-tip");
 								}
 								else
 								{
-									$("#nom_groupement").addClass("form-input-tip");							
+									evarisk("#nom_groupement").addClass("form-input-tip");							
 								}
 								if(' . $valeurActuelleIn . ')
 								{
-									$("#' . $idButton . '").hide();
+									evarisk("#' . $idButton . '").hide();
 								}
 								else
 								{
-									$("#' . $idButton . '").show();
+									evarisk("#' . $idButton . '").show();
 								}
 							});
 						})

@@ -1,19 +1,11 @@
 <?php
-
-	$_POST['tableElement']=$_POST['table'];
-	$_POST['idElement']= isset($_POST['id'])?$_POST['id']:null;
-	$menu = $_POST['menu'];
+	$_POST['tableElement'] = $_POST['table'];
+	$_POST['idElement'] = isset($_POST['id']) ? $_POST['id'] : null;
+	$menu = isset($_POST['menu'])?$_POST['menu']:'';
 	$tableElement = $_POST['tableElement'];
 	$idElement = $_POST['idElement'];
-	if(isset($_POST['partie']))
-		$partie = $_POST['partie'];
-	else
-		$partie = 'right';
 
-	if(isset($_POST['partition']))
-		$partition = $_POST['partition'];
-	else
-		$partition = 'tout';
+	$partition = isset($_POST['partition'])?$_POST['partition']:'tout';
 
 	require_once(EVA_CONFIG);
 
@@ -84,32 +76,20 @@
 		break;
 	}
 
-	{//Contenu
-		$script = getScriptPartieDroite($pageHook);
-		// //Contextual help definition
-		// add_contextual_help($pageHook, '<p>Ceci est l\'aide des groupements.</p>');
-		// //Creation of contextual menu
-		// screen_meta($pageHook);
+	$script = getScriptPartieDroite($pageHook);
 
-		echo $script . '<div class="metabox-holder clear">
-			<script type="text/javascript">
-				$(".inside").each(function(){
-					// $(this).css("max-height","400px");
-					// $(this).css("overflow","auto");
-				});
-			</script>';
+	$idsFilAriane = isset($_POST['idsFilAriane'])?$_POST['idsFilAriane']:null;
+	$expanded = isset($_POST['expanded'])?$_POST['expanded']:null;
+	$page = isset($_POST['page'])?$_POST['page']:null;
+	$idPere = isset($_POST['idPere'])?$_POST['idPere']:null;
+	$affichage = isset($_POST['affichage'])?$_POST['affichage']:null;
+	$partie = isset($_POST['partie'])?$_POST['partie']:'right';
+
+	echo $script . '<div class="metabox-holder clear">';
 		//Add the postBoxes
-		$idsFilAriane = isset($_POST['idsFilAriane'])?$_POST['idsFilAriane']:null;
-		$expanded = isset($_POST['expanded'])?$_POST['expanded']:null;
-		$page = isset($_POST['page'])?$_POST['page']:null;
-		$idPere = isset($_POST['idPere'])?$_POST['idPere']:null;
-		$affichage = isset($_POST['affichage'])?$_POST['affichage']:null;
-		
 		do_meta_boxes( $pageHook, $partie . 'Side', array('tableElement'=>$tableElement, 'idElement'=>$idElement, 'idPere'=>$idPere, 'affichage'=>$affichage, 'idsFilAriane'=>$idsFilAriane, 'markers' =>$markers, 'page'=>$page, 'expanded'=>$expanded));
 		//To preserve postBoxes order
 		wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false);
 		//To preserve postBoxes closure state
 		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false);
-		echo '</div>';
-	}
-?>
+	echo '</div>';

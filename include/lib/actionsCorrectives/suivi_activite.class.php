@@ -8,19 +8,19 @@ class suivi_activite
 		$idBouttonEnregistrer = 'saveActionFollow';
 		$scriptEnregistrement = 
 			'<script type="text/javascript">
-				$(document).ready(function() {				
-					$("#' . $idBouttonEnregistrer . '").click(function() {
-						$("#load' . $idBouttonEnregistrer . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" />\');
-						$("#bttn' . $idBouttonEnregistrer . '").hide();
-						$("#load' . $idBouttonEnregistrer . '").show();
+				evarisk(document).ready(function() {				
+					evarisk("#' . $idBouttonEnregistrer . '").click(function() {
+						evarisk("#load' . $idBouttonEnregistrer . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" />\');
+						evarisk("#bttn' . $idBouttonEnregistrer . '").hide();
+						evarisk("#load' . $idBouttonEnregistrer . '").show();
 
-						$("#load' . $tableElement . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+						evarisk("#load' . $tableElement . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 							"post": "true", 
 							"table": "' . TABLE_ACTIVITE_SUIVI . '",
 							"act": "save",
 							"idElement": "' . $idElement . '",
 							"tableElement": "' . $tableElement . '",
-							"commentaire": $("#commentaire' . $tableElement . $idElement . '").val()
+							"commentaire": evarisk("#commentaire' . $tableElement . $idElement . '").val()
 						});
 					});
 				});
@@ -114,12 +114,12 @@ class suivi_activite
 
 			$scriptTableauSuiviModification = 
 			'<script type="text/javascript">
-				$(document).ready(function() {
-					$("#' . $idTable . '").dataTable({
+				evarisk(document).ready(function() {
+					evarisk("#' . $idTable . '").dataTable({
 						"bInfo": false
 					});
-					$("#' . $idTable . '").children("thead").remove();
-					$("#' . $idTable . '").children("tfoot").remove();
+					evarisk("#' . $idTable . '").children("thead").remove();
+					evarisk("#' . $idTable . '").children("tfoot").remove();
 				});
 			</script>';
 

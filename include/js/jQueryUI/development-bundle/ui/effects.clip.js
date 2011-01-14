@@ -51,4 +51,4 @@ $.effects.clip = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

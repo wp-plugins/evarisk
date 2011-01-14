@@ -61,7 +61,7 @@ class evaUserEvaluatorGroup
 		<th class="check-column" scope="row">
 			<!--<input type="checkbox" value="<?php echo $rowInformations->evaluator_group_id; ?>" name="attribute[]"/>-->
 		</th>
-		<td><strong><a onclick="javascript:$('#act').val('mod');$('#id').val('<?php echo $rowInformations->evaluator_group_id; ?>');$('#evaUserEvaluatorGroupManagementForm').submit();" style="cursor:pointer;" ><?php echo stripcslashes($rowInformations->evaluator_group_name); ?></a></strong></td>
+		<td><strong><a onclick="javascript:evarisk('#act').val('mod');evarisk('#id').val('<?php echo $rowInformations->evaluator_group_id; ?>');evarisk('#evaUserEvaluatorGroupManagementForm').submit();" style="cursor:pointer;" ><?php echo stripcslashes($rowInformations->evaluator_group_name); ?></a></strong></td>
 		<td><strong><?php echo $rowInformations->evaluator_group_description ?></strong></td>
 		<td><strong><?php echo $rowInformations->TOTALUSERNUMBER ?></strong></td>
 	</tr>
@@ -525,8 +525,8 @@ class evaUserEvaluatorGroup
 				if(isset($groupesLiesIds[$groupeUtilisateurs->evaluator_group_id]))
 				{
 					$script = $script . '<script type="text/javascript">
-						$(document).ready(function() {
-							$(\'#' . $idCbLigne . '\').attr("checked", "checked");
+						evarisk(document).ready(function() {
+							evarisk(\'#' . $idCbLigne . '\').attr("checked", "checked");
 						});
 					</script>';
 				}
@@ -536,8 +536,8 @@ class evaUserEvaluatorGroup
 			if(!$noScript)
 			{
 			$script = $script . '<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#' . $idTable . '\').dataTable({
+				evarisk(document).ready(function() {
+					evarisk(\'#' . $idTable . '\').dataTable({
 						"bLengthChange": false,
 						"bAutoWidth": false,
 						"bFilter": false,
@@ -560,16 +560,16 @@ class evaUserEvaluatorGroup
 		{//Bouton Enregistrer
 			$idBoutonEnregistrer = 'save_group';
 			$scriptEnregistrement = '<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#' . $idBoutonEnregistrer . '\').click(function() {
+				evarisk(document).ready(function() {
+					evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {
 						var groupeUtilisateurs = new Array();
-						$(\'#' . $idTable . ' input\').each(function(){
-							if($(this).attr("checked"))
+						evarisk(\'#' . $idTable . ' input\').each(function(){
+							if(evarisk(this).attr("checked"))
 							{
-								groupeUtilisateurs.push($(this).attr("id").replace(new RegExp(/[A-Za-z_\-]+[\d]+[A-Za-z_\-]+/), ""));
+								groupeUtilisateurs.push(evarisk(this).attr("id").replace(new RegExp(/[A-Za-z_\-]+[\d]+[A-Za-z_\-]+/), ""));
 							}
 						});
-						$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 							"table": "' . TABLE_EVA_EVALUATOR_GROUP_BIND . '",
 							"act": "save",
 							"idsGroupes": groupeUtilisateurs,
@@ -601,12 +601,12 @@ class evaUserEvaluatorGroup
 
 		$scriptEnregistrement =
 		'<script type="text/javascript">
-			$(document).ready(function() {
-				$(\'#groupesEvaluateursNonAssocies\').change(function() {
-					$("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-					groupesEvaluateurAAssocier = $(\'#groupesEvaluateursNonAssocies\').val();
+			evarisk(document).ready(function() {
+				evarisk(\'#groupesEvaluateursNonAssocies\').change(function() {
+					evarisk("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+					groupesEvaluateurAAssocier = evarisk(\'#groupesEvaluateursNonAssocies\').val();
 
-					$("#listeGroupesEvaluateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					evarisk("#listeGroupesEvaluateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",
 						"table": "' . TABLE_EVA_EVALUATOR_GROUP_BIND . '",
 						"act": "save",
@@ -619,8 +619,8 @@ class evaUserEvaluatorGroup
 
 			function deleteGroupeEvaluateurBind(idGroupe, idBind)
 			{
-				$("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-				$("#listeGroupesEvaluateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				evarisk("#chargementBox' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+				evarisk("#listeGroupesEvaluateurs").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post": "true",
 					"table": "' . TABLE_EVA_EVALUATOR_GROUP_BIND . '",
 					"act": "delete",
@@ -634,7 +634,7 @@ class evaUserEvaluatorGroup
 
 		/*	Recuperation des groupes deja affectes	*/
 		$idTable = 'groupesEvaluateurs' . $tableElement . $idElement;
-		$titres = array(__('Action', 'evarisk'), ucfirst(strtolower(sprintf(__('Nom %s', 'evarisk'), __('du groupe d\'&eacute;valuateurs', 'evarisk')))), ucfirst(strtolower(sprintf(__('Description %s', 'evarisk'), __('du groupe d\'&eacute;valuateurs', 'evarisk')))), __('Nombre d\'&eacute;valuateur', 'evarisk'));
+		$titres = array(ucfirst(strtolower(sprintf(__('Nom %s', 'evarisk'), __('du groupe d\'&eacute;valuateurs', 'evarisk')))), ucfirst(strtolower(sprintf(__('Description %s', 'evarisk'), __('du groupe d\'&eacute;valuateurs', 'evarisk')))), __('Nombre d\'&eacute;valuateur', 'evarisk'), __('Action', 'evarisk'));
 		$listeGroupesAffectes = evaUserEvaluatorGroup::getBindGroups($idElement, $tableElement);
 		foreach($listeGroupesAffectes as $groupeAffecte)
 		{
@@ -644,18 +644,18 @@ class evaUserEvaluatorGroup
 			unset($valeurs);
 			$idLigne = $tableElement . $idElement . 'groupeEvaluateur' . $groupeAffecte->id_group;
 			$idCbLigne = 'cb_' . $idLigne;
-			$valeurs[] = array('value'=>'<img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteGroupeEvaluateurBind(\'' . $groupeAffecte->id_group . '\', \'' . $groupeAffecte->id . '\');" />');
 			$valeurs[] = array('value'=>$groupInformation[0]->evaluator_group_name);
 			$valeurs[] = array('value'=>$groupInformation[0]->evaluator_group_description);
 			$valeurs[] = array('value'=>$groupInformation[0]->TOTALUSERNUMBER);
+			$valeurs[] = array('value'=>'<img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" id="' . $idCbLigne . '" onclick="javascript:deleteGroupeEvaluateurBind(\'' . $groupeAffecte->id_group . '\', \'' . $groupeAffecte->id . '\');" />');
 
 			$lignesDeValeurs[] = $valeurs;
 			$idLignes[] = $idLigne;
 		}
-		$classes = array('cbColumnLarge','','','cbNbUserEvaluatorGroup');
+		$classes = array('','','cbNbUserEvaluatorGroup','cbColumnLarge');
 		$script = $scriptEnregistrement . '<script type="text/javascript">
-			$(document).ready(function() {
-				$(\'#' . $idTable . '\').dataTable({
+			evarisk(document).ready(function() {
+				evarisk(\'#' . $idTable . '\').dataTable({
 					"bLengthChange": false,
 					"bAutoWidth": false,
 					"bFilter": false,

@@ -23,16 +23,18 @@ if($_POST['act'] == 'saveDocumentUnique')
 	$informationDocumentUnique['nomDuDocument'] = eva_tools::IsValid_Variable($_POST['nomDuDocument']);
 	$informationDocumentUnique['methodologie'] = ($_POST['methodologie']);
 	$informationDocumentUnique['sources'] = ($_POST['sources']);
+	$informationDocumentUnique['id_model'] = ($_POST['id_model']);
 
 	$lienVersDUER = '';
 	$sauvegardeDocumentUnique = documentUnique::saveNewDocumentUnique($tableElement, $idElement, $informationDocumentUnique);
 	$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_DUER . '").addClass("updated");';
+			evarisk(document).ready(function(){
+				evarisk("#message' . TABLE_DUER . '").addClass("updated");';
+
 	if($sauvegardeDocumentUnique['result'] != 'error')
 	{
 		$messageInfo = $messageInfo . '
-				$("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk') . '</strong></p>') . '");';
+				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk') . '</strong></p>') . '");';
 
 		$lastDocumentUnique = documentUnique::getDernierDocumentUnique($tableElement, $idElement);
 		/*	Check if an odt file exist to be downloaded	*/
@@ -40,22 +42,22 @@ if($_POST['act'] == 'saveDocumentUnique')
 		$odtFile = 'documentUnique/' . $tableElement . '/' . $idElement . '/' . $lastDocumentUnique->nomDUER . '_V' . $lastDocumentUnique->revisionDUER . '.odt';
 		if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
 		{
-			$outputOdtFile = '<br/><br/><br/><a href=\'' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '\' target=\'evaDUEROdt\' >' . __('T&eacute;l&eacute;charger au format odt', 'evarisk') . '</a>';
+			$outputOdtFile = '<br/><br/><br/><a href=\'' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '\' target=\'evaDUEROdt\' >' . __('T&eacute;l&eacute;charger au format odt', 'evarisk') . '</a><br/><br/><br/><br/><a href=\'' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '\' target=\'OOffice\' >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a>';
 		}
-		$lienVersDUER = '$("#documentUniqueResult").html("<a href=\'' . EVA_INC_PLUGIN_URL . 'modules/evaluationDesRisques/documentUnique.php?idElement=' . $idElement . '&table=' . $tableElement . '\' target=\'evaDUER\' >' . __('Voir le document unique', 'evarisk') . '</a>' . $outputOdtFile . '");';
+		$lienVersDUER = 'evarisk("#documentUniqueResultContainer").html("<div style=\'float:right;width:80%;\' >' . $outputOdtFile . '</div>");';
 	}
 	else
 	{
 		$messageInfo = $messageInfo . '
-				$("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique n\'&agrave; pas pu &ecirc;tre sauvegard&eacute;', 'evarisk') . '</strong></p>') . '");';
+				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique n\'&agrave; pas pu &ecirc;tre sauvegard&eacute;', 'evarisk') . '</strong></p>') . '");';
 	}
 
 	$messageInfo = $messageInfo . '
-				$("#message' . TABLE_DUER . '").show();
+				evarisk("#message' . TABLE_DUER . '").show();
 				' . $lienVersDUER . '
 				setTimeout(function(){
-					$("#message' . TABLE_DUER . '").removeClass("updated");
-					$("#message' . TABLE_DUER . '").hide();
+					evarisk("#message' . TABLE_DUER . '").removeClass("updated");
+					evarisk("#message' . TABLE_DUER . '").hide();
 				},5000);
 			});
 		</script>';

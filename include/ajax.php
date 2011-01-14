@@ -34,382 +34,444 @@ require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserEvaluatorGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
 /*
  * Paramètres passés en POST
  */
-if($_POST['post'] == 'true')
+if($_REQUEST['post'] == 'true')
 {
-	if(isset($_POST['table']))
-		switch($_POST['table'])
+	/*	Refactoring actions	*/
+	if(isset($_REQUEST['act']))
+	{
+		switch($_REQUEST['act'])
+		{
+			case 'edit':
+			case 'add':
+			case 'changementPage':
+			{
+				$tableId = 'mainTable';
+				$output = '
+					<script type="text/javascript">
+						evarisk(document).ready(function() {
+							initialiseClassicalPage();
+							if("' . $_REQUEST['affichage'] . '" == "affichageTable")
+							{
+								initialiseEditedElementInGridMode("photo' . $_REQUEST['table'] . $_REQUEST['id'] . '");
+							}
+							else
+							{
+								';
+						switch($_REQUEST['table'])
+						{
+							case TABLE_GROUPEMENT:
+							case TABLE_CATEGORIE_DANGER:
+							case TABLE_TACHE:
+								$output .= 'evarisk("#node-' . $tableId . '-' . $_REQUEST['id'] . '").addClass("edited");';
+							break;
+							case TABLE_UNITE_TRAVAIL:
+							case TABLE_DANGER:
+							case TABLE_ACTIVITE:
+								$output .= 'evarisk("#leaf-' . $_REQUEST['id'] . '").addClass("edited");';
+							break;
+						}
+						$output .= '
+							}
+						});
+					</script>';
+				echo $output;
+				require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
+			}
+			break;
+
+			/*	Actions on picture	*/
+			case 'defaultPictureSelection':
+				echo evaPhoto::setMainPhotoAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPhoto']);
+			break;
+			case 'DeleteDefaultPictureSelection':
+				echo evaPhoto::setMainPhotoAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPhoto'], 'no');
+			break;
+			case 'deletePicture':
+				echo evaPhoto::deletePictureAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPicture']);
+			break;
+			case 'reloadGallery':
+				$script = 
+				'<script type="text/javascript">
+					evarisk(document).ready(function(){
+						evarisk(".qq-upload-list").hide();
+					});
+				</script>';
+				echo $script . evaPhoto::outputGallery($_REQUEST['table'], $_REQUEST['idElement']);
+			break;
+			case 'showGallery':
+				echo evaPhoto::getGallery($_REQUEST['table'], $_REQUEST['idElement']);
+			break;
+		}
+	}
+
+	if(isset($_REQUEST['table']))
+	{
+		switch($_REQUEST['table'])
 		{
 			case TABLE_GROUPEMENT:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
+					case 'transfert':
+					{
+						$fils = $_REQUEST['idElementSrc'];
+						$pere = $_REQUEST['idElementDest'];
+						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
+						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
+						$groupementPere = EvaGroupement::getGroupement($idPere);
+						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)) //Le fils est un groupement
+						{
+							$groupement = EvaGroupement::getGroupement($idFils);
+							$descendants = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
+							$sourceIsParentOfDest = false;
+							foreach($descendants as $sourceDescendants)
+							{
+								if($sourceDescendants->id == $idPere)
+								{
+									$sourceIsParentOfDest = true;
+								}
+							}
+							if(!$sourceIsParentOfDest)
+							{
+								$pereActu = Arborescence::getPere($_REQUEST['nom'], $groupement);
+								if($pereActu->id != $idPere)
+								{
+									$_REQUEST['act'] = 'update';
+									$_REQUEST['id'] = $groupement->id;
+									$_REQUEST['nom_groupement'] = $groupement->nom;
+									$_REQUEST['description'] = $groupement->description;
+									$_REQUEST['telephone'] = $groupement->telephoneGroupement;
+									$_REQUEST['effectif'] = $groupement->effectif;
+									
+									$address = new EvaAddress($groupement->id_adresse);
+									
+									$address->load();
+									$contenuInputLigne1 = $address->getFirstLine();
+									$contenuInputLigne2 = $address->getSecondLine();
+									$contenuInputCodePostal = $address->getPostalCode();
+									$contenuInputVille = $address->getCity();
+									
+									$_REQUEST['adresse_ligne_1'] = $address->getFirstLine();
+									$_REQUEST['adresse_ligne_2'] = $address->getSecondLine();
+									$_REQUEST['code_REQUESTal'] = $address->getPostalCode();
+									$_REQUEST['ville'] = $address->getCity();
+									$_REQUEST['longitude'] = $address->getLongitude();
+									$_REQUEST['latitude'] = $address->getLatitude();
+									$_REQUEST['groupementPere'] = $idPere;
+									require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');
+								}
+							}
+							else
+							{
+								echo 
+	'<script type="text/javascript" >
+			setTimeout(\'actionMessageShow("#message", "<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="error" />' . __('Vous ne pouvez pas effectuer ce d&eacute;placement', 'evarisk') . '")\', 700);
+			setTimeout(\'actionMessageHide("#message")\',7500);
+	</script>';
+							}
+						}
+						else //Le fils est une unité
+						{
+							$idFils = str_replace('leaf-','', $fils);
+							uniteDeTravail::transfertUnit($idFils, $idPere);
+						}
+					}
+					break;
 					case 'save':
 					case 'update':
+					{
 						global $wpdb;
-						switch($_POST['act'])
+						switch($_REQUEST['act'])
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
+								$afterActionList = '
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
+											"table": "' . TABLE_GROUPEMENT . '",
+											"act": "edit",
+											"id": "' . $_REQUEST['id'] . '",
+											"partie": "left",
+											"menu": evarisk("#menu").val(),
+											"affichage": "affichageListe",
+											"expanded": expanded
+										});';
+								$afterActionTable = '
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+											"table": "' . TABLE_GROUPEMENT . '",
+											"act": "edit",
+											"id": "' . $_REQUEST['id'] . '",
+											"partie": "left",
+											"menu": evarisk("#menu").val(),
+											"affichage": "affichageTable",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+											"partition": "tout"
+										})';
 								break;
 							case 'update':
 								$action = __('mise &agrave; jour', 'evarisk');
+								$afterActionList = '';
+								$afterActionTable = '';
 								break;
 						}	
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');		
 						$messageInfo = '
 							<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du groupement', 'evarisk') . ' "' . stripslashes($_POST['nom_groupement']) . '"', $action)) . '");
-									$("#message").show();
-									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
-									},7500);
+								evarisk(document).ready(function(){
+									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du groupement', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_groupement']) . '"', $action)) . '");
+									setTimeout(\'actionMessageHide("#message")\',7500);
 									
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+									evarisk("#rightEnlarging").show();
+									evarisk("#equilize").click();
+									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_groupement'] . '</label>\');
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_groupement'] . '</label>");
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_GROUPEMENT . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
 											"act": "edit",
+											"id": "' . $_REQUEST['id'] . '",
 											"partie": "right",
-				"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"partition": "tout"
 										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_GROUPEMENT . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "left",
-				"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
+										' . $afterActionTable	. '
 									}
 									else
 									{
 										var expanded = new Array();
-										$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_GROUPEMENT . '",
 											"act": "edit",
-											"id": "' . $_POST['id'] . '",
+											"id": "' . $_REQUEST['id'] . '",
 											"partie": "right",
-				"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_GROUPEMENT . '",
-											"act": "edit",
-											"id": "' . $_POST['id'] . '",
-											"partie": "left",
-				"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
+										' . $afterActionList . '
 									}
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+									evarisk("#node-mainTable-' . $_REQUEST['id'] . ' td:first-child").children("span.nomNoeudArbre").html("' . $_REQUEST['nom_groupement'] . '");
 								});
 							</script>';
 						echo $messageInfo;
-						break;
-					case 'edit':
-					case 'add':
-					case 'changementPage':
-						echo '
-							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
-								});
-							</script>';
-						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
+					}
 					break;
 					case 'delete':
+					{
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');		
 						echo '
 							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									$(\'#partieEdition\').html(" ");
-
+								evarisk(document).ready(function() {
+									initialiseClassicalPage();
+									evarisk("#partieEdition").html(" ");
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
-					break;
-					
-					case 'defaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
-					break;
-					case 'DeleteDefaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto'], 'no');
-					break;
-					case 'deletePicture':
-						echo evaPhoto::deletePictureAction($_POST['table'], $_POST['idElement'], $_POST['idPicture']);
-					break;
-					case 'reloadGallery':
-						$script = 
-						'<script type="text/javascript">
-							$(document).ready(function(){
-								$(".qq-upload-list").hide();
-							});
-						</script>';
-						echo $script . evaPhoto::outputGallery($_POST['table'], $_POST['idElement']);
-					break;
-					case 'showGallery':
-						echo evaPhoto::getGallery($_POST['table'], $_POST['idElement']);
+					}
 					break;
 				}
 				break;
 			case TABLE_UNITE_TRAVAIL:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'save':
 					case 'update':
-						switch($_POST['act'])
+					{
+						switch($_REQUEST['act'])
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
+								$afterActionList = '
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
+											"table": "' . TABLE_UNITE_TRAVAIL . '",
+											"act": "edit",
+											"id": "' . $_REQUEST['id'] . '",
+											"partie": "left",
+											"menu": evarisk("#menu").val(),
+											"affichage": "affichageListe",
+											"expanded": expanded
+										});';
+								$afterActionTable = '
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
+											"table": "' . TABLE_UNITE_TRAVAIL . '",
+											"id": "' . $_REQUEST['id'] . '",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+											"act": "edit",
+											"partie": "left",
+											"menu": evarisk("#menu").val(),
+											"affichage": "affichageTable",
+											"partition": "tout"
+										});';
 								break;
 							case 'update':
 								$action = __('mise &agrave; jour', 'evarisk');
+								$afterActionList = '';
+								$afterActionTable = '';
 								break;
-						}	
+						}
+						$workingUnitResult = false;
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteTravailPersistance.php' );
-						$messageInfo = '
-							<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'unit&eacute; de travail', 'evarisk') . ' "' . stripslashes($_POST['nom_unite_travail']) . '"', $action)) . '");
-									$("#message").show();
-									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
-									},7500);
-									
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_unite_travail'] . '</label>\');
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#rightEnlarging\').show();
-										$(\'#equilize\').click();
-										$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_unite_travail'] . '</label>\');
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_UNITE_TRAVAIL . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_UNITE_TRAVAIL . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "left",
-				"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
-									}
-									else
-									{
-										var expanded = new Array();
-										$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_UNITE_TRAVAIL . '",
-											"act": "edit",
-											"id": "' . $_POST['id'] . '",
-											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_UNITE_TRAVAIL . '",
-											"act": "edit",
-											"id": "' . $_POST['id'] . '",
-											"partie": "left",
-				"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
-									}
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								});
-							</script>';
+						if($workingUnitResult)
+						{
+							$messageInfo = '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'unit&eacute; de travail', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_unite_travail']) . '"', $action)) . '");
+		setTimeout(\'actionMessageHide("#message")\',7500);
+		
+		evarisk("#rightEnlarging").show();
+		evarisk("#equilize").click();
+		evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+		if("' . $_REQUEST['affichage'] . '" == "affichageTable")
+		{
+			if(evarisk("#filAriane :last-child").is("label"))
+				evarisk("#filAriane :last-child").remove();
+			evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
+			if(evarisk("#filAriane :last-child").is("label"))
+				evarisk("#filAriane :last-child").remove();
+			evarisk("#rightEnlarging").show();
+			evarisk("#equilize").click();
+			evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . TABLE_UNITE_TRAVAIL . '",
+				"id": "' . $_REQUEST['id'] . '",
+				"page": evarisk("#pagemainPostBoxReference").val(),
+				"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+				"act": "edit",
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageTable",
+				"partition": "tout"
+			});
+			' . $afterActionTable . '
+		}
+		else
+		{
+			var expanded = new Array();
+			evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . TABLE_UNITE_TRAVAIL . '",
+				"act": "edit",
+				"id": "' . $_REQUEST['id'] . '",
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"expanded": expanded
+			});
+			' . $afterActionList . '
+		}
+		evarisk("#leaf-' . $_REQUEST['id'] . ' td:first-child").children("span.nomFeuilleArbre").html("' . $_REQUEST['nom_unite_travail'] . '");
+	});
+</script>';
+						}
+						else
+						{
+							$messageInfo = '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Une erreur est survenue lors de l\'enregistrement de la fiche %s', 'evarisk') . '</strong></p>', __('de l\'unit&eacute; de travail', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_unite_travail']) . '"')) . '");
+		setTimeout(\'actionMessageHide("#message")\',7500);
+	});
+</script>';
+						}
 						echo $messageInfo;
-						break;
-					case 'edit':
-					case 'add':
-						echo '
-							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#leaf-' . $_POST['id'] . '").addClass("edited");
-									}
-								});
-							</script>';
-						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
-						break;
+					}
+					break;
 					case 'delete':
+					{
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteTravailPersistance.php' );
 						echo '
 							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									$(\'#partieEdition\').html(" ");
+								evarisk(document).ready(function() {
+									initialiseClassicalPage();
+									evarisk("#partieEdition").html(" ");
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
-					break;
-					
-					case 'defaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
-					break;
-					case 'DeleteDefaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto'], 'no');
-					break;
-					case 'deletePicture':
-						echo evaPhoto::deletePictureAction($_POST['table'], $_POST['idElement'], $_POST['idPicture']);
-					break;
-					case 'reloadGallery':
-						$script = 
-						'<script type="text/javascript">
-							$(document).ready(function(){
-								$(".qq-upload-list").hide();
-							});
-						</script>';
-						echo $script . evaPhoto::outputGallery($_POST['table'], $_POST['idElement']);
-					break;
-					case 'showGallery':
-						echo evaPhoto::getGallery($_POST['table'], $_POST['idElement']);
+					}
 					break;
 				}
 				break;
 			case TABLE_CATEGORIE_DANGER:
-				switch($_POST['act'])
-				{
+				switch($_REQUEST['act'])
+				{				
+					case 'transfert':
+					{
+						$fils = $_REQUEST['idElementSrc'];
+						$pere = $_REQUEST['idElementDest'];
+						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
+						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
+						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils))
+						//Le fils est une catégorie
+						{
+							$categorie = categorieDangers::getCategorieDanger($idFils);
+							$pereActu = Arborescence::getPere($_REQUEST['nom'], $categorie);
+							if($pereActu->id != $idPere)
+							{
+								$_REQUEST['act'] = 'update';
+								$_REQUEST['id'] = $idFils;
+								$_REQUEST['nom_categorie'] = $categorie->nom;
+								$_REQUEST['categorieMere'] = $idPere;
+								require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');
+							}
+						}
+						else
+						//Le fils est un danger
+						{
+							$idFils = str_replace('leaf-','', $fils);
+							evaDanger::transfertDanger($idFils, $idPere);
+						}
+					}
+					break;
 					case 'reloadComboDangers':
-						$idElement = eva_tools::IsValid_Variable($_POST['idElement']);
+					{
+						$formId = eva_tools::IsValid_Variable($_REQUEST['formId']);
+						$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
 						$dangers = categorieDangers::getDangersDeLaCategorie($idElement, 'Status="Valid"');
 						$script = '';
 						if($dangers[0]->id != null)
 						{
 							$script .= '
 								<script type="text/javascript">
-									$(document).ready(function(){
-										$("#needDangerCategory").show();';
+									evarisk(document).ready(function(){
+										evarisk("#needDangerCategory").show();';
 										if(count($dangers) > 1)
 										{
 											$script .= 
 										'
-										$("#divDangerFormRisque").show();
-										$("#boutonAvanceRisque").children("span:first").html("-");';
+										evarisk("#' . $formId . 'divDangerFormRisque").show();
+										evarisk("#boutonAvanceRisque").children("span:first").html("-");';
 										}
 										else
 										{
 											$script .= 
 										'
-										$("#divDangerFormRisque").hide();
-										$("#boutonAvanceRisque").children("span:first").html("+");';
+										evarisk("#' . $formId . 'divDangerFormRisque").hide();
+										evarisk("#boutonAvanceRisque").children("span:first").html("+");';
 										}
 							$script .= 
 									'})
@@ -418,17 +480,19 @@ if($_POST['post'] == 'true')
 						else
 						{
 							$script .= '
-								<script type="text/javascript">
-									$(document).ready(function(){
-										$("#needDangerCategory").hide();
-									})
-								</script>';
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#needDangerCategory").hide();
+	})
+</script>';
 						}
-						echo $script . EvaDisplayInput::afficherComboBox($dangers, 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $dangers[0]->id);
-						break;
+						echo $script . EvaDisplayInput::afficherComboBox($dangers, $formId . 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $dangers[0]->id);
+					}
+					break;
 					case 'save':
 					case 'update':
-						switch($_POST['act'])
+					{
+						switch($_REQUEST['act'])
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
@@ -440,41 +504,26 @@ if($_POST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');	
 						$messageInfo = '
 							<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la cat&eacute;gorie de dangers', 'evarisk') . ' "' . stripslashes($_POST['nom_categorie']) . '"', $action)) . '");
-									$("#message").show();
-									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
-									},7500);
-									
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+								evarisk(document).ready(function(){
+									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la cat&eacute;gorie de dangers', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_categorie']) . '"', $action)) . '");
+									setTimeout(\'actionMessageHide("#message")\',7500);
+
+									evarisk("#rightEnlarging").show();
+									evarisk("#equilize").click();
+									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_categorie'] . '</label>\');
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_categorie'] . '</label>\');
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_CATEGORIE_DANGER . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
+											"id": "' . $_REQUEST['id'] . '",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_CATEGORIE_DANGER . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -482,139 +531,44 @@ if($_POST['post'] == 'true')
 									else
 									{
 										var expanded = new Array();
-										$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_CATEGORIE_DANGER . '",
 											"act": "edit",
-											"id": "' . $_POST['id'] . '",
+											"id": "' . $_REQUEST['id'] . '",
 											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_CATEGORIE_DANGER . '",
-											"act": "edit",
-											"id": "' . $_POST['id'] . '",
-											"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
 									}
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 							</script>';
 						echo $messageInfo;
-						break;
-					case 'edit':
-					case 'add':
-					case 'changementPage':
-						echo '
-							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
-								});
-							</script>';
-						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
+					}
 					break;
 					case 'delete':
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');	
+					{
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');
 						echo '
 							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
+								evarisk(document).ready(function() {
+									initialiseClassicalPage();
+									evarisk("#partieEdition").html(" ");
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
-					break;
-
-					case 'defaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
-					break;
-					case 'DeleteDefaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto'], 'no');
-					break;
-					case 'deletePicture':
-						echo evaPhoto::deletePictureAction($_POST['table'], $_POST['idElement'], $_POST['idPicture']);
-					break;
-					case 'reloadGallery':
-						$script = 
-						'<script type="text/javascript">
-							$(document).ready(function(){
-								$(".qq-upload-list").hide();
-							});
-						</script>';
-						echo $script . evaPhoto::outputGallery($_POST['table'], $_POST['idElement']);
-					break;
-					case 'showGallery':
-						echo evaPhoto::getGallery($_POST['table'], $_POST['idElement']);
+					}
 					break;
 				}
 				break;
 			case TABLE_DANGER:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'save':
 					case 'update':
-						switch($_POST['act'])
+					{
+						switch($_REQUEST['act'])
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
@@ -626,42 +580,27 @@ if($_POST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/danger/dangerPersistance.php' );
 						$messageInfo = '
 							<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du danger', 'evarisk') . ' "' . stripslashes($_POST['nom_danger']) . '"', $action)) . '");
-									$("#message").show();
-									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
-									},7500);
+								evarisk(document).ready(function(){
+									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du danger', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_danger']) . '"', $action)) . '");
+									setTimeout(\'actionMessageHide("#message")\',7500);
 									
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_danger'] . '</label>\');
+									evarisk("#rightEnlarging").show();
+									evarisk("#equilize").click();
+									evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_danger'] . '</label>\');
 									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_DANGER . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
+											"id": "' . $_REQUEST['id'] . '",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_DANGER . '",
-											"id": "' . $_POST['id'] . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "left",
-				"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -669,121 +608,48 @@ if($_POST['post'] == 'true')
 									else
 									{
 										var expanded = new Array();
-										$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_DANGER . '",
 											"act": "edit",
-											"id": "' . $_POST['id'] . '",
+											"id": "' . $_REQUEST['id'] . '",
 											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_DANGER . '",
-											"act": "edit",
-											"id": "' . $_POST['id'] . '",
-											"partie": "left",
-				"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
 									}
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 							</script>';
 						echo $messageInfo;
-						break;
-					case 'edit':
-					case 'add':
-						echo '
-							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#leaf-' . $_POST['id'] . '").addClass("edited");
-									}
-								});
-							</script>';
-						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
-						break;
+					}
+					break;
 					case 'delete':
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/danger/dangerPersistance.php');	
+					{
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/danger/dangerPersistance.php');
 						echo '
 							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
+								evarisk(document).ready(function() {
+									initialiseClassicalPage();
+									evarisk("#partieEdition").html(" ");
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
+					}
 					break;
 				}
 				break;
 			case TABLE_UTILISE_EPI:
 				{
 					global $wpdb;
-					$tableElement = eva_tools::IsValid_Variable($_POST['tableElement']);
-					$idElement = (int)eva_tools::IsValid_Variable($_POST['idElement']);
+					$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
+					$idElement = (int)eva_tools::IsValid_Variable($_REQUEST['idElement']);
 					$sql = "DELETE FROM " . TABLE_UTILISE_EPI . " WHERE elementID = " . $idElement . " AND elementTable='" . $tableElement . "';";
 					$wpdb->query($sql);
 					unset($epiId);
 					$insert = '';
-					if(count($_POST['epis']) > 0)
-						foreach($_POST['epis'] as $epi)
+					if(count($_REQUEST['epis']) > 0)
+						foreach($_REQUEST['epis'] as $epi)
 						{
 							$epiId = (int)eva_tools::IsValid_Variable($epi);
 							$insert = $insert . "(" . $epiId . ", " . $idElement . ", '" . $tableElement . "'), ";
@@ -803,88 +669,283 @@ if($_POST['post'] == 'true')
 					}
 					echo '
 						<script type="text/javascript">
-							$(document).ready(function() {
-								
-								$(\'#messageEPI\').show();
-								$(\'#messageEPI\').addClass("updated");
-								$(\'#messageEPI\').html("' . addslashes($message) . '");
-								setTimeout(function(){
-									$(\'#messageEPI\').hide();
-									$(\'#messageEPI\').removeClass("updated");
-									},7500
-								);
+							evarisk(document).ready(function() {
+								actionMessageShow("#messageEPI", "' . addslashes($message) . ');
+								setTimeout(\'actionMessageHide("#message")\',7500);
 							});
 						</script>';
 				}
 				break;
 			case TABLE_RISQUE:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'save':
 						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_POST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_POST['description']);
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
+						$_REQUEST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']);
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
 						echo getFormulaireCreationRisque($tableElement, $idElement);
+					break;
+					case 'saveAdvanced':
+					{
+						$retourALaLigne = array("\r\n", "\n", "\r");
+						$_REQUEST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']);
+						$currentId = isset($_REQUEST['currentId']) ? (eva_tools::IsValid_Variable($_REQUEST['currentId'])) : '';
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');			
+						if($idRisque > 0)
+						{
+							$moreMessage = '
+	actionMessageShow("#' . $currentId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
+	setTimeout(\'evarisk("#' . $currentId . 'content").html("");evarisk("#' . $currentId . 'content").removeClass("updated");\',3000);';
+						}
+						else
+						{
+							$moreMessage = '
+	actionMessageShow("#' . $currentId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
+	setTimeout(\'evarisk("#' . $currentId . 'content").html("");evarisk("#' . $currentId . 'content").removeClass("updated");\',3000);';
+						}
+						require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
+
+						evaPhoto::associatePicture(TABLE_RISQUE, $idRisque, str_replace('picture', '', str_replace('_', '', $currentId)));
+						echo '
+<script type="text/javascript" >
+	evarisk("#addRiskByPictureButtonId' . $currentId . '").click();
+	evarisk("#riskAssociatedToPicture' . $currentId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_RISQUE . '",
+		"act":"reloadRiskAssociatedToPicture",
+		"idPicture":"' . str_replace('picture', '', str_replace('_', '', $currentId)) . '"
+	});
+	' . $moreMessage . '
+</script>';
+					}
+					break;
+					case 'associateRiskToPicture':
+					{
+						$tableElement = isset($_REQUEST['tableElement']) ? (eva_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
+						$idElement = isset($_REQUEST['idElement']) ? (eva_tools::IsValid_Variable($_REQUEST['idElement'])) : '';
+						$oldidPicture = isset($_REQUEST['oldidPicture']) ? (eva_tools::IsValid_Variable($_REQUEST['oldidPicture'])) : '';
+						$idPhoto = isset($_REQUEST['idPicture']) ? (eva_tools::IsValid_Variable($_REQUEST['idPicture'])) : '';
+
+						/*	Unassociate the risk to the picture	*/
+						if($oldidPicture != '')
+						{
+							evaPhoto::unAssociatePicture($tableElement, $idElement, str_replace('picture', '', str_replace('_', '', $oldidPicture)));
+							echo '
+<script type="text/javascript" >
+	evarisk("#riskAssociatedToPicture' . $oldidPicture . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_RISQUE . '",
+		"act":"reloadRiskAssociatedToPicture",
+		"idPicture":"' . str_replace('picture', '', str_replace('_', '', $oldidPicture)) . '"
+	});
+</script>';
+						}
+						/*	Associate the risk to the picture	*/
+						$associateResult = evaPhoto::associatePicture($tableElement, $idElement, str_replace('picture', '', str_replace('_', '', $idPhoto)));
+						echo '
+<script type="text/javascript" >
+	evarisk("#riskAssociatedToPicture' . $idPhoto . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_RISQUE . '",
+		"act":"reloadRiskAssociatedToPicture",
+		"idPicture":"' . str_replace('picture', '', str_replace('_', '', $idPhoto)) . '"
+	});
+</script>';
+					}
+					break;
+					case 'unAssociatePicture':
+					{
+						$tableElement = isset($_REQUEST['tableElement']) ? (eva_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
+						$idElement = isset($_REQUEST['idElement']) ? (eva_tools::IsValid_Variable($_REQUEST['idElement'])) : '';
+						$idPhoto = isset($_REQUEST['idPicture']) ? (eva_tools::IsValid_Variable($_REQUEST['idPicture'])) : '';
+
+						/*	Unassociate the risk to the picture	*/
+						if($idPhoto != '')
+						{
+							evaPhoto::unAssociatePicture($tableElement, $idElement, $idPhoto);
+							echo '
+<script type="text/javascript" >
+	if(evarisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_")){
+		evarisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . TABLE_RISQUE . '",
+			"act":"reloadRiskAssociatedToPicture",
+			"idPicture":"' . str_replace('picture', '', str_replace('_', '', $idPhoto)) . '"
+		});
+	}
+	if(evarisk("#associatedPictureContainer")){
+		evarisk("#associatedPictureContainer").html("");
+	}
+</script>';
+						}
+					}
+					break;
+					case 'reloadRiskAssociatedToPicture':
+						$idPicture = isset($_REQUEST['idPicture']) ? (eva_tools::IsValid_Variable($_REQUEST['idPicture'])) : '';
+						echo Risque::getRisqueAssociePhoto($idPicture);
 					break;
 					case 'delete':
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 					break;
 					case 'load':
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
-						echo '<script type="text/javascript">
-						$(document).ready(function() {
-							showRiskForm();
-						});
-					</script>' . getFormulaireCreationRisque($_POST['tableElement'], $_POST['idElement'], $_POST['idRisque']);
+						echo getFormulaireCreationRisque($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['idRisque']);
 					break;
 					case 'reloadVoirRisque' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
 						echo getVoirRisque($tableElement, $idElement);
 					break;
 					case 'voirRisqueLigne' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
 						echo documentUnique::bilanRisque($tableElement, $idElement, 'ligne');
+					break;
+					case 'reloadRiskForm' :
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
+						echo getFormulaireCreationRisque($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['idRisque']);
+					break;
+					case 'loadAdvancedRiskForm' :
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
+						echo getAvancedFormulaireCreationRisque($_REQUEST['tableElement'], $_REQUEST['idElement']);
 					break;
 					case 'voirRisqueUnite' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
 						echo documentUnique::bilanRisque($tableElement, $idElement, 'unite');
 					break;
-					case 'voirDocumentUnique' :
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
-						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >$(document).ready(function(){$("#ui-datepicker-div").hide();});</script>';
-					break;
-					case 'voirHistoriqueDocumentUnique' :
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
-						echo documentUnique::getDUERList($tableElement, $idElement);
-					break;
-					case 'saveDocumentUnique' :
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUniquePersistance.php');
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
-						$tableElement = $_POST['tableElement'];
-						$idElement = $_POST['idElement'];
-						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
+					case 'addRiskByPicture':
+					{
+						$addRiskByPictureForm = '';
+						$tableElement = isset($_REQUEST['tableElement']) ? (eva_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
+						$idElement = isset($_REQUEST['idElement']) ? (eva_tools::IsValid_Variable($_REQUEST['idElement'])) : '';
+						$currentId = isset($_REQUEST['currentId']) ? (eva_tools::IsValid_Variable($_REQUEST['currentId'])) : '';
+
+						{//Choix de la catégorie de dangers
+							$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation(NULL, $currentId);
+							$script .= $categorieDanger['script'];
+							$selectionCategorie = $categorieDanger['selectionCategorie'];
+							$addRiskByPictureForm .= $categorieDanger['list'];
+						}
+						{//Choix du danger
+							$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, NULL, $currentId);
+							$script .= $ListDanger['script'];
+							$addRiskByPictureForm .= $ListDanger['list'];
+						}
+
+						{//Choix de la méthode
+							$methodes = MethodeEvaluation::getMethods('Status="Valid"');
+							$script .= '
+							evarisk("#' . $currentId . 'methodeFormRisque").change(function(){
+								evarisk("#' . $currentId . 'divVariablesFormRisque").html(evarisk("#loadingImg").html());
+								evarisk("#' . $currentId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
+							});';
+							if($risque[0] != null)
+							{// Si l'on édite un risque, on sélectionne la bonne méthode
+								$idSelection = $risque[0]->id_methode;
+							}
+							else
+							{// Sinon on sélectionne la première méthode
+								$idSelection = $methodes[0]->id;
+							}
+							$selection = MethodeEvaluation::getMethod($idSelection);
+							$nombreMethode = count($methodes);
+							$afficheSelecteurMethode = '';
+							if($nombreMethode <= 1)
+							{
+								$afficheSelecteurMethode = ' display:none; ';
+							}
+							$addRiskByPictureForm .= '
+				<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $currentId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection) . '</div>';
+						}
+
+						{//Evaluation des variables
+							$script .= '
+					evarisk("#' . $currentId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), "idRisque": "0", "formId": "' . $currentId . '"});';
+							$addRiskByPictureForm .= '
+				<div id="' . $currentId . 'divVariablesFormRisque"></div><!-- /' . $currentId . 'divVariablesFormRisque -->';
+						}
+
+						{//Description
+							$contenuInput = '';
+							if($risque[0] != null)
+							{// Si l'on édite un risque, on remplit l'aire de texte avec sa description
+								$contenuInput = $risque[0]->commentaire;
+							}
+							$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
+							$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
+							$addRiskByPictureForm .= '
+				<div id="' . $currentId . 'divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', '' . $currentId . 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '100%', '') . '</div>';
+						}
+
+						{//Bouton enregistrer
+							$allVariables = MethodeEvaluation::getAllVariables();
+							$idBouttonEnregistrer = 'enregistrerFormRisque' . $currentId;
+							$scriptEnregistrement = 
+'<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#' . $idBouttonEnregistrer . '").click(function(){
+			var variables = new Array();';
+			foreach($allVariables as $variable)
+			{
+				$scriptEnregistrement .= '
+			variables["' . $variable->id . '"] = evarisk("#' . $currentId . 'var' . $variable->id . 'FormRisque").val();';
+			}
+			$scriptEnregistrement .= '
+			var historisation = true;
+			var correctivActions = "";
+			evarisk("#' . $currentId . 'content").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post":"true", 
+				"table":"' . TABLE_RISQUE . '", 
+				"act":"saveAdvanced", 
+				"tableElement":"' . $tableElement . '", 
+				"idElement":"' . $idElement . '", 
+				"idDanger":evarisk("#' . $currentId . 'dangerFormRisque").val(), 
+				"idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), 
+				"histo":historisation, 
+				"actionsCorrectives":correctivActions, 
+				"variables":variables, 
+				"description":evarisk("#' . $currentId . 'descriptionFormRisque").val(), 
+				"idRisque":"", 
+				"currentId":"' . $currentId . '"
+			});
+		});
+	});
+</script>';
+							$addRiskByPictureForm .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', 'save' . $currentId, false, false, '', 'button-primary alignright saveRiskFormButton', '', '', $scriptEnregistrement);
+						}
+
+						echo $addRiskByPictureForm . '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		' . $script . '
+	});
+</script>';
+					}
 					break;
 				}
 				break;
 			case TABLE_METHODE:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'reloadVariables':
-						$idMethode = eva_tools::IsValid_Variable($_POST['idMethode']);
-						$idRisque = eva_tools::IsValid_Variable($_POST['idRisque']);
+					{
+						$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode']);
+						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
+						$formId = (isset($_REQUEST['formId'])) ? eva_tools::IsValid_Variable($_REQUEST['formId']) : '';
 						unset($valeurInitialVariables);
 						if($idRisque != '')
 						{	
@@ -908,48 +969,25 @@ if($_POST['post'] == 'true')
 							}
 							{//Script de la variable
 								$affichage .= '<script type="text/javascript">
-									$(document).ready(function() {';
-								{//Gestion du script du slider
-									$affichage .= '
-										$("#slider-range-min' . $variable->id . '").slider({
+									evarisk(document).ready(function() {
+										evarisk("#' . $formId . 'slider-range-min' . $variable->id . '").slider({
 											range: "min",
 											value: ' . $valeurInitialVariable . ',
 											min:	' . $variable->min . ',
 											max:	' . $variable->max . ',
-											slide: function(event, ui) {
-												$("#var' . $variable->id . 'FormRisque").val(ui.value);
+											slide: function(event, ui){
+												evarisk("#' . $formId . 'var' . $variable->id . 'FormRisque").val(ui.value);
 											}
 										});
-										$("#var' . $variable->id . 'FormRisque").val($("#slider-range-min' . $variable->id . '").slider("value"));';
-								}
-								{//Gestion du script de la description
-									$affichage .= '
-										$("#plusVar' . $variable->id . 'FormRisque").click(function(){
-											$("#explicationVariable' . $variable->id . 'FormRisque").toggleClass("hidden");
-											if($("#explicationVariable' . $variable->id . 'FormRisque").is(".hidden"))
-											{
-												$("#plusVar' . $variable->id . 'FormRisque img").attr("src", "' . PICTO_EXPAND . '");
-												$("#plusVar' . $variable->id . 'FormRisque img").attr("alt", " + ");
-												$("#plusVar' . $variable->id . 'FormRisque img").attr("title", "Voir les explications");
-											}
-											else
-											{
-												$("#plusVar' . $variable->id . 'FormRisque img").attr("src", "' . PICTO_COLLAPSE . '");
-												$("#plusVar' . $variable->id . 'FormRisque img").attr("alt", " - ");
-												$("#plusVar' . $variable->id . 'FormRisque img").attr("title", "Cacher les explications");
-											}
-										});';
-								}
-								$affichage .= '
+										evarisk("#' . $formId . 'var' . $variable->id . 'FormRisque").val(evarisk("#' . $formId . 'slider-range-min' . $variable->id . '").slider("value"));
 									});
 								</script>';
 							}
 							{//Affichage de la variable
 								$affichage .= '
-									<span id="plusVar' . $variable->id . 'FormRisque" class="plusVariable"><img src="' . PICTO_EXPAND . '" alt=" + " title="Voir les explications" /><label for="var' . $variable->id . 'FormRisque">' . $variable->nom . ' :</label></span>
-									<input type="text" class="sliderValue" disabled="disabled" id="var' . $variable->id . 'FormRisque" name="variables[]" />
-									<div id="explicationVariable' . $variable->id . 'FormRisque" class="explicationVariable hidden">' . nl2br($variable->annotation) . '</div>
-									<div id="slider-range-min' . $variable->id . '" class="slider_variable"></div>';
+									<label for="' . $formId . 'var' . $variable->id . 'FormRisque">' . $variable->nom . ' :</label>
+									<input type="text" class="sliderValue" disabled="disabled" id="' . $formId . 'var' . $variable->id . 'FormRisque" name="' . $formId . 'variables[]" />
+									<div id="' . $formId . 'slider-range-min' . $variable->id . '" class="slider_variable"></div>';
 							}
 						}
 
@@ -1006,7 +1044,7 @@ if($_POST['post'] == 'true')
 								}
 								$taskToMatch .= '</table>';
 							}
-							
+
 							if(is_array($tachesAssocieesNonSoldees) && (options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui'))
 							{
 								$taskToMatch .= '<div style="text-align:justify;color:red;" >' . __('Des actions correctives sont actuellement en cours et ne sont pas sold&eacute;es. Si vous voulez lier la modification de ce risque &agrave; une de ces actions corrective, vous devez d\'abord solder celles-ci.', 'evarisk') . '</div>';
@@ -1022,16 +1060,18 @@ if($_POST['post'] == 'true')
 									<div id="explanationTab" >' . $methodExplanationPicture . '</div>
 								</div>
 								<script type="text/javascript" >
-									$(document).ready(function(){
-										$("#moreRiskAction").tabs();
+									evarisk(document).ready(function(){
+										evarisk("#moreRiskAction").tabs();
 									})
 								</script>';
 						}
 
 						echo '<div class="alignleft" style="width:30%;" >' . $affichage . '</div><div class="alignright" style="width:70%;" >' . $rightContainer . '</div>';
+					}
 					break;
 					case 'reloadVariables-FAC':
-						$idRisque = eva_tools::IsValid_Variable($_POST['idRisque']);
+					{
+						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
 						unset($valeurInitialVariables);
 						if($idRisque != '')
 						{	
@@ -1057,22 +1097,17 @@ if($_POST['post'] == 'true')
 							}
 							{//Script de la variable
 								$affichage .= '<script type="text/javascript">
-									$(document).ready(function() {
-										// alert("valeur ' . $valeurInitialVariable . '");';
-								{//Gestion du script du slider
-									$affichage .= '
-										$("#slider-range-min-FAC' . $variable->id . '").slider({
+									evarisk(document).ready(function(){
+										evarisk("#slider-range-min-FAC' . $variable->id . '").slider({
 											range: "min",
 											value: ' . $valeurInitialVariable . ',
 											min:	' . $variable->min . ',
 											max:	' . $variable->max . ',
-											slide: function(event, ui) {
-												$("#var' . $variable->id . 'FormRisque-FAC").val(ui.value);
+											slide: function(event, ui){
+												evarisk("#var' . $variable->id . 'FormRisque-FAC").val(ui.value);
 											}
 										});
-										$("#var' . $variable->id . 'FormRisque-FAC").val($("#slider-range-min-FAC' . $variable->id . '").slider("value"));';
-								}
-								$affichage .= '
+										evarisk("#var' . $variable->id . 'FormRisque-FAC").val(evarisk("#slider-range-min-FAC' . $variable->id . '").slider("value"));
 									});
 								</script>';
 							}
@@ -1096,67 +1131,81 @@ if($_POST['post'] == 'true')
 						$rightContainer = $methodExplanationPicture;
 
 						echo '<div class="alignleft" style="width:30%;" >' . $affichage . '</div><div class="alignright" style="width:70%;" >' . $rightContainer . '</div>';
-					break;
-					case 'defaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
-					break;
-					case 'DeleteDefaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto'], 'no');
-					break;
-					case 'deletePicture':
-						echo evaPhoto::deletePictureAction($_POST['table'], $_POST['idElement'], $_POST['idPicture']);
-					break;
-					case 'reloadGallery':
-						$script = 
-						'<script type="text/javascript">
-							$(document).ready(function(){
-								$(".qq-upload-list").hide();
-							});
-						</script>';
-						echo $script . evaPhoto::outputGallery($_POST['table'], $_POST['idElement']);
-					break;
-					case 'showGallery':
-						echo evaPhoto::getGallery($_POST['table'], $_POST['idElement']);
+					}
 					break;
 				}
 			break;
 			case TABLE_GROUPE_QUESTION:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
+					case 'transfert':
+					{
+						$fils = $_REQUEST['idElementSrc'];
+						$pere = $_REQUEST['idElementDest'];
+						$pereOriginel = $_REQUEST['idElementOrigine'];
+						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
+						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
+						$idPereOriginel = str_replace('node-' . $_REQUEST['location'] . '-','', $pereOriginel);
+						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils))
+						//Le fils est un groupe de questions
+						{
+							$idFils = str_replace('node-' . $_REQUEST['location'] . '-','', $fils);
+							$groupeQuestion = evaGroupeQuestions::getGroupeQuestions($idFils);
+							$pereActu = Arborescence::getPere($_REQUEST['nom'], $groupeQuestion);
+							if($pereActu->id != $idPere)
+							{
+								$_REQUEST['act'] = 'update';
+								$_REQUEST['id'] = $groupeQuestion->id;
+								$_REQUEST['nom'] = $groupeQuestion->nom;
+								$_REQUEST['code'] = $groupeQuestion->code;
+								$_REQUEST['idPere'] = $idPere;
+								require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
+							}
+						}
+						else
+						//Le fils est une question
+						{
+							$idFils = str_replace('leaf-','', $fils);
+							evaQuestion::transfertQuestion($idFils, $idPere, $idPereOriginel);
+						}
+					}
+					break;
 					case 'save':
-						switch($_POST['choix'])
+					{
+						switch($_REQUEST['choix'])
 						{
 							case 'titre':
-								if($_POST['nom'] != null and $_POST['nom'] != '')
+								if($_REQUEST['nom'] != null and $_REQUEST['nom'] != '')
 								{
 									$retourALaLigne = array("\r\n", "\n", "\r");
-									$_POST['nom'] = str_replace($retourALaLigne, "[retourALaLigne]",$_POST['nom']);
-									$_POST['extrait'] = null;
+									$_REQUEST['nom'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['nom']);
+									$_REQUEST['extrait'] = null;
 									require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
 								}
 								break;
 						}
-						break;
-						
+					}
+					break;
 					case 'update':
-						switch($_POST['choix'])
+					{
+						switch($_REQUEST['choix'])
 						{
 							case 'titre':
-								if($_POST['nom'] != null and $_POST['nom'] != '')
+								if($_REQUEST['nom'] != null and $_REQUEST['nom'] != '')
 								{ 
 									$retourALaLigne = array("\r\n", "\n", "\r");
-									$_POST['nom'] = str_replace($retourALaLigne, "[retourALaLigne]",$_POST['nom']);
-									$temp = EvaGroupeQuestions::getGroupeQuestions($_POST['id']);
-									$temp = Arborescence::getPere($_POST['table'],$temp);
-									$_POST['idPere'] = $temp->id;
+									$_REQUEST['nom'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['nom']);
+									$temp = EvaGroupeQuestions::getGroupeQuestions($_REQUEST['id']);
+									$temp = Arborescence::getPere($_REQUEST['table'],$temp);
+									$_REQUEST['idPere'] = $temp->id;
 									require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
 								}
 								break;
 						}
-						break;
-						
+					}
+					break;
 					case 'addExtrait' :
-						$groupeQuestion = EvaGroupeQuestions::getGroupeQuestions($_POST['idGroupeQuestion']);
+						$groupeQuestion = EvaGroupeQuestions::getGroupeQuestions($_REQUEST['idGroupeQuestion']);
 						if($groupeQuestion->extraitTexte != null AND $groupeQuestion->extraitTexte != '')
 						{
 							$extraitActuel = $groupeQuestion->extraitTexte . "
@@ -1168,96 +1217,79 @@ if($_POST['post'] == 'true')
 							$extraitActuel = '';
 						}
 						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_POST['extrait'] = str_replace($retourALaLigne, "[retourALaLigne]",$extraitActuel . $_POST['extrait']);
-						$_POST['act'] = "addExtrait";
+						$_REQUEST['extrait'] = str_replace($retourALaLigne, "[retourALaLigne]",$extraitActuel . $_REQUEST['extrait']);
+						$_REQUEST['act'] = "addExtrait";
 						unset($extraitActuel);
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
-						break;
+					break;
 					case 'reloadCombo':
-						$racine = $wpdb->get_row( 'SELECT * FROM ' . TABLE_GROUPE_QUESTION . ' where nom="' . $_POST['nomRacine'] . '"');
+						$racine = $wpdb->get_row( 'SELECT * FROM ' . TABLE_GROUPE_QUESTION . ' where nom="' . $_REQUEST['nomRacine'] . '"');
 						$valeurDefaut = $racine->nom;
-						$selection = $_POST['selection'];
-						echo evaDisplayInput::afficherComboBoxArborescente($racine, TABLE_GROUPE_QUESTION, $_POST['idSelect'], $_POST['labelSelect'], $_POST['nameSelect'], $valeurDefaut, $selection);
-						break;
+						$selection = $_REQUEST['selection'];
+						echo evaDisplayInput::afficherComboBoxArborescente($racine, TABLE_GROUPE_QUESTION, $_REQUEST['idSelect'], $_REQUEST['labelSelect'], $_REQUEST['nameSelect'], $valeurDefaut, $selection);
+					break;
 					case 'reloadTableArborescente':
-						$racine = EvaGroupeQuestions::getGroupeQuestions($_POST['idRacine']);
-						$nomRacine = $_POST['nomRacine'];
-						$idTable = $_POST['idTable'];
-						echo evaDisplayDesign::getTableArborescence($racine, $_POST['table'], $idTable, $nomRacine);
-						break;
+						$racine = EvaGroupeQuestions::getGroupeQuestions($_REQUEST['idRacine']);
+						$nomRacine = $_REQUEST['nomRacine'];
+						$idTable = $_REQUEST['idTable'];
+						echo evaDisplayDesign::getTableArborescence($racine, $_REQUEST['table'], $idTable, $nomRacine);
+					break;
 				}
 				break;
 			case TABLE_QUESTION:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'edit':
 					case 'save':
-						$_POST['code'] = '';
+						$_REQUEST['code'] = '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_POST['enonce'] = str_replace($retourALaLigne, "[retourALaLigne]",$_POST['enonce']);
+						$_REQUEST['enonce'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['enonce']);
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/questionPersistance.php');
 					break;
 				}
 				break;
-			case TABLE_PHOTO:
-				switch($_POST['act'])
-				{
-					case 'save':
-					case 'edit':
-						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_POST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_POST['description']);
-						require_once(EVA_MODULES_PLUGIN_DIR . 'photo/photoPersistance.php');
-					break;
-				}
-				break;
 			case TABLE_TACHE:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
-					case 'edit':
-					case 'add':
-					case 'changementPage':
+					case 'transfert':
 					{
-						echo '
-							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#node-' . $_GET['location'] . '-' . $_POST['id'] . '").addClass("edited");
-									}
-								});
-							</script>';
-						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
+						$fils = $_REQUEST['idElementSrc'];
+						$pere = $_REQUEST['idElementDest'];
+						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
+						$idOrigine = str_replace('node-' . $_REQUEST['location'] . '-','', $_REQUEST['idElementOrigine']);
+						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
+						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)) //Le fils est une tâche
+						{
+							$tache = new EvaTask($idFils);
+							$tache->load();
+							$tache->transfert($idPere);
+						}
+						else //Le fils est une activité
+						{
+							$idFils = str_replace('leaf-','', $fils);
+							$activite = new EvaActivity($idFils);
+							$activite->load();
+							$activite->transfert($idPere);
+
+							/*	Update the action ancestor	*/
+							$relatedTask = new EvaTask($idPere);
+							$relatedTask->load();
+							$relatedTask->computeProgression();
+							$relatedTask->save();
+							unset($relatedTask);
+
+							/*	Update the action ancestor	*/
+							$relatedTask = new EvaTask($idOrigine);
+							$relatedTask->load();
+							$relatedTask->computeProgression();
+							$relatedTask->save();
+						}
 					}
 					break;
 					case 'updateProvenance':
 					{
-						$id = eva_tools::IsValid_Variable($_POST['id']);
-						$provenance = eva_tools::IsValid_Variable($_POST['provenance']);
+						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
+						$provenance = eva_tools::IsValid_Variable($_REQUEST['provenance']);
 						$provenanceComponents = explode('_-_', $provenance);
 
 						$tache = new EvaTask($id);
@@ -1268,7 +1300,7 @@ if($_POST['post'] == 'true')
 
 						if($tache->getStatus() != 'error')
 						{
-							$updateMessage = '$("#messageh' . $_POST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e', 'evarisk') . '</strong></p>') . '");';
+							$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e', 'evarisk') . '</strong></p>') . '");';
 
 							switch($provenanceComponents[0])
 							{
@@ -1293,21 +1325,21 @@ if($_POST['post'] == 'true')
 						}
 						else
 						{
-							$updateMessage = '$("#messageh' . $_POST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che n\'a pas &eacute;t&eacute; effectu&eacute;e.', 'evarisk') . '</strong></p>') . '");';
+							$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che n\'a pas &eacute;t&eacute; effectu&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 						}
 						
 						$messageInfo =
 							'<script type="text/javascript">
-								$(document).ready(function(){
-									$("#savingLinkTaskElement").html("");
-									$("#savingLinkTaskElement").hide();
-									$("#saveLinkTaskElement").show();
-									$("#messageh' . $_POST['table'] . '").addClass("updated");
+								evarisk(document).ready(function(){
+									evarisk("#savingLinkTaskElement").html("");
+									evarisk("#savingLinkTaskElement").hide();
+									evarisk("#saveLinkTaskElement").show();
+									evarisk("#messageh' . $_REQUEST['table'] . '").addClass("updated");
 									' . $updateMessage . '
-									$("#messageh' . $_POST['table'] . '").show();
+									evarisk("#messageh' . $_REQUEST['table'] . '").show();
 									setTimeout(function(){
-										$("#messageh' . $_POST['table'] . '").removeClass("updated");
-										$("#messageh' . $_POST['table'] . '").hide();
+										evarisk("#messageh' . $_REQUEST['table'] . '").removeClass("updated");
+										evarisk("#messageh' . $_REQUEST['table'] . '").hide();
 									},7500);
 								});
 							</script>';
@@ -1319,7 +1351,7 @@ if($_POST['post'] == 'true')
 					case 'taskDone':
 					{
 						global $wpdb;
-						switch($_POST['act'])
+						switch($_REQUEST['act'])
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
@@ -1331,15 +1363,15 @@ if($_POST['post'] == 'true')
 								$action = __('sold&eacute;e', 'evarisk');
 								break;
 						}	
-						$tache = new EvaTask($_POST['id']);
+						$tache = new EvaTask($_REQUEST['id']);
 						$tache->load();
-						$tache->setName($_POST['nom_tache']);
-						$tache->setDescription($_POST['description']);
-						$tache->setIdFrom($_POST['idProvenance']);
-						$tache->setTableFrom($_POST['tableProvenance']);
+						$tache->setName($_REQUEST['nom_tache']);
+						$tache->setDescription($_REQUEST['description']);
+						$tache->setIdFrom($_REQUEST['idProvenance']);
+						$tache->setTableFrom($_REQUEST['tableProvenance']);
 						$tache->setProgressionStatus('inProgress');
-						$tache->setidResponsable($_POST['responsable_tache']);
-						if($_POST['act'] == 'taskDone')
+						$tache->setidResponsable($_REQUEST['responsable_tache']);
+						if($_REQUEST['act'] == 'taskDone')
 						{
 							global $current_user;
 							$tache->setidSoldeur($current_user->ID);
@@ -1358,67 +1390,43 @@ if($_POST['post'] == 'true')
 							$racine->setRightLimit(($racine->getRightLimit()) + 2);
 							$racine->save();
 						}
+						$tache->computeProgression();
 						$tache->save();
 						$tacheMere = new EvaTask();
 						$tacheMere->convertWpdb(Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb()));
-						if($_POST['idPere'] != $tacheMere->getId())
+						if($_REQUEST['idPere'] != $tacheMere->getId())
 						{
-							$tache->transfert($_POST['idPere']);
+							$tache->transfert($_REQUEST['idPere']);
 						}
-						$messageInfo = '<script type="text/javascript">';
+						$messageInfo = '<script type="text/javascript">
+								evarisk(document).ready(function(){';
 						if($tache->getStatus() != 'error')
 						{
 							$messageInfo = $messageInfo . '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_POST['nom_tache']) . '"', $action)) . '");
-									$("#message").show();
-									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
-									},7500);';
+									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
+									setTimeout(\'actionMessageHide("#message")\',7500);';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_POST['nom_tache']) . '"', $action)) . '");
-									$("#message").show();
-									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
-									},7500);';
+									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
+									setTimeout(\'actionMessageHide("#message")\',7500);';
 						}
 						$messageInfo = $messageInfo . '
-									// $(\'#rightEnlarging\').show();
-									// $(\'#equilize\').click();
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_tache'] . '</label>\');
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_tache'] . '</label>\');
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_TACHE . '",
 											"id": "' . $tache->getId() . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "right",
-											"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_TACHE . '",
-											"id": "' . $tache->getId() . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "left",
-											"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -1426,22 +1434,13 @@ if($_POST['post'] == 'true')
 									else
 									{
 										var expanded = new Array();
-										$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_TACHE . '",
 											"act": "edit",
 											"id": "' . $tache->getId() . '",
 											"partie": "right",
-											"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_TACHE . '",
-											"act": "edit",
-											"id": "' . $tache->getId() . '",
-											"partie": "left",
-											"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
@@ -1453,7 +1452,7 @@ if($_POST['post'] == 'true')
 					break;
 					case 'delete':
 					{
-						$tache = new EvaTask($_POST['id']);
+						$tache = new EvaTask($_REQUEST['id']);
 						$tache->load();
 						$tache->setStatus('Deleted');
 						$tache->save();
@@ -1462,46 +1461,44 @@ if($_POST['post'] == 'true')
 						if($tache->getStatus() != 'error')
 						{
 							$messageInfo = $messageInfo . '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($tache->getName()) . '"')) . '");
-									$("#message").show();
+								evarisk(document).ready(function(){
+									evarisk("#message").addClass("updated");
+									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($tache->getName()) . '"')) . '");
+									evarisk("#message").show();
 									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
+										evarisk("#message").removeClass("updated");
+										evarisk("#message").hide();
 									},7500);';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($tache->getName()) . '"')) . '");
-									$("#message").show();
+								evarisk(document).ready(function(){
+									evarisk("#message").addClass("updated");
+									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($tache->getName()) . '"')) . '");
+									evarisk("#message").show();
 									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
+										evarisk("#message").removeClass("updated");
+										evarisk("#message").hide();
 									},7500);';
 						}
 						$messageInfo = $messageInfo . '
-									$("#rightEnlarging").show();
-									$("#equilize").click();
-									// $("#partieEdition").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $("#partieGauche").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+									evarisk("#rightEnlarging").show();
+									evarisk("#equilize").click();
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($("#filAriane :last-child").is("label"))
-											$("#filAriane :last-child").remove();
-										$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_tache'] . '</label>");
-										$("#partieEdition").html("");
-										$("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_tache'] . '</label>");
+										evarisk("#partieEdition").html("");
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_TACHE . '",
 											"id": "' . $tache->getId() . '",
-											"page": $("#pagemainPostBoxReference").val(),
-											"idPere": $("#identifiantActuellemainPostBox").val(),
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "left",
-											"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -1509,14 +1506,14 @@ if($_POST['post'] == 'true')
 									else
 									{
 										var expanded = new Array();
-										$(".expanded").each(function(){expanded.push($(this).attr("id"));});
-										$("#partieEdition").html("");
-										$("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").html("");
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_TACHE . '",
 											"act": "edit",
 											"id": "' . $tache->getId() . '",
 											"partie": "left",
-											"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
@@ -1529,55 +1526,14 @@ if($_POST['post'] == 'true')
 				}
 				break;
 			case TABLE_ACTIVITE:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
-					case 'edit':
-					case 'add':
-					case 'changementPage':
-					{
-						echo '
-							<script type="text/javascript">
-								$(document).ready(function() {
-									if($(\'#rightSide-sortables\').html() == "")
-										$(\'#rightEnlarging\').hide();
-									else
-										$(\'#rightEnlarging\').show();
-									if($(\'#leftSide-sortables\').html() == "")
-										$(\'#leftEnlarging\').hide();
-									else
-										$(\'#leftEnlarging\').show();
-									
-									if("' . $_POST['affichage'] . '" == "affichageTable")
-									{
-										$("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-											for(var i=1; i<=$(this).children("td").length; i++)
-											{
-												if($(this).children("td:nth-child(" + i + ")").children("img").attr("id") == "photo' . $_POST['table'] . $_POST['id'] . '")
-												{												
-													$(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
-													// 3 * i car nomInfo + : + info
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-													$(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
-												}
-											}
-										});
-									}
-									else
-									{
-										$("#leaf-' . $_POST['id'] . '").addClass("edited");
-									}
-								});
-							</script>';
-						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
-						break;
-					}
 					case 'save':
 					case 'update':
 					case 'actionDone':
 					{
 						global $wpdb;
-						switch($_POST['act'])
+						switch($_REQUEST['act'])
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
@@ -1587,24 +1543,24 @@ if($_POST['post'] == 'true')
 								$action = __('mise &agrave; jour', 'evarisk');
 								break;
 						}
-						$activite = new EvaActivity($_POST['id']);
+						$activite = new EvaActivity($_REQUEST['id']);
 						$activite->load();
-						$activite->setName($_POST['nom_activite']);
-						$activite->setDescription($_POST['description']);
-						$activite->setRelatedTaskId($_POST['idPere']);
-						$activite->setStartDate($_POST['date_debut']);
-						$activite->setFinishDate($_POST['date_fin']);
-						$activite->setCout($_POST['cout']);
-						$activite->setProgression($_POST['avancement']);
+						$activite->setName($_REQUEST['nom_activite']);
+						$activite->setDescription($_REQUEST['description']);
+						$activite->setRelatedTaskId($_REQUEST['idPere']);
+						$activite->setStartDate($_REQUEST['date_debut']);
+						$activite->setFinishDate($_REQUEST['date_fin']);
+						$activite->setCout($_REQUEST['cout']);
+						$activite->setProgression($_REQUEST['avancement']);
 						$activite->setProgressionStatus('inProgress');
-						if(($_POST['avancement'] == '100') || ($_POST['act'] == 'actionDone'))
+						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone'))
 						{
 							$activite->setProgressionStatus('Done');
 							global $current_user;
 							$activite->setidSoldeur($current_user->ID);
 							$activite->setdateSolde(date('Y-m-d H:i:s'));
 						}
-						$activite->setidResponsable($_POST['responsable_activite']);
+						$activite->setidResponsable($_REQUEST['responsable_activite']);
 						$activite->save();
 
 						/*	Update the action ancestor	*/
@@ -1630,50 +1586,40 @@ if($_POST['post'] == 'true')
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo .= '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");';
+								evarisk(document).ready(function(){
+									evarisk("#message").addClass("updated");
+									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");';
+								evarisk(document).ready(function(){
+									evarisk("#message").addClass("updated");
+									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
 						}
 						$messageInfo .= '
-									$("#message").show();
+									evarisk("#message").show();
 									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
+										evarisk("#message").removeClass("updated");
+										evarisk("#message").hide();
 									},7500);
 
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+									evarisk("#rightEnlarging").show();
+									evarisk("#equilize").click();
+									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($(\'#filAriane :last-child\').is("label"))
-											$(\'#filAriane :last-child\').remove();
-										$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_activite'] . '</label>\');
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_activite'] . '</label>\');
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"id": "' . $activite->getId() . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_ACTIVITE . '",
-											"id": "' . $activite->getId() . '",
-											"page": $(\'#pagemainPostBoxReference\').val(),
-											"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-											"act": "edit",
-											"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -1681,55 +1627,44 @@ if($_POST['post'] == 'true')
 									else
 									{
 										var expanded = new Array();
-										$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-										$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "edit",
 											"id": "' . $activite->getId() . '",
 											"partie": "right",
-				"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"expanded": expanded
-										});
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-											"table": "' . TABLE_ACTIVITE . '",
-											"act": "edit",
-											"id": "' . $activite->getId() . '",
-											"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
 									}
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 							</script>';
 						echo $messageInfo;
-						break;
 					}
+					break;
 					case 'update-FAC':
 					{
 						$action = __('mise &agrave; jour', 'evarisk');
 
-						$activite = new EvaActivity($_POST['id']);
+						$activite = new EvaActivity($_REQUEST['id']);
 						$activite->load();
-						$activite->setName($_POST['nom_activite']);
-						$activite->setDescription($_POST['description']);
-						$activite->setRelatedTaskId($_POST['idPere']);
-						$activite->setStartDate($_POST['date_debut']);
-						$activite->setFinishDate($_POST['date_fin']);
-						$activite->setCout($_POST['cout']);
-						$activite->setProgression($_POST['avancement']);
+						$activite->setName($_REQUEST['nom_activite']);
+						$activite->setDescription($_REQUEST['description']);
+						$activite->setRelatedTaskId($_REQUEST['idPere']);
+						$activite->setStartDate($_REQUEST['date_debut']);
+						$activite->setFinishDate($_REQUEST['date_fin']);
+						$activite->setCout($_REQUEST['cout']);
+						$activite->setProgression($_REQUEST['avancement']);
 						$activite->setProgressionStatus('inProgress');
-						if(($_POST['avancement'] == '100') || ($_POST['act'] == 'actionDone'))
+						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone'))
 						{
 							$activite->setProgressionStatus('Done');
 							global $current_user;
 							$activite->setidSoldeur($current_user->ID);
 							$activite->setdateSolde(date('Y-m-d H:i:s'));
 						}
-						$activite->setidResponsable($_POST['responsable_activite']);
+						$activite->setidResponsable($_REQUEST['responsable_activite']);
 						$activite->save();
 
 						/*	Update the action ancestor	*/
@@ -1751,16 +1686,16 @@ if($_POST['post'] == 'true')
 							unset($ancestorTask);
 						}
 
-						$idRisque = eva_tools::IsValid_Variable($_POST['idProvenance']);
+						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
 						$risque = Risque::getRisque($idRisque);
-						$_POST['idRisque'] = $idRisque;
-						$_POST['idDanger'] = $risque[0]->id_danger;
-						$_POST['idMethode'] = $risque[0]->id_methode;
-						$_POST['description'] = $risque[0]->commentaire;
-						$_POST['idElement'] = $risque[0]->id_element;
-						$_POST['tableElement'] = $risque[0]->nomTableElement;
-						$_POST['act'] = 'save';
-						$_POST['histo'] = 'true';
+						$_REQUEST['idRisque'] = $idRisque;
+						$_REQUEST['idDanger'] = $risque[0]->id_danger;
+						$_REQUEST['idMethode'] = $risque[0]->id_methode;
+						$_REQUEST['description'] = $risque[0]->commentaire;
+						$_REQUEST['idElement'] = $risque[0]->id_element;
+						$_REQUEST['tableElement'] = $risque[0]->nomTableElement;
+						$_REQUEST['act'] = 'save';
+						$_REQUEST['histo'] = 'true';
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 
 						/*	Make the link between a corrective action and a risk evaluation	*/
@@ -1772,32 +1707,32 @@ if($_POST['post'] == 'true')
 									AND Status = 'Valid' 
 								ORDER BY id DESC 
 								LIMIT 1", 
-								$_POST['idProvenance']
+								$_REQUEST['idProvenance']
 							);
 						$evaluation = $wpdb->get_row($query);
 						evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $relatedTask->getId(), 'after');
 
 						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){';
+							evarisk(document).ready(function(){';
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo .= '
-								$("#message' . TABLE_RISQUE . '").addClass("updated");
-								$("#message' . TABLE_RISQUE . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");';
+								evarisk("#message' . TABLE_RISQUE . '").addClass("updated");
+								evarisk("#message' . TABLE_RISQUE . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-								$("#message' . TABLE_RISQUE . '").addClass("updated");
-								$("#message' . TABLE_RISQUE . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', $action)) . '");';
+								evarisk("#message' . TABLE_RISQUE . '").addClass("updated");
+								evarisk("#message' . TABLE_RISQUE . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
 						}
 						$messageInfo .= '
-								$("#message' . TABLE_RISQUE . '").show();
+								evarisk("#message' . TABLE_RISQUE . '").show();
 								setTimeout(function(){
-									$("#message' . TABLE_RISQUE . '").removeClass("updated");
-									$("#message' . TABLE_RISQUE . '").hide();
+									evarisk("#message' . TABLE_RISQUE . '").removeClass("updated");
+									evarisk("#message' . TABLE_RISQUE . '").hide();
 								},7500);
-								$("#ongletVoirLesRisques").click();
+								evarisk("#ongletVoirLesRisques").click();
 							});
 						</script>';
 						echo $messageInfo;
@@ -1805,8 +1740,8 @@ if($_POST['post'] == 'true')
 					break;
 					case 'pictureLoad':
 					{
-						$tableElement = $_POST['table'];
-						$idElement = $_POST['idElement'];
+						$tableElement = $_REQUEST['table'];
+						$idElement = $_REQUEST['idElement'];
 						$repertoireDestination = str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/');
 						$allowedExtensions = "['jpeg','jpg','png','gif']";
 						$multiple = false;
@@ -1814,19 +1749,19 @@ if($_POST['post'] == 'true')
 						$gallery = '<table summary="upload picture before and after corrective action" cellpadding="0" cellspacing="0" style="width:100%;" >
 							<tr>
 								<td id="pictureBeforeContainer" >
-									<div id="uploadButtonBefore" >' . evaPhoto::getFormulaireUploadPhoto($_POST['table'], $_POST['idElement'], '', 'pictureBeforeForm', $allowedExtensions, $multiple, str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "actionsCorrectives/activite/uploadPhotoAvant.php"), $photoDefaut, __('Envoyer la photo avant', 'evarisk'), 'loadPictureBeforeAC();') . '</div>
+									<div id="uploadButtonBefore" >' . evaPhoto::getFormulaireUploadPhoto($_REQUEST['table'], $_REQUEST['idElement'], '', 'pictureBeforeForm', $allowedExtensions, $multiple, str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "actionsCorrectives/activite/uploadPhotoAvant.php"), $photoDefaut, __('Envoyer la photo avant', 'evarisk'), 'loadPictureBeforeAC();') . '</div>
 									<div id="pictureBefore" >&nbsp;</div>
 								</td>
 								<td id="pictureAfterContainer" >
-									<div id="uploadButtonAfter" >' . evaPhoto::getFormulaireUploadPhoto($_POST['table'], $_POST['idElement'], '', 'pictureAfterForm', $allowedExtensions, $multiple, str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "actionsCorrectives/activite/uploadPhotoApres.php"), $photoDefaut, __('Envoyer la photo apr&egrave;s', 'evarisk'), 'loadPictureAfterAC();') . '</div>
+									<div id="uploadButtonAfter" >' . evaPhoto::getFormulaireUploadPhoto($_REQUEST['table'], $_REQUEST['idElement'], '', 'pictureAfterForm', $allowedExtensions, $multiple, str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "actionsCorrectives/activite/uploadPhotoApres.php"), $photoDefaut, __('Envoyer la photo apr&egrave;s', 'evarisk'), 'loadPictureAfterAC();') . '</div>
 									<div id="PictureAfter" >&nbsp;</div>
 								</td>
 							</tr>
 						</table>
 						<script type="text/javascript" >
 							function loadPictureBeforeAC(){
-								$(".qq-upload-list").hide();
-								$("#pictureBefore").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								evarisk(".qq-upload-list").hide();
+								evarisk("#pictureBefore").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post":"true", 
 									"nom":"loadPictureAC",
 									"act":"before",
@@ -1835,8 +1770,8 @@ if($_POST['post'] == 'true')
 								});
 							}
 							function loadPictureAfterAC(){
-								$(".qq-upload-list").hide();
-								$("#PictureAfter").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								evarisk(".qq-upload-list").hide();
+								evarisk("#PictureAfter").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post":"true", 
 									"nom":"loadPictureAC",
 									"act":"after",
@@ -1844,25 +1779,25 @@ if($_POST['post'] == 'true')
 									"idProvenance": "' . $idElement . '"
 								});
 							}
-							$(document).ready(function(){
-								$("#uploadButtonBefore .qq-upload-button").css("width", "90%");
-								$("#uploadButtonAfter .qq-upload-button").css("width", "90%");
+							evarisk(document).ready(function(){
+								evarisk("#uploadButtonBefore .qq-upload-button").css("width", "90%");
+								evarisk("#uploadButtonAfter .qq-upload-button").css("width", "90%");
 							});
 						</script>';
 						echo $gallery;
-						// echo evaPhoto::galleryContent($_POST['table'], $_POST['idElement']);
+						// echo evaPhoto::galleryContent($_REQUEST['table'], $_REQUEST['idElement']);
 					}
 					break;
 					case 'actualiserAvancement':
 					{
-						$activites = $_POST['activites'];
+						$activites = $_REQUEST['activites'];
 						$status = 'Valid';
 						foreach($activites as $idActivite => $avancementActivite)
 						{
 							$activite = new EvaActivity($idActivite);
 							$activite->load();
 							$activite->setProgression($avancementActivite);
-							if($_POST['avancement'] == '100')
+							if($_REQUEST['avancement'] == '100')
 							{
 								$activite->setProgressionStatus('Done');
 								global $current_user;
@@ -1894,26 +1829,26 @@ if($_POST['post'] == 'true')
 						}
 						
 						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . $_POST['tableProvenance'] . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
 						if($status != 'error')
 						{
 							$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
 						}
 						$messageInfo = $messageInfo . '
-									$("#message' . $_POST['tableProvenance'] . '").show();
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
 									setTimeout(function(){
-										$("#message' . $_POST['tableProvenance'] . '").removeClass("updated");
-										$("#message' . $_POST['tableProvenance'] . '").hide();
+										evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
 									},7500);
-									$("#divSuiviAction' . $_POST['tableProvenance'] . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"suiviAction",	"tableProvenance":"' . $_POST['tableProvenance'] . '", "idProvenance": "' . $_POST['idProvenance'] . '"});
-									$("#divSuiviAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+									evarisk("#divSuiviAction' . $_REQUEST['tableProvenance'] . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"suiviAction",	"tableProvenance":"' . $_REQUEST['tableProvenance'] . '", "idProvenance": "' . $_REQUEST['idProvenance'] . '"});
+									evarisk("#divSuiviAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
 								});
 							</script>';
 						echo $messageInfo;
@@ -1921,7 +1856,7 @@ if($_POST['post'] == 'true')
 					break;
 					case 'delete':
 					{
-						$activite = new EvaActivity($_POST['id']);
+						$activite = new EvaActivity($_REQUEST['id']);
 						$activite->load();
 						$activite->setStatus('Deleted');
 						$activite->save();
@@ -1930,44 +1865,46 @@ if($_POST['post'] == 'true')
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo = $messageInfo . '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($activite->getName()) . '"')) . '");
-									$("#message").show();
+								evarisk(document).ready(function(){
+									evarisk("#message").addClass("updated");
+									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($activite->getName()) . '"')) . '");
+									evarisk("#message").show();
 									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
+										evarisk("#message").removeClass("updated");
+										evarisk("#message").hide();
 									},7500);';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-								$(document).ready(function(){
-									$("#message").addClass("updated");
-									$("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($activite->getName()) . '"')) . '");
-									$("#message").show();
+								evarisk(document).ready(function(){
+									evarisk("#message").addClass("updated");
+									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($activite->getName()) . '"')) . '");
+									evarisk("#message").show();
 									setTimeout(function(){
-										$("#message").removeClass("updated");
-										$("#message").hide();
+										evarisk("#message").removeClass("updated");
+										evarisk("#message").hide();
 									},7500);';
 						}
 						$messageInfo .= '
-									$("#rightEnlarging").show();
-									$("#equilize").click();
-									if("' . $_POST['affichage'] . '" == "affichageTable")
+									evarisk("#rightEnlarging").show();
+									evarisk("#equilize").click();
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
-										if($("#filAriane :last-child").is("label"))
-											$("#filAriane :last-child").remove();
-										$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_POST['nom_activite'] . '</label>");
-										$("#partieEdition").html("");
-										$("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										if(evarisk("#filAriane :last-child").is("label"))
+											evarisk("#filAriane :last-child").remove();
+										evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_activite'] . '</label>");
+										evarisk("#partieEdition").html("");
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"id": "' . $activite->getId() . '",
-											"page": $("#pagemainPostBoxReference").val(),
-											"idPere": $("#identifiantActuellemainPostBox").val(),
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "changementPage",
 											"partie": "left",
-											"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -1975,70 +1912,49 @@ if($_POST['post'] == 'true')
 									else
 									{
 										var expanded = new Array();
-										$(".expanded").each(function(){expanded.push($(this).attr("id"));});
-										$("#partieEdition").html("");
-										$("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+										evarisk("#partieEdition").html("");
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "changementPage",
 											"id": "' . $activite->getId() . '",
 											"partie": "left",
-											"menu": $("#menu").val(),
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
 									}
-									// $("#partieEdition").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $("#partieGauche").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 								});
 							</script>';
 						echo $messageInfo;
 					}
 					break;
-					case 'defaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto']);
-					break;
-					case 'DeleteDefaultPictureSelection':
-						echo evaPhoto::setMainPhotoAction($_POST['table'], $_POST['idElement'], $_POST['idPhoto'], 'no');
-					break;
-					case 'deletePicture':
-						echo evaPhoto::deletePictureAction($_POST['table'], $_POST['idElement'], $_POST['idPicture']);
-					break;
-					case 'reloadGallery':
-						$script = 
-						'<script type="text/javascript">
-							$(document).ready(function(){
-								$(".qq-upload-list").hide();
-							});
-						</script>';
-						echo $script . evaPhoto::outputGallery($_POST['table'], $_POST['idElement']);
-					break;
-					case 'showGallery':
-						echo evaPhoto::getGallery($_POST['table'], $_POST['idElement']);
-					break;
 					case 'setAsBeforePicture':
 					{
-						$activite = new EvaActivity($_POST['idElement']);
+						$activite = new EvaActivity($_REQUEST['idElement']);
 						$activite->load();
-						$activite->setidPhotoAvant($_POST['idPhoto']);
+						$activite->setidPhotoAvant($_REQUEST['idPhoto']);
 						$activite->save();
 						$messageInfo = '<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").addClass("updated");';
+								evarisk(document).ready(function(){
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").show();
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
 									setTimeout(function(){
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").removeClass("updated");
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").hide();
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
 									reloadcontainer();
 								});
@@ -2048,28 +1964,28 @@ if($_POST['post'] == 'true')
 					break;
 					case 'setAsAfterPicture':
 					{
-						$activite = new EvaActivity($_POST['idElement']);
+						$activite = new EvaActivity($_REQUEST['idElement']);
 						$activite->load();
-						$activite->setidPhotoApres($_POST['idPhoto']);
+						$activite->setidPhotoApres($_REQUEST['idPhoto']);
 						$activite->save();
 						$messageInfo = '<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").addClass("updated");';
+								evarisk(document).ready(function(){
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").show();
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
 									setTimeout(function(){
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").removeClass("updated");
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").hide();
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
 									reloadcontainer();
 								});
@@ -2079,28 +1995,28 @@ if($_POST['post'] == 'true')
 					break;
 					case 'unsetAsBeforePicture':
 					{
-						$activite = new EvaActivity($_POST['idElement']);
+						$activite = new EvaActivity($_REQUEST['idElement']);
 						$activite->load();
 						$activite->setidPhotoAvant("0");
 						$activite->save();
 						$messageInfo = '<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").addClass("updated");';
+								evarisk(document).ready(function(){
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").show();
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
 									setTimeout(function(){
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").removeClass("updated");
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").hide();
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
 									reloadcontainer();
 								});
@@ -2110,28 +2026,28 @@ if($_POST['post'] == 'true')
 					break;
 					case 'unsetAsAfterPicture':
 					{
-						$activite = new EvaActivity($_POST['idElement']);
+						$activite = new EvaActivity($_REQUEST['idElement']);
 						$activite->load();
 						$activite->setidPhotoApres("0");
 						$activite->save();
 						$messageInfo = '<script type="text/javascript">
-								$(document).ready(function(){
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").addClass("updated");';
+								evarisk(document).ready(function(){
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 						if($activite->getStatus() != 'error')
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 						}
 						$messageInfo .= '
-									$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").show();
+									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
 									setTimeout(function(){
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").removeClass("updated");
-										$("#message' . $_POST['table'] . '_' . $_POST['idElement'] . '").hide();
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
 									reloadcontainer();
 								});
@@ -2142,53 +2058,56 @@ if($_POST['post'] == 'true')
 				}
 				break;
 			case TABLE_ACTIVITE_SUIVI:
-				$tableElement = $_POST['tableElement'];
-				$idElement = $_POST['idElement'];
+				$tableElement = $_REQUEST['tableElement'];
+				$idElement = $_REQUEST['idElement'];
 				require_once( EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/suivi_activite.class.php');
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'save':
+					{
 						$messageInfo = 
 							'<script type="text/javascript">
-								$(document).ready(function(){
-									$("#messageInfo' . $tableElement . $idElement . '").addClass("updated");';
+								evarisk(document).ready(function(){
+									evarisk("#messageInfo' . $tableElement . $idElement . '").addClass("updated");';
 
-						$saveFollow = suivi_activite::saveSuiviActivite($_POST['tableElement'], $_POST['idElement'], $_POST['commentaire']);
+						$saveFollow = suivi_activite::saveSuiviActivite($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['commentaire']);
 
 						if($saveFollow == 'ok')
 						{
 							$messageInfo .= '
-									$("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
+									evarisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 						}
 						else
 						{
 							$messageInfo .= '
-									$("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
+									evarisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
 						}
 
 						$messageInfo .= '
-									$("#messageInfo' . $tableElement . $idElement . '").show();
+									evarisk("#messageInfo' . $tableElement . $idElement . '").show();
 									setTimeout(function(){
-										$("#messageInfo' . $tableElement . $idElement . '").removeClass("updated");
-										$("#messageInfo' . $tableElement . $idElement . '").hide();
+										evarisk("#messageInfo' . $tableElement . $idElement . '").removeClass("updated");
+										evarisk("#messageInfo' . $tableElement . $idElement . '").hide();
 									},7500);
 
-									$("#loadsaveActionFollow").html(\'\');
-									$("#bttnsaveActionFollow").show();
-									$("#loadsaveActionFollow").hide();
+									evarisk("#loadsaveActionFollow").html(\'\');
+									evarisk("#bttnsaveActionFollow").show();
+									evarisk("#loadsaveActionFollow").hide();
 								});
 							</script>';
 						echo $messageInfo . suivi_activite::formulaireAjoutSuivi($tableElement, $idElement);
+					}
 					break;
 				}
-				break;
+			break;
 			case TABLE_LIAISON_USER_GROUPS:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case "save":
-						$status = evaUserGroup::saveBind($_POST['idGroupe'], $_POST['idElement'], $_POST['tableElement']);
+					{
+						$status = evaUserGroup::saveBind($_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
 
-						switch($_POST['tableElement'])
+						switch($_REQUEST['tableElement'])
 						{
 							case TABLE_GROUPEMENT:
 								$complement = "au groupement";
@@ -2198,33 +2117,35 @@ if($_POST['post'] == 'true')
 								break;
 						}
 						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_LIAISON_USER_GROUPS . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").addClass("updated");';
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
+									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
 									setTimeout(function(){
-										$("#message' . TABLE_LIAISON_USER_GROUPS . '").removeClass("updated");
-										$("#message' . TABLE_LIAISON_USER_GROUPS . '").hide();
+										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").removeClass("updated");
+										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").hide();
 									},7500);
-									$("#ongletVoirLesRisques").click();
+									evarisk("#ongletVoirLesRisques").click();
 								});
 							</script>';
-						echo $messageInfo . evaUserGroup::boxGroupesUtilisateursEvaluation($_POST['tableElement'], $_POST['idElement']);
+						echo $messageInfo . evaUserGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
+					}
 					break;
 					case "delete":
-						$status = evaUserGroup::deleteBind($_POST['idGroupe'], $_POST['idElement'], $_POST['tableElement']);
+					{
+						$status = evaUserGroup::deleteBind($_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
 
-						switch($_POST['tableElement'])
+						switch($_REQUEST['tableElement'])
 						{
 							case TABLE_GROUPEMENT:
 								$complement = "du groupement";
@@ -2234,115 +2155,40 @@ if($_POST['post'] == 'true')
 								break;
 						}
 						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_LIAISON_USER_GROUPS . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").addClass("updated");';
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
+									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
 									setTimeout(function(){
-										$("#message' . TABLE_LIAISON_USER_GROUPS . '").removeClass("updated");
-										$("#message' . TABLE_LIAISON_USER_GROUPS . '").hide();
+										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").removeClass("updated");
+										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").hide();
 									},7500);
-									$("#ongletVoirLesRisques").click();
+									evarisk("#ongletVoirLesRisques").click();
 								});
 							</script>';
-						echo $messageInfo . evaUserGroup::boxGroupesUtilisateursEvaluation($_POST['tableElement'], $_POST['idElement']);
-					break;
-				}
-				break;
-			case TABLE_LIAISON_USER_EVALUATION:
-				switch($_POST['act'])
-				{
-					case 'save':
-						$status = evaUser::saveUserEvaluationBind($_POST['idsUsers'], $_POST['idElement'], $_POST['tableElement']);
-
-						switch($_POST['tableElement'])
-						{
-							case TABLE_GROUPEMENT:
-								$complement = "au groupement";
-								break;
-							case TABLE_UNITE_TRAVAIL:
-								$complement = "&agrave; l'unit&eacute;";
-								break;
-						}
-						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_LIAISON_USER_EVALUATION . '").addClass("updated");';
-						if($status['result'] != 'error')
-						{
-							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'utilisateur a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						else
-						{
-							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").show();
-									setTimeout(function(){
-										$("#message' . TABLE_LIAISON_USER_EVALUATION . '").removeClass("updated");
-										$("#message' . TABLE_LIAISON_USER_EVALUATION . '").hide();
-									},7500);
-								});
-							</script>';
-
-						echo $messageInfo . evaUser::boxUtilisateursEvalues($_POST);
-					break;
-					case 'delete':
-						$status = evaUser::deleteUserEvaluationBind($_POST['idsUsers'], $_POST['idElement'], $_POST['tableElement']);
-
-						switch($_POST['tableElement'])
-						{
-							case TABLE_GROUPEMENT:
-								$complement = "du groupement";
-								break;
-							case TABLE_UNITE_TRAVAIL:
-								$complement = "de l'unit&eacute;";
-								break;
-						}
-						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_LIAISON_USER_EVALUATION . '").addClass("updated");';
-						if($status['result'] != 'error')
-						{
-							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs ont &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('supprim&eacute;s', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						else
-						{
-							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs n\'ont pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('supprim&eacute;s', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						$messageInfo = $messageInfo . '
-									$("#message' . TABLE_LIAISON_USER_EVALUATION . '").show();
-									setTimeout(function(){
-										$("#message' . TABLE_LIAISON_USER_EVALUATION . '").removeClass("updated");
-										$("#message' . TABLE_LIAISON_USER_EVALUATION . '").hide();
-									},7500);
-								});
-							</script>';
-
-						echo $messageInfo . evaUser::boxUtilisateursEvalues($_POST);
+						echo $messageInfo . evaUserGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
+					}
 					break;
 				}
 				break;
 			case TABLE_EVA_EVALUATOR_GROUP_BIND:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case "save":
-						$status = evaUserEvaluatorGroup::saveBind($_POST['idGroupe'], $_POST['idElement'], $_POST['tableElement']);
+					{
+						$status = evaUserEvaluatorGroup::saveBind($_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
 
-						switch($_POST['tableElement'])
+						switch($_REQUEST['tableElement'])
 						{
 							case TABLE_GROUPEMENT:
 								$complement = "au groupement";
@@ -2352,33 +2198,35 @@ if($_POST['post'] == 'true')
 								break;
 						}
 						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").addClass("updated");';
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
+									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
 									setTimeout(function(){
-										$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").removeClass("updated");
-										$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").hide();
+										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").removeClass("updated");
+										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").hide();
 									},7500);
-									$("#ongletVoirLesRisques").click();
+									evarisk("#ongletVoirLesRisques").click();
 								});
 							</script>';
-						echo $messageInfo . evaUserEvaluatorGroup::boxGroupesUtilisateursEvaluation($_POST['tableElement'], $_POST['idElement']);
+						echo $messageInfo . evaUserEvaluatorGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
+					}
 					break;
 					case "delete":
-						$status = evaUserEvaluatorGroup::deleteBind($_POST['idBind'], $_POST['idGroupe'], $_POST['idElement'], $_POST['tableElement']);
+					{
+						$status = evaUserEvaluatorGroup::deleteBind($_REQUEST['idBind'], $_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
 
-						switch($_POST['tableElement'])
+						switch($_REQUEST['tableElement'])
 						{
 							case TABLE_GROUPEMENT:
 								$complement = "du groupement";
@@ -2388,42 +2236,44 @@ if($_POST['post'] == 'true')
 								break;
 						}
 						$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").addClass("updated");';
 						if($status['result'] != 'error')
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						else
 						{
 							$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
+									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
 						}
 						$messageInfo = $messageInfo . '
-									$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
+									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
 									setTimeout(function(){
-										$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").removeClass("updated");
-										$("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").hide();
+										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").removeClass("updated");
+										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").hide();
 									},7500);
-									$("#ongletVoirLesRisques").click();
+									evarisk("#ongletVoirLesRisques").click();
 								});
 							</script>';
-						echo $messageInfo . evaUserEvaluatorGroup::boxGroupesUtilisateursEvaluation($_POST['tableElement'], $_POST['idElement']);
+						echo $messageInfo . evaUserEvaluatorGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
+					}
 					break;
 				}
 				break;
 			case TABLE_OPTION:
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
-					case 'update':	
+					case 'update':
+					{
 						$optionYesNoList = array();
 						$optionYesNoList['oui'] = __('Oui', 'evarisk');
 						$optionYesNoList['non'] = __('Non', 'evarisk');
 
-						$optionId = eva_tools::IsValid_Variable($_POST['id']);
-						$optionValue = eva_tools::IsValid_Variable($_POST['value']);
-						$optionName = eva_tools::IsValid_Variable($_POST['optionName']);
+						$optionId = eva_tools::IsValid_Variable($_REQUEST['id']);
+						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
+						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
 
 						$update = options::updateOption($optionId, $optionValue);
 						$newOptionValue = options::getOptionValue(strtolower(str_replace(' ', '_', $optionName)));
@@ -2431,18 +2281,18 @@ if($_POST['post'] == 'true')
 						$optionYesNoList['selected'] = $newOptionValue;
 						$lineScript = 
 							'<script type="text/javascript">
-								$(document).ready(function(){
+								evarisk(document).ready(function(){
 									/* Apply the jEditable handlers to the table */
-									$(".' . strtolower(str_replace(' ', '_', $optionName)) . '").editable( "' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+									evarisk(".' . strtolower(str_replace(' ', '_', $optionName)) . '").editable( "' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 										"data" : \'' . json_encode($optionYesNoList) . '\',
 										"type" : "select",
 										"submit" : "' . __('Sauvegarder', 'evarisk') . '",
 										"cancel" : "' . __('Annuler', 'evarisk') . '",
 										"submitdata": function ( value, settings ) {
 											return {
-												"id": $(this).parent("tr").attr("id").replace("option", ""),
+												"id": evarisk(this).parent("tr").attr("id").replace("option", ""),
 												"post" : true,
-												"optionName" : $(this).prev("td").html(),
+												"optionName" : evarisk(this).prev("td").html(),
 												"table" : "' . TABLE_OPTION . '",
 												"act" : "update"
 											};
@@ -2451,32 +2301,97 @@ if($_POST['post'] == 'true')
 								});
 							</script>';
 						echo $newOptionValue . $lineScript;
+					}
 					break;
 				}
 				break;
 			case TABLE_LIAISON_USER_ELEMENT:
 				require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php');
-				switch($_POST['act'])
+				switch($_REQUEST['act'])
 				{
 					case 'save':
-						evaUserLinkElement::setLinkUserElement($_POST['tableElement'], $_POST['idElement'], $_POST['utilisateurs']);
-						echo evaUserLinkElement::afficheListeUtilisateur($_POST['tableElement'], $_POST['idElement']);
+						evaUserLinkElement::setLinkUserElement($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['utilisateurs']);
+						echo evaUserLinkElement::afficheListeUtilisateur($_REQUEST['tableElement'], $_REQUEST['idElement']);
+					break;
+				}
+				break;
+			case TABLE_DUER:
+				$tableElement = $_REQUEST['tableElement'];
+				$idElement = $_REQUEST['idElement'];
+				switch($_REQUEST['act'])
+				{
+					case 'voirDocumentUnique' :
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
+					break;
+					case 'voirHistoriqueDocumentUnique' :
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo documentUnique::getDUERList($tableElement, $idElement);
+					break;
+					case 'saveDocumentUnique' :
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUniquePersistance.php');
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
+					break;
+					case 'loadNewModelForm':
+						echo evaDisplayDesign::getNewModelUploadForm($tableElement, $idElement);
+					break;
+				}
+				break;
+			case TABLE_GED_DOCUMENTS:
+				$tableElement = $_REQUEST['tableElement'];
+				$idElement = $_REQUEST['idElement'];
+				switch($_REQUEST['act'])
+				{
+					case 'loadDocument':
+						$category = $_REQUEST['category'];
+						$selection = (isset($_REQUEST['selection']) && ($_REQUEST['selection'] != '') && ($_REQUEST['selection'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['selection']) : '';
+						$documentList = gestionDoc::getDocumentList($tableElement, $idElement, $category);
+						if(count($documentList) > 0)
+						{
+							$modelList = evaDisplayInput::afficherComboBox($documentList, 'DUERModelToUse', '', 'DUERModelToUse', '', $selection);
+							if($selection != '')
+							{
+								$script = '<script type="text/javascript" >evarisk("#DUERModelToUse").val("' . $selection . '")</script>';
+							}
+						}
+						else
+						{
+							$modelList = '<span style="color:#FF0000;" >' . __('Aucun mod&eacute;le &agrave; pr&eacute;senter', 'evarisk') . '</span>';
+						}
+						echo '<div style="margin:12px 24px;" class="bold" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="modelToUse" style="width:15px;" />' . __('Mod&egrave;le &agrave; utiliser', 'evarisk') . '<br/>' . $modelList . $script . '</div>';
+					break;
+					case 'duplicateDocument':
+						$idDocument = $_REQUEST['idDocument'];
+						gestionDoc::duplicateDocument($tableElement, $idElement, $idDocument);
+					break;
+					case 'loadExistingDocument':
+						echo EvaDisplayDesign::getExistingModelList($tableElement, $idElement);
 					break;
 				}
 				break;
 		}
-	if(isset($_POST['nom']))
-		switch($_POST['nom'])
+	}
+
+	if(isset($_REQUEST['nom']))
+	{
+		switch($_REQUEST['nom'])
 		{
 			case "installerEvarisk":
 				{
-					$insertions = $_POST;
+					$insertions = $_REQUEST;
 					unset($insertions['EPI']);
-					foreach($_POST["EPI"] as $epi)
+					foreach($_REQUEST["EPI"] as $epi)
 					{
 						$insertions['EPI'][$epi[1]] = $epi[0];
 					}
-					foreach($_POST["methodes"] as $methode)
+					foreach($_REQUEST["methodes"] as $methode)
 					{
 						$insertions['methodes'][$methode[1]] = $methode[0];
 					}
@@ -2491,7 +2406,7 @@ if($_POST['post'] == 'true')
 				break;
 			case "loadFieldsNewVariable":
 				{
-					for($i=$_POST['min']; $i<=$_POST['max']; $i++)
+					for($i=$_REQUEST['min']; $i<=$_REQUEST['max']; $i++)
 					{
 						$idInput = 'newVariableAlterValueFor' . $i;
 						$nomChamps = 'newVariableAlterValue[' . $i . ']';
@@ -2502,8 +2417,8 @@ if($_POST['post'] == 'true')
 				break;
 			case "veilleSummary":
 				{
-					$tableElement = eva_tools::IsValid_Variable($_POST['tableElement']);
-					$idElement = eva_tools::IsValid_Variable($_POST['idElement']);
+					$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
+					$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
 					$veilleResult = evaAnswerToQuestion::getAnswersForStats(date('Y-m-d'), $tableElement, $idElement, 2); 
 					$myCharts = ' ';
 					if( count($veilleResult) > 0)
@@ -2515,7 +2430,7 @@ if($_POST['post'] == 'true')
 					$chartContent = trim(substr($myCharts,0,-1));
 					
 					$messageInfo .= '<script type="text/javascript" language="javascript"> 
-						$(document).ready(function(){
+						evarisk(document).ready(function(){
 							line1 = [' . $chartContent . '];
 							plot2 = $.jqplot("resultChart", [line1], {
 								seriesDefaults:{renderer:$.jqplot.PieRenderer}, 
@@ -2532,20 +2447,20 @@ if($_POST['post'] == 'true')
 			case "veilleClicPagination":
 				{
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/formulaireReponse.php');
-					$summary = ($_POST['act'] == 'summary') ? true : false ;
-					echo '<div id="plotLocation"></div><div id="interractionVeille">' . getFormulaireReponse($_POST['idElement'], $_POST['tableElement'], $summary) . '</div>';
+					$summary = ($_REQUEST['act'] == 'summary') ? true : false ;
+					echo '<div id="plotLocation"></div><div id="interractionVeille">' . getFormulaireReponse($_REQUEST['idElement'], $_REQUEST['tableElement'], $summary) . '</div>';
 				}
 				break;
 			case "veilleClicValidation":
 				{
-					$questionID = eva_tools::IsValid_Variable($_POST['idQuestion']);
-					$tableElement = eva_tools::IsValid_Variable($_POST['tableElement']);
-					$idElement = eva_tools::IsValid_Variable($_POST['idElement']);
-					$reponse = eva_tools::IsValid_Variable($_POST['reponse']);
-					$valeurReponse = eva_tools::IsValid_Variable($_POST['valeur']);
-					$observationReponse = eva_tools::IsValid_Variable($_POST['observation']);
-					$soumission = eva_tools::IsValid_Variable($_POST['soumission']);
-					$limiteValidite = eva_tools::IsValid_Variable($_POST['limiteValidite']);
+					$questionID = eva_tools::IsValid_Variable($_REQUEST['idQuestion']);
+					$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
+					$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
+					$reponse = eva_tools::IsValid_Variable($_REQUEST['reponse']);
+					$valeurReponse = eva_tools::IsValid_Variable($_REQUEST['valeur']);
+					$observationReponse = eva_tools::IsValid_Variable($_REQUEST['observation']);
+					$soumission = eva_tools::IsValid_Variable($_REQUEST['soumission']);
+					$limiteValidite = eva_tools::IsValid_Variable($_REQUEST['limiteValidite']);
 					$save = EvaAnswerToQuestion::saveNewAnswerToQuestion($questionID, $tableElement, $idElement, date('Y-m-d'), $reponse, $valeurReponse, $observationReponse, $limiteValidite);
 					$messageInfo = '';
 					// if($soumission != 'totale')
@@ -2557,7 +2472,7 @@ if($_POST['post'] == 'true')
 									<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse a bien &eacute;t&eacute; enregistr&eacute;e.</strong>
 								</span>
 								<script type="text/javascript" >
-									setTimeout(function(){$(\'#observationTropLongue' . $questionID . '\').html("")},5000);
+									setTimeout(function(){evarisk(\'#observationTropLongue' . $questionID . '\').html("")},5000);
 								</script>';
 						}
 						else
@@ -2567,7 +2482,7 @@ if($_POST['post'] == 'true')
 									<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p>
 								</span>
 								<script type="text/javascript" >
-									setTimeout(function(){$(\'#observationTropLongue' . $questionID . '\').html("")},5000);
+									setTimeout(function(){evarisk(\'#observationTropLongue' . $questionID . '\').html("")},5000);
 								</script>';
 						}
 					// }
@@ -2575,11 +2490,11 @@ if($_POST['post'] == 'true')
 					// {
 						// if($save == 'ok')
 						// {
-							// $_POST['statusVeille'] = $_POST['statusVeille'] . true;
+							// $_REQUEST['statusVeille'] = $_REQUEST['statusVeille'] . true;
 						// }
 						// else
 						// {
-							// $_POST['statusVeille'] = false;
+							// $_REQUEST['statusVeille'] = false;
 						// }
 					// }
 					echo $messageInfo;
@@ -2599,41 +2514,41 @@ if($_POST['post'] == 'true')
 
 			case "demandeAction" :
 				{
-				echo Risque::getTableQuotationRisque($_POST['tableProvenance'], $_POST['idProvenance']) . '<br />';
+				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']) . '<br />';
 				
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/activite-new.php');
 				getActivityGeneralInformationPostBoxBody(array('idElement' => null, 'idPere' => 1, 'affichage' => null, 'idsFilAriane' => null));
 				echo 
 					'<script type="text/javascript">
-						$(document).ready(function(){
-							$("#idProvenance_activite").val("' . $_POST['idProvenance'] . '");
-							$("#tableProvenance_activite").val("' . $_POST['tableProvenance'] . '");
-							$("#save_activite").unbind("click");
-							$("#save_activite").click(function(){
-								if($(\'#nom_activite\').is(".form-input-tip"))
+						evarisk(document).ready(function(){
+							evarisk("#idProvenance_activite").val("' . $_REQUEST['idProvenance'] . '");
+							evarisk("#tableProvenance_activite").val("' . $_REQUEST['tableProvenance'] . '");
+							evarisk("#save_activite").unbind("click");
+							evarisk("#save_activite").click(function(){
+								if(evarisk(\'#nom_activite\').is(".form-input-tip"))
 								{
-									$(\'#nom_activite\').val("");
-									$(\'#nom_activite\').removeClass(\'form-input-tip\');
+									evarisk(\'#nom_activite\').val("");
+									evarisk(\'#nom_activite\').removeClass(\'form-input-tip\');
 								}
-								valeurActuelle = $("#nom_activite").val();
+								valeurActuelle = evarisk("#nom_activite").val();
 								if(valeurActuelle == "")
 								{
 									alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
 								}
 								else
 								{						
-									$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 										"nom": "addAction",
-										"nom_activite": $("#nom_activite").val(),
+										"nom_activite": evarisk("#nom_activite").val(),
 										"idPere": 1,
-										"description": $("#description_activite").val(),
-										"date_debut": $("#date_debut_activite").val(),
-										"date_fin": $("#date_fin_activite").val(),
-										"cout": $("#cout_activite").val(),
-										"avancement": $("#avancement_activite").val(),
-										"responsable_activite": $("#responsable_activite").val(),
-										"idProvenance": $("#idProvenance_activite").val(),
-										"tableProvenance": $("#tableProvenance_activite").val()
+										"description": evarisk("#description_activite").val(),
+										"date_debut": evarisk("#date_debut_activite").val(),
+										"date_fin": evarisk("#date_fin_activite").val(),
+										"cout": evarisk("#cout_activite").val(),
+										"avancement": evarisk("#avancement_activite").val(),
+										"responsable_activite": evarisk("#responsable_activite").val(),
+										"idProvenance": evarisk("#idProvenance_activite").val(),
+										"tableProvenance": evarisk("#tableProvenance_activite").val()
 									});
 								}
 							});
@@ -2643,12 +2558,12 @@ if($_POST['post'] == 'true')
 				break;
 			case "suiviAction" :
 				{
-				echo Risque::getTableQuotationRisque($_POST['tableProvenance'], $_POST['idProvenance']) . '<br />';
+				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']) . '<br />';
 
 				$taches = new EvaTaskTable();
 				$tacheLike = new EvaTask();
-				$tacheLike->setIdFrom($_POST['idProvenance']);
-				$tacheLike->setTableFrom($_POST['tableProvenance']);
+				$tacheLike->setIdFrom($_REQUEST['idProvenance']);
+				$tacheLike->setTableFrom($_REQUEST['tableProvenance']);
 				$taches->getTasksLike($tacheLike);
 				//On demande à l'utilisateur de choisir l'action qui l'intéresse.
 				$actionsCorrectives = $taches->getTasks();
@@ -2665,9 +2580,9 @@ if($_POST['post'] == 'true')
 						switch($actionCorrective->getTableFrom())
 						{
 							case TABLE_RISQUE:
-								$output .= Risque::getTableQuotationRisqueAvantApresAC($_POST['tableProvenance'], $_POST['idProvenance'], $actionCorrective, $idDiv);
-								$moreSuiviOn = '$("#' . $idDiv . '-affichage-quotation").show();';
-								$moreSuiviOff = '$("#' . $idDiv . '-affichage-quotation").hide();';
+								$output .= Risque::getTableQuotationRisqueAvantApresAC($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], $actionCorrective, $idDiv);
+								$moreSuiviOn = 'evarisk("#' . $idDiv . '-affichage-quotation").show();';
+								$moreSuiviOff = 'evarisk("#' . $idDiv . '-affichage-quotation").hide();';
 							break;
 						}
 
@@ -2715,8 +2630,8 @@ if($_POST['post'] == 'true')
 							$dateFin = date('Y-m-d', strtotime('+' . DAY_AFTER_TODAY_GANTT . ' day'));
 							
 							echo '<script type="text/javascript">
-								$(document).ready(function(){
-									$("#' . $idDiv . '-affichage").gantt({
+								evarisk(document).ready(function(){
+									evarisk("#' . $idDiv . '-affichage").gantt({
 										"tasks":[' . $tasksGantt . '],
 										"titles":[
 											"ID",
@@ -2735,25 +2650,25 @@ if($_POST['post'] == 'true')
 						else
 						{
 							echo '<script type="text/javascript">
-								$(document).ready(function(){										
-									$("#' . $idDiv . '-affichage").html("&nbsp;&nbsp;&nbsp;&nbsp;' . __('Action non d&eacute;coup&eacute;e', 'evarisk') . '");
+								evarisk(document).ready(function(){										
+									evarisk("#' . $idDiv . '-affichage").html("&nbsp;&nbsp;&nbsp;&nbsp;' . __('Action non d&eacute;coup&eacute;e', 'evarisk') . '");
 								});
 							</script>';
 						}
 						echo '<script type="text/javascript">
-							$(document).ready(function(){			
-								$("#' . $idDiv . '-choix").toggle(
+							evarisk(document).ready(function(){			
+								evarisk("#' . $idDiv . '-choix").toggle(
 									function()
 									{
-										$("#' . $idDiv . '-affichage").show();
+										evarisk("#' . $idDiv . '-affichage").show();
 										' . $moreSuiviOn . '
-										$(this).children("span:first").html("-");
+										evarisk(this).children("span:first").html("-");
 									},
 									function()
 									{
-										$("#' . $idDiv . '-affichage").hide();
+										evarisk("#' . $idDiv . '-affichage").hide();
 										' . $moreSuiviOff . '
-										$(this).children("span:first").html("+");
+										evarisk(this).children("span:first").html("+");
 									}
 								);
 							});
@@ -2761,26 +2676,26 @@ if($_POST['post'] == 'true')
 						{//Bouton enregistrer
 							$idBoutonEnregistrer = $idDiv . '-enregistrer';
 							$scriptEnregistrement = '<script type="text/javascript">
-								$(document).ready(function() {	
-									var boutonEnregistrer = $(\'#' . $idBoutonEnregistrer . '\').parent().html();
-									$(\'#' . $idBoutonEnregistrer . '\').parent().html("");
-									$(\'#' . $idDiv . '-affichage\').append(boutonEnregistrer);
-									$(\'#' . $idBoutonEnregistrer . '\').click(function() {
+								evarisk(document).ready(function() {	
+									var boutonEnregistrer = evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html();
+									evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html("");
+									evarisk(\'#' . $idDiv . '-affichage\').append(boutonEnregistrer);
+									evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {
 										var idDiv = "' . $idDiv . '";
 										var activites = new Array();
-										$("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3) input").each(function(){
-											if($(this).attr("id") != "")
+										evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3) input").each(function(){
+											if(evarisk(this).attr("id") != "")
 											{
-												activites[$(this).attr("id").substr(idDiv.length + 1)] = $(this).val();
+												activites[evarisk(this).attr("id").substr(idDiv.length + 1)] = evarisk(this).val();
 											}
 										});
-										$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 											"post":"true", 
 											"table":"' . TABLE_ACTIVITE . '", 
 											"act":"actualiserAvancement", 
 											"activites":activites,
-											"tableProvenance":"' . $_POST['tableProvenance'] . '",
-											"idProvenance": "' . $_POST['idProvenance'] . '"
+											"tableProvenance":"' . $_REQUEST['tableProvenance'] . '",
+											"idProvenance": "' . $_REQUEST['idProvenance'] . '"
 										});
 										return false;
 									});
@@ -2793,17 +2708,17 @@ if($_POST['post'] == 'true')
 							}
 						}
 						echo '<script type="text/javascript">
-								$(document).ready(function(){
+								evarisk(document).ready(function(){
 									//Transformation du texte des cases avancement en input
-									$("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3)").each(function(){
-										$(this).html("<input type=\"text\" value=\"" + $(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
-										if($(this).parent("tr").children("td:first").html().match("^T")=="T")
+									evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3)").each(function(){
+										evarisk(this).html("<input type=\"text\" value=\"" + evarisk(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
+										if(evarisk(this).parent("tr").children("td:first").html().match("^T")=="T")
 										{
-											$(this).children("input").attr("disabled","disabled");
+											evarisk(this).children("input").attr("disabled","disabled");
 										}
 										else
 										{
-											$(this).children("input").attr("id","' . $idDiv . '-" + $(this).parent("tr").children("td:first").html().substr(1, 1));
+											evarisk(this).children("input").attr("id","' . $idDiv . '-" + evarisk(this).parent("tr").children("td:first").html().substr(1, 1));
 										}
 									});
 								});
@@ -2812,8 +2727,8 @@ if($_POST['post'] == 'true')
 						foreach($niveaux as $key => $niveau)
 						{
 							echo '<script type="text/javascript">
-									$(document).ready(function(){		
-										$("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
+									evarisk(document).ready(function(){		
+										evarisk("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
 									});
 								</script>';
 						}
@@ -2821,7 +2736,7 @@ if($_POST['post'] == 'true')
 				}
 				else
 				{
-					switch($_POST['tableProvenance'])
+					switch($_REQUEST['tableProvenance'])
 					{
 						case TABLE_RISQUE :
 							$complement	= __('ce risque', 'evarisk');
@@ -2839,25 +2754,25 @@ if($_POST['post'] == 'true')
 					$actionSave = evaActivity::saveNewActivity();
 
 					$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . $_POST['tableProvenance'] . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
 					if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error'))
 					{
 						$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					else
 					{
 						$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").show();
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
 								setTimeout(function(){
-									$("#message' . $_POST['tableProvenance'] . '").removeClass("updated");
-									$("#message' . $_POST['tableProvenance'] . '").hide();
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
 								},7500);
-								$("#ongletVoirLesRisques").click();
+								evarisk("#ongletVoirLesRisques").click();
 							});
 						</script>';
 					echo $messageInfo;
@@ -2865,7 +2780,7 @@ if($_POST['post'] == 'true')
 				break;
 			case "loadPictureAC":
 				{
-					switch($_POST['act'])
+					switch($_REQUEST['act'])
 					{
 						case 'before':
 							$query = $wpdb->prepare(
@@ -2873,7 +2788,7 @@ if($_POST['post'] == 'true')
 								FROM " . TABLE_PHOTO . " AS P
 									INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoAvant = P.id)
 								WHERE A.id = '%s' ", 
-								$_POST['idProvenance']
+								$_REQUEST['idProvenance']
 							);
 							$picture = $wpdb->get_row($query);
 							echo '<img src="' . EVA_HOME_URL . $picture->photo . '" alt="picture before corrective action" style="width:40%;" />';
@@ -2884,7 +2799,7 @@ if($_POST['post'] == 'true')
 								FROM " . TABLE_PHOTO . " AS P
 									INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoApres = P.id)
 								WHERE A.id = '%s' ", 
-								$_POST['idProvenance']
+								$_REQUEST['idProvenance']
 							);
 							$picture = $wpdb->get_row($query);
 							echo '<img src="' . EVA_HOME_URL . $picture->photo . '" alt="picture after corrective action" style="width:40%;" />';
@@ -2894,23 +2809,23 @@ if($_POST['post'] == 'true')
 				break;
 			case "ficheAction" :
 				{
-				echo Risque::getTableQuotationRisque($_POST['tableProvenance'], $_POST['idProvenance']);
+				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']);
 
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/simple-activite-new.php');
 				getSimpleActivityGeneralInformationPostBoxBody(array('idElement' => null, 'idPere' => 1, 'affichage' => null, 'idsFilAriane' => null));				
 				echo 
 					'<script type="text/javascript">
-						$(document).ready(function(){
-							$("#idProvenance_activite").val("' . $_POST['idProvenance'] . '");
-							$("#tableProvenance_activite").val("' . $_POST['tableProvenance'] . '");
+						evarisk(document).ready(function(){
+							evarisk("#idProvenance_activite").val("' . $_REQUEST['idProvenance'] . '");
+							evarisk("#tableProvenance_activite").val("' . $_REQUEST['tableProvenance'] . '");
 						})
 					</script>';
 				}
 				break;
 			case "suiviFicheAction" :
 				{
-					$tableElement = $_POST['tableElement'];
-					$idElement = $_POST['idElement'];
+					$tableElement = $_REQUEST['tableElement'];
+					$idElement = $_REQUEST['idElement'];
 					$risques = array();
 					$riskList = Risque::getRisques($tableElement, $idElement, "Valid");
 					if($riskList != null)
@@ -2990,7 +2905,7 @@ if($_POST['post'] == 'true')
 											$noPictureBefore = true;
 											if($activiteDeLaTache->idPhotoAvant > 0)
 											{
-												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " id = '" . $activiteDeLaTache->idPhotoAvant . "' ");
+												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " PICTURE.id = '" . $activiteDeLaTache->idPhotoAvant . "' ");
 												if(is_file(EVA_HOME_DIR . $infosPhoto[0]->photo))
 												{
 											$actionsCorrectives .= '
@@ -3009,7 +2924,7 @@ if($_POST['post'] == 'true')
 											$noPictureAfter = true;
 											if($activiteDeLaTache->idPhotoApres > 0)
 											{
-												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " id = '" . $activiteDeLaTache->idPhotoApres . "' ");
+												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " PICTURE.id = '" . $activiteDeLaTache->idPhotoApres . "' ");
 												if(is_file(EVA_HOME_DIR . $infosPhoto[0]->photo))
 												{
 											$actionsCorrectives .= '
@@ -3056,19 +2971,19 @@ if($_POST['post'] == 'true')
 							$output .= 
 									'</div>';
 							$script .= 
-									'$("#moreCorrectiveAction' . $idRisque . '").click(function(){
-										$("#correctiveActionContent' . $idRisque . '").toggle();
-										if($("#correctiveActionContent' . $idRisque . '").css("display") == "none"){
-											$("#pictMoreAC' . $idRisque . '").attr("src", "' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png");
+									'evarisk("#moreCorrectiveAction' . $idRisque . '").click(function(){
+										evarisk("#correctiveActionContent' . $idRisque . '").toggle();
+										if(evarisk("#correctiveActionContent' . $idRisque . '").css("display") == "none"){
+											evarisk("#pictMoreAC' . $idRisque . '").attr("src", "' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png");
 										}
 										else{
-											$("#pictMoreAC' . $idRisque . '").attr("src", "' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-collapse-dark.png");
+											evarisk("#pictMoreAC' . $idRisque . '").attr("src", "' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-collapse-dark.png");
 										}
 									});';
 						}
 						echo $output . 
 							'<script type="text/javascript" >
-								$(document).ready(function(){
+								evarisk(document).ready(function(){
 									' . $script . '
 								});
 							</script>';
@@ -3083,16 +2998,16 @@ if($_POST['post'] == 'true')
 				{
 					$actionSave = evaActivity::saveNewActivity();
 
-					$idRisque = eva_tools::IsValid_Variable($_POST['idProvenance']);
+					$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
 					$risque = Risque::getRisque($idRisque);
-					$_POST['idRisque'] = $idRisque;
-					$_POST['idDanger'] = $risque[0]->id_danger;
-					$_POST['idMethode'] = $risque[0]->id_methode;
-					$_POST['description'] = $risque[0]->commentaire;
-					$_POST['idElement'] = $risque[0]->id_element;
-					$_POST['tableElement'] = $risque[0]->nomTableElement;
-					$_POST['act'] = 'save';
-					$_POST['histo'] = 'true';
+					$_REQUEST['idRisque'] = $idRisque;
+					$_REQUEST['idDanger'] = $risque[0]->id_danger;
+					$_REQUEST['idMethode'] = $risque[0]->id_methode;
+					$_REQUEST['description'] = $risque[0]->commentaire;
+					$_REQUEST['idElement'] = $risque[0]->id_element;
+					$_REQUEST['tableElement'] = $risque[0]->nomTableElement;
+					$_REQUEST['act'] = 'save';
+					$_REQUEST['histo'] = 'true';
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 
 					/*	Make the link between a corrective action and a risk evaluation	*/
@@ -3104,43 +3019,43 @@ if($_POST['post'] == 'true')
 								AND Status = 'Valid' 
 							ORDER BY id DESC 
 							LIMIT 1", 
-							$_POST['idProvenance']
+							$_REQUEST['idProvenance']
 						);
 					$evaluation = $wpdb->get_row($query);
 					evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionSave['task_id'], 'after');
 
 					$messageInfo = '<script type="text/javascript">
-							$(document).ready(function(){
-								$("#message' . $_POST['tableProvenance'] . '").addClass("updated");';
+							evarisk(document).ready(function(){
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
 					if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error'))
 					{
 						$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					else
 					{
 						$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					$messageInfo = $messageInfo . '
-								$("#message' . $_POST['tableProvenance'] . '").show();
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
 								setTimeout(function(){
-									$("#message' . $_POST['tableProvenance'] . '").removeClass("updated");
-									$("#message' . $_POST['tableProvenance'] . '").hide();
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
 								},7500);
 
-								$("#id_activite").val("' . $actionSave['action_id'] . '");
-								$("#idPere_activite").val("' . $actionSave['task_id'] . '");
-								$("#ActionSaveButton").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								evarisk("#id_activite").val("' . $actionSave['action_id'] . '");
+								evarisk("#idPere_activite").val("' . $actionSave['task_id'] . '");
+								evarisk("#ActionSaveButton").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post":"true",
 									"nom":"addActionPhotoSaveButtonReload"
 								});
 
-								$("#photosActionsCorrectives").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								evarisk("#photosActionsCorrectives").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post":"true",
 									"table":"' . TABLE_ACTIVITE . '",
 									"act":"pictureLoad",
-									"tableElement":$("#tableProvenance_activite").val(),
+									"tableElement":evarisk("#tableProvenance_activite").val(),
 									"idElement":"' . $actionSave['action_id'] . '"
 								});
 							});
@@ -3158,27 +3073,27 @@ if($_POST['post'] == 'true')
 					$idResponsableIsMandatory = options::getOptionValue('responsable_Action_Obligatoire');
 
 					$scriptEnregistrementSave = '<script type="text/javascript">
-						$(document).ready(function() {
-							$(\'#' . $idBouttonEnregistrer . '\').click(function() {
+						evarisk(document).ready(function() {
+							evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
 								var variables = new Array();';
 					$allVariables = MethodeEvaluation::getAllVariables();
 					foreach($allVariables as $variable)
 					{
 						$scriptEnregistrementSave .= '
-								variables["' . $variable->id . '"] = $("#var' . $variable->id . 'FormRisque-FAC").val();';
+								variables["' . $variable->id . '"] = evarisk("#var' . $variable->id . 'FormRisque-FAC").val();';
 					}
 					$scriptEnregistrementSave .= '
-								if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+								if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 								{
 									document.getElementById(\'' . $idTitre . '\').value=\'\';
-									$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+									evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 								}
 
-								idResponsable = $("#responsable_activite").val();
+								idResponsable = evarisk("#responsable_activite").val();
 								idResponsableIsMandatory = "false";
 								idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
-								valeurActuelle = $("#' . $idTitre . '").val();
+								valeurActuelle = evarisk("#' . $idTitre . '").val();
 								if(valeurActuelle == "")
 								{
 									alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
@@ -3189,22 +3104,22 @@ if($_POST['post'] == 'true')
 								}
 								else
 								{
-									$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 										"table": "' . TABLE_ACTIVITE . '",
 										"act": "update-FAC",
-										"id": $("#id_activite").val(),
-										"nom_activite": $("#nom_activite").val(),
-										"date_debut": $("#date_debut_activite").val(),
-										"date_fin": $("#date_fin_activite").val(),
-										"idPere": $("#idPere_activite").val(),
-										"description": $("#description_activite").val(),
-										"affichage": $("#affichage_activite").val(),
-										"cout": $("#cout_activite").val(),
-										"avancement": $("#avancement_activite").val(),
-										"responsable_activite": $("#responsable_activite").val(),
-										"idsFilAriane": $("#idsFilAriane_activite").val(),
-										"idProvenance": $("#idProvenance_activite").val(),
-										"tableProvenance": $("#tableProvenance_activite").val(),
+										"id": evarisk("#id_activite").val(),
+										"nom_activite": evarisk("#nom_activite").val(),
+										"date_debut": evarisk("#date_debut_activite").val(),
+										"date_fin": evarisk("#date_fin_activite").val(),
+										"idPere": evarisk("#idPere_activite").val(),
+										"description": evarisk("#description_activite").val(),
+										"affichage": evarisk("#affichage_activite").val(),
+										"cout": evarisk("#cout_activite").val(),
+										"avancement": evarisk("#avancement_activite").val(),
+										"responsable_activite": evarisk("#responsable_activite").val(),
+										"idsFilAriane": evarisk("#idsFilAriane_activite").val(),
+										"idProvenance": evarisk("#idProvenance_activite").val(),
+										"tableProvenance": evarisk("#tableProvenance_activite").val(),
 										"variables":variables
 									});
 								}
@@ -3218,16 +3133,16 @@ if($_POST['post'] == 'true')
 				{
 					$actionSave = evaActivity::saveNewActivity();
 
-					$idRisque = eva_tools::IsValid_Variable($_POST['idProvenance']);
+					$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
 					$risque = Risque::getRisque($idRisque);
-					$_POST['idRisque'] = $idRisque;
-					$_POST['idDanger'] = $risque[0]->id_danger;
-					$_POST['idMethode'] = $risque[0]->id_methode;
-					$_POST['description'] = $risque[0]->commentaire;
-					$_POST['idElement'] = $risque[0]->id_element;
-					$_POST['tableElement'] = $risque[0]->nomTableElement;
-					$_POST['act'] = 'save';
-					$_POST['histo'] = 'true';
+					$_REQUEST['idRisque'] = $idRisque;
+					$_REQUEST['idDanger'] = $risque[0]->id_danger;
+					$_REQUEST['idMethode'] = $risque[0]->id_methode;
+					$_REQUEST['description'] = $risque[0]->commentaire;
+					$_REQUEST['idElement'] = $risque[0]->id_element;
+					$_REQUEST['tableElement'] = $risque[0]->nomTableElement;
+					$_REQUEST['act'] = 'save';
+					$_REQUEST['histo'] = 'true';
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 
 					/*	Make the link between a corrective action and a risk evaluation	*/
@@ -3239,32 +3154,32 @@ if($_POST['post'] == 'true')
 								AND Status = 'Valid' 
 							ORDER BY id DESC 
 							LIMIT 1", 
-							$_POST['idProvenance']
+							$_REQUEST['idProvenance']
 						);
 					$evaluation = $wpdb->get_row($query);
 					evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionSave['task_id'], 'after');
 
 					$messageInfo = 
 					'<script type="text/javascript">
-						$(document).ready(function(){
-							$("#message' . $_POST['tableProvenance'] . '").addClass("updated");';
+						evarisk(document).ready(function(){
+							evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
 					if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error'))
 					{
 						$messageInfo .= '
-							$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+							evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					else
 					{
 						$messageInfo .= '
-							$("#message' . $_POST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_POST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+							evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
 					$messageInfo .= '
-							$("#message' . $_POST['tableProvenance'] . '").show();
+							evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
 							setTimeout(function(){
-								$("#message' . $_POST['tableProvenance'] . '").removeClass("updated");
-								$("#message' . $_POST['tableProvenance'] . '").hide();
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+								evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
 							},7500);
-							$("#ongletVoirLesRisques").click();
+							evarisk("#ongletVoirLesRisques").click();
 						});
 					</script>';
 					echo $messageInfo;
@@ -3272,10 +3187,10 @@ if($_POST['post'] == 'true')
 				break;
 			case "OLDsuiviAction" :
 				{
-				switch($_POST['tableProvenance'])
+				switch($_REQUEST['tableProvenance'])
 				{
 					case TABLE_RISQUE :
-						$risque = Risque::getRisque($_POST['idProvenance']);
+						$risque = Risque::getRisque($_REQUEST['idProvenance']);
 						{//Création de la table
 							unset($tableauVariables);
 							foreach($risque as $ligneRisque)
@@ -3291,7 +3206,7 @@ if($_POST['post'] == 'true')
 
 							unset($titres,$classes, $idLignes, $lignesDeValeurs);
 							$idLignes = null;
-							$idTable = 'tableDemandeAction' . $_POST['tableProvenance'] . $_POST['idProvenance'];
+							$idTable = 'tableDemandeAction' . $_REQUEST['tableProvenance'] . $_REQUEST['idProvenance'];
 							$titres[] = __("Quotation", 'evarisk');
 							$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
 							$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
@@ -3321,8 +3236,8 @@ if($_POST['post'] == 'true')
 
 							$lignesDeValeurs = (isset($lignesDeValeurs))?$lignesDeValeurs:null;
 							$script = '<script type="text/javascript">
-								$(document).ready(function(){
-									$("#' . $idTable . ' tfoot").remove();
+								evarisk(document).ready(function(){
+									evarisk("#' . $idTable . ' tfoot").remove();
 								});
 							</script>';
 
@@ -3330,15 +3245,15 @@ if($_POST['post'] == 'true')
 						}
 						break;
 					default :
-						echo 'Pensez &agrave; <b>ajouter</b> le <b>cas ' . $_POST['tableProvenance'] . '</b> dans le <b>switch</b> ligne <b>' . __LINE__ . '</b> du fichier "' . dirname(__FILE__) . '\<b>' . basename(__FILE__) . '</b>"<br />';
+						echo 'Pensez &agrave; <b>ajouter</b> le <b>cas ' . $_REQUEST['tableProvenance'] . '</b> dans le <b>switch</b> ligne <b>' . __LINE__ . '</b> du fichier "' . dirname(__FILE__) . '\<b>' . basename(__FILE__) . '</b>"<br />';
 						break;
 				}
 				echo '<br />';
 				//On récupère les actions relatives à l'élément de provenance.
 				$taches = new EvaTaskTable();
 				$tacheLike = new EvaTask();
-				$tacheLike->setIdFrom($_POST['idProvenance']);
-				$tacheLike->setTableFrom($_POST['tableProvenance']);
+				$tacheLike->setIdFrom($_REQUEST['idProvenance']);
+				$tacheLike->setTableFrom($_REQUEST['tableProvenance']);
 				$taches->getTasksLike($tacheLike);
 				//On demande à l'utilisateur de choisir l'action qui l'intéresse.
 				$actionsCorrectives = $taches->getTasks();
@@ -3395,8 +3310,8 @@ if($_POST['post'] == 'true')
 							$dateFin = date('Y-m-d', strtotime('+' . DAY_AFTER_TODAY_GANTT . ' day'));
 							
 							echo '<script type="text/javascript">
-								$(document).ready(function(){										
-									$("#' . $idDiv . '-affichage").gantt({
+								evarisk(document).ready(function(){										
+									evarisk("#' . $idDiv . '-affichage").gantt({
 										"tasks":[' . $tasksGantt . '],
 										"titles":[
 											"ID",
@@ -3415,23 +3330,23 @@ if($_POST['post'] == 'true')
 						else
 						{
 							echo '<script type="text/javascript">
-								$(document).ready(function(){										
-									$("#' . $idDiv . '-affichage").html("&nbsp;&nbsp;&nbsp;&nbsp;' . __('Action non d&eacute;coup&eacute;e', 'evarisk') . '");
+								evarisk(document).ready(function(){										
+									evarisk("#' . $idDiv . '-affichage").html("&nbsp;&nbsp;&nbsp;&nbsp;' . __('Action non d&eacute;coup&eacute;e', 'evarisk') . '");
 								});
 							</script>';
 						}
 						echo '<script type="text/javascript">
-							$(document).ready(function(){			
-								$("#' . $idDiv . '-choix").toggle(
+							evarisk(document).ready(function(){			
+								evarisk("#' . $idDiv . '-choix").toggle(
 									function()
 									{
-										$("#' . $idDiv . '-affichage").show();
-										$(this).children("span:first").html("-");
+										evarisk("#' . $idDiv . '-affichage").show();
+										evarisk(this).children("span:first").html("-");
 									},
 									function()
 									{
-										$("#' . $idDiv . '-affichage").hide();
-										$(this).children("span:first").html("+");
+										evarisk("#' . $idDiv . '-affichage").hide();
+										evarisk(this).children("span:first").html("+");
 									}
 								);
 							});
@@ -3439,26 +3354,26 @@ if($_POST['post'] == 'true')
 						{//Bouton enregistrer
 							$idBoutonEnregistrer = $idDiv . '-enregistrer';
 							$scriptEnregistrement = '<script type="text/javascript">
-								$(document).ready(function() {	
-									var boutonEnregistrer = $(\'#' . $idBoutonEnregistrer . '\').parent().html();
-									$(\'#' . $idBoutonEnregistrer . '\').parent().html("");
-									$(\'#' . $idDiv . '-affichage\').append(boutonEnregistrer);
-									$(\'#' . $idBoutonEnregistrer . '\').click(function() {
+								evarisk(document).ready(function() {	
+									var boutonEnregistrer = evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html();
+									evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html("");
+									evarisk(\'#' . $idDiv . '-affichage\').append(boutonEnregistrer);
+									evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {
 										var idDiv = "' . $idDiv . '";
 										var activites = new Array();
-										$("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3) input").each(function(){
-											if($(this).attr("id") != "")
+										evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3) input").each(function(){
+											if(evarisk(this).attr("id") != "")
 											{
-												activites[$(this).attr("id").substr(idDiv.length + 1)] = $(this).val();
+												activites[evarisk(this).attr("id").substr(idDiv.length + 1)] = evarisk(this).val();
 											}
 										});
-										$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 											"post":"true", 
 											"table":"' . TABLE_ACTIVITE . '", 
 											"act":"actualiserAvancement", 
 											"activites":activites,
-											"tableProvenance":"' . $_POST['tableProvenance'] . '",
-											"idProvenance": "' . $_POST['idProvenance'] . '"
+											"tableProvenance":"' . $_REQUEST['tableProvenance'] . '",
+											"idProvenance": "' . $_REQUEST['idProvenance'] . '"
 										});
 										return false;
 									});
@@ -3467,17 +3382,17 @@ if($_POST['post'] == 'true')
 							echo EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, 'Enregistrer', null, '', $idDiv . 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 						}
 						echo '<script type="text/javascript">
-								$(document).ready(function(){		
+								evarisk(document).ready(function(){		
 									//Transformation du texte des cases avancement en input
-									$("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3)").each(function(){
-										$(this).html("<input type=\"text\" value=\"" + $(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
-										if($(this).parent("tr").children("td:first").html().match("^T")=="T")
+									evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3)").each(function(){
+										evarisk(this).html("<input type=\"text\" value=\"" + evarisk(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
+										if(evarisk(this).parent("tr").children("td:first").html().match("^T")=="T")
 										{
-											$(this).children("input").attr("disabled","disabled");
+											evarisk(this).children("input").attr("disabled","disabled");
 										}
 										else
 										{
-											$(this).children("input").attr("id","' . $idDiv . '-" + $(this).parent("tr").children("td:first").html().substr(1, 1));
+											evarisk(this).children("input").attr("id","' . $idDiv . '-" + evarisk(this).parent("tr").children("td:first").html().substr(1, 1));
 										}
 									});
 								});
@@ -3486,8 +3401,8 @@ if($_POST['post'] == 'true')
 						foreach($niveaux as $key => $niveau)
 						{
 							echo '<script type="text/javascript">
-									$(document).ready(function(){		
-										$("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
+									evarisk(document).ready(function(){		
+										evarisk("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
 									});
 								</script>';
 						}
@@ -3495,7 +3410,7 @@ if($_POST['post'] == 'true')
 				}
 				else
 				{
-					switch($_POST['tableProvenance'])
+					switch($_REQUEST['tableProvenance'])
 					{
 						case TABLE_RISQUE :
 							$complement	= __('ce risque', 'evarisk');
@@ -3509,24 +3424,25 @@ if($_POST['post'] == 'true')
 				}
 				break;
 		}
+	}
 	//Chargement des meta-boxes
-	if(isset($_POST['nomMetaBox']))
-		switch($_POST['nomMetaBox'])
+	if(isset($_REQUEST['nomMetaBox']))
+		switch($_REQUEST['nomMetaBox'])
 		{
 			case 'Geolocalisation':
-				if($_POST['markers'] != "")
+				if($_REQUEST['markers'] != "")
 				{
-					foreach($_POST['markers'] as $markerImplode)
+					foreach($_REQUEST['markers'] as $markerImplode)
 					{
 						$markerNArray = explode('"; "', stripcslashes($markerImplode));
-						for($i=0; $i<count($_POST["keys"]); $i++)
+						for($i=0; $i<count($_REQUEST["keys"]); $i++)
 						{
-							$markerAArray[$_POST["keys"][$i]] = $markerNArray[$i];
+							$markerAArray[$_REQUEST["keys"][$i]] = $markerNArray[$i];
 						}
 						$markers[] = $markerAArray;
 					}
 				}
-				echo EvaGoogleMaps::getGoogleMap($_POST['idGoogleMapsDiv'], $markers);
+				echo EvaGoogleMaps::getGoogleMap($_REQUEST['idGoogleMapsDiv'], $markers);
 				break;
 		}
 }
@@ -3535,206 +3451,74 @@ if($_POST['post'] == 'true')
  */
 else
 {
-	switch($_GET['nom'])
+	switch($_REQUEST['nom'])
 	{
 		case TABLE_GROUPEMENT:
-			switch($_GET['act'])
+			switch($_REQUEST['act'])
 			{
-				case 'transfert':
-					$fils = $_GET['idElementSrc'];
-					$pere = $_GET['idElementDest'];
-					$idPere = str_replace('node-' . $_GET['location'] . '-','', $pere);
-					$idFils = (string)((int) str_replace('node-' . $_GET['location'] . '-','', $fils));
-					$groupementPere = EvaGroupement::getGroupement($idPere);
-					if($idFils == str_replace('node-' . $_GET['location'] . '-','', $fils)) //Le fils est un groupement
-					{
-						$groupement = EvaGroupement::getGroupement($idFils);
-						$pereActu = Arborescence::getPere($_GET['nom'], $groupement);
-						if($pereActu->id != $idPere)
-						{
-							$_POST['act'] = 'update';
-							$_POST['id'] = $groupement->id;
-							$_POST['nom_groupement'] = $groupement->nom;
-							$_POST['description'] = $groupement->description;
-							$_POST['telephone'] = $groupement->telephoneGroupement;
-							$_POST['effectif'] = $groupement->effectif;
-							
-							$address = new EvaAddress($groupement->id_adresse);
-							
-							$address->load();
-							$contenuInputLigne1 = $address->getFirstLine();
-							$contenuInputLigne2 = $address->getSecondLine();
-							$contenuInputCodePostal = $address->getPostalCode();
-							$contenuInputVille = $address->getCity();
-							
-							$_POST['adresse_ligne_1'] = $address->getFirstLine();
-							$_POST['adresse_ligne_2'] = $address->getSecondLine();
-							$_POST['code_postal'] = $address->getPostalCode();
-							$_POST['ville'] = $address->getCity();
-							$_POST['longitude'] = $address->getLongitude();
-							$_POST['latitude'] = $address->getLatitude();
-							$_POST['groupementPere'] = $idPere;
-							require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');
-						}
-					}
-					else //Le fils est une unité
-					{
-						$idFils = str_replace('leaf-','', $fils);
-						uniteDeTravail::transfertUnit($idFils, $idPere);
-					}
-					break;
 				case 'none':
-					switch($_GET['affichage'])
+					switch($_REQUEST['affichage'])
 					{
 						case "affichageTable":
 						case "affichageListe":
-							$_POST['affichage'] = $_GET['affichage'];
+							$_REQUEST['affichage'] = $_REQUEST['affichage'];
 							require_once(EVA_MODULES_PLUGIN_DIR . 'evaluationDesRisques/partieGaucheEvaluationDesRisques.php');
 							echo $script . $partieGauche;
 							break;
 					}
 					break;
 				case 'reloadScriptDD':
-					echo EvaDisplayDesign::getScriptDragAndDrop($_GET['idTable'], $_GET['nom'], $_GET['divDeChargement']);
+					echo EvaDisplayDesign::getScriptDragAndDrop($_REQUEST['idTable'], $_REQUEST['nom'], $_REQUEST['divDeChargement']);
 					break;
 			}
 			break;
 		case TABLE_TACHE:
-			switch($_GET['act'])
+			switch($_REQUEST['act'])
 			{
-				case 'transfert':
-					$fils = $_GET['idElementSrc'];
-					$pere = $_GET['idElementDest'];
-					$idPere = str_replace('node-' . $_GET['location'] . '-','', $pere);
-					$idOrigine = str_replace('node-' . $_GET['location'] . '-','', $_GET['idElementOrigine']);
-					$idFils = (string)((int) str_replace('node-' . $_GET['location'] . '-','', $fils));
-					if($idFils == str_replace('node-' . $_GET['location'] . '-','', $fils)) //Le fils est une tâche
-					{
-						$tache = new EvaTask($idFils);
-						$tache->load();
-						$tache->transfert($idPere);
-					}
-					else //Le fils est une activité
-					{
-						$idFils = str_replace('leaf-','', $fils);
-						$activite = new EvaActivity($idFils);
-						$activite->load();
-						$activite->transfert($idPere);
-
-						/*	Update the action ancestor	*/
-						$relatedTask = new EvaTask($idPere);
-						$relatedTask->load();
-						$relatedTask->computeProgression();
-						$relatedTask->save();
-						unset($relatedTask);
-
-						/*	Update the action ancestor	*/
-						$relatedTask = new EvaTask($idOrigine);
-						$relatedTask->load();
-						$relatedTask->computeProgression();
-						$relatedTask->save();
-					}
-					break;
 				case 'none':
-					switch($_GET['affichage'])
+					switch($_REQUEST['affichage'])
 					{
 						case "affichageTable":
 						case "affichageListe":
-							$_POST['affichage'] = $_GET['affichage'];
+							$_REQUEST['affichage'] = $_REQUEST['affichage'];
 							require_once(EVA_MODULES_PLUGIN_DIR . 'evaluationDesRisques/partieGaucheEvaluationDesRisques.php');
 							echo $script . $partieGauche;
 							break;
 					}
 					break;
 				case 'reloadScriptDD':
-					echo EvaDisplayDesign::getScriptDragAndDrop($_GET['idTable'], $_GET['nom'], $_GET['divDeChargement']);
+					echo EvaDisplayDesign::getScriptDragAndDrop($_REQUEST['idTable'], $_REQUEST['nom'], $_REQUEST['divDeChargement']);
 					break;
 			}
 			break;
 		case TABLE_GROUPE_QUESTION:
-			switch($_GET['act'])
+			switch($_REQUEST['act'])
 			{
-				case 'transfert':
-					$fils = $_GET['idElementSrc'];
-					$pere = $_GET['idElementDest'];
-					$pereOriginel = $_GET['idElementOrigine'];
-					$idPere = str_replace('node-' . $_GET['location'] . '-','', $pere);
-					$idFils = (string)((int) str_replace('node-' . $_GET['location'] . '-','', $fils));
-					$idPereOriginel = str_replace('node-' . $_GET['location'] . '-','', $pereOriginel);
-					if($idFils == str_replace('node-' . $_GET['location'] . '-','', $fils))
-					//Le fils est un groupe de questions
-					{
-						$idFils = str_replace('node-' . $_GET['location'] . '-','', $fils);
-						$groupeQuestion = evaGroupeQuestions::getGroupeQuestions($idFils);
-						$pereActu = Arborescence::getPere($_GET['nom'], $groupeQuestion);
-						if($pereActu->id != $idPere)
-						{
-							$_POST['act'] = 'update';
-							$_POST['id'] = $groupeQuestion->id;
-							$_POST['nom'] = $groupeQuestion->nom;
-							$_POST['code'] = $groupeQuestion->code;
-							$_POST['idPere'] = $idPere;
-							require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
-						}
-					}
-					else
-					//Le fils est une question
-					{
-						$idFils = str_replace('leaf-','', $fils);
-						evaQuestion::transfertQuestion($idFils, $idPere, $idPereOriginel);
-					}
-					break;
 				case 'delete':
-					$_POST['idGroupeQuestion'] = $_GET['id'];
-					$_POST['act'] = $_GET['act'];
+					$_REQUEST['idGroupeQuestion'] = $_REQUEST['id'];
+					$_REQUEST['act'] = $_REQUEST['act'];
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
 					break;
 			}
 		case TABLE_QUESTION:
-			switch($_GET['act'])
+			switch($_REQUEST['act'])
 			{
 				case 'delete':
-					$_POST['idQuestion'] = $_GET['id'];
-					$_POST['idGroupeQuestions'] = $_GET['idPere'];
-					$_POST['act'] = $_GET['act'];
+					$_REQUEST['idQuestion'] = $_REQUEST['id'];
+					$_REQUEST['idGroupeQuestions'] = $_REQUEST['idPere'];
+					$_REQUEST['act'] = $_REQUEST['act'];
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/questionPersistance.php');
 					break;
 			}
 		case TABLE_CATEGORIE_DANGER:
-			switch($_GET['act'])
+			switch($_REQUEST['act'])
 			{
-				case 'transfert':
-					$fils = $_GET['idElementSrc'];
-					$pere = $_GET['idElementDest'];
-					$idFils = (string)((int) str_replace('node-' . $_GET['location'] . '-','', $fils));
-					$idPere = str_replace('node-' . $_GET['location'] . '-','', $pere);
-					if($idFils == str_replace('node-' . $_GET['location'] . '-','', $fils))
-					//Le fils est une catégorie
-					{
-						$categorie = categorieDangers::getCategorieDanger($idFils);
-						$pereActu = Arborescence::getPere($_GET['nom'], $categorie);
-						if($pereActu->id != $idPere)
-						{
-							$_POST['act'] = 'update';
-							$_POST['id'] = $idFils;
-							$_POST['nom_categorie'] = $categorie->nom;
-							$_POST['categorieMere'] = $idPere;
-							require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');
-						}
-					}
-					else
-					//Le fils est un danger
-					{
-						$idFils = str_replace('leaf-','', $fils);
-						evaDanger::transfertDanger($idFils, $idPere);
-					}
-					break;
 				case 'none':
-					switch($_GET['affichage'])
+					switch($_REQUEST['affichage'])
 					{
 						case "affichageTable":
 						case "affichageListe":
-							$_POST['affichage'] = $_GET['affichage'];
+							$_REQUEST['affichage'] = $_REQUEST['affichage'];
 							require_once(EVA_MODULES_PLUGIN_DIR . 'dangers/partieGaucheDangers.php');
 							echo $script . $partieGauche;
 							break;

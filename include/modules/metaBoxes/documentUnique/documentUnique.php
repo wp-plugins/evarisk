@@ -13,8 +13,8 @@
 		if(((int)$arguments['idElement']) == 0)
 		{
 			$script = '<script type="text/javascript">
-					$(document).ready(function() {
-						$("#postBoxDocumentUnique").hide();
+					evarisk(document).ready(function() {
+						evarisk("#postBoxDocumentUnique").hide();
 					});
 				</script>';
 			echo $script;
@@ -26,65 +26,65 @@
 
 			$scriptRisque = 
 			'<script type="text/javascript">
-				$(document).ready(function(){
-					$("#ongletRisquesLignes").click(function(){
-						$("#divRisquesLignes").show();
-						$("#divRisquesUnites").hide();
-						$("#divDocumentUnique").hide();
-						$("#divHistoriqueDocumentUnique").hide();
+				evarisk(document).ready(function(){
+					evarisk("#ongletRisquesLignes").click(function(){
+						evarisk("#divRisquesLignes").show();
+						evarisk("#divRisquesUnites").hide();
+						evarisk("#divDocumentUnique").hide();
+						evarisk("#divHistoriqueDocumentUnique").hide();
 
-						$("#ongletRisquesLignes").addClass("selected_tab");
-						$("#ongletRisquesUnites").removeClass("selected_tab");
-						$("#ongletDocumentUnique").removeClass("selected_tab");
-						$("#ongletHistoriqueDocumentUnique").removeClass("selected_tab");
+						evarisk("#ongletRisquesLignes").addClass("selected_tab");
+						evarisk("#ongletRisquesUnites").removeClass("selected_tab");
+						evarisk("#ongletDocumentUnique").removeClass("selected_tab");
+						evarisk("#ongletHistoriqueDocumentUnique").removeClass("selected_tab");
 
-						$("#divRisquesLignes").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$("#divRisquesLignes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"voirRisqueLigne", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
+						evarisk("#divRisquesLignes").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+						evarisk("#divRisquesLignes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"voirRisqueLigne", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
 					});
 
-					$("#ongletRisquesUnites").click(function(){
-						$("#divRisquesLignes").hide();
-						$("#divRisquesUnites").show();
-						$("#divDocumentUnique").hide();
-						$("#divHistoriqueDocumentUnique").hide();
+					evarisk("#ongletRisquesUnites").click(function(){
+						evarisk("#divRisquesLignes").hide();
+						evarisk("#divRisquesUnites").show();
+						evarisk("#divDocumentUnique").hide();
+						evarisk("#divHistoriqueDocumentUnique").hide();
 
-						$("#ongletRisquesLignes").removeClass("selected_tab");
-						$("#ongletRisquesUnites").addClass("selected_tab");
-						$("#ongletDocumentUnique").removeClass("selected_tab");
-						$("#ongletHistoriqueDocumentUnique").removeClass("selected_tab");
+						evarisk("#ongletRisquesLignes").removeClass("selected_tab");
+						evarisk("#ongletRisquesUnites").addClass("selected_tab");
+						evarisk("#ongletDocumentUnique").removeClass("selected_tab");
+						evarisk("#ongletHistoriqueDocumentUnique").removeClass("selected_tab");
 						
-						$("#divRisquesUnites").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$("#divRisquesUnites").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"voirRisqueUnite", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
+						evarisk("#divRisquesUnites").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+						evarisk("#divRisquesUnites").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"voirRisqueUnite", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
 					});
 
-					$("#ongletDocumentUnique").click(function(){
-						$("#divRisquesLignes").hide();
-						$("#divRisquesUnites").hide();
-						$("#divDocumentUnique").show();
-						$("#divHistoriqueDocumentUnique").hide();
+					evarisk("#ongletDocumentUnique").click(function(){
+						evarisk("#divRisquesLignes").hide();
+						evarisk("#divRisquesUnites").hide();
+						evarisk("#divDocumentUnique").show();
+						evarisk("#divHistoriqueDocumentUnique").hide();
 
-						$("#ongletRisquesLignes").removeClass("selected_tab");
-						$("#ongletRisquesUnites").removeClass("selected_tab");
-						$("#ongletDocumentUnique").addClass("selected_tab");
-						$("#ongletHistoriqueDocumentUnique").removeClass("selected_tab");
+						evarisk("#ongletRisquesLignes").removeClass("selected_tab");
+						evarisk("#ongletRisquesUnites").removeClass("selected_tab");
+						evarisk("#ongletDocumentUnique").addClass("selected_tab");
+						evarisk("#ongletHistoriqueDocumentUnique").removeClass("selected_tab");
 						
-						$("#divDocumentUnique").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"voirDocumentUnique", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
+						evarisk("#divDocumentUnique").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+						evarisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"voirDocumentUnique", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
 					});
 
-					$("#ongletHistoriqueDocumentUnique").click(function(){
-						$("#divRisquesLignes").hide();
-						$("#divRisquesUnites").hide();
-						$("#divDocumentUnique").hide();
-						$("#divHistoriqueDocumentUnique").show();
+					evarisk("#ongletHistoriqueDocumentUnique").click(function(){
+						evarisk("#divRisquesLignes").hide();
+						evarisk("#divRisquesUnites").hide();
+						evarisk("#divDocumentUnique").hide();
+						evarisk("#divHistoriqueDocumentUnique").show();
 
-						$("#ongletRisquesLignes").removeClass("selected_tab");
-						$("#ongletRisquesUnites").removeClass("selected_tab");
-						$("#ongletDocumentUnique").removeClass("selected_tab");
-						$("#ongletHistoriqueDocumentUnique").addClass("selected_tab");
+						evarisk("#ongletRisquesLignes").removeClass("selected_tab");
+						evarisk("#ongletRisquesUnites").removeClass("selected_tab");
+						evarisk("#ongletDocumentUnique").removeClass("selected_tab");
+						evarisk("#ongletHistoriqueDocumentUnique").addClass("selected_tab");
 						
-						$("#divHistoriqueDocumentUnique").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$("#divHistoriqueDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"voirHistoriqueDocumentUnique", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
+						evarisk("#divHistoriqueDocumentUnique").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+						evarisk("#divHistoriqueDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"voirHistoriqueDocumentUnique", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
 					});
 				});
 			</script>';

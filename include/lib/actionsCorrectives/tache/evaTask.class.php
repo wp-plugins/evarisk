@@ -353,7 +353,9 @@ class EvaTask extends EvaBaseTask
 		$TasksAndSubTasks = $this->getDescendants();
 		$TasksAndSubTasks->addTask($this);
 		$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
+
 		$taskDuration = $taskCompleteDuration = 0;
+		$totalProgression = $totalSubTask = 0;
 		if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
 		{
 			foreach($TasksAndSubTasks as $task)
@@ -364,13 +366,20 @@ class EvaTask extends EvaBaseTask
 				{
 					foreach($activities as $activity)
 					{
-						$activityStartDate = $activity->getStartDate();
-						$startDate = explode('-', $activityStartDate);
-						$activityFinishDate = $activity->getFinishDate();
-						$finishDate = explode('-', $activityFinishDate);
-						$activiteDuration = mktime(0,0,0,$finishDate[1],$finishDate[2],$finishDate[0]) - mktime(0,0,0,$startDate[1], $startDate[2],$startDate[0]);
-						$taskDuration += $activiteDuration;
-						$taskCompleteDuration += $activiteDuration * $activity->getProgression() / 100;
+						{	/*	Old version lookin at the task duration to calculate the progression	*/
+							// $activityStartDate = $activity->getStartDate();
+							// $startDate = explode('-', $activityStartDate);
+							// $activityFinishDate = $activity->getFinishDate();
+							// $finishDate = explode('-', $activityFinishDate);
+							// $activiteDuration = mktime(0,0,0,$finishDate[1],$finishDate[2],$finishDate[0]) - mktime(0,0,0,$startDate[1], $startDate[2],$startDate[0]);
+							// $taskDuration += $activiteDuration;
+							// $taskCompleteDuration += $activiteDuration * $activity->getProgression() / 100;
+						}
+						
+						{
+							$totalProgression += $activity->getProgression();
+							$totalSubTask++;
+						}
 					}
 				}
 				else
@@ -379,9 +388,11 @@ class EvaTask extends EvaBaseTask
 				}
 			}
 		}
-		if($taskDuration > 0)
+		// if($taskDuration > 0)
+		if($totalProgression > 0)
 		{
-			$progressionToSet = round($taskCompleteDuration / $taskDuration * 100);
+			// $progressionToSet = round($taskCompleteDuration / $taskDuration * 100);
+			$progressionToSet = round($totalProgression / $totalSubTask);
 			$this->setProgression($progressionToSet);
 			if($progressionToSet >= 100)
 			{
@@ -479,7 +490,7 @@ class EvaTask extends EvaBaseTask
 					$valeurs[] = array('value'=>'');
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListPassedButNotMarkAsDoneEmpty';
-					$acDashboardBox .= '<script type="text/javascript" >$("#evaDashboard_ac_passed").remove();</script>';
+					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_ac_passed").remove();</script>';
 				}
 
 				$classes = array('cbColumnLarge','','','cbNbUserGroup');
@@ -545,7 +556,7 @@ class EvaTask extends EvaBaseTask
 					$valeurs[] = array('value'=>'');
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListToMarkAsDoneEmpty';
-					$acDashboardBox .= '<script type="text/javascript" >$("#evaDashboard_task_toDone").remove();</script>';
+					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_task_toDone").remove();</script>';
 					$outputDatas = false;
 				}
 
@@ -634,7 +645,7 @@ class EvaTask extends EvaBaseTask
 					$valeurs[] = array('value'=>'');
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListToReEvaluateRiskEmpty';
-					$acDashboardBox .= '<script type="text/javascript" >$("#evaDashboard_ac_done").remove();</script>';
+					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_ac_done").remove();</script>';
 				}
 
 				$classes = array('cbColumnLarge','','','cbNbUserGroup');
@@ -652,11 +663,11 @@ class EvaTask extends EvaBaseTask
 		{
 			$script = 
 			'<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#' . $idTable . '\').dataTable({
+				evarisk(document).ready(function() {
+					evarisk(\'#' . $idTable . '\').dataTable({
 						"bInfo": false
 						' . $tableOptions . '});
-					$(\'#' . $idTable . '\').children("tfoot").remove();
+					evarisk(\'#' . $idTable . '\').children("tfoot").remove();
 				});
 			</script>';
 			$acDashboardBox .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);

@@ -149,13 +149,13 @@ class categorieDangers {
 		{
 			echo 
 				'<script type="text/javascript">
-					$(document).ready(function(){
-						$("#message").addClass("updated");
-						$("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						$("#message").show();
+					evarisk(document).ready(function(){
+						evarisk("#message").addClass("updated");
+						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						evarisk("#message").show();
 						setTimeout(function(){
-							$("#message").removeClass("updated");
-							$("#message").hide();
+							evarisk("#message").removeClass("updated");
+							evarisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -164,16 +164,100 @@ class categorieDangers {
 		{
 			echo 
 				'<script type="text/javascript">
-					$(document).ready(function(){
-						$("#message").addClass("updated");
-						$("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						$("#message").show();
+					evarisk(document).ready(function(){
+						evarisk("#message").addClass("updated");
+						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						evarisk("#message").show();
 						setTimeout(function(){
-							$("#message").removeClass("updated");
-							$("#message").hide();
+							evarisk("#message").removeClass("updated");
+							evarisk("#message").hide();
 						},7500);
 					});
 				</script>';
 		}
 	}
+
+	function getCategorieDangerForRiskEvaluation($risque, $formId = '')
+	{
+		$categoryResult = array();
+		$categoryResult['list'] = '';
+		$categoryResult['script'] = '';
+		$categoryResult['selectionCategorie'] = '';
+
+		$nomRacine = 'Categorie Racine';
+		$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
+		$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine);
+
+		if($risque[0] != null)
+		{// Si l'on édite un risque, on sélectionne la bonne catégorie de dangers
+			$selectionCategorie = $risque[0]->idCategorie;
+		}
+		else
+		{// Sinon on sélectionne la racine
+			$selectionCategorie = $categorieRacine->id;
+		}
+
+		if(AFFICHAGE_PICTO_CATEGORIE)
+		{
+			foreach($categoriesDangers as $categorieDangers)
+			{
+				if($selectionCategorie == $categorieRacine->id)
+				{
+					$selectionCategorie = $categorieDangers->id;
+				}
+				$categoryResult['selectionCategorie'] = $selectionCategorie;
+				$categorieDangerMainPhoto = evaPhoto::getMainPhoto(TABLE_CATEGORIE_DANGER, $categorieDangers->id);
+				if($categorieDangerMainPhoto != 'error')
+				{
+					$categorieDangerMainPhoto = EVA_HOME_URL . $categorieDangerMainPhoto;
+				}
+				else
+				{
+					$categorieDangerMainPhoto = DEFAULT_DANGER_CATEGORIE_PICTO;
+				}
+
+				$categoryResult['list'] .= '<div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . $categorieDangers->nom . '" title="' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" /></label></div>';
+			}
+			if($categoryResult['list'] != '')
+			{
+				$formIdSelector = ($formId != '') ? '#' . $formId . ' ' : '';
+				$categoryResult['script'] .= '
+		evarisk("#' . $formId . 'divCategorieDangerFormRisque").hide();
+		evarisk("#' . $formId . 'cat' . $selectionCategorie . '").click();
+		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";
+		evarisk("' . $formIdSelector . '.categoriesDangers").click(function(){
+			var ' . $formId . 'newCatId = (evarisk(this).attr("id")).replace("' . $formId . 'cat","");
+			if(' . $formId . 'oldCatId != ' . $formId . 'newCatId)
+			{
+				evarisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
+				evarisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post":"true", 
+					"table":"' . TABLE_CATEGORIE_DANGER . '", 
+					"act":"reloadComboDangers", 
+					"idElement":evarisk("#' . $formId . 'categorieDangerFormRisque").val(),
+					"formId":"' . $formId . '"
+				});
+				' . $formId . 'oldCatId = ' . $formId . 'newCatId;
+			}
+		});';
+			}
+		}
+		$categoryResult['list'] .= '
+		<div id="' . $formId . 'divCategorieDangerFormRisque" >' . EvaDisplayInput::afficherComboBoxArborescente($categorieRacine, TABLE_CATEGORIE_DANGER, $formId . 'categorieDangerFormRisque', __('Cat&eacute;gorie de dangers', 'evarisk') . ' : ', 'categorieDangers', ucfirst(strtolower(sprintf(__("choisissez %s", 'evarisk'), __("une cat&eacute;gorie de dangers", 'evarisk')))), $selectionCategorie) . '</div>';
+		$categoryResult['script'] .= '
+	evarisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
+		evarisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true", 
+			"table":"' . TABLE_CATEGORIE_DANGER . '", 
+			"act":"reloadComboDangers", 
+			"idElement":evarisk("#' . $formId . 'categorieDangerFormRisque").val(),
+			"formId":"' . $formId . '"
+		});
+	});';
+
+		return $categoryResult;
+	}
+
 }

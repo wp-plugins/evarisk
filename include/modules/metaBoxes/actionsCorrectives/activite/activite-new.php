@@ -76,7 +76,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$activite_new .= $label . EvaDisplayInput::afficherInput('text', $id, $contenuInputDateDebut, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date') . '';
 	}
 	{//Date de début de l'action
-		$contenuAideTitre = "test";
+		$contenuAideTitre = "";
 		$id = "date_fin_activite";
 		$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de fin %s", 'evarisk'), __("de l'action",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionEnd" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
 		$labelInput = '';
@@ -96,18 +96,18 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$id = "avancement_activite";
 		$nomChamps = "avancement";
 		$activite_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputAvancement, $contenuAideDescription, $labelInput, $nomChamps, true, true, 3, '', 'number', '10%') . '<div id="sliderAvancement" ></div><script type="text/javascript" >
-	$(function() {
-		$( "#sliderAvancement" ).slider({
+	evarisk(function() {
+		evarisk( "#sliderAvancement" ).slider({
 			value:' . $contenuInputAvancement . ',
 			min: 0,
 			max: 100,
 			step: 1,
 			slide: function( event, ui ) {
-				$( "#' . $id . '" ).val( ui.value );
+				evarisk( "#' . $id . '" ).val( ui.value );
 			}
 		});
-		$( "#' . $id . '" ).val( $( "#sliderAvancement" ).slider( "value" ) );
-		$( "#' . $id . '" ).attr("style",$( "#' . $id . '" ).attr("style") + "border:0px solid #000000;");
+		evarisk( "#' . $id . '" ).val( evarisk( "#sliderAvancement" ).slider( "value" ) );
+		evarisk( "#' . $id . '" ).attr("style",evarisk( "#' . $id . '" ).attr("style") + "border:0px solid #000000;");
 ;
 	});
 	</script>';
@@ -160,26 +160,26 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$idResponsableIsMandatory = options::getOptionValue('responsable_Action_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
-			$(document).ready(function() {
-				$("#putTodayActionStart").click(function(){
-					$("#date_debut_activite").val("' . date('Y-m-d') . '");
+			evarisk(document).ready(function() {
+				evarisk("#putTodayActionStart").click(function(){
+					evarisk("#date_debut_activite").val("' . date('Y-m-d') . '");
 				});
-				$("#putTodayActionEnd").click(function(){
-					$("#date_fin_activite").val("' . date('Y-m-d') . '");
+				evarisk("#putTodayActionEnd").click(function(){
+					evarisk("#date_fin_activite").val("' . date('Y-m-d') . '");
 				});
 
-				$(\'#' . $idBouttonEnregistrer . '\').click(function() {
-					if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+				evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
+					if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 					{
 						document.getElementById(\'' . $idTitre . '\').value=\'\';
-						$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+						evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 					}
 
-					idResponsable = $("#responsable_activite").val();
+					idResponsable = evarisk("#responsable_activite").val();
 					idResponsableIsMandatory = "false";
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
-					valeurActuelle = $("#' . $idTitre . '").val();
+					valeurActuelle = evarisk("#' . $idTitre . '").val();
 					if(valeurActuelle == "")
 					{
 						alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
@@ -190,22 +190,22 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 					}
 					else
 					{
-						$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_ACTIVITE . '",
-							"act": $("#act_activite").val(),
-							"id": $("#id_activite").val(),
-							"nom_activite": $("#nom_activite").val(),
-							"date_debut": $("#date_debut_activite").val(),
-							"date_fin": $("#date_fin_activite").val(),
-							"idPere": $("#idPere_activite").val(),
-							"description": $("#description_activite").val(),
-							"affichage": $("#affichage_activite").val(),
-							"cout": $("#cout_activite").val(),
-							"avancement": $("#avancement_activite").val(),
-							"responsable_activite": $("#responsable_activite").val(),
-							"idsFilAriane": $("#idsFilAriane_activite").val(),
-							"idProvenance": $("#idProvenance_activite").val(),
-							"tableProvenance": $("#tableProvenance_activite").val()
+							"act": evarisk("#act_activite").val(),
+							"id": evarisk("#id_activite").val(),
+							"nom_activite": evarisk("#nom_activite").val(),
+							"date_debut": evarisk("#date_debut_activite").val(),
+							"date_fin": evarisk("#date_fin_activite").val(),
+							"idPere": evarisk("#idPere_activite").val(),
+							"description": evarisk("#description_activite").val(),
+							"affichage": evarisk("#affichage_activite").val(),
+							"cout": evarisk("#cout_activite").val(),
+							"avancement": evarisk("#avancement_activite").val(),
+							"responsable_activite": evarisk("#responsable_activite").val(),
+							"idsFilAriane": evarisk("#idsFilAriane_activite").val(),
+							"idProvenance": evarisk("#idProvenance_activite").val(),
+							"tableProvenance": evarisk("#tableProvenance_activite").val()
 						});
 					}
 				});
@@ -219,21 +219,21 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$alertWhenMarkActionAsDone = options::getOptionValue('avertir_Solde_Action_Non_100');
 
 		$scriptEnregistrementDone = '<script type="text/javascript">
-			$(document).ready(function() {				
-				$(\'#' . $idBoutton . '\').click(function() {
-					if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+			evarisk(document).ready(function() {				
+				evarisk(\'#' . $idBoutton . '\').click(function() {
+					if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 					{
 						document.getElementById(\'' . $idTitre . '\').value=\'\';
-						$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+						evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 					}
 
-					idResponsable = $("#responsable_activite").val();
+					idResponsable = evarisk("#responsable_activite").val();
 					idResponsableIsMandatory = "false";
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 					alertWhenMarkActionAsDone = "non";
 					alertWhenMarkActionAsDone = "' . $alertWhenMarkActionAsDone . '";
 
-					valeurActuelle = $("#' . $idTitre . '").val();
+					valeurActuelle = evarisk("#' . $idTitre . '").val();
 					if(valeurActuelle == "")
 					{
 						alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
@@ -244,7 +244,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 					}
 					else if(
 						(
-							($("#avancement_activite").val() == "100") && (' . $contenuInputAvancement . ' == "100") 
+							(evarisk("#avancement_activite").val() == "100") && (' . $contenuInputAvancement . ' == "100") 
 						)
 						||
 							(alertWhenMarkActionAsDone == "non")
@@ -252,27 +252,27 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 						(
 							(alertWhenMarkActionAsDone == "oui")
 							&&
-							confirm((convertAccentToJS("' . __("Vous &eacute;tes sur le point de solder une action dont l\'avancement est de #avancement#%.#retour#Etes vous sur de vouloir continuer ?", 'evarisk') . '").replace("#avancement#", $("#avancement_activite").val())).replace("#retour#", "\r\n"))
+							confirm((convertAccentToJS("' . __("Vous &eacute;tes sur le point de solder une action dont l\'avancement est de #avancement#%.#retour#Etes vous sur de vouloir continuer ?", 'evarisk') . '").replace("#avancement#", evarisk("#avancement_activite").val())).replace("#retour#", "\r\n"))
 						)
 					)
 					{
-						$("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-						$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						evarisk("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_ACTIVITE . '",
 							"act": "actionDone",
-							"id": $("#id_activite").val(),
-							"nom_activite": $("#nom_activite").val(),
-							"date_debut": $("#date_debut_activite").val(),
-							"date_fin": $("#date_fin_activite").val(),
-							"idPere": $("#idPere_activite").val(),
-							"description": $("#description_activite").val(),
-							"affichage": $("#affichage_activite").val(),
-							"cout": $("#cout_activite").val(),
-							"avancement": $("#avancement_activite").val(),
-							"responsable_activite": $("#responsable_activite").val(),
-							"idsFilAriane": $("#idsFilAriane_activite").val(),
-							"idProvenance": $("#idProvenance_activite").val(),
-							"tableProvenance": $("#tableProvenance_activite").val()
+							"id": evarisk("#id_activite").val(),
+							"nom_activite": evarisk("#nom_activite").val(),
+							"date_debut": evarisk("#date_debut_activite").val(),
+							"date_fin": evarisk("#date_fin_activite").val(),
+							"idPere": evarisk("#idPere_activite").val(),
+							"description": evarisk("#description_activite").val(),
+							"affichage": evarisk("#affichage_activite").val(),
+							"cout": evarisk("#cout_activite").val(),
+							"avancement": evarisk("#avancement_activite").val(),
+							"responsable_activite": evarisk("#responsable_activite").val(),
+							"idsFilAriane": evarisk("#idsFilAriane_activite").val(),
+							"idProvenance": evarisk("#idProvenance_activite").val(),
+							"tableProvenance": evarisk("#tableProvenance_activite").val()
 						});
 					}
 				});
@@ -304,7 +304,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 			$activite_new .= 
 					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') . 
 				'</div>
-				<script type="text/javascript" >$("#ActionSaveButton").children("br").remove();</script>';
+				<script type="text/javascript" >evarisk("#ActionSaveButton").children("br").remove();</script>';
 		}
 		else
 		{

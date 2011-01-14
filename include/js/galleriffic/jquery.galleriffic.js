@@ -976,4 +976,4 @@
 
 		return this;
 	};
-})(jQuery);
+})(evarisk);

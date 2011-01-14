@@ -254,4 +254,4 @@ $.extend($.ui.selectable, {
 	}
 });
 
-})(jQuery);
+})(evarisk);

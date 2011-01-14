@@ -41,12 +41,12 @@ class EvaDisplayDesign {
 		$debutPage = $debutPage . '</h2>';
 		$debutPage = $debutPage . '<div id="champsCaches" class=""></div>
 			<script type="text/javascript">
-				$(document).ready(function() {
+				evarisk(document).ready(function() {
 					setTimeout 
 					( 
 						function() 
 						{ 
-							$("#message").hide();
+							evarisk("#message").hide();
 						}, 
 						10000
 					);
@@ -57,71 +57,29 @@ class EvaDisplayDesign {
 			$racine = Arborescence::getRacine($table);
 			$idPere = $racine->id;
 			$debutPage = $debutPage . '<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#affichageTable\').click(function() {
-						$(\'#affichageListe\').removeClass(\'selectedAffichage\');
-						$(\'#affichageTable\').addClass(\'selectedAffichage\');
-						$(\'#identifiantActuellemainPostBox\').val(1);
-						$(\'#pagemainPostBoxReference\').val(1);
+				evarisk(document).ready(function() {
+					evarisk(\'#affichageTable\').click(function() {
+						evarisk(\'#affichageListe\').removeClass(\'selectedAffichage\');
+						evarisk(\'#affichageTable\').addClass(\'selectedAffichage\');
+						evarisk(\'#identifiantActuellemainPostBox\').val(1);
+						evarisk("#pagemainPostBoxReference").val(1);
 						
-						while($(\'#filAriane :last-child\').attr("id") != "element1")
+						while(evarisk(\'#filAriane :last-child\').attr("id") != "element1")
 						{
-							$(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').remove();
 						}
-						
-						$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#pagemainPostBoxReference\').val(),
-							"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-							"partie": "right",
-"menu": $("#menu").val(),
-							"affichage": "affichageTable",
-							"partition": "main"
-						});
-						$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#pagemainPostBoxReference\').val(),
-							"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-							"partie": "left",
-"menu": $("#menu").val(),
-							"affichage": "affichageTable",
-							"partition": "main"
-						});
-				
-						$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+
+						changementPage("right", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageTable", "main");
+						changementPage("left", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageTable", "main");
 					});
-					$(\'#affichageListe\').click(function() {
-						$(\'#affichageTable\').removeClass(\'selectedAffichage\');
-						$(\'#affichageListe\').addClass(\'selectedAffichage\');
-						$(\'#identifiantActuellemainPostBox\').val(1);
-						$(\'#pagemainPostBoxReference\').val(1);
-						
-						$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#pagemainPostBoxReference\').val(),
-							"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-							"partie": "right",
-"menu": $("#menu").val(),
-							"affichage": "affichageListe",
-							"partition": "main"
-						});
-						$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#pagemainPostBoxReference\').val(),
-							"idPere": $(\'#identifiantActuellemainPostBox\').val(),
-							"partie": "left",
-"menu": $("#menu").val(),
-							"affichage": "affichageListe",
-							"partition": "main"
-						});
-				
-						$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+					evarisk(\'#affichageListe\').click(function() {
+						evarisk(\'#affichageTable\').removeClass(\'selectedAffichage\');
+						evarisk(\'#affichageListe\').addClass(\'selectedAffichage\');
+						evarisk(\'#identifiantActuellemainPostBox\').val(1);
+						evarisk("#pagemainPostBoxReference").val(1);
+
+						changementPage("right", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageListe", "main");
+						changementPage("left", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageListe", "main");
 					});
 				});
 			</script>';
@@ -170,41 +128,19 @@ class EvaDisplayDesign {
 		{
 			$display = 'style="display: none"';
 		}
-		$filAriane = '<div ' . $display . 'id="filAriane"><a href=# id="element1">' . $titreFilAriane . '</a></div>';
+		$filAriane = '<div ' . $display . ' id="filAriane"><a href="#" id="element1">' . $titreFilAriane . '</a></div>';
 		$script = '<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#element1\').click(function() {
-						$(\'#equilize\').click();
-												$(\'#identifiantActuelle' . $idPostBox . '\').val(1);
-						$(\'#page' . $idPostBox . 'Reference\').val(1);
-						while($(\'#filAriane :last-child\').attr("id") != "element1")
+				evarisk(document).ready(function() {
+					evarisk(\'#element1\').click(function() {
+						evarisk("#equilize").click();
+												evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(1);
+						evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+						while(evarisk(\'#filAriane :last-child\').attr("id") != "element1")
 						{
-							$(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').remove();
 						}
-						
-						$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-							"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-							"partie": "right",
-							"menu": $("#menu").val(),
-							"affichage": "affichageTable",
-							"partition": "main"
-						});
-						$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-							"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-							"partie": "left",
-							"menu": $("#menu").val(),
-							"affichage": "affichageTable",
-							"partition": "main"
-						});
-				
-						$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+						changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+						changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 						return false;
 					});
 				});
@@ -226,43 +162,21 @@ class EvaDisplayDesign {
 								break;
 						}
 						$script = $script .'<script type="text/javascript">
-		$(document).ready(function() {
-			$(\'#identifiantActuelle' . $idPostBox . '\').val(' . $element->id . ');
-			$(\'#page' . $idPostBox . 'Reference\').val(1);
-			$(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
+		evarisk(document).ready(function() {
+			evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(' . $element->id . ');
+			evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+			evarisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
 			
-			$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . addslashes($element->nom) . '</label>\');
-			$(\'#element' . $element->id . '\').click(function() {
-				$(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-				$(\'#page' . $idPostBox . 'Reference\').val(1);
-				while($(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
+			evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . addslashes($element->nom) . '</label>\');
+			evarisk(\'#element' . $element->id . '\').click(function() {
+				evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+				evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+				while(evarisk(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
 				{
-					$(\'#filAriane :last-child\').remove();
+					evarisk(\'#filAriane :last-child\').remove();
 				}					
-				
-				$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-					"table": "' . $table . '",
-					"act": "changementPage",
-					"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-					"partie": "right",
-					"menu": $("#menu").val(),
-					"affichage": "affichageTable",
-					"partition": "main"
-				});
-				$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-					"table": "' . $table . '",
-					"act": "changementPage",
-					"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-					"partie": "left",
-					"menu": $("#menu").val(),
-					"affichage": "affichageTable",
-					"partition": "main"
-				});
-				
-				$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-				$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+				changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+				changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 				return false;
 			});
 		});
@@ -271,8 +185,8 @@ class EvaDisplayDesign {
 				}
 				$script = $script . '
 <script type="text/javascript">
-	$(document).ready(function() {
-		$(\'#element' . $element->id . '\').click();
+	evarisk(document).ready(function() {
+		evarisk(\'#element' . $element->id . '\').click();
 	});
 </script>';
 			}
@@ -315,39 +229,39 @@ class EvaDisplayDesign {
 	{
 		$splitEcran = '
 			<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#leftEnlarging' . $numero . '\').click(function() {
-						$(\'#partieEdition' . $numero . '\').hide();
-						$(\'#partieGauche' . $numero . '\').show();
-						$(\'#partieGauche' . $numero . '\').css(\'width\', \'98%\');
+				evarisk(document).ready(function() {
+					evarisk(\'#leftEnlarging' . $numero . '\').click(function() {
+						evarisk(\'#partieEdition' . $numero . '\').hide();
+						evarisk(\'#partieGauche' . $numero . '\').show();
+						evarisk(\'#partieGauche' . $numero . '\').css(\'width\', \'98%\');
 						adminMenu.fold();
-						$("#enlarging' . $numero . ' .ui-slider-range").css("width","100%");
-						$("#enlarging' . $numero . ' .ui-slider-handle").css("left","100%");
+						evarisk("#enlarging' . $numero . ' .ui-slider-range").css("width","100%");
+						evarisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","100%");
 					});
-					$(\'#rightEnlarging' . $numero . '\').click(function() {
-						$(\'#partieGauche' . $numero . '\').hide();
-						$(\'#partieEdition' . $numero . '\').show();
-						$(\'#partieEdition' . $numero . '\').css(\'width\', \'98%\');
+					evarisk(\'#rightEnlarging' . $numero . '\').click(function() {
+						evarisk(\'#partieGauche' . $numero . '\').hide();
+						evarisk(\'#partieEdition' . $numero . '\').show();
+						evarisk(\'#partieEdition' . $numero . '\').css(\'width\', \'98%\');
 						adminMenu.fold();
-						$("#enlarging' . $numero . ' .ui-slider-range").css("width","0%");
-						$("#enlarging' . $numero . ' .ui-slider-handle").css("left","0%");
+						evarisk("#enlarging' . $numero . ' .ui-slider-range").css("width","0%");
+						evarisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","0%");
 					});
-					$(\'#equilize' . $numero . '\').click(function() {
-						$(\'#partieGauche' . $numero . '\').show();
-						$(\'#partieEdition' . $numero . '\').show();
-						$(\'#partieEdition' . $numero . '\').css(\'width\', \'49%\');
-						$(\'#partieGauche' . $numero . '\').css(\'width\', \'49%\');
-						$("#enlarging' . $numero . ' .ui-slider-range").css("width","50%");
-						$("#enlarging' . $numero . ' .ui-slider-handle").css("left","50%");
+					evarisk(\'#equilize' . $numero . '\').click(function() {
+						evarisk(\'#partieGauche' . $numero . '\').show();
+						evarisk(\'#partieEdition' . $numero . '\').show();
+						evarisk(\'#partieEdition' . $numero . '\').css(\'width\', \'49%\');
+						evarisk(\'#partieGauche' . $numero . '\').css(\'width\', \'49%\');
+						evarisk("#enlarging' . $numero . ' .ui-slider-range").css("width","50%");
+						evarisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","50%");
 					});
 				});
 			</script>';
 						
 						
 		$script = '<script type="text/javascript">
-				$(document).ready(function() {
-					$("#enlarging' . $numero . ' .ui-slider-horizontal").css("width","100px");
-					$("#enlarging' . $numero . '").slider({
+				evarisk(document).ready(function() {
+					evarisk("#enlarging' . $numero . ' .ui-slider-horizontal").css("width","100px");
+					evarisk("#enlarging' . $numero . '").slider({
 						range: "min",
 						value: 50,
 						min: 25,
@@ -359,10 +273,10 @@ class EvaDisplayDesign {
 							{
 								adminMenu.fold();
 							}
-							$(\'#partieEdition' . $numero . '\').show();
-							$(\'#partieGauche' . $numero . '\').show();
-							$("#partieGauche' . $numero . '").css("width", largeurGauche  + "%");
-							$("#partieEdition' . $numero . '").css("width", largeurDroite  + "%");
+							evarisk(\'#partieEdition' . $numero . '\').show();
+							evarisk(\'#partieGauche' . $numero . '\').show();
+							evarisk("#partieGauche' . $numero . '").css("width", largeurGauche  + "%");
+							evarisk("#partieEdition' . $numero . '").css("width", largeurDroite  + "%");
 						}
 					});
 				});
@@ -402,7 +316,7 @@ class EvaDisplayDesign {
 		{
 			$display = $display . '
 			<script type="text/javascript">
-				$(document).ready(function() {
+				evarisk(document).ready(function() {
 				});
 			</script';
 		}
@@ -437,76 +351,55 @@ class EvaDisplayDesign {
 				break;
 		}
 		$scriptPostBox = '<script type="text/javascript">
-	$(document).ready(function() {
-		$(\'#' . $idPostBox . 'Fleche\').click(function() {
-			$(\'#' . $idPostBox . '\').toggleClass(\'closed\');
+	evarisk(document).ready(function() {
+		evarisk(\'#' . $idPostBox . 'Fleche\').click(function() {
+			evarisk(\'#' . $idPostBox . '\').toggleClass(\'closed\');
 		});
 		if(document.getElementById(\'filAriane\').lastChild == document.getElementById(\'filAriane\').firstChild)
 		{
-			$(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
+			evarisk(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
 		}
 		else
 		{
-			$(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
+			evarisk(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
 		}
-		$(\'#' . $idPostBox . 'Pere\').click(function() {
-			if($(\'#filAriane :last-child\') != $(\'#filAriane :first-child\'))
+		evarisk(\'#' . $idPostBox . 'Pere\').click(function() {
+			if(evarisk(\'#filAriane :last-child\') != evarisk(\'#filAriane :first-child\'))
 			{
-				$(\'#page' . $idPostBox . 'Reference\').val(1);
-				if($(\'#filAriane :last-child\').is("label"))
+				evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+				if(evarisk(\'#filAriane :last-child\').is("label"))
 				{
-					$(\'#filAriane :last-child\').remove();
+					evarisk(\'#filAriane :last-child\').remove();
 				}
-				$(\'#filAriane :last-child\').remove();
-				$(\'#filAriane :last-child\').remove();
-				$(\'#' . $idPostBox . ' h3 span\').html($(\'#filAriane :last-child\').html());
-				var id = $(\'#filAriane :last-child\').attr("id");
+				evarisk(\'#filAriane :last-child\').remove();
+				evarisk(\'#filAriane :last-child\').remove();
+				evarisk(\'#' . $idPostBox . ' h3 span\').html(evarisk(\'#filAriane :last-child\').html());
+				var id = evarisk(\'#filAriane :last-child\').attr("id");
 				var reg = new  RegExp("(element)", "g");
 				var id = id.replace(reg, "");
-				$(\'#identifiantActuelle' . $idPostBox . '\').val(id);
-								
-				$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-					"table": "' . $table . '",
-					"act": "changementPage",
-					"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-					"partie": "right",
-					"menu": $("#menu").val(),
-					"affichage": "affichageTable",
-					"partition": "main"
-				});
-				$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-					"table": "' . $table . '",
-					"act": "changementPage",
-					"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-					"partie": "left",
-					"menu": $("#menu").val(),
-					"affichage": "affichageTable",
-					"partition": "main"
-				});
-				
-				$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-				$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+				evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(id);
+
+				changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+				changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 				return false;
 			}
 		});
 		if(document.getElementById(\'favorite-inside-' . $idPostBox . '\') != null)
 		{
-			document.getElementById(\'favorite-inside-' . $idPostBox . '\').style.width = $(\'#favorite-actions-' . $idPostBox . '\').innerWidth() -4 + "px";
+			document.getElementById(\'favorite-inside-' . $idPostBox . '\').style.width = evarisk(\'#favorite-actions-' . $idPostBox . '\').innerWidth() -4 + "px";
 		}
-		$(\'#favorite-toggle-' . $idPostBox . '\').hover(function() {
-			$(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
-			$(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
-			$(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
+		evarisk(\'#favorite-toggle-' . $idPostBox . '\').hover(function() {
+			evarisk(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
+			evarisk(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
+			evarisk(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
 		});
-		$(\'#favorite-first-' . $idPostBox . '\').click(function() {
-			$(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
-			$(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
-			$(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
+		evarisk(\'#favorite-first-' . $idPostBox . '\').click(function() {
+			evarisk(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
+			evarisk(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
+			evarisk(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
 		});
 		var timeoutFavoriteActions;
-		$(\'#favorite-actions-' . $idPostBox . '\').hover(function() {
+		evarisk(\'#favorite-actions-' . $idPostBox . '\').hover(function() {
 			clearTimeout(timeoutFavoriteActions);
 		},function() {
 			timeoutFavoriteActions = setTimeout 
@@ -514,13 +407,13 @@ class EvaDisplayDesign {
 				function() 
 				{ 
 					//document.getElementById(\'favorite-inside-' . $idPostBox . '\').style.display = "none";
-					$(\'#favorite-inside-' . $idPostBox . '\').slideUp(100);
+					evarisk(\'#favorite-inside-' . $idPostBox . '\').slideUp(100);
 					setTimeout 
 					( 
 						function() 
 						{ 
-							$(\'#favorite-first-' . $idPostBox . '\').removeClass("slide-down");
-							$(\'#favorite-inside-' . $idPostBox . '\').removeClass("slideDown");
+							evarisk(\'#favorite-first-' . $idPostBox . '\').removeClass("slide-down");
+							evarisk(\'#favorite-inside-' . $idPostBox . '\').removeClass("slideDown");
 						}, 
 						100
 					);
@@ -529,63 +422,63 @@ class EvaDisplayDesign {
 			);
 		});
 		
-		$(\'#favorite-first-link-' . $idPostBox . '\').click(function() {
-			$(\'#rightEnlarging\').show();
-			$(\'#equilize\').click();
+		evarisk(\'#favorite-first-link-' . $idPostBox . '\').click(function() {
+			evarisk("#rightEnlarging").show();
+			evarisk("#equilize").click();
 			
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table . '",
 				"act": "add",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "right",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table . '",
 				"act": "add",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
 			
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 			return false;
 		});
 		
-		$(\'#favorite-second-link-' . $idPostBox . '\').click(function() {
-			$(\'#rightEnlarging\').show();
-			$(\'#equilize\').click();
+		evarisk(\'#favorite-second-link-' . $idPostBox . '\').click(function() {
+			evarisk("#rightEnlarging").show();
+			evarisk("#equilize").click();
 			
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table2 . '",
 				"act": "add",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "right",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table2 . '",
 				"act": "add",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
 			
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 			return false;
 		});
 	});
@@ -619,8 +512,8 @@ class EvaDisplayDesign {
 						</div>';
 		}
 		$postBox = $postBox . '
-						<h3 class="hndle"><span>' . $titrePostBox . '</span></h3>
-						<div class="inside" style="">' . $corpsPostBox . '</div>
+						<h3 class="handle"><span>' . $titrePostBox . '</span></h3>
+						<div class="inside" id="' . $idPostBox . 'Container" >' . $corpsPostBox . '</div>
 					</div>';
 		return $postBox;
 	}
@@ -636,129 +529,88 @@ class EvaDisplayDesign {
 	{	
 		$pagination = '
 <script type="text/javascript">
-	$(document).ready(function() {
-		$(\'#element1\').unbind("click");
-		$(\'#element1\').click(function() {
-			$(\'#identifiantActuelle' . $id . '\').val(1);
-			$(\'#page' . $id . 'Reference\').val(1);
-			while($(\'#filAriane :last-child\').attr("id") != "element1")
+	evarisk(document).ready(function() {
+		evarisk(\'#element1\').unbind("click");
+		evarisk(\'#element1\').click(function() {
+			evarisk(\'#identifiantActuelle' . $id . '\').val(1);
+			evarisk(\'#page' . $id . 'Reference\').val(1);
+			while(evarisk(\'#filAriane :last-child\').attr("id") != "element1")
 			{
-				$(\'#filAriane :last-child\').remove();
+				evarisk(\'#filAriane :last-child\').remove();
 			}
-			
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-				"table": "' . $table . '",
-				"act": "changementPage",
-				"page": $(\'#page' . $id . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $id . '\').val(),
-				"partie": "right",
-				"menu": $("#menu").val(),
-				"affichage": "affichageTable",
-				"partition": "main"
-			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-				"table": "' . $table . '",
-				"act": "changementPage",
-				"page": $(\'#page' . $id . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $id . '\').val(),
-				"partie": "left",
-				"menu": $("#menu").val(),
-				"affichage": "affichageTable",
-				"partition": "main"
-			});
-			
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#' . $id . ' h3 span\').html($(\'#filAriane :first-child\').html());
+
+			changementPage("right", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+			changementPage("left", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+			evarisk(\'#' . $id . ' h3 span\').html(evarisk(\'#filAriane :first-child\').html());
 			return false;
 		});
 	});
-	$(document).ready(function() {	
-		$(\'#page' . $id . '\').keypress(function(event) {
+	evarisk(document).ready(function() {	
+		evarisk(\'#page' . $id . '\').keypress(function(event) {
 			if (event.which && (event.which < 48 || event.which >57) && event.which != 8 && event.which != 13) {
 				event.preventDefault();
 			}
 		});
-		$(\'#page' . $id . '\').keyup(function() {
-			$(\'#page' . $id . 'Reference\').val($(\'#page' . $id . '\').val())
+		evarisk(\'#page' . $id . '\').keyup(function() {
+			evarisk(\'#page' . $id . 'Reference\').val(evarisk(\'#page' . $id . '\').val())
 		});
 		
-		var page = $(\'#page' . $id . 'Reference\').val();
-		$(\'#page' . $id . '\').val(page);
-		$(\'#formPagination' . $id . '\').click(function(event) {
-			if($(event.target).is(\'.button\'))
+		var page = evarisk(\'#page' . $id . 'Reference\').val();
+		evarisk(\'#page' . $id . '\').val(page);
+		evarisk(\'#formPagination' . $id . '\').click(function(event) {
+			if(evarisk(event.target).is(\'.button\'))
 			{
-				if($("#filAriane :last-child").is("label"))
-					$("#filAriane :last-child").remove();
+				if(evarisk("#filAriane :last-child").is("label"))
+					evarisk("#filAriane :last-child").remove();
 				switch((event.target).id)
 				{
 					case "first' . $id . '":
 						page = 1;
 						break;
 					case "previous' . $id . '":
-						page = parseInt($(\'#page' . $id . 'Reference\').val()) - 1;
+						page = parseInt(evarisk(\'#page' . $id . 'Reference\').val()) - 1;
 						if(page < 1)
 						{
 							page = 1;	
 						}
 						break;
 					case "next' . $id . '":
-						page = parseInt($(\'#page' . $id . 'Reference\').val()) + 1;
-						if(page > $(\'#pageMax' . $id . '\').value)
+						page = parseInt(evarisk(\'#page' . $id . 'Reference\').val()) + 1;
+						if(page > evarisk(\'#pageMax' . $id . '\').value)
 						{
-							page = $(\'#pageMax' . $id . '\').val();	
+							page = evarisk(\'#pageMax' . $id . '\').val();	
 						}
 						break;
 					case "last' . $id . '":
-						page = parseInt($(\'#pageMax' . $id . '\').val());
+						page = parseInt(evarisk(\'#pageMax' . $id . '\').val());
 						break;
 					case "text' . $id . '":
-						if(parseInt($(\'#page' . $id . 'Reference\').val()) > parseInt($(\'#pageMax' . $id . '\').val()))
+						if(parseInt(evarisk(\'#page' . $id . 'Reference\').val()) > parseInt(evarisk(\'#pageMax' . $id . '\').val()))
 						{
-							page = parseInt($(\'#pageMax' . $id . '\').val());
+							page = parseInt(evarisk(\'#pageMax' . $id . '\').val());
 						}
 						else
 						{
-							if(parseInt($(\'#page' . $id . 'Reference\').val()) < 1)
+							if(parseInt(evarisk(\'#page' . $id . 'Reference\').val()) < 1)
 							{
 								page = 1;	
 							}
 							else
 							{
-								if($(\'#page' . $id . 'Reference\').val() != "")
+								if(evarisk(\'#page' . $id . 'Reference\').val() != "")
 								{
-									page = parseInt($(\'#page' . $id . 'Reference\').val());
+									page = parseInt(evarisk(\'#page' . $id . 'Reference\').val());
 								}
 							}
 						}
 						break;
 				}
-				$(\'#page' . $id . 'Reference\').val(page);
-				
-				$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-					"table": "' . $table . '",
-					"act": "changementPage",
-					"page": $(\'#page' . $id . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $id . '\').val(),
-					"partie": "right",
-					"menu": $("#menu").val(),
-					"affichage": "affichageTable",
-					"partition": "main"
-				});
-				$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-					"table": "' . $table . '",
-					"act": "changementPage",
-					"page": $(\'#page' . $id . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $id . '\').val(),
-					"partie": "left",
-					"menu": $("#menu").val(),
-					"affichage": "affichageTable",
-					"partition": "main"
-				});
-				
-				$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-				$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-				$(\'#page' . $id . '\').val(page);
+				evarisk(\'#page' . $id . 'Reference\').val(page);
+
+				changementPage("right", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+				changementPage("left", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+
+				evarisk(\'#page' . $id . '\').val(page);
 				return false;
 			}
 		});
@@ -787,12 +639,9 @@ class EvaDisplayDesign {
 	 * @param string $nomRacine Text to be displayed in the root of the table.
 	 * @return string HTML code of the table.
 	 */
-	static function getTableArborescence($racine, $table, $idTable, $nomRacine, $draggable = true, $outputAction = true)
+	function getTableArborescence($racine, $table, $idTable, $nomRacine, $draggable = true, $outputAction = true)
 	{
-		$elements = '';
-		$monCorpsTable = '';
-		$class = '';
-		$infoRacine = '';
+		$elements = $monCorpsTable = $class = $infoRacine = '';
 		switch($table)
 		{
 			case TABLE_GROUPEMENT:
@@ -803,9 +652,9 @@ class EvaDisplayDesign {
 				$titreInfo = __("Somme des risques", 'evarisk');
 				$actionSize = 5;
 				$actions = '
-							<td class="noPadding"  id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td>
+							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td>
 							<td id="addMain' . $racine->id . 'Alt"></td>
-							<!-- <td class="noPadding"  id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td>
+							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td>
 							<td id="addSecondary' . $racine->id . 'Alt"></td> -->';
 				break;
 			case TABLE_CATEGORIE_DANGER:
@@ -816,9 +665,9 @@ class EvaDisplayDesign {
 				$titreInfo = null;
 				$actionSize = 4;
 				$actions = '
-							<td class="noPadding"  id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>
+							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>
 							<td id="addMain' . $racine->id . 'Alt"></td>
-							<td class="noPadding"  id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td>
+							<td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td>
 							<td id="addSecondary' . $racine->id . 'Alt"></td>';
 				break;
 			case TABLE_TACHE:
@@ -828,12 +677,12 @@ class EvaDisplayDesign {
         $tacheRacine->load();
 				$subElements = $tacheRacine->getWPDBActivitiesDependOn();
 				$divDeChargement = 'message';
-				$titreInfo = null;
+				$titreInfo = __("Avancement", 'evarisk');
 				$actionSize = 4;
 				$actions = '
-							<td class="noPadding"  id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td>
+							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td>
 							<td id="addMain' . $racine->id . 'Alt" style="display:none;"></td>
-							<td class="noPadding"  id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td>
+							<td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td>
 							<td id="addSecondary' . $racine->id . 'Alt" style="display:none;"></td>';
 				break;
 			case TABLE_GROUPE_QUESTION:
@@ -844,8 +693,8 @@ class EvaDisplayDesign {
 				$titreInfo = null;
 				$actionSize = 3;
 				$actions = '
-							<td class="noPadding"  id="add-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_INSERT . '" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="' . __('Inserer sous le titre', 'evarisk') . '" /></td>
-							<td class="noPadding"   id="edit-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';display:none;" id="img_edit_racine" src="' . PICTO_EDIT . '" alt="' . __('Modifier le titre', 'evarisk') . '" title="' . __('Modifier le titre', 'evarisk') . '" /></td>
+							<td class="noPadding addMain" id="add-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_INSERT . '" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="' . __('Inserer sous le titre', 'evarisk') . '" /></td>
+							<td class="noPadding addSecondary" id="edit-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';display:none;" id="img_edit_racine" src="' . PICTO_EDIT . '" alt="' . __('Modifier le titre', 'evarisk') . '" title="' . __('Modifier le titre', 'evarisk') . '" /></td>
 							<td></td>';
 				break;
 		}
@@ -872,174 +721,26 @@ class EvaDisplayDesign {
 					$subAffichage = $subElement->enonce;
 					break;
 			}
-			$info = '';
-			if($titreInfo != null)
-			{
-				$info =  EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
-				$info = '
-					<td id ="info-' . $subElement->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
-			}
 		}
 
-		{//treetable
-		$tableArborescente = '
-<script type="text/javascript">
-	$(document).ready(function()  {
-		$("#' . $idTable . '").treeTable();	
-
-		// Make visible that a row is clicked
-		$("table#' . $idTable . ' tbody tr").mousedown(function() {
-		  $("tr.selected").removeClass("selected"); // Deselect currently selected rows
-		  $(this).addClass("selected");
-		});
-
-		// Make sure row is selected when span is clicked
-		$("table#' . $idTable . ' tbody tr span").mousedown(function() {
-		  $($(this).parents("tr")[0]).trigger("mousedown");
-		});
-
-		var span = document.getElementById("tdRacine' . $idTable . '").firstChild;
-		$("#' . $idTable . ' #node-' . $idTable . '-' . $racine->id . '").toggleBranch();
-		document.getElementById("tdRacine' . $idTable . '").removeChild(span);
-
-		$("#' . $idTable . ' tr.parent").each(function(){
-			var childNodes = $("table#' . $idTable . ' tbody tr.child-of-" + $(this).attr("id"));
-			if(childNodes.length > 0) {
-				$(this).addClass("aFils");
-				var premierFils = $("table#' . $idTable . ' tbody tr.child-of-" + $(this).attr("id") + ":first").attr("id");
-				if(premierFils != premierFils.replace(/node/g,""))
-				{
-					$(this).addClass("aFilsNoeud");
-					$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
-					$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
-					$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-					$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
-				}
-				else
-				{
-					$(this).addClass("aFilsFeuille");
-					$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
-					$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
-					$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-					$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
-				}
-			}
-			else
-			{
-				$(this).removeClass("aFils");
-				$(this).addClass("sansFils");
-			}
-		});
-		
-		$("#' . $idTable . ' #addMain' . $racine->id . '").click(function(){
-			var idPere = ' . $racine->id . ';
-			$(\'#rightEnlarging\').show();
-			$(\'#equilize\').click();';
-
-			if($table == TABLE_GROUPEMENT)
-			{
-			$tableArborescente .= '
-			$("#menu").val("gestiongrptut");
-			';
-			}
-
-			$tableArborescente .= '
-			var expanded = new Array();
-			$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-			
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-				"table": "' . $table . '",
-				"act": "add",
-				"page": $(\'#pagemainPostBoxReference\').val(),
-				"idPere": idPere,
-				"partie": "right",
-				"menu": $("#menu").val(),
-				"affichage": "affichageListe",
-				"partition": "tout",
-				"expanded": expanded
-			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-				"table": "' . $table . '",
-				"act": "add",
-				"page": $(\'#pagemainPostBoxReference\').val(),
-				"idPere": idPere,
-				"partie": "left",
-				"menu": $("#menu").val(),
-				"affichage": "affichageListe",
-				"partition": "tout",
-				"expanded": expanded
-			});
-			
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			return false;
-		});
-		
-		$("#' . $idTable . ' #addSecondary' . $racine->id . '").click(function(){
-			var idPere = ' . $racine->id . ';
-			$(\'#rightEnlarging\').show();
-			$(\'#equilize\').click();
-			
-			var expanded = new Array();
-			$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-				"table": "' . $sousTable . '",
-				"act": "add",
-				"page": $(\'#pagemainPostBoxReference\').val(),
-				"idPere": idPere,
-				"partie": "right",
-				"menu": $("#menu").val(),
-				"affichage": "affichageListe",
-				"partition": "tout",
-				"expanded": expanded
-			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-				"table": "' . $sousTable . '",
-				"act": "add",
-				"page": $(\'#pagemainPostBoxReference\').val(),
-				"idPere": idPere,
-				"partie": "left",
-				"menu": $("#menu").val(),
-				"affichage": "affichageListe",
-				"partition": "tout",
-				"expanded": expanded
-			});
-			
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			return false;
-		});
-		
-		$("#' . $idTable . ' #add-node-' . $racine->id . '").click(function(){
-			for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
-			{
-				if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $racine->id . ')
-					document.regulatoryWatchForm.titrePere.options[i].selected = true;
-			}
-			$("#traiter").click();
-		});
-	});
-</script> ';
-		}
-
+		$draggableScript = '';
 		if($draggable)
 		{
-		$tableArborescente .= '
-<script type="text/javascript">
-	$(document).ready(function(){
+		$draggableScript .= '
+		//	Draggable interface
 		var draggedObject;
 		var draggedObjectFather;
 	
 		// Configure draggable nodes
-		$("#' . $idTable . ' .noeudArbre, #' . $idTable . ' .feuilleArbre").draggable({
+		evarisk("#' . $idTable . ' .noeudArbre, #' . $idTable . ' .feuilleArbre").draggable({
 			start: function(event, ui) {
 				draggedObject = event.target.id;
 				var classNames = event.target.className.split(\' \');
 				draggedObjectFather = "temp";
 				for(key in classNames) {
 					if(classNames[key].match("child-of-")) {
-						draggedObjectFather = $("#" + classNames[key].substring(9));
-						draggedObjectFather = draggedObjectFather.attr(\'id\');
+						draggedObjectFather = evarisk("#" + classNames[key].substring(9));
+						draggedObjectFather = draggedObjectFather.attr("id");
 					}
 				}
 			},
@@ -1052,108 +753,117 @@ class EvaDisplayDesign {
 		});
 		
 		dropFunction = function(event, ui)
-		{ 
+		{
 			// Call jQuery treeTable plugin to move the branch
-			$($(ui.draggable)).appendBranchTo(this);
+			evarisk(evarisk(ui.draggable)).appendBranchTo(this);
 			var dropLocation = event.target.id;
-			
-			var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $table . '&location=' . $idTable . '&act=transfert&idElementSrc=" + draggedObject + "&idElementOrigine=" + draggedObjectFather + "&idElementDest=" + dropLocation;
-			$(\'#equilize\').click();
-			$(\'#' . $divDeChargement . '\').show();
-			$(\'#' . $divDeChargement . '\').addClass("updated");
-			$(\'#' . $divDeChargement . '\').load(adresse);
-			$(\'#' . $divDeChargement . '\').html("Transfert en cours ...");
+
+			evarisk("#equilize").click();
+			evarisk("#' . $divDeChargement . '").addClass("updated");
+			evarisk("#' . $divDeChargement . '").html("' . __('Transfert en cours...', 'evarisk') . '");
+			evarisk("#' . $divDeChargement . '").show();
+			evarisk("#' . $divDeChargement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post":"true",
+				"table":"' . $table . '",
+				"location":"' . $idTable . '",
+				"act":"transfert",
+				"idElementSrc":draggedObject,
+				"idElementOrigine":draggedObjectFather,
+				"idElementDest":dropLocation
+			});
 			setTimeout 
 			( 
 				function() 
 				{
-					$("#' . $idTable . ' tr.parent").each(function(){
-						var childNodes = $("table#' . $idTable . ' tbody tr.child-of-" + $(this).attr("id"));
+					evarisk("#' . $idTable . ' tr.parent").each(function(){
+						var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
 						if(childNodes.length > 0) {
-							$(this).removeClass("sansFils");
-							$(this).addClass("aFils");
-							var premierFils = $("table#' . $idTable . ' tbody tr.child-of-" + $(this).attr("id") + ":first").attr("id");
+							evarisk(this).removeClass("sansFils");
+							evarisk(this).addClass("aFils");
+							var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
 							if(premierFils != premierFils.replace(/node-' . $idTable . '-/g,""))
 							{
-								$(this).addClass("aFilsNoeud");
-								$(this).droppable( "option", "accept", \'.noeudArbre\' );
-								$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
-								$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
-								$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-								$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
+								evarisk(this).addClass("aFilsNoeud");
+								evarisk(this).droppable( "option", "accept", ".noeudArbre" );
+								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
+								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
+								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
+								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
 							}
 							else
 							{
-								$(this).addClass("aFilsFeuille");
-								$(this).droppable( "option", "accept", \'.feuilleArbre\' );
-								$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
-								$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
-								$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-								$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
+								evarisk(this).addClass("aFilsFeuille");
+								evarisk(this).droppable( "option", "accept", ".feuilleArbre" );
+								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
+								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
+								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
+								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
 							}
 						}
 						else
 						{
-							$(this).removeClass("aFilsNoeud");
-							$(this).removeClass("aFilsFeuille");
-							$(this).removeClass("aFils");
-							$(this).addClass("sansFils");
-							$(this).droppable( "option", "accept", \'.noeudArbre, .feuilleArbre\' );
-							$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-							$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-							$("#' . $idTable . ' #addSecondary" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"")).show();
-							$("#' . $idTable . ' #addMain" + $(this).attr("id").replace(/node-' . $idTable . '-/g,"")).show();
+							evarisk(this).removeClass("aFilsNoeud");
+							evarisk(this).removeClass("aFilsFeuille");
+							evarisk(this).removeClass("aFils");
+							evarisk(this).addClass("sansFils");
+							evarisk(this).droppable( "option", "accept", ".noeudArbre, .feuilleArbre" );
+							evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
+							evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
+							evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).show();
+							evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).show();
 						}
 					});
-					$(document).ajaxStop(function(){
-						$(\'#' . $divDeChargement . '\').removeClass("updated");
+					evarisk(document).ajaxStop(function(){
+						evarisk("#' . $divDeChargement . '").removeClass("updated");
 					});
 				}, 
 				10 
 			);
 		}
-		
-		overFunction = function(event, ui)
-		{ 
+
+		evarisk("#tdRacine' . $idTable . '").droppable({
+			"over":function(){
+				evarisk(this).html("' . __('D&eacute;poser ici pour mettre &agrave; la racine de votre arborescence', 'evarisk') . '");
+			},
+			"out":function(){
+				evarisk(this).html("");
+			},
+			"drop":function(){
+				evarisk(this).html("");
+			}
+		});
+
+		overFunction = function(event, ui){
 			// Make the droppable branch expand when a draggable node is moved over it.
-			if(this.id != $(ui.draggable.parents("tr")[0]).id && !$(this).is(".expanded")) {
-			var overObject = $(this);
-			setTimeout 
-			( 
-				function() 
-				{ 
-					if(overObject.is(".accept"))
-					{
+			if(this.id != evarisk(ui.draggable.parents("tr")[0]).id && !evarisk(this).is(".expanded")){
+				var overObject = evarisk(this);
+				setTimeout(function(){
+					if(overObject.is(".accept")){
 						overObject.expand();
 					}
 				}, 
-				500 
-			);
+					500 
+				);
 		  }
 		}
-		
-		$("#' . $idTable . ' .aFilsNoeud, #' . $idTable . ' .racineArbre").droppable({
+		evarisk("#' . $idTable . ' .aFilsNoeud, #' . $idTable . ' .racineArbre").droppable({
 			accept: "#' . $idTable . ' .noeudArbre",
 			drop: dropFunction,
 			hoverClass: "accept",
 			over: overFunction			  
-		});
-
-		$("#' . $idTable . ' .aFilsFeuille").droppable({
+		});
+		evarisk("#' . $idTable . ' .aFilsFeuille").droppable({
 			accept: "#' . $idTable . ' .feuilleArbre",
 			drop: dropFunction,
 			hoverClass: "accept",
 			over: overFunction
-		});
-
-		$("#' . $idTable . ' .sansFils").droppable({
+		});
+		evarisk("#' . $idTable . ' .sansFils").droppable({
 			accept: "#' . $idTable . ' .feuilleArbre, #' . $idTable . ' .noeudArbre",
 			drop: dropFunction,
 			hoverClass: "accept",
 			over: overFunction
-		});
-	});
-</script>';
+		});';
 		}
 
 		$tableArborescente .= '
@@ -1166,31 +876,20 @@ class EvaDisplayDesign {
 			$tableArborescente = $tableArborescente . '	<th class="infoList">' . $titreInfo . '</th>';
 			$infoRacine = EvaDisplayDesign::getInfoArborescence($table, $racine->id);
 			$infoRacine = '
-				<td id ="info-' . $racine->id . '" class="' . $infoRacine['class'] . '"></td>';
+							<td id ="info-' . $racine->id . '" class="' . $infoRacine['class'] . '"></td>';
 		}
 		$tableArborescente = $tableArborescente;
 		if($outputAction)
 		{
 			$tableArborescente .= '
-							<th colspan=' . $actionSize . ' class="actionButtonList">' . __('Actions', 'evarisk') . '</th>';
+							<th colspan="' . $actionSize . '" class="actionButtonList">' . __('Actions', 'evarisk') . '</th>';
 		}
-			$tableArborescente .= '</tr>
+			$tableArborescente .= '
+						</tr>
 					</thead>
 					<tbody>
-						<tr id="node-' . $idTable . '-' . $racine->id . '" class="' . $class . ' parent racineArbre">
-							<td id="tdRacine' . $idTable . '">';
-
-			if($draggable)
-			{
-			$tableArborescente .= $nomRacine ;
-			}
-			else
-			{
-			$tableArborescente .= '&nbsp;';
-			}
-
-			$tableArborescente .=  '</td>' . $infoRacine;
-
+						<tr id="node-' . $idTable . '-' . $racine->id . '" class="parent racineArbre">
+							<td id="tdRacine' . $idTable . '">&nbsp;</td>' . $infoRacine;
 		if($outputAction)
 		{
 			$tableArborescente .= $actions;
@@ -1201,7 +900,328 @@ class EvaDisplayDesign {
 					</tbody>
 				</table>';
 
-		return $tableArborescente;
+		$script = '
+<script type="text/javascript">
+	evarisk(document).ready(function()
+	{
+		//	Change the simple table in treetable
+		evarisk("#' . $idTable . '").treeTable();	
+		selectRowInTreeTable("' . $idTable . '");
+
+		var span = document.getElementById("tdRacine' . $idTable . '").firstChild;
+		evarisk("#' . $idTable . ' #node-' . $idTable . '-' . $racine->id . '").toggleBranch();
+		document.getElementById("tdRacine' . $idTable . '").removeChild(span);
+
+		evarisk("#' . $idTable . ' tr.parent").each(function(){
+			var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
+			if(childNodes.length > 0){
+				evarisk(this).addClass("aFils");				
+				var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
+				if(premierFils != premierFils.replace(/node/g,"")){
+					evarisk(this).addClass("aFilsNoeud");
+				}
+				else{
+					evarisk(this).addClass("aFilsFeuille");
+				}
+			}
+			else{
+				evarisk(this).removeClass("aFils");
+				evarisk(this).addClass("sansFils");
+			}
+		});
+
+		' . $draggableScript . '
+
+		evarisk("#' . $idTable . ' .addMain").click(function(){
+			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			var expanded = reInitTreeTable();';
+		if($table == TABLE_GROUPEMENT)
+		{
+		$script .= '
+			evarisk("#menu").val("gestiongrptut");
+			';
+		}
+			$script .= '
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . $table . '",
+				"act": "add",
+				"page": evarisk("#pagemainPostBoxReference").val(),
+				"idPere": nodeId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
+		});
+
+		evarisk("#' . $idTable . ' .addSecondary").click(function(){
+			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			var expanded = reInitTreeTable();';
+		if($table == TABLE_GROUPEMENT)
+		{
+		$script .= '
+			evarisk("#menu").val("gestiongrptut");
+			';
+		}
+			$script .= '
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . $sousTable . '",
+				"act": "add",
+				"page": evarisk("#pagemainPostBoxReference").val(),
+				"idPere": nodeId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
+		});';
+
+		if($table == TABLE_GROUPE_QUESTION)
+		{
+			$script .= '
+
+		evarisk("#' . $idTable . ' #add-node-' . $racine->id . '").click(function(){
+			for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
+			{
+				if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $racine->id . ')
+					document.regulatoryWatchForm.titrePere.options[i].selected = true;
+			}
+			evarisk("#traiter").click();
+		});';
+		}
+
+		switch($table)
+		{
+			case TABLE_CATEGORIE_DANGER :
+			case TABLE_GROUPEMENT :
+			case TABLE_TACHE :
+			{	/*	Tree leaf	*/
+				$script .= '
+		//	The user click on the delete button of a leaf
+		evarisk("#' . $idTable . ' .delete-leaf").click(function(){
+			var leafId = evarisk(this).parent("tr").attr("id").replace("leaf-", "");
+			evarisk("#menu").val("gestiongrptut");
+			var expanded = reInitTreeTable();
+			if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?', 'evarisk') . '")){
+				evarisk("#partieEdition").html("");
+				evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+				evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post": "true", 
+					"table": "' . $sousTable . '",
+					"act": "delete",
+					"id": leafId,
+					"partie": "left",
+					"menu": evarisk("#menu").val(),
+					"affichage": "affichageListe",
+					"partition": "tout",
+					"expanded": expanded
+				});
+			}
+		});
+
+		//	The user click on the edit button of a leaf
+		evarisk("#' . $idTable . ' .edit-leaf").click(function(){
+			var leafId = evarisk(this).parent("tr").attr("id").replace("leaf-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			evarisk("#menu").val("gestiongrptut");
+			var expanded = reInitTreeTable();
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post": "true", 
+				"table": "' . $sousTable . '",
+				"act": "edit",
+				"id": leafId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"expanded": expanded
+			});
+		});
+
+		//	The user click on the name of the leaf
+		evarisk(".nomFeuilleArbre").click(function(){
+			var leafId = evarisk(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			evarisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+				"table": "' . $sousTable . '",
+				"act": "edit",
+				"id": leafId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"expanded": expanded
+			});
+		});
+
+		//	The user click on the edit button of a leaf
+		evarisk("#' . $idTable . ' .risk-leaf").click(function(){
+			var leafId = evarisk(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			evarisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+				"table": "' . $sousTable . '",
+				"act": "edit",
+				"id": leafId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"expanded": expanded
+			});
+		});';
+			}
+			{	/*	Tree node	*/
+				$script .= '
+		//	The user click on the delete button of a node
+		evarisk("#' . $idTable . ' .delete-node").click(function(){
+			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			evarisk("#menu").val("gestiongrptut");
+			var expanded = reInitTreeTable();
+			if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?\r\nATTENTION: si cet element possede des sous elements, ils seront inaccessibles', 'evarisk') . '")){
+				evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+				evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post": "true", 
+					"table": "' . $table . '",
+					"act": "delete",
+					"id": nodeId,
+					"partie": "left",
+					"menu": evarisk("#menu").val(),
+					"affichage": "affichageListe",
+					"partition": "tout",
+					"expanded": expanded
+				});
+			}
+		});
+		//	The user click on the delete button of a node
+		evarisk("#' . $idTable . ' .edit-node").click(function(){
+			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			evarisk("#menu").val("gestiongrptut");
+			var expanded = reInitTreeTable();
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . $table . '",
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
+		});
+		//	The user click on the delete button of a node
+		evarisk("#' . $idTable . ' .risq-node").click(function(){
+			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			evarisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . $table . '",
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
+		});
+		//	The user click on the delete button of a node
+		evarisk("#' . $idTable . ' .nomNoeudArbre").click(function(){
+			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			evarisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . $table . '",
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": evarisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
+		});';
+			}
+			break;
+			case TABLE_QUESTION :
+			if(false){	/*	Tree leaf	*/
+				$script = '
+				<script type="text/javascript">
+					evarisk(document).ready(function()  
+					{
+						evarisk("#' . $idTable . ' #delete-leaf-' . $subElement->id . '").click(function(){
+							var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $sousTable . '&id=' . $subElement->id . '&idPere=' . $elementPere->id . '&act=delete";
+							evarisk("#ajax-response").html(evarisk("#loadingImg").html());
+							evarisk("#ajax-response").load(adresse);
+						});
+					});
+				</script>';
+			}
+			if(false){	/*	Tree node	*/
+				$script = '
+					<script type="text/javascript">
+						evarisk(document).ready(function()  
+						{
+							evarisk("#' . $idTable . ' #delete-node-' . $element->id . '").click(function(){
+								var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $table . '&id=' . $element->id . '&act=delete";
+								evarisk("#ajax-response").html(evarisk("#loadingImg").html());
+								evarisk("#ajax-response").load(adresse);
+							});
+							evarisk("#' . $idTable . ' #add-node-' . $element->id . '").click(function(){
+								for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
+								{
+									if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $element->id . ')
+										document.regulatoryWatchForm.titrePere.options[i].selected = true;
+								}
+								evarisk("#traiter").click();
+							});
+							evarisk("#' . $idTable . ' #edit-node-' . $element->id . '").click(function(){
+								for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
+								{
+									if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $element->id . ')
+										document.regulatoryWatchForm.titrePere.options[i].selected = true;
+								}
+								if(evarisk("#codeTitre").val() == "")
+								{
+									evarisk("#codeTitre").val(' . $element->code . ')
+								}
+								evarisk("#updateVeille").click();
+							});
+						});
+					</script>';
+			}
+			break;
+		}
+		$script .= '
+	});
+</script>';
+
+		return $tableArborescente . $script;
 	}
 
 	/**
@@ -1212,10 +1232,10 @@ class EvaDisplayDesign {
 	 * @param string $table Father element table name.
 	 * @return string HTML code of the inner table.
 	 */
-	static function getCorpsTableArborescence($elementsFils, $elementPere, $table, $titreInfo, $idTable)
+	function getCorpsTableArborescence($elementsFils, $elementPere, $table, $titreInfo, $idTable)
 	{
-		$monCorpsTable = '';
-		$monCorpsSubElements = '';
+		$monCorpsTable = $monCorpsSubElements = '';
+
 		switch($table)
 		{
 			case TABLE_CATEGORIE_DANGER :
@@ -1248,456 +1268,52 @@ class EvaDisplayDesign {
 			{
 				case TABLE_CATEGORIE_DANGER :
 					$tdSubEdit = '
-							<td></td>
-							<td></td>
-							<td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+							<td colspan="2">&nbsp;</td>
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+					$subAffichage = $subElement->nom;
+					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPEMENT :
 					$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
 					$tdSubEdit = '
-							<td></td>
-							<td></td>
-							<td style="' . $affichagePictoEvalRisque . '" class="noPadding" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding" id="delete-work-unit' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+							<td colspan="2">&nbsp;</td>
+							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+					$subAffichage = $subElement->nom;
+					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_TACHE :
 					$tdSubEdit = '
-							<td></td>
-							<td></td>
-							<td class="noPadding" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+							<td colspan="2">&nbsp;</td>
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+					$subAffichage = $subElement->nom;
+					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPE_QUESTION :
 					$tdSubDelete = '
-							<td></td>
-							<td></td>
-							<td id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
-					break;
-			}
-			switch($table)
-			{
-				case TABLE_CATEGORIE_DANGER :
-				case TABLE_GROUPEMENT :
-				case TABLE_TACHE :
-					$subAffichage = $subElement->nom;
-					$script = '
-						<script type="text/javascript">
-							$(document).ready(function()
-							{
-								$("#' . $idTable . ' #delete-leaf' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #delete-work-unit' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").unbind("click");
-								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").click(function(event){
-									if(!$(event.target).is("span"))
-										$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").click();
-								});
-								$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").unbind("click");
-								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").unbind("dblclick");
-								$("#' . $idTable . ' #leaf-' . $subElement->id . '-name").dblclick(function(event){
-									if(!$(event.target).is("span"))
-										$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").click();
-								});
-								$("#' . $idTable . ' #edit-leaf' . $subElement->id . '").click(function(){
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$("#menu").val(\'gestiongrptut\');
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									var expanded = new Array();
-									$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-									$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-										"table": "' . $sousTable . '",
-										"act": "edit",
-										"id": "' . $subElement->id . '",
-										"partie": "right",
-										"menu": $("#menu").val(),
-										"affichage": "affichageListe",
-										"expanded": expanded
-									});
-									$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-										"table": "' . $sousTable . '",
-										"act": "edit",
-										"id": "' . $subElement->id . '",
-										"partie": "left",
-										"menu": $("#menu").val(),
-										"affichage": "affichageListe",
-										"expanded": expanded
-									});
-								});
-								$("#' . $idTable . ' #risq-leaf' . $subElement->id . '").click(function(){
-									$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$("#menu").val(\'risq\');
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									var expanded = new Array();
-									$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-									$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-										"table": "' . $sousTable . '",
-										"act": "edit",
-										"id": "' . $subElement->id . '",
-										"partie": "right",
-										"menu": $("#menu").val(),
-										"affichage": "affichageListe",
-										"expanded": expanded
-									});
-									$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-										"table": "' . $sousTable . '",
-										"act": "edit",
-										"id": "' . $subElement->id . '",
-										"partie": "left",
-										"menu": $("#menu").val(),
-										"affichage": "affichageListe",
-										"expanded": expanded
-									});
-								});
-							
-								$("#' . $idTable . ' #delete-work-unit' . $subElement->id . '").click(function(){
-									$("#menu").val(\'gestiongrptut\');
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									var expanded = new Array();
-									$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-
-									if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?', 'evarisk') . '")){
-										$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', 
-										{
-											"post": "true", 
-											"table": "' . $sousTable . '",
-											"act": "delete",
-											"id": "' . $subElement->id . '",
-											"partie": "left",
-											"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"partition": "tout",
-											"expanded": expanded
-										});
-									}
-								});
-							
-								$("#' . $idTable . ' #delete-leaf' . $subElement->id . '").click(function(){
-									$("#menu").val(\'gestiongrptut\');
-									$(\'#rightEnlarging\').show();
-									$(\'#equilize\').click();
-									var expanded = new Array();
-									$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-
-									if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?', 'evarisk') . '")){
-										$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-										$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', 
-										{
-											"post": "true", 
-											"table": "' . $sousTable . '",
-											"act": "delete",
-											"id": "' . $subElement->id . '",
-											"partie": "left",
-											"menu": $("#menu").val(),
-											"affichage": "affichageListe",
-											"partition": "tout",
-											"expanded": expanded
-										});
-									}
-								});
-
-							});
-						</script>';
-					$subActions = $script . $tdSubEdit . $tdSubDelete;
-					break;
-				case TABLE_GROUPE_QUESTION :
+							<td colspan="2">&nbsp;</td>
+							<td class="noPadding delete-leaf" id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
 					$subAffichage = 'Q' . $subElement->id . ' : ' . ucfirst($subElement->enonce);
-					$script = '
-						<script type="text/javascript">
-							$(document).ready(function()  
-							{
-								$("#' . $idTable . ' #delete-leaf-' . $subElement->id . '").click(function(){
-									var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $sousTable . '&id=' . $subElement->id . '&idPere=' . $elementPere->id . '&act=delete";
-									$(\'#ajax-response\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#ajax-response\').load(adresse);
-								});
-							});
-						</script>';
-					$subActions = $script . $tdSubDelete;
+					$subActions = $tdSubDelete;
 					break;
 			}
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
-			$monCorpsSubElements = $monCorpsSubElements . $script . '
-				<tr id="leaf-' . $subElement->id . '" class="test child-of-node-' . $idTable . '-' . $elementPere->id . ' feuilleArbre">
-					<td id="leaf-' . $subElement->id . '-name" class="nomFeuilleArbre" >' . $subAffichage . '</td>';
+			$monCorpsSubElements .= '
+				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' feuilleArbre">
+					<td id="leaf-' . $subElement->id . '-name" ><span class="nomFeuilleArbre" >' . $subAffichage . '</span></td>';
 				if($titreInfo != null)
 				{
 					$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
 				}
-				$monCorpsSubElements = $monCorpsSubElements . $subActions . '
+				$monCorpsSubElements .= $subActions . '
 				</tr>';
 		}
 		if(count($elementsFils) != 0)
 		{
 			foreach ($elementsFils as $element )
-			{
-				switch($table)
-				{
-					case TABLE_CATEGORIE_DANGER :
-						$tdAddMain = '<td class="noPadding"  id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdAddSecondary = '<td class="noPadding"  id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdEdit = '<td class="noPadding"   id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
-						$tdDelete = '<td class="noPadding"   id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
-						break;
-					case TABLE_GROUPEMENT :
-						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
-						$tdEdit = '<td class="noPadding" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td><td style="' . $affichagePictoEvalRisque . '" class="noPadding" id="risq-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td>';
-						$tdDelete = '<td class="noPadding" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
-						break;
-					case TABLE_TACHE :
-						$tdAddMain = '<td class="noPadding"  id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdAddSecondary = '<td class="noPadding"  id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdEdit = '<td class="noPadding"   id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
-						$tdDelete = '<td id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
-						break;
-					case TABLE_GROUPE_QUESTION :
-						$tdAdd = '<td class="noPadding"  id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
-						$tdEdit = '<td class="noPadding"   id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
-						$tdDelete = '<td id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
-						break;
-				}
-				switch($table)
-				{
-					case TABLE_CATEGORIE_DANGER :
-					case TABLE_GROUPEMENT :
-					case TABLE_TACHE :
-						$affichage = $element->nom;
-						$script = '
-					<script type="text/javascript">
-						$(document).ready(function()  {
-							$("#' . $idTable . ' #edit-node' . $element->id . '").unbind("click");
-							$("#' . $idTable . ' #risq-node' . $element->id . '").unbind("click");
-							$("#' . $idTable . ' #delete-node' . $element->id . '").unbind("click");
-							$("#' . $idTable . ' #node-' . $element->id . '-name").unbind("click");
-							$("#' . $idTable . ' #node-' . $idTable . '-' . $element->id . '-name").click(function(event){
-								if(!$(event.target).is("span"))
-									$("#' . $idTable . ' #risq-node' . $element->id . '").click();
-							});
-							$("#' . $idTable . ' #edit-node' . $element->id . '").click(function(){
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$("#menu").val(\'gestiongrptut\');
-								$(\'#rightEnlarging\').show();
-								$(\'#equilize\').click();
-								var expanded = new Array();
-								$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-								$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "edit",
-									"id": "' . $element->id . '",
-									"partie": "right",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-								$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "edit",
-									"id": "' . $element->id . '",
-									"partie": "left",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-							});
-							$("#' . $idTable . ' #risq-node' . $element->id . '").click(function(){
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$("#menu").val(\'risq\');
-								$(\'#rightEnlarging\').show();
-								$(\'#equilize\').click();
-								var expanded = new Array();
-								$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-								$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "edit",
-									"id": "' . $element->id . '",
-									"partie": "right",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-								$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "edit",
-									"id": "' . $element->id . '",
-									"partie": "left",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-							});
-							$("#' . $idTable . ' #delete-node' . $element->id . '").click(function(){
-								$("#menu").val(\'gestiongrptut\');
-								$(\'#rightEnlarging\').show();
-								$(\'#equilize\').click();
-								var expanded = new Array();
-								$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-
-								if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?\r\nATTENTION: si cet element possede des sous elements, ils seront inaccessibles', 'evarisk') . '")){
-									$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-									$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', 
-									{
-										"post": "true", 
-										"table": "' . $table . '",
-										"act": "delete",
-										"id": "' . $element->id . '",
-										"partie": "left",
-										"menu": $("#menu").val(),
-										"affichage": "affichageListe",
-										"partition": "tout",
-										"expanded": expanded
-									});
-								}
-							});
-
-              $("#' . $idTable . ' #addMain' . $element->id . '").unbind("click");
-							$("#' . $idTable . ' #addMain' . $element->id . '").click(function(){
-								';
-							if($table == TABLE_GROUPEMENT)
-							{
-								$script .= '$("#menu").val("gestiongrptut");';
-							}
-							$script .=	
-								'var nomPere = ' . $element->id . ';
-								$(\'#rightEnlarging\').show();
-								$(\'#equilize\').click();
-								var expanded = new Array();
-								$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-								$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "add",
-									"idPere": nomPere,
-									"partie": "right",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-								$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "add",
-									"idPere": nomPere,
-									"partie": "left",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								return false;
-							});
-							
-              $("#' . $idTable . ' #addSecondary' . $element->id . '").unbind("click");
-							$("#' . $idTable . ' #addSecondary' . $element->id . '").click(function(){
-								';
-							if($table == TABLE_GROUPEMENT)
-							{
-								$script .= '$("#menu").val("gestiongrptut");';
-							}
-							$script .=	
-								'
-								var nomPere = ' . $element->id . ';
-								$(\'#rightEnlarging\').show();
-								$(\'#equilize\').click();
-								var expanded = new Array();
-								$(\'.expanded\').each(function(){expanded.push($(this).attr("id"));});
-								$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $sousTable . '",
-									"act": "add",
-									"idPere": nomPere,
-									"partie": "right",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-								$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $sousTable . '",
-									"act": "add",
-									"idPere": nomPere,
-									"partie": "left",
-									"menu": $("#menu").val(),
-									"affichage": "affichageListe",
-									"partition": "tout",
-									"expanded": expanded
-								});
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								// $(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								return false;
-							});
-						});
-					</script>';
-						$actions = $script . '
-							' . $tdAddMain . '
-							' . $tdAddSecondary . '
-							' . $tdEdit . '
-							' . $tdDelete;
-						break;
-					case TABLE_GROUPE_QUESTION :
-						$affichage = $element->code . '-' . ucfirst($element->nom);
-						$script = '
-							<script type="text/javascript">
-								$(document).ready(function()  
-								{
-									$("#' . $idTable . ' #delete-node-' . $element->id . '").click(function(){
-										var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $table . '&id=' . $element->id . '&act=delete";
-										$(\'#ajax-response\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-										$(\'#ajax-response\').load(adresse);
-									});
-									$("#' . $idTable . ' #add-node-' . $element->id . '").click(function(){
-										for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
-										{
-											if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $element->id . ')
-												document.regulatoryWatchForm.titrePere.options[i].selected = true;
-										}
-										$("#traiter").click();
-									});
-									$("#' . $idTable . ' #edit-node-' . $element->id . '").click(function(){
-										for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
-										{
-											if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $element->id . ')
-												document.regulatoryWatchForm.titrePere.options[i].selected = true;
-										}
-										if($("#codeTitre").val() == "")
-										{
-											$("#codeTitre").val(' . $element->code . ')
-										}
-										$("#updateVeille").click();
-									});
-								});
-							</script>';
-						$actions = $script . $tdAdd . $tdEdit . $tdDelete;
-						break;
-				}
-				if($titreInfo != null)
-				{
-					$info = EvaDisplayDesign::getInfoArborescence($table, $element->id);
-					$info = '<td id ="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
-				}
-				else
-				{
-					$info = '';
-				}
-				$class = 'child-of-node-' . $idTable . '-' . $elementPere->id . '';
-				$monCorpsTable = $monCorpsTable . '
-					<tr id="node-' . $idTable . '-' . $element->id . '" class="' . $class . ' noeudArbre parent">
-						<td id="node-' . $idTable . '-' . $element->id . '-name" class="nomNoeudArbre" >' . $affichage . '</td>
-						' . $info .  $actions . '
-					</tr>';
-				
+			{				
 				$elements_fils = '';
 				switch($table)
 				{
@@ -1724,13 +1340,125 @@ class EvaDisplayDesign {
 						$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element->id);
 						break;
 				}
-				$trouveElement = count($elements_fils) + count($subElements);			
+				$trouveElement = count($elements_fils) + count($subElements);
+
+				switch($table)
+				{
+					case TABLE_CATEGORIE_DANGER :
+						$affichage = $element->nom;
+						$tplAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
+						$tplAddsecond = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
+						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '">&nbsp;</td>';
+						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '">&nbsp;</td>';
+						if(count($elements_fils) > 0)
+						{
+							$tdAddMain = $tplAddMain;
+						}
+						elseif(count($subElements) > 0)
+						{
+							$tdAddSecondary = $tplAddsecond;
+						}
+						elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+						{
+							$tdAddMain = $tplAddMain;
+							$tdAddSecondary = $tplAddsecond;
+						}
+
+						$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
+						$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
+						$actions = '
+							' . $tdAddMain . '
+							' . $tdAddSecondary . '
+							' . $tdEdit . '
+							' . $tdDelete;
+						break;
+					case TABLE_GROUPEMENT :
+						$affichage = $element->nom;
+						$tplAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
+						$tplAddsecond = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
+						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '">&nbsp;</td>';
+						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '">&nbsp;</td>';
+						if(count($elements_fils) > 0)
+						{
+							$tdAddMain = $tplAddMain;
+						}
+						elseif(count($subElements) > 0)
+						{
+							$tdAddSecondary = $tplAddsecond;
+						}
+						elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+						{
+							$tdAddMain = $tplAddMain;
+							$tdAddSecondary = $tplAddsecond;
+						}
+	
+						$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
+						$tdEdit = '<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td><td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
+						$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
+						$actions = '
+							' . $tdAddMain . '
+							' . $tdAddSecondary . '
+							' . $tdEdit . '
+							' . $tdDelete;
+						break;
+					case TABLE_TACHE :
+						$affichage = $element->nom;
+						$tplAddMain = '<td class="noPadding addMain"  id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
+						$tplAddsecond = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
+						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '">&nbsp;</td>';
+						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '">&nbsp;</td>';
+						if(count($elements_fils) > 0)
+						{
+							$tdAddMain = $tplAddMain;
+						}
+						elseif(count($subElements) > 0)
+						{
+							$tdAddSecondary = $tplAddsecond;
+						}
+						elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+						{
+							$tdAddMain = $tplAddMain;
+							$tdAddSecondary = $tplAddsecond;
+						}
+
+						$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
+						$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
+						$actions = '
+							' . $tdAddMain . '
+							' . $tdAddSecondary . '
+							' . $tdEdit . '
+							' . $tdDelete;
+						break;
+					case TABLE_GROUPE_QUESTION :
+						$affichage = $element->code . '-' . ucfirst($element->nom);
+						$tdAdd = '<td class="noPadding addMain" id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
+						$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
+						$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
+						$actions = $tdAdd . $tdEdit . $tdDelete;
+						break;
+				}
+				if($titreInfo != null)
+				{
+					$info = EvaDisplayDesign::getInfoArborescence($table, $element->id);
+					$info = '<td id ="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
+				}
+				else
+				{
+					$info = '';
+				}
+				$monCorpsTable .= '
+					<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' noeudArbre parent">
+						<td id="node-' . $idTable . '-' . $element->id . '-name" ><span class="nomNoeudArbre" >' . $affichage . '</span></td>
+						' . $info .  $actions . '
+					</tr>';
+
 				if($trouveElement)
 				{
-					$monCorpsTable = $monCorpsTable . EvaDisplayDesign::getCorpsTableArborescence($elements_fils, $element, $table, $titreInfo, $idTable);
+					$monCorpsTable .= EvaDisplayDesign::getCorpsTableArborescence($elements_fils, $element, $table, $titreInfo, $idTable);
 				}
 			}
 		}
+
 		return $monCorpsTable . $monCorpsSubElements;
 	}
 
@@ -1753,11 +1481,37 @@ class EvaDisplayDesign {
 				$info['class'] = '';
 				break;
 			case TABLE_TACHE :
-				$info['value'] = '';
+				$tache = new EvaTask($elementId);
+				$tache->load();
+				$statutProgression = '';
+				switch($tache->getProgressionStatus())
+				{
+					case 'inProgress';
+						$statutProgression = __('En cours', 'evarisk');
+					break;
+					case 'Done';
+					case 'DoneByChief';
+						$statutProgression = __('Sold&eacute;e', 'evarisk');
+					break;
+				}
+				$info['value'] = $tache->getProgression() . '%&nbsp;(' . $statutProgression . ')';
 				$info['class'] = '';
 				break;
 			case TABLE_ACTIVITE :
-				$info['value'] = '';
+				$action = new EvaActivity($elementId);
+				$action->load();
+				$statutProgression = '';
+				switch($action->getProgressionStatus())
+				{
+					case 'inProgress';
+						$statutProgression = __('En cours', 'evarisk');
+					break;
+					case 'Done';
+					case 'DoneByChief';
+						$statutProgression = __('Sold&eacute;e', 'evarisk');
+					break;
+				}
+				$info['value'] = $action->getProgression() . '%&nbsp;(' . $statutProgression . ')';
 				$info['class'] = '';
 				break;
 			case TABLE_GROUPEMENT :
@@ -1902,41 +1656,41 @@ class EvaDisplayDesign {
 		$pageMax = isset($listeElements)?ceil(count($listeElements)/$nombreElements):1;
 		$liste  = '
 <script type="text/javascript">
-	$(document).ready(function() {
-		$(\'#page' . $idPostBox . 'Reference\').val(' . $page . ');
-		$(\'#page' . $idPostBox . '\').val(' . $page . ');
+	evarisk(document).ready(function() {
+		evarisk(\'#page' . $idPostBox . 'Reference\').val(' . $page . ');
+		evarisk(\'#page' . $idPostBox . '\').val(' . $page . ');
 		if(document.getElementById(\'filAriane\').lastChild == document.getElementById(\'filAriane\').firstChild)
 		{
-			$(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
+			evarisk(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
 		}
 		else
 		{
-			$(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
+			evarisk(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
 		}
-		$(\'#pageMax' . $idPostBox . '\').val(' . $pageMax . ');
-		if($(\'#pageMax' . $idPostBox . '\').val() == 0)
+		evarisk(\'#pageMax' . $idPostBox . '\').val(' . $pageMax . ');
+		if(evarisk(\'#pageMax' . $idPostBox . '\').val() == 0)
 		{
-			$(\'#pageMax' . $idPostBox . '\').val(1);
+			evarisk(\'#pageMax' . $idPostBox . '\').val(1);
 		}
 		if(' . $page . ' <= 1)
 		{
-			$(\'#first' . $idPostBox . '\').attr("disabled", "disabled");
-			$(\'#previous' . $idPostBox . '\').attr("disabled", "disabled");
+			evarisk(\'#first' . $idPostBox . '\').attr("disabled", "disabled");
+			evarisk(\'#previous' . $idPostBox . '\').attr("disabled", "disabled");
 		}
 		else
 		{
-			$(\'#first' . $idPostBox . '\').attr("disabled", "");
-			$(\'#previous' . $idPostBox . '\').attr("disabled", "");
+			evarisk(\'#first' . $idPostBox . '\').attr("disabled", "");
+			evarisk(\'#previous' . $idPostBox . '\').attr("disabled", "");
 		}
-		if(parseInt($(\'#pageMax' . $idPostBox . '\').val()) == ' . $page . ')
+		if(parseInt(evarisk(\'#pageMax' . $idPostBox . '\').val()) == ' . $page . ')
 		{
-			$(\'#last' . $idPostBox . '\').attr("disabled", "disabled");
-			$(\'#next' . $idPostBox . '\').attr("disabled", "disabled");
+			evarisk(\'#last' . $idPostBox . '\').attr("disabled", "disabled");
+			evarisk(\'#next' . $idPostBox . '\').attr("disabled", "disabled");
 		}
 		else
 		{
-			$(\'#last' . $idPostBox . '\').attr("disabled", "");
-			$(\'#next' . $idPostBox . '\').attr("disabled", "");
+			evarisk(\'#last' . $idPostBox . '\').attr("disabled", "");
+			evarisk(\'#next' . $idPostBox . '\').attr("disabled", "");
 		}
 	});
 </script>';
@@ -1948,19 +1702,19 @@ class EvaDisplayDesign {
 		{
 			$liste  = $liste . '
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#favorite-actions-mainPostBox").hide();
-			$("#favorite-second-link-' . $idPostBox . '").show();
-			$("#favorite-first-link-' . $idPostBox . '").show();
-			$(\'#infoLi\').html("' . $messageAbsence . '\"" + $(\'#filAriane\').children(\'a:last\').html() + "\".<br />" +
+		evarisk(document).ready(function() {
+			evarisk("#favorite-actions-mainPostBox").hide();
+			evarisk("#favorite-second-link-' . $idPostBox . '").show();
+			evarisk("#favorite-first-link-' . $idPostBox . '").show();
+			evarisk(\'#infoLi\').html("' . $messageAbsence . '\"" + evarisk(\'#filAriane\').children(\'a:last\').html() + "\".<br />" +
 		"<a href=\"#\" id=\"addMain\"><img src=\"' . $mainSrc . '\" alt=\"mainAdd\" title=\"' . $mainAdd . '\" />' . $mainAdd . '</a><br />" +
 		"<a href=\"#\" id=\"addSecondary\"><img src=\"' . $secondarySrc . '\" alt=\"secondaryAdd\" title=\"' . $secondaryAdd . '\" />' . $secondaryAdd . '</a>");
-			$("#addMain").click(function(){
-				$(\'#favorite-first-link-' . $idPostBox . '\').click();
+			evarisk("#addMain").click(function(){
+				evarisk(\'#favorite-first-link-' . $idPostBox . '\').click();
 				return false;
 			});
-			$("#addSecondary").click(function(){
-				$(\'#favorite-second-link-' . $idPostBox . '\').click();
+			evarisk("#addSecondary").click(function(){
+				evarisk(\'#favorite-second-link-' . $idPostBox . '\').click();
 				return false;
 			});
 		});
@@ -1982,64 +1736,64 @@ class EvaDisplayDesign {
 		$nombreElements = 0;
 		$script = '';
 		$chargement = '
-			$(\'#rightEnlarging\').show();
-			$(\'#equilize\').click();
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#rightEnlarging").show();
+			evarisk("#equilize").click();
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $_POST['table'] . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "right",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $_POST['table'] . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 			return false;';
 		foreach($elements as $elementObject)
 		{
 			$table = $elementObject['table'];
 			$idElement = $elementObject['id'];
 			$chargement = '
-				$(\'#rightEnlarging\').show();
-				$(\'#equilize\').click();
-				$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+				evarisk("#rightEnlarging").show();
+				evarisk("#equilize").click();
+				evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 					"table": "' . $table . '",
 					"id": "' . $idElement . '",
-					"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+					"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+					"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 					"act": "edit",
 					"partie": "right",
-					"menu": $("#menu").val(),
+					"menu": evarisk("#menu").val(),
 					"affichage": "affichageTable",
 					"partition": "tout"
 				});
-				$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+				evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 					"table": "' . $_POST['table'] . '",
 					"id": "' . $_POST['idPere'] . '",
-					"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+					"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+					"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 					"act": "edit",
 					"partie": "left",
-					"menu": $("#menu").val(),
+					"menu": evarisk("#menu").val(),
 					"affichage": "affichageTable",
 					"partition": "tout"
 				});
-				$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-				$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+				evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+				evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 				return false;';
 			$ligneEditer[] = array('value' => '<a id="edit' . $table . $idElement . '" class="button boutonInfos"><img alt="" title="' . __('&Eacute;diter', 'evarisk') . '" src="' . PICTO_EDIT . '"/>' . __('&Eacute;diter', 'evarisk') . '</a>', 'class' => 'boutonsInfoElement');
 			switch($table)
@@ -2130,44 +1884,23 @@ class EvaDisplayDesign {
 					break;
 			}
 			$scriptFilAriane = '
-				if($(\'#filAriane :last-child\').is("label"))
-					$(\'#filAriane :last-child\').remove();
-				$(\'#filAriane\').append(\'<label>&nbsp;&raquo;&nbsp;</label><a href="#" id="element' . $element->id . '" class="elementFilAriane">' . addslashes($element->nom) . '</a>\');
-				$(\'#page' . $idPostBox . 'Reference\').val(1);
-				$(document).ready(function() {
-					$(\'#element' . $element->id . '\').click(function() {
-						$(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-						$(\'#page' . $idPostBox . 'Reference\').val(1);
-						while($(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
+				if(evarisk(\'#filAriane :last-child\').is("label"))
+					evarisk(\'#filAriane :last-child\').remove();
+				evarisk(\'#filAriane\').append(\'<label>&nbsp;&raquo;&nbsp;</label><a href="#" id="element' . $element->id . '" class="elementFilAriane">' . addslashes($element->nom) . '</a>\');
+				evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+				evarisk(document).ready(function() {
+					evarisk(\'#element' . $element->id . '\').click(function() {
+						evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+						evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+						while(evarisk(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
 						{
-							$(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').remove();
 						}
-																
-						$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-							"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-							"partie": "right",
-							"menu": $("#menu").val(),
-							"affichage": "affichageTable",
-							"partition": "main"
-						});
-						$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-							"table": "' . $table . '",
-							"act": "changementPage",
-							"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-							"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-							"partie": "left",
-							"menu": $("#menu").val(),
-							"affichage": "affichageTable",
-							"partition": "main"
-						});
-						
-						$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						
-						$(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
+
+						changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+						changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+
+						evarisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
 						return false;
 					});
 				});';
@@ -2205,36 +1938,36 @@ class EvaDisplayDesign {
 			
 			$script = $script .'
 				<script type="text/javascript">
-					$(document).ready(function() {
+					evarisk(document).ready(function() {
 						if(' . $aFilsNoeud . ')
 						{
-							$("#favorite-second-link-' . $idPostBox . '").hide();
-							$("#favorite-first-link-' . $idPostBox . '").show();
+							evarisk("#favorite-second-link-' . $idPostBox . '").hide();
+							evarisk("#favorite-first-link-' . $idPostBox . '").show();
 						}
 						if(' . $aFilsFeuille . ')
 						{
-							$("#favorite-first-link-' . $idPostBox . '").hide();
-							$("#favorite-second-link-' . $idPostBox . '").show();
+							evarisk("#favorite-first-link-' . $idPostBox . '").hide();
+							evarisk("#favorite-second-link-' . $idPostBox . '").show();
 						}
 						var timeoutDbl' . $table . $idElement . '_0;
 						var timeoutDbl' . $table . $idElement . '_1;
 						var nbClic = 0;
-						$(\'#photo' . $table . $idElement . '\').dblclick(function() {
+						evarisk(\'#photo' . $table . $idElement . '\').dblclick(function() {
 							clearTimeout(timeoutDbl' . $table . $idElement . '_0);
 							clearTimeout(timeoutDbl' . $table . $idElement . '_1);
-							if(($("#select' . $table . $idElement . '").attr("id")) != undefined)
-								$("#select' . $table . $idElement . '").click();
+							if((evarisk("#select' . $table . $idElement . '").attr("id")) != undefined)
+								evarisk("#select' . $table . $idElement . '").click();
 							else
-								$("#edit' . $table . $idElement . '").click();
+								evarisk("#edit' . $table . $idElement . '").click();
 						});
-						$(\'#photo' . $table . $idElement . '\').parent().click(function(event){
+						evarisk(\'#photo' . $table . $idElement . '\').parent().click(function(event){
 							if(nbClic == 0)
 							{
 								timeoutDbl' . $table . $idElement . '_0 = setTimeout 
 								( 
 									function() 
 									{ 
-										$("#edit' . $table . $idElement . '").click();
+										evarisk("#edit' . $table . $idElement . '").click();
 									}, 
 									300 
 								);
@@ -2245,7 +1978,7 @@ class EvaDisplayDesign {
 								( 
 									function() 
 									{ 
-										$("#edit' . $table . $idElement . '").click();
+										evarisk("#edit' . $table . $idElement . '").click();
 									}, 
 									300 
 								);
@@ -2253,121 +1986,100 @@ class EvaDisplayDesign {
 							nbClic = (nbClic + 1)%2;
 							return("false");
 						});
-						$(\'#edit' . $table . $idElement . '\').click(function() {
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $element->nom . '</label>\');
+						evarisk(\'#edit' . $table . $idElement . '\').click(function() {
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $element->nom . '</label>\');
 							' . $chargement . '
 						});
-						$(\'#risq' . $table . $idElement . '\').click(function() {
-							$("#menu").val(\'risq\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $element->nom . '</label>\');
+						evarisk(\'#risq' . $table . $idElement . '\').click(function() {
+							evarisk("#menu").val(\'risq\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $element->nom . '</label>\');
 							' . $chargement . '
 						});
-						$(\'#addMain' . $table . $idElement . '\').click(function() {
-							$(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-							$(\'#page' . $idPostBox . 'Reference\').val(1);
-							$(\'#rightEnlarging\').show();
-							$(\'#equilize\').click();
-							$("#menu").val(\'gestiongrptut\');
+						evarisk(\'#addMain' . $table . $idElement . '\').click(function() {
+							evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+							evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+							evarisk("#rightEnlarging").show();
+							evarisk("#equilize").click();
+							evarisk("#menu").val(\'gestiongrptut\');
 							' . $scriptFilAriane . '
-							$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $element->nom . '</label>");
+							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $element->nom . '</label>");
 							
-							$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+							evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $table . '",
 								"act": "add",
-								"page": $(\'#page' . $idPostBox . 'Reference\').val(),
+								"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
 								"idPere": ' . $element->id . ',
 								"partie": "right",
-								"menu": $("#menu").val(),
+								"menu": evarisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
-							$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+							evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $table . '",
 								"act": "add",
-								"page": $(\'#page' . $idPostBox . 'Reference\').val(),
+								"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
 								"idPere": ' . $element->id . ',
 								"partie": "left",
-								"menu": $("#menu").val(),
+								"menu": evarisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
 							
-							$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-							$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+							evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+							evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 							return false;
 						});
-						$(\'#addSecondary' . $table . $idElement . '\').click(function() {
-							$(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-							$(\'#page' . $idPostBox . 'Reference\').val(1);
-							$(\'#rightEnlarging\').show();
-							$(\'#equilize\').click();
-							$("#menu").val(\'gestiongrptut\');
+						evarisk(\'#addSecondary' . $table . $idElement . '\').click(function() {
+							evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+							evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
+							evarisk("#rightEnlarging").show();
+							evarisk("#equilize").click();
+							evarisk("#menu").val(\'gestiongrptut\');
 							' . $scriptFilAriane . '
-							$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $element->nom . '</label>");
+							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $element->nom . '</label>");
 							
-							$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+							evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $sousTable . '",
 								"act": "add",
 								"page": 1,
 								"idPere": ' . $element->id . ',
 								"partie": "right",
-								"menu": $("#menu").val(),
+								"menu": evarisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
-							$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+							evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $sousTable . '",
 								"act": "add",
-								"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-								"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+								"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+								"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 								"partie": "left",
-								"menu": $("#menu").val(),
+								"menu": evarisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
 							
-							$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-							$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+							evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+							evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 							return false;
 						});
-						$(\'#select' . $table . $idElement . '\').click(function() {
-							if(!($(this).attr("disabled")))
+						evarisk(\'#select' . $table . $idElement . '\').click(function() {
+							if(!(evarisk(this).attr("disabled")))
 							{
-								if($(\'#filAriane :last-child\').is("label"))
-									$(\'#filAriane :last-child\').remove();
-								$(\'#identifiantActuelle' . $idPostBox . '\').val(' . $idElement . ');
+								if(evarisk(\'#filAriane :last-child\').is("label"))
+									evarisk(\'#filAriane :last-child\').remove();
+								evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(' . $idElement . ');
 								' . $scriptFilAriane . '
 
-								$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "changementPage",
-									"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-									"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-									"partie": "right",
-									"menu": $("#menu").val(),
-									"affichage": "affichageTable",
-									"partition": "main"
-								});
-								$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
-									"table": "' . $table . '",
-									"act": "changementPage",
-									"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-									"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
-									"partie": "left",
-									"menu": $("#menu").val(),
-									"affichage": "affichageTable",
-									"partition": "main"
-								});
-								
-								$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								
-								$(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
+								changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+								changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+
+								evarisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
 								return false;
 							}
 						});
@@ -2399,32 +2111,32 @@ class EvaDisplayDesign {
 		$listeBoutons = '';
 		
 		$chargement = '
-			$(\'#rightEnlarging\').show();
-			$(\'#equilize\').click();
-			$(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#rightEnlarging").show();
+			evarisk("#equilize").click();
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $mainTable . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "right",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			$(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $mainTable . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": $(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": $(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "left",
-				"menu": $("#menu").val(),
+				"menu": evarisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			$(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-			$(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
 			return false;';
 		//ajout des éléments de la barre lattérale/side-bar
 		switch($_POST['table'])
@@ -2467,39 +2179,39 @@ class EvaDisplayDesign {
 					';
 				}
 				$scriptColDroite = '<script type="text/javascript">
-					$("#favorite-actions-mainPostBox").hide();
-					$(document).ready(function() {
-						$(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
+					evarisk("#favorite-actions-mainPostBox").hide();
+					evarisk(document).ready(function() {
+						evarisk(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
 							' . $chargement . '
 						});
-						$(\'#risq' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$("#menu").val(\'risq\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $elementPere->nom . '</label>\');
+						evarisk(\'#risq' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#menu").val(\'risq\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $elementPere->nom . '</label>\');
 							' . $chargement . '
 						});
-						$(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$(\'#rightEnlarging\').show();
-							$(\'#equilize\').click();
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $elementPere->nom . '</label>");
-							$("#favorite-first-link-mainPostBox").click();
+						evarisk(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#rightEnlarging").show();
+							evarisk("#equilize").click();
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $elementPere->nom . '</label>");
+							evarisk("#favorite-first-link-mainPostBox").click();
 						});
-						$(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$(\'#rightEnlarging\').show();
-							$(\'#equilize\').click();
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $elementPere->nom . '</label>");
-							$("#favorite-second-link-mainPostBox").click();
+						evarisk(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#rightEnlarging").show();
+							evarisk("#equilize").click();
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $elementPere->nom . '</label>");
+							evarisk("#favorite-second-link-mainPostBox").click();
 						});
 					});
 				</script>';
@@ -2542,32 +2254,32 @@ class EvaDisplayDesign {
 					';
 				}
 				$scriptColDroite = '<script type="text/javascript">
-					$("#favorite-actions-mainPostBox").hide();
-					$(document).ready(function() {
-						$(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
+					evarisk("#favorite-actions-mainPostBox").hide();
+					evarisk(document).ready(function() {
+						evarisk(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
 							' . $chargement . '
 						});
-						$(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$(\'#rightEnlarging\').show();
-							$(\'#equilize\').click();
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle cat&eacute;gorie de dangers &agrave; ' . $elementPere->nom . '</label>");
-							$("#favorite-first-link-mainPostBox").click();
+						evarisk(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#rightEnlarging").show();
+							evarisk("#equilize").click();
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle cat&eacute;gorie de dangers &agrave; ' . $elementPere->nom . '</label>");
+							evarisk("#favorite-first-link-mainPostBox").click();
 						});
-						$(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							$(\'#rightEnlarging\').show();
-							$(\'#equilize\').click();
-							$("#menu").val(\'gestiongrptut\');
-							if($(\'#filAriane :last-child\').is("label"))
-								$(\'#filAriane :last-child\').remove();
-							$("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau danger &agrave; ' . $elementPere->nom . '</label>");
-							$("#favorite-second-link-mainPostBox").click();
+						evarisk(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							evarisk("#rightEnlarging").show();
+							evarisk("#equilize").click();
+							evarisk("#menu").val(\'gestiongrptut\');
+							if(evarisk(\'#filAriane :last-child\').is("label"))
+								evarisk(\'#filAriane :last-child\').remove();
+							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau danger &agrave; ' . $elementPere->nom . '</label>");
+							evarisk("#favorite-second-link-mainPostBox").click();
 						});
 					});
 				</script>';
@@ -2580,29 +2292,29 @@ class EvaDisplayDesign {
 			}
 		}
 		$scriptTable = '<script type="text/javascript">
-				$(document).ready(function() {
-					$("#' . $idTable . ' tr:first").append(
+				evarisk(document).ready(function() {
+					evarisk("#' . $idTable . ' tr:first").append(
 						"<td rowspan=' . (count($lignesDeValeurs) - 1) . ' style=\"width:' . $largeurDerniereColonne . '%;\">" + ' . $listeBoutons . '
 						"</td>"
 					);
-					$("#' . $idTable . ' tr:first").append();
-					$("#' . $idTable . ' .nomElement, #' . $idTable . ' .photoElement, #' . $idTable . ' .boutonsInfoElement").each(function(){
-						$(this).attr("colspan", "3");
+					evarisk("#' . $idTable . ' tr:first").append();
+					evarisk("#' . $idTable . ' .nomElement, #' . $idTable . ' .photoElement, #' . $idTable . ' .boutonsInfoElement").each(function(){
+						evarisk(this).attr("colspan", "3");
 					});
-					$("#' . $idTable . ' .nomInfoElement").each(function(){
-						$(this).css("width","' . $largeurNomInfo . '%");
+					evarisk("#' . $idTable . ' .nomInfoElement").each(function(){
+						evarisk(this).css("width","' . $largeurNomInfo . '%");
 					});
-					$("#' . $idTable . ' .deuxPoints").each(function(){
-						$(this).css("width","' . $largeurDeuxPoints . '%");
+					evarisk("#' . $idTable . ' .deuxPoints").each(function(){
+						evarisk(this).css("width","' . $largeurDeuxPoints . '%");
 					});
-					$("#' . $idTable . ' .valeurInfoElement").each(function(){
-						$(this).css("width","' . $largeurValeurInfo . '%");
+					evarisk("#' . $idTable . ' .valeurInfoElement").each(function(){
+						evarisk(this).css("width","' . $largeurValeurInfo . '%");
 					});
-					$("#' . $idTable . ' .pagination").each(function(){
-						$(this).attr("colspan", "' . ($nombreElements * 3 + 1) . '");
+					evarisk("#' . $idTable . ' .pagination").each(function(){
+						evarisk(this).attr("colspan", "' . ($nombreElements * 3 + 1) . '");
 					});
-					$("#' . $idPostBox . ' .inside").each(function(){
-						$(this).css("padding", "0");
+					evarisk("#' . $idPostBox . ' .inside").each(function(){
+						evarisk(this).css("padding", "0");
 					});
 				});
 			</script>';
@@ -2643,6 +2355,8 @@ class EvaDisplayDesign {
     }
 	}
 
+
+
 	/**
 	*	Return the form template for generating the single document
 	*	@return string HTML code of the form
@@ -2650,11 +2364,11 @@ class EvaDisplayDesign {
 	static function getFormulaireGenerationDUER()
 	{
 		return 
-			EvaDisplayInput::ouvrirForm('POST', 'infosGenerationDU', 'infosGenerationDU') .
 				'<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
 					<tr>
-						<td style="width:60%;" >
-							<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire" style="width:100%;" >
+						<td style="width:60%;" >' . 
+							EvaDisplayInput::ouvrirForm('POST', 'infosGenerationDU', 'infosGenerationDU') . 
+							'<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire" style="width:100%;" >
 								<tr>
 									<td ><label for="dateCreation">' . __('date de cr&eacute;ation', 'evarisk') . '</label></td>
 									<td >' . EvaDisplayInput::afficherInput('text', 'dateCreation', '#DATEFORM1#', '', '', 'dateCreation', false, false, 150, '', 'Date', '100%', '', 'left;width:100%;', false) . '</td>
@@ -2708,14 +2422,112 @@ class EvaDisplayDesign {
 								</tr> 
 		-->
 								<tr>
-									<td colspan="2"><input type="button" id="genererDUER" name="genererDUER" value="' . __('g&eacute;n&eacute;rer', 'evarisk') . '" /></td>
+									<td >&nbsp;</td>
+									<td style="padding:12px 0px;" >
+										<div>
+											<input type="checkbox" id="modelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
+											<label for="modelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+										</div>
+										<div id="modelListForDUERGeneration" style="display:none;" >&nbsp;</div>
+									</td>
 								</tr>
-							</table>
-						</td>
-						<td style="width:40%;" ><div style="float:right;width:80%;" id="documentUniqueResult" >&nbsp;</div></td>
+								<tr>
+									<td colspan="2"><input class="button-primary alignright" type="button" id="genererDUER" name="genererDUER" value="' . __('g&eacute;n&eacute;rer', 'evarisk') . '" /></td>
+								</tr>
+							</table>' .
+							EvaDisplayInput::fermerForm('infosGenerationDU') .
+						'</td>
+						<td style="width:40%;" id="documentUniqueResultContainer" >&nbsp;</td>
 					</tr>
-				</table>' .
-			EvaDisplayInput::fermerForm('infosGenerationDU');
+				</table>';
+	}
+
+	/**
+	*	Return the form template to upload a new DUER model
+	*	@return string HTML code of the form
+	*/
+	static function getNewModelUploadForm($tableElement, $idElement)
+	{
+		$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
+		$idUpload = 'model' . $tableElement;
+		$allowedExtensions = "['odt']";
+		$multiple = false;
+		$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "gestionDocumentaire/uploadFile.php");
+
+		$newModelForm = 
+			'<div style="margin:0px auto;width:92%;" >
+				<div id="moreModelChoice" >
+					' . EvaDisplayDesign::getExistingModelList($tableElement, $idElement) . '
+				</div>
+				<div style="margin:6px 0px;" class="bold" >' . __('Ajouter un nouveau mod&egrave;le', 'evarisk') . '&nbsp:</div>
+				<ol>
+					<li><a class="bold" href="' . EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt" >' . __('T&eacute;l&eacute;chargez le mod&egrave;le par d&eacute;faut', 'evarisk') . '</a></li>
+					<li>
+						<span class="bold" >' . __('Modifiez le mod&egrave;le', 'evarisk') . '</span>
+						<ul>
+							<li style="text-align:justify;" >' . __('Apportez vos modifications au fichier t&eacute;l&eacute;charg&eacute;', 'evarisk') . '<br/><span style="color:red;" >' . __('Attention &agrave; ne pas supprimer ou modifier les parties du document qui sont sous la forme "{UnTexte}"', 'evarisk') . '</span></li>
+						</ul>
+					</li>
+					<li>
+						<span class="bold" >' . __('Envoyez votre mod&egrave;le', 'evarisk') . '</span>
+						<ul>
+							<li>' . gestionDoc::getFormulaireUpload(TABLE_DUER, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, __('S&eacute;lectionner le mod&egrave;le &agrave; envoyer', 'evarisk')) . '</li>
+						</ul>
+					</li>
+				</ol>
+			</div>';
+
+		return $newModelForm;
+	}
+
+	/**
+	*	Return the combo box with the different existing model
+	*	@return string $moreModelChoice HTML code containing the different existing model
+	*/
+	function getExistingModelList($tableElement, $idElement)
+	{
+		$moreModelChoice = '';
+		$documentList = gestionDoc::getCompleteDocumentList('document_unique', 
+		"	AND id NOT IN (
+				SELECT id 
+				FROM " . TABLE_GED_DOCUMENTS . " 
+				WHERE id_element = '" . $idElement . "' 
+					AND table_element = '" . $tableElement . "'
+			)
+			AND nom NOT IN (
+				SELECT nom 
+				FROM " . TABLE_GED_DOCUMENTS . " 
+				WHERE id_element = '" . $idElement . "' 
+					AND table_element = '" . $tableElement . "'
+			)			");
+		if(count($documentList) > 0)
+		{
+			$moreModelChoice = 
+				'<div style="margin:6px 0px;" class="bold" >' . __('Affecter un mod&egrave;le existant', 'evarisk') . '&nbsp:</div>
+				<ol>
+					<li>
+						' . __('S&eacute;lectionner un mod&eacute;le', 'evarisk') . '
+						<div style="margin:3px 24px;" class="bold" >
+							' . evaDisplayInput::afficherComboBox($documentList, 'modelToDuplicate', '', 'modelToDuplicate', '', '') . '
+							<input type="button" value="' . __('Affecter', 'evarisk') . '" class="button-primary" id="duplicateModel" name="duplicateModel" />
+							<script type="text/javascript" >
+								evarisk("#duplicateModel").click(function(){
+									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										"post": "true", 
+										"table": "' . TABLE_GED_DOCUMENTS . '",
+										"act": "duplicateDocument",
+										"tableElement": "' . $tableElement . '",
+										"idElement": "' . $idElement . '",
+										"idDocument": evarisk("#modelToDuplicate").val()
+									});
+								});
+							</script>
+						</div>
+					</li>
+				</ol>
+				<div style="display:table;width:70%;margin:12px auto;" ><hr style="width:35%;" class="alignleft" /><span class="alignleft" style="text-align:center;width:15%;margin:0px 12px;" >' . __('ou', 'evarisk') . '</span><hr style="width:35%;" class="alignleft" /></div>';
+		}
+		return $moreModelChoice;
 	}
 
 }

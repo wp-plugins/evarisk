@@ -71,6 +71,7 @@ function evarisk_add_options() {
 function eva_add_admin_js()
 {
 	echo'<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.js"></script>
+	<script type="text/javascript" >var evarisk = jQuery.noConflict();</script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/lib.js"></script>
 	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js"></script>
@@ -81,13 +82,13 @@ function eva_add_admin_js()
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/uploadify/jquery.uploadify.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/users.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/role.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/eav.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.editable.js"></script>
 	<script type="text/javascript" src="' . EVA_PLUGIN_DIR . '../../../wp-admin/js/postbox.js"></script>
+
 	
 	<style type="text/css" title="currentStyle">
 		@import "' . EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css";
@@ -98,7 +99,12 @@ function eva_add_admin_js()
 		@import "' . EVA_INC_PLUGIN_URL . 'css/utilisateur.css";
 		@import "' . EVA_INC_PLUGIN_URL . 'css/eav.css";
 		@import "' . EVA_INC_PLUGIN_URL . 'css/role.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/documentUnique.css";
-	</style>';
+		@import "' . EVA_INC_PLUGIN_URL . 'css/documentUnique.css";";
+	</style>
+
+	<script type="text/javascript" >
+		var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";
+	</script>
+';
 }
 ?>

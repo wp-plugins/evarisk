@@ -108,19 +108,19 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$idResponsableIsMandatory = options::getOptionValue('responsable_Tache_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
-			$(document).ready(function() {				
-				$("#' . $idBouttonEnregistrer . '").click(function() {
-					if($("#' . $idTitre . '").is(".form-input-tip"))
+			evarisk(document).ready(function() {				
+				evarisk("#' . $idBouttonEnregistrer . '").click(function() {
+					if(evarisk("#' . $idTitre . '").is(".form-input-tip"))
 					{
 						document.getElementById("' . $idTitre . '").value="";
-						$("#' . $idTitre . '").removeClass("form-input-tip");
+						evarisk("#' . $idTitre . '").removeClass("form-input-tip");
 					}
 
-					idResponsable = $("#responsable_tache").val();
+					idResponsable = evarisk("#responsable_tache").val();
 					idResponsableIsMandatory = "false";
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
-					valeurActuelle = $("#' . $idTitre . '").val();
+					valeurActuelle = evarisk("#' . $idTitre . '").val();
           if(valeurActuelle == "")
           {
             alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
@@ -131,18 +131,18 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 					}
           else
           {
-            $("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+            evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
               "table": "' . TABLE_TACHE . '",
-              "act": $("#actTache").val(),
-              "id": $("#idTache").val(),
-              "nom_tache": $("#' . $idTitre . '").val(),
-              "idPere": $("#idPereTache").val(),
-              "responsable_tache": $("#responsable_tache").val(),
-              "description": $("#descriptionTache").val(),
-              "affichage": $("#affichageTache").val(),
-              "idsFilAriane": $("#idsFilArianeTache").val(),
-              "idProvenance": $("#idProvenanceTache").val(),
-              "tableProvenance": $("#tableProvenanceTache").val()
+              "act": evarisk("#actTache").val(),
+              "id": evarisk("#idTache").val(),
+              "nom_tache": evarisk("#' . $idTitre . '").val(),
+              "idPere": evarisk("#idPereTache").val(),
+              "responsable_tache": evarisk("#responsable_tache").val(),
+              "description": evarisk("#descriptionTache").val(),
+              "affichage": evarisk("#affichageTache").val(),
+              "idsFilAriane": evarisk("#idsFilArianeTache").val(),
+              "idProvenance": evarisk("#idProvenanceTache").val(),
+              "tableProvenance": evarisk("#tableProvenanceTache").val()
             });
           }
 				});
@@ -153,19 +153,19 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$idBoutton = 'taskDone';
 
 		$scriptEnregistrementDone = '<script type="text/javascript">
-			$(document).ready(function() {				
-				$("#' . $idBoutton . '").click(function() {
-					if($("#' . $idTitre . '").is(".form-input-tip"))
+			evarisk(document).ready(function() {				
+				evarisk("#' . $idBoutton . '").click(function() {
+					if(evarisk("#' . $idTitre . '").is(".form-input-tip"))
 					{
 						document.getElementById("' . $idTitre . '").value="";
-						$("#' . $idTitre . '").removeClass("form-input-tip");
+						evarisk("#' . $idTitre . '").removeClass("form-input-tip");
 					}
 
-					idResponsable = $("#responsable_tache").val();
+					idResponsable = evarisk("#responsable_tache").val();
 					idResponsableIsMandatory = "false";
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
-					valeurActuelle = $("#' . $idTitre . '").val();
+					valeurActuelle = evarisk("#' . $idTitre . '").val();
           if(valeurActuelle == "")
           {
             alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
@@ -176,19 +176,19 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 					}
           else if(confirm(convertAccentToJS("' . __('En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments \'en-dessous\'. Etes vous sur?', 'evarisk') . '")))
           {
-						$("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-            $("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						evarisk("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+            evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
               "table": "' . TABLE_TACHE . '",
               "act": "taskDone",
-              "id": $("#idTache").val(),
-              "nom_tache": $("#' . $idTitre . '").val(),
-              "idPere": $("#idPereTache").val(),
-              "responsable_tache": $("#responsable_tache").val(),
-              "description": $("#descriptionTache").val(),
-              "affichage": $("#affichageTache").val(),
-              "idsFilAriane": $("#idsFilArianeTache").val(),
-              "idProvenance": $("#idProvenanceTache").val(),
-              "tableProvenance": $("#tableProvenanceTache").val()
+              "id": evarisk("#idTache").val(),
+              "nom_tache": evarisk("#' . $idTitre . '").val(),
+              "idPere": evarisk("#idPereTache").val(),
+              "responsable_tache": evarisk("#responsable_tache").val(),
+              "description": evarisk("#descriptionTache").val(),
+              "affichage": evarisk("#affichageTache").val(),
+              "idsFilAriane": evarisk("#idsFilArianeTache").val(),
+              "idProvenance": evarisk("#idProvenanceTache").val(),
+              "tableProvenance": evarisk("#tableProvenanceTache").val()
             });
           }
 				});
@@ -220,7 +220,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 			$tache_new .= 
 					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') . 
 				'</div>
-				<script type="text/javascript" >$("#TaskSaveButton").children("br").remove();</script>';
+				<script type="text/javascript" >evarisk("#TaskSaveButton").children("br").remove();</script>';
 		}
 		else
 		{

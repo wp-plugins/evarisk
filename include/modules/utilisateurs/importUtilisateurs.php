@@ -182,11 +182,11 @@
 <script type="text/javascript" >
 	function changeSeparator()
 	{
-		$('.fieldSeparator').html($('#fieldSeparator').val());
+		evarisk('.fieldSeparator').html(evarisk('#fieldSeparator').val());
 	}
-	$(document).ready(function(){
+	evarisk(document).ready(function(){
 		changeSeparator();
-		$('#fieldSeparator').blur(function(){changeSeparator()});
+		evarisk('#fieldSeparator').blur(function(){changeSeparator()});
 	});
 </script>
 <form enctype="multipart/form-data" method="post" action="" >

@@ -18,7 +18,7 @@
 	 * Risks Assessment
 	 */
 	{
-		DEFINE('OPTIONS_AVANCEEES_EVALUATION_RISQUE', 'collapsed'); // 3 possibles values : collapsed / expanded / invisible
+		//DEFINE('OPTIONS_AVANCEEES_EVALUATION_RISQUE', 'collapsed'); // 3 possibles values : collapsed / expanded / invisible
 	}
 	
 	/**

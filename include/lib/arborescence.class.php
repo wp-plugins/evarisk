@@ -150,7 +150,7 @@ class Arborescence {
 			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche  - $decrement ) . "', `limiteDroite`= '" . ($element->limiteDroite - $decrement ) . "' WHERE`id` = '" . $element->id . "'";
 			$wpdb->query($sql);
 		}
-		
+
 		/*
 		  * On referme l'arbre :
 		  *	- On tri les limites des éléments de l'arbre par ordre croissant
@@ -173,7 +173,7 @@ class Arborescence {
 		{
 			if($tableauElements[$i][1] == 'g')
 			{
-				$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . $i . "' WHERE`id` = '" . $tableauElements[$i][2] . "'";
+				$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . $i . "' WHERE `id` = '" . $tableauElements[$i][2] . "'";
 			}
 			else
 			{
@@ -181,7 +181,7 @@ class Arborescence {
 				{
 					$limiteDroiteDestination = $i;
 				}
-				$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . $i . "' WHERE`id` = '" . $tableauElements[$i][2] . "'";
+				$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . $i . "' WHERE `id` = '" . $tableauElements[$i][2] . "'";
 			}
 			$wpdb->query($sql);
 		}

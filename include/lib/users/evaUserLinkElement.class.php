@@ -32,6 +32,7 @@ class evaUserLinkElement
 			//on récupère les utilisateurs déjà affectés à l'élément en cours.
 			$listeUtilisateursLies = array();
 			$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
+
 			if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0))
 			{
 				foreach($utilisateursLies as $utilisateur)
@@ -53,8 +54,8 @@ class evaUserLinkElement
 					if(isset($listeUtilisateursLies[$utilisateur['user_id']]))
 					{
 						$script = $script . '<script type="text/javascript">
-							$(document).ready(function() {
-								$(\'#' . $idCbLigne . '\').attr("checked", "checked");
+							evarisk(document).ready(function() {
+								evarisk(\'#' . $idCbLigne . '\').attr("checked", "checked");
 							});
 						</script>';
 						$affectedValue = __('oui', 'evarisk');
@@ -80,8 +81,8 @@ class evaUserLinkElement
 			if(!$noScript)
 			{
 			$script = $script . '<script type="text/javascript">
-				$(document).ready(function() {
-					$(\'#' . $idTable . '\').dataTable({
+				evarisk(document).ready(function() {
+					evarisk(\'#' . $idTable . '\').dataTable({
 						"bAutoWidth": false,
 						"bInfo": false,
 						"aoColumns": 
@@ -92,7 +93,7 @@ class evaUserLinkElement
 							{ "bSortable": true }
 						],
 						"aaSorting": [[1,\'desc\']]});
-					$(\'#' . $idTable . '\').children("tfoot").remove();
+					evarisk(\'#' . $idTable . '\').children("tfoot").remove();
 				});
 			</script>';
 			}
@@ -101,16 +102,16 @@ class evaUserLinkElement
 		{//Bouton Enregistrer
 			$idBoutonEnregistrer = 'save_group';
 			$scriptEnregistrement = '<script type="text/javascript">
-				$(document).ready(function() {				
-					$(\'#' . $idBoutonEnregistrer . '\').click(function() {		
+				evarisk(document).ready(function() {				
+					evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {		
 						var listeUtilisateurs = new Array();
-						$(\'#' . $idTable . ' input\').each(function(){
-							if($(this).attr("checked"))
+						evarisk(\'#' . $idTable . ' input\').each(function(){
+							if(evarisk(this).attr("checked"))
 							{
-								listeUtilisateurs.push($(this).attr("id").replace(new RegExp(/[A-Za-z_\-]+[\d]+[A-Za-z_\-]+/), ""));
+								listeUtilisateurs.push(evarisk(this).attr("id").replace(new RegExp(/[A-Za-z_\-]+[\d]+[A-Za-z_\-]+/), ""));
 							}
 						});
-						$("#userList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						evarisk("#userList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_LIAISON_USER_ELEMENT . '",
 							"act": "save",
 							"utilisateurs": listeUtilisateurs,
@@ -224,9 +225,9 @@ class evaUserLinkElement
 		}
 
 		$messageInfo = 
-			'<script type="text/javascript">
-				$(document).ready(function(){
-					$("#messageInfo_' . $tableElement . $idElement . '_affectUser").addClass("updated");';
+'<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").addClass("updated");';
 
 		$endOfQuery = trim(substr($userToTreat, 0, -2));
 		if($endOfQuery != "")
@@ -240,28 +241,28 @@ class evaUserLinkElement
 			if($wpdb->query($query))
 			{
 				$messageInfo .= '
-					$("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
+		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 			}
 			else
 			{
 				$messageInfo .= '
-					$("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
+		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
 			}
 		}
 		else
 		{
-				$messageInfo .= '
-					$("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong></p>') . '");';
+			$messageInfo .= '
+		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong></p>') . '");';
 		}
 
-			$messageInfo .= '
-						$("#messageInfo_' . $tableElement . $idElement . '_affectUser").show();
-						setTimeout(function(){
-							$("#messageInfo_' . $tableElement . $idElement . '_affectUser").removeClass("updated");
-							$("#messageInfo_' . $tableElement . $idElement . '_affectUser").hide();
-						},7500);
-				});
-			</script>';
+		$messageInfo .= '
+		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").show();
+		setTimeout(function(){
+			evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").removeClass("updated");
+			evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").hide();
+		},7500);
+	});
+</script>';
 		echo $messageInfo;
 	}
 

@@ -42,4 +42,4 @@ $.effects.transfer = function(o) {
 	});
 };
 
-})(jQuery);
+})(evarisk);

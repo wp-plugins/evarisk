@@ -33,44 +33,44 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			var totalSubmit = false;
 			function page(nb)
 			{
-				$(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
-				$(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':nb, \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
+				evarisk(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
+				evarisk(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':nb, \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
 			}
 			function summary()
 			{
-				$(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
-				$(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':\'null\', \'actualPageElementNb\':\'null\', \'act\' : \'summary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
-				$(\'#plotLocation\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleSummary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
-				$(\'#plotLocation\').show();
+				evarisk(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
+				evarisk(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':\'null\', \'actualPageElementNb\':\'null\', \'act\' : \'summary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
+				evarisk(\'#plotLocation\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleSummary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
+				evarisk(\'#plotLocation\').show();
 			}
 			
-			$(document).ready(function(){
-				$(\'#veille-PDF-creation\').click(function(){
-					$(\'#plotLocation\').hide();
-					$(\'#veilleMainContent\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'chargerInfosGeneralesVeille\', \'numeroRubrique\':\'' . $numeroRubrique . '\', \'tableElement\':\'' . $tableElement . '\', \'idElement\':\'' . $idElement . '\'});
+			evarisk(document).ready(function(){
+				evarisk(\'#veille-PDF-creation\').click(function(){
+					evarisk(\'#plotLocation\').hide();
+					evarisk(\'#veilleMainContent\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'chargerInfosGeneralesVeille\', \'numeroRubrique\':\'' . $numeroRubrique . '\', \'tableElement\':\'' . $tableElement . '\', \'idElement\':\'' . $idElement . '\'});
 				});
-				$(\'#veille-summary\').click(function(){
+				evarisk(\'#veille-summary\').click(function(){
 					summary();
 				});
-				$(\'#veille-liste-groupe-question\').click(function(){
-					$(\'#plotLocation\').hide();
+				evarisk(\'#veille-liste-groupe-question\').click(function(){
+					evarisk(\'#plotLocation\').hide();
 				});
-				$(\'#submit-veille\').click(function(){
+				evarisk(\'#submit-veille\').click(function(){
 					totalSubmit = true;
-					$(\'.soumissionQuetionVeille\').each(function(){
-						$(this).click();
+					evarisk(\'.soumissionQuetionVeille\').each(function(){
+						evarisk(this).click();
 					});
-					$(\'#messageInfoVeille\').html(\'<span id="message" class="updated fade below-h2" style="cursor:pointer;" ><strong>&nbsp;Enregistrement en cours...</strong></span>\');
-					$(this).ajaxStop(function(){
+					evarisk(\'#messageInfoVeille\').html(\'<span id="message" class="updated fade below-h2" style="cursor:pointer;" ><strong>&nbsp;Enregistrement en cours...</strong></span>\');
+					evarisk(this).ajaxStop(function(){
 						setTimeout
 						( 
 							function(){
 								totalSubmit = false;
-									setTimeout(function(){$(\'#messageInfoVeille\').html("");},4999);
+									setTimeout(function(){evarisk(\'#messageInfoVeille\').html("");},4999);
 									setTimeout
 									( 
 										function(){
-											page(parseInt($(\'#actualPage\').val()) + 1);
+											page(parseInt(evarisk(\'#actualPage\').val()) + 1);
 										}
 										,5000
 									);
@@ -263,14 +263,14 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 				if( $response->min != null AND $response->max != null )
 				{
 					$script = '<script type="text/javascript">
-					$(document).ready(function(){
-						$(\'#id' . $field_name . 'Value' . $response->id . '\').keypress(function(event) {
+					evarisk(document).ready(function(){
+						evarisk(\'#id' . $field_name . 'Value' . $response->id . '\').keypress(function(event) {
 							if (event.which && (event.which < 48 || event.which >57) && event.which != 8) {
 								event.preventDefault();
 							}
 						});
 					});</script>';
-					$moreresponse = $script . '<input onclick="javascript:$(\'#' . $field_id . '\').click()" type="text" name="response[' . $field_name . '][value' . $response->id . ']" value="' . $valueReponseALaQuestion . '" class="veille-response-input" id="id' . $field_name . 'Value' . $response->id . '"/>';
+					$moreresponse = $script . '<input onclick="javascript:evarisk(\'#' . $field_id . '\').click()" type="text" name="response[' . $field_name . '][value' . $response->id . ']" value="' . $valueReponseALaQuestion . '" class="veille-response-input" id="id' . $field_name . 'Value' . $response->id . '"/>';
 				}
 				$checked = '';
 				if( $idReponseALaQuestion == $response->id )
@@ -283,33 +283,33 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
 			$locale = ($locale == 'en') ? '' : $locale;
 			$script = '<script type="text/javascript">
-				$(document).ready(function(){
-					$(\'#limiteValidite' . $field_name . '\').datepicker($.datepicker.regional["' . $locale . '"]);
-					$(\'#limiteValidite' . $field_name . '\').datepicker("option", "dateFormat", "yy-mm-dd");
-					$(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeMonth", true);
-					$(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeYear", true);
-					$(\'#limiteValidite' . $field_name . '\').datepicker("option", "navigationAsDateFormat", true);
-					$(\'#observation' . $field_name . '\').keyup(function(event) {
-						var chaine = $(\'#observation' . $field_name . '\').val();
+				evarisk(document).ready(function(){
+					evarisk(\'#limiteValidite' . $field_name . '\').datepicker($.datepicker.regional["' . $locale . '"]);
+					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "dateFormat", "yy-mm-dd");
+					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeMonth", true);
+					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeYear", true);
+					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "navigationAsDateFormat", true);
+					evarisk(\'#observation' . $field_name . '\').keyup(function(event) {
+						var chaine = evarisk(\'#observation' . $field_name . '\').val();
 						if (chaine.length > ' . EVA_MAX_LONGUEUR_OBSERVATIONS . ') 
 						{
-							$(\'#observation' . $field_name . '\').val(chaine.substring(0, ' . EVA_MAX_LONGUEUR_OBSERVATIONS . '));
-							$(\'#observationTropLongue' . $field_name . '\').html(\'Observation trop longue\');
+							evarisk(\'#observation' . $field_name . '\').val(chaine.substring(0, ' . EVA_MAX_LONGUEUR_OBSERVATIONS . '));
+							evarisk(\'#observationTropLongue' . $field_name . '\').html(\'Observation trop longue\');
 						}
 						else
 						{
-							$(\'#observationTropLongue' . $field_name . '\').html(\'\');
+							evarisk(\'#observationTropLongue' . $field_name . '\').html(\'\');
 						}
 					});
-					$(\'#q' . $field_name . '-submit\').click(function() { 
+					evarisk(\'#q' . $field_name . '-submit\').click(function() { 
 						var reponse = -1;
 						var valeur ="";
 						for(var i=1; i <= parseInt(' . $response->id . '); i++)
 						{
-							if($(\'#r' . $field_name . '_\'+i).is(\':checked\'))
+							if(evarisk(\'#r' . $field_name . '_\'+i).is(\':checked\'))
 							{
 								reponse = i;
-								valeur = $(\'#id' . $field_name . 'Value\'+i).val();
+								valeur = evarisk(\'#id' . $field_name . 'Value\'+i).val();
 								if(valeur == undefined)
 								{
 									valeur = "";
@@ -327,8 +327,8 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 								}
 							}
 						}
-						var observation =	$(\'#observation' . $field_name . '\').val();
-						var limiteValidite =	$(\'#limiteValidite' . $field_name . '\').val();
+						var observation =	evarisk(\'#observation' . $field_name . '\').val();
+						var limiteValidite =	evarisk(\'#limiteValidite' . $field_name . '\').val();
 						if(reponse == -1)
 						{
 							if(!totalSubmit)
@@ -350,8 +350,8 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 								alert(convertAccentToJS(message));
 								statusGlobal = "error";
 							}
-							$(\'#observationTropLongue' . $field_name . '\').html(\'<div id="message" class="updated fade below-h2"><p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\\\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p></div>\');
-							setTimeout(function(){$(\'#observationTropLongue' . $field_name . '\').html("")},5000);
+							evarisk(\'#observationTropLongue' . $field_name . '\').html(\'<div id="message" class="updated fade below-h2"><p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\\\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p></div>\');
+							setTimeout(function(){evarisk(\'#observationTropLongue' . $field_name . '\').html("")},5000);
 						}
 						else
 						{
@@ -363,7 +363,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 							{
 								soumission = "totale";
 							}
-							$(\'#observationTropLongue' . $field_name . '\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\',\'nom\':\'veilleClicValidation\',\'idQuestion\':idQuestion,\'tableElement\':tableElement,\'idElement\':idElement,\'reponse\':reponse,\'valeur\':valeur,\'observation\':observation,\'soumission\':soumission,\'limiteValidite\':limiteValidite});
+							evarisk(\'#observationTropLongue' . $field_name . '\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\',\'nom\':\'veilleClicValidation\',\'idQuestion\':idQuestion,\'tableElement\':tableElement,\'idElement\':idElement,\'reponse\':reponse,\'valeur\':valeur,\'observation\':observation,\'soumission\':soumission,\'limiteValidite\':limiteValidite});
 						}
 						return false;
 					});

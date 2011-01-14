@@ -34,7 +34,7 @@ if ( !current_user_can('Evarisk_:_gerer_attributs') )
 	<div id="evaMessage" class="updated fade below-h2" >
 		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>error_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
-	<script type="text/javascript" >setTimeout(function(){$('#evaMessage').remove()},5000);</script>
+	<script type="text/javascript" >setTimeout(function(){evarisk('#evaMessage').remove()},5000);</script>
 <?php
 	}
 
@@ -105,7 +105,7 @@ endif;
 	<input name="addattribute" type="submit" id="addattribute" class="button-primary" value="<?php echo $actionButtonLabel; ?>" />	
 	
 	<?php if(($attributeAction != 'add') && ($attributeAction != 'addattribute')) : ?>
-	<input onclick="javascript:if(confirm('<?php echo __('&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?','evarisk') ; ?>')){$('#act').val('del');$('#attributeManagementForm').submit();}else{return false;}"  name="delAttribute" type="submit" id="delAttribute" class="button add-new-h2" value="<?php echo __('Supprimer l\'attribut', 'evarisk'); ?>" />
+	<input onclick="javascript:if(confirm('<?php echo __('&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?','evarisk') ; ?>')){evarisk('#act').val('del');evarisk('#attributeManagementForm').submit();}else{return false;}"  name="delAttribute" type="submit" id="delAttribute" class="button add-new-h2" value="<?php echo __('Supprimer l\'attribut', 'evarisk'); ?>" />
 	<?php endif; ?>
 </p>
 

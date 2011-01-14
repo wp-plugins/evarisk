@@ -16,18 +16,16 @@
 	$idElement = eva_tools::IsValid_Variable($result['idElement']);
 	$fichier = eva_tools::IsValid_Variable($result['fichier']);
 	
-	$uploadStatus = evaPhoto::saveNewPhoto($tableElement, $idElement, $fichier);
+	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
 	if($uploadStatus == 'error')
 	{
 		$result[success] = false;
 	}
 	else
 	{
-		$query = $wpdb->prepare("SELECT id FROM " . TABLE_PHOTO . " WHERE photo = '%s'  AND status = 'valid' ORDER BY id DESC LIMIT 1", $fichier);
-		$pictureId = $wpdb->get_row($query);
 		$action = new EvaActivity($idElement);
 		$action->load();
-		$action->setidPhotoAvant($pictureId->id);
+		$action->setidPhotoAvant($uploadStatus);
 		$action->save();
 	}
 	

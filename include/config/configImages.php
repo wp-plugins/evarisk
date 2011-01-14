@@ -69,6 +69,7 @@
 	DEFINE('PICTO_INSERT', EVA_IMG_ICONES_PLUGIN_URL . 'inserer.png');
 	DEFINE('PICTO_EDIT', EVA_IMG_ICONES_PLUGIN_URL . 'edit.png');
 	DEFINE('PICTO_DELETE', EVA_IMG_ICONES_PLUGIN_URL . 'delete.png');
+	DEFINE('PICTO_DELETE_VSMALL', EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png');
 
 	/**
 	* Google Maps icons define

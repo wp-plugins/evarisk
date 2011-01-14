@@ -3,7 +3,7 @@
 Plugin Name: Evarisk
 Plugin URI: http://www.evarisk.com/document-unique-logiciel
 Description: Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises et g&eacute;rer toutes les donn&eacute;es li&eacute;es &agrave; la s&eacute;curit&eacute; de votre personnel.
-Version: 5.1.0.2
+Version: 5.1.2
 Author: Evarisk
 Author URI: http://www.evarisk.com
 */
@@ -14,13 +14,6 @@ global $wpdb;
 require_once('include/config/config.php' );
 DEFINE('EVA_CONFIG', EVA_INC_PLUGIN_DIR . 'config/config.php');
 require_once('include/evarisk_admin.php' );
-
-// Installation du plugin (fichier evariskInstallEavModel.php)
-// require_once(EVA_MODULES_PLUGIN_DIR . 'installation/evariskInstallEavModel.php' );
-// register_activation_hook( __FILE__, 'eavModelInstall' );
-// register_activation_hook( __FILE__, 'eavModelUsersValueInstall' );
-// register_activation_hook( __FILE__, 'evaUsersGroup' );
-// register_activation_hook( __FILE__, 'evaRoles' );
 
 // Fonction d'initialisation du plugin
 add_action('plugins_loaded', 'evarisk_init');

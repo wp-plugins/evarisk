@@ -30,7 +30,8 @@
 	
 	DEFINE('EVA_RESULTATS_PLUGIN_URL', EVA_HOME_URL . 'medias/results/');
 	DEFINE('EVA_RESULTATS_PLUGIN_DIR', EVA_HOME_DIR . 'medias/results/');
-	DEFINE('EVA_MODELES_PLUGIN_DIR', EVA_HOME_DIR . 'medias/modeles/');
+	DEFINE('EVA_MODELES_PLUGIN_DIR', EVA_UPLOADS_PLUGIN_DIR . 'modeles/');
+	DEFINE('EVA_MODELES_PLUGIN_URL', EVA_UPLOADS_PLUGIN_URL . 'modeles/');
 
 	/**
 	 * Risk name define variable
@@ -78,8 +79,20 @@
 	DEFINE('DAY_AFTER_TODAY_GANTT', DAY_BEFORE_TODAY_GANTT);
 	DEFINE('LARGEUR_INDENTATION_GANTT_EN_EM', 1.5);
 
+	$linkToDownloadOpenOffice = 'http://download.services.openoffice.org/files/localized/fr/3.2.1/OOo_3.2.1_Win_x86_install-wJRE_fr.exe';
+	$locale = get_locale();
+	if( !empty( $locale ) && ($locale != 'fr_FR'))
+	{
+		$linkToDownloadOpenOffice = 'http://download.services.openoffice.org/files/localized/' . $locale . '/3.2.1/OOo_3.2.1_Win_x86_install-wJRE_' . $locale . '.exe';
+	}
+	DEFINE('LINK_TO_DOWNLOAD_OPEN_OFFICE', $linkToDownloadOpenOffice);
+
 	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 	require_once('configLogiciel.php');
 
 	require_once('configImages.php');
+	/**
+	*	Vars to delete when sure that the correspnding version is passed
+	*/
+	DEFINE('EVA_MODELES_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/modeles/'); //version 23
 ?>

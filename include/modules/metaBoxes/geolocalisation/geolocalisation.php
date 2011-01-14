@@ -1,7 +1,7 @@
 <?php
 	require_once(EVA_CONFIG);
 	//Postbox definition
-	$postBoxTitle = __('G&eacute;localisation', 'evarisk');
+	$postBoxTitle = __('G&eacute;olocalisation', 'evarisk');
 	$postBoxId = 'postBoxGeolocation';
 	$postBoxCallbackFunction = 'getGeolocationPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
@@ -15,7 +15,7 @@
 		$markers = $arguments['markers'];
 		$idGoogleMapsDiv = 'map' . $arguments['tableElement'] . $arguments['idElement'];
 		$script = '<script type="text/javascript">
-				$(document).ready(function() {
+				evarisk(document).ready(function() {
 					var idGoogleMapsDiv = "' . $idGoogleMapsDiv . '";';
 		if($markers[0] != null)
 		{
@@ -40,7 +40,7 @@
 				var keys = "";';
 		}
 		$script = $script . '
-					$("#' . $idGoogleMapsDivWrap . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					evarisk("#' . $idGoogleMapsDivWrap . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"nomMetaBox": "Geolocalisation",
 						"idGoogleMapsDiv": idGoogleMapsDiv,

@@ -202,12 +202,12 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		{//Script relatif à l'enregistrement
 			$scriptEnregistrement = '
 			<script type="text/javascript">
-				$(document).ready(function() {	
-					$(\'#' . $idBouttonEnregistrer . '\').click(function() {
-						if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+				evarisk(document).ready(function() {	
+					evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
+						if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 						{
 							document.getElementById(\'' . $idTitre . '\').value=\'\';
-							$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+							evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 						}
 						
 						if(' . $geolocObligatoire . ' && !geolocPossible)
@@ -217,7 +217,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 						}
 						else
 						{
-							valeurActuelle = $(\'#' . $idTitre . '\').val();
+							valeurActuelle = evarisk(\'#' . $idTitre . '\').val();
 							if(valeurActuelle == "")
 							{
 								var message = "' . ucfirst(sprintf(__('Vous n\'avez pas donn&eacute; de nom %s', 'evarisk'), __('au groupement', 'evarisk'))) . '";
@@ -232,24 +232,24 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 								}
 								else
 								{
-									$(\'#act\').val("' . $saveOrUpdate . '");
-									$("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+									evarisk(\'#act\').val("' . $saveOrUpdate . '");
+									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 										"table": "' . TABLE_GROUPEMENT . '",
-										"act": $(\'#act\').val(),
-										"id": $(\'#id\').val(),
-										"nom_groupement": $(\'#nom_groupement\').val(),
-										"groupementPere": $(\'#groupementPere :selected\').val(),
-										"description": $(\'#description\').val(),
-										"adresse_ligne_1": $(\'#adresse_ligne_1\').val(),
-										"adresse_ligne_2": $(\'#adresse_ligne_2\').val(),
-										"code_postal": $(\'#code_postal\').val(),
-										"ville": $(\'#ville\').val(),
-										"telephone": $(\'#telephone\').val(),
-										"effectif": $(\'#effectif\').val(),
-										"affichage": $(\'#affichage\').val(),
-										"latitude": $(\'#latitude\').val(),
-										"longitude": $(\'#longitude\').val(),
-										"idsFilAriane": $(\'#idsFilAriane\').val()
+										"act": evarisk(\'#act\').val(),
+										"id": evarisk(\'#id\').val(),
+										"nom_groupement": evarisk(\'#nom_groupement\').val(),
+										"groupementPere": evarisk(\'#groupementPere :selected\').val(),
+										"description": evarisk(\'#description\').val(),
+										"adresse_ligne_1": evarisk(\'#adresse_ligne_1\').val(),
+										"adresse_ligne_2": evarisk(\'#adresse_ligne_2\').val(),
+										"code_postal": evarisk(\'#code_postal\').val(),
+										"ville": evarisk(\'#ville\').val(),
+										"telephone": evarisk(\'#telephone\').val(),
+										"effectif": evarisk(\'#effectif\').val(),
+										"affichage": evarisk(\'#affichage\').val(),
+										"latitude": evarisk(\'#latitude\').val(),
+										"longitude": evarisk(\'#longitude\').val(),
+										"idsFilAriane": evarisk(\'#idsFilAriane\').val()
 									});
 								}
 							}

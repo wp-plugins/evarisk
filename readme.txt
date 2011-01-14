@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
-Tested up to: 3.0.1
-Stable tag: 5.1.0.2
+Tested up to: 3.0.4
+Stable tag: 5.1.2
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -59,6 +59,35 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 9. Ecran d'ajout d'un risque avec la liste de l'INRS et 4 risques propre &agrave; l'entreprise, on voit les jauges qui permettent d'&eacute;valuer, Gravit&eacute;, Exposition, Occurrence, Formation, Protection.
 
 == Changelog ==
+
+= Version 5.1.2 =
+
+Am&eacute;liorations :
+
+* Changement du nom des documents uniques dans l'historique : rajout du num&eacute;ro de version pour diff&eacute;rencier des documents g&eacute;n&eacute;r&eacute;s le m&ecirc;me jour et ayant le m&ecirc;me nom
+* V&eacute;rification du nombre de sous &eacute;l&eacute;ments et du type de ces &eacute;l&eacute;ments dans les arbres pour ne pas afficher les bouton d'ajout d&egrave;s le d&eacute;part et non en javascript une fois la page charg&eacute;e
+* S&eacute;curisation de l'insertion des diff&eacute;rents &eacute;l&eacute;ment (UT et Groupement) pour ne pas pouvoir ins&eacute;rer une UT au m&ecirc;me niveau qu'un groupement
+* Possibilit&eacute; d'ajouter des risques associ&eacute;s &agrave; des photos
+* Gestion des mod&egrave;les de document unique par groupement
+* Duplication d'un mod&egrave;le de document unique .odt d'un groupement &agrave; un autre
+* Ajout du pourcentage d'avancement dans l'arbre des actions correctives
+
+Corrections :
+
+* Changement de la variable $() en evarisk() pour tous les javascript utilisant jQuery pour &eacute;viter tout conflit avec d'autres extensions
+* Image "supprimer" de l'interface de gestion des groupes d'utilisateurs et d'&eacute;valuateurs plus grosse que les autres
+* Suppression de la possibilit&eacute; de d&eacute;placer un &eacute;l&eacute;ment "parent" dans un de ses "enfants"
+* Envoi de photos sur un serveur (impossibilit&eacute; &agrave; cause des droits d'acc&egrave;s au dossier)
+
+Ergonomie:
+
+* Masquage de la liste des cat&eacute;gories de danger lors d'une modification de risque
+* Changement de l'emplacement du bouton supprimer des box "groupes d'&eacute;valuateur" et "groupes d'utilisateurs" (de la premi&egrave;re colonne &agrave; la derni&egrave;re)
+
+= Version 5.1.1 =
+
+* Saut de version en 5.1.2
+
 
 = Version 5.1.0.2 =
 
@@ -137,7 +166,6 @@ Corrections :
 * Champs manquants pour les photos avant et apr&egrave;s les actions correctives
 * Lors d'une erreur de mise &agrave; jour sur les photos avant et apr&egrave;s les actions correctives le picto n'&eacute;tait pas bon
 * Raccourcissement de la barre de progression d'une action corrective
-
 
 = Version 5.0.3 =
 
@@ -237,24 +265,6 @@ Voici les 4 changements fondamentaux qui permettent aujourd'hui &agrave; ce logi
 
 == Am&eacute;liorations Futures ==
 
-= 5.1.1 =
-
-* Gestion des diff&eacute;rents DUER par modele en fonction des groupes et sous groupe
-* Mise en place des unites de travail (impression des fiches)
-* Mise en place de l'exe (faire les tests de mise a jour du serveur Xamp)
-
-= 5.1.2 =
-
-* Mise en place des risques par photos
-* Mise en place des photos par Actions correctives
-* Changer chargement de l'arbre, enlever l'ajax
-* S&eacute;curisation de l'insertion des diff&eacute;rents &eacute;l&eacute;ment (UT et Groupement) pour ne pas pouvoir ins&eacute;rer une UT au m&ecirc;me niveau qu'un groupement
-* Faire les v&eacute;rifications au niveau des bouton d'insertion avant le chargement de l'arbre et ne pas le cacher avec javascript
-* Changer les variables Jquery afin que ca soit compatible avec d'autres plugin
-* Revoir l'historique des documents uniques (nom identique)
-* Revoir l'affichage sous internet explorer
-* Changer le placement du bouton supprimer dans les box groupes d'&eacute;valuateurs, utilisateurs, groupes d'utilisateurs
-
 = 5.1.3 =
 
 * Int&eacute;gration des fonctionnalit&eacute;s de base de la version 4.3.4
@@ -262,7 +272,6 @@ Voici les 4 changements fondamentaux qui permettent aujourd'hui &agrave; ce logi
 * Int&eacute;gration de la gestion des FDS
 * V&eacute;rification des pictos pour les EPI
 * Int&eacute;gration des modeles de fiches de postes complet et simple pour l'affichage
-
 
 = 5.2.0 =
 

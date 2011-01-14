@@ -64,24 +64,24 @@
 					{// Script of checking box
 						$script = '
 							<script type="text/javascript">
-								$(document).ready(function(){$(\'#' . $idChamps . '\').attr("checked", "checked");});
+								evarisk(document).ready(function(){evarisk(\'#' . $idChamps . '\').attr("checked", "checked");});
 							</script>';
 					}
 					$EPIPostBoxBody = $EPIPostBoxBody . EvaDisplayInput::afficherInput('checkbox', $idChamps, '', '', $labelInput, $nomChamps, false, true, 255, 'eva_epi', '', '', $script, 'left; text-align:center; max-width: 24%', true);
 				}
 				$idBouttonEnregistrer = 'saveEPIS';
 				$scriptEnregistrement = '<script type="text/javascript">
-					$(document).ready(function() {
-						$(\'#' . $idBouttonEnregistrer . '\').click(function(){
+					evarisk(document).ready(function() {
+						evarisk(\'#' . $idBouttonEnregistrer . '\').click(function(){
 							var epis = new Array();
-							$(\'.eva_epi\').each(function(){
-								if($(this).attr("checked"))
+							evarisk(\'.eva_epi\').each(function(){
+								if(evarisk(this).attr("checked"))
 								{
-									epis.push($(this).attr("id").replace(/epi_/,""));
+									epis.push(evarisk(this).attr("id").replace(/epi_/,""));
 								}
 							});
 							
-							$(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {
+							evarisk(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {
 								"post": "true",
 								"table": "' . TABLE_UTILISE_EPI . '",
 								"epis": epis,

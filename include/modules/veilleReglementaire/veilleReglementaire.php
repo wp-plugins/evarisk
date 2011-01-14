@@ -36,27 +36,27 @@ $veilleReglementaireDisplay = $veilleReglementaireDisplay . evaDisplayInput::fer
 		$lignesDeValeurs[] = $valeurs;
 		$idLignes[] = $idLigne;
 		$script = $script . '<script type="text/javascript">
-			$(document).ready(function() {
-				$("#cb_' . $idLigne . '").click(function(){
+			evarisk(document).ready(function() {
+				evarisk("#cb_' . $idLigne . '").click(function(){
 					toutCoche = true;
-					$(\'#' . $idTable . ' tbody :input\').each(function(){
-						if(!($(this).attr("checked")))
+					evarisk(\'#' . $idTable . ' tbody :input\').each(function(){
+						if(!(evarisk(this).attr("checked")))
 						{
 							toutCoche = false;
 						}
 					});
 					if(toutCoche)
 					{
-						$("#cb_tableTextesReferencielsHead").attr("checked", "checked");
-						$("#cb_tableTextesReferencielsFoot").attr("checked", "checked");
+						evarisk("#cb_tableTextesReferencielsHead").attr("checked", "checked");
+						evarisk("#cb_tableTextesReferencielsFoot").attr("checked", "checked");
 					}
 					else
 					{
-						$("#cb_tableTextesReferencielsHead").attr("checked", "");
-						$("#cb_tableTextesReferencielsFoot").attr("checked", "");
+						evarisk("#cb_tableTextesReferencielsHead").attr("checked", "");
+						evarisk("#cb_tableTextesReferencielsFoot").attr("checked", "");
 					}
 				});
-				$("#' . $idLigne . ' .nomTexte").click(function(){
+				evarisk("#' . $idLigne . ' .nomTexte").click(function(){
 					alert("ouvrir texte ' . $texte->id . '")
 				});
 			});
@@ -64,50 +64,50 @@ $veilleReglementaireDisplay = $veilleReglementaireDisplay . evaDisplayInput::fer
 	}
 	$classes = array('cbColumn','nomTexte','analysable','unitesAffectees');
 	$script = $script . '<script type="text/javascript">
-		$(document).ready(function() {
-			$("#cb_tableTextesReferenciels").attr("id", "cb_tableTextesReferencielsHead");
-			$("#cb_tableTextesReferenciels").attr("id", "cb_tableTextesReferencielsFoot");
+		evarisk(document).ready(function() {
+			evarisk("#cb_tableTextesReferenciels").attr("id", "cb_tableTextesReferencielsHead");
+			evarisk("#cb_tableTextesReferenciels").attr("id", "cb_tableTextesReferencielsFoot");
 			
-			$(\'#cb_tableTextesReferencielsHead\').click(function(){
-				$(\'#' . $idTable . ' tbody :input\').each(function(){
-					if($(\'#cb_tableTextesReferencielsHead\').attr("checked"))
+			evarisk(\'#cb_tableTextesReferencielsHead\').click(function(){
+				evarisk(\'#' . $idTable . ' tbody :input\').each(function(){
+					if(evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked"))
 					{
-						$(this).attr("checked", "checked");
+						evarisk(this).attr("checked", "checked");
 					}
 					else
 					{
-						$(this).attr("checked", "");
+						evarisk(this).attr("checked", "");
 					}
 				});
-				if($(\'#cb_tableTextesReferencielsHead\').attr("checked"))
+				if(evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked"))
 				{
-					$(\'#cb_tableTextesReferencielsFoot\').attr("checked", "checked");
+					evarisk(\'#cb_tableTextesReferencielsFoot\').attr("checked", "checked");
 				}
 				else
 				{
-					$(\'#cb_tableTextesReferencielsFoot\').attr("checked", "");
+					evarisk(\'#cb_tableTextesReferencielsFoot\').attr("checked", "");
 				}
 			});
-			$(\'#cb_tableTextesReferencielsFoot\').click(function(){
-				if($(\'#cb_tableTextesReferencielsHead\').attr("checked"))
+			evarisk(\'#cb_tableTextesReferencielsFoot\').click(function(){
+				if(evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked"))
 				{
-					$(\'#cb_tableTextesReferencielsHead\').attr("checked", "");
+					evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked", "");
 				}
 				else
 				{
-					$(\'#cb_tableTextesReferencielsHead\').attr("checked", "checked");
+					evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked", "checked");
 				}
-				$(\'#cb_tableTextesReferencielsHead\').click();
-				if($(\'#cb_tableTextesReferencielsHead\').attr("checked"))
+				evarisk(\'#cb_tableTextesReferencielsHead\').click();
+				if(evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked"))
 				{
-					$(\'#cb_tableTextesReferencielsHead\').attr("checked", "");
+					evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked", "");
 				}
 				else
 				{
-					$(\'#cb_tableTextesReferencielsHead\').attr("checked", "checked");
+					evarisk(\'#cb_tableTextesReferencielsHead\').attr("checked", "checked");
 				}
 			});
-			$(\'#' . $idTable . '\').dataTable({"sPaginationType": \'full_numbers\', "bAutoWidth": false, "aoColumns": [
+			evarisk(\'#' . $idTable . '\').dataTable({"sPaginationType": \'full_numbers\', "bAutoWidth": false, "aoColumns": [
 				{ "bSortable": false },
 				{ "bSortable": true },
 				{ "bSortable": false },

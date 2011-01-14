@@ -45,4 +45,4 @@ $.effects.highlight = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

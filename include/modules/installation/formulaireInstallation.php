@@ -14,9 +14,9 @@ $insertions[0]['class'] = 'setupTitle';
 $insertions[1]['class'] = 'setupAction';
 $scriptCB = '
 	<script type="text/javascript">
-		$(document).ready(function(){
-			$(\'#%1$s\').attr("checked", "checked");
-			$(\'#%1$s\').addClass("cbSetup");
+		evarisk(document).ready(function(){
+			evarisk(\'#%1$s\').attr("checked", "checked");
+			evarisk(\'#%1$s\').addClass("cbSetup");
 		});
 	</script>';
 {//Dangers
@@ -59,15 +59,15 @@ $scriptCB = '
 	$idEPI = "insertionEPI";
 	$scriptCBEPI = '
 		<script type="text/javascript">
-			$(document).ready(function(){
-				$(\'#%1$s\').addClass("cbEPISetup");
-				$(\'#%1$s\').click(function(){
+			evarisk(document).ready(function(){
+				evarisk(\'#%1$s\').addClass("cbEPISetup");
+				evarisk(\'#%1$s\').click(function(){
 					var check = "";
-					$(\'.cbEPISetup\').each(function(){
-						if($(this).attr("checked"))
+					evarisk(\'.cbEPISetup\').each(function(){
+						if(evarisk(this).attr("checked"))
 							check = "checked";
 					});
-					$(\'#' . $idEPI . '\').attr("checked", check);
+					evarisk(\'#' . $idEPI . '\').attr("checked", check);
 				});
 			});
 		</script>';
@@ -143,13 +143,13 @@ $scriptCB = '
 		$script = sprintf($scriptCB, $idEPI);
 		$script = $script . '
 			<script type="text/javascript">
-				$(document).ready(function(){
-					$(\'#' . $idEPI . '\').click(function(){
+				evarisk(document).ready(function(){
+					evarisk(\'#' . $idEPI . '\').click(function(){
 						var check = "";
-						if($(this).attr("checked"))
+						if(evarisk(this).attr("checked"))
 							check = "checked";
-						$(\'.cbEPISetup\').each(function(){
-							$(this).attr("checked", check);
+						evarisk(\'.cbEPISetup\').each(function(){
+							evarisk(this).attr("checked", check);
 						});
 					});
 				});
@@ -194,62 +194,62 @@ if(STANDALONEVERSION)
 }
 
 	$scriptEnregistrement = '<script type="text/javascript">
-		$(document).ready(function() {
+		evarisk(document).ready(function() {
 
 			' . $autoLaunch . '
 		
-			$("#' . $idBouttonEnregistrer . '").click(function() {
+			evarisk("#' . $idBouttonEnregistrer . '").click(function() {
 				var epi = new Array();
 				epi[0] = new Array();
-				epi[0][0] = $(\'#bab\').attr("checked");
+				epi[0][0] = evarisk(\'#bab\').attr("checked");
 				epi[0][1] = "bab";
 				epi[1] = new Array();
-				epi[1][0] = $(\'#casque\').attr("checked");
+				epi[1][0] = evarisk(\'#casque\').attr("checked");
 				epi[1][1] = "casque";
 				epi[2] = new Array();
-				epi[2][0] = $(\'#chaussures\').attr("checked");
+				epi[2][0] = evarisk(\'#chaussures\').attr("checked");
 				epi[2][1] = "chaussures";
 				epi[3] = new Array();
-				epi[3][0] = $(\'#combi\').attr("checked");
+				epi[3][0] = evarisk(\'#combi\').attr("checked");
 				epi[3][1] = "combi";
 				epi[4] = new Array();
-				epi[4][0] = $(\'#gants\').attr("checked");
+				epi[4][0] = evarisk(\'#gants\').attr("checked");
 				epi[4][1] = "gants";
 				epi[5] = new Array();
-				epi[5][0] = $(\'#harnais\').attr("checked");
+				epi[5][0] = evarisk(\'#harnais\').attr("checked");
 				epi[5][1] = "harnais";
 				epi[6] = new Array();
-				epi[6][0] = $(\'#lunettes\').attr("checked");
+				epi[6][0] = evarisk(\'#lunettes\').attr("checked");
 				epi[6][1] = "lunettes";
 				epi[7] = new Array();
-				epi[7][0] = $(\'#masque\').attr("checked");
+				epi[7][0] = evarisk(\'#masque\').attr("checked");
 				epi[7][1] = "masque";
 				var methodes = new Array();
 				methodes[0] = new Array();
-				methodes[0][0] = $(\'#insertionMethodeEvarisk\').attr("checked");
+				methodes[0][0] = evarisk(\'#insertionMethodeEvarisk\').attr("checked");
 				methodes[0][1] = "evarisk";
 				var goOnInstall = false;
-				if( !$("#activationThemeEvarisk").is(":checked") || (autoInstall))
+				if( !evarisk("#activationThemeEvarisk").is(":checked") || (autoInstall))
 				{
 					goOnInstall = true;
 				}
-				else if($("#activationThemeEvarisk").is(":checked") && confirm("' . __('Etes vous sur de vouloir activer le theme Evarisk pour votre Blog?\nNB: Si vous avez un theme personnalise celui sera remplace par le theme Evarisk. Il restera disponible dans la liste des themes.', 'evarisk') . '"))
+				else if(evarisk("#activationThemeEvarisk").is(":checked") && confirm("' . __('Etes vous sur de vouloir activer le theme Evarisk pour votre Blog?\nNB: Si vous avez un theme personnalise celui sera remplace par le theme Evarisk. Il restera disponible dans la liste des themes.', 'evarisk') . '"))
 				{
 					goOnInstall = true;
 				}
 
 				if(goOnInstall)
 				{
-					$("#installLoading").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading..." />\');
-					$("#installButton").html("' . __('Installation en cours. Merci de patienter', 'evarisk') . '");
-					$("#wrap' . $idForm . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					evarisk("#installLoading").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading..." />\');
+					evarisk("#installButton").html("' . __('Installation en cours. Merci de patienter', 'evarisk') . '");
+					evarisk("#wrap' . $idForm . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true", 
 						"nom": "installerEvarisk", 
-						"categorieDangers": $("#insertionCategorie").attr("checked"),
-						"danger": $("#insertionDanger").attr("checked"),
+						"categorieDangers": evarisk("#insertionCategorie").attr("checked"),
+						"danger": evarisk("#insertionDanger").attr("checked"),
 						"methodes": methodes,
-						"theme": $("#activationThemeEvarisk").attr("checked"),
-						"EPIs": $("#insertionEPI").attr("checked"),
+						"theme": evarisk("#activationThemeEvarisk").attr("checked"),
+						"EPIs": evarisk("#insertionEPI").attr("checked"),
 						"EPI": epi
 					});
 				}
@@ -271,8 +271,8 @@ if(STANDALONEVERSION)
 {
 	echo
 '<script type="text/javascript">
-		$(document).ready(function() {
-			$("#' . $idBouttonEnregistrer . '").click();
+		evarisk(document).ready(function() {
+			evarisk("#' . $idBouttonEnregistrer . '").click();
 		});
 </script>';
 }

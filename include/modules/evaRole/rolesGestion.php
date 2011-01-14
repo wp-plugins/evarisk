@@ -34,7 +34,7 @@
 	<div id="evaMessage" class="updated fade below-h2" >
 		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>error_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
-	<script type="text/javascript" >setTimeout(function(){$('#evaMessage').remove()},5000);</script>
+	<script type="text/javascript" >setTimeout(function(){evarisk('#evaMessage').remove()},5000);</script>
 <?php
 	}
 
@@ -103,7 +103,7 @@
 <p class="submit">
 	<input name="addgroup" type="submit" id="addgroup" class="button-primary" value="<?php echo $actionButtonLabel; ?>" />
 	<?php if(($evaRoleAction != 'add') && ($evaRoleAction != 'addevaRole')) : ?>
-	<input onclick="javascript:if(confirm('<?php echo __('&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?','evarisk') ; ?>')){$('#act').val('del');$('#evaRoleForm').submit();}else{return false;}"  name="delGroup" type="submit" id="delGroup" class="button add-new-h2" value="<?php echo __('Supprimer le r&ocirc;le', 'evarisk'); ?>" />
+	<input onclick="javascript:if(confirm('<?php echo __('&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?','evarisk') ; ?>')){evarisk('#act').val('del');evarisk('#evaRoleForm').submit();}else{return false;}"  name="delGroup" type="submit" id="delGroup" class="button add-new-h2" value="<?php echo __('Supprimer le r&ocirc;le', 'evarisk'); ?>" />
 	<?php endif; ?>
 </p>
 

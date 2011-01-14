@@ -797,4 +797,4 @@ var isNumber = function(value) {
 	return !isNaN(parseInt(value, 10));
 };
 
-})(jQuery);
+})(evarisk);

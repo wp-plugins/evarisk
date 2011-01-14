@@ -20,7 +20,6 @@
 				//require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/actionCorrective.php' );
 				// require_once(EVA_METABOXES_PLUGIN_DIR . 'accidentDeTravail/accidentDeTravail.php' );
 				// require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/veilleReglementairePostBox.php');
-				// require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/utilisateursEvalues.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/groupesEvaluateurs.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/utilisateurs.php' );

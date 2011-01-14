@@ -491,15 +491,15 @@ function evarisk_insertions($insertions = null)
 		}
 		case 22:
 		{
-			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = NULL;";
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET niveauSeuil = NULL;";
 			$wpdb->query($sql);
-			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 1 WHERE valeur = 0;";
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET niveauSeuil = 1 WHERE valeur = 0;";
 			$wpdb->query($sql);
-			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 2 WHERE valeur = 48;";
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET niveauSeuil = 2 WHERE valeur = 48;";
 			$wpdb->query($sql);
-			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 3 WHERE valeur = 51;";
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET niveauSeuil = 3 WHERE valeur = 51;";
 			$wpdb->query($sql);
-			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET `niveauSeuil` = 4 WHERE valeur = 80;";
+			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET niveauSeuil = 4 WHERE valeur = 80;";
 			$wpdb->query($sql);
 
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
@@ -524,6 +524,43 @@ function evarisk_insertions($insertions = null)
 			$wpdb->query($sql);
 
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 26:
+		{
+			/*	Move the directory containing the different models	*/
+			if(is_dir(EVA_MODELES_PLUGIN_OLD_DIR) && !is_dir(EVA_MODELES_PLUGIN_DIR))
+			{
+				rename(EVA_MODELES_PLUGIN_OLD_DIR, EVA_MODELES_PLUGIN_DIR);
+			}
+			
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 27:
+		{
+			$sql = "INSERT INTO " . TABLE_GED_DOCUMENTS . " (id, status, dateCreation, idCreateur, dateSuppression, idSuppresseur, id_element, table_element, categorie, nom, chemin) VALUES('', 'valid', NOW(), 1, '0000-00-00 00:00:00', 0, 0, 'all', 'document_unique', 'modeleDefaut.odt', 'medias/uploads/modeles/documentUnique/');";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 28:
+		{
+			$sql = "INSERT INTO " . TABLE_OPTION . " (id, nom, valeur, Status) VALUES ('', 'risques_avances', 'non', 'Valid');";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}		
+		case 29:
+		{
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " SELECT '', status, isMainPicture, id, idDestination, tableDestination FROM " . TABLE_PHOTO . ";";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_PHOTO . " DROP isMainPicture,  DROP idDestination, DROP tableDestination;;";
+			$wpdb->query($sql);
+
+			// EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}
 	}

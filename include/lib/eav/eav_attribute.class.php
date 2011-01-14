@@ -245,7 +245,7 @@ class eav_attribute extends eav_entity
 			<th class="check-column" scope="row">
 			<!--	<input type="checkbox" value="<?php echo $attributesInfos->attribute_id; ?>" name="attribute[]"/> -->
 			</th>
-			<td><strong><a onclick="javascript:$('#act').val('mod');$('#id').val('<?php echo $attributesInfos->attribute_id; ?>');$('#attributeManagementForm').submit();" ><?php echo stripcslashes($attributesInfos->frontend_label); ?></a></strong></td>
+			<td><strong><a onclick="javascript:evarisk('#act').val('mod');evarisk('#id').val('<?php echo $attributesInfos->attribute_id; ?>');evarisk('#attributeManagementForm').submit();" ><?php echo stripcslashes($attributesInfos->frontend_label); ?></a></strong></td>
 			<td><strong><?php echo $attributesInfos->frontend_input ?></strong></td>
 		</tr>
 <?php

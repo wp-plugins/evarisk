@@ -543,4 +543,4 @@
         ajaxoptions: {}
     };
 
-})(jQuery);
+})(evarisk);

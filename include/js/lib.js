@@ -112,3 +112,115 @@ function checkdate (month, day, year) {
     // *     example 4: checkdate(1, 390, 2000);    // *     returns 4: false
     return month > 0 && month < 13 && year > 0 && year < 32768 && day > 0 && day <= (new Date(year, month, 0)).getDate();
 }
+
+
+function changementPage(partie, table, page, idPere, affichage, partition)
+{
+	var partContainer = 'partieEdition';
+	if(partie == 'left')
+	{
+		var partContainer = 'partieGauche';
+	}
+
+	evarisk("#" + partContainer).html(	evarisk("#loadingImg").html()	);
+	evarisk("#" + partContainer).load(EVA_AJAX_FILE_URL, 
+	{
+		"post": "true", 
+		"table": table,
+		"act": "changementPage",
+		"page": page,
+		"idPere": idPere,
+		"partie": partie,
+		"affichage": affichage,
+		"partition": "main",
+		"menu": evarisk("#menu").val()
+	});
+}
+
+function tabChange(divId, tabId)
+{
+	evarisk("#postBoxRisques .tabs").each(function(){
+		evarisk(this).removeClass("selected_tab");
+	});
+	evarisk("#postBoxRisques .eva_tabs_panel").each(function(){
+		evarisk(this).hide();
+	});
+	evarisk(divId).show();
+	evarisk(tabId).addClass("selected_tab");
+}
+function hideExtraTab()
+{
+	evarisk("#ongletDemandeActionCorrective" + TABLE_RISQUE).css("display","none");
+	evarisk("#ongletSuiviActionCorrective" + TABLE_RISQUE).css("display","none");
+	evarisk("#ongletFicheActionCorrective" + TABLE_RISQUE).css("display","none");
+}
+
+function selectRowInTreeTable(tableId)
+{
+	// Make visible that a row is clicked
+	evarisk("table#" + tableId + " tbody tr").mousedown(function() {
+		evarisk("tr.selected").removeClass("selected"); // Deselect currently selected rows
+		evarisk("tr.edited").removeClass("edited"); // Deselect currently selected rows
+		evarisk(this).addClass("selected");
+	});
+
+	// Make sure row is selected when span is clicked
+	evarisk("table#" + tableId + " tbody tr span").mousedown(function() {
+		evarisk(evarisk(this).parents("tr")[0]).trigger("mousedown");
+	});
+}
+function reInitTreeTable()
+{
+	evarisk("#rightEnlarging").show();
+	evarisk("#equilize").click();
+	var expanded = new Array();
+	evarisk(".expanded").each(function(){
+		expanded.push(evarisk(this).attr("id"));
+	});
+	return expanded;
+}
+
+function initialiseClassicalPage()
+{
+	if(evarisk("#rightSide-sortables").html() == ""){
+		evarisk("#rightEnlarging").hide();
+	}
+	else{
+		evarisk("#rightEnlarging").show();
+	}
+	if(evarisk("#leftSide-sortables").html() == ""){
+		evarisk("#leftEnlarging").hide();
+	}
+	else{
+		evarisk("#leftEnlarging").show();
+	}
+}
+function initialiseEditedElementInGridMode(idToEdit)
+{
+	evarisk("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
+		for(var i=1; i<=evarisk(this).children("td").length; i++)
+		{
+			if(evarisk(this).children("td:nth-child(" + i + ")").children("img").attr("id") == idToEdit)
+			{												
+				evarisk(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
+				// 3 * i car nomInfo + : + info
+				evarisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
+				evarisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
+				evarisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
+			}
+		}
+	});
+}
+
+function actionMessageShow(idToShow, messageToShow)
+{
+	evarisk(idToShow).show();
+	evarisk(idToShow).addClass("updated");
+	evarisk(idToShow).html(messageToShow);
+}
+function actionMessageHide(idToHide)
+{
+	evarisk(idToHide).hide();
+	evarisk(idToHide).html("");
+	evarisk(idToHide).removeClass("updated");
+}

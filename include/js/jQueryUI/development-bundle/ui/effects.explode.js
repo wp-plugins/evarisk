@@ -76,4 +76,4 @@ $.effects.explode = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

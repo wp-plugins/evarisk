@@ -2,6 +2,8 @@
 /*
  * @version v5.0
  */
+ ini_set('display_errors',true);
+ ini_set('error_reporting',E_ALL);
  
 	require_once($_GET['abspath'] . 'wp-load.php');
 	require_once($_GET['abspath'] . 'wp-admin/includes/admin.php');
@@ -15,7 +17,7 @@
 	$idElement = eva_tools::IsValid_Variable($result['idElement']);
 	$fichier = eva_tools::IsValid_Variable($result['fichier']);
 	
-	$uploadStatus = evaPhoto::saveNewPhoto($tableElement, $idElement, $fichier);
+	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
 	if($uploadStatus == 'error')
 	{
 		$result[success] = false;

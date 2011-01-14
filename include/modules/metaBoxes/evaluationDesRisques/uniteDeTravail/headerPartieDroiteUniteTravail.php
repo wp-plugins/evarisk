@@ -25,8 +25,8 @@
 		if(((int)$idElement) == 0)
 		{
 			$script = '<script type="text/javascript">
-					$(document).ready(function() {
-						$("#postBoxHeaderUniteTravail").hide();
+					evarisk(document).ready(function() {
+						evarisk("#postBoxHeaderUniteTravail").hide();
 					});
 				</script>';
 			echo $script;
@@ -90,7 +90,7 @@
 			$workingUnitsNames = UniteDeTravail::getWorkingUnitsName();
 			$workingUnitsNames[] = "";
 			
-			$valeurActuelleIn = '$("#' . $idTitreWU . '").val ()in {';
+			$valeurActuelleIn = 'evarisk("#' . $idTitreWU . '").val ()in {';
 			foreach($workingUnitsNames as $workingUnitName)
 			{
 				$valeurActuelleIn = $valeurActuelleIn . "'" . addslashes($workingUnitName) . "':'', ";
@@ -99,34 +99,34 @@
 			$valeurActuelleIn = $valeurActuelleIn . "}";
 			$idButton = 'validChangeTitre';
 			$script = '<script type="text/javascript">
-						$(document).ready(function(){
-							$("#' . $idButton . '").hide();
-							$("#' . $idButton . '").click(function(){
-								$("#nom_unite_travail").val($("#' . $idTitreWU . '").val());
-								$("#save").click();
+						evarisk(document).ready(function(){
+							evarisk("#' . $idButton . '").hide();
+							evarisk("#' . $idButton . '").click(function(){
+								evarisk("#nom_unite_travail").val(evarisk("#' . $idTitreWU . '").val());
+								evarisk("#save").click();
 							});
 						})
 					</script>';
 			$renduPage = $renduPage . EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
 			$script = '<script type="text/javascript">
-						$(document).ready(function(){
-							$("#' . $idTitreWU . '").keyup(function(){
-								$("#nom_unite_travail").val($("#' . $idTitreWU . '").val());
-								if($("#nom_unite_travail").val() != "")
+						evarisk(document).ready(function(){
+							evarisk("#' . $idTitreWU . '").keyup(function(){
+								evarisk("#nom_unite_travail").val(evarisk("#' . $idTitreWU . '").val());
+								if(evarisk("#nom_unite_travail").val() != "")
 								{
-									$("#nom_unite_travail").removeClass("form-input-tip");
+									evarisk("#nom_unite_travail").removeClass("form-input-tip");
 								}
 								else
 								{
-									$("#nom_unite_travail").addClass("form-input-tip");							
+									evarisk("#nom_unite_travail").addClass("form-input-tip");							
 								}
 								if(' . $valeurActuelleIn . ')
 								{
-									$("#' . $idButton . '").hide();
+									evarisk("#' . $idButton . '").hide();
 								}
 								else
 								{
-									$("#' . $idButton . '").show();
+									evarisk("#' . $idButton . '").show();
 								}
 							});
 						})

@@ -54,4 +54,4 @@ $.effects.shake = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

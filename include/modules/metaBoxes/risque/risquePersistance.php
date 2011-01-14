@@ -5,7 +5,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' );
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-if($_POST['act'] == 'save')
+if(($_POST['act'] == 'save') || ($_POST['act'] == 'saveAdvanced'))
 {
 	$idRisque = eva_tools::IsValid_Variable($_POST['idRisque']);
 	$idDanger = eva_tools::IsValid_Variable($_POST['idDanger']);
@@ -15,7 +15,7 @@ if($_POST['act'] == 'save')
 	$histo = eva_tools::IsValid_Variable($_POST['histo']);
 	$variables = $_POST['variables'];
 	$description = eva_tools::IsValid_Variable($_POST['description']);
-	Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+	$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 
 	/*	Check if there are correctiv actions to link with this risk	*/
 	$actionsCorrectives = eva_tools::IsValid_Variable($_POST['actionsCorrectives']);
@@ -46,26 +46,26 @@ if($_POST['act'] == 'delete')
 
 	$messageInfo = 
 	'<script type="text/javascript">
-		$(document).ready(function(){
-			$("#message' . $table . '").addClass("updated");';
+		evarisk(document).ready(function(){
+			evarisk("#message' . $table . '").addClass("updated");';
 		if($deleteResult != 'error')
 		{
 			$messageInfo .= '
-			$("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a &eacute;t&eacute; supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
+			evarisk("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a &eacute;t&eacute; supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
 		}
 		else
 		{
 			$messageInfo .= '
-			$("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
+			evarisk("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
 		}
 		$messageInfo .= '
-			$("#message' . $table . '").show();
+			evarisk("#message' . $table . '").show();
 			setTimeout(function(){
-				$("#message' . $table . '").removeClass("updated");
-				$("#message' . $table . '").hide();
+				evarisk("#message' . $table . '").removeClass("updated");
+				evarisk("#message' . $table . '").hide();
 			},5000);
 
-			$("#ongletVoirLesRisques").click();
+			evarisk("#ongletVoirLesRisques").click();
 		});
 	</script>';
 	echo $messageInfo;

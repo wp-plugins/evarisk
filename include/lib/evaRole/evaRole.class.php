@@ -54,7 +54,7 @@ class evaRole
 		<th class="check-column" scope="row">
 			<!--<input type="checkbox" value="<?php echo $rowInformations->eva_role_id; ?>" name="attribute[]"/>-->
 		</th> 
-		<td><strong><a onclick="javascript:$('#act').val('mod');$('#id').val('<?php echo $rowInformations->eva_role_id; ?>');$('#evaRoleForm').submit();" style="cursor:pointer;" ><?php echo stripcslashes($rowInformations->eva_role_name); ?></a></strong></td>
+		<td><strong><a onclick="javascript:evarisk('#act').val('mod');evarisk('#id').val('<?php echo $rowInformations->eva_role_id; ?>');evarisk('#evaRoleForm').submit();" style="cursor:pointer;" ><?php echo stripcslashes($rowInformations->eva_role_name); ?></a></strong></td>
 		<td><strong><?php echo $rowInformations->eva_role_description ?></strong></td>
 		<td><?php echo str_replace(',',', ',str_replace('_',' ',$rowInformations->eva_role_capabilities)); ?></td>
 	</tr>

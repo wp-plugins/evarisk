@@ -47,4 +47,4 @@ $.effects.drop = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

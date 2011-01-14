@@ -1,4 +1,4 @@
-<h2 id="add-new-role" ><?php _e('R&ocirc;le') ?><input type="submit" class="button add-new-h2" onclick="javascript:$('#act').val('add');$('#evaRoleForm').submit();" value="<?php _e('Ajouter') ?>" name="AjouterRole"/></h2>
+<h2 id="add-new-role" ><?php _e('R&ocirc;le') ?><input type="submit" class="button add-new-h2" onclick="javascript:evarisk('#act').val('add');evarisk('#evaRoleForm').submit();" value="<?php _e('Ajouter') ?>" name="AjouterRole"/></h2>
 
 <?php
 	if($createOK)
@@ -20,7 +20,7 @@
 	<div id="evaMessage" class="updated fade below-h2" >
 		<strong><img src="<?php echo  EVA_IMG_ICONES_PLUGIN_URL ?>success_vs.png" alt="response" style="vertical-align:middle;" /><?php echo $actionMessage ?></strong>
 	</div>
-	<script type="text/javascript" >setTimeout(function(){$('#evaMessage').remove()},5000);</script>
+	<script type="text/javascript" >setTimeout(function(){evarisk('#evaMessage').remove()},5000);</script>
 <?php
 	}
 ?>

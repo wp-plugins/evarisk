@@ -47,4 +47,4 @@ $.effects.slide = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

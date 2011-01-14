@@ -36,8 +36,8 @@ class EvaDisplayInput {
 	{
 		$script = '
 			<script type="text/javascript">
-				$(document).ready(function() {
-					$("#' . $id . ' :input").filter(".input_required").prev("br").prev("label").addClass("for_required_input");
+				evarisk(document).ready(function() {
+					evarisk("#' . $id . ' :input").filter(".input_required").prev("br").prev("label").addClass("for_required_input");
 				});
 			</script>';
 		return $script . '</form>';
@@ -61,50 +61,50 @@ class EvaDisplayInput {
 			$class = $class . ' form-input-tip';
 		}
 		$script = '<script type="text/javascript">
-			$(document).ready(function() {
+			evarisk(document).ready(function() {
 				document.getElementById("' . $id . '").className = "' . $class . '"; ';
 		if(ucfirst(strtolower($limitation)) != 'Date')
 		{
-			$script = $script . '$(\'#' . $id . '\').focus(function() {
-						if($(\'#' . $id . '\').is(".form-input-tip"))
+			$script = $script . 'evarisk(\'#' . $id . '\').focus(function() {
+						if(evarisk(\'#' . $id . '\').is(".form-input-tip"))
 						{
-							$(\'#' . $id . '\').val("");
-							$(\'#' . $id . '\').removeClass(\'form-input-tip\');
+							evarisk(\'#' . $id . '\').val("");
+							evarisk(\'#' . $id . '\').removeClass(\'form-input-tip\');
 						}
 					});
 					
-					$(\'#' . $id . '\').blur(function() {
-						if($(\'#' . $id . '\').val() == "")
+					evarisk(\'#' . $id . '\').blur(function() {
+						if(evarisk(\'#' . $id . '\').val() == "")
 						{
-							$(\'#' . $id . '\').addClass(\'form-input-tip\');
-							$(\'#' . $id . '\').val("' . $contenuAide . '");
+							evarisk(\'#' . $id . '\').addClass(\'form-input-tip\');
+							evarisk(\'#' . $id . '\').val("' . $contenuAide . '");
 						}
 					});
 					
-					if($(\'#' . $id . '\').val() == "")
+					if(evarisk(\'#' . $id . '\').val() == "")
 					{
-						$(\'#' . $id . '\').addClass(\'form-input-tip\');
-						$(\'#' . $id . '\').val("' . $contenuAide . '");
+						evarisk(\'#' . $id . '\').addClass(\'form-input-tip\');
+						evarisk(\'#' . $id . '\').val("' . $contenuAide . '");
 					}';
 		}
 		switch(ucfirst(strtolower($limitation)))
 		{
 			case 'Number' :
-				$script = $script . '$(\'#' . $id . '\').keypress(function(event) {
+				$script = $script . 'evarisk(\'#' . $id . '\').keypress(function(event) {
 					if (event.which && (event.which < 48 || event.which >57) && event.which != 8) {
 						event.preventDefault();
 					}
 				});';
 				break;
 			case 'Float' :
-				$script = $script . '$(\'#' . $id . '\').keypress(function(event) {
+				$script = $script . 'evarisk(\'#' . $id . '\').keypress(function(event) {
 						if (event.which && (event.which < 48 || event.which >57) && event.which != 8 && event.which != 46) {
 							event.preventDefault();
 						}
 						if (event.which == 46)
 						{
 							var reg = /\./;
-							if(reg.exec($(\'#' . $id . '\').val()) != null)
+							if(reg.exec(evarisk(\'#' . $id . '\').val()) != null)
 							{
 								event.preventDefault();
 							}
@@ -114,16 +114,16 @@ class EvaDisplayInput {
 			case 'Date' :
 				$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
 				$locale = ($locale == 'en') ? '' : $locale;
-				$script = $script . '$(\'#' . $id . '\').datepicker($.datepicker.regional["' . $locale . '"]);';
-				$script = $script . '$(\'#' . $id . '\').datepicker("option", "dateFormat", "yy-mm-dd");';
-				$script = $script . '$(\'#' . $id . '\').datepicker("option", "changeMonth", true);';
-				$script = $script . '$(\'#' . $id . '\').datepicker("option", "changeYear", true);';
-				$script = $script . '$(\'#' . $id . '\').datepicker("option", "navigationAsDateFormat", true);';
-				$script = $script . '$(\'#ui-datepicker-div\').hide();';
+				$script .= 'evarisk(\'#' . $id . '\').datepicker(evarisk.datepicker.regional["' . $locale . '"]);
+				evarisk(\'#' . $id . '\').datepicker("option", "dateFormat", "yy-mm-dd");
+				evarisk(\'#' . $id . '\').datepicker("option", "changeMonth", true);
+				evarisk(\'#' . $id . '\').datepicker("option", "changeYear", true);
+				evarisk(\'#' . $id . '\').datepicker("option", "navigationAsDateFormat", true);
+				evarisk(\'#ui-datepicker-div\').hide();';
 				break;
 		}
 		$script = $script . '
-          $("#' . $id . '").val("' . $contenuInput . '"); 
+          evarisk("#' . $id . '").val("' . $contenuInput . '"); 
 				});
 			</script>';
 		return $script;
@@ -173,7 +173,7 @@ class EvaDisplayInput {
 				break;
 			default:
 				$input = $input . '
-						<input style="clear: both; width: ' . $width . '" maxlength="' . $taille . '" type="' . $type . '" autocomplete="off" id="' . $id . '" value="' . $contenuInput . '" tabindex="1" name="' . $nomChamps . '"/>';
+						<input style="clear: both; width: ' . $width . '" maxlength="' . $taille . '" type="' . $type . '"  id="' . $id . '" value="' . $contenuInput . '" tabindex="1" name="' . $nomChamps . '"/>';
 				break;
 		}
 		$input = $input . '</div>';
@@ -203,7 +203,7 @@ class EvaDisplayInput {
 	static function afficherComboBox($elements, $idSelect, $labelSelect, $nameSelect, $valeurDefaut = "", $selection = "", $tabValue = null, $tabDisplay = null)
 	{
 		$comboBox = '<label id="lbl_' . $idSelect . '" for="' . $idSelect . '">' . $labelSelect . '</label>
-						<select class="inputCategorieMere" id="' . $idSelect . '" name="' . $nameSelect . '" autocomplete="off">';
+						<select class="inputCategorieMere" id="' . $idSelect . '" name="' . $nameSelect . '" >';
 		if($valeurDefaut != "")
 			$comboBox = $comboBox . '<option value="">' . $valeurDefaut . '</option>';
 		for($i=0; $i<count($elements); $i++)
@@ -259,7 +259,7 @@ class EvaDisplayInput {
 			$maListe = EvaDisplayInput::creerComboBoxArborescente($elements, $table, 1, $selection);
 		}
 		return '<label id="lbl_' . $idSelect . '" for="' . $idSelect . '">' . $labelSelect . '</label>
-						<select class="inputSelectArborescent" id="' . $idSelect . '" name="' . $nameSelect . '" autocomplete="off">
+						<select class="inputSelectArborescent" id="' . $idSelect . '" name="' . $nameSelect . '" >
 							<option value="' . $racine->id . '">' . $valeurDefaut . '</option>
 							' . $maListe . '</select>';							
 	}

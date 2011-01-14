@@ -13,6 +13,7 @@
 	if(current_user_can('Evarisk_:_voir_les_risques'))
 	{
 		$postBoxTitle = __('Risques', 'evarisk');
+		/*	If the postBoxId change don't forget to replace each iteration in this script	*/
 		$postBoxId = 'postBoxRisques';
 		$postBoxCallbackFunction = 'getRisquesPostBoxBody';
 		add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
@@ -26,72 +27,92 @@
 		if($idElement != null)
 		{
 			$scriptRisque = '<script type="text/javascript">
-					$(document).ready(function(){
-						$("#ongletVoirLesRisques").click(function(){
-							$("#divFormRisque").hide();
-							$("#divDemandeAction' . TABLE_RISQUE . '").hide();
-							$("#divSuiviAction' . TABLE_RISQUE . '").hide();
-							$("#divFicheAction' . TABLE_RISQUE . '").hide();
-							$("#ongletAjouterRisque").removeClass("selected_tab");
-							$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-							$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-							$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-							$("#divVoirRisques").show();
-							$("#ongletVoirLesRisques").addClass("selected_tab");
-							$("#divVoirRisques").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_RISQUE . '", "act":"reloadVoirRisque", "tableElement":"' . $tableElement . '","idElement":' . $idElement . '});
-							$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
-							$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
-							$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","none");
-						});
-						$("#ongletAjouterRisque").click(function(){
-							showRiskForm();
-							$("#divVariablesFormRisque").html(\'<img src="' . PICTO_LOADING . '" />\');
-							$("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":$("#methodeFormRisque").val(), "idRisque": "0"});
-							$("#historisationContainer").hide();
-						});
-					});
-					function showRiskForm(){
-						$("#divVoirRisques").hide();
-						$("#divDemandeAction' . TABLE_RISQUE . '").hide();
-						$("#divSuiviAction' . TABLE_RISQUE . '").hide();
-						$("#divFicheAction' . TABLE_RISQUE . '").hide();
-						$("#ongletVoirLesRisques").removeClass("selected_tab");
-						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-						$("#divFormRisque").show();
-						$("#ongletAjouterRisque").addClass("selected_tab");
-						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
-						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
-						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","none");
-					}
-					$("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").click(function(){
-						$("#divFormRisque").hide();
-						$("#divVoirRisques").hide();
-						$("#divDemandeAction' . TABLE_RISQUE . '").hide();
-						$("#divSuiviAction' . TABLE_RISQUE . '").show();
-						$("#divFicheAction' . TABLE_RISQUE . '").hide();
-						$("#ongletAjouterRisque").removeClass("selected_tab");
-						$("#ongletVoirLesRisques").removeClass("selected_tab");
-						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-						$("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").addClass("selected_tab");
-						$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
-						$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
-						$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","none");
-						$("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+					var TABLE_RISQUE = "' . TABLE_RISQUE . '";
 
-						$("#divSuiviAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-						$("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "nom":"suiviFicheAction"});
+					evarisk(document).ready(function(){
+						//	Show the risk list for the actual element
+						evarisk("#ongletVoirLesRisques").click(function(){
+							evarisk("#divVoirRisques").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							{
+								"post":"true", 
+								"table":"' . TABLE_RISQUE . '", 
+								"act":"reloadVoirRisque", 
+								"tableElement":"' . $tableElement . '",
+								"idElement":' . $idElement . '
+							}
+							);
+							tabChange("#divVoirRisques", "#ongletVoirLesRisques");
+							hideExtraTab();
+						});
+
+						//	Show the existing corrective action on the actual element
+						evarisk("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").click(function(){
+							evarisk("#divSuiviAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
+							evarisk("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							{
+								"post":"true", 
+								"tableElement":"' . $tableElement . '", 
+								"idElement":"' . $idElement . '", 
+								"nom":"suiviFicheAction"
+							}
+							);
+							tabChange("#divSuiviAction' . TABLE_RISQUE . '", "#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '");
+							hideExtraTab();
+							evarisk("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+						});
+
+						//	Output the form to add a new risk
+						evarisk("#ongletAjouterRisque").click(function(){
+							evarisk("#formRisque").html(evarisk("#loadingImg").html());
+							evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+								{
+									"post":"true", 
+									"table":"' . TABLE_RISQUE . '", 
+									"act":"reloadRiskForm", 
+									"tableElement":"' . $tableElement . '", 
+									"idElement":"' . $idElement . '", 
+									"idRisque": ""
+								}
+							);
+							tabChange("#divFormRisque", "#ongletAjouterRisque");
+							hideExtraTab();
+							evarisk("#divDangerContainer :radio").each(function(){
+								evarisk(this).attr("checked", "");
+							});
+							evarisk("#divDangerContainer").css("display", "block");
+							evarisk("#divDangerContainerSwitch").css("display", "none");
+							evarisk("#historisationContainer").hide();
+							evarisk("#associatedPictureContainer").hide();
+						});
+
+						evarisk("#ongletAjouterRisquePhoto").click(function(){
+							evarisk("#formRisque").html(evarisk("#loadingImg").html());
+							evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							{
+								"post":"true", 
+								"table":"' . TABLE_RISQUE . '", 
+								"act":"loadAdvancedRiskForm", 
+								"tableElement":"' . $tableElement . '", 
+								"idElement":"' . $idElement . '", 
+								"idRisque": ""
+							});
+							tabChange("#divFormRisque", "#ongletAjouterRisquePhoto");
+							hideExtraTab();
+						});
 					});
 				</script>';
 
 			$liEditionRisque = $divEditionRisque = '';
 			if(current_user_can(eva_tools::slugify('Evarisk_:_editer_les_risques')))
 			{
+				$advancedFormRisque = '';
+				if((options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
+				{
+					$advancedFormRisque = '<li id="ongletAjouterRisquePhoto" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(__('Ajouter des risques depuis des photos', 'evarisk'))) . '</label></li>';
+				}
 				$liEditionRisque = '
-					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>';
+					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>' . $advancedFormRisque;
+
 				$divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none">' . getFormulaireCreationRisque($tableElement, $idElement) . '</div>';
 			}
 
@@ -99,8 +120,9 @@
 			$liSuiviActionCorrective = '';
 			if(count($taskList) > 0)
 			{
-				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
+				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:inline" ><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
 			}
+
 
 			$corpsPostBoxRisque = $scriptRisque . '
 				<div id="message' . TABLE_RISQUE . '" class="updated fade" style="cursor:pointer; display:none;"></div>
@@ -167,70 +189,50 @@
 				foreach($risques as $risque)
 				{
 					$idligne = 'risque-' . $risque[0]->id;
-					$scriptRisque .= '<script type="text/javascript">
-						$(document).ready(function() {
-							$("#' . $idligne . '-edit").click(function(){
-								$("#divFormRisque").html(\'<img src="' . PICTO_LOADING . '" />\');
-								showRiskForm();
-								$("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": "' . $risque[0]->id . '", "idElement":"' . $idElement . '", "tableElement":"' . $tableElement . '"});
+					$scriptRisque .= 
+					'<script type="text/javascript">
+						evarisk(document).ready(function() {
+							evarisk("#' . $idligne . '-edit").click(function(){
+								evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
+								tabChange("#divFormRisque", "#ongletAjouterRisque");
+								evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": "' . $risque[0]->id . '", "idElement":"' . $idElement . '", "tableElement":"' . $tableElement . '"});
 							});';
-							
+
 					if(options::getOptionValue('action_correctives_avancees') == 'oui')
 					{
 						$scriptRisque .= 
-							'$("#' . $idligne . '-demandeAction").click(function(){
-								$("#divFormRisque").hide();
-								$("#divVoirRisques").hide();
-								$("#ongletAjouterRisque").removeClass("selected_tab");
-								$("#ongletVoirLesRisques").removeClass("selected_tab");
-								$("#divDemandeAction' . TABLE_RISQUE . '").show();
-								$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").addClass("selected_tab");
-								$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","inline");
-							
-								$("#divDemandeAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"demandeAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
-								$("#divDemandeAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+							'evarisk("#' . $idligne . '-demandeAction").click(function(){
+								tabChange("#divDemandeAction' . TABLE_RISQUE . '", "#ongletDemandeActionCorrective' . TABLE_RISQUE . '");
+								hideExtraTab();
+								evarisk("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+								evarisk("#divDemandeAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"demandeAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
+								evarisk("#divDemandeAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
 							});
 							
-							$("#' . $idligne . '-suiviAction").click(function(){
-								$("#divFormRisque").hide();
-								$("#divVoirRisques").hide();
-								$("#ongletAjouterRisque").removeClass("selected_tab");
-								$("#ongletVoirLesRisques").removeClass("selected_tab");
-								$("#divSuiviAction' . TABLE_RISQUE . '").show();
-								$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").addClass("selected_tab");
-								$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","inline");
-							
-								$("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"suiviAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
-								$("#divSuiviAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+							evarisk("#' . $idligne . '-suiviAction").click(function(){
+								tabChange("#divSuiviAction' . TABLE_RISQUE . '", "#ongletSuiviActionCorrective' . TABLE_RISQUE . '");
+								hideExtraTab();
+								evarisk("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+								evarisk("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"suiviAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
+								evarisk("#divSuiviAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
 							});';
 					}
 					else
 					{
 						$scriptRisque .= 
-							'$("#' . $idligne . '-FAC").click(function(){
-								$("#divFormRisque").hide();
-								$("#divVoirRisques").hide();
-								$("#divDemandeAction' . TABLE_RISQUE . '").hide();
-								$("#divSuiviAction' . TABLE_RISQUE . '").hide();
-								$("#divFicheAction' . TABLE_RISQUE . '").show();
-								$("#ongletAjouterRisque").removeClass("selected_tab");
-								$("#ongletVoirLesRisques").removeClass("selected_tab");
-								$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-								$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").removeClass("selected_tab");
-								$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").addClass("selected_tab");
-								$("#ongletDemandeActionCorrective' . TABLE_RISQUE . '").css("display","none");
-								$("#ongletSuiviActionCorrective' . TABLE_RISQUE . '").css("display","none");
-								$("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
-
-								$("#divFicheAction' . TABLE_RISQUE . '").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-								$("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "nom":"ficheAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
+							'evarisk("#' . $idligne . '-FAC").click(function(){
+								tabChange("#divFicheAction' . TABLE_RISQUE . '", "#ongletFicheActionCorrective' . TABLE_RISQUE . '");
+								hideExtraTab();
+								evarisk("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+								evarisk("#divFicheAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
+								evarisk("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "nom":"ficheAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
 							});';
 					}
 
 					$scriptRisque .= 
-							'$("#' . $idligne . '-delete").click(function(){
+							'evarisk("#' . $idligne . '-delete").click(function(){
 								if(confirm("' . __('Etes vous sur de vouloir supprimer cet enregistrement?', 'evarisk') . '\r\n' . $risque[0]->nomDanger . '\r\n\t' . nl2br($risque[0]->commentaire) . '")){
-									$("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+									evarisk("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 										{
 											"post":"true",
 											"table":"' . TABLE_RISQUE . '",
@@ -282,34 +284,32 @@
 				$scoreRisqueUniteTravail += $risk[1]['value'];
 			}
 			$nombreRisqueUniteTravail = count($riskAndSubRisks);
-			$scriptRisque = $scriptRisque . '
-				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#riskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
-						$("#riskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
-						$("#LeftRiskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
-						$("#LeftRiskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
-					});
-				</script>';
 
 			{//Script de définition de la dataTable
 				$scriptVoirRisque = $scriptRisque . '
-					<script type="text/javascript">
-						$(document).ready(function() {
-							$("#' . $idTable . '").dataTable({
-								"sPaginationType": "full_numbers", 
-								"bAutoWidth": false,
-								"bInfo": false,								
-								"aoColumns": [
-									{ "bSortable": true, "sType": "numeric"},
-									{ "bSortable": true},
-									{ "bSortable": false},
-									{ "bSortable": false }],
-								"aaSorting": [[0,"desc"]]
-							});
-							$("#' . $idTable . ' tfoot").remove();
-						});
-					</script>';
+<script type="text/javascript">
+	evarisk(document).ready(function() {
+
+		//	Update The risk number and score in the different part of the screen
+		evarisk("#riskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
+		evarisk("#riskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
+		evarisk("#LeftRiskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
+		evarisk("#LeftRiskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
+
+		evarisk("#' . $idTable . '").dataTable({
+			"sPaginationType": "full_numbers", 
+			"bAutoWidth": false,
+			"bInfo": false,								
+			"aoColumns": [
+				{ "bSortable": true, "sType": "numeric"},
+				{ "bSortable": true},
+				{ "bSortable": false},
+				{ "bSortable": false }],
+			"aaSorting": [[0,"desc"]]
+		});
+		evarisk("#' . $idTable . ' tfoot").remove();
+	});
+</script>';
 			}
 			
 			$voirRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
@@ -323,149 +323,49 @@
 	*/
 	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '')
 	{
+		$divDangerContainerStyle = $script = '';
+		$divDangerContainerSwitchStyle = ' style="display:none;" ';
 		if($idRisque != '')
 		{
 			$risque = Risque::getRisque($idRisque);
+			$divDangerContainerStyle = ' style="display:none;" ';
+			$divDangerContainerSwitchStyle = '';
 		}
 		else
 		{
 			$risque = null;
 		}
-		$formRisque = EvaDisplayInput::ouvrirForm('POST', 'formRisque', 'formRisque');
-		
-		{// Champs cachés
-			$formRisque = $formRisque . EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRisque', false, false);
-		}
-		
+
 		{//Choix de la catégorie de dangers
-			$nomRacine = 'Categorie Racine';
-			$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
-			$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine);
-			$radioGroup = '';
-			if($risque[0] != null)
-			{// Si l'on édite un risque, on sélectionne la bonne catégorie de dangers
-				$selectionCategorie = $risque[0]->idCategorie;
-			}
-			else
-			{// Sinon on sélectionne la racine
-				$selectionCategorie = $categorieRacine->id;
-			}
-			if(AFFICHAGE_PICTO_CATEGORIE)
-			{
-				$radioGroup = '';
-				foreach($categoriesDangers as $categorieDangers)
-				{
-					if($selectionCategorie == $categorieRacine->id)
-					{
-						$selectionCategorie = $categorieDangers->id;
-					}
-
-					$categorieDangerMainPhoto = evaPhoto::getMainPhoto(TABLE_CATEGORIE_DANGER, $categorieDangers->id);
-					if($categorieDangerMainPhoto == 'error')
-					{
-						$categorieDangerMainPhoto = DEFAULT_DANGER_CATEGORIE_PICTO;
-						
-						/* Lorsqu'une catégorie de danger n'a pas de picto alors on stoppait le script
-						
-						
-						$selectionCategorie = $categorieRacine->id;
-						$radioGroup = '';
-						break; */
-					}
-					else
-					{
-						$categorieDangerMainPhoto = EVA_HOME_URL . $categorieDangerMainPhoto;
-					}
-
-					$radioGroup .= '<div class="radioPictoCategorie"><input id="cat' . $categorieDangers->id . '" type="radio" name="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . $categorieDangers->nom . '" title="' . $categorieDangers->nom . '" id="imgCat' . $categorieDangers->id . '" /></label></div>';
-				}
-				if($radioGroup != '')
-				{
-					$script = '
-						<script type="text/javascript">
-							$(document).ready(function(){
-								$("#cat' . $selectionCategorie . '").click();
-								var oldCatId = ($("[name=\'categoriesDangers\']:first").attr("id")).replace("cat","");
-								$("[name=\'categoriesDangers\']").click(function(){
-									var newCatId = ($(this).attr("id")).replace("cat","");
-									if(oldCatId != newCatId)
-									{
-										$("#categorieDangerFormRisque").val(newCatId);
-										$("#divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_CATEGORIE_DANGER . '", "act":"reloadComboDangers", "idElement":$("#categorieDangerFormRisque").val()});
-										oldCatId = newCatId;
-									}
-								});
-							});
-							$("#divCategorieDangerFormRisque").hide();
-						</script>';
-					$radioGroup = $script . $radioGroup . '<br class="clear"/>';
-				}
-			}
-			$script = '
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$("#categorieDangerFormRisque").change(function(){
-								$("#divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_CATEGORIE_DANGER . '", "act":"reloadComboDangers", "idElement":$("#categorieDangerFormRisque").val()});
-						});
-					})
-				</script>';
-			$formRisque = $script . $formRisque . '<div id="divCategorieDangerFormRisque">' . EvaDisplayInput::afficherComboBoxArborescente($racine = $categorieRacine, $table = TABLE_CATEGORIE_DANGER, $idSelect = 'categorieDangerFormRisque', $labelSelect = __('Cat&eacute;gorie de dangers', 'evarisk') . ' : ', $nameSelect = 'categorieDangers', $valeurDefaut = ucfirst(strtolower(sprintf(__("choisissez %s", 'evarisk'), __("une cat&eacute;gorie de dangers", 'evarisk')))), $selectionCategorie) . '</div>';
+			$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque);
+			$script .= $categorieDanger['script'];
+			$selectionCategorie = $categorieDanger['selectionCategorie'];
 		}
-		
-		$formRisque = $script . $radioGroup . $formRisque . '<div id="needDangerCategory">';
-
 		{//Choix du danger
-			$dangers = categorieDangers::getDangersDeLaCategorie($selectionCategorie, 'Status="Valid"');
-			if(isset($dangers[0]) && ($dangers[0]->id != null))
-			{
-				$formRisque = $formRisque . '
-					<script type="text/javascript">
-						$(document).ready(function(){
-							$("#needDangerCategory").show();
-						})
-					</script>';
-			}
-			else
-			{
-				$formRisque = $formRisque . '
-					<script type="text/javascript">
-						$(document).ready(function(){
-							$("#needDangerCategory").hide();
-						})
-					</script>';
-			}
-			if($risque[0] != null)
-			{// Si l'on édite un risque, on sélectionne le bon danger
-				$selection = $risque[0]->idDanger;
-				$selection = evaDanger::getDanger($selection);
-			}
-			else
-			{// Sinon on sélectionne le premier danger de la catégorie
-				$selection = (isset($dangers[0]) && ($dangers[0]->id))?$dangers[0]->id:null;
-			}
-			if($selection != null)
-			{
-				$nombreDeDangers = count($dangers);
-				$afficheSelecteurDanger = '';
-				if($nombreDeDangers <= 1)
-				{
-					$afficheSelecteurDanger = ' display:none; ';
-				}
-				$formRisque .= '<div  style="' . $afficheSelecteurDanger . '" id="divDangerFormRisque" >' . EvaDisplayInput::afficherComboBox($dangers, 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $selection) . '</div><br />';
-			}
-		}
+			$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, $risque);
+			$script .= $ListDanger['script'];
+		}		
+
+		$formRisque = 
+EvaDisplayInput::ouvrirForm('POST', 'formRisque', 'formRisque') .
+EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRisque', false, false) . 
+'<div id="formRisque" >
+	' . $advancedFormRisque . '
+	<div>
+		<div id="divDangerContainerSwitch" ' . $divDangerContainerSwitchStyle . ' class="pointer" >
+			<img id="divDangerContainerSwitchPic" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" />
+			<span style="vertical-align:middle;" >' . __('Voir les dangers', 'evarisk') . '</span>
+		</div>
+		<div id="divDangerContainer" ' . $divDangerContainerStyle . ' >' . $categorieDanger['list'] . $ListDanger['list'] . '</div>
+	</div>';
 
 		{//Choix de la méthode
 			$methodes = MethodeEvaluation::getMethods('Status="Valid"');
-			$script = '
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$("#methodeFormRisque").change(function(){
-							$("#divVariablesFormRisque").html(\'<img src="' . PICTO_LOADING . '" />\');
-							$("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":$("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
-						});
-					})
-				</script>';
+			$script .= '
+			evarisk("#methodeFormRisque").change(function(){
+				evarisk("#divVariablesFormRisque").html(evarisk("#loadingImg").html());
+				evarisk("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
+			});';
 			if($risque[0] != null)
 			{// Si l'on édite un risque, on sélectionne la bonne méthode
 				$idSelection = $risque[0]->id_methode;
@@ -481,17 +381,17 @@
 			{
 				$afficheSelecteurMethode = ' display:none; ';
 			}
-			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . $script . EvaDisplayInput::afficherComboBox($methodes, $idSelect = 'methodeFormRisque', $labelSelect = __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', $nameSelect = 'methode', $valeurDefaut = '', $selection) . '</div>';
+			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $idSelect = 'methodeFormRisque', $labelSelect = __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', $nameSelect = 'methode', $valeurDefaut = '', $selection) . '</div>';
 		}
 
 		{//Evaluation des variables
-			$formRisque = $formRisque . '<script type="text/javascript">
-					$(document).ready(function(){
-						$("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":$("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
-					})
-				</script>';
-			$formRisque = $formRisque . '<div id="divVariablesFormRisque">';
-			$formRisque = $formRisque . '</div><!-- /divVariablesFormRisque -->';
+			$formRisque .= 
+'<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
+	})
+</script>
+<div id="divVariablesFormRisque"></div><!-- /divVariablesFormRisque -->';
 		}
 		
 		{//Description
@@ -502,7 +402,30 @@
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
-			$formRisque = $formRisque . '<br />' . '<div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput($type='textarea', $id='descriptionFormRisque', $contenuInput, $contenuAide='', $labelInput . ' : ', $nomChamps='description', $grise=false, DESCRIPTION_RISQUE_OBLIGATOIRE, $taille = 3, $classe='', $limitation='', $width='100%', $script='') . '</div>';
+			$formRisque .= '<br /><div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '100%', '') . '</div>';
+		}
+
+		{//Photo associée au risque
+			if($idRisque != '')
+			{
+				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $idRisque);
+				if(count($pictureAssociated) > 0)
+				{
+					$formRisque .= '<div class="alignleft pointer" id="associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_HOME_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
+					$script .= '
+		evarisk("#deletePictureAssociation").click(function(){
+			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post":"true",
+				"table":"' . TABLE_RISQUE . '",
+				"tableElement":"' . TABLE_RISQUE . '",
+				"idElement":"' . $idRisque . '",
+				"act":"unAssociatePicture",
+				"idPicture":"' . $pictureAssociated[0]->id . '"
+			});
+		});';
+				}
+			}
 		}
 
 		{//Historisation du risque
@@ -515,62 +438,218 @@
 		{//Bouton enregistrer
 			$allVariables = MethodeEvaluation::getAllVariables();
 			$idBouttonEnregistrer = 'enregistrerFormRisque';
-			$scriptEnregistrement = '<script type="text/javascript">
-				$(document).ready(function() {	
-					$(\'#' . $idBouttonEnregistrer . '\').click(function(){
-						var variables = new Array();';
+			$scriptEnregistrement = 
+'<script type="text/javascript">
+	evarisk(document).ready(function(){
+		//	Change the state of the danger container
+		evarisk("#divDangerContainerSwitch").click(function(){
+			if(evarisk("#divDangerContainerSwitchPic").attr("src") == "' . PICTO_EXPAND . '"){
+				evarisk("#divDangerContainerSwitchPic").attr("src", "' . PICTO_COLLAPSE . '");
+			}
+			else{
+				evarisk("#divDangerContainerSwitchPic").attr("src", "' . PICTO_EXPAND . '");
+			}
+			evarisk("#divDangerContainer").toggle();
+		});
+		evarisk("#' . $idBouttonEnregistrer . '").click(function(){
+			var variables = new Array();';
 			foreach($allVariables as $variable)
 			{
 				$scriptEnregistrement .= '
-						variables["' . $variable->id . '"] = $("#var' . $variable->id . 'FormRisque").val();';
+			variables["' . $variable->id . '"] = evarisk("#var' . $variable->id . 'FormRisque").val();';
 			}
 			$scriptEnregistrement .= '
-						var historisation = true;
-						if($("#historisation").is(":checked")){
-							historisation = false;
-						}
-						var correctivActions = "";';
+			var historisation = true;
+			if(evarisk("#historisation").is(":checked")){
+				historisation = false;
+			}
+			var correctivActions = "";';
 			if($idRisque != '')
 			{
 				$scriptEnregistrement .= '
-						$("#correctivActionTab input:checkbox").each(function(){
-							if( $(this).is(":checked") )
-							{
-								acValue = $(this).val();
-								correctivActions += acValue + "_ac_";
-							}
-						});
-				';
+			evarisk("#correctivActionTab input:checkbox").each(function(){
+				if( evarisk(this).is(":checked") )
+				{
+					acValue = evarisk(this).val();
+					correctivActions += acValue + "_ac_";
+				}
+			});';
 			}
-			$scriptEnregistrement .= ';
-						$("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-							"post":"true", 
-							"table":"' . TABLE_RISQUE . '", 
-							"act":"save", 
-							"tableElement":"' . $tableElement . '", 
-							"idElement":"' . $idElement . '", 
-							"idDanger":$("#dangerFormRisque").val(), 
-							"idMethode":$("#methodeFormRisque").val(), 
-							"histo":historisation, 
-							"actionsCorrectives":correctivActions, 
-							"variables":variables, 
-							"description":$("#descriptionFormRisque").val(), 
-							"idRisque":$("#idRisque").val()
-						});
-						$("#divFormRisque").html(\'<img src="' . PICTO_LOADING . '" />\');
-						$("#divVoirRisques").html(\'<img src="' . PICTO_LOADING . '" />\');
-						setTimeout(function(){$("#ongletVoirLesRisques").click();},1000);
-						return false;
-					});
-				});
-				</script>';
+			$scriptEnregistrement .= '
+			evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post":"true", 
+				"table":"' . TABLE_RISQUE . '", 
+				"act":"save", 
+				"tableElement":"' . $tableElement . '", 
+				"idElement":"' . $idElement . '", 
+				"idDanger":evarisk("#dangerFormRisque").val(), 
+				"idMethode":evarisk("#methodeFormRisque").val(), 
+				"histo":historisation, 
+				"actionsCorrectives":correctivActions, 
+				"variables":variables, 
+				"description":evarisk("#descriptionFormRisque").val(), 
+				"idRisque":evarisk("#idRisque").val()
+			});
+			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
+			evarisk("#divVoirRisques").html(evarisk("#loadingImg").html());
+			setTimeout(function(){evarisk("#ongletVoirLesRisques").click();},1000);
+			return false;
+		});
+	});
+</script>';
 			$formRisque .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 		}
 		
-		$formRisque = $formRisque . '</div> <!--/needDangerCategory-->';
-		$formRisque = $formRisque . EvaDisplayInput::fermerForm('formRisque');
+		$formRisque .= '
+</div>'	. 
+EvaDisplayInput::fermerForm('formRisque') . '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		' . $script . '
+	});
+</script>';
 		
 		return $formRisque;
+	}
+
+	/**
+	*	Create an advanced form to add a risq to an element
+	*	
+	*	@param mixed $tableElement The element type we want to add risq to
+	*	@param integer $idElement The element identifier we want to add risq to
+	*
+	*	@return mixed $advancedForm The complete html output for the form
+	*/
+	function getAvancedFormulaireCreationRisque($tableElement, $idElement)
+	{
+		$advancedForm = '';
+		$script = '';
+
+		/*	Add The form button to add a new picture	*/
+		$advancedForm = '<div style="display:table;width:95%;margin:0px 0px 12px 0px;" ><div class="alignleft" >' . Risque::getRisqueNonAssociePhoto($tableElement, $idElement) . '</div><div id="sendNewPictureForm" class="alignright" style="margin:12px 0px;" >' . evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/'), 'pictureToAssociateToRisk', "['jpeg','jpg','png','gif']", true, '', '', __('Envoyer des photos', 'evarisk'), 'evarisk("#ongletAjouterRisquePhoto").click();') . '</div></div>';
+
+		/*	Get the picture list associated to the current element	*/
+		$pictureList = evaPhoto::getPhotos($tableElement, $idElement);
+		foreach($pictureList as $picture)
+		{
+			$currentId = 'picture_' . $picture->id . '_';
+
+			if(is_file(EVA_HOME_DIR . $picture->photo))
+			{
+				/*	Check if there are already risks that are associated to this picture	*/
+				$riskListForPicture = '';
+				$riskListForPicture = Risque::getRisqueAssociePhoto($picture->id);
+
+				/*	Add the picture to the output	*/
+				$advancedForm .= '
+<div id="' . $currentId . '" class="clear" style="margin:0px 0px 12px;" >
+	<div class="clear" >
+		<img id="addRiskByPictureId' . $currentId . '" class="alignleft riskPictureThumbs" src="' . EVA_HOME_URL . $picture->photo . '" alt="picture to associated to a risk ' . $picture->id . '" />
+		<div style="width:75%;" id="addRiskByPictureButtonId' . $currentId . '" class="alignleft pointer" >
+			<img id="divDangerContainerSwitchPic' . $currentId . '" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" class="expandablePics addRiskByPictureButton" />
+			<span style="vertical-align:middle;" class="addRiskByPictureButton" id="addRiskForPictureText' . $currentId . '" >' . __('Ajouter un risque pour cette photo', 'evarisk') . '</span>
+			<div class="riskAssociatedToPictureContainer" id="riskAssociatedToPicture' . $currentId . '" >' . $riskListForPicture . '</div>
+		</div>
+	</div>
+	<div id="' . $currentId . 'content" class="clear" style="padding:12px 0px;" >&nbsp;</div>
+</div>';
+			}
+		}
+
+		{/*	Define different javascript action associated to the advanced form	*/
+		$script = '
+<script type="text/javascript" >
+	var draggedObjectFather;
+	evarisk(document).ready(function(){
+		evarisk(".riskPictureThumbs").click(function(){
+			loadAdvancedRiskForm(evarisk(this).attr("id").replace("addRiskByPictureId",""));
+			checkOpenRiskNumber();
+		});
+		evarisk(".addRiskByPictureButton").click(function(){
+			loadAdvancedRiskForm(evarisk(this).parent("div").attr("id").replace("addRiskByPictureButtonId",""));
+			checkOpenRiskNumber();
+		});
+		evarisk("#saveMassRiskWithPicture").click(function(){
+			evarisk(".saveRiskFormButton").each(function(){
+				evarisk(this).click();
+			});
+		});
+		evarisk(".riskAssociatedToPictureContainer").droppable({
+			accept:".riskAssociatedToPicture",
+			activeClass: "ui-state-hover",
+			hoverClass: "ui-state-active",
+			over: function(event, ui){
+				if(evarisk(this).html() == ""){
+					evarisk(this).html("' . __('D&eacute;poser ici pour affecter ce risque &agrave; cette photo', 'evarisk') . '");
+				}
+			},
+			drop: function(event, ui){
+				evarisk(ui.draggable).remove();
+				evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post":"true",
+					"table":"' . TABLE_RISQUE . '",
+					"act":"associateRiskToPicture",
+					"tableElement":"' . TABLE_RISQUE . '",
+					"idElement":evarisk(ui.draggable).attr("id").replace("loadRiskId", ""),
+					"idPicture":evarisk(this).attr("id").replace("riskAssociatedToPicture",""),
+					"oldidPicture":draggedObjectFather
+				});
+			}
+		});
+		evarisk("#seeRiskToAssociate").click(function(){
+			if(evarisk("#seeRiskToAssociatePic").attr("src") == "' . PICTO_EXPAND . '"){
+				evarisk("#seeRiskToAssociatePic").attr("src", "' . PICTO_COLLAPSE . '");
+			}
+			else{
+				evarisk("#seeRiskToAssociatePic").attr("src", "' . PICTO_EXPAND . '");
+			}
+		});
+	});
+	//Verification du nombre de risque ouvert pour ajout avec une photo, si supérieur à 1 alors on affiche le bouton enregistrer tout
+	function checkOpenRiskNumber()
+	{
+		var openNumber = 0
+		evarisk(".expandablePics").each(function(){
+			if(evarisk(this).attr("src") == "' . PICTO_COLLAPSE . '"){
+				openNumber++;
+			}
+		});
+		if(openNumber > 1){
+			evarisk("#saveMassRiskWithPicture").show();
+		}
+		else{
+			evarisk("#saveMassRiskWithPicture").hide();
+		}
+	}
+	//Chargement du formulaire d\'ajout d\'un risque
+	function loadAdvancedRiskForm(idToLoad)
+	{
+		if(evarisk("#divDangerContainerSwitchPic" + idToLoad).attr("src") == "' . PICTO_EXPAND . '"){
+			evarisk("#divDangerContainerSwitchPic" + idToLoad).attr("src", "' . PICTO_COLLAPSE . '");
+			evarisk("#addRiskForPictureText" + idToLoad).html("' . __('Annuler l\'ajout du risque', 'evarisk') . '");
+			evarisk("#" + idToLoad + "content").html(evarisk("#loadingImg").html());
+			evarisk("#" + idToLoad + "content").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post":"true",
+				"table":"' . TABLE_RISQUE . '",
+				"act":"addRiskByPicture",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '",
+				"currentId":idToLoad
+			});
+		}
+		else{
+			evarisk("#divDangerContainerSwitchPic" + idToLoad).attr("src", "' . PICTO_EXPAND . '");
+			evarisk("#addRiskForPictureText" + idToLoad).html("' . __('Ajouter un risque pour cette photo', 'evarisk') . '");
+			evarisk("#" + idToLoad + "content").html("");
+		}
+	}
+</script>';
+		}
+
+		return $advancedForm . '<div id="massSaveButton" ><input style="display:none;" class="button-primary alignright" type="button" name="saveMassRiskWithPicture" id="saveMassRiskWithPicture" value="' . __('Enregistrer tout', 'evarisk') . '" /></div>' . $script;
 	}
 
 ?>

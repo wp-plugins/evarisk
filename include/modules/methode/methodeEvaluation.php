@@ -160,8 +160,8 @@ else
 
 <script type="text/javascript">
 <!--
-$(document).ready(function() {
-	$('#table_methode').dataTable({"sPaginationType": 'full_numbers', "bAutoWidth": false, "aoColumns": [
+evarisk(document).ready(function() {
+	evarisk('#table_methode').dataTable({"sPaginationType": 'full_numbers', "bAutoWidth": false, "aoColumns": [
 { "bSortable": false },
 { "bSortable": true, "sType": "html" },
 { "bSortable": false }],

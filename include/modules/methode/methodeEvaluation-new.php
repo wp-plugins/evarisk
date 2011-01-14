@@ -79,7 +79,7 @@ function getMethodForm()
 			$varsJava = $varsJava  .  " '";
 		}
 		$script = '<script type="text/javascript">
-				$(document).ready(function() {				
+				evarisk(document).ready(function() {				
 					nbInput = ' . $nbInput . ';
 				});
 			</script>';
@@ -107,8 +107,8 @@ function getMethodForm()
 				$texteBouton = "Ajouter les variables";
 				{//Adding script
 					$script = '<script type="text/javascript">
-						$(document).ready(function() {
-							$(\'#' . $idBouton . '\').click(function(){
+						evarisk(document).ready(function() {
+							evarisk(\'#' . $idBouton . '\').click(function(){
 								var nbChampsAjout = document.getElementById(\'' . $idInput . '\').value;
 								var DivToAdd = document.getElementById(\'formulediv\');
 								if(nbChampsAjout != parseInt(nbChampsAjout)){alert(\'Veuillez saisir un nombre (ex: 1)\');}
@@ -150,7 +150,7 @@ function getMethodForm()
 										DivToAdd.appendChild(tempInput);
 									}
 								}
-								$("#' . $idInput . '").val("");
+								evarisk("#' . $idInput . '").val("");
 							});
 						});
 						</script>';
@@ -168,8 +168,8 @@ function getMethodForm()
 				$texteBouton = "Retirer les variables";
 				{//Removing script
 					$script = '<script type="text/javascript">
-						$(document).ready(function() {
-							$(\'#' . $idBouton . '\').click(function(){
+						evarisk(document).ready(function() {
+							evarisk(\'#' . $idBouton . '\').click(function(){
 								var nbChampsRetrait = document.getElementById(\'' . $idInput . '\').value;
 								var d = document.getElementById(\'formulediv\');
 								if(nbChampsRetrait != parseInt(nbChampsRetrait)){alert(\'Veuillez saisir un nombre\');}
@@ -186,7 +186,7 @@ function getMethodForm()
 										nbInput = nbInput - 1 ;
 									}
 								}
-								$("#' . $idInput . '").val("");
+								evarisk("#' . $idInput . '").val("");
 							});
 						});
 						</script>';
@@ -228,14 +228,14 @@ function getMethodForm()
 				$valeurActuelleIn = $valeurActuelleIn . "}";
 			}
 			$scriptEnregistrement = '<script type="text/javascript">
-				$(document).ready(function() {				
-					$(\'#' . $idBouttonEnregistrer . '\').click(function() {
-						if($(\'#' . $idTitre . '\').is(".form-input-tip"))
+				evarisk(document).ready(function() {				
+					evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
+						if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 						{
 							document.getElementById(\'' . $idTitre . '\').value=\'\';
-							$(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+							evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 						}
-						valeurActuelle = $(\'#' . $idTitre . '\').val();
+						valeurActuelle = evarisk(\'#' . $idTitre . '\').val();
 						if(valeurActuelle == "")
 						{
 							alert("Vous n\'avez pas donne de nom a la méthode");
@@ -248,7 +248,7 @@ function getMethodForm()
 							}
 							else
 							{
-								$(\'#act\').val("' . $saveOrUpdate . '");
+								evarisk(\'#act\').val("' . $saveOrUpdate . '");
 								document.forms.methodForm.submit();
 							}
 						}	
@@ -277,9 +277,9 @@ function getMethodForm()
 			$labelInput='';
 			$nomChamps='validImport';
 			$scriptValidImport = '<script type="text/javascript">
-					$(document).ready(function() {
-						$(\'#' . $id . '\').click(function() {
-							$(\'#act\').val(\'import\');
+					evarisk(document).ready(function() {
+						evarisk(\'#' . $id . '\').click(function() {
+							evarisk(\'#act\').val(\'import\');
 							document.forms.methodForm.submit();
 						});
 					});
@@ -322,9 +322,9 @@ function getMethodForm()
 		{//Save Button (bottom)
 			$idBouttonEnregistrerBas = 'save2';
 			$scriptEnregistrement = '<script type="text/javascript">
-				$(document).ready(function() {				
-					$(\'#' . $idBouttonEnregistrerBas . '\').click(function() {
-						$(\'#' . $idBouttonEnregistrer . '\').click();
+				evarisk(document).ready(function() {				
+					evarisk(\'#' . $idBouttonEnregistrerBas . '\').click(function() {
+						evarisk(\'#' . $idBouttonEnregistrer . '\').click();
 					});
 				});
 				</script>';
@@ -355,8 +355,8 @@ function getMethodForm()
 				unset($ligneDeValeurs);
 				$idLigne = 'ut-' . $variable->id;
 				$scriptVariables = $scriptVariables . '<script type="text/javascript">
-					$(document).ready(function() {
-						$("#' . $idLigne . '").click(function(){});
+					evarisk(document).ready(function() {
+						evarisk("#' . $idLigne . '").click(function(){});
 					});
 				</script>';
 				$idLignes[] = $idLigne;
@@ -366,8 +366,8 @@ function getMethodForm()
 				$lignesDeValeurs[] = $ligneDeValeurs;
 			}
 			$scriptTable = $scriptVariables . '<script type="text/javascript">
-					$(document).ready(function() {
-						$("#' . $idTable . '").dataTable({
+					evarisk(document).ready(function() {
+						evarisk("#' . $idTable . '").dataTable({
 							"sPaginationType": "full_numbers", 
 							"bAutoWidth": false, 
 							"aoColumns": [
@@ -383,9 +383,9 @@ function getMethodForm()
 		{//New variable display switcher
 			$script = '
 				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#variable-add-toggle").click(function(){
-							$("#variable-add").toggleClass("hide-if-js");
+					evarisk(document).ready(function() {
+						evarisk("#variable-add-toggle").click(function(){
+							evarisk("#variable-add").toggleClass("hide-if-js");
 						});
 					});
 				</script>';
@@ -422,16 +422,16 @@ function getMethodForm()
 			$nomChamps = 'checkValues';
 			$script = '
 				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#'. $idInput . '").click(function(){
-							$("#valeursDiscretes").toggleClass("hide-if-js");
+					evarisk(document).ready(function() {
+						evarisk("#'. $idInput . '").click(function(){
+							evarisk("#valeursDiscretes").toggleClass("hide-if-js");
 						});
-						$("#'. $idInputMin . '").blur(function(){
-							$("#valeursDiscretes").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
-							$("#valeursDiscretes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"loadFieldsNewVariable", "min":$("#'. $idInputMin . '").val(), "max":$("#'. $idInputMax . '").val()});
+						evarisk("#'. $idInputMin . '").blur(function(){
+							evarisk("#valeursDiscretes").html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
+							evarisk("#valeursDiscretes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "nom":"loadFieldsNewVariable", "min":evarisk("#'. $idInputMin . '").val(), "max":evarisk("#'. $idInputMax . '").val()});
 						});
-						$("#'. $idInputMax . '").blur(function(){
-							$("#'. $idInputMin . '").blur();
+						evarisk("#'. $idInputMax . '").blur(function(){
+							evarisk("#'. $idInputMin . '").blur();
 						});
 					});
 				</script>';
@@ -444,23 +444,23 @@ function getMethodForm()
 			$idButton = "AjouterVariable";
 			$script = '
 				<script type="text/javascript">
-					$(document).ready(function() {
-						$("#' . $idButton . '").click(function(){
+					evarisk(document).ready(function() {
+						evarisk("#' . $idButton . '").click(function(){
 							var submit = true;
-							if($("#' . $idInputNom . '").is(".form-input-tip"))
+							if(evarisk("#' . $idInputNom . '").is(".form-input-tip"))
 							{
-								$("#' . $idInputNom . '").val("");
+								evarisk("#' . $idInputNom . '").val("");
 								alert("Veuillez donner un nom à votre variable.");
 								submit = false;
 							}
-							if($("#' . $idInputMin . '").val() > $("#' . $idInputMax . '").val())
+							if(evarisk("#' . $idInputMin . '").val() > evarisk("#' . $idInputMax . '").val())
 							{
 								alert("La valeur maximale doit être supérieure à la valeur minimale.");
 								submit = false;
 							}
 							if(submit)
 							{
-								$("#act").val("addVariable");
+								evarisk("#act").val("addVariable");
 								document.forms.methodForm.submit();
 							}
 						});

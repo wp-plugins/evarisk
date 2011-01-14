@@ -474,4 +474,4 @@ $.extend($.ui.accordion, {
 	}
 });
 
-})(jQuery);
+})(evarisk);

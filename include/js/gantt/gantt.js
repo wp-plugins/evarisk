@@ -438,4 +438,4 @@
 			graphSize: 12
 		}
 	});
-})(jQuery);
+})(evarisk);

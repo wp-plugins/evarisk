@@ -1633,4 +1633,4 @@ $.datepicker.version = "1.7.2";
 // Add another global to avoid noConflict issues with inline event handlers
 window.DP_jQuery = $;
 
-})(jQuery);
+})(evarisk);

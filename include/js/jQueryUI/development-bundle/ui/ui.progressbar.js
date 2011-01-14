@@ -113,4 +113,4 @@ $.extend($.ui.progressbar, {
 	}
 });
 
-})(jQuery);
+})(evarisk);

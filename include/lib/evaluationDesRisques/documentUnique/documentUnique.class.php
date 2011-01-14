@@ -17,7 +17,7 @@ class documentUnique
 	*
 	*	@return array $lignesDeValeurs The different risqs ordered by element
 	*/
-	static function listeRisquePourElement($tableElement, $idElement)
+	function listeRisquePourElement($tableElement, $idElement)
 	{
 		$lignesDeValeurs = array();
 		$temp = Risque::getRisques($tableElement, $idElement, "Valid");
@@ -69,7 +69,7 @@ class documentUnique
 		return $lignesDeValeurs;
 	}
 
-	static function listRisk($tableElement, $idElement)
+	function listRisk($tableElement, $idElement)
 	{
 		$lignesDeValeurs = array();
 
@@ -105,7 +105,7 @@ class documentUnique
 	*
 	*	@return mixed An html result with the different risqs or a link to print the work unit sheet
 	*/
-	static function bilanRisque($tableElement, $idElement, $typeBilan = 'ligne', $outPut = 'html')
+	function bilanRisque($tableElement, $idElement, $typeBilan = 'ligne', $outPut = 'html')
 	{
 		unset($titres, $classes, $idLignes, $lignesDeValeurs);
 
@@ -134,8 +134,8 @@ class documentUnique
 
 							$scriptVoirRisque = $scriptRisque . '
 							<script type="text/javascript">
-							$(document).ready(function() {
-								$("#' . $idTable . '").dataTable(
+							evarisk(document).ready(function() {
+								evarisk("#' . $idTable . '").dataTable(
 								{
 								"bPaginate": false, 
 								"bLengthChange": false,
@@ -209,7 +209,7 @@ class documentUnique
 	*
 	*	@return array $completeTree An array with the complete element tree and their affected user groups
 	*/
-	static function listeGroupeUtilisateurAffectes($tableElement, $idElement)
+	function listeGroupeUtilisateurAffectes($tableElement, $idElement)
 	{
 		$completeTree = Arborescence::completeTree($tableElement, $idElement);
 		if( is_array($completeTree) )
@@ -258,7 +258,7 @@ class documentUnique
 	*
 	*	@return mixed $outputContent Depending on the "typeSortie" parameter, output an array or an html code
 	*/
-	static function readlisteGroupeUtilisateurAffectes($groupesALire, $espacement = '', $typeSortie = 'html', $i = 0)
+	function readlisteGroupeUtilisateurAffectes($groupesALire, $espacement = '', $typeSortie = 'html', $i = 0)
 	{
 		if($typeSortie == 'html')
 		{
@@ -379,7 +379,7 @@ class documentUnique
 	*
 	*	@return mixed $outputContent Depending on the "typeSortie" parameter, output an array or an html code
 	*/
-	static function readListeGroupesUtilisateurs($groupesALire, $typeSortie = 'html')
+	function readListeGroupesUtilisateurs($groupesALire, $typeSortie = 'html')
 	{
 		if($typeSortie == 'html')
 		{
@@ -418,8 +418,6 @@ class documentUnique
 		return $outputContent;
 	}
 
-
-
 	/**
 	*	Get all the risqs for an element and all it's descendant
 	*
@@ -428,7 +426,7 @@ class documentUnique
 	*
 	*	@return array $bilanRisqueParUniteArborescent An array with all the risq for the element we are on (with all the descendant risqs)
 	*/
-	static function bilanParUnite($tableElement, $idElement, $espacement = '', $i = 0)
+	function bilanParUnite($tableElement, $idElement, $espacement = '', $i = 0)
 	{
 		$completeTree = Arborescence::completeTree($tableElement, $idElement);
 		if( is_array($completeTree) )
@@ -479,7 +477,7 @@ class documentUnique
 	*
 	*	@return mixed $outputContent Depending on the asked output type an html output or a prepared file
 	*/
-	static function readBilanParUnite($bilanALire, $espacement = '', $typeSortie = 'html', $i = 0)
+	function readBilanParUnite($bilanALire, $espacement = '', $typeSortie = 'html', $i = 0)
 	{
 		if($typeSortie == 'html')
 		{
@@ -580,7 +578,7 @@ class documentUnique
 	*
 	*	@return array $listeRisque An ordered array with all the risqs by line. Ordered by risq level
 	*/
-	static function readBilanUnitaire($bilanALire)
+	function readBilanUnitaire($bilanALire)
 	{
 		$listeRisque = $listeRisque[SEUIL_BAS_FAIBLE] = $listeRisque[SEUIL_BAS_APLANIFIER] = $listeRisque[SEUIL_BAS_ATRAITER] = $listeRisque[SEUIL_BAS_INACCEPTABLE] = array();
 
@@ -628,8 +626,6 @@ class documentUnique
 		return $listeRisque;
 	}
 
-
-
 	/**
 	*	Output a form with the different field needed to save and generate a new document. If the element type is a work unit, we propose to print the work unit sheet
 	*
@@ -638,7 +634,7 @@ class documentUnique
 	*
 	*	@return mixed The form or a link to the work unit sheet to print
 	*/
-	static function formulaireGenerationDocumentUnique($tableElement, $idElement)
+	function formulaireGenerationDocumentUnique($tableElement, $idElement)
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/templateDocumentUnique.tpl.php');
 		if($tableElement == TABLE_GROUPEMENT)
@@ -651,63 +647,96 @@ class documentUnique
 			$formulaireDocumentUniqueParams['#DATEFIN1#'] = date('Y-m-d');
 			$groupementInformations = Evagroupement::getGroupement($idElement);
 			$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = $groupementInformations->nom;
-			//$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = (isset($lastDocumentUnique->nomSociete) && ($lastDocumentUnique->nomSociete != '')) ? $lastDocumentUnique->nomSociete : '';
+			if(($groupementInformations->nom != $lastDocumentUnique->nomSociete) && ($lastDocumentUnique->nomSociete != ''))
+			{
+				$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = (isset($lastDocumentUnique->nomSociete) && ($lastDocumentUnique->nomSociete != '')) ? $lastDocumentUnique->nomSociete : '';
+			}
 			$formulaireDocumentUniqueParams['#TELFIXE#'] = (isset($lastDocumentUnique->telephoneFixe) && ($lastDocumentUnique->telephoneFixe != '')) ? $lastDocumentUnique->telephoneFixe : '';
 			$formulaireDocumentUniqueParams['#TELPORTABLE#'] = (isset($lastDocumentUnique->telephonePortable) && ($lastDocumentUnique->telephonePortable != '')) ? $lastDocumentUnique->telephonePortable : '';
 			$formulaireDocumentUniqueParams['#TELFAX#'] = (isset($lastDocumentUnique->telephoneFax) && ($lastDocumentUnique->telephoneFax != '')) ? $lastDocumentUnique->telephoneFax : '';
 			$formulaireDocumentUniqueParams['#EMETTEUR#'] = (isset($lastDocumentUnique->emetteurDUER) && ($lastDocumentUnique->emetteurDUER != '')) ? $lastDocumentUnique->emetteurDUER : '';
 			$formulaireDocumentUniqueParams['#DESTINATAIRE#'] = (isset($lastDocumentUnique->destinataireDUER) && ($lastDocumentUnique->destinataireDUER != '')) ? $lastDocumentUnique->destinataireDUER : '';
 			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_documentUnique_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupementInformations->nom));
-			// $formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = (isset($lastDocumentUnique->nomDUER) && ($lastDocumentUnique->nomDUER != '')) ? $lastDocumentUnique->nomDUER : '';
 			$formulaireDocumentUniqueParams['#METHODOLOGIE#'] = (isset($lastDocumentUnique->methodologieDUER) && ($lastDocumentUnique->methodologieDUER != '')) ? $lastDocumentUnique->methodologieDUER : ($methodologieParDefaut);
 			$formulaireDocumentUniqueParams['#SOURCES#'] = (isset($lastDocumentUnique->sourcesDUER) && ($lastDocumentUnique->sourcesDUER != '')) ? $lastDocumentUnique->sourcesDUER : ($sourcesParDefaut);
+			$lastDocumentUnique->id_model = (isset($lastDocumentUnique->id_model) && ($lastDocumentUnique->id_model != '')) ? $lastDocumentUnique->id_model : 0;
 
-			return 
-			'<script type="text/javascript">
-				$(document).ready(function() {
-					$("#dateCreation").datepicker();
-					$("#dateCreation").datepicker("option", {dateFormat: "yy-mm-dd"});
+			$output = 
+			EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationDUER(), $formulaireDocumentUniqueParams) . 
+			'<input type="hidden" name="oldIdModel" id="oldIdModel" value="' . $lastDocumentUnique->id_model . '" />
+			<script type="text/javascript" >
+				evarisk(document).ready(function(){
+					evarisk("#dateCreation").datepicker();
+					evarisk("#dateCreation").datepicker("option", {dateFormat: "yy-mm-dd"});
 
-					$("#dateDebutAudit").datepicker();
-					$("#dateDebutAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
+					evarisk("#dateDebutAudit").datepicker();
+					evarisk("#dateDebutAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
 
-					$("#dateFinAudit").datepicker();
-					$("#dateFinAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
+					evarisk("#dateFinAudit").datepicker();
+					evarisk("#dateFinAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
 
-					$("#genererDUER").click(function(){
-						$("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					evarisk("#genererDUER").click(function(){
+						evarisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 							"post":"true", 
-							"table":"' . TABLE_RISQUE . '", 
+							"table":"' . TABLE_DUER . '", 
 							"act":"saveDocumentUnique", 
 							"tableElement":"' . $tableElement . '",
 							"idElement":"' . $idElement . '", 
-							"dateCreation":$("#dateCreation").val(), 
-							"dateDebutAudit":$("#dateDebutAudit").val(), 
-							"dateFinAudit":$("#dateFinAudit").val(), 
-							"nomEntreprise":$("#nomEntreprise").val(),
-							"telephoneFixe":$("#telephoneFixe").val(),
-							"telephonePortable":$("#telephonePortable").val(),
-							"numeroFax":$("#numeroFax").val(),
-							"emetteur":$("#emetteur").val(),
-							"destinataire":$("#destinataire").val(),
-							"nomDuDocument":$("#nomDuDocument").val(),
-							"methodologie":$("#methodologie").val(),
-							"sources":$("#sources").val()
+							"dateCreation":evarisk("#dateCreation").val(), 
+							"dateDebutAudit":evarisk("#dateDebutAudit").val(), 
+							"dateFinAudit":evarisk("#dateFinAudit").val(), 
+							"nomEntreprise":evarisk("#nomEntreprise").val(),
+							"telephoneFixe":evarisk("#telephoneFixe").val(),
+							"telephonePortable":evarisk("#telephonePortable").val(),
+							"numeroFax":evarisk("#numeroFax").val(),
+							"emetteur":evarisk("#emetteur").val(),
+							"destinataire":evarisk("#destinataire").val(),
+							"nomDuDocument":evarisk("#nomDuDocument").val(),
+							"methodologie":evarisk("#methodologie").val(),
+							"id_model":evarisk("#DUERModelToUse").val(),
+							"sources":evarisk("#sources").val()
 						});
-						$("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
-						$("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
+						evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
+						evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
+					});';
+
+					if($lastDocumentUnique->id_model)
+					{
+						$output .= '
+						setTimeout(function(){
+							evarisk("#modelDefaut").click();
+						},100);';
+					}
+
+					$output .= 'evarisk("#ui-datepicker-div").hide();
+					evarisk("#modelDefaut").click(function(){
+						clearTimeout();
+						setTimeout(function(){
+							if(!evarisk("#modelDefaut").is(":checked"))
+							{
+								evarisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+								evarisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});
+								evarisk("#modelListForDUERGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique", "selection":evarisk("#oldIdModel").val()});
+								evarisk("#modelListForDUERGeneration").show();
+							}
+							else
+							{
+								evarisk("#documentUniqueResultContainer").html("");
+								evarisk("#modelListForDUERGeneration").html("");
+								evarisk("#modelListForDUERGeneration").hide();
+							}
+							},500
+						);
 					});
 				});
-			</script>' . EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationDUER(), $formulaireDocumentUniqueParams);
+			</script>';
 		}
 		else
 		{
-			return __('Imprimer la fiche de l\'unit&eacute;','evarisk');
+			$output = __('Imprimer la fiche de l\'unit&eacute;','evarisk');
 		}
+		return $output;
 	}
-
-
-
 
 	/**
 	*	Save a "document unique" in database
@@ -718,7 +747,7 @@ class documentUnique
 	*
 	*	@return array $status An array with the response status, if it's ok or not
 	*/
-	static function saveNewDocumentUnique ($tableElement, $idElement, $informationDocumentUnique)
+	function saveNewDocumentUnique ($tableElement, $idElement, $informationDocumentUnique)
 	{
 		global $wpdb;
 		$status = array();
@@ -783,12 +812,19 @@ class documentUnique
 			}
 		}
 
+		{	/*	Génération de l'adresse du groupement	*/
+			$gpmt = EvaGroupement::getGroupement($idElement);
+			$groupementAdressComponent = new EvaBaseAddress($gpmt->id_adresse);
+			$groupementAdressComponent->load();
+			$groupementAdress = $groupementAdressComponent->getFirstLine() . " " . $groupementAdressComponent->getSecondLine() . " " . $groupementAdressComponent->getPostalCode() . " " . $groupementAdressComponent->getCity() ;
+		}
+
 		{	/*	Enregistrement d'un document unique	*/
 			$query = 
 				"INSERT INTO " . TABLE_DUER . " 
-					(id, element, elementId, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER) 
+					(id, element, elementId, id_model, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER) 
 				VALUES	
-					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '', '" . mysql_escape_string(serialize(evaUserGroup::getUserGroup())) . "', '" . mysql_escape_string(serialize(documentUnique::listeGroupeUtilisateurAffectes($tableElement, $idElement))) . "', '" . mysql_escape_string(serialize(documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(documentUnique::bilanParUnite($tableElement, $idElement))) . "', '" . ($informationDocumentUnique['methodologie']) . "', '" . ($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($alerte) . "', '')";
+					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . mysql_real_escape_string($groupementAdress) . "', '" . mysql_escape_string(serialize(evaUserGroup::getUserGroup())) . "', '" . mysql_escape_string(serialize(documentUnique::listeGroupeUtilisateurAffectes($tableElement, $idElement))) . "', '" . mysql_escape_string(serialize(documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(documentUnique::bilanParUnite($tableElement, $idElement))) . "', '" . ($informationDocumentUnique['methodologie']) . "', '" . ($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($alerte) . "', '')";
 			if($wpdb->query($query) === false)
 			{
 				$status['result'] = 'error'; 
@@ -805,9 +841,6 @@ class documentUnique
 		return $status;
 	}
 
-
-
-
 	/**
 	*	Get the last "document unique" for a given element
 	*
@@ -816,7 +849,7 @@ class documentUnique
 	*
 	*	@return mixed $lastDocumentUnique An object with all information about the last document
 	*/
-	static function getDernierDocumentUnique($tableElement, $idElement, $id = '')
+	function getDernierDocumentUnique($tableElement, $idElement, $id = '')
 	{
 		global $wpdb;
 		$lastDocumentUnique = array();
@@ -845,7 +878,7 @@ class documentUnique
 	*
 	*	@return mixed $outputListeDocumentUnique An html code with the list or a message if no document were generated
 	*/
-	static function getDUERList($tableElement, $idElement)
+	function getDUERList($tableElement, $idElement)
 	{
 		global $wpdb;
 		$isteDocumentUnique = array();
@@ -874,6 +907,7 @@ class documentUnique
 				}
 				$listeParDate[$documentUnique->DateGeneration][$documentUnique->id]['name'] = $documentUnique->nomDUER;
 				$listeParDate[$documentUnique->DateGeneration][$documentUnique->id]['fileName'] = $documentUnique->nomDUER . '_V' . $documentUnique->revisionDUER;
+				$listeParDate[$documentUnique->DateGeneration][$documentUnique->id]['revision'] = 'V' . $documentUnique->revisionDUER;
 			}
 
 			if( count($listeParDate) > 0 )
@@ -893,8 +927,8 @@ class documentUnique
 					{
 						$outputListeDocumentUnique .= '
 							<tr>
-								<td>&nbsp;&nbsp;&nbsp;- ' . $DUER['name'] . '</td>
-								<td><a href="' . EVA_INC_PLUGIN_URL . 'modules/evaluationDesRisques/documentUnique.php?idElement=' . $idElement . '&table=' . $tableElement . '&id=' . $index . '" target="evaDUERHtml" >Html</a></td>';
+								<td>&nbsp;&nbsp;&nbsp;- ' . $DUER['name'] . '_' . $DUER['revision'] . '</td>
+								<!-- <td><a href="' . EVA_INC_PLUGIN_URL . 'modules/evaluationDesRisques/documentUnique.php?idElement=' . $idElement . '&table=' . $tableElement . '&id=' . $index . '" target="evaDUERHtml" >Html</a></td> -->';
 
 						/*	Check if an odt file exist to be downloaded	*/
 						$odtFile = 'documentUnique/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
@@ -909,7 +943,10 @@ class documentUnique
 					}
 				}
 				$outputListeDocumentUnique .= '
-						</thead>
+							<tr>
+								<td style="padding:18px;" ><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></td>
+							</tr>
+						</tbody>
 					</table>';
 			}
 		}
@@ -931,18 +968,10 @@ class documentUnique
 	*
 	*	@return mixed Depending on the output type we ask for, an html output or a file
 	*/
-	static function generationDocumentUnique($tableElement, $idElement, $outputType, $idDUER = '')
+	function generationDocumentUnique($tableElement, $idElement, $outputType, $idDUER = '')
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/templateDocumentUnique.tpl.php');
-		if($outputType == 'odt')
-		{
-			require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
-
-			$config = array(
-				'PATH_TO_TMP' => EVA_RESULTATS_PLUGIN_DIR . 'tmp'
-			);
-			$odf = new odf(EVA_MODELES_PLUGIN_DIR . 'documentUnique/modeleDefaut.odt', $config);
-		}
+		require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
 
 		if($tableElement == TABLE_GROUPEMENT)
 		{
@@ -956,6 +985,21 @@ class documentUnique
 			}
 			$documentUnique = '';
 			$nbPageTotal = 1;
+
+			if($outputType == 'odt')
+			{
+				require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
+
+				$config = array(
+					'PATH_TO_TMP' => EVA_RESULTATS_PLUGIN_DIR . 'tmp'
+				);
+				$odf = new odf(EVA_MODELES_PLUGIN_DIR . 'documentUnique/modeleDefaut.odt', $config);
+				if($lastDocumentUnique->id_model > 1)
+				{
+					$pathToModelFile = gestionDoc::getDocumentPath($lastDocumentUnique->id_model);
+					$odf = new odf(EVA_HOME_DIR . $pathToModelFile, $config);
+				}
+			}
 
 			/*	Ajout du sommaire	*/
 			$nbPageTotal++;
@@ -1236,8 +1280,7 @@ class documentUnique
 		$documentUniqueParam['#METHODOLOGIE#'] = $lastDocumentUnique->methodologieDUER;
 		$documentUniqueParam['#SOURCES#'] = $lastDocumentUnique->sourcesDUER;
 
-		$documentUniqueParam['#DISPODESPLANS#'] = '';
-		$documentUniqueParam['#PLANS#'] = $lastDocumentUnique->planDUER;
+		$documentUniqueParam['#DISPODESPLANS#'] = $lastDocumentUnique->planDUER;
 		$documentUniqueParam['#ALERTE#'] = $lastDocumentUnique->alerteDUER;
 
 		$completeOutput = EvaDisplayDesign::feedTemplate($premiereDeCouvertureDocumentUnique . $documentUnique, $documentUniqueParam);
@@ -1278,10 +1321,17 @@ class documentUnique
 
 			$documentUniqueParam['#DISPODESPLANS#'] = str_replace('<br />', "
 	", eva_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#']));
-			$odf->setVars('dispoDesPlans', $documentUniqueParam['#DISPODESPLANS#']);
+			if(trim($documentUniqueParam['#DISPODESPLANS#']) == '')
+			{
+				$documentUniqueParam['#DISPODESPLANS#'] = __('La localisation n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
+			}
+			$odf->setVars('dispoDesPlans', str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#'])));
+
+			$odf->setVars('remarqueImportante', str_replace('<br />', "
+	", eva_tools::slugify_noaccent($documentUniqueParam['#ALERTE#'])));
 
 			// $odf->setVars('methodologie', $documentUniqueParam['#METHODOLOGIE#']);
-			// $odf->setVars('plans', $documentUniqueParam['#PLANS#']);
 
 			{/*	Remplissage du template pour les groupes d'utilisateurs	*/
 				$listeUserGroupe = array();

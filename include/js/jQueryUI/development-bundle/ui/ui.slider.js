@@ -555,4 +555,4 @@ $.extend($.ui.slider, {
 	}
 });
 
-})(jQuery);
+})(evarisk);

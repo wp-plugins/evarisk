@@ -75,4 +75,4 @@ $.effects.bounce = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

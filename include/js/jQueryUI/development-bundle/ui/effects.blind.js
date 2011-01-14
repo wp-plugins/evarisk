@@ -46,4 +46,4 @@ $.effects.blind = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

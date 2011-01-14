@@ -81,49 +81,49 @@ $idElement = $_POST['idElement'];
 			var ligne2 = "";
 			var code_postal = "";
 			var ville = "";
-			if($(\'#adresse_ligne_1\').val() != "" && $(\'#adresse_ligne_1\').val() != "Adresse ligne 1")
+			if(evarisk(\'#adresse_ligne_1\').val() != "" && evarisk(\'#adresse_ligne_1\').val() != "Adresse ligne 1")
 			{
-				ligne1 = $(\'#adresse_ligne_1\').val() + "\n";
+				ligne1 = evarisk(\'#adresse_ligne_1\').val() + "\n";
 			}
-			if($(\'#adresse_ligne_2\').val() != "" && $(\'#adresse_ligne_2\').val() != "Adresse ligne 2")
+			if(evarisk(\'#adresse_ligne_2\').val() != "" && evarisk(\'#adresse_ligne_2\').val() != "Adresse ligne 2")
 			{
-				ligne2 = $(\'#adresse_ligne_2\').val() + "\n";
+				ligne2 = evarisk(\'#adresse_ligne_2\').val() + "\n";
 			}
-			if($(\'#code_postal\').val() != "" && $(\'#code_postal\').val() != "Code postal")
+			if(evarisk(\'#code_postal\').val() != "" && evarisk(\'#code_postal\').val() != "Code postal")
 			{
-				code_postal = $(\'#code_postal\').val();
+				code_postal = evarisk(\'#code_postal\').val();
 			}
-			if($(\'#ville\').val() != "" && $(\'#ville\').val() != "Ville")
+			if(evarisk(\'#ville\').val() != "" && evarisk(\'#ville\').val() != "Ville")
 			{
-				ville = $(\'#ville\').val();
+				ville = evarisk(\'#ville\').val();
 			}
 			var adresse = ligne1 + ligne2 + code_postal + " " + ville;
-			var site = ($(\'#nomElement\').html()).trim();
-			var nomClient = (($(\'#miniFilAriane\').html()).split(\'&raquo;\')[0]).trim();
+			var site = (evarisk(\'#nomElement\').html()).trim();
+			var nomClient = ((evarisk(\'#miniFilAriane\').html()).split(\'&raquo;\')[0]).trim();
 			var tableElement = "' . $tableElement . '";
 			var idElement = "' .  $idElement . '";
 			var numeroRubrique = "' .  $numeroRubrique . '";
-			var prenomApprobateur = $(\'#prenomApprobateur\').val();
-			var nomApprobateur = $(\'#nomApprobateur\').val();
-			var prenomInspecteur = $(\'#prenomInspecteur\').val();
-			var nomInspecteur = $(\'#nomInspecteur\').val();
-			var arretesPrefectoraux = ($(\'#arretesPrefectoraux\').val()).trim();
-			var controleurDernierControle = $(\'#controleurDernierControle\').val();
-			var organismeDernierControle = $(\'#organismeDernierControle\').val();
-			var dateDernierControle = $(\'#dateDernierControle\').val();
-			var dateAudit = $(\'#dateAudit\').val();
-			var dateDeclarationInstallation = $(\'#dateDeclarationInstallation\').val();
-			var dateMiseServiceInstallation = $(\'#dateMiseServiceInstallation\').val();
-			var groupeAuQuelInstallationAppartient = $(\'#groupeAuQuelInstallationAppartient\').val();
+			var prenomApprobateur = evarisk(\'#prenomApprobateur\').val();
+			var nomApprobateur = evarisk(\'#nomApprobateur\').val();
+			var prenomInspecteur = evarisk(\'#prenomInspecteur\').val();
+			var nomInspecteur = evarisk(\'#nomInspecteur\').val();
+			var arretesPrefectoraux = (evarisk(\'#arretesPrefectoraux\').val()).trim();
+			var controleurDernierControle = evarisk(\'#controleurDernierControle\').val();
+			var organismeDernierControle = evarisk(\'#organismeDernierControle\').val();
+			var dateDernierControle = evarisk(\'#dateDernierControle\').val();
+			var dateAudit = evarisk(\'#dateAudit\').val();
+			var dateDeclarationInstallation = evarisk(\'#dateDeclarationInstallation\').val();
+			var dateMiseServiceInstallation = evarisk(\'#dateMiseServiceInstallation\').val();
+			var groupeAuQuelInstallationAppartient = evarisk(\'#groupeAuQuelInstallationAppartient\').val();
 			var effectif = 0;
-			if($(\'#effectif\').val() != "" && $(\'#effectif\').val() != "Effectif" && $(\'#effectif\').val() != "&Eacute;ffectif")
+			if(evarisk(\'#effectif\').val() != "" && evarisk(\'#effectif\').val() != "Effectif" && evarisk(\'#effectif\').val() != "&Eacute;ffectif")
 			{
-				effectif = $(\'#effectif\').val();
+				effectif = evarisk(\'#effectif\').val();
 			}
-			$(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'generationPDF\', \'tableElement\':tableElement, \'idElement\':idElement, \'nomClient\':nomClient, \'site\':site, \'adresse\':adresse, \'numeroRubrique\':numeroRubrique, \'effectif\':effectif, \'prenomApprobateur\':prenomApprobateur, \'nomApprobateur\':nomApprobateur, \'arretesPrefectoraux\':arretesPrefectoraux, \'controleurDernierControle\':controleurDernierControle, \'organismeDernierControle\':organismeDernierControle, \'dateDernierControle\':dateDernierControle, \'dateAudit\':dateAudit, \'dateDeclarationInstallation\':dateDeclarationInstallation, \'dateMiseServiceInstallation\':dateMiseServiceInstallation, \'groupeAuQuelInstallationAppartient\':groupeAuQuelInstallationAppartient});
+			evarisk(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'generationPDF\', \'tableElement\':tableElement, \'idElement\':idElement, \'nomClient\':nomClient, \'site\':site, \'adresse\':adresse, \'numeroRubrique\':numeroRubrique, \'effectif\':effectif, \'prenomApprobateur\':prenomApprobateur, \'nomApprobateur\':nomApprobateur, \'arretesPrefectoraux\':arretesPrefectoraux, \'controleurDernierControle\':controleurDernierControle, \'organismeDernierControle\':organismeDernierControle, \'dateDernierControle\':dateDernierControle, \'dateAudit\':dateAudit, \'dateDeclarationInstallation\':dateDeclarationInstallation, \'dateMiseServiceInstallation\':dateMiseServiceInstallation, \'groupeAuQuelInstallationAppartient\':groupeAuQuelInstallationAppartient});
 		}
-		$(document).ready(function() {
-			$(\'#' . $idBouttonEnregistrer . '\').click(function() {
+		evarisk(document).ready(function() {
+			evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
 				genererPDF();
 			});
 		});

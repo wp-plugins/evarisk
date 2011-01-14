@@ -53,4 +53,4 @@ $.effects.pulsate = function(o) {
 
 };
 
-})(jQuery);
+})(evarisk);

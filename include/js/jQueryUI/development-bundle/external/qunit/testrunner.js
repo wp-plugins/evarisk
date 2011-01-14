@@ -614,7 +614,7 @@ function triggerEvent( elem, type, event ) {
 	}
 }
 
-})(jQuery);
+})(evarisk);
 
 /**
  * jsDump

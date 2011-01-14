@@ -159,7 +159,7 @@
 			break;
 
 		case 'addoption':
-			echo '<script type="text/javascript" >$("#act").val("mod");$("#attributeManagementForm").submit();</script>';
+			echo '<script type="text/javascript" >evarisk("#act").val("mod");evarisk("#attributeManagementForm").submit();</script>';
 			break;
 
 		default:
