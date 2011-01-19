@@ -33,8 +33,9 @@ if($_POST['act'] == 'saveDocumentUnique')
 
 	if($sauvegardeDocumentUnique['result'] != 'error')
 	{
-		$messageInfo = $messageInfo . '
-				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk') . '</strong></p>') . '");';
+		$messageInfo .= '
+				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk') . '</strong></p>') . '");
+				evarisk("#ongletHistoriqueDocumentUnique").click();';
 
 		$lastDocumentUnique = documentUnique::getDernierDocumentUnique($tableElement, $idElement);
 		/*	Check if an odt file exist to be downloaded	*/
@@ -52,9 +53,8 @@ if($_POST['act'] == 'saveDocumentUnique')
 				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique n\'&agrave; pas pu &ecirc;tre sauvegard&eacute;', 'evarisk') . '</strong></p>') . '");';
 	}
 
-	$messageInfo = $messageInfo . '
+	$messageInfo .= '
 				evarisk("#message' . TABLE_DUER . '").show();
-				' . $lienVersDUER . '
 				setTimeout(function(){
 					evarisk("#message' . TABLE_DUER . '").removeClass("updated");
 					evarisk("#message' . TABLE_DUER . '").hide();

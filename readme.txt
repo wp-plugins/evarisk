@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.0.4
-Stable tag: 5.1.2
+Stable tag: 5.1.2.1
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -59,6 +59,14 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 9. Ecran d'ajout d'un risque avec la liste de l'INRS et 4 risques propre &agrave; l'entreprise, on voit les jauges qui permettent d'&eacute;valuer, Gravit&eacute;, Exposition, Occurrence, Formation, Protection.
 
 == Changelog ==
+
+= Version 5.1.2.1 =
+
+Corrections:
+
+* Int&eacute;gration de la librairie de gestion documentaire manquante lors de la derni&egrave;re mise &agrave; jour
+* Correction de la box d'affectation des utilisateurs &agrave; une unit&eacute; de travail ou &agrave; un groupement
+* Passage sur l'onglet historique des documents uniques apr&egrave;s g&eacute;n&eacute;ration du document unique
 
 = Version 5.1.2 =
 
