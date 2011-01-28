@@ -6,9 +6,37 @@
 	$fieldSeparator = isset($_POST['fieldSeparator']) ? eva_tools::IsValid_Variable($_POST['fieldSeparator']) : '';
 	$sendUserMail = isset($_POST['sendUserMail']) ? eva_tools::IsValid_Variable($_POST['sendUserMail']) : '';
 
+	$optionEmailDomain = '';
+	$checkEmailDomain = '';
+	$checkEmailDomain = options::getOptionValue('emailDomain', 'Moderated');
+	if($checkEmailDomain == '')
+	{
+		$optionEmailDomain = '
+			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . TABLE_OPTION . '",
+				"act": "save",
+				"value": evarisk("#domaineMail").val(),
+				"optionStatus": "Moderated",
+				"optionName": "emailDomain"
+			});';
+	}
+	else
+	{
+		$optionEmailDomain = '
+			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"table": "' . TABLE_OPTION . '",
+				"act": "updateFromName",
+				"value": evarisk("#domaineMail").val(),
+				"optionName": "emailDomain"
+			});';
+	}
+
 	if($importAction != '')
 	{
-
 		$userToCreate = array();
 		$importResult = '';
 
@@ -179,14 +207,60 @@
 	}
 
 ?>
+<div id="ajax-response" style="display:none;" >&nbsp;</div>
 <script type="text/javascript" >
-	function changeSeparator()
-	{
+	function changeSeparator(){
 		evarisk('.fieldSeparator').html(evarisk('#fieldSeparator').val());
 	}
 	evarisk(document).ready(function(){
 		changeSeparator();
 		evarisk('#fieldSeparator').blur(function(){changeSeparator()});
+
+		evarisk('#ajouterUtilisateurListe').click(function(){
+			var error = 0;
+			evarisk('#mailDomainContainer').css('color', '#000000');
+			evarisk('#firstNameContainer').css('color', '#000000');
+			evarisk('#lastNameContainer').css('color', '#000000');
+			evarisk('#fastAddErrorMessage').hide();
+
+			evarisk('#domaineMail').val(evarisk('#domaineMail').val().replace("@", ""));
+
+			if(evarisk('#domaineMail').val() == ""){
+				evarisk('#mailDomainContainer').css('color', '#FF0000');
+				error++;
+			}
+			if(evarisk('#prenomUtilisateur').val() == ""){
+				evarisk('#firstNameContainer').css('color', '#FF0000');
+				error++;
+			}
+			if(evarisk('#nomUtilisateur').val() == ""){
+				evarisk('#lastNameContainer').css('color', '#FF0000');
+				error++;
+			}
+
+			if(error > 0){
+				evarisk('#fastAddErrorMessage').show();
+			}
+			else{
+				identifiant = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#nomUtilisateur').val();
+				prenom = evarisk('#prenomUtilisateur').val();
+				nom = evarisk('#nomUtilisateur').val();
+				motDePasse = evarisk('#motDePasse').val();
+				emailUtilisateur = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#prenomUtilisateur').val() + '@' + evarisk('#domaineMail').val();
+				roleUtilisateur = evarisk('#userRoles').val();
+
+				newline = identifiant + evarisk('#fieldSeparator').val() + prenom + evarisk('#fieldSeparator').val() + nom + evarisk('#fieldSeparator').val() + motDePasse + evarisk('#fieldSeparator').val() + emailUtilisateur + evarisk('#fieldSeparator').val() + roleUtilisateur;
+
+				if(evarisk('#userLinesToCreate').val() != ''){
+					newline = '\r\n' + newline;
+				}
+				evarisk('#userLinesToCreate').val(evarisk('#userLinesToCreate').val() + newline);
+				evarisk('#prenomUtilisateur').val("");
+				evarisk('#nomUtilisateur').val("");
+
+<?php echo $optionEmailDomain;	?>
+			}
+		});
 	});
 </script>
 <form enctype="multipart/form-data" method="post" action="" >
@@ -194,62 +268,102 @@
 
 	<!-- 	Start of file specification part	-->
 	<h3><?php echo __('Sp&eacute;cifications pour le fichier', 'evarisk'); ?></h3>
-	<?php echo __('Vous pouvez d&eacute;finir le s&eacute;parateur de champs', 'evarisk'); ?><input type="text" name="fieldSeparator" id="fieldSeparator" value=";" />
-	<br/><br/>
-	<?php echo __('Chaque ligne de d&eacute;finition devra respecter le format ci-apr&egrave;s&nbsp;:', 'evarisk'); ?>
-	<br/><span style="font-style:italic;" ><?php echo __('Les champs identifiants et email sont obligatoires. Vous n\'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent', 'evarisk'); ?></span>
-	<div style="margin:21px;padding:12px;border:1px solid #333333;width:40%;text-align:center;" ><?php echo __('identifiant' . $separatorExample . 'prenom' . $separatorExample . 'nom' . $separatorExample . 'mot de passe' . $separatorExample . 'email' . $separatorExample . 'role', 'evarisk'); ?></div>
+	<div class="alignleft" >
+		<?php echo __('Chaque ligne de d&eacute;finition devra respecter le format ci-apr&egrave;s&nbsp;:', 'evarisk'); ?>
+		<br/><span style="font-style:italic;font-size:10px;" ><?php echo '<span style="color:#CC0000;" >' . __('Les champs identifiants et email sont obligatoires.', 'evarisk') . '</span><br/>' . __('Vous n\'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent.', 'evarisk') . '<br/>' . __('Exemple&nbsp;', 'evarisk') . '&nbsp;<span style="font-weight:bold;" >' . __('identifiant', 'evarisk') . $separatorExample . $separatorExample . $separatorExample . $separatorExample . __('email', 'evarisk') . $separatorExample . '</span>'; ?></span>
+		<div style="margin:3px 6px;padding:12px;border:1px solid #333333;width:80%;text-align:center;" ><?php echo '<span style="color:#CC0000;" >' . __('identifiant', 'evarisk') . '</span>' . $separatorExample . __('prenom', 'evarisk') . $separatorExample . __('nom', 'evarisk') . $separatorExample . __('mot de passe', 'evarisk') . $separatorExample . '<span style="color:#CC0000;" >' . __('email', 'evarisk') . '</span>' . $separatorExample . __('role', 'evarisk'); ?></div>
+	</div>
+	<div class="floatleft" style="margin: 0px 36px;" >
+		<table style="margin:0px 36px;" summary="" cellpadding="0" cellspacing="0">
+			<tr>
+				<td>
+					<?php echo __('S&eacute;parateur de champs', 'evarisk'); ?>
+				</td>
+				<td>
+					<input type="text" name="fieldSeparator" id="fieldSeparator" value=";" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<?php echo __('R&ocirc;le pour les utilisateurs', 'evarisk'); ?><br/>
+					<span style="font-style:italic;font-size:10px;" ><?php echo __('Si aucun r&ocirc;le n\'a &eacute;t&eacute; d&eacute;fini dans le fichier', 'evarisk'); ?></span>
+				</td>
+				<td>
+					<select name="userRoles" id="userRoles" >
+						<?php
+							if ( !isset($wp_roles) )
+							{
+								$wp_roles = new WP_Roles();
+							}
+							foreach ($wp_roles->get_names() as $role => $roleName)
+							{
+								$selected = '';
+								if(($userRoles == '') && ($role == 'subscriber'))
+								{
+									$selected = 'selected = "selected"';
+								}
+								elseif(($userRoles != '') && ($role == $userRoles))
+								{
+									$selected = 'selected = "selected"';
+								}
+								echo '<option value="' . $role . '" ' . $selected . ' >' . $roleName . '</option>';
+							}
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<?php echo __('Envoyer le mot de passe aux utilisateurs.', 'evarisk'); ?>
+					<br/><span style="font-weight:bold;font-size:9px;" ><?php echo __('(Peut ne pas fonctionner sur certains serveurs)', 'evarisk'); ?></span>
+				</td>
+				<td>
+					<input type="checkbox" name="sendUserMail" id="sendUserMail" />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
+	<!-- 	Start of fast add part	-->
+	<h3 class="clear" ><?php echo __('Ajout rapide d\'utilisateurs', 'evarisk'); ?></h3>
+	<table summary="Fast user adding section" cellpadding="0" cellspacing="0" >
+		<tr>
+			<td id="mailDomainContainer"><?php echo ucfirst(strtolower(__('domaine de l\'adresse email (sans le @)', 'evarisk'))); ?></td>
+			<td><input type="text" value="<?php echo $checkEmailDomain; ?>" id="domaineMail" name="domaineMail" /></td>
+			<td style="text-align:right;" ><?php echo ucfirst(strtolower(__('mot de passe par d&eacute;faut', 'evarisk'))); ?><br/><span style="font-size:9px;" ><?php echo __('Laissez vide pour un mot de passe al&eacute;atoire', 'evarisk'); ?></span></td>
+			<td><input type="text" value="" id="motDePasse" name="motDePasse" /></td>
+		</tr>
+		<tr>
+			<td colspan="2" >&nbsp;</td>
+		</tr>
+		<tr>
+			<td id="firstNameContainer"><?php echo ucfirst(strtolower(__('prenom', 'evarisk'))); ?></td>
+			<td id="lastNameContainer"><?php echo ucfirst(strtolower(__('nom', 'evarisk'))); ?></td>
+		</tr>
+		<tr>
+			<td><input type="text" value="" id="prenomUtilisateur" name="prenomUtilisateur" /></td>
+			<td><input type="text" value="" id="nomUtilisateur" name="nomUtilisateur" /></td>
+			<td><input type="button" class="button-secondary" value="<?php echo __('Ajouter &agrave; la liste des utilisateurs &agrave; importer', 'evarisk'); ?>" id="ajouterUtilisateurListe" name="ajouterUtilisateurListe" /><div id="fastAddErrorMessage" style="display:none;color:#FF0000;" ><?php echo __('Merci de remplir les champs marqu&eacute;s en rouge', 'evarisk'); ?></div></td>
+		</tr>
+	</table>
 
 
 	<!-- 	Start of user list to import part	-->
 	<h3><?php echo __('Utilisateurs &agrave; importer', 'evarisk'); ?></h3>
-	<table>
+	<table summary="User list to import section" cellpadding="0" cellspacing="0" >
 		<tr>
 			<td><?php echo __('Vous pouvez entrer directement le utilisateurs que vous souhaitez cr&eacute;er ici.<br/>Chaques utilisateur sera s&eacute;par&eacute; par un retour &agrave; la ligne', 'evarisk'); ?></td>
 			<td rowspan="2" ><?php echo __('-&nbsp;et&nbsp;/&nbsp;ou&nbsp;-', 'evarisk'); ?></td>
 			<td><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)', 'evarisk'); ?></td>
 		</tr>
 		<tr>
-			<td><textarea name="userLinesToCreate" cols="70" rows="12"></textarea></td>
+			<td><textarea name="userLinesToCreate" id="userLinesToCreate" cols="70" rows="5"></textarea></td>
 			<td style="vertical-align:top;" ><input type="file" id="userFileToCreate" name="userFileToCreate" /></td>
-		</tr>
-		<tr>
-			<td colspan="3" style="padding-top:12px;text-align:center;" ><?php echo __('Si vous n\'avez pas sp&eacute;cifi&eacute; de r&ocirc;le dans la liste vous pouvez choisir le r&ocirc;le attribu&eacute; aux utilisateurs', 'evarisk'); ?></td>
-		</tr>
-		<tr>
-			<td colspan="3" style="font-weight:bold;text-align:center;" >
-				<?php echo __('R&ocirc;le pour les utilisateurs', 'evarisk'); ?>
-				<select name="userRoles" >
-					<?php
-						if ( !isset($wp_roles) )
-						{
-							$wp_roles = new WP_Roles();
-						}
-						foreach ($wp_roles->get_names() as $role => $roleName)
-						{
-							$selected = '';
-							if(($userRoles == '') && ($role == 'subscriber'))
-							{
-								$selected = 'selected = "selected"';
-							}
-							elseif(($userRoles != '') && ($role == $userRoles))
-							{
-								$selected = 'selected = "selected"';
-							}
-							echo '<option value="' . $role . '" ' . $selected . ' >' . $roleName . '</option>';
-						}
-					?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" style="text-align:center;" >
-				<input type="checkbox" name="sendUserMail" id="sendUserMail" /><?php echo __('Envoyer le mot de passe aux utilisateurs.', 'evarisk'); ?><br/><span style="font-weight:bold;" ><?php echo __('(Attention cette option peut ne pas fonctionner sur certains serveurs)', 'evarisk'); ?></span>
-			</td>
 		</tr>
 	</table>
 
 
 	<!-- 	Submit form button	-->
-	<input type="submit" class="button" name="importSubmit" id="importSubmit" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" />
+	<input type="submit" class="button-primary" name="importSubmit" id="importSubmit" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" />
 </form>

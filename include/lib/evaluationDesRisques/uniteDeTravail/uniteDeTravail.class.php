@@ -283,7 +283,27 @@ class UniteDeTravail {
 		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "' WHERE `id`='" . $id_unite . "'";
 		return $wpdb->query($sql);
 	}
-	
+
+	/**
+	 * Update a given working unit
+	 *
+	 * @param string $id_unite The wordking unit identifier we want to update
+	 * @param string $whatToUpdate The wordking unit information we want to update
+	 * @param string $whatToSet The value of the information we want to update
+	 */
+	function updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet)
+	{
+		global $wpdb;
+		
+		$query = $wpdb->prepare(
+			"UPDATE " . TABLE_UNITE_TRAVAIL . " 
+				SET " . $whatToUpdate . " = '%s' 
+			WHERE id='" . $id_unite . "'",
+			 $whatToSet
+		);
+
+		return $wpdb->query($query);
+	}
 	/**
 	  * Transfer an working unit from a group to an other
 	  * @param int $idUnite Working unit to transfer identifier

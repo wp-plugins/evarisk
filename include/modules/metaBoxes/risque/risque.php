@@ -113,7 +113,8 @@
 				$liEditionRisque = '
 					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>' . $advancedFormRisque;
 
-				$divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none">' . getFormulaireCreationRisque($tableElement, $idElement) . '</div>';
+				// $divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none">' . getFormulaireCreationRisque($tableElement, $idElement) . '</div>';
+				$divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none"><div id="formRisque" ></div></div>';
 			}
 
 			$taskList = evaActivity::activityList($tableElement, $idElement);
@@ -122,7 +123,6 @@
 			{
 				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:inline" ><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
 			}
-
 
 			$corpsPostBoxRisque = $scriptRisque . '
 				<div id="message' . TABLE_RISQUE . '" class="updated fade" style="cursor:pointer; display:none;"></div>
@@ -305,9 +305,23 @@
 				{ "bSortable": true},
 				{ "bSortable": false},
 				{ "bSortable": false }],
-			"aaSorting": [[0,"desc"]]
+			"aaSorting": [[0,"desc"]],
+			"oLanguage": {
+				"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
+				"sEmptyTable": "' . __('Aucun risque trouv&eacute;', 'evarisk') . '",
+				"sLengthMenu": "' . __('Afficher _MENU_ risques', 'evarisk') . '",
+				"sInfoEmpty": "' . __('Aucun risque', 'evarisk') . '",
+				"sZeroRecords": "' . __('Aucun risque trouv&eacute;', 'evarisk') . '",
+				"oPaginate": {
+					"sFirst": "' . __('Premi&eacute;re', 'evarisk') . '",
+					"sLast": "' . __('Derni&egrave;re', 'evarisk') . '",
+					"sNext": "' . __('Suivante', 'evarisk') . '",
+					"sPrevious": "' . __('Pr&eacute;c&eacute;dente', 'evarisk') . '"
+				}
+			}
 		});
 		evarisk("#' . $idTable . ' tfoot").remove();
+		evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 	});
 </script>';
 			}
@@ -349,7 +363,7 @@
 		$formRisque = 
 EvaDisplayInput::ouvrirForm('POST', 'formRisque', 'formRisque') .
 EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRisque', false, false) . 
-'<div id="formRisque" >
+'
 	' . $advancedFormRisque . '
 	<div>
 		<div id="divDangerContainerSwitch" ' . $divDangerContainerSwitchStyle . ' class="pointer" >
@@ -391,7 +405,7 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 		evarisk("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
 	})
 </script>
-<div id="divVariablesFormRisque"></div><!-- /divVariablesFormRisque -->';
+<div id="divVariablesFormRisque" class="clear" ></div><!-- /divVariablesFormRisque -->';
 		}
 		
 		{//Description
@@ -502,7 +516,7 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 		}
 		
 		$formRisque .= '
-</div>'	. 
+'	. 
 EvaDisplayInput::fermerForm('formRisque') . '
 <script type="text/javascript">
 	evarisk(document).ready(function(){

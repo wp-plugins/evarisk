@@ -15,24 +15,21 @@ class evaUserLinkElement
 	*
 	*	@param mixed $tableElement The element type we want to get the user list for
 	*	@param integer $idElement The element identifier we want to get the user list for
-	*	@param boolean $noScript Define if all datatable options must be shown or just the table
 	*
 	*	@return mixed $utilisateursMetaBox The entire html code to output
 	*/
-	function afficheListeUtilisateur($tableElement, $idElement, $noScript = false)
+	function afficheListeUtilisateurTable($tableElement, $idElement)
 	{
 		$utilisateursMetaBox = '';
 
-		$utilisateursMetaBox .= '<div id="message' . TABLE_LIAISON_USER_ELEMENT . '" class="updated fade" style="cursor:pointer; display:none;"></div>';
 		{//Création dataTable
 			$idTable = 'listeIndividus' . $tableElement . $idElement;
-			$titres = array( __('&nbsp;', 'evarisk'), __('Affect&eacute;', 'evarisk'), ucfirst(strtolower(sprintf(__('Nom %s', 'evarisk'), __('de l\'utilisateur', 'evarisk')))), ucfirst(strtolower(sprintf(__('Pr&eacute;nom %s', 'evarisk'), __('de l\'utilisateur', 'evarisk')))));
+			$titres = array( '', ucfirst(strtolower(__('Nom', 'evarisk'))), ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk'))), ucfirst(strtolower(__('Inscription', 'evarisk'))));
 			unset($lignesDeValeurs);
 
 			//on récupère les utilisateurs déjà affectés à l'élément en cours.
 			$listeUtilisateursLies = array();
 			$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-
 			if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0))
 			{
 				foreach($utilisateursLies as $utilisateur)
@@ -49,20 +46,15 @@ class evaUserLinkElement
 					unset($valeurs);
 					$idLigne = $tableElement . $idElement . 'listeUtilisateurs' . $utilisateur['user_id'];
 					$idCbLigne = 'cb_' . $idLigne;
-					$valeurs[] = array('value'=>evaDisplayInput::afficherInput('checkbox', $idCbLigne, null, null, null, 'cb_' . $idLigne));
-					$affectedValue = __('non', 'evarisk');
+					$moreLineClass = 'userIsNotLinked';
 					if(isset($listeUtilisateursLies[$utilisateur['user_id']]))
 					{
-						$script = $script . '<script type="text/javascript">
-							evarisk(document).ready(function() {
-								evarisk(\'#' . $idCbLigne . '\').attr("checked", "checked");
-							});
-						</script>';
-						$affectedValue = __('oui', 'evarisk');
+						$moreLineClass = 'userIsLinked';
 					}
-					$valeurs[] = array('value'=>$affectedValue);
+					$valeurs[] = array('value'=>'<span id="actionButton' . $tableElement . 'UserLink' . $utilisateur['user_id'] . '" class="buttonActionUserLinkList ' . $moreLineClass . '  ui-icon pointer" >&nbsp;</span>');
 					$valeurs[] = array('value'=>$utilisateur['user_lastname']);
 					$valeurs[] = array('value'=>$utilisateur['user_firstname']);
+					$valeurs[] = array('value'=>eva_tools::transformeDate($utilisateur['user_registered']));
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = $idLigne;
 				}
@@ -70,102 +62,200 @@ class evaUserLinkElement
 			else
 			{
 				$valeurs[] = array('value'=>'');
-				$valeurs[] = array('value'=>'');
 				$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
+				$valeurs[] = array('value'=>'');
 				$valeurs[] = array('value'=>'');
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
 			}
 
-			$classes = array('cbColumnLarge','','','cbNbUserGroup');
-			if(!$noScript)
-			{
-			$script = $script . '<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk(\'#' . $idTable . '\').dataTable({
-						"bAutoWidth": false,
-						"bInfo": false,
-						"aoColumns": 
-						[
-							{ "bSortable": false },
-							{ "bSortable": true },
-							{ "bSortable": true },
-							{ "bSortable": true }
-						],
-						"aaSorting": [[1,\'desc\']]});
-					evarisk(\'#' . $idTable . '\').children("tfoot").remove();
-				});
-			</script>';
+			$classes = array('addUserButtonDTable','','','');
+			$script = 
+'<script type="text/javascript">
+	evarisk(document).ready(function() {
+		evarisk("#' . $idTable . '").dataTable({
+			"bAutoWidth": false,
+			"bInfo": false,
+			"bPaginate": false,
+			"bFilter": false,
+			"aaSorting": [[3,\'desc\']]
+		});
+		evarisk("#' . $idTable . '").children("tfoot").remove();
+		evarisk(".buttonActionUserLinkList").click(function(){
+			if(evarisk(this).hasClass("addUserToLinkList")){
+				var currentId = evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
+				cleanUserIdFiedList(currentId, "' . $tableElement . '");
+				
+				var lastname = evarisk(this).parent("td").next().html();
+				var firstname = evarisk(this).parent("td").next().next().html();
+
+				addUserIdFieldList(lastname + " " + firstname, currentId, "' . $tableElement . '");
 			}
+			else if(evarisk(this).hasClass("deleteUserToLinkList")){
+				deleteUserIdFiedList(evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), "' . $tableElement . '");
+			}
+		});
+		evarisk("#completeUserList' . $tableElement . ' .odd, #completeUserList' . $tableElement . ' .even").click(function(){
+			if(evarisk(this).children("td:first").children("span").hasClass("userIsNotLinked")){
+				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
+				cleanUserIdFiedList(currentId, "' . $tableElement . '");
+				
+				var lastname = evarisk(this).children("td:nth-child(2)").html();
+				var firstname = evarisk(this).children("td:nth-child(3)").html();
+
+				addUserIdFieldList(lastname + " " + firstname, currentId, "' . $tableElement . '");
+			}
+			else{
+				deleteUserIdFiedList(evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", ""), "' . $tableElement . '");
+			}
+		});
+	});
+</script>';
+
 			$utilisateursMetaBox .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
 		}
+
+		return $utilisateursMetaBox;
+	}
+
+	/**
+	*	Output a table with the different users binded to an element
+	*
+	*	@param mixed $tableElement The element type we want to get the user list for
+	*	@param integer $idElement The element identifier we want to get the user list for
+	*
+	*	@return mixed $utilisateursMetaBox The entire html code to output
+	*/
+	function afficheListeUtilisateur($tableElement, $idElement)
+	{
+		$utilisateursMetaBox = '';
+		$alreadyLinkedUserId = $alreadyLinkedUser = '';
+
+		//on récupère les utilisateurs déjà affectés à l'élément en cours.
+		$listeUtilisateursLies = array();
+		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
+		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0))
+		{
+			foreach($utilisateursLies as $utilisateur)
+			{
+				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
+				$alreadyLinkedUserId .= $utilisateur->id_user . ', ';
+				$currentUser = evaUser::getUserInformation($utilisateur->id_user);
+				$alreadyLinkedUser .= '<div class="selecteduserOP" id="affectedUser' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . '<div class="ui-icon deleteUserFromList" >&nbsp;</div></div>';
+			}
+		}
+		else
+		{
+			$alreadyLinkedUser = '<span id="noUserSelected' . $tableElement . '" style="margin:5px 10px;color:#646464;" >' . __('Aucun utilisateur affect&eacute;', 'evarisk') . '</span>';
+		}
+
+		$utilisateursMetaBox = '
+<input type="hidden" style="width:100%;" name="affectedUserIdList' . $tableElement . '" id="affectedUserIdList' . $tableElement . '" value="' . $alreadyLinkedUserId . '" />
+
+<div class="alignleft" style="width:40%;" >
+	<!-- <span class="userListOutputExplanation" >' . __('Utilisateurs d&eacute;j&agrave; affect&eacute;s', 'evarisk') . '</span> -->
+	<div id="userListOutput' . $tableElement . '" class="userListOutput ui-widget-content clear" >' . $alreadyLinkedUser . '</div>
+</div>
+
+<div class="alignright" style="width:55%;" >
+	<span class="alignright" ><a href="' . get_option('siteurl') . '/wp-admin/user-new.php">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>
+	<div class="clear addLinkUserElement" >
+		<div class="clear" >
+			<span class="searchUserInput ui-icon" ></span>
+			<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="affectedUser' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />
+		</div>
+		<div id="completeUserList' . $tableElement . '" class="completeUserList clear" >' . evaUserLinkElement::afficheListeUtilisateurTable($tableElement, $idElement) . '</div>
+	</div>
+</div>
+
+<script type="text/javascript" >
+	function cleanUserIdFiedList(id, tableElement)
+	{
+		var actualAffectedUserList = evarisk("#affectedUserIdList" + tableElement).val().replace(id + ", ", "");
+		evarisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList + id + ", ");
+
+		if(evarisk("#affectedUser" + tableElement + id)){
+			evarisk("#affectedUser" + tableElement + id).remove();
+		}
+
+		evarisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsLinked");
+		evarisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsNotLinked");
+	}
+	function deleteUserIdFiedList(id, tableElement)
+	{
+		var actualAffectedUserList = evarisk("#affectedUserIdList" + tableElement).val().replace(id + ", ", "");
+		evarisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList );
+		evarisk("#affectedUser" + tableElement + id).remove();
+
+		evarisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsLinked");
+		evarisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsNotLinked");
+	}
+	function addUserIdFieldList(name, id, tableElement)
+	{
+		evarisk(\'<div class="selecteduserOP" onclick="javascript:deleteUserIdFiedList(evarisk(this).attr(\\\'id\\\').replace(\\\'affectedUser\\\' + evarisk(\\\'.userListOutput\\\').attr(\\\'id\\\').replace(\\\'userListOutput\\\', \\\'\\\'), \\\'\\\'), evarisk(\\\'.userListOutput\\\').attr(\\\'id\\\').replace(\\\'userListOutput\\\', \\\'\\\'));" title="' . __('Cliquez pour supprimer', 'evarisk') . '" />\').text(name).prependTo("#userListOutput" + tableElement);
+
+		evarisk("#noUserSelected" + tableElement).remove();
+		evarisk("#userListOutput" + tableElement + " div:first").append(\'<div  onclick="javascript:deleteUserIdFiedList(evarisk(this).parent().attr(\\\'id\\\').replace(\\\'affectedUser\\\' + evarisk(\\\'.userListOutput\\\').attr(\\\'id\\\').replace(\\\'userListOutput\\\', \\\'\\\'), \\\'\\\'), evarisk(\\\'.userListOutput\\\').attr(\\\'id\\\').replace(\\\'userListOutput\\\', \\\'\\\'));" class="ui-icon deleteUserFromList" >&nbsp;</div>\');
+
+		evarisk("#userListOutput" + tableElement + " div:first").attr("id", "affectedUser" + tableElement + id);
+		evarisk("#userListOutput" + tableElement).attr("scrollTop",0);
+	}
+
+	evarisk(document).ready(function(){
+		evarisk("#affectedUser' . $tableElement . '").click(function(){
+			evarisk(this).val("");
+		});
+		evarisk("#affectedUser' . $tableElement . '").blur(function(){
+			evarisk(this).val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
+		});
+
+		evarisk(".selecteduserOP").click(function(){
+			id = evarisk(this).attr("id").replace("affectedUser' . $tableElement . '", "");
+			deleteUserIdFiedList(id, "' . $tableElement . '");
+		});
+
+		evarisk("#affectedUser' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'searchUsers.php");
+		evarisk("#affectedUser' . $tableElement . '").result(function(event, data, formatted){
+			cleanUserIdFiedList(data[1], "' . $tableElement . '");
+			addUserIdFieldList(data[0], data[1], "' . $tableElement . '");
+
+			evarisk("#affectedUser' . $tableElement . '").val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
+		});
+	});
+</script>';
+
 		{//Bouton Enregistrer
-			$idBoutonEnregistrer = 'save_group';
+			$idBoutonEnregistrer = 'save_group' . $tableElement;
 			$scriptEnregistrement = '<script type="text/javascript">
 				evarisk(document).ready(function() {				
-					evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {		
-						var listeUtilisateurs = new Array();
-						evarisk(\'#' . $idTable . ' input\').each(function(){
-							if(evarisk(this).attr("checked"))
-							{
-								listeUtilisateurs.push(evarisk(this).attr("id").replace(new RegExp(/[A-Za-z_\-]+[\d]+[A-Za-z_\-]+/), ""));
-							}
-						});
-						evarisk("#userList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+					evarisk("#' . $idBoutonEnregistrer . '").click(function(){
+						evarisk("#saveButtonLoading' . $tableElement . '").show();
+						evarisk("#saveButtonContainer' . $tableElement . '").hide();
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_LIAISON_USER_ELEMENT . '",
 							"act": "save",
-							"utilisateurs": listeUtilisateurs,
+							"utilisateurs": evarisk("#affectedUserIdList' . $tableElement . '").val(),
 							"tableElement": "' . $tableElement . '",
 							"idElement": "' . $idElement . '"
 						});
 					});
 				});
 				</script>';
-			$boutonEnregistrer = EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 
-			$displayButton = true;
-			$displayedMessage = '';
-			switch($tableElement)
-			{
-				case TABLE_TACHE:
-
-					$displayedMessage = '<div class="alignright button-primary" id="TaskSaveUserListButton" >' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . '</div>';
-
-					$currentTask = new EvaTask($idElement);
-					$currentTask->load();
-					$ProgressionStatus = $currentTask->getProgressionStatus();
-					if( ($ProgressionStatus != '') && ($ProgressionStatus != 'inProgress') && (options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') )
-					{
-						$displayButton = false;
-					}
-				break;
-				case TABLE_ACTIVITE:
-
-					$displayedMessage = '<div class="alignright button-primary" id="TaskSaveUserListButton" >' . __('Cette action est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . '</div>';
-
-					$currentActivity = new EvaActivity($idElement);
-					$currentActivity->load();
-					$ProgressionStatus = $currentActivity->getProgressionStatus();
-					if( ($ProgressionStatus != '') && ($ProgressionStatus != 'inProgress') && (options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') )
-					{
-						$displayButton = false;
-					}
-				break;
-			}
-
-			if($displayButton)
-			{
-				$utilisateursMetaBox .= $boutonEnregistrer;
-			}
-			else
-			{
-				$utilisateursMetaBox .= $displayedMessage;
-			}
+			$utilisateursMetaBox .= '<div class="clear" ><div id="saveButtonLoading' . $tableElement . '" style="display:none;" class="clear alignright" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading in progress" /></div><div id="saveButtonContainer' . $tableElement . '" >' . EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div></div>';
 		}
 
 		return $utilisateursMetaBox;
 	}
 
+	/**
+	*	Get the user linked to an element
+	*
+	*	@param mixed $tableElement The element type we want to get the user list for
+	*	@param integer $idElement The element identifier we want to get the user list for
+	*
+	*	@return object A wordpress object with the user list affected to the given element
+	*/
 	function getAffectedUser($tableElement, $idElement)
 	{
 		global $wpdb;
@@ -182,6 +272,15 @@ class evaUserLinkElement
 		return $wpdb->get_results($query);
 	}
 
+	/**
+	*	Create a link betwwen an element and a user
+	*
+	*	@param mixed $tableElement The element type we want to create a link to
+	*	@param integer $idElement The element identifier we want to create a link to
+	*	@param array $userIdList An user list id to create link with the selected element
+	*
+	*	@return mixed $messageInfo An html output that contain the result message
+	*/
 	function setLinkUserElement($tableElement, $idElement, $userIdList)
 	{
 		global $wpdb;
@@ -199,36 +298,27 @@ class evaUserLinkElement
 			}
 		}
 
-		$deleteAlluser = true;
-		if(is_array($userIdList) && (count($userIdList) > 0))
+		$newUserList = explode(", ", $userIdList);
+
+		foreach($listeUtilisateursLies as $utilisateurs)
 		{
-			$deleteAlluser = false;
-			foreach($userIdList as $userId)
+			if(is_array($newUserList) && !in_array($utilisateurs->id_user, $newUserList))
 			{
-				if(!array_key_exists($userId, $listeUtilisateursLies))
+				$userToTreat .= "('" . $utilisateurs->id . "', 'deleted', '" . $utilisateurs->date_affectation . "', '" . $utilisateurs->id_attributeur . "', NOW(), '" . $current_user->ID . "', '" . $utilisateurs->id_user . "', '" . $idElement . "', '" . $tableElement . "'), ";
+			}
+		}
+		if(is_array($newUserList) && (count($newUserList) > 0))
+		{
+			foreach($newUserList as $userId)
+			{
+				if((trim($userId) != '') && !array_key_exists($userId, $listeUtilisateursLies))
 				{
 					$userToTreat .= "('', 'valid', NOW(), '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $userId . "', '" . $idElement . "', '" . $tableElement . "'), ";
 				}
 			}
 		}
 
-		foreach($listeUtilisateursLies as $utilisateurs)
-		{
-			if(is_array($userIdList) && !in_array($utilisateurs->id_user, $userIdList))
-			{
-				$userToTreat .= "('" . $utilisateurs->id . "', 'deleted', '" . $utilisateurs->date_affectation . "', '" . $utilisateurs->id_attributeur . "', NOW(), '" . $current_user->ID . "', '" . $utilisateurs->id_user . "', '" . $idElement . "', '" . $tableElement . "'), ";
-			}
-			elseif($deleteAlluser)
-			{
-				$userToTreat .= "('" . $utilisateurs->id . "', 'deleted', '" . $utilisateurs->date_affectation . "', '" . $utilisateurs->id_attributeur . "', NOW(), '" . $current_user->ID . "', '" . $utilisateurs->id_user . "', '" . $idElement . "', '" . $tableElement . "'), ";
-			}
-		}
-
-		$messageInfo = 
-'<script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").addClass("updated");';
-
+		$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong></p>');
 		$endOfQuery = trim(substr($userToTreat, 0, -2));
 		if($endOfQuery != "")
 		{
@@ -240,30 +330,23 @@ class evaUserLinkElement
 			);
 			if($wpdb->query($query))
 			{
-				$messageInfo .= '
-		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
+				$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>');
 			}
 			else
 			{
-				$messageInfo .= '
-		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
+				$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"');
 			}
 		}
-		else
-		{
-			$messageInfo .= '
-		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong></p>') . '");';
-		}
 
-		$messageInfo .= '
-		evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").show();
-		setTimeout(function(){
-			evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").removeClass("updated");
-			evarisk("#messageInfo_' . $tableElement . $idElement . '_affectUser").hide();
-		},7500);
+		echo 
+'<script type="text/javascript">
+	evarisk(document).ready(function(){
+		actionMessageShow("#messageInfo_' . $tableElement . $idElement . '_affectUser", "' . $message . '");
+		setTimeout(\'actionMessageHide("#messageInfo_' . $tableElement . $idElement . '_affectUser")\',7500);
+		evarisk("#saveButtonLoading' . $tableElement . '").hide();
+		evarisk("#saveButtonContainer' . $tableElement . '").show();
 	});
 </script>';
-		echo $messageInfo;
 	}
 
 }

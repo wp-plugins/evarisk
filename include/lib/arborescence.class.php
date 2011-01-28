@@ -68,7 +68,7 @@ class Arborescence {
 		return $resultat;
 	}
 	
-	static function getPere($table, $element, $where='Status=\'Valid\'')
+	static function getPere($table, $element, $where="Status='Valid'")
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_row( "
@@ -85,12 +85,11 @@ class Arborescence {
 			AND table2.limiteGauche < " . $element->limiteGauche . "
 			AND table2.limiteDroite > " . $element->limiteDroite . "
 			AND table1.limiteGauche < table2.limiteGauche
-		)
-");
+		)");
 		return $resultat;
 	}
 	
-	static function getFils($table, $element, $order="id ASC", $numeroPage=null, $nombreElementsParPage=null, $where='Status=\'Valid\'')
+	static function getFils($table, $element, $order = "id ASC", $numeroPage = null, $nombreElementsParPage = null, $where = " Status='Valid' ")
 	{	
 		global $wpdb;
 		$limit = "";
@@ -99,22 +98,24 @@ class Arborescence {
 			$limit = "
 		LIMIT " . ($numeroPage - 1) . ", " . $nombreElementsParPage;
 		}
-		$resultat = $wpdb->get_results(
-		"SELECT * 
-		FROM " . $table . " table1 
+		$query = "SELECT * 
+		FROM " . $table . " AS table1 
 		WHERE " . $where . "
-		AND table1.limiteGauche > " . $element->limiteGauche . " 
-		AND table1.limiteDroite < " . $element->limiteDroite . " 
-		AND NOT EXISTS ( 
-			SELECT * 
-			FROM " . $table . " table2 
-			WHERE " . $where . "
-			AND table2.limiteGauche > " . $element->limiteGauche . " 
-			AND table2.limiteDroite < " . $element->limiteDroite . " 
-			AND table1.limiteGauche > table2.limiteGauche 
-			AND table1.limiteDroite < table2.limiteDroite
-		)
-		ORDER BY " . $order . $limit);
+			AND table1.limiteGauche > " . $element->limiteGauche . " 
+			AND table1.limiteDroite < " . $element->limiteDroite . " 
+			AND NOT EXISTS (
+				SELECT * 
+				FROM " . $table . " AS table2 
+				WHERE " . $where . "
+					AND table2.limiteGauche > " . $element->limiteGauche . " 
+					AND table2.limiteDroite < " . $element->limiteDroite . " 
+					AND table1.limiteGauche > table2.limiteGauche 
+					AND table1.limiteDroite < table2.limiteDroite
+			)
+		ORDER BY " . $order . $limit;
+
+		$resultat = $wpdb->get_results($query);
+
 		return $resultat;
 	}
 	

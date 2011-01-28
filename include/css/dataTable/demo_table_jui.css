@@ -101,7 +101,7 @@ table.display thead th {
 }
 
 .dataTables_filter {
-	width: 50%;
+	/*	width: 50%;	*/
 	float: right;
 	text-align: right;
 }

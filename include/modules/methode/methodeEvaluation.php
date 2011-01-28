@@ -159,15 +159,32 @@ else
 ?>
 
 <script type="text/javascript">
-<!--
-evarisk(document).ready(function() {
-	evarisk('#table_methode').dataTable({"sPaginationType": 'full_numbers', "bAutoWidth": false, "aoColumns": [
-{ "bSortable": false },
-{ "bSortable": true, "sType": "html" },
-{ "bSortable": false }],
-"aaSorting": [[1,'asc']]});
-} )
-//-->
+	evarisk(document).ready(function(){
+		evarisk('#table_methode').dataTable({
+			"sPaginationType": 'full_numbers', 
+			"bAutoWidth": false, 
+			"bInfo": false,	
+			"aoColumns": [
+				{ "bSortable": false },
+				{ "bSortable": true, "sType": "html" },
+				{ "bSortable": false }
+			],
+			"aaSorting": [[1,'asc']],
+			"oLanguage": {
+				"sSearch": "<span class='ui-icon searchDataTableIcon' >&nbsp;</span>",
+				"sEmptyTable": "<?php echo __('Aucun risque trouv&eacute;', 'evarisk'); ?>",
+				"sLengthMenu": "<?php echo __('Afficher _MENU_ risques', 'evarisk'); ?>",
+				"sInfoEmpty": "<?php echo __('Aucun risque', 'evarisk'); ?>",
+				"sZeroRecords": "<?php echo __('Aucun risque trouv&eacute;', 'evarisk'); ?>",
+				"oPaginate": {
+					"sFirst": "<?php echo __('Premi&eacute;re', 'evarisk'); ?>",
+					"sLast": "<?php  echo __('Derni&egrave;re', 'evarisk'); ?>",
+					"sNext": "<?php echo __('Suivante', 'evarisk'); ?>",
+					"sPrevious": "<?php  echo __('Pr&eacute;c&eacute;dente', 'evarisk'); ?>"
+				}
+			}
+		});
+	});
 </script>
 <div class="wrap">
 	<div class="icon32"><img alt="evarisk Icon" src=<?php echo EVA_METHODE_ICON ?> title="evariskIcon"/></div>

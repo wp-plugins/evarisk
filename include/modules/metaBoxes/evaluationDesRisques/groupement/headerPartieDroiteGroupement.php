@@ -84,9 +84,7 @@
 			if($groupementPere->nom != "Groupement Racine")
 				$miniFilAriane = $miniFilAriane . $groupementPere->nom;
 			$renduPage = '<div id="enTeteDroite">
-					';
-			$renduPage = $renduPage . '
-					<div id="Informations">
+				<div id="Informations">
 					<div id="nomElement" class="titleDiv">';
 			$idTitreGp = 'titreGp' . $idElement;
 			$groupsNames = EvaGroupement::getGroupementsName();
@@ -95,7 +93,7 @@
 			$valeurActuelleIn = 'evarisk("#' . $idTitreGp . '").val() in {';
 			foreach($groupsNames as $groupName)
 			{
-				$valeurActuelleIn = $valeurActuelleIn . "'" . addslashes($groupName) . "':'', ";
+				$valeurActuelleIn .= "'" . addslashes($groupName) . "':'', ";
 			}
 			$valeurActuelleIn = substr($valeurActuelleIn, 0, strlen($valeurActuelleIn) - 2);
 			$valeurActuelleIn = $valeurActuelleIn . "}";
@@ -104,40 +102,52 @@
 						evarisk(document).ready(function(){
 							evarisk("#' . $idButton . '").hide();
 							evarisk("#' . $idButton . '").click(function(){
-								evarisk("#nom_groupement").val(evarisk("#' . $idTitreGp . '").val());
-								evarisk("#save").click();
+								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+								{
+									"post": "true", 
+									"table": "' . TABLE_GROUPEMENT . '",
+									"act": "updateByField",
+									"id": ' . $idElement . ',
+									"whatToUpdate": "nom",
+									"whatToSet": evarisk("#' . $idTitreGp . '").val()
+								});
 							});
 						})
 					</script>';
-			$renduPage = $renduPage . EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
+			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', __('Enregistrer'), null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
 			$script = '<script type="text/javascript">
 						evarisk(document).ready(function(){
+							evarisk("#' . $idTitreGp . '").focus(function(){
+								evarisk(this).select();
+								evarisk("#' . $idTitreGp . '").addClass("titleInfoSelected");
+							});
+							evarisk("#' . $idTitreGp . '").blur(function(){
+								if(!evarisk("#' . $idButton . '").is(":visible")){
+									evarisk("#' . $idTitreGp . '").removeClass("titleInfoSelected");
+								}
+							});
 							evarisk("#' . $idTitreGp . '").keyup(function(){
 								evarisk("#nom_groupement").val(evarisk("#' . $idTitreGp . '").val());
-								if(evarisk("#nom_groupement").val() != "")
-								{
+								if(evarisk("#nom_groupement").val() != ""){
 									evarisk("#nom_groupement").removeClass("form-input-tip");
 								}
-								else
-								{
+								else{
 									evarisk("#nom_groupement").addClass("form-input-tip");							
 								}
-								if(' . $valeurActuelleIn . ')
-								{
+								if(' . $valeurActuelleIn . '){
 									evarisk("#' . $idButton . '").hide();
 								}
-								else
-								{
+								else{
 									evarisk("#' . $idButton . '").show();
 								}
 							});
 						})
 					</script>';
-			$renduPage = $renduPage . EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', '','85%', $script);
-			$renduPage = $renduPage . '</div>
+			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', 'alignright','85%', $script, 'left') . '
+					</div>
 					<div class="mainInfosDiv">
 						<div class="mainInfos1 alignleft" style="width: 68%">
-							<p class="">
+							<p>
 								<span id="miniFilAriane">' . __('Hi&eacute;rarchie', 'evarisk') . ' : ' . $miniFilAriane . '</span><br />
 								' . $texteResponsable . ' : <strong>' . $nomResponsables . '</strong><br />
 							</p>
@@ -149,10 +159,11 @@
 							</p>
 						</div>
 					</div>
-				</div>';
-			$renduPage = $renduPage . '</div>
-				<br class="clear" />';
+				</div>
+			</div>
+			<br class="clear" />';
 			echo $renduPage;
 		}
+
 	}
 ?>

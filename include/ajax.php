@@ -139,7 +139,7 @@ if($_REQUEST['post'] == 'true')
 							}
 							if(!$sourceIsParentOfDest)
 							{
-								$pereActu = Arborescence::getPere($_REQUEST['nom'], $groupement);
+								$pereActu = Arborescence::getPere($_REQUEST['table'], $groupement);
 								if($pereActu->id != $idPere)
 								{
 									$_REQUEST['act'] = 'update';
@@ -284,6 +284,50 @@ if($_REQUEST['post'] == 'true')
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
 					}
 					break;
+					case 'updateByField':
+					{
+						$id_Groupement = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['id']));
+						$whatToUpdate = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['whatToUpdate']));
+						$whatToSet = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['whatToSet']));
+
+						switch($whatToUpdate){
+							case 'nom':
+							{
+								$messageContainerId = 'message';
+								$actionAfterSuccess = 'evarisk("#validChangeTitre").hide();
+			evarisk("#titreGp' . $id_Groupement . '").removeClass("titleInfoSelected");
+			evarisk("#node-mainTable-' . $id_Groupement . '-name span.nomNoeudArbre").html("' . $whatToSet . '");';
+							}
+							break;
+							default:
+							{
+								$messageContainerId = 'message';
+								$actionAfterSuccess = '';
+							}
+							break;
+						}
+
+						$updateGroupement = EvaGroupement::updateGroupementByField($id_Groupement, $whatToUpdate, $whatToSet);
+						if($updateGroupement)
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Sauvegarde r&eacute;ussie', 'evarisk') . '</strong></p>');
+						}
+						else
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La sauvegarde a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
+							$actionAfterSuccess = '';
+						}
+	echo 
+	'<script type="text/javascript">
+		evarisk(document).ready(function(){
+			actionMessageShow("#' . $messageContainerId . '", "' . $messageInfo . '");
+			setTimeout(\'actionMessageHide("#' . $messageContainerId . '")\',7500);
+
+			' . $actionAfterSuccess . '
+		});
+	</script>';
+					}
+					break;
 				}
 				break;
 			case TABLE_UNITE_TRAVAIL:
@@ -292,11 +336,17 @@ if($_REQUEST['post'] == 'true')
 					case 'save':
 					case 'update':
 					{
-						switch($_REQUEST['act'])
+						$previousAct = $_REQUEST['act'];
+						$workingUnitResult = false;
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteTravailPersistance.php' );
+						if($workingUnitResult)
 						{
-							case 'save':
-								$action = __('sauvegard&eacute;e', 'evarisk');
-								$afterActionList = '
+							switch($previousAct)
+							{
+								case 'save':
+								{
+									$action = __('sauvegard&eacute;e', 'evarisk');
+									$afterActionList = '
 										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 										{
 											"post": "true", 
@@ -308,31 +358,32 @@ if($_REQUEST['post'] == 'true')
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});';
-								$afterActionTable = '
-										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-										{
-											"post": "true", 
-											"table": "' . TABLE_UNITE_TRAVAIL . '",
-											"id": "' . $_REQUEST['id'] . '",
-											"page": evarisk("#pagemainPostBoxReference").val(),
-											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
-											"act": "edit",
-											"partie": "left",
-											"menu": evarisk("#menu").val(),
-											"affichage": "affichageTable",
-											"partition": "tout"
-										});';
+									$afterActionTable = '
+											evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+											{
+												"post": "true", 
+												"table": "' . TABLE_UNITE_TRAVAIL . '",
+												"id": "' . $_REQUEST['id'] . '",
+												"page": evarisk("#pagemainPostBoxReference").val(),
+												"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+												"act": "edit",
+												"partie": "left",
+												"menu": evarisk("#menu").val(),
+												"affichage": "affichageTable",
+												"partition": "tout"
+											});';
+								}
 								break;
-							case 'update':
-								$action = __('mise &agrave; jour', 'evarisk');
-								$afterActionList = '';
-								$afterActionTable = '';
+								case 'update':
+								{
+									$action = __('mise &agrave; jour', 'evarisk');
+									$afterActionList = '
+		evarisk("#leaf-' . $_REQUEST['id'] . ' span.nomFeuilleArbre").html("' . $_REQUEST['nom_unite_travail'] . '");';
+									$afterActionTable = '';
+								}
 								break;
-						}
-						$workingUnitResult = false;
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteTravailPersistance.php' );
-						if($workingUnitResult)
-						{
+							}
+
 							$messageInfo = '
 <script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -341,50 +392,52 @@ if($_REQUEST['post'] == 'true')
 		
 		evarisk("#rightEnlarging").show();
 		evarisk("#equilize").click();
-		evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-		if("' . $_REQUEST['affichage'] . '" == "affichageTable")
+		evarisk("#partieEdition").html(evarisk("#loadingImg").html());';
+							if($_REQUEST['affichage'] == 'affichageTable')
+							{
+								$messageInfo .= '
+		if(evarisk("#filAriane :last-child").is("label"))
+			evarisk("#filAriane :last-child").remove();
+		evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
+		if(evarisk("#filAriane :last-child").is("label"))
+			evarisk("#filAriane :last-child").remove();
+		evarisk("#rightEnlarging").show();
+		evarisk("#equilize").click();
+		evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
+		evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
-			if(evarisk("#filAriane :last-child").is("label"))
-				evarisk("#filAriane :last-child").remove();
-			evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
-			if(evarisk("#filAriane :last-child").is("label"))
-				evarisk("#filAriane :last-child").remove();
-			evarisk("#rightEnlarging").show();
-			evarisk("#equilize").click();
-			evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
-				"post": "true", 
-				"table": "' . TABLE_UNITE_TRAVAIL . '",
-				"id": "' . $_REQUEST['id'] . '",
-				"page": evarisk("#pagemainPostBoxReference").val(),
-				"idPere": evarisk("#identifiantActuellemainPostBox").val(),
-				"act": "edit",
-				"partie": "right",
-				"menu": evarisk("#menu").val(),
-				"affichage": "affichageTable",
-				"partition": "tout"
-			});
-			' . $afterActionTable . '
-		}
-		else
+			"post": "true", 
+			"table": "' . TABLE_UNITE_TRAVAIL . '",
+			"id": "' . $_REQUEST['id'] . '",
+			"page": evarisk("#pagemainPostBoxReference").val(),
+			"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+			"act": "edit",
+			"partie": "right",
+			"menu": evarisk("#menu").val(),
+			"affichage": "affichageTable",
+			"partition": "tout"
+		});
+		' . $afterActionTable;
+							}
+							else
+							{
+								$messageInfo .= '
+		var expanded = new Array();
+		evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+		evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
-			var expanded = new Array();
-			evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
-				"post": "true", 
-				"table": "' . TABLE_UNITE_TRAVAIL . '",
-				"act": "edit",
-				"id": "' . $_REQUEST['id'] . '",
-				"partie": "right",
-				"menu": evarisk("#menu").val(),
-				"affichage": "affichageListe",
-				"expanded": expanded
-			});
-			' . $afterActionList . '
-		}
-		evarisk("#leaf-' . $_REQUEST['id'] . ' td:first-child").children("span.nomFeuilleArbre").html("' . $_REQUEST['nom_unite_travail'] . '");
+			"post": "true", 
+			"table": "' . TABLE_UNITE_TRAVAIL . '",
+			"act": "edit",
+			"id": "' . $_REQUEST['id'] . '",
+			"partie": "right",
+			"menu": evarisk("#menu").val(),
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+		' . $afterActionList;
+							}
+							$messageInfo .= '
 	});
 </script>';
 						}
@@ -412,6 +465,50 @@ if($_REQUEST['post'] == 'true')
 								});
 							</script>';
 						require_once(EVA_MODULES_PLUGIN_DIR . 'partieDroite.php');
+					}
+					break;
+					case 'updateByField':
+					{
+						$id_unite = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['id']));
+						$whatToUpdate = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['whatToUpdate']));
+						$whatToSet = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['whatToSet']));
+
+						switch($whatToUpdate){
+							case 'nom':
+							{
+								$messageContainerId = 'message';
+								$actionAfterSuccess = 'evarisk("#validChangeTitre").hide();
+			evarisk("#titreWU' . $id_unite . '").removeClass("titleInfoSelected");
+			evarisk("#leaf-' . $id_unite . ' span.nomFeuilleArbre").html("' . $whatToSet . '");';
+							}
+							break;
+							default:
+							{
+								$messageContainerId = 'message';
+								$actionAfterSuccess = '';
+							}
+							break;
+						}
+
+						$updateGroupement = UniteDeTravail::updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet);
+						if($updateGroupement)
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Sauvegarde r&eacute;ussie', 'evarisk') . '</strong></p>');
+						}
+						else
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La sauvegarde a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
+							$actionAfterSuccess = '';
+						}
+	echo 
+	'<script type="text/javascript">
+		evarisk(document).ready(function(){
+			actionMessageShow("#' . $messageContainerId . '", "' . $messageInfo . '");
+			setTimeout(\'actionMessageHide("#' . $messageContainerId . '")\',7500);
+
+			' . $actionAfterSuccess . '
+		});
+	</script>';
 					}
 					break;
 				}
@@ -700,7 +797,8 @@ if($_REQUEST['post'] == 'true')
 						{
 							$moreMessage = '
 	actionMessageShow("#' . $currentId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
-	setTimeout(\'evarisk("#' . $currentId . 'content").html("");evarisk("#' . $currentId . 'content").removeClass("updated");\',3000);';
+	setTimeout(\'evarisk("#' . $currentId . 'content").html("");evarisk("#' . $currentId . 'content").removeClass("updated");\',3000);
+	goTo("#' . $currentId . '");';
 						}
 						else
 						{
@@ -713,7 +811,8 @@ if($_REQUEST['post'] == 'true')
 						evaPhoto::associatePicture(TABLE_RISQUE, $idRisque, str_replace('picture', '', str_replace('_', '', $currentId)));
 						echo '
 <script type="text/javascript" >
-	evarisk("#addRiskByPictureButtonId' . $currentId . '").click();
+	evarisk("#addRiskForPictureText' . $currentId . '").html("' . __('Ajouter un risque pour cette photo', 'evarisk') . '");
+	evarisk("#divDangerContainerSwitchPic' . $currentId . '").attr("src").replace("collapse", "expand");
 	evarisk("#riskAssociatedToPicture' . $currentId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 	{
 		"post":"true",
@@ -875,7 +974,7 @@ if($_REQUEST['post'] == 'true')
 							$script .= '
 					evarisk("#' . $currentId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), "idRisque": "0", "formId": "' . $currentId . '"});';
 							$addRiskByPictureForm .= '
-				<div id="' . $currentId . 'divVariablesFormRisque"></div><!-- /' . $currentId . 'divVariablesFormRisque -->';
+				<div id="' . $currentId . 'divVariablesFormRisque" class="clear" ></div><!-- /' . $currentId . 'divVariablesFormRisque -->';
 						}
 
 						{//Description
@@ -2303,6 +2402,23 @@ if($_REQUEST['post'] == 'true')
 						echo $newOptionValue . $lineScript;
 					}
 					break;
+					case 'save':
+					{
+						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
+						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
+						$optionStatus = eva_tools::IsValid_Variable($_REQUEST['optionStatus']);
+
+						$createOption = options::createOption($optionName, $optionValue, $optionStatus);
+					}
+					break;
+					case 'updateFromName':
+					{
+						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
+						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
+
+						$createOption = options::updateOptionFromName($optionName, $optionValue);
+					}
+					break;
 				}
 				break;
 			case TABLE_LIAISON_USER_ELEMENT:
@@ -2311,7 +2427,6 @@ if($_REQUEST['post'] == 'true')
 				{
 					case 'save':
 						evaUserLinkElement::setLinkUserElement($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['utilisateurs']);
-						echo evaUserLinkElement::afficheListeUtilisateur($_REQUEST['tableElement'], $_REQUEST['idElement']);
 					break;
 				}
 				break;
@@ -2525,18 +2640,15 @@ if($_REQUEST['post'] == 'true')
 							evarisk("#tableProvenance_activite").val("' . $_REQUEST['tableProvenance'] . '");
 							evarisk("#save_activite").unbind("click");
 							evarisk("#save_activite").click(function(){
-								if(evarisk(\'#nom_activite\').is(".form-input-tip"))
-								{
+								if(evarisk(\'#nom_activite\').is(".form-input-tip")){
 									evarisk(\'#nom_activite\').val("");
 									evarisk(\'#nom_activite\').removeClass(\'form-input-tip\');
 								}
 								valeurActuelle = evarisk("#nom_activite").val();
-								if(valeurActuelle == "")
-								{
+								if(valeurActuelle == ""){
 									alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
 								}
-								else
-								{						
+								else{
 									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 										"nom": "addAction",
 										"nom_activite": evarisk("#nom_activite").val(),

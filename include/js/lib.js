@@ -114,7 +114,7 @@ function checkdate (month, day, year) {
 }
 
 
-function changementPage(partie, table, page, idPere, affichage, partition)
+function changementPage(partie, table, page, idPere, affichage, option)
 {
 	var partContainer = 'partieEdition';
 	if(partie == 'left')
@@ -123,18 +123,34 @@ function changementPage(partie, table, page, idPere, affichage, partition)
 	}
 
 	evarisk("#" + partContainer).html(	evarisk("#loadingImg").html()	);
-	evarisk("#" + partContainer).load(EVA_AJAX_FILE_URL, 
-	{
-		"post": "true", 
-		"table": table,
-		"act": "changementPage",
-		"page": page,
-		"idPere": idPere,
-		"partie": partie,
-		"affichage": affichage,
-		"partition": "main",
-		"menu": evarisk("#menu").val()
-	});
+	if(affichage == 'affichageTable'){
+		evarisk("#" + partContainer).load(EVA_AJAX_FILE_URL, 
+		{
+			"post": "true", 
+			"table": table,
+			"act": "changementPage",
+			"page": page,
+			"idPere": idPere,
+			"partie": partie,
+			"affichage": affichage,
+			"partition": option,
+			"menu": evarisk("#menu").val()
+		});
+	}
+	else{
+		evarisk("#" + partContainer).load(EVA_AJAX_FILE_URL, 
+		{
+			"post": "true", 
+			"table": table,
+			"act": "changementPage",
+			"page": page,
+			"idPere": idPere,
+			"partie": partie,
+			"affichage": affichage,
+			"expanded": option,
+			"menu": evarisk("#menu").val()
+		});
+	}
 }
 
 function tabChange(divId, tabId)
@@ -223,4 +239,17 @@ function actionMessageHide(idToHide)
 	evarisk(idToHide).hide();
 	evarisk(idToHide).html("");
 	evarisk(idToHide).removeClass("updated");
+}
+
+function goTo(ancre){
+	var speed = 1000;
+	jQuery("html,body").animate({scrollTop:jQuery(ancre).offset().top},speed,"swing",function(){
+		if(ancre != "body")
+				window.location.hash = ancre;
+		else
+				window.location.hash = "#";
+		jQuery(ancre).attr("tabindex","-1");
+		jQuery(ancre).focus();
+		jQuery(ancre).removeAttr("tabindex");
+	});
 }

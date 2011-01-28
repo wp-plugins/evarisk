@@ -75,7 +75,7 @@ function eva_add_admin_js()
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/lib.js"></script>
 	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jQueryUI/js/jquery-ui-1.7.2.custom.min.js"></script>
+	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/i18n/jquery-ui-i18n.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/ui.gantt.min.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js"></script>
@@ -87,6 +87,7 @@ function eva_add_admin_js()
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/role.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/eav.js"></script>
 	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.editable.js"></script>
+	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js"></script>
 	<script type="text/javascript" src="' . EVA_PLUGIN_DIR . '../../../wp-admin/js/postbox.js"></script>
 
 	
@@ -99,7 +100,8 @@ function eva_add_admin_js()
 		@import "' . EVA_INC_PLUGIN_URL . 'css/utilisateur.css";
 		@import "' . EVA_INC_PLUGIN_URL . 'css/eav.css";
 		@import "' . EVA_INC_PLUGIN_URL . 'css/role.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/documentUnique.css";";
+		@import "' . EVA_INC_PLUGIN_URL . 'css/documentUnique.css";
+		@import "' . EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css";
 	</style>
 
 	<script type="text/javascript" >

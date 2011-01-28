@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.0.4
-Stable tag: 5.1.2.1
+Stable tag: 5.1.2.2
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -59,6 +59,31 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 9. Ecran d'ajout d'un risque avec la liste de l'INRS et 4 risques propre &agrave; l'entreprise, on voit les jauges qui permettent d'&eacute;valuer, Gravit&eacute;, Exposition, Occurrence, Formation, Protection.
 
 == Changelog ==
+
+= Version 5.1.2.2 =
+
+Am&eacute;liorations :
+
+* Ajout de la box permettant d'affecter des utilisateurs &agrave; un &eacute;l&eacute;ment (groupement, unit&eacute; de travail, &eacute;valuation, ...)
+* Changement de l'ergonomie de la box d'affectation des utilisateurs &agrave; un &eacute;l&eacute;ment
+* Ajout d'une interface pour ajouter des utilisateurs rapidement &agrave; partir d'un nom et d'un pr&eacute;nom
+* Supprimer l'affichage de la box bilan sur unit&eacute; de travail
+* Remonter au niveau de la box des risques apr&egrave;s sauvegarde
+* Traduction des Datatables
+
+Corrections:
+
+* Correction de bugs de la box d'affectation des utilisateurs &agrave; un &eacute;l&eacute;ment
+* V&eacute;rification du rechargement apr&egrave;s ajout/edition/suppression d'un &eacute;l&eacute;ment
+* V&eacute;rifier le comportement de l'interface apr&egrave;s un drag and drop
+* V&eacute;rifier le comportement lors de la suppression d'un groupement
+* Enregistrement du drag and drop d'un groupement
+
+Ergonomie:
+
+* Am&eacute;lioration ergonomie de la box de liaison entre un utilisateur et un &eacute;l&eacute;ment
+* Am&eacute;liorer l'ergonomie de l'&eacute;dition du nom de l'&eacute;l&eacute;ment dans la box r&eacute;capitulatif
+* Changer la taille des pictos dans les arbres
 
 = Version 5.1.2.1 =
 

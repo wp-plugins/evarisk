@@ -397,6 +397,27 @@ class EvaGroupement {
 			Arborescence::deplacerElements(TABLE_GROUPEMENT, $racine, $groupementFils, $groupementDestination);
 		}
 	}
+
+	/**
+	 * Update the group which is the identifier
+	 *
+	 * @param string $id_Groupement The group identifier we want to update
+	 * @param string $whatToUpdate The group information we want to update
+	 * @param string $whatToSet The value of the information we want to update
+	 */
+	function updateGroupementByField($id_Groupement, $whatToUpdate, $whatToSet)
+	{
+		global $wpdb;
+		
+		$query = $wpdb->prepare(
+			"UPDATE " . TABLE_GROUPEMENT . " 
+				SET " . $whatToUpdate . " = '%s' 
+			WHERE id='" . $id_Groupement . "'",
+			 $whatToSet
+		);
+
+		return $wpdb->query($query);
+	}
 	
 	/**
 	  * Set the status of the group wich is the identifier to Delete 

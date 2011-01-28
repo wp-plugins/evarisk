@@ -235,11 +235,11 @@ function getMainPostBoxBody($arguments)
 			evarisk(document).ready(function() {
 				evarisk(\'#' . $postBoxId . ' .inside\').each(function(){evarisk(this).addClass("noPadding");});
 				evarisk(\'#filAriane\').hide();';
-		if(count($arguments['expanded']) > 0)
+		if(is_array($arguments['expanded']) && (count($arguments['expanded']) > 0))
 			foreach($arguments['expanded'] as $expanded)
 			{
 				$scriptAfterEvaluationRisques= $scriptAfterEvaluationRisques . '
-					evarisk("#' . $expanded . ' span").click();';
+					evarisk("#' . $expanded . ' span.expander").click();';
 			}
 		$scriptAfterEvaluationRisques= $scriptAfterEvaluationRisques . '
 			});

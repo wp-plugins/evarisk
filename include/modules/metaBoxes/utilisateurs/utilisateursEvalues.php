@@ -14,6 +14,7 @@
 
 		echo 
 			'<div id="message' . TABLE_LIAISON_USER_EVALUATION . '" class="updated fade" style="cursor:pointer; display:none;"></div>
+			<div class="margin16" >test</div>
 			<div id="listeEmployesEvalues" >' . $afficheListeUtilisateurs . '</div>';
 	}
 

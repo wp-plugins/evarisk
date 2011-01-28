@@ -82,9 +82,9 @@
 			$nomResponsables = substr($nomResponsables, 0, strlen($nomResponsables) - 2);
 			if($groupementPere->nom != "Groupement Racine")
 				$miniFilAriane = $miniFilAriane . $groupementPere->nom;
-			$renduPage = '<div id="enTeteDroite">';
-			$renduPage = $renduPage . '
-					<div id="Informations">
+			$renduPage = 
+			'<div id="enTeteDroite">
+				<div id="Informations">
 					<div id="nomElement" class="titleDiv">';
 			$idTitreWU = 'titreWU' . $idElement;
 			$workingUnitsNames = UniteDeTravail::getWorkingUnitsName();
@@ -102,37 +102,49 @@
 						evarisk(document).ready(function(){
 							evarisk("#' . $idButton . '").hide();
 							evarisk("#' . $idButton . '").click(function(){
-								evarisk("#nom_unite_travail").val(evarisk("#' . $idTitreWU . '").val());
-								evarisk("#save").click();
+								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+								{
+									"post": "true", 
+									"table": "' . TABLE_UNITE_TRAVAIL . '",
+									"act": "updateByField",
+									"id": ' . $idElement . ',
+									"whatToUpdate": "nom",
+									"whatToSet": evarisk("#' . $idTitreWU . '").val()
+								});
 							});
 						})
 					</script>';
-			$renduPage = $renduPage . EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
+			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
 			$script = '<script type="text/javascript">
 						evarisk(document).ready(function(){
+							evarisk("#' . $idTitreWU . '").focus(function(){
+								evarisk(this).select();
+								evarisk("#' . $idTitreWU . '").addClass("titleInfoSelected");
+							});
+							evarisk("#' . $idTitreWU . '").blur(function(){
+								if(!evarisk("#' . $idButton . '").is(":visible")){
+									evarisk("#' . $idTitreWU . '").removeClass("titleInfoSelected");
+								}
+							});
 							evarisk("#' . $idTitreWU . '").keyup(function(){
 								evarisk("#nom_unite_travail").val(evarisk("#' . $idTitreWU . '").val());
-								if(evarisk("#nom_unite_travail").val() != "")
-								{
+								if(evarisk("#nom_unite_travail").val() != ""){
 									evarisk("#nom_unite_travail").removeClass("form-input-tip");
 								}
-								else
-								{
+								else{
 									evarisk("#nom_unite_travail").addClass("form-input-tip");							
 								}
-								if(' . $valeurActuelleIn . ')
-								{
+								if(' . $valeurActuelleIn . '){
 									evarisk("#' . $idButton . '").hide();
 								}
-								else
-								{
+								else{
 									evarisk("#' . $idButton . '").show();
 								}
 							});
 						})
 					</script>';
-			$renduPage = $renduPage . EvaDisplayInput::afficherInput('text', $idTitreWU, $nomUniteTravail, null, null, $idTitreWU, false, false, 255,'titleInfo', '','85%', $script);
-			$renduPage = $renduPage . '</div>
+			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreWU, $nomUniteTravail, null, null, $idTitreWU, false, false, 255,'titleInfo', '','85%', $script, 'left') . '
+					</div>
 					<div class="mainInfosDiv">
 						<div class="mainInfos1 alignleft" style="width: 68%">
 							<p class="">
@@ -147,10 +159,12 @@
 							</p>
 						</div>
 					</div>
-				</div>';
-			$renduPage = $renduPage . '</div>
-				<br class="clear" />';
+				</div>
+			</div>
+			<br class="clear" />';
+
 			echo $renduPage;
 		}
 	}
+
 ?>

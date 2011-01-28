@@ -128,6 +128,7 @@ class evaUser
 
 				unset($valeurs);
 				$valeurs['user_id'] = $user_info->ID;
+				$valeurs['user_registered'] = $user_info->user_registered;
 				if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) )
 				{
 					$valeurs['user_lastname'] = $user_info->user_lastname;
@@ -222,6 +223,41 @@ class evaUser
 		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_EVALUATION . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
 		
 		return $wpdb->get_results($queryCleanGroupBind);
+	}
+
+	/**
+	*	Get the wordpress' user list
+	*
+	*	@return array $userlist An object containing the different subscriber
+	*/
+	function getUserInformation($userId)
+	{
+		$listeComplete = array();
+
+		$user_info = get_userdata($userId);
+
+		unset($valeurs);
+		$valeurs['user_id'] = $user_info->ID;
+		if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) )
+		{
+			$valeurs['user_lastname'] = $user_info->user_lastname;
+		}
+		else
+		{
+			$valeurs['user_lastname'] = '';
+		}
+		if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) )
+		{
+			$valeurs['user_firstname'] = $user_info->user_firstname;
+		}
+		else
+		{
+			$valeurs['user_firstname'] = $user_info->user_nicename;
+		}
+
+		$listeComplete[$user_info->ID] = $valeurs;
+
+		return $listeComplete;
 	}
 
 }

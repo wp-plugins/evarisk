@@ -1472,6 +1472,12 @@ function evarisk_creationTables()
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(EvaVersion::getVersion('base_evarisk') <= 30)
+		{//Renommage de la valeur du champ "table_element" pour la liaison entre les utilisateurs et une évaluation des risques
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 ?>

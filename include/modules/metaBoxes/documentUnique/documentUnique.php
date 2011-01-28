@@ -24,7 +24,9 @@
 			$idElement = $arguments['idElement'];
 			$tableElement = $arguments['tableElement'];
 
-			$scriptRisque = 
+			if($tableElement == TABLE_GROUPEMENT)
+			{
+				$scriptRisque = 
 			'<script type="text/javascript">
 				evarisk(document).ready(function(){
 					evarisk("#ongletRisquesLignes").click(function(){
@@ -89,7 +91,7 @@
 				});
 			</script>';
 
-			$corpsPostBoxRisque = $scriptRisque . '
+				$corpsPostBoxRisque = $scriptRisque . '
 				<div id="message' . TABLE_DUER . '" class="updated fade" style="cursor:pointer; display:none;"></div>
 				<ul class="eva_tabs">
 					<li id="ongletRisquesLignes" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower( __('Risques unitaires', 'evarisk'))) . '</label></li>
@@ -101,6 +103,18 @@
 				<div id="divRisquesUnites" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divDocumentUnique" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divHistoriqueDocumentUnique" class="eva_tabs_panel" style="display:none"></div>';
+			}
+			else
+			{
+				$corpsPostBoxRisque = '
+<div id="message' . TABLE_DUER . '" class="updated fade" style="cursor:pointer; display:none;"></div>
+<ul class="eva_tabs">
+	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>
+	<li id="ongletHistoriqueFicheDePoste" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="4">' . ucfirst(strtolower( __('Historique des fiches de poste', 'evarisk'))) . '</label></li>
+</ul>
+<div id="divImpressionFicheDePoste" class="eva_tabs_panel">' . documentUnique::bilanRisque($tableElement, $idElement, 'ligne') . '</div>
+<div id="divHistoriqueFicheDePoste" class="eva_tabs_panel" style="display:none"></div>';
+			}
 
 			echo $corpsPostBoxRisque;
 		}

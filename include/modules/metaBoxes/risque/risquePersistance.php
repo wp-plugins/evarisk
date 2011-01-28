@@ -5,20 +5,20 @@ require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' );
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-if(($_POST['act'] == 'save') || ($_POST['act'] == 'saveAdvanced'))
+if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 {
-	$idRisque = eva_tools::IsValid_Variable($_POST['idRisque']);
-	$idDanger = eva_tools::IsValid_Variable($_POST['idDanger']);
-	$idMethode = eva_tools::IsValid_Variable($_POST['idMethode']);
-	$tableElement = eva_tools::IsValid_Variable($_POST['tableElement']);
-	$idElement = eva_tools::IsValid_Variable($_POST['idElement']);
-	$histo = eva_tools::IsValid_Variable($_POST['histo']);
-	$variables = $_POST['variables'];
-	$description = eva_tools::IsValid_Variable($_POST['description']);
+	$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
+	$idDanger = eva_tools::IsValid_Variable($_REQUEST['idDanger']);
+	$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode']);
+	$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
+	$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
+	$histo = eva_tools::IsValid_Variable($_REQUEST['histo']);
+	$variables = $_REQUEST['variables'];
+	$description = eva_tools::IsValid_Variable($_REQUEST['description']);
 	$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 
 	/*	Check if there are correctiv actions to link with this risk	*/
-	$actionsCorrectives = eva_tools::IsValid_Variable($_POST['actionsCorrectives']);
+	$actionsCorrectives = eva_tools::IsValid_Variable($_REQUEST['actionsCorrectives']);
 	if($actionsCorrectives != '')
 	{
 		/*	Make the link between a corrective action and a risk evaluation	*/
@@ -35,13 +35,18 @@ if(($_POST['act'] == 'save') || ($_POST['act'] == 'saveAdvanced'))
 		$evaluation = $wpdb->get_row($query);
 		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionsCorrectives, 'after');
 	}
+
+	if($_REQUEST['act'] == 'save')
+	{
+		echo '<script type="text/javascript" >goTo("#postBoxRisques");</script>';
+	}
 }
-if($_POST['act'] == 'delete')
+if($_REQUEST['act'] == 'delete')
 {
-	$table = eva_tools::IsValid_Variable($_POST['table']);
-	$idRisque = eva_tools::IsValid_Variable($_POST['idRisque']);
-	$tableElement = eva_tools::IsValid_Variable($_POST['tableElement']);
-	$idElement = eva_tools::IsValid_Variable($_POST['idElement']);
+	$table = eva_tools::IsValid_Variable($_REQUEST['table']);
+	$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
+	$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
+	$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
 	$deleteResult = Risque::deleteRisk($idRisque, $tableElement, $idElement);
 
 	$messageInfo = 

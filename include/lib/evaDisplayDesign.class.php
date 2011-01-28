@@ -645,6 +645,7 @@ class EvaDisplayDesign {
 		switch($table)
 		{
 			case TABLE_GROUPEMENT:
+			{
 				$elements = Arborescence::getFils($table, $racine, "nom ASC");
 				$sousTable = TABLE_UNITE_TRAVAIL;
 				$subElements = EvaGroupement::getUnitesDuGroupement($racine->id);
@@ -652,12 +653,14 @@ class EvaDisplayDesign {
 				$titreInfo = __("Somme des risques", 'evarisk');
 				$actionSize = 5;
 				$actions = '
-							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td>
-							<td id="addMain' . $racine->id . 'Alt"></td>
-							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td>
-							<td id="addSecondary' . $racine->id . 'Alt"></td> -->';
-				break;
+							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td>
+							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td> -->';
+				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_GROUPEMENT . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '\' />';
+				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_UNIT . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '\' />';
+			}
+			break;
 			case TABLE_CATEGORIE_DANGER:
+			{
 				$elements = Arborescence::getFils($table, $racine, "nom ASC");
 				$sousTable = TABLE_DANGER;
 				$subElements = categorieDangers::getDangersDeLaCategorie($racine->id);
@@ -665,12 +668,14 @@ class EvaDisplayDesign {
 				$titreInfo = null;
 				$actionSize = 4;
 				$actions = '
-							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>
-							<td id="addMain' . $racine->id . 'Alt"></td>
-							<td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td>
-							<td id="addSecondary' . $racine->id . 'Alt"></td>';
-				break;
+							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>
+							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td> -->';
+				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_CATEGORIE_DANGER . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '\' />';
+				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_DANGER . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '\' />';
+			}
+			break;
 			case TABLE_TACHE:
+			{
 				$elements = Arborescence::getFils($table, $racine, "nom ASC");
 				$sousTable = TABLE_ACTIVITE;
         $tacheRacine = new EvaTask($racine->id);
@@ -680,12 +685,14 @@ class EvaDisplayDesign {
 				$titreInfo = __("Avancement", 'evarisk');
 				$actionSize = 4;
 				$actions = '
-							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td>
-							<td id="addMain' . $racine->id . 'Alt" style="display:none;"></td>
-							<td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td>
-							<td id="addSecondary' . $racine->id . 'Alt" style="display:none;"></td>';
-				break;
+							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td>
+							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td> -->';
+				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_TACHE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '\' />';
+				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_ACTIVITE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' />';
+			}
+			break;
 			case TABLE_GROUPE_QUESTION:
+			{
 				$elements = Arborescence::getFils($table, $racine, "code ASC");
 				$sousTable = TABLE_QUESTION;
 				$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($racine->id);
@@ -693,10 +700,13 @@ class EvaDisplayDesign {
 				$titreInfo = null;
 				$actionSize = 3;
 				$actions = '
-							<td class="noPadding addMain" id="add-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_INSERT . '" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="' . __('Inserer sous le titre', 'evarisk') . '" /></td>
-							<td class="noPadding addSecondary" id="edit-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS . ';display:none;" id="img_edit_racine" src="' . PICTO_EDIT . '" alt="' . __('Modifier le titre', 'evarisk') . '" title="' . __('Modifier le titre', 'evarisk') . '" /></td>
+							<td class="noPadding addMain" id="add-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_INSERT . '" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="' . __('Inserer sous le titre', 'evarisk') . '" /></td>
+							<td class="noPadding addSecondary" id="edit-node-' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';display:none;" id="img_edit_racine" src="' . PICTO_EDIT . '" alt="' . __('Modifier le titre', 'evarisk') . '" title="' . __('Modifier le titre', 'evarisk') . '" /></td>
 							<td></td>';
-				break;
+				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_INSERT . '\' alt=\'' . __('Inserer sous le titre', 'evarisk') . '\' title=\'' . __('Inserer sous le titre', 'evarisk') . '\' />';
+				$addSecondaryPicture = '';
+			}
+			break;
 		}
 		$trouveElement = count($elements);
 		if($trouveElement)
@@ -752,8 +762,7 @@ class EvaDisplayDesign {
 			scroll: true
 		});
 		
-		dropFunction = function(event, ui)
-		{
+		var dropFunction = function(event, ui){
 			// Call jQuery treeTable plugin to move the branch
 			evarisk(evarisk(ui.draggable)).appendBranchTo(this);
 			var dropLocation = event.target.id;
@@ -771,46 +780,35 @@ class EvaDisplayDesign {
 				"idElementOrigine":draggedObjectFather,
 				"idElementDest":dropLocation
 			});
-			setTimeout 
-			( 
-				function() 
-				{
+			setTimeout(
+				function(){
 					evarisk("#' . $idTable . ' tr.parent").each(function(){
 						var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
-						if(childNodes.length > 0) {
+						if(childNodes.length > 0){
 							evarisk(this).removeClass("sansFils");
 							evarisk(this).addClass("aFils");
 							var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
-							if(premierFils != premierFils.replace(/node-' . $idTable . '-/g,""))
-							{
+							if(premierFils != premierFils.replace(/node-' . $idTable . '-/g,"")){
 								evarisk(this).addClass("aFilsNoeud");
 								evarisk(this).droppable( "option", "accept", ".noeudArbre" );
-								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
-								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
-								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
+								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").hide();
+								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
 							}
-							else
-							{
+							else{
 								evarisk(this).addClass("aFilsFeuille");
 								evarisk(this).droppable( "option", "accept", ".feuilleArbre" );
-								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).hide();
-								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").show();
-								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "").show();
+								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").hide();
+								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
 							}
 						}
-						else
-						{
+						else{
 							evarisk(this).removeClass("aFilsNoeud");
 							evarisk(this).removeClass("aFilsFeuille");
 							evarisk(this).removeClass("aFils");
 							evarisk(this).addClass("sansFils");
-							evarisk(this).droppable( "option", "accept", ".noeudArbre, .feuilleArbre" );
-							evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-							evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + "Alt").hide();
-							evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).show();
-							evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"")).show();
+							evarisk(this).droppable("option", "accept", ".noeudArbre, .feuilleArbre");
+							evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
+							evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
 						}
 					});
 					evarisk(document).ajaxStop(function(){
@@ -821,17 +819,17 @@ class EvaDisplayDesign {
 			);
 		}
 
-		evarisk("#tdRacine' . $idTable . '").droppable({
-			"over":function(){
-				evarisk(this).html("' . __('D&eacute;poser ici pour mettre &agrave; la racine de votre arborescence', 'evarisk') . '");
-			},
-			"out":function(){
-				evarisk(this).html("");
-			},
-			"drop":function(){
-				evarisk(this).html("");
-			}
-		});
+		// evarisk("#tdRacine' . $idTable . '").droppable({
+			// "over":function(){
+				// evarisk(this).html("' . __('D&eacute;poser ici pour mettre &agrave; la racine de votre arborescence', 'evarisk') . '");
+			// },
+			// "out":function(){
+				// evarisk(this).html("");
+			// },
+			// "drop":function(event, ui){
+				// evarisk(this).html("");
+			// }
+		// });
 
 		overFunction = function(event, ui){
 			// Make the droppable branch expand when a draggable node is moved over it.
@@ -873,12 +871,11 @@ class EvaDisplayDesign {
 							<th>' . $nomRacine . '</th>';
 		if($titreInfo != null)
 		{
-			$tableArborescente = $tableArborescente . '	<th class="infoList">' . $titreInfo . '</th>';
+			$tableArborescente .= '<th class="infoList">' . $titreInfo . '</th>';
 			$infoRacine = EvaDisplayDesign::getInfoArborescence($table, $racine->id);
 			$infoRacine = '
 							<td id ="info-' . $racine->id . '" class="' . $infoRacine['class'] . '"></td>';
 		}
-		$tableArborescente = $tableArborescente;
 		if($outputAction)
 		{
 			$tableArborescente .= '
@@ -902,8 +899,7 @@ class EvaDisplayDesign {
 
 		$script = '
 <script type="text/javascript">
-	evarisk(document).ready(function()
-	{
+	evarisk(document).ready(function(){
 		//	Change the simple table in treetable
 		evarisk("#' . $idTable . '").treeTable();	
 		selectRowInTreeTable("' . $idTable . '");
@@ -932,14 +928,13 @@ class EvaDisplayDesign {
 
 		' . $draggableScript . '
 
-		evarisk("#' . $idTable . ' .addMain").click(function(){
-			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+		evarisk("#' . $idTable . ' .addMain img").click(function(){
+			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
 			var expanded = reInitTreeTable();';
 		if($table == TABLE_GROUPEMENT)
 		{
 		$script .= '
-			evarisk("#menu").val("gestiongrptut");
-			';
+			evarisk("#menu").val("gestiongrptut");';
 		}
 			$script .= '
 			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
@@ -958,14 +953,13 @@ class EvaDisplayDesign {
 			});
 		});
 
-		evarisk("#' . $idTable . ' .addSecondary").click(function(){
-			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+		evarisk("#' . $idTable . ' .addSecondary img").click(function(){
+			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
 			var expanded = reInitTreeTable();';
 		if($table == TABLE_GROUPEMENT)
 		{
 		$script .= '
-			evarisk("#menu").val("gestiongrptut");
-			';
+			evarisk("#menu").val("gestiongrptut");';
 		}
 			$script .= '
 			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
@@ -1218,6 +1212,7 @@ class EvaDisplayDesign {
 			break;
 		}
 		$script .= '
+	
 	});
 </script>';
 
@@ -1269,8 +1264,8 @@ class EvaDisplayDesign {
 				case TABLE_CATEGORIE_DANGER :
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>
-							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
 					$subAffichage = $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
@@ -1278,23 +1273,23 @@ class EvaDisplayDesign {
 					$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>
-							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					$subAffichage = $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_TACHE :
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>
-							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 					$subAffichage = $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPE_QUESTION :
 					$tdSubDelete = '
 							<td colspan="2">&nbsp;</td>
-							<td class="noPadding delete-leaf" id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
+							<td class="noPadding delete-leaf" id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
 					$subAffichage = 'Q' . $subElement->id . ' : ' . ucfirst($subElement->enonce);
 					$subActions = $tdSubDelete;
 					break;
@@ -1310,151 +1305,149 @@ class EvaDisplayDesign {
 				$monCorpsSubElements .= $subActions . '
 				</tr>';
 		}
+
 		if(count($elementsFils) != 0)
 		{
 			foreach ($elementsFils as $element )
-			{				
+			{
 				$elements_fils = '';
-				switch($table)
-				{
-					case TABLE_CATEGORIE_DANGER :
-						$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
-						$sousTable = TABLE_DANGER;
-						$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
-						break;
-					case TABLE_GROUPEMENT :
-						$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
-						$sousTable = TABLE_UNITE_TRAVAIL;
-						$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
-						break;
-					case TABLE_TACHE :
-						$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
-            $sousTable = TABLE_ACTIVITE;
-            $tache = new EvaTask($element->id);
-            $tache->load();
-            $subElements = $tache->getWPDBActivitiesDependOn();
-						break;
-					case TABLE_GROUPE_QUESTION :
-						$elements_fils = Arborescence::getFils($table, $element, "code ASC");
-						$sousTable = TABLE_QUESTION;
-						$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element->id);
-						break;
-				}
-				$trouveElement = count($elements_fils) + count($subElements);
+				$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
+				$elements_pere = Arborescence::getPere($table, $element, " Status = 'Deleted' ");
 
-				switch($table)
+				if(count($elements_pere) <= 0)
 				{
-					case TABLE_CATEGORIE_DANGER :
-						$affichage = $element->nom;
-						$tplAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-						$tplAddsecond = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '">&nbsp;</td>';
-						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '">&nbsp;</td>';
-						if(count($elements_fils) > 0)
-						{
-							$tdAddMain = $tplAddMain;
-						}
-						elseif(count($subElements) > 0)
-						{
-							$tdAddSecondary = $tplAddsecond;
-						}
-						elseif((count($elements_fils) == 0) && (count($subElements) == 0))
-						{
-							$tdAddMain = $tplAddMain;
-							$tdAddSecondary = $tplAddsecond;
-						}
+					switch($table)
+					{
+						case TABLE_CATEGORIE_DANGER :
+							$sousTable = TABLE_DANGER;
+							$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
+						break;
+						case TABLE_GROUPEMENT :
+							$sousTable = TABLE_UNITE_TRAVAIL;
+							$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
+						break;
+						case TABLE_TACHE :
+							$sousTable = TABLE_ACTIVITE;
+							$tache = new EvaTask($element->id);
+							$tache->load();
+							$subElements = $tache->getWPDBActivitiesDependOn();
+						break;
+						case TABLE_GROUPE_QUESTION :
+							$sousTable = TABLE_QUESTION;
+							$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element->id);
+						break;
+					}
+					$trouveElement = count($elements_fils) + count($subElements);
 
-						$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
-						$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
-						$actions = '
-							' . $tdAddMain . '
-							' . $tdAddSecondary . '
-							' . $tdEdit . '
-							' . $tdDelete;
+					switch($table)
+					{
+						case TABLE_CATEGORIE_DANGER :
+							$affichage = $element->nom;
+							$tdAddMainStyle = 'display:none;';
+							$tdAddSecondaryStyle = 'display:none;';
+							if(count($elements_fils) > 0)
+							{
+								$tdAddMainStyle = '';
+							}
+							elseif(count($subElements) > 0)
+							{
+								$tdAddSecondaryStyle = '';
+							}
+							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+							{
+								$tdAddMainStyle = '';
+								$tdAddSecondaryStyle = '';
+							}
+							$tdAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
+							$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
+							$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
+							$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('la cat&eacute;gorie de dangers', 'evarisk')) . '" /></td>';
+							$actions = '
+								' . $tdAddMain . '
+								' . $tdAddSecondary . '
+								' . $tdEdit . '
+								' . $tdDelete;
 						break;
-					case TABLE_GROUPEMENT :
-						$affichage = $element->nom;
-						$tplAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-						$tplAddsecond = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '">&nbsp;</td>';
-						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '">&nbsp;</td>';
-						if(count($elements_fils) > 0)
-						{
-							$tdAddMain = $tplAddMain;
-						}
-						elseif(count($subElements) > 0)
-						{
-							$tdAddSecondary = $tplAddsecond;
-						}
-						elseif((count($elements_fils) == 0) && (count($subElements) == 0))
-						{
-							$tdAddMain = $tplAddMain;
-							$tdAddSecondary = $tplAddsecond;
-						}
-	
-						$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
-						$tdEdit = '<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td><td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
-						$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
-						$actions = '
-							' . $tdAddMain . '
-							' . $tdAddSecondary . '
-							' . $tdEdit . '
-							' . $tdDelete;
-						break;
-					case TABLE_TACHE :
-						$affichage = $element->nom;
-						$tplAddMain = '<td class="noPadding addMain"  id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-						$tplAddsecond = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-						$tdAddMain = '<td class="noPadding" id="addMain' . $element->id . '">&nbsp;</td>';
-						$tdAddSecondary = '<td class="noPadding" id="addSecondary' . $element->id . '">&nbsp;</td>';
-						if(count($elements_fils) > 0)
-						{
-							$tdAddMain = $tplAddMain;
-						}
-						elseif(count($subElements) > 0)
-						{
-							$tdAddSecondary = $tplAddsecond;
-						}
-						elseif((count($elements_fils) == 0) && (count($subElements) == 0))
-						{
-							$tdAddMain = $tplAddMain;
-							$tdAddSecondary = $tplAddsecond;
-						}
+						case TABLE_GROUPEMENT :
+							$affichage = $element->nom;
+							$tdAddMainStyle = 'display:none;';
+							$tdAddSecondaryStyle = 'display:none;';
+							if(count($elements_fils) > 0)
+							{
+								$tdAddMainStyle = '';
+							}
+							elseif(count($subElements) > 0)
+							{
+								$tdAddSecondaryStyle = '';
+							}
+							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+							{
+								$tdAddMainStyle = '';
+								$tdAddSecondaryStyle = '';
+							}
+							$tdAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" /></td>';
+							$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_UNIT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une unit&eacute; de travail', 'evarisk')) . '" /></td>';
 
-						$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
-						$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
-						$actions = '
-							' . $tdAddMain . '
-							' . $tdAddSecondary . '
-							' . $tdEdit . '
-							' . $tdDelete;
+							$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
+							$tdEdit = '<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td><td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
+							$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
+							$actions = '
+								' . $tdAddMain . '
+								' . $tdAddSecondary . '
+								' . $tdEdit . '
+								' . $tdDelete;
 						break;
-					case TABLE_GROUPE_QUESTION :
-						$affichage = $element->code . '-' . ucfirst($element->nom);
-						$tdAdd = '<td class="noPadding addMain" id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
-						$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
-						$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
-						$actions = $tdAdd . $tdEdit . $tdDelete;
+						case TABLE_TACHE :
+							$affichage = $element->nom;
+							$tdAddMainStyle = 'display:none;';
+							$tdAddSecondaryStyle = 'display:none;';
+							if(count($elements_fils) > 0)
+							{
+								$tdAddMainStyle = '';
+							}
+							elseif(count($subElements) > 0)
+							{
+								$tdAddSecondaryStyle = '';
+							}
+							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+							{
+								$tdAddMainStyle = '';
+								$tdAddSecondaryStyle = '';
+							}
+							$tdAddMain = '<td class="noPadding addMain"  id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
+							$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
+							$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
+							$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
+							$actions = '
+								' . $tdAddMain . '
+								' . $tdAddSecondary . '
+								' . $tdEdit . '
+								' . $tdDelete;
 						break;
-				}
-				if($titreInfo != null)
-				{
-					$info = EvaDisplayDesign::getInfoArborescence($table, $element->id);
-					$info = '<td id ="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
-				}
-				else
-				{
+						case TABLE_GROUPE_QUESTION :
+							$affichage = $element->code . '-' . ucfirst($element->nom);
+							$tdAdd = '<td class="noPadding addMain" id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
+							$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
+							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
+							$actions = $tdAdd . $tdEdit . $tdDelete;
+						break;
+					}
 					$info = '';
-				}
-				$monCorpsTable .= '
-					<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' noeudArbre parent">
-						<td id="node-' . $idTable . '-' . $element->id . '-name" ><span class="nomNoeudArbre" >' . $affichage . '</span></td>
-						' . $info .  $actions . '
-					</tr>';
+					if($titreInfo != null)
+					{
+						$info = EvaDisplayDesign::getInfoArborescence($table, $element->id);
+						$info = '<td id ="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
+					}
+					$monCorpsTable .= '
+						<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' noeudArbre parent">
+							<td id="node-' . $idTable . '-' . $element->id . '-name" ><span class="nomNoeudArbre" >' . $affichage . '</span></td>
+							' . $info . $actions . '
+						</tr>';
 
-				if($trouveElement)
-				{
-					$monCorpsTable .= EvaDisplayDesign::getCorpsTableArborescence($elements_fils, $element, $table, $titreInfo, $idTable);
+					if($trouveElement)
+					{
+						$monCorpsTable .= EvaDisplayDesign::getCorpsTableArborescence($elements_fils, $element, $table, $titreInfo, $idTable);
+					}
 				}
 			}
 		}

@@ -655,7 +655,7 @@ class evaUserEvaluatorGroup
 		$classes = array('','','cbNbUserEvaluatorGroup','cbColumnLarge');
 		$script = $scriptEnregistrement . '<script type="text/javascript">
 			evarisk(document).ready(function() {
-				evarisk(\'#' . $idTable . '\').dataTable({
+				evarisk("#' . $idTable . '").dataTable({
 					"bLengthChange": false,
 					"bAutoWidth": false,
 					"bFilter": false,
@@ -667,7 +667,15 @@ class evaUserEvaluatorGroup
 						{ "bSortable": false },
 						{ "bSortable": true }
 					],
-					"aaSorting": [[1,\'asc\']]});
+					"aaSorting": [[1,"asc"]],
+					"oLanguage": {
+						"sEmptyTable": "' . __('Aucun groupe trouv&eacute;', 'evarisk') . '",
+						"sInfoEmpty": "' . __('Aucun groupe', 'evarisk') . '",
+						"sZeroRecords": "' . __('Aucun groupe trouv&eacute;', 'evarisk') . '"
+					}
+				});
+				evarisk("#' . $idTable . ' tfoot").remove();
+				evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 			});
 		</script>';
 		$groupesUtilisateursDataTable = evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);

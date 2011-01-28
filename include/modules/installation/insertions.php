@@ -560,7 +560,17 @@ function evarisk_insertions($insertions = null)
 			$sql = "ALTER TABLE " . TABLE_PHOTO . " DROP isMainPicture,  DROP idDestination, DROP tableDestination;;";
 			$wpdb->query($sql);
 
-			// EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 30:
+		{
+			$sql = "UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation' WHERE table_element='" . TABLE_UNITE_TRAVAIL . "' ;";
+			$wpdb->query($sql);
+			$sql = "UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET table_element = '" . TABLE_GROUPEMENT . "_evaluation' WHERE table_element='" . TABLE_GROUPEMENT . "' ;";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}
 	}

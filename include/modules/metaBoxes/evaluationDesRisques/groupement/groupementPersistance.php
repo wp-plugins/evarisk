@@ -12,42 +12,42 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 $search = "Status='Valid' AND nom<>'Groupement Racine'";
 $groupement = EvaGroupement::getGroupements($search);
 			
-if($_POST['act'] == 'save')
+if($_REQUEST['act'] == 'save')
 {
-	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['nom_groupement']));
+	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_groupement']));
 	EvaGroupement::saveNewGroupement($nom);
-	$_POST['id'] = $wpdb->insert_id;
-	$_POST['act'] = 'update';
+	$_REQUEST['id'] = $wpdb->insert_id;
+	$_REQUEST['act'] = 'update';
 }
-if($_POST['act'] == 'update')
+if($_REQUEST['act'] == 'update')
 {
-	$id_groupement = $_POST['id'];
-	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['nom_groupement']));
+	$id_groupement = $_REQUEST['id'];
+	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_groupement']));
 	
 	$groupementUpdate = EvaGroupement::getGroupementByName($nom);
-	$ligne1 = $_POST['adresse_ligne_1'];
-	$ligne2 = $_POST['adresse_ligne_2'];
-	$ville = $_POST['ville'];
-	$codePostal = $_POST['code_postal'];
-	$latitude = $_POST['latitude'];
-	$longitude = $_POST['longitude'];
+	$ligne1 = $_REQUEST['adresse_ligne_1'];
+	$ligne2 = $_REQUEST['adresse_ligne_2'];
+	$ville = $_REQUEST['ville'];
+	$codePostal = $_REQUEST['code_postal'];
+	$latitude = $_REQUEST['latitude'];
+	$longitude = $_REQUEST['longitude'];
 	$address = new EvaAddress($groupementUpdate->id_adresse, $ligne1, $ligne2, $codePostal, $ville, $latitude, $longitude, 'Valid');
 	$address->save();
 	$idAdresse = $address->getId();
 	
-	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['groupementPere']));
+	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['groupementPere']));
 	
-	$effectif = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['effectif']));
+	$effectif = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['effectif']));
 	if($effectif == '')
 	{
 		$effectif = null;
 	}
-	$description = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['description']));
+	$description = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['description']));
 	if($description == '')
 	{
 		$description = null;
 	}
-	$telephone = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['telephone']));
+	$telephone = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['telephone']));
 	if($telephone == '')
 	{
 		$telephone = null;
@@ -55,7 +55,7 @@ if($_POST['act'] == 'update')
 	
 	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
 }
-if($_POST['act'] == 'delete')
+if($_REQUEST['act'] == 'delete')
 {
-	EvaGroupement::deleteGroupement($_POST['id']);
+	EvaGroupement::deleteGroupement($_REQUEST['id']);
 }
