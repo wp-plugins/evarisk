@@ -44,6 +44,7 @@ class EvaTaskTable extends EvaBaseTask
 		unset($this->idSoldeurChef);
 		unset($this->ProgressionStatus);
 		unset($this->dateSolde);
+		unset($this->hasPriority);
 	}
   
 	/**
@@ -114,6 +115,7 @@ class EvaTaskTable extends EvaBaseTask
 			$idSoldeurChef = eva_tools::IsValid_Variable($task->getidSoldeurChef());
 			$ProgressionStatus = eva_tools::IsValid_Variable($task->getProgressionStatus());
 			$dateSolde = eva_tools::IsValid_Variable($task->getdateSolde());
+			$hasPriority = eva_tools::IsValid_Variable($task->gethasPriority());
 		}
     {//Query creation
       $sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -176,6 +178,10 @@ class EvaTaskTable extends EvaBaseTask
 			if($dateSolde != '')
       {
         $sql = $sql . " AND " . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'";
+      }
+			if($hasPriority != '')
+      {
+        $sql = $sql . " AND " . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "'";
       }
     }
     

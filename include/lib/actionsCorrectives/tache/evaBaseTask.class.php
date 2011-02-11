@@ -33,6 +33,7 @@ class EvaBaseTask
 	const idSoldeur = 'idSoldeur';
 	const idSoldeurChef = 'idSoldeurChef';
 	const dateSolde = 'dateSolde';
+	const hasPriority = 'hasPriority';
 
 /*
  * Class variable define
@@ -107,17 +108,21 @@ class EvaBaseTask
 	 */
 	var $idResponsable;
 	/**
-	 * @var string The task maker
+	 * @var string The person who says that the task is done
 	 */
 	var $idSoldeur;
 	/**
-	 * @var string The task maker
+	 * @var string The master chief who says taht the task is done
 	 */
 	var $idSoldeurChef;
 	/**
-	 * @var string The task maker
+	 * @var string The date tha task was marked as done
 	 */
 	var $dateSolde;
+	/**
+	 * @var string The task priority status
+	 */
+	var $hasPriority;
 	
 /*
  *	Constructor, getters and setters
@@ -144,8 +149,9 @@ class EvaBaseTask
 	 * @param integer $idSoldeur The task maker
 	 * @param string $ProgressionStatus The progression status
 	 * @param string $dateSolde
+	 * @param string $hasPriority
 	 */
-	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='')
+	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='')
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -167,6 +173,7 @@ class EvaBaseTask
 		$this->idSoldeurChef = $idSoldeurChef;
 		$this->ProgressionStatus = $ProgressionStatus;
 		$this->dateSolde = $dateSolde;
+		$this->hasPriority = $hasPriority;
 	}
 	
 	/**
@@ -450,7 +457,7 @@ class EvaBaseTask
 
 	/**
 	 * Returns the task maker id
-	 * @param integer $idCreateur The task maker id
+	 * @param integer $idSoldeur The task maker id
 	 */
 	function setidSoldeur($idSoldeur)
 	{
@@ -468,7 +475,7 @@ class EvaBaseTask
 
 	/**
 	 * Returns the task maker id
-	 * @param integer $idCreateur The task maker id
+	 * @param integer $idSoldeurChef The task maker id
 	 */
 	function setidSoldeurChef($idSoldeurChef)
 	{
@@ -486,7 +493,7 @@ class EvaBaseTask
 
 	/**
 	 * Returns the identifier of the person in charge of the task
-	 * @param integer $idCreateur The identifier of the person in charge of the task
+	 * @param integer $idResponsable The identifier of the person in charge of the task
 	 */
 	function setidResponsable($idResponsable)
 	{
@@ -504,7 +511,7 @@ class EvaBaseTask
 
 	/**
 	 * Returns The progression status of the task
-	 * @param string $idCreateur The progression status of the task
+	 * @param string $ProgressionStatus The progression status of the task
 	 */
 	function setProgressionStatus($ProgressionStatus)
 	{
@@ -522,17 +529,34 @@ class EvaBaseTask
 
 	/**
 	 * Returns The progression status of the task
-	 * @param string $idCreateur The progression status of the task
+	 * @param string $dateSolde The progression status of the task
 	 */
 	function setdateSolde($dateSolde)
 	{
 		$this->dateSolde = $dateSolde;
 	}
+
+	/**
+	 * Returns the task's priority status
+	 * @return string The priority status
+	 */
+	function gethasPriority()
+	{
+		return $this->hasPriority;
+	}
+
+	/**
+	 * Returns The priority status of the task
+	 * @param string $hasPriority The priority status of the task
+	 */
+	function sethasPriority($hasPriority)
+	{
+		$this->hasPriority = $hasPriority;
+	}
 	
 /*
  * Others methods
  */
-
 	/**
 	 * Convert a wpdb object to an EvaBaseTask object
 	 * @param object $wpdbTask The object to convert
@@ -558,6 +582,7 @@ class EvaBaseTask
 		$this->setidSoldeur($wpdbTask->idSoldeur);
 		$this->setProgressionStatus($wpdbTask->ProgressionStatus);
 		$this->setdateSolde($wpdbTask->dateSolde);
+		$this->sethasPriority($wpdbTask->hasPriority);
 	}
 
 	/**
@@ -587,7 +612,8 @@ class EvaBaseTask
 					self::idResponsable => $this->getidResponsable(),
 					self::idSoldeur => $this->getidSoldeur(),
 					self::ProgressionStatus => $this->getProgressionStatus(),
-					self::dateSolde => $this->getdateSolde()
+					self::dateSolde => $this->getdateSolde(),
+					self::hasPriority => $this->gethasPriority()
 				)
 			);
 	}

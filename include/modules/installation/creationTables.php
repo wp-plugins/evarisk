@@ -1478,6 +1478,32 @@ function evarisk_creationTables()
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(EvaVersion::getVersion('base_evarisk') <= 31)
+		{//Ajout du champs permettant de définir une action comme prioritaire
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD hasPriority ENUM( 'yes', 'no' ) NOT NULL DEFAULT 'no';";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD INDEX(hasPriority);";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 32)
+		{//Ajout des champs définissant le type d'une option ainsi que le nom qui sera affiché dans l'interface
+			$sql = "ALTER TABLE " . TABLE_OPTION . " ADD typeOption ENUM( 'ouinon', 'numerique', 'text' ) NOT NULL DEFAULT 'ouinon';";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_OPTION . " ADD nomAffiche CHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER nom;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_OPTION . " ADD domaine CHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER id;";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_OPTION . " ADD INDEX(typeOption);";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 ?>

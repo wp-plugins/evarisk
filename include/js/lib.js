@@ -241,6 +241,17 @@ function actionMessageHide(idToHide)
 	evarisk(idToHide).removeClass("updated");
 }
 
+function emptyOptionForm()
+{
+	evarisk("#actionOption").val("save");
+	evarisk("#idOption").val("");
+	evarisk("#nomOption").val("");
+	evarisk("#type").val("");
+	evarisk("#optionName").html("");
+	evarisk("#optionEdition").html("");
+	evarisk("#light").hide();
+	evarisk("#fade").hide();
+}
 function goTo(ancre){
 	var speed = 1000;
 	jQuery("html,body").animate({scrollTop:jQuery(ancre).offset().top},speed,"swing",function(){

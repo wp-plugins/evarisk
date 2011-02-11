@@ -20,13 +20,15 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$postId = $arguments['idElement'];
     $tache = new EvaTask($postId);
 		$tache->load();
-		$contenuInputTitre = $tache->getName();
+		$contenuInputTitre = html_entity_decode($tache->getName(), ENT_NOQUOTES, 'UTF-8');
 		$contenuInputDescription = $tache->getDescription();
 		$idProvenance = $tache->getIdFrom();
 		$tableProvenance = $tache->getTableFrom();
 		$contenuInputResponsable = $tache->getidResponsable();
 		$contenuInputRealisateur = $tache->getidSoldeur();
 		$ProgressionStatus = $tache->getProgressionStatus();
+		$startDate = $tache->getStartDate();
+		$endDate = $tache->getFinishDate();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 		$idPere = $tacheMere->id;
@@ -39,6 +41,8 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$contenuInputResponsable = '';
 		$contenuInputRealisateur = '';
 		$ProgressionStatus = '';
+		$startDate = '';
+		$endDate = '';
 		$idProvenance = 0;
 		$tableProvenance = '';
 		$idPere = $arguments['idPere'];
@@ -64,6 +68,12 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$nomChamps = "nom_tache";
 		$idTitre = "nom_tache";
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
+	}
+	{//Dates
+		if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00'))
+		{
+			$tache_new .='<br/>' . __('D&eacute;but', 'evarisk') . '&nbsp;' . eva_tools::transformeDate($startDate) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . eva_tools::transformeDate($endDate) . '&nbsp;<span style="font-size:9px;" >(' . __('Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches', 'evarisk') . ')</span><br/>';
+		}
 	}
 	{//Responsable
 		$contenuAideDescription = "";
@@ -153,8 +163,8 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$idBoutton = 'taskDone';
 
 		$scriptEnregistrementDone = '<script type="text/javascript">
-			evarisk(document).ready(function() {				
-				evarisk("#' . $idBoutton . '").click(function() {
+			evarisk(document).ready(function(){
+				evarisk("#' . $idBoutton . '").click(function(){
 					if(evarisk("#' . $idTitre . '").is(".form-input-tip"))
 					{
 						document.getElementById("' . $idTitre . '").value="";
@@ -228,6 +238,28 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 				'<div class="alignright button-primary" id="TaskSaveButton" >' . 
 					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . 
 				'</div>';
+		}
+
+		if(options::getOptionValue('export_tasks', 'Moderated') == 'oui')
+		{
+			$tache_new .= 
+				'<br/>
+				<div class="alignright button-primary" id="taskExportButton" >
+					' . __('Exporter', 'evarisk') . '
+				</div>
+				<script type="text/javascript" >
+					evarisk(document).ready(function(){
+						evarisk("#taskExportButton").click(function(){
+							evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							{
+								"post": "true", 
+								"table": "' . TABLE_TACHE . '",
+								"act": "exportTask",
+								"id": evarisk("#idTache").val()
+							});
+						});
+					});
+				</script>';
 		}
 	}
 	$tache_new .= EvaDisplayInput::fermerForm($idForm);

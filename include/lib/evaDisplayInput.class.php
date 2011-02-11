@@ -236,7 +236,39 @@ class EvaDisplayInput {
 		$comboBox = $comboBox . '</select>';
 		return $comboBox;
 	}
-	
+
+		/**
+	*	Create a combo box output
+	*
+	*	@param string $identifier The name and unique identifier of the combo box
+	* @param array $content A complete array containing all values to put into the combo box
+	*	@param mixed $selectedValue The value we have to select into the combo
+	*
+	*	@return mixed $output The combo box output
+	*/
+	function createComboBox($identifier, $content, $selectedValue)
+	{
+		$output = '<select id="' . $identifier . '" name="' . $identifier . '" >';
+
+		foreach($content as $index => $datas)
+		{
+			if(is_object($datas))
+			{
+				$selected = ($selectedValue == $datas->id) ? ' selected="selected" ' : '';
+				$output .= '<option value="' . $datas->id . '" ' . $selected . ' >' . $datas->nom . '</option>';
+			}
+			else
+			{
+				$selected = ($selectedValue == $index) ? ' selected="selected" ' : '';
+				$output .= '<option value="' . $index . '" ' . $selected . ' >' . $datas . '</option>';
+			}
+		}
+
+		$output .= '</select>';
+
+		return $output;
+	}
+
 	/**
 	  * Create an comboBox with indentation to simulate an tree
 	  * @see creerComboBoxArborescente.

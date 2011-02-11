@@ -87,6 +87,13 @@
 	}
 	DEFINE('LINK_TO_DOWNLOAD_OPEN_OFFICE', $linkToDownloadOpenOffice);
 
+	/**
+	*	Define the option possible value
+	*/
+	$optionYesNoList = array();
+	$optionYesNoList['oui'] = __('Oui', 'evarisk');
+	$optionYesNoList['non'] = __('Non', 'evarisk');
+
 	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 	require_once('configLogiciel.php');
 

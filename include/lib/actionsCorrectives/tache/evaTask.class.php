@@ -43,12 +43,13 @@ class EvaTask extends EvaBaseTask
 			$idSoldeurChef = eva_tools::IsValid_Variable($this->getidSoldeurChef());
 			$ProgressionStatus = eva_tools::IsValid_Variable($this->getProgressionStatus());
 			$dateSolde = eva_tools::IsValid_Variable($this->getdateSolde());
+			$hasPriority = eva_tools::IsValid_Variable($this->gethasPriority());
 		}
 		
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::firstInsert . ")
+			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::firstInsert . ")
 				VALUES ('" . mysql_real_escape_string($name) . "', 
 								'" . mysql_real_escape_string($leftLimit) . "', 
 								'" . mysql_real_escape_string($rightLimit) . "', 
@@ -67,6 +68,7 @@ class EvaTask extends EvaBaseTask
 								'" . mysql_real_escape_string($idSoldeurChef) . "',
 								'" . mysql_real_escape_string($ProgressionStatus) . "',
 								'" . mysql_real_escape_string($dateSolde) . "',
+								'" . mysql_real_escape_string($hasPriority) . "',
 								NOW())";
 		}
 		else
@@ -88,7 +90,8 @@ class EvaTask extends EvaBaseTask
 				" . self::idSoldeur . " = '" . mysql_real_escape_string($idSoldeur) . "' ,
 				" . self::idSoldeurChef . " = '" . mysql_real_escape_string($idSoldeurChef) . "' ,
 				" . self::ProgressionStatus . " = '" . mysql_real_escape_string($ProgressionStatus) . "' ,
-				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "' 
+				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "' ,
+				" . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "' 
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
 
@@ -121,7 +124,6 @@ class EvaTask extends EvaBaseTask
 		if($id != 0)
 		{
 			$wpdbTask = $wpdb->get_row( "SELECT * FROM " . TABLE_TACHE . " WHERE " . self::id . " = " . $id);
-			
 			if($wpdbTask != null)
 			{
 				$this->convertWpdb($wpdbTask);
@@ -322,7 +324,7 @@ class EvaTask extends EvaBaseTask
 						$activityFinishYear = $date[0];
 						$activityFinishMonth = $date[1];
 						$activityFinishMonth = $date[2];
-						echo $activityFinishDay;
+
 						if(($activityStartYear < $startYear) 
 							OR ($activityStartYear == $startYear AND $activityStartMonth < $startMonth) 
 							OR ($activityStartYear == $startYear AND $activityStartMonth == $startMonth AND $activityStartDay < $startDay))
@@ -338,8 +340,8 @@ class EvaTask extends EvaBaseTask
 					}
 				}
 			}
-		$this->setStartDate($startDate);
-		$this->setFinishDate($finishDate);
+			$this->setStartDate($startDate);
+			$this->setFinishDate($finishDate);
 		}
 	}
 
@@ -423,10 +425,6 @@ class EvaTask extends EvaBaseTask
 		$actionsList = trim(substr($actionsList, 0, -2));
 		if($actionsList != '')
 		{
-			// $query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_TACHE_ELEMENT . " SET status = 'deleted' WHERE id_tache = '%s' ", $actionID);
-			// $wpdb->query($query);
-
-
 			$query = $wpdb->prepare
 			(
 				"REPLACE INTO " . TABLE_LIAISON_TACHE_ELEMENT . " 
@@ -438,6 +436,47 @@ class EvaTask extends EvaBaseTask
 		}
 	}
 
+	/**
+	*
+	*/
+	function saveNewTask()
+	{
+		$tache = new EvaTask();
+
+		$tache->setName($_POST['nom_activite']);
+		$tache->setDescription($_POST['description']);
+		$tache->setCost($_POST['cout']);
+		$tache->setIdFrom($_POST['idProvenance']);
+		$tache->setTableFrom($_POST['tableProvenance']);
+		$tache->setidResponsable($_POST['responsable_activite']);
+		$tache->setProgressionStatus('inProgress');
+		if(isset($_POST['hasPriority']))
+		{
+			$tache->sethasPriority($_POST['hasPriority']);
+		}
+		else
+		{
+			$tache->sethasPriority('no');
+		}
+		if($_POST['avancement'] == '100')
+		{
+			$tache->setProgressionStatus('Done');
+			global $current_user;
+			$tache->setidSoldeur($current_user->ID);
+		}
+		$racine = new EvaTask(1);
+		$racine->load();
+		$tache->setLeftLimit($racine->getRightLimit());
+		$tache->setRightLimit($racine->getRightLimit() + 1);
+		$racine->setRightLimit($racine->getRightLimit() + 2);
+		$racine->save();
+		$tache->setStartDate($_POST['date_debut']);
+		$tache->setFinishDate($_POST['date_fin']);
+		$tache->save();
+
+		return $tache->getId();
+	}
+	
 	/**
 	*
 	*/
@@ -674,6 +713,26 @@ class EvaTask extends EvaBaseTask
 		}
 
 		return $acDashboardBox;
+	}
+
+	/**
+	*
+	*/
+	function getPriorityTask($tableElement, $idElement)
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT id
+			FROM " . TABLE_TACHE . "
+			WHERE tableProvenance = '%s'
+				AND idProvenance = '%d' 
+				AND hasPriority = 'yes'
+				AND Status = 'Valid' 
+			LIMIT 1",
+		$tableElement, $idElement);
+
+		return $wpdb->get_row($query);
 	}
 
 }

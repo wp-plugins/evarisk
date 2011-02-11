@@ -416,7 +416,57 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
-			$formRisque .= '<br /><div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '100%', '') . '</div>';
+			$formRisque .= '<br/><div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+		}
+
+		{//Preconisation (action prioritaire)
+			$contenuInput = '';
+			$preconisationAction = 'creation';
+			$preconisationActionID = 0;
+			$moreLabelInput = '';
+			if($risque[0] != null)
+			{// Si l'on édite un risque, on remplit l'aire de texte avec sa description
+				$tache = EvaTask::getPriorityTask(TABLE_RISQUE, $risque[0]->id);
+				$tache = new EvaTask($tache->id);
+				if($tache->id > 0)
+				{
+					$tache->load();
+					$contenuInput = $tache->description;
+					$preconisationAction = 'update';
+					$preconisationActionID = $tache->id;
+					$moreLabelInput = '<span class="preconisation" >' .$tache->name . '&nbsp;(' . __('Progression', 'evarisk') . '&nbsp;' . $tache->progression . '%)</span>';
+
+					$existingPreconisation = '';
+					$TasksAndSubTasks = $tache->getDescendants();
+					$TasksAndSubTasks->addTask($tache);
+					$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
+					if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
+					{
+						foreach($TasksAndSubTasks as $task)
+						{
+							if($task->id != $tache->id)
+							{
+								$existingPreconisation .= '-&nbsp;' .$task->name . '&nbsp;(' . __('Progression', 'evarisk') . '&nbsp;' . $task->progression . '%).<br/>';
+							}
+							$activities = $task->getActivitiesDependOn();
+							$activities = $activities->getActivities();
+							if($activities != null AND count($activities) > 0)
+							{
+								foreach($activities as $activity)
+								{
+									$existingPreconisation .= '&nbsp;&nbsp;-&nbsp;' .$activity->name . '&nbsp;(' . __('Progression', 'evarisk') . '&nbsp;' . $activity->progression . '%).<br/>';
+								}
+							}
+						}
+					}
+				}
+			}
+			$labelInput = ucfirst(strtolower(__("pr&eacute;conisation pour le risque", 'evarisk'))) . $moreLabelInput;
+			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('textarea', 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			if($existingPreconisation != '')
+			{
+				$formRisque .= '<div id="divPreconisationExistante" class="clear preconisationExistante" >' . ucfirst(strtolower(__("pr&eacute;conisation existante", 'evarisk'))) . '&nbsp;:<br/>' . $existingPreconisation . '</div>';
+			}
 		}
 
 		{//Photo associée au risque
@@ -503,6 +553,9 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 				"actionsCorrectives":correctivActions, 
 				"variables":variables, 
 				"description":evarisk("#descriptionFormRisque").val(), 
+				"preconisationAction":"' . $preconisationAction . '",
+				"preconisationActionID":"' . $preconisationActionID . '",
+				"preconisationRisque":evarisk("#preconisationRisque").val(),
 				"idRisque":evarisk("#idRisque").val()
 			});
 			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());

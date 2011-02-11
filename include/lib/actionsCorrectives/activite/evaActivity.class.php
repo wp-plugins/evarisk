@@ -143,26 +143,6 @@ class EvaActivity extends EvaBaseActivity
 		global $wpdb;
 		require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php');
 
-		$tache = new EvaTask();
-		$tache->setName($_POST['nom_activite']);
-		$tache->setDescription($_POST['description']);
-		$tache->setCost($_POST['cout']);
-		$tache->setIdFrom($_POST['idProvenance']);
-		$tache->setTableFrom($_POST['tableProvenance']);
-		$tache->setidResponsable($_POST['responsable_activite']);
-		$tache->setProgressionStatus('inProgress');
-		if($_POST['avancement'] == '100')
-		{
-			$tache->setProgressionStatus('Done');
-			global $current_user;
-			$tache->setidSoldeur($current_user->ID);
-		}
-		$racine = new EvaTask(1);
-		$racine->load();
-		$tache->setLeftLimit($racine->getRightLimit());
-		$tache->setRightLimit($racine->getRightLimit() + 1);
-		$racine->setRightLimit($racine->getRightLimit() + 2);
-		$racine->save();
 		$activite = new EvaActivity();
 		$activite->setName($_POST['nom_activite']);
 		$activite->setDescription($_POST['description']);
@@ -178,11 +158,13 @@ class EvaActivity extends EvaBaseActivity
 			$activite->setidSoldeur($current_user->ID);
 		}
 		$activite->setidResponsable($_POST['responsable_activite']);
-		$tache->setStartDate($_POST['date_debut']);
-		$tache->setFinishDate($_POST['date_fin']);
+
+		$tache = new EvaTask($_POST['parentTaskId']);
+		$tache->load();
 		$tache->getTimeWindow();
 		$tache->computeProgression();
 		$tache->save();
+
 		$activite->setRelatedTaskId($tache->getId());
 		$activite->save();
 

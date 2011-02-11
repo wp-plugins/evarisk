@@ -151,6 +151,7 @@ class documentUnique
 									{ "bSortable": false}
 								],
 									"aaSorting": [[1,"desc"]]});
+								evarisk("#' . $idTable . ' tfoot").remove();
 							});
 							</script>';
 
@@ -165,8 +166,6 @@ class documentUnique
 				elseif($typeBilan == 'unite')
 				{
 					$bilanParUnite = documentUnique::bilanParUnite($tableElement, $idElement);
-
-		// echo '<pre>';print_r($bilanParUnite);echo '</pre>';
 
 					$recapitulatifRisque = 
 					'<table summary="risqsSummary' . $tableElement . '-' . $idElement . '" cellpadding="0" cellspacing="0" class="widefat post fixed">

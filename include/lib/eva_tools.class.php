@@ -211,7 +211,8 @@ class eva_tools
 		return $newString;
 	}
 
-	function make_recursiv_dir($dir){
+	function make_recursiv_dir($dir)
+	{
 		$tab=explode('/',$dir);
 		$str='';
 		foreach($tab as $k => $v ){

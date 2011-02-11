@@ -65,7 +65,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de l'action",'evarisk'))) . '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span> :';
 		$nomChamps = "nom_activite";
 		$idTitre = "nom_activite";
-		$activite_new = $activite_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
+		$activite_new = $activite_new . EvaDisplayInput::afficherInput('text', $idTitre, html_entity_decode($contenuInputTitre, ENT_NOQUOTES, 'UTF-8'), $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
 	{//Date de début de l'action
 		$contenuAideTitre = "";

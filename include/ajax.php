@@ -1511,7 +1511,8 @@ if($_REQUEST['post'] == 'true')
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);';
 						}
-						$messageInfo = $messageInfo . '
+						$tache->load();
+						$messageInfo .= '
 									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
 									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
@@ -1539,6 +1540,17 @@ if($_REQUEST['post'] == 'true')
 											"act": "edit",
 											"id": "' . $tache->getId() . '",
 											"partie": "right",
+											"menu": evarisk("#menu").val(),
+											"affichage": "affichageListe",
+											"expanded": expanded
+										});
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
+											"table": "' . TABLE_TACHE . '",
+											"act": "edit",
+											"id": "' . $tache->getId() . '",
+											"partie": "left",
 											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
@@ -1622,6 +1634,57 @@ if($_REQUEST['post'] == 'true')
 						echo $messageInfo;
 					}
 					break;
+					case 'exportTask':
+					{
+						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
+
+						$existingPreconisation = '';
+						$tache = new EvaTask($id);
+						$tache->load();
+						$TasksAndSubTasks = $tache->getDescendants();
+						$TasksAndSubTasks->addTask($tache);
+						$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
+						if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
+						{
+							foreach($TasksAndSubTasks as $task)
+							{
+								if($task->id != $tache->id)
+								{
+									$existingPreconisation .= '* ' . $task->name;
+									if($task->description != '')
+									{
+										$existingPreconisation .= '(' . $task->description . ')';
+									}
+									$existingPreconisation .= " 
+";
+								}
+								$activities = $task->getActivitiesDependOn();
+								$activities = $activities->getActivities();
+								if(($activities != null) AND (count($activities) > 0))
+								{
+									foreach($activities as $activity)
+									{
+										$existingPreconisation .= '* ' . $activity->name;
+										if($activity->description != '')
+										{
+											$existingPreconisation .= '(' . $activity->description . ')';
+										}
+										$existingPreconisation .= " 
+";
+									}
+								}
+							}
+						}
+
+						$dirToSaveExportedFile = EVA_UPLOADS_PLUGIN_DIR . $_REQUEST['table'];
+						if(!is_dir($dirToSaveExportedFile))
+						{
+							eva_tools::make_recursiv_dir($dirToSaveExportedFile);
+							eva_tools::changeAccesAuthorisation($dirToSaveExportedFile);
+						}
+						file_put_contents($dirToSaveExportedFile . '/taskExport.txt' ,$existingPreconisation);
+					}
+					break;
 				}
 				break;
 			case TABLE_ACTIVITE:
@@ -1696,6 +1759,7 @@ if($_REQUEST['post'] == 'true')
 									evarisk("#message").addClass("updated");
 									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
 						}
+						$activite->load();
 						$messageInfo .= '
 									evarisk("#message").show();
 									setTimeout(function(){
@@ -1733,6 +1797,17 @@ if($_REQUEST['post'] == 'true')
 											"id": "' . $activite->getId() . '",
 											"partie": "right",
 				"menu": evarisk("#menu").val(),
+											"affichage": "affichageListe",
+											"expanded": expanded
+										});
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										{
+											"post": "true", 
+											"table": "' . TABLE_ACTIVITE . '",
+											"act": "edit",
+											"id": "' . $activite->getId() . '",
+											"partie": "left",
+											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
@@ -2364,51 +2439,60 @@ if($_REQUEST['post'] == 'true')
 			case TABLE_OPTION:
 				switch($_REQUEST['act'])
 				{
+					case 'editOption':
+					{
+						$id = (isset($_REQUEST['id'])) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
+						$id = str_replace('editOption-', '', $id);
+
+						$option = options::getOption($id);
+
+						echo options::editOptionForm($option->typeOption) . '
+<script type="text/javascript" >
+	evarisk("#idOption").val("' . $id . '");
+	evarisk("#valeur").val("' . $option->valeur . '");
+	evarisk("#optionName").html("' . $option->nomAffiche . '");
+	evarisk(".closeLightBoxContainer").click(function(){emptyOptionForm();});
+</script>';
+					}
+					break;
 					case 'update':
 					{
-						$optionYesNoList = array();
-						$optionYesNoList['oui'] = __('Oui', 'evarisk');
-						$optionYesNoList['non'] = __('Non', 'evarisk');
-
 						$optionId = eva_tools::IsValid_Variable($_REQUEST['id']);
-						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
-						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
+						$optionValue = eva_tools::IsValid_Variable($_REQUEST['valeur']);
 
 						$update = options::updateOption($optionId, $optionValue);
-						$newOptionValue = options::getOptionValue(strtolower(str_replace(' ', '_', $optionName)));
+						if($update)
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Sauvegarde r&eacute;ussie', 'evarisk') . '</strong></p>');
+							$actionAfterSuccess = 'evarisk("#optionValueContainer' . $optionId . '").html("' . $optionValue . '");';
+						}
+						else
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La sauvegarde a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
+							$actionAfterSuccess = '';
+						}
+						echo 
+'<script type="text/javascript">
+	evarisk(document).ready(function(){
+		emptyOptionForm();
+		actionMessageShow("#messageOption", "' . $messageInfo . '");
+		setTimeout(\'actionMessageHide("#messageOption")\',7500);
 
-						$optionYesNoList['selected'] = $newOptionValue;
-						$lineScript = 
-							'<script type="text/javascript">
-								evarisk(document).ready(function(){
-									/* Apply the jEditable handlers to the table */
-									evarisk(".' . strtolower(str_replace(' ', '_', $optionName)) . '").editable( "' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-										"data" : \'' . json_encode($optionYesNoList) . '\',
-										"type" : "select",
-										"submit" : "' . __('Sauvegarder', 'evarisk') . '",
-										"cancel" : "' . __('Annuler', 'evarisk') . '",
-										"submitdata": function ( value, settings ) {
-											return {
-												"id": evarisk(this).parent("tr").attr("id").replace("option", ""),
-												"post" : true,
-												"optionName" : evarisk(this).prev("td").html(),
-												"table" : "' . TABLE_OPTION . '",
-												"act" : "update"
-											};
-										},
-									});
-								});
-							</script>';
-						echo $newOptionValue . $lineScript;
+		' . $actionAfterSuccess . '
+	});
+</script>';
 					}
 					break;
 					case 'save':
 					{
 						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
 						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
+						$optionShownName = eva_tools::IsValid_Variable($_REQUEST['optionShownName']);
+						$optionDomain = eva_tools::IsValid_Variable($_REQUEST['optionDomain']);
+						$optionType = eva_tools::IsValid_Variable($_REQUEST['optionType']);
 						$optionStatus = eva_tools::IsValid_Variable($_REQUEST['optionStatus']);
 
-						$createOption = options::createOption($optionName, $optionValue, $optionStatus);
+						$createOption = options::createOption($optionName, $optionValue, $optionShownName, $optionDomain, $optionType, $optionStatus);
 					}
 					break;
 					case 'updateFromName':
@@ -2863,6 +2947,7 @@ if($_REQUEST['post'] == 'true')
 				break;
 			case "addAction" :
 				{
+					$_POST['parentTaskId'] = evaTask::saveNewTask();
 					$actionSave = evaActivity::saveNewActivity();
 
 					$messageInfo = '<script type="text/javascript">
@@ -3108,6 +3193,7 @@ if($_REQUEST['post'] == 'true')
 				break;
 			case "addActionPhoto" :
 				{
+					$_POST['parentTaskId'] = evaTask::saveNewTask();
 					$actionSave = evaActivity::saveNewActivity();
 
 					$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
@@ -3243,6 +3329,7 @@ if($_REQUEST['post'] == 'true')
 				break;
 			case "addAction-FAC" :
 				{
+					$_POST['parentTaskId'] = evaTask::saveNewTask();
 					$actionSave = evaActivity::saveNewActivity();
 
 					$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);

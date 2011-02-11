@@ -8,7 +8,7 @@
 
 	$optionEmailDomain = '';
 	$checkEmailDomain = '';
-	$checkEmailDomain = options::getOptionValue('emailDomain', 'Moderated');
+	$checkEmailDomain = options::getOptionValue('emailDomain', 'Valid');
 	if($checkEmailDomain == '')
 	{
 		$optionEmailDomain = '
@@ -18,8 +18,11 @@
 				"table": "' . TABLE_OPTION . '",
 				"act": "save",
 				"value": evarisk("#domaineMail").val(),
-				"optionStatus": "Moderated",
-				"optionName": "emailDomain"
+				"optionStatus": "Valid",
+				"optionName": "emailDomain",
+				"optionShownName": "' . __('domaine pour l\'email des utilisateurs import&eacute;', 'evarisk') . '",
+				"optionDomain": "user",
+				"optionType": "text"
 			});';
 	}
 	else

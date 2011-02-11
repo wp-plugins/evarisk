@@ -1540,7 +1540,7 @@ class EvaDisplayDesign {
 		$corpsTable = '';
 		for($i=0; $i<count($titres); $i++)
 		{
-			$barreTitre = $barreTitre . '<th class="' . $classes[$i] . '" scope="col">' . $titres[$i] . '</th>';
+			$barreTitre .= '<th class="' . $classes[$i] . '" scope="col">' . $titres[$i] . '</th>';
 		}
 		if($barreTitre != '')
 		{
@@ -1549,13 +1549,13 @@ class EvaDisplayDesign {
 		for($numeroLigne=0; $numeroLigne<count($lignesDeValeurs); $numeroLigne++)
 		{
 			$ligneDeValeurs = $lignesDeValeurs[$numeroLigne];
-			$corpsTable = $corpsTable . '<tr id="' . $idLignes[$numeroLigne] . '" valign="top">';
+			$corpsTable .= '<tr id="' . $idLignes[$numeroLigne] . '" valign="top" >';
 			for($i=0; $i<count($ligneDeValeurs); $i++)
 			{
-				$corpsTable = $corpsTable . '
+				$corpsTable .= '
 					<td class="' . $classes[$i] . ' ' . $ligneDeValeurs[$i]['class'] . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
 			}
-			$corpsTable = $corpsTable . '</tr>';
+			$corpsTable .= '</tr>';
 		}
 		$table = $script . '<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed">
 				<thead>
@@ -1564,9 +1564,9 @@ class EvaDisplayDesign {
 				<tfoot>
 						' . $barreTitre . '
 				</tfoot>
-				<tbody>';
-		$table = $table . $corpsTable;
-		$table = $table . '
+				<tbody>'
+				 . $corpsTable . 
+				'
 				</tbody>
 			</table>';
 		return $table;
@@ -2367,7 +2367,7 @@ class EvaDisplayDesign {
 									<td >' . EvaDisplayInput::afficherInput('text', 'dateCreation', '#DATEFORM1#', '', '', 'dateCreation', false, false, 150, '', 'Date', '100%', '', 'left;width:100%;', false) . '</td>
 								</tr>
 								<tr>
-									<td ><label for="dateDebutAudit">' . _('date de d&eacute;but d\'audit', 'evarisk') . '</label></td>
+									<td ><label for="dateDebutAudit">' . __('date de d&eacute;but d\'audit', 'evarisk') . '</label></td>
 									<td >' . EvaDisplayInput::afficherInput('text', 'dateDebutAudit', '#DATEDEBUT1#', '', '', 'dateDebutAudit', false, false, 150, '', 'Date', '100%', '', 'left;width:100%;', false) . '</td>
 								</tr>
 								<tr>

@@ -573,5 +573,31 @@ function evarisk_insertions($insertions = null)
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}
+		case 31:
+		{
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 32:
+		{
+			$sql = "UPDATE " . TABLE_OPTION . " SET nomAffiche = LOWER(REPLACE(nom, '_', ' '));";
+			$wpdb->query($sql);
+			$sql = "UPDATE " . TABLE_OPTION . " SET domaine = 'task';";
+			$wpdb->query($sql);
+			$sql = $wpdb->prepare("UPDATE " . TABLE_OPTION . " SET typeOption = 'text', Status = 'Valid', nomAffiche = '%s', domaine = 'user' WHERE nom = 'emailDomain';", __('domaine pour l\'email des utilisateurs import&eacute;', 'evarisk'));
+			$wpdb->query($sql);
+			$sql = "UPDATE " . TABLE_OPTION . " SET domaine = 'risk' WHERE nom = 'risques_avances';";
+			$wpdb->query($sql);
+
+			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'creation_sous_tache_preconisation', '%s', 'non', 'Valid', 'ouinon');", __('cr&eacute;er une sous-t&acirc;che pour les pr&eacute;conisations', 'evarisk'));
+			$wpdb->query($sql);
+			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'export_only_priority_task', '%s', 'oui', 'Valid', 'ouinon');", __('exporter uniquement les t&acirc;ches prioritaires dans le plan d\'action', 'evarisk'));
+			$wpdb->query($sql);
+			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'export_tasks', '%s', 'non', 'Moderated', 'ouinon');", __('exporter les actions correctives', 'evarisk'));
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
 	}
 }

@@ -93,7 +93,7 @@
 
 				$corpsPostBoxRisque = $scriptRisque . '
 				<div id="message' . TABLE_DUER . '" class="updated fade" style="cursor:pointer; display:none;"></div>
-				<ul class="eva_tabs">
+				<ul class="eva_tabs" style="margin-bottom:12px;" >
 					<li id="ongletRisquesLignes" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower( __('Risques unitaires', 'evarisk'))) . '</label></li>
 					<li id="ongletRisquesUnites" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower( __('Risques par unit&eacute;', 'evarisk'))) . '</label></li>
 					<li id="ongletDocumentUnique" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower( __('Document Unique', 'evarisk'))) . '</label></li>

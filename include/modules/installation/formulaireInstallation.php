@@ -179,7 +179,7 @@ $autoLaunch = '';
 
 $classes = null;
 $idLignes = null;
-$formulaireInstallation = $formulaireInstallation . EvaDisplayDesign::getTable($idTable, null, $lignesDeValeurs, $classes, $idLignes);
+$formulaireInstallation = $formulaireInstallation . EvaDisplayDesign::getTable($idTable, null, $lignesDeValeurs, $classes, $idLignes, '');
 {//Bouton installer Evarisk
 	$allVariables = MethodeEvaluation::getAllVariables();
 	$idBouttonEnregistrer = 'installerEvarisk';

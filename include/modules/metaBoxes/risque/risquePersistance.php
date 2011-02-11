@@ -36,6 +36,41 @@ if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionsCorrectives, 'after');
 	}
 
+	/*	Check if there are ecommendation to link with this risk	*/
+	$preconisationActionID = eva_tools::IsValid_Variable($_REQUEST['preconisationActionID']);
+	$preconisationAction = eva_tools::IsValid_Variable($_REQUEST['preconisationAction']);
+	$preconisationRisque = eva_tools::IsValid_Variable($_REQUEST['preconisationRisque']);
+	if(($preconisationRisque != ''))
+	{
+		if($preconisationAction == 'creation')
+		{
+			$infosDanger = EvaDanger::getDanger($idDanger);
+			$_POST['nom_activite'] = __('Action prioritaire risque ' . $infosDanger->nom, 'evarisk');
+			$_POST['description'] = $preconisationRisque;
+			$_POST['cout'] = '';
+			$_POST['idProvenance'] = $idRisque;
+			$_POST['tableProvenance'] = TABLE_RISQUE;
+			$_POST['responsable_activite'] = '';
+			$_POST['date_debut'] = date('Y-m-d');
+			$_POST['date_fin'] = date('Y-m-d', mktime(0, 0, 0, date("m")+1, date("d"), date("Y")));
+			$_POST['avancement'] = '0';
+			$_POST['hasPriority'] = 'yes';
+
+			$_POST['parentTaskId'] = evaTask::saveNewTask();
+			if(options::getOptionValue('creation_sous_tache_preconisation') == 'oui')
+			{
+				evaActivity::saveNewActivity();
+			}
+		}
+		elseif($preconisationAction == 'update')
+		{
+			$priorityAction = new EvaTask($preconisationActionID);
+			$priorityAction->load();
+			$priorityAction->setDescription($preconisationRisque);
+			$priorityAction->save();
+		}
+	}
+
 	if($_REQUEST['act'] == 'save')
 	{
 		echo '<script type="text/javascript" >goTo("#postBoxRisques");</script>';

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evarisk v5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-28 11:20+0100\n"
-"PO-Revision-Date: 2011-01-28 11:21+0100\n"
+"POT-Creation-Date: 2011-02-11 11:39+0100\n"
+"PO-Revision-Date: 2011-02-11 11:39+0100\n"
 "Last-Translator: Alexandre techer <alexandre.techer@gmail.com>\n"
 "Language-Team: Evarisk <contact@evarisk.com>\n"
 "MIME-Version: 1.0\n"
@@ -27,13 +27,13 @@ msgstr "You don't select a response"
 #: ../include/ajax.php:595
 #: ../include/ajax.php:671
 #: ../include/ajax.php:1456
-#: ../include/ajax.php:1638
-#: ../include/ajax.php:2874
-#: ../include/ajax.php:2879
-#: ../include/ajax.php:3145
-#: ../include/ajax.php:3150
-#: ../include/ajax.php:3281
-#: ../include/ajax.php:3286
+#: ../include/ajax.php:1701
+#: ../include/ajax.php:2959
+#: ../include/ajax.php:2964
+#: ../include/ajax.php:3231
+#: ../include/ajax.php:3236
+#: ../include/ajax.php:3368
+#: ../include/ajax.php:3373
 msgid "sauvegard&eacute;e"
 msgstr "saved"
 
@@ -42,8 +42,8 @@ msgstr "saved"
 #: ../include/ajax.php:598
 #: ../include/ajax.php:674
 #: ../include/ajax.php:1459
-#: ../include/ajax.php:1642
-#: ../include/ajax.php:1747
+#: ../include/ajax.php:1705
+#: ../include/ajax.php:1822
 msgid "mise &agrave; jour"
 msgstr "updated"
 
@@ -52,11 +52,11 @@ msgstr "updated"
 #: ../include/ajax.php:605
 #: ../include/ajax.php:681
 #: ../include/ajax.php:1505
-#: ../include/ajax.php:1690
-#: ../include/ajax.php:1820
-#: ../include/ajax.php:2874
-#: ../include/ajax.php:3145
-#: ../include/ajax.php:3281
+#: ../include/ajax.php:1753
+#: ../include/ajax.php:1895
+#: ../include/ajax.php:2959
+#: ../include/ajax.php:3231
+#: ../include/ajax.php:3368
 #, php-format
 msgid "La fiche %s a correctement &eacute;t&eacute; %s"
 msgstr "The %s form  has been successfully %s"
@@ -68,12 +68,14 @@ msgstr "group"
 
 #: ../include/ajax.php:313
 #: ../include/ajax.php:496
+#: ../include/ajax.php:2466
 #, fuzzy
 msgid "Sauvegarde r&eacute;ussie"
 msgstr "saved"
 
 #: ../include/ajax.php:317
 #: ../include/ajax.php:500
+#: ../include/ajax.php:2471
 #, fuzzy
 msgid "La sauvegarde a &eacute;chou&eacute;e"
 msgstr "has correctly been"
@@ -99,7 +101,7 @@ msgid "de la cat&eacute;gorie de dangers"
 msgstr "dangers category"
 
 #: ../include/ajax.php:681
-#: ../include/ajax.php:3323
+#: ../include/ajax.php:3410
 msgid "du danger"
 msgstr "danger"
 
@@ -123,13 +125,13 @@ msgid "M&eacute;thode d'&eacute;valuation"
 msgstr "Assessment method"
 
 #: ../include/ajax.php:986
-#: ../include/ajax.php:3324
+#: ../include/ajax.php:3411
 #, php-format
 msgid "commentaire %s"
 msgstr "comment %s"
 
 #: ../include/ajax.php:986
-#: ../include/ajax.php:3324
+#: ../include/ajax.php:3411
 msgid "sur le risque"
 msgstr "on the risk"
 
@@ -167,268 +169,251 @@ msgstr "saved"
 
 #: ../include/ajax.php:1505
 #: ../include/ajax.php:1511
-#: ../include/ajax.php:1565
 #: ../include/ajax.php:1577
+#: ../include/ajax.php:1589
 msgid "de la t&acirc;che"
 msgstr ""
 
 #: ../include/ajax.php:1511
-#: ../include/ajax.php:1697
-#: ../include/ajax.php:1826
-#: ../include/ajax.php:2879
-#: ../include/ajax.php:3150
-#: ../include/ajax.php:3286
+#: ../include/ajax.php:1760
+#: ../include/ajax.php:1901
+#: ../include/ajax.php:2964
+#: ../include/ajax.php:3236
+#: ../include/ajax.php:3373
 #, fuzzy, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; %s."
 msgstr "The %s form  has been successfully %s"
 
-#: ../include/ajax.php:1565
-#: ../include/ajax.php:1969
+#: ../include/ajax.php:1577
+#: ../include/ajax.php:2044
 #, fuzzy, php-format
 msgid "La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e"
 msgstr "The %s form  has been successfully %s"
 
-#: ../include/ajax.php:1577
+#: ../include/ajax.php:1589
 #, fuzzy, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e"
 msgstr "The %s form  has been successfully %s"
 
-#: ../include/ajax.php:1690
-#: ../include/ajax.php:1697
-#: ../include/ajax.php:1820
-#: ../include/ajax.php:1826
-#: ../include/ajax.php:1969
-#: ../include/ajax.php:1981
+#: ../include/ajax.php:1753
+#: ../include/ajax.php:1760
+#: ../include/ajax.php:1895
+#: ../include/ajax.php:1901
+#: ../include/ajax.php:2044
+#: ../include/ajax.php:2056
 msgid "de l'action"
 msgstr ""
 
-#: ../include/ajax.php:1851
+#: ../include/ajax.php:1926
 msgid "Envoyer la photo avant"
 msgstr ""
 
-#: ../include/ajax.php:1855
+#: ../include/ajax.php:1930
 msgid "Envoyer la photo apr&egrave;s"
 msgstr ""
 
-#: ../include/ajax.php:1936
-#: ../include/ajax.php:2177
+#: ../include/ajax.php:2011
+#: ../include/ajax.php:2252
 #, fuzzy
 msgid "Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es"
 msgstr "The %s form  has been successfully %s"
 
-#: ../include/ajax.php:1941
-#: ../include/ajax.php:2182
+#: ../include/ajax.php:2016
+#: ../include/ajax.php:2257
 msgid "Les modifications n'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es"
 msgstr ""
 
-#: ../include/ajax.php:1981
+#: ../include/ajax.php:2056
 #, fuzzy, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e."
 msgstr "The %s form  has been successfully %s"
 
-#: ../include/ajax.php:2045
+#: ../include/ajax.php:2120
 msgid "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l'action"
 msgstr ""
 
-#: ../include/ajax.php:2050
+#: ../include/ajax.php:2125
 msgid "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo avant l'action"
 msgstr ""
 
-#: ../include/ajax.php:2076
+#: ../include/ajax.php:2151
 msgid "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr ""
 
-#: ../include/ajax.php:2081
+#: ../include/ajax.php:2156
 msgid "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr ""
 
-#: ../include/ajax.php:2107
+#: ../include/ajax.php:2182
 msgid "La photo n'est plus d&eacute;finie comme photo avant l'action"
 msgstr ""
 
-#: ../include/ajax.php:2112
+#: ../include/ajax.php:2187
 msgid "La photo est toujours d&eacute;finie comme photo avant l'action"
 msgstr ""
 
-#: ../include/ajax.php:2138
+#: ../include/ajax.php:2213
 msgid "La photo n'est plus d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr ""
 
-#: ../include/ajax.php:2143
+#: ../include/ajax.php:2218
 msgid "La photo est toujours d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr ""
 
-#: ../include/ajax.php:2224
-#: ../include/ajax.php:2262
+#: ../include/ajax.php:2299
+#: ../include/ajax.php:2337
 #, php-format
 msgid "Le groupe d'utilisateurs a &eacute;t&eacute; correctement %s %s."
 msgstr ""
 
-#: ../include/ajax.php:2224
-#: ../include/ajax.php:2229
-#: ../include/ajax.php:2305
-#: ../include/ajax.php:2310
+#: ../include/ajax.php:2299
+#: ../include/ajax.php:2304
+#: ../include/ajax.php:2380
+#: ../include/ajax.php:2385
 #, fuzzy
 msgid "affect&eacute;"
 msgstr "Borderline"
 
-#: ../include/ajax.php:2229
-#: ../include/ajax.php:2267
+#: ../include/ajax.php:2304
+#: ../include/ajax.php:2342
 #, php-format
 msgid "Le groupe d'utilisateurs n'a pas pu &ecirc;tre %s %s."
 msgstr ""
 
-#: ../include/ajax.php:2262
-#: ../include/ajax.php:2267
-#: ../include/ajax.php:2343
-#: ../include/ajax.php:2348
+#: ../include/ajax.php:2337
+#: ../include/ajax.php:2342
+#: ../include/ajax.php:2418
+#: ../include/ajax.php:2423
 #, fuzzy
 msgid "d&eacute;saffect&eacute;"
 msgstr "High"
 
-#: ../include/ajax.php:2305
-#: ../include/ajax.php:2343
+#: ../include/ajax.php:2380
+#: ../include/ajax.php:2418
 #, fuzzy, php-format
 msgid "Le groupe d'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s."
 msgstr "Start upload"
 
-#: ../include/ajax.php:2310
-#: ../include/ajax.php:2348
+#: ../include/ajax.php:2385
+#: ../include/ajax.php:2423
 #, php-format
 msgid "Le groupe d'&eacute;valuateurs n'a pas pu &ecirc;tre %s %s."
 msgstr ""
 
-#: ../include/ajax.php:2370
-msgid "Oui"
-msgstr ""
-
-#: ../include/ajax.php:2371
-msgid "Non"
-msgstr ""
-
-#: ../include/ajax.php:2388
-#, fuzzy
-msgid "Sauvegarder"
-msgstr "saved"
-
-#: ../include/ajax.php:2389
-msgid "Annuler"
-msgstr ""
-
-#: ../include/ajax.php:2481
+#: ../include/ajax.php:2565
 #, fuzzy
 msgid "Aucun mod&eacute;le &agrave; pr&eacute;senter"
 msgstr "Referencial creation"
 
-#: ../include/ajax.php:2483
+#: ../include/ajax.php:2567
 #, fuzzy
 msgid "Mod&egrave;le &agrave; utiliser"
 msgstr "Update"
 
-#: ../include/ajax.php:2649
-#: ../include/ajax.php:3211
+#: ../include/ajax.php:2733
+#: ../include/ajax.php:3297
 #, fuzzy
 msgid "Vous n\\'avez pas donne de nom a l'action"
 msgstr "You don't give a name %s"
 
-#: ../include/ajax.php:2766
-#: ../include/ajax.php:3446
+#: ../include/ajax.php:2850
+#: ../include/ajax.php:3533
 #, fuzzy
 msgid "Action non d&eacute;coup&eacute;e"
 msgstr "Compagnies"
 
-#: ../include/ajax.php:2854
-#: ../include/ajax.php:3528
+#: ../include/ajax.php:2938
+#: ../include/ajax.php:3615
 #, fuzzy
 msgid "ce risque"
 msgstr "risks"
 
-#: ../include/ajax.php:2857
-#: ../include/ajax.php:3531
+#: ../include/ajax.php:2941
+#: ../include/ajax.php:3618
 #, fuzzy
 msgid "cet &eacute;l&eacute;ment"
 msgstr "the element"
 
-#: ../include/ajax.php:2860
-#: ../include/ajax.php:3534
+#: ../include/ajax.php:2944
+#: ../include/ajax.php:3621
 #, fuzzy, php-format
 msgid "Il n'y a pas d'action pour %s"
 msgstr "There is no PPE"
 
-#: ../include/ajax.php:2874
-#: ../include/ajax.php:2879
-#: ../include/ajax.php:3145
-#: ../include/ajax.php:3150
-#: ../include/ajax.php:3281
-#: ../include/ajax.php:3286
+#: ../include/ajax.php:2959
+#: ../include/ajax.php:2964
+#: ../include/ajax.php:3231
+#: ../include/ajax.php:3236
+#: ../include/ajax.php:3368
+#: ../include/ajax.php:3373
 #, fuzzy
 msgid "de l'action corrective"
 msgstr "Remedial actions"
 
-#: ../include/ajax.php:2998
+#: ../include/ajax.php:3083
 #, fuzzy
 msgid "D&eacute;but"
 msgstr "result"
 
-#: ../include/ajax.php:3002
+#: ../include/ajax.php:3087
 msgid "Fin"
 msgstr ""
 
-#: ../include/ajax.php:3010
+#: ../include/ajax.php:3095
 #: ../include/lib/evaDisplayDesign.class.php:685
 msgid "Avancement"
 msgstr ""
 
-#: ../include/ajax.php:3011
+#: ../include/ajax.php:3096
 msgid "Description"
 msgstr "Descripition"
 
-#: ../include/ajax.php:3012
+#: ../include/ajax.php:3097
 msgid "Co&ucirc;t"
 msgstr ""
 
-#: ../include/ajax.php:3015
+#: ../include/ajax.php:3100
 msgid "Photo avant"
 msgstr "Photo before"
 
-#: ../include/ajax.php:3030
-#: ../include/ajax.php:3049
+#: ../include/ajax.php:3115
+#: ../include/ajax.php:3134
 #, fuzzy
 msgid "Aucune n'a &eacute;t&eacute; d&eacute;finie"
 msgstr "Referencial creation"
 
-#: ../include/ajax.php:3035
+#: ../include/ajax.php:3120
 #, fuzzy
 msgid "Photo apr&egrave;s"
 msgstr "Acces right"
 
-#: ../include/ajax.php:3075
+#: ../include/ajax.php:3160
 msgid "Voir les actions associ&eacute;es &agrave; ce risque"
 msgstr ""
 
-#: ../include/ajax.php:3081
+#: ../include/ajax.php:3166
 #, fuzzy
 msgid "Il n'y a aucune action corrective pour ce risque"
 msgstr "There is no PPE"
 
-#: ../include/ajax.php:3105
+#: ../include/ajax.php:3190
 #, fuzzy
 msgid "Il n'y a aucun risque pour cette &eacute;l&eacute;ment"
 msgstr "the element"
 
-#: ../include/ajax.php:3215
+#: ../include/ajax.php:3301
 msgid "Vous devez choisir une personne en charge de l\\'action"
 msgstr ""
 
-#: ../include/ajax.php:3241
+#: ../include/ajax.php:3327
 msgid "Enregistrer"
 msgstr "Save"
 
-#: ../include/ajax.php:3322
+#: ../include/ajax.php:3409
 msgid "Quotation"
 msgstr "Valuation"
 
-#: ../include/ajax.php:3323
+#: ../include/ajax.php:3410
 #, php-format
 msgid "nom %s"
 msgstr "%s name"
@@ -500,6 +485,14 @@ msgstr "updated"
 
 #: ../include/config/config.php:48
 msgid "Risque Inacceptable"
+msgstr ""
+
+#: ../include/config/config.php:94
+msgid "Oui"
+msgstr ""
+
+#: ../include/config/config.php:95
+msgid "Non"
 msgstr ""
 
 #: ../include/config/configDroitAcces.php:5
@@ -1149,6 +1142,15 @@ msgstr "November"
 msgid "D&eacute;cembre"
 msgstr "Decembre"
 
+#: ../include/lib/options.class.php:146
+#, fuzzy
+msgid "&Eacute;dition de "
+msgstr "Edit"
+
+#: ../include/lib/options.class.php:150
+msgid "Annuler"
+msgstr ""
+
 #: ../include/lib/actionsCorrectives/suivi_activite.class.php:33
 #, fuzzy
 msgid "Commentaire"
@@ -1163,60 +1165,60 @@ msgstr ""
 msgid "Le <b>%s</b>, <b>%s</b> dit <i>%s</i>"
 msgstr ""
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:468
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:534
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:507
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:573
 msgid "Nom T&acirc;che"
 msgstr ""
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:468
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:534
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:507
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:573
 msgid "Progression (%)"
 msgstr ""
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:468
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:534
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:585
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:507
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:573
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
 #, fuzzy
 msgid "Fiche"
 msgstr "File"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:478
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:544
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:517
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:583
 msgid "Voir l'action"
 msgstr ""
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:486
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:552
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:642
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:525
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:591
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:681
 #, fuzzy
 msgid "Aucun r&eacute;sultat trouv&eacute;"
 msgstr "Compagnies"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:585
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
 #, fuzzy
 msgid "Nom danger"
 msgstr "Danger name"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:585
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
 #, fuzzy
 msgid "Commentaire sur le risque"
 msgstr "on the risk"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:585
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
 #, fuzzy
 msgid "&Eacute;l&eacute;ment"
 msgstr "the element"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:612
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:651
 msgid "Il vous faut ajouter le cas "
 msgstr ""
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:634
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:673
 #, fuzzy
 msgid "Voir le risque"
 msgstr "on the risk"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:657
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:696
 #, php-format
 msgid "Vous devez d&eacute;clarer %s dans le fichier %s &agrave; la ligne %d si vous voulez cette information"
 msgstr ""
@@ -1266,67 +1268,67 @@ msgstr "The label field is required"
 msgid "description %s"
 msgstr "%s descripition"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:176
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:175
 msgid "Somme des quotation"
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:198
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:736
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1259
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:197
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:735
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1258
 #, fuzzy
 msgid "Imprimer la fiche de l'unit&eacute;"
 msgstr "Entity table field"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:768
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:767
 msgid "Le pr&eacute;sent document a &eacute;t&eacute; r&eacute;alis&eacute; pour permettre au chef d'entreprise d'avoir une vision des risques hi&eacute;rarchis&eacute;s dans son &eacute;tablissement. Lors de l'&eacute;valuation, "
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:772
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:771
 #, php-format
 msgid "La tranche des 75% des salari&eacute;s &eacute;valu&eacute;s n'a pas &eacute;t&eacute; atteinte, puisque seul "
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:831
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:830
 #: ../include/lib/evaRole/evaRole.class.php:147
 msgid "Une erreur est survenue lors de l'enregistrement"
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:947
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:946
 #, fuzzy
 msgid "T&eacute;l&eacute;charger Open Office"
 msgstr "Upload photos"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:955
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:954
 msgid "Aucun document unique n'a &eacute;t&eacute; g&eacute;n&eacute;r&eacute; pour le moment"
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1071
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1070
 msgid "Nom du groupe"
 msgstr "Group name"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1072
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1071
 msgid "Description du groupe"
 msgstr "Group description"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1073
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1072
 #, fuzzy
 msgid "Nombre d'utilisateur du groupe"
 msgstr "Group users list"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1097
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1096
 #, fuzzy
 msgid "Groupes utilisateurs (m&eacute;tiers)"
 msgstr "Users groups"
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1227
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1226
 msgid "Somme des quotations"
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1319
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1318
 msgid " au "
 msgstr ""
 
-#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1326
+#: ../include/lib/evaluationDesRisques/documentUnique/documentUnique.class.php:1325
 #, fuzzy
 msgid "La localisation n'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e"
 msgstr "Referencial creation"
@@ -2058,34 +2060,38 @@ msgstr "%s forname"
 msgid "Inscription"
 msgstr "Descripition"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:144
-#: ../include/lib/users/evaUserLinkElement.class.php:195
+#: ../include/lib/users/evaUserLinkElement.class.php:146
+#: ../include/lib/users/evaUserLinkElement.class.php:213
 msgid "Cliquez pour supprimer"
 msgstr ""
 
-#: ../include/lib/users/evaUserLinkElement.class.php:149
+#: ../include/lib/users/evaUserLinkElement.class.php:151
 #, fuzzy
 msgid "Aucun utilisateur affect&eacute;"
 msgstr "No non-assign users"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:156
-#, fuzzy
-msgid "Utilisateurs d&eacute;j&agrave; affect&eacute;s"
-msgstr "No non-assign users"
-
-#: ../include/lib/users/evaUserLinkElement.class.php:161
+#: ../include/lib/users/evaUserLinkElement.class.php:163
 #, fuzzy
 msgid "Ajouter des utilisateurs"
 msgstr "Drag the users here"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:165
-#: ../include/lib/users/evaUserLinkElement.class.php:209
-#: ../include/lib/users/evaUserLinkElement.class.php:222
+#: ../include/lib/users/evaUserLinkElement.class.php:167
+#: ../include/lib/users/evaUserLinkElement.class.php:243
+#: ../include/lib/users/evaUserLinkElement.class.php:260
 #, fuzzy
 msgid "Rechercher dans la liste des utilisateurs"
 msgstr "Users groups"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:321
+#: ../include/lib/users/evaUserLinkElement.class.php:171
+msgid "cochez tout"
+msgstr ""
+
+#: ../include/lib/users/evaUserLinkElement.class.php:171
+#, fuzzy
+msgid "d&eacute;cochez tout"
+msgstr "Select"
+
+#: ../include/lib/users/evaUserLinkElement.class.php:359
 msgid "Il n'a aucune modification a apporter"
 msgstr ""
 
@@ -2673,6 +2679,24 @@ msgstr ""
 msgid "Protection"
 msgstr "Valuation"
 
+#: ../include/modules/installation/insertions.php:587
+#, fuzzy
+msgid "domaine pour l'email des utilisateurs import&eacute;"
+msgstr "Users groups"
+
+#: ../include/modules/installation/insertions.php:592
+msgid "cr&eacute;er une sous-t&acirc;che pour les pr&eacute;conisations"
+msgstr ""
+
+#: ../include/modules/installation/insertions.php:594
+msgid "exporter uniquement les t&acirc;ches prioritaires dans le plan d'action"
+msgstr ""
+
+#: ../include/modules/installation/insertions.php:596
+#, fuzzy
+msgid "exporter les actions correctives"
+msgstr "Remedial actions"
+
 #: ../include/modules/metaBoxes/mainPostBox.php:171
 #, fuzzy
 msgid "Cliquer pour remonter d\\'un niveau."
@@ -2730,7 +2754,7 @@ msgstr ""
 
 #: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:117
 #: ../include/modules/metaBoxes/actionsCorrectives/activite/simple-activite-new.php:123
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:70
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:80
 msgid "Responsable"
 msgstr "Overseer"
 
@@ -2742,7 +2766,7 @@ msgstr ""
 
 #: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:130
 #: ../include/modules/metaBoxes/actionsCorrectives/activite/simple-activite-new.php:136
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:78
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:88
 #, fuzzy
 msgid "Choisissez..."
 msgstr "choose %s"
@@ -2777,31 +2801,39 @@ msgstr ""
 msgid "Enregistrer et Terminer"
 msgstr "Save"
 
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:126
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:171
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:75
+msgid "Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches"
+msgstr ""
+
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:136
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:181
 #, fuzzy
 msgid "Vous n\\'avez pas donne de nom a la t&acirc;che"
 msgstr "You don't give a name %s"
 
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:130
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:175
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:140
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:185
 msgid "Vous devez choisir une personne en charge de la t&acirc;che"
 msgstr ""
 
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:177
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:187
 msgid "En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments 'en-dessous'. Etes vous sur?"
 msgstr ""
 
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:207
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:217
 msgid "Solder la tache"
 msgstr ""
 
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:215
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:225
 msgid "Cette t&acirc;che est sold&eacute;e"
 msgstr ""
 
-#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:229
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:239
 msgid "Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier"
+msgstr ""
+
+#: ../include/modules/metaBoxes/actionsCorrectives/tache/tache-new.php:248
+msgid "Exporter"
 msgstr ""
 
 #: ../include/modules/metaBoxes/dangers/categorieDangers/categorieDangers-new.php:60
@@ -3087,43 +3119,64 @@ msgstr "the element"
 msgid "Voir les dangers"
 msgstr "dangers"
 
-#: ../include/modules/metaBoxes/risque/risque.php:428
+#: ../include/modules/metaBoxes/risque/risque.php:437
+#: ../include/modules/metaBoxes/risque/risque.php:449
+#: ../include/modules/metaBoxes/risque/risque.php:457
+#, fuzzy
+msgid "Progression"
+msgstr "Valuation"
+
+#: ../include/modules/metaBoxes/risque/risque.php:464
+#, fuzzy
+msgid "pr&eacute;conisation pour le risque"
+msgstr "Risks assessment"
+
+#: ../include/modules/metaBoxes/risque/risque.php:468
+#, fuzzy
+msgid "pr&eacute;conisation existante"
+msgstr "Geolocalisation"
+
+#: ../include/modules/metaBoxes/risque/risque.php:478
 #, fuzzy
 msgid "Photo associ&eacute;e &agrave; ce risque"
 msgstr "%s already call like that"
 
-#: ../include/modules/metaBoxes/risque/risque.php:428
+#: ../include/modules/metaBoxes/risque/risque.php:478
 #, fuzzy
 msgid "Supprimer l'association"
 msgstr "Delete the group"
 
-#: ../include/modules/metaBoxes/risque/risque.php:448
+#: ../include/modules/metaBoxes/risque/risque.php:498
 msgid "Ne pas afficher dans les historiques de modifications"
 msgstr ""
 
-#: ../include/modules/metaBoxes/risque/risque.php:544
+#: ../include/modules/metaBoxes/risque/risque.php:597
 msgid "Envoyer des photos"
 msgstr ""
 
-#: ../include/modules/metaBoxes/risque/risque.php:598
+#: ../include/modules/metaBoxes/risque/risque.php:651
 msgid "D&eacute;poser ici pour affecter ce risque &agrave; cette photo"
 msgstr ""
 
-#: ../include/modules/metaBoxes/risque/risque.php:645
+#: ../include/modules/metaBoxes/risque/risque.php:698
 msgid "Annuler l'ajout du risque"
 msgstr ""
 
-#: ../include/modules/metaBoxes/risque/risque.php:666
+#: ../include/modules/metaBoxes/risque/risque.php:719
 #, fuzzy
 msgid "Enregistrer tout"
 msgstr "Save"
 
-#: ../include/modules/metaBoxes/risque/risquePersistance.php:59
+#: ../include/modules/metaBoxes/risque/risquePersistance.php:48
+msgid "Action prioritaire risque "
+msgstr ""
+
+#: ../include/modules/metaBoxes/risque/risquePersistance.php:94
 #, fuzzy
 msgid "Le risque a &eacute;t&eacute; supprim&eacute;."
 msgstr "referencial"
 
-#: ../include/modules/metaBoxes/risque/risquePersistance.php:64
+#: ../include/modules/metaBoxes/risque/risquePersistance.php:99
 #, fuzzy
 msgid "Le risque n'a pas pu &ecirc;tre supprim&eacute;."
 msgstr "could not be deleted"
@@ -3267,194 +3320,207 @@ msgstr "Regulatory Watch"
 msgid "Photo explicative de la m&eacute;thode"
 msgstr ""
 
-#: ../include/modules/options/options.php:14
+#: ../include/modules/options/options.php:7
+msgid "Domaine de l'option"
+msgstr ""
+
+#: ../include/modules/options/options.php:8
 msgid "Nom de l'option"
 msgstr ""
 
-#: ../include/modules/options/options.php:15
+#: ../include/modules/options/options.php:9
 msgid "Valeur"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:51
+#: ../include/modules/options/options.php:32
+#, fuzzy
+msgid "Utilisateurs"
+msgstr "Group users"
+
+#: ../include/modules/options/options.php:115
+msgid "Fermer"
+msgstr ""
+
+#: ../include/modules/utilisateurs/importUtilisateurs.php:54
 msgid "Aucun utilisateurs n'a &eacute;t&eacute; ajout&eacute; depuis le champs texte"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:62
 #: ../include/modules/utilisateurs/importUtilisateurs.php:65
+#: ../include/modules/utilisateurs/importUtilisateurs.php:68
 #, php-format
 msgid "Le fichier que vous avez envoy&eacute; est trop lourd: %s taille autoris&eacute;e %s"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:68
+#: ../include/modules/utilisateurs/importUtilisateurs.php:71
 msgid "Le fichier que vous avez envoy&eacute; n'a pas &eacute;t&eacute; compl&eacute;tement envoy&eacute;"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:71
+#: ../include/modules/utilisateurs/importUtilisateurs.php:74
 msgid "Une erreur est survenue lors de l'envoie du fichier"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:75
+#: ../include/modules/utilisateurs/importUtilisateurs.php:78
 #, fuzzy, php-format
 msgid "Le fichier %s n'a pas pu &ecirc;tre envoy&eacute;"
 msgstr "could not be deleted"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:109
-#: ../include/modules/utilisateurs/importUtilisateurs.php:115
+#: ../include/modules/utilisateurs/importUtilisateurs.php:112
+#: ../include/modules/utilisateurs/importUtilisateurs.php:118
 msgid "L'adresse email <b>"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:122
-#: ../include/modules/utilisateurs/importUtilisateurs.php:127
+#: ../include/modules/utilisateurs/importUtilisateurs.php:125
+#: ../include/modules/utilisateurs/importUtilisateurs.php:130
 msgid "L'identifiant <b>"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:155
+#: ../include/modules/utilisateurs/importUtilisateurs.php:158
 #, fuzzy, php-format
 msgid "L'utilisateur de la ligne %s n'a pas pu &ecirc;tre ajout&eacute;"
 msgstr "could not be deleted"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:180
+#: ../include/modules/utilisateurs/importUtilisateurs.php:183
 #, fuzzy, php-format
 msgid "%s utilisateur a &eacute;t&eacute; cr&eacute;&eacute;"
 msgstr "Referencial creation"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:183
+#: ../include/modules/utilisateurs/importUtilisateurs.php:186
 #, fuzzy, php-format
 msgid "%s utilisateurs ont &eacute;t&eacute; cr&eacute;&eacute;s"
 msgstr "Evaluated employees"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:186
+#: ../include/modules/utilisateurs/importUtilisateurs.php:189
 msgid "L'import s'est termin&eacute; avec succ&eacute;s. Veuillez trouver le r&eacute;sultat ci-dessous"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:191
+#: ../include/modules/utilisateurs/importUtilisateurs.php:194
 msgid "Les nouveaux utilisateurs recevront leurs mot de passe par email"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:201
+#: ../include/modules/utilisateurs/importUtilisateurs.php:204
 msgid "Des erreurs sont survenues. Veuillez trouver la liste ci-dessous"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:270
+#: ../include/modules/utilisateurs/importUtilisateurs.php:273
 msgid "Sp&eacute;cifications pour le fichier"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:272
+#: ../include/modules/utilisateurs/importUtilisateurs.php:275
 msgid "Chaque ligne de d&eacute;finition devra respecter le format ci-apr&egrave;s&nbsp;:"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:273
+#: ../include/modules/utilisateurs/importUtilisateurs.php:276
 #, fuzzy
 msgid "Les champs identifiants et email sont obligatoires."
 msgstr "The label field is required"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:273
+#: ../include/modules/utilisateurs/importUtilisateurs.php:276
 msgid "Vous n'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent."
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:273
+#: ../include/modules/utilisateurs/importUtilisateurs.php:276
 msgid "Exemple&nbsp;"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:273
-#: ../include/modules/utilisateurs/importUtilisateurs.php:274
+#: ../include/modules/utilisateurs/importUtilisateurs.php:276
+#: ../include/modules/utilisateurs/importUtilisateurs.php:277
 #, fuzzy
 msgid "identifiant"
 msgstr "Significative"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:273
-#: ../include/modules/utilisateurs/importUtilisateurs.php:274
+#: ../include/modules/utilisateurs/importUtilisateurs.php:276
+#: ../include/modules/utilisateurs/importUtilisateurs.php:277
 msgid "email"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:274
-#: ../include/modules/utilisateurs/importUtilisateurs.php:341
+#: ../include/modules/utilisateurs/importUtilisateurs.php:277
+#: ../include/modules/utilisateurs/importUtilisateurs.php:344
 msgid "prenom"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:274
-#: ../include/modules/utilisateurs/importUtilisateurs.php:342
+#: ../include/modules/utilisateurs/importUtilisateurs.php:277
+#: ../include/modules/utilisateurs/importUtilisateurs.php:345
 #, fuzzy
 msgid "nom"
 msgstr "%s name"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:274
+#: ../include/modules/utilisateurs/importUtilisateurs.php:277
 msgid "mot de passe"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:274
+#: ../include/modules/utilisateurs/importUtilisateurs.php:277
 #, fuzzy
 msgid "role"
 msgstr "Grid"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:280
+#: ../include/modules/utilisateurs/importUtilisateurs.php:283
 #, fuzzy
 msgid "S&eacute;parateur de champs"
 msgstr "manage %s"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:288
+#: ../include/modules/utilisateurs/importUtilisateurs.php:291
 #, fuzzy
 msgid "R&ocirc;le pour les utilisateurs"
 msgstr "Users groups"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:289
+#: ../include/modules/utilisateurs/importUtilisateurs.php:292
 #, fuzzy
 msgid "Si aucun r&ocirc;le n'a &eacute;t&eacute; d&eacute;fini dans le fichier"
 msgstr "Referencial creation"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:317
+#: ../include/modules/utilisateurs/importUtilisateurs.php:320
 msgid "Envoyer le mot de passe aux utilisateurs."
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:318
+#: ../include/modules/utilisateurs/importUtilisateurs.php:321
 msgid "(Peut ne pas fonctionner sur certains serveurs)"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:329
+#: ../include/modules/utilisateurs/importUtilisateurs.php:332
 #, fuzzy
 msgid "Ajout rapide d'utilisateurs"
 msgstr "Users group"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:332
+#: ../include/modules/utilisateurs/importUtilisateurs.php:335
 msgid "domaine de l'adresse email (sans le @)"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:334
+#: ../include/modules/utilisateurs/importUtilisateurs.php:337
 #, fuzzy
 msgid "mot de passe par d&eacute;faut"
 msgstr "assessment methods"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:334
+#: ../include/modules/utilisateurs/importUtilisateurs.php:337
 msgid "Laissez vide pour un mot de passe al&eacute;atoire"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:347
+#: ../include/modules/utilisateurs/importUtilisateurs.php:350
 #, fuzzy
 msgid "Ajouter &agrave; la liste des utilisateurs &agrave; importer"
 msgstr "Group users"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:347
+#: ../include/modules/utilisateurs/importUtilisateurs.php:350
 msgid "Merci de remplir les champs marqu&eacute;s en rouge"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:353
+#: ../include/modules/utilisateurs/importUtilisateurs.php:356
 #, fuzzy
 msgid "Utilisateurs &agrave; importer"
 msgstr "Group users"
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:356
+#: ../include/modules/utilisateurs/importUtilisateurs.php:359
 msgid "Vous pouvez entrer directement le utilisateurs que vous souhaitez cr&eacute;er ici.<br/>Chaques utilisateur sera s&eacute;par&eacute; par un retour &agrave; la ligne"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:357
+#: ../include/modules/utilisateurs/importUtilisateurs.php:360
 msgid "-&nbsp;et&nbsp;/&nbsp;ou&nbsp;-"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:358
+#: ../include/modules/utilisateurs/importUtilisateurs.php:361
 msgid "Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)"
 msgstr ""
 
-#: ../include/modules/utilisateurs/importUtilisateurs.php:368
+#: ../include/modules/utilisateurs/importUtilisateurs.php:371
 #, fuzzy
 msgid "Importer les utilisateurs"
 msgstr "Drag the users here"
@@ -3468,6 +3534,14 @@ msgstr "Display"
 #, fuzzy
 msgid "Unit&eacute;s affect&eacute;es"
 msgstr "Compagnies"
+
+#, fuzzy
+#~ msgid "Sauvegarder"
+#~ msgstr "saved"
+
+#, fuzzy
+#~ msgid "Utilisateurs d&eacute;j&agrave; affect&eacute;s"
+#~ msgstr "No non-assign users"
 
 #, fuzzy
 #~ msgid "Voir la liste compl&egrave;te des utilisateurs"
@@ -3505,10 +3579,6 @@ msgstr "Compagnies"
 #, fuzzy
 #~ msgid "Cliquez ici pour ajouter un participant"
 #~ msgstr "Clic to go to the upper level"
-
-#, fuzzy
-#~ msgid "Utilisateurs"
-#~ msgstr "Group users"
 
 #, fuzzy
 #~ msgid "Ajouter un nouvel utilisateur"

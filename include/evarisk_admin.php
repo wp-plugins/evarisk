@@ -102,6 +102,7 @@ function eva_add_admin_js()
 		@import "' . EVA_INC_PLUGIN_URL . 'css/role.css";
 		@import "' . EVA_INC_PLUGIN_URL . 'css/documentUnique.css";
 		@import "' . EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css";
+		@import "' . EVA_INC_PLUGIN_URL . 'css/lightbox.css";
 	</style>
 
 	<script type="text/javascript" >

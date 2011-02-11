@@ -179,12 +179,10 @@ div.inside{overflow: hidden; padding: 5px;}
 
 /* -- Liste catégorie danger -- */
 .expander{		display: none;	}
-
 .aFils .expander{		display: inline;	}
-
 .actionButtonList{		width: 20%;	}
-
-.infoList{		width: 20%;	}	/* -- END Liste catégorie danger -- */
+.infoList{		width: 20%;	}	
+/* -- END Liste catégorie danger -- */
 
 /* -- Galery photo -- */
 ul.thumbs li	{		display: inline;	}
@@ -202,7 +200,6 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 /* -- END Galery photo -- */
 
 /* -- Veille référentiel -- */
-
 .listeCreationVeille li	{		display: inline;		margin-right: 60px;	}
 .veille-reponse-titre	{		font-weight:bold;	}
 .veille-reponse-extraitTexte	{		border:1px solid #000000;		background-color:#FFFFCC;		text-align:justify;		font-size:11px;		margin:0px 24px;		padding:3px;	}
@@ -225,8 +222,6 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 /* -- END Partie droite -- */
 
 /* -- Risques -- */
-
-
 .risqueInfo	{		-webkit-border-radius:12px;		-moz-border-radius:12px;		border-radius:12px;	}
 .risque2Info, .Seuil_2	{		color: white;		background-color: orange;	}
 .risque3Info, .Seuil_3	{		color: white;		background-color: red;	}
@@ -256,23 +251,17 @@ th.columnCommentaireRisque	{		text-align: center !important;	}
 .explicationVariable	{		border:1px solid #000000;		background-color:#FFFFCC;		text-align:justify;		font-size:11px;		margin:1% 24px;		padding:3px;	}
 #pictureToAssociateToRisk .qq-uploader .qq-upload-button{		width:90% !important;		padding:7px;	}
 .deleteLinkBetweenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px;	width:16px;height:16px;}
+.riskPictureThumbs{	max-width: 20%;	}
 /* -- END Risques -- */
 
 /* -- Tabs -- */
 .eva_tabs_panel	{		border-color:#DFDFDF;		border-style:solid;		border-width:1px;		overflow:auto;		padding:0px;		margin:0px;	}
-
 ul.eva_tabs	{		margin-top:12px;	}
-
 ul.eva_tabs li	{		border-style:solid solid none;		-webkit-border-radius:3px 3px 0 0;		-moz-border-radius:3px 3px 0 0;		border-radius:3px 3px 0 0;		padding:5px 8px;		border-color:#DFDFDF;		background-color : #E6E6E6;		border-width:1px 1px 0;		margin-bottom:3px;		margin-top:12px;	}
-
 ul.eva_tabs li label	{		font-weight:bold;		text-decoration:none;	}
-
 ul.eva_tabs li.selected_tab	{		background-color : #F6F6F6;	}
-
 ul.eva_tabs_button li	{		-webkit-border-radius:1em;		-moz-border-radius:1em;		border-radius:1em;		/*background-color:#F6F6F6;*/	}
-
 ul.eva_tabs_button 	{		margin-bottom:8px;	}
-
 ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 /* -- END Tabs -- */
 
@@ -311,37 +300,49 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .ui-slider-horizontal{	width:95%;	}
 #photosActionsCorrectives li.selected img{	border:1px solid #000000;	}
 .pictureThumbs{	width:80%;	}
+.preconisationExistante{	border:1px solid #DDDDDD; width:95%;	}
+.preconisation{	margin-left:9px; font-size:10px; text-decoration:underline;	}
+#taskExportButton{	margin:0px 12px;	}
 /* -- END Actions correctives -- */
 
 
 .dataTables_length{	width:50% !important;	}
-.dataTables_paginate{	margin:12px 0px;	}
+.dataTables_paginate{	margin:12px 24px;	}
 .dataTables_filter{	float:right;	}
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
 .searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
 
-.riskPictureThumbs{	max-width: 20%;	}
 
 /* -- START LINK USER ELEMENT -- */
-.userListOutput{	height:225px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
+.userListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
 .selecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .selecteduserOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
 .deleteUserFromList{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
-.deleteUserFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
+.deleteUserFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
 
 .searchUserToAffect{	float:left; width:90%; color:#888888;	}
 .searchUserInput{	float:left; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
 
-.userIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66CC33_256x240.png"); background-position: -64px -144px; width:16px; height:16px;}
-.userIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;}
+.userIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66cc33_256x240.png"); background-position: -64px -144px; width:16px; height:16px;}
+.userIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px; width:16px; height:16px;}
 .userIsNotLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png"); background-position: -96px -144px; width:16px; height:16px;}
 .userIsNotLinked:hover, .linkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png"); background-position: -64px -144px; width:16px; height:16px;}
 
-.addLinkUserElement{	padding:3px 0px; margin:6px 0px;	}
+.addLinkUserElement{	padding:3px 0px;	}
 .addUserButtonDTable{	width:5%;	}
 .completeUserList{	height:190px; overflow:auto;	}
 .completeUserList .odd, .completeUserList .even{	cursor:pointer;	}
+
+.checkAll, .uncheckAll{ font-size:9px;cursor:pointer;	}
 /* -- END LINK USER ELEMENT -- */
 
-.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
+
+/* -- Options -- */
+.optionsActionColumn{	width:30px !important;	}
+/* -- End options -- */
+
+.editDataTableRow{	cursor:pointer; background-position: -64px -112px;	}
+.closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
+.closeLightBoxIcon{	background-position: -80px -128px !important; }
+.hide{	display:none;	}
