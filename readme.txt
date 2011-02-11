@@ -63,6 +63,7 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 = Version 5.1.2.3 =
 
 Am&eacute;liorations:
+
 * Ajout d'un bouton cocher/d&eacute;cocher tout dans la box des utilisateurs
 * L'affichage du bouton "enregistrer" de la box des utilisateurs s'affichent en fonction des actions dans la box
 * Suppression du footer (doublon) dans les tableaux listant les risques unitaires et par unit&eacute;s
@@ -71,10 +72,12 @@ Am&eacute;liorations:
 * Affichage des dates dans les t&acirc;ches "m&egrave;res"
 
 Corrections:
+
 * Icone jquery ui verte ne s'affiche pas &agrave; cause du nommage dans le fichier css
 * Erreur dans le fichier evaDisplayDesign.class.php ligne 2370 appel de _() au lieu de __()
 
 Ergonomie:
+
 * Interface de gestion des options du logiciel
 
 = Version 5.1.2.2 =
