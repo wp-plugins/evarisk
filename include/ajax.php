@@ -777,51 +777,51 @@ if($_REQUEST['post'] == 'true')
 				switch($_REQUEST['act'])
 				{
 					case 'save':
+					{
+						$pictureId = isset($_REQUEST['pictureId']) ? (eva_tools::IsValid_Variable($_REQUEST['pictureId'])) : '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
 						$_REQUEST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
-						echo getFormulaireCreationRisque($tableElement, $idElement);
-					break;
-					case 'saveAdvanced':
-					{
-						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_REQUEST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']);
-						$currentId = isset($_REQUEST['currentId']) ? (eva_tools::IsValid_Variable($_REQUEST['currentId'])) : '';
-						$tableElement = $_REQUEST['tableElement'];
-						$idElement = $_REQUEST['idElement'];
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');			
-						if($idRisque > 0)
-						{
-							$moreMessage = '
-	actionMessageShow("#' . $currentId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
-	setTimeout(\'evarisk("#' . $currentId . 'content").html("");evarisk("#' . $currentId . 'content").removeClass("updated");\',3000);
-	goTo("#' . $currentId . '");';
-						}
-						else
-						{
-							$moreMessage = '
-	actionMessageShow("#' . $currentId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
-	setTimeout(\'evarisk("#' . $currentId . 'content").html("");evarisk("#' . $currentId . 'content").removeClass("updated");\',3000);';
-						}
-						require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
-						evaPhoto::associatePicture(TABLE_RISQUE, $idRisque, str_replace('picture', '', str_replace('_', '', $currentId)));
-						echo '
+						if($pictureId != '')
+						{
+							if($idRisque > 0)
+							{
+								$moreMessage = '
+		actionMessageShow("#' . $pictureId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
+		setTimeout(\'evarisk("#' . $pictureId . 'content").html("");evarisk("#' . $pictureId . 'content").removeClass("updated");\',3000);
+		goTo("#' . $pictureId . '");';
+							}
+							else
+							{
+								$moreMessage = '
+		actionMessageShow("#' . $pictureId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
+		setTimeout(\'evarisk("#' . $pictureId . 'content").html("");evarisk("#' . $pictureId . 'content").removeClass("updated");\',3000);';
+							}
+
+							require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
+							evaPhoto::associatePicture(TABLE_RISQUE, $idRisque, str_replace('picture', '', str_replace('_', '', $pictureId)));
+							echo '
 <script type="text/javascript" >
-	evarisk("#addRiskForPictureText' . $currentId . '").html("' . __('Ajouter un risque pour cette photo', 'evarisk') . '");
-	evarisk("#divDangerContainerSwitchPic' . $currentId . '").attr("src").replace("collapse", "expand");
-	evarisk("#riskAssociatedToPicture' . $currentId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	evarisk("#addRiskForPictureText' . $pictureId . '").html("' . __('Ajouter un risque pour cette photo', 'evarisk') . '");
+	evarisk("#divDangerContainerSwitchPic' . $pictureId . '").attr("src").replace("collapse", "expand");
+	evarisk("#riskAssociatedToPicture' . $pictureId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 	{
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
 		"act":"reloadRiskAssociatedToPicture",
-		"idPicture":"' . str_replace('picture', '', str_replace('_', '', $currentId)) . '"
+		"idPicture":"' . str_replace('picture', '', str_replace('_', '', $pictureId)) . '"
 	});
 	' . $moreMessage . '
 </script>';
+						}
+						else
+						{
+							require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
+							echo getFormulaireCreationRisque($tableElement, $idElement);
+						}
 					}
 					break;
 					case 'associateRiskToPicture':
@@ -926,6 +926,17 @@ if($_REQUEST['post'] == 'true')
 						echo documentUnique::bilanRisque($tableElement, $idElement, 'unite');
 					break;
 					case 'addRiskByPicture':
+					{
+						$addRiskByPictureForm = '';
+						$tableElement = isset($_REQUEST['tableElement']) ? (eva_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
+						$idElement = isset($_REQUEST['idElement']) ? (eva_tools::IsValid_Variable($_REQUEST['idElement'])) : '';
+						$currentId = isset($_REQUEST['currentId']) ? (eva_tools::IsValid_Variable($_REQUEST['currentId'])) : '';
+
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
+						echo  getFormulaireCreationRisque($tableElement, $idElement, '', $currentId);
+					}
+					break;
+					case 'addRiskByPicture-old':
 					{
 						$addRiskByPictureForm = '';
 						$tableElement = isset($_REQUEST['tableElement']) ? (eva_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
@@ -3624,6 +3635,7 @@ if($_REQUEST['post'] == 'true')
 				break;
 		}
 	}
+
 	//Chargement des meta-boxes
 	if(isset($_REQUEST['nomMetaBox']))
 		switch($_REQUEST['nomMetaBox'])
@@ -3697,8 +3709,8 @@ else
 					$_REQUEST['idGroupeQuestion'] = $_REQUEST['id'];
 					$_REQUEST['act'] = $_REQUEST['act'];
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
-					break;
 			}
+			break;
 		case TABLE_QUESTION:
 			switch($_REQUEST['act'])
 			{
@@ -3707,8 +3719,8 @@ else
 					$_REQUEST['idGroupeQuestions'] = $_REQUEST['idPere'];
 					$_REQUEST['act'] = $_REQUEST['act'];
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/questionPersistance.php');
-					break;
 			}
+			break;
 		case TABLE_CATEGORIE_DANGER:
 			switch($_REQUEST['act'])
 			{
@@ -3724,6 +3736,5 @@ else
 					}
 			}
 			break;
-			
 	}
 }

@@ -312,6 +312,7 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
 .searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
+.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
 
 
 /* -- START LINK USER ELEMENT -- */

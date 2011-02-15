@@ -335,7 +335,7 @@
 	/*
 	* Création du formulaire d'ajout/édition
 	*/
-	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '')
+	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '', $formId = '')
 	{
 		$divDangerContainerStyle = $script = '';
 		$divDangerContainerSwitchStyle = ' style="display:none;" ';
@@ -351,34 +351,34 @@
 		}
 
 		{//Choix de la catégorie de dangers
-			$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque);
+			$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque, $formId);
 			$script .= $categorieDanger['script'];
 			$selectionCategorie = $categorieDanger['selectionCategorie'];
 		}
 		{//Choix du danger
-			$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, $risque);
+			$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, $risque, $formId);
 			$script .= $ListDanger['script'];
 		}		
 
 		$formRisque = 
-EvaDisplayInput::ouvrirForm('POST', 'formRisque', 'formRisque') .
-EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRisque', false, false) . 
+EvaDisplayInput::ouvrirForm('POST', $formId . 'formRisque', $formId . 'formRisque') .
+EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', null, 'idRisque', false, false) . 
 '
 	' . $advancedFormRisque . '
 	<div>
-		<div id="divDangerContainerSwitch" ' . $divDangerContainerSwitchStyle . ' class="pointer" >
-			<img id="divDangerContainerSwitchPic" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" />
+		<div id="' . $formId . 'divDangerContainerSwitch" ' . $divDangerContainerSwitchStyle . ' class="pointer" >
+			<img id="' . $formId . 'divDangerContainerSwitchPic" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" />
 			<span style="vertical-align:middle;" >' . __('Voir les dangers', 'evarisk') . '</span>
 		</div>
-		<div id="divDangerContainer" ' . $divDangerContainerStyle . ' >' . $categorieDanger['list'] . $ListDanger['list'] . '</div>
+		<div id="' . $formId . 'divDangerContainer" ' . $divDangerContainerStyle . ' >' . $categorieDanger['list'] . $ListDanger['list'] . '</div>
 	</div>';
 
 		{//Choix de la méthode
 			$methodes = MethodeEvaluation::getMethods('Status="Valid"');
 			$script .= '
-			evarisk("#methodeFormRisque").change(function(){
-				evarisk("#divVariablesFormRisque").html(evarisk("#loadingImg").html());
-				evarisk("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
+			evarisk("#' . $formId . 'methodeFormRisque").change(function(){
+				evarisk("#' . $formId . 'divVariablesFormRisque").html(evarisk("#loadingImg").html());
+				evarisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
 			});';
 			if($risque[0] != null)
 			{// Si l'on édite un risque, on sélectionne la bonne méthode
@@ -395,17 +395,17 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 			{
 				$afficheSelecteurMethode = ' display:none; ';
 			}
-			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $idSelect = 'methodeFormRisque', $labelSelect = __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', $nameSelect = 'methode', $valeurDefaut = '', $selection) . '</div>';
+			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection) . '</div>';
 		}
 
 		{//Evaluation des variables
 			$formRisque .= 
 '<script type="text/javascript">
 	evarisk(document).ready(function(){
-		evarisk("#divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
+		evarisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '", "formId": "' . $formId . '"});
 	})
 </script>
-<div id="divVariablesFormRisque" class="clear" ></div><!-- /divVariablesFormRisque -->';
+<div id="' . $formId . 'divVariablesFormRisque" class="clear" ></div><!-- /' . $formId . 'divVariablesFormRisque -->';
 		}
 		
 		{//Description
@@ -416,7 +416,7 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
-			$formRisque .= '<br/><div id="divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			$formRisque .= '<br/><div id="' . $formId . 'divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 		}
 
 		{//Preconisation (action prioritaire)
@@ -462,10 +462,10 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 				}
 			}
 			$labelInput = ucfirst(strtolower(__("pr&eacute;conisation pour le risque", 'evarisk'))) . $moreLabelInput;
-			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('textarea', 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 			if($existingPreconisation != '')
 			{
-				$formRisque .= '<div id="divPreconisationExistante" class="clear preconisationExistante" >' . ucfirst(strtolower(__("pr&eacute;conisation existante", 'evarisk'))) . '&nbsp;:<br/>' . $existingPreconisation . '</div>';
+				$formRisque .= '<div id="' . $currentId . 'divPreconisationExistante" class="clear preconisationExistante" >' . ucfirst(strtolower(__("pr&eacute;conisation existante", 'evarisk'))) . '&nbsp;:<br/>' . $existingPreconisation . '</div>';
 			}
 		}
 
@@ -475,9 +475,9 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $idRisque);
 				if(count($pictureAssociated) > 0)
 				{
-					$formRisque .= '<div class="alignleft pointer" id="associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_HOME_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
+					$formRisque .= '<div class="alignleft pointer" id="' . $currentId . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $currentId . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_HOME_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
 					$script .= '
-		evarisk("#deletePictureAssociation").click(function(){
+		evarisk("#' . $currentId . 'deletePictureAssociation").click(function(){
 			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post":"true",
@@ -495,36 +495,37 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 		{//Historisation du risque
 			if($idRisque != '')
 			{
-				$formRisque .= '<div class="alignright" id="historisationContainer" ><input type="checkbox" value="non" name="historisation" id="historisation" /><label for="historisation" >' . __('Ne pas afficher dans les historiques de modifications','evarisk') . '</label></div>';
+				$formRisque .= '<div class="alignright" id="' . $currentId . 'historisationContainer" ><input type="checkbox" value="non" name="' . $currentId . 'historisation" id="' . $currentId . 'historisation" /><label for="historisation" >' . __('Ne pas afficher dans les historiques de modifications','evarisk') . '</label></div>';
 			}
 		}
 
 		{//Bouton enregistrer
 			$allVariables = MethodeEvaluation::getAllVariables();
-			$idBouttonEnregistrer = 'enregistrerFormRisque';
+			$idBouttonEnregistrer = 'enregistrerFormRisque' . $formId;
 			$scriptEnregistrement = 
 '<script type="text/javascript">
 	evarisk(document).ready(function(){
 		//	Change the state of the danger container
-		evarisk("#divDangerContainerSwitch").click(function(){
-			if(evarisk("#divDangerContainerSwitchPic").attr("src") == "' . PICTO_EXPAND . '"){
-				evarisk("#divDangerContainerSwitchPic").attr("src", "' . PICTO_COLLAPSE . '");
+		evarisk("#' . $formId . 'divDangerContainerSwitch").click(function(){
+			if(evarisk("#' . $formId . 'divDangerContainerSwitchPic").attr("src") == "' . PICTO_EXPAND . '"){
+				evarisk("#' . $formId . 'divDangerContainerSwitchPic").attr("src", "' . PICTO_COLLAPSE . '");
 			}
 			else{
-				evarisk("#divDangerContainerSwitchPic").attr("src", "' . PICTO_EXPAND . '");
+				evarisk("#' . $formId . 'divDangerContainerSwitchPic").attr("src", "' . PICTO_EXPAND . '");
 			}
-			evarisk("#divDangerContainer").toggle();
+			evarisk("#' . $formId . 'divDangerContainer").toggle();
 		});
 		evarisk("#' . $idBouttonEnregistrer . '").click(function(){
+			goTo("#postBoxRisques");
 			var variables = new Array();';
 			foreach($allVariables as $variable)
 			{
 				$scriptEnregistrement .= '
-			variables["' . $variable->id . '"] = evarisk("#var' . $variable->id . 'FormRisque").val();';
+			variables["' . $variable->id . '"] = evarisk("#' . $formId . 'var' . $variable->id . 'FormRisque").val();';
 			}
 			$scriptEnregistrement .= '
 			var historisation = true;
-			if(evarisk("#historisation").is(":checked")){
+			if(evarisk("#' . $formId . 'historisation").is(":checked")){
 				historisation = false;
 			}
 			var correctivActions = "";';
@@ -547,16 +548,17 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 				"act":"save", 
 				"tableElement":"' . $tableElement . '", 
 				"idElement":"' . $idElement . '", 
-				"idDanger":evarisk("#dangerFormRisque").val(), 
-				"idMethode":evarisk("#methodeFormRisque").val(), 
+				"idDanger":evarisk("#' . $formId . 'dangerFormRisque").val(), 
+				"idMethode":evarisk("#' . $formId . 'methodeFormRisque").val(), 
 				"histo":historisation, 
 				"actionsCorrectives":correctivActions, 
 				"variables":variables, 
-				"description":evarisk("#descriptionFormRisque").val(), 
+				"description":evarisk("#' . $formId . 'descriptionFormRisque").val(), 
 				"preconisationAction":"' . $preconisationAction . '",
 				"preconisationActionID":"' . $preconisationActionID . '",
-				"preconisationRisque":evarisk("#preconisationRisque").val(),
-				"idRisque":evarisk("#idRisque").val()
+				"preconisationRisque":evarisk("#' . $formId . 'preconisationRisque").val(),
+				"idRisque":evarisk("#' . $formId . 'idRisque").val(), 
+				"pictureId":"' . $formId . '"
 			});
 			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
 			evarisk("#divVoirRisques").html(evarisk("#loadingImg").html());
@@ -565,7 +567,7 @@ EvaDisplayInput::afficherInput('hidden', 'idRisque', $idRisque, '', null, 'idRis
 		});
 	});
 </script>';
-			$formRisque .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+			$formRisque .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright saveRiskFormButton', '', '', $scriptEnregistrement);
 		}
 		
 		$formRisque .= '
@@ -631,11 +633,11 @@ EvaDisplayInput::fermerForm('formRisque') . '
 	evarisk(document).ready(function(){
 		evarisk(".riskPictureThumbs").click(function(){
 			loadAdvancedRiskForm(evarisk(this).attr("id").replace("addRiskByPictureId",""));
-			checkOpenRiskNumber();
+			// checkOpenRiskNumber();
 		});
 		evarisk(".addRiskByPictureButton").click(function(){
 			loadAdvancedRiskForm(evarisk(this).parent("div").attr("id").replace("addRiskByPictureButtonId",""));
-			checkOpenRiskNumber();
+			// checkOpenRiskNumber();
 		});
 		evarisk("#saveMassRiskWithPicture").click(function(){
 			evarisk(".saveRiskFormButton").each(function(){
