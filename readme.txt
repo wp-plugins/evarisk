@@ -4,13 +4,14 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.0.4
-Stable tag: 5.1.2.4
+Stable tag: 5.1.2.5
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
 == Description ==
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises et g&eacute;rer toutes les donn&eacute;es li&eacute;es &agrave; la s&eacute;curit&eacute; de votre personnel.
+Veillez &agrave; sauvegarder le plugin avant de faire la mise &agrave; jour
 
 
 
@@ -59,6 +60,32 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 9. Ecran d'ajout d'un risque avec la liste de l'INRS et 4 risques propre &agrave; l'entreprise, on voit les jauges qui permettent d'&eacute;valuer, Gravit&eacute;, Exposition, Occurrence, Formation, Protection.
 
 == Changelog ==
+
+* Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.2.5 =
+
+* D&eacute;placement des fichiers envoy&eacute;s et g&eacute;n&eacute;r&eacute;s du dossier du plugin vers le dossier wp-content de wordpress (pour &eacute;viter qu'ils ne soient supprim&eacute;s lors de la mise &agrave; jour)
+
+Am&eacute;liorations:
+
+* Gestion des statuts des t&acirc;ches et sous t&acirc;ches des action correctives (non-commenc&eacute;e / passer en cours)
+* Prise en compte des deux types d'affichage (pageHook) pour les box des groupements (groupement gestion / groupement risques)
+* Ajout de statistiques sur le tableau de bord (personnel/risque)
+* G&eacute;n&eacute;ration de fiches de postes simple (par poste et par groupement)
+* G&eacute;n&eacute;ration du plan d'action au format texte dans le document unique 
+
+Corrections:
+
+* Mise &agrave; jour des t&acirc;ches parentes lors de la mise &agrave; jour des enfants
+* Email des utilisateurs mal construit &agrave; l'import avec le formulaire d'insertion rapide (prenom.prenom au lieu de prenom.nom)
+* Le champs affich&eacute;s dans la box "r&eacute;capitulatif" des unit&eacute;s et groupements n'affichait pas le nom en entier si il &eacute;tait trop long
+
+Ergonomie:
+
+* Le clic n'importe o&ugrave; sur la ligne &eacute;dite l'&eacute;l&eacute;ment plus forc&eacute;ment sur le nom de l'&eacute;l&eacute;ment
+* Ajout d'un identifiant sur la ligne des &eacute;l&eacute;ments dans les arbres
+
 
 = Version 5.1.2.4 =
 

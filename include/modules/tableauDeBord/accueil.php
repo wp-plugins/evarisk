@@ -23,17 +23,17 @@
 
 	tableauDeBord::genereTableauDeBord();
 
-?>		
+?>
 		<div style="float:left;width:49%;" id="evaDashboard_LeftSide" >
 			<?php
 				/*	Output the different Meta Box define for the dashboard page	*/
-				do_meta_boxes("evaDashboard_Left", "advanced", null);
+				do_meta_boxes("evaDashboard", "leftSide", null);
 			?>
 		</div>
 		<div style="float:right;width:49%;" id="evaDashboard_RightSide" >
 			<?php
 				/*	Output the different Meta Box define for the dashboard page	*/
-				do_meta_boxes("evaDashboard_Right", "advanced", null);		
+				do_meta_boxes("evaDashboard", "rightSide", null);
 				//To preserve postBoxes order
 				wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false);
 				//To preserve postBoxes closure state

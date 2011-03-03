@@ -206,12 +206,12 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 			</script>';
 	}
 	{//Boutons
-		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || (options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui'))
+		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui'))
 		{
 			$tache_new .= 
 				'<div class="alignright" id="TaskSaveButton" >';
 
-			if(($saveOrUpdate != 'save') && (($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress')))
+			if(($saveOrUpdate != 'save') && (($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted')))
 			{
 			$tache_new .= 
 					EvaDisplayInput::afficherInput('button', $idBoutton, __('Solder la tache', 'evarisk'), null, '', $idBoutton, false, true, '', 'button-primary', '', '', $scriptEnregistrementDone, 'left');

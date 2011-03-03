@@ -1,5 +1,5 @@
 <?php
-	
+
 	function getScriptPartieDroite($pageHook)
 	{
 		return '

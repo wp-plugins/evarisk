@@ -153,6 +153,17 @@ function changementPage(partie, table, page, idPere, affichage, option)
 	}
 }
 
+function commonTabChange(boxId, divId, tabId)
+{
+	evarisk("#" + boxId + " .tabs").each(function(){
+		evarisk(this).removeClass("selected_tab");
+	});
+	evarisk("#" + boxId + " .eva_tabs_panel").each(function(){
+		evarisk(this).hide();
+	});
+	evarisk(divId).show();
+	evarisk(tabId).addClass("selected_tab");
+}
 function tabChange(divId, tabId)
 {
 	evarisk("#postBoxRisques .tabs").each(function(){
@@ -174,15 +185,15 @@ function hideExtraTab()
 function selectRowInTreeTable(tableId)
 {
 	// Make visible that a row is clicked
-	evarisk("table#" + tableId + " tbody tr").mousedown(function() {
+	evarisk("table#" + tableId + " tbody tr").click(function() {
 		evarisk("tr.selected").removeClass("selected"); // Deselect currently selected rows
 		evarisk("tr.edited").removeClass("edited"); // Deselect currently selected rows
 		evarisk(this).addClass("selected");
 	});
 
 	// Make sure row is selected when span is clicked
-	evarisk("table#" + tableId + " tbody tr span").mousedown(function() {
-		evarisk(evarisk(this).parents("tr")[0]).trigger("mousedown");
+	evarisk("table#" + tableId + " tbody tr span").click(function() {
+		evarisk(evarisk(this).parents("tr")[0]).trigger("click");
 	});
 }
 function reInitTreeTable()

@@ -16,7 +16,7 @@
 	$idElement = eva_tools::IsValid_Variable($result['idElement']);
 	$fichier = eva_tools::IsValid_Variable($result['fichier']);
 	
-	$uploadStatus = gestionDoc::saveNewDoc($table, $tableElement, $idElement, $fichier);
+	$uploadStatus = eva_gestionDoc::saveNewDoc($table, $tableElement, $idElement, $fichier);
 	if($uploadStatus == 'error')
 	{
 		$result[success] = false;

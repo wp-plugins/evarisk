@@ -16,7 +16,8 @@
 			require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/danger/danger-new.php');
 			if(((int)$idElement) != 0)
 			{
-				require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersMainPhoto.php');
+				// require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersMainPhoto.php');
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'galeriePhotos/galeriePhotos.php');
 				if(file_exists(EVA_TEMPLATES_PLUGIN_DIR . 'includesDangersPerso.php'))
 					include_once(EVA_TEMPLATES_PLUGIN_DIR . 'includesDangersPerso.php');
 			}

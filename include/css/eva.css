@@ -11,6 +11,11 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .radioPictoCategorie {float:left; margin-right:2%; margin-bottom:2%;}
 .radioPictoCategorie img {vertical-align:middle; max-width:48px; cursor:pointer; }
 
+.tabcroisillon{	margin:6px 0px;	}
+
+.treeTable td {	vertical-align:middle;	}
+.treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
+
 /* -- Boutons choix affichage enlarging -- */
 #choseEnlarging{display: inline; vertical-align: top; margin-bottom:12px; margin-left:10px;}
 #choseEnlarging span{margin:0 10px;}
@@ -215,7 +220,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 /* -- Partie droite -- */
 .titleDiv /* bientôt à enlever*/	
 {		font-size: 1.3em;		font-weight: bold;	}
-.titleInfo	{		font-size: 1.3em;		font-weight: bold;		border: none !important;		background-color: transparent !important;	}
+.titleInfo	{		font-size: 1.3em;		font-weight: bold;		border: none !important;		background-color: transparent !important;	width:150%;	}
 .titleInfo:hover	{		border: 1px solid #646464 !important;	cursor:pointer !important;	}
 .titleInfoSelected	{		border: 1px solid #646464 !important; }
 .mainInfos2	{		text-align: center;	}
@@ -234,7 +239,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .risque5Text	{		color: red;	}
 .risque6Text	{		font-size : 1.7em;		font-weight : bolder;		color: black;	}
 
-.columnQuotation,
+.columnQuotation{	width:10%; vertical-align : middle !important;	}
 .columnNomDanger,
 .columnEtat	{		width: 16%;		padding: 1px !important;		vertical-align : middle !important;	}
 
@@ -242,11 +247,12 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 
 .columnCommentaireRisque	{		width: 40%;		padding: 1px !important;		vertical-align : middle !important;	}
 
-.columnQuotation,
+.columnQuotation	{		text-align: center !important;	}
+/*,
 th.columnNomDanger,
 th.columnEtat,
 th.columnDescriptionDanger,
-th.columnCommentaireRisque	{		text-align: center !important;	}
+th.columnCommentaireRisque*/
 
 .explicationVariable	{		border:1px solid #000000;		background-color:#FFFFCC;		text-align:justify;		font-size:11px;		margin:1% 24px;		padding:3px;	}
 #pictureToAssociateToRisk .qq-uploader .qq-upload-button{		width:90% !important;		padding:7px;	}
@@ -263,6 +269,11 @@ ul.eva_tabs li.selected_tab	{		background-color : #F6F6F6;	}
 ul.eva_tabs_button li	{		-webkit-border-radius:1em;		-moz-border-radius:1em;		border-radius:1em;		/*background-color:#F6F6F6;*/	}
 ul.eva_tabs_button 	{		margin-bottom:8px;	}
 ul.eva_tabs_button li label	{		padding-bottom:3px;	}
+
+.ui-tabs{	padding:0px !important; }
+.ui-tabs .ui-tabs-nav{	padding:0px !important;	}
+#evaDashboard_vracStats .inside{		padding:0px !important;	}
+.ui-tabs .ui-tabs-nav li a{		padding:0.1em 1em !important;	}
 /* -- END Tabs -- */
 
 /* -- Sliders -- */
@@ -347,3 +358,10 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
 .closeLightBoxIcon{	background-position: -80px -128px !important; }
 .hide{	display:none;	}
+.marginSideAuto{	margin:0px auto;}
+.marginBotTopAuto{	margin:auto 0px;}
+.noResultInBox{	margin:6px auto; width:60% !important; font-weight:bold;	}
+.italic{	font-style:italic;	}
+
+
+#divFicheDePoste{	padding:12px 3px;	}

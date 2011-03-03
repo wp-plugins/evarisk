@@ -150,7 +150,11 @@ class EvaActivity extends EvaBaseActivity
 		$activite->setFinishDate($_POST['date_fin']);
 		$activite->setCout($_POST['cout']);
 		$activite->setProgression($_POST['avancement']);
-		$activite->setProgressionStatus('inProgress');
+		$activite->setProgressionStatus('notStarted');
+		if($_POST['avancement'] > '0')
+		{
+			$activite->setProgressionStatus('inProgress');
+		}
 		if($_POST['avancement'] == '100')
 		{
 			$activite->setProgressionStatus('Done');
@@ -223,7 +227,7 @@ class EvaActivity extends EvaBaseActivity
 				$tacheLike->setIdFrom($idRisque);
 				$tacheLike->setTableFrom(TABLE_RISQUE);
 				$taches->getTasksLike($tacheLike);
-				$tachesActionsCorrectives = $taches->getTasks();
+				$tachesActionsCorrectives[] = $taches->getTasks();
 			}
 		}
 

@@ -868,7 +868,7 @@ class EvaDisplayDesign {
 				<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed">
 					<thead>
 						<tr>
-							<th>' . $nomRacine . '</th>';
+							<th >' . $nomRacine . '</th>';
 		if($titreInfo != null)
 		{
 			$tableArborescente .= '<th class="infoList">' . $titreInfo . '</th>';
@@ -1042,8 +1042,8 @@ class EvaDisplayDesign {
 		});
 
 		//	The user click on the name of the leaf
-		evarisk(".nomFeuilleArbre").click(function(){
-			var leafId = evarisk(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
+		evarisk(".nomFeuilleArbre, .treeTableInfoColumn").click(function(){
+			var leafId = evarisk(this).parent("tr").attr("id").replace("leaf-", "");
 			selectRowInTreeTable("' . $idTable . '");
 			evarisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
@@ -1081,7 +1081,7 @@ class EvaDisplayDesign {
 				$script .= '
 		//	The user click on the delete button of a node
 		evarisk("#' . $idTable . ' .delete-node").click(function(){
-			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 			evarisk("#menu").val("gestiongrptut");
 			var expanded = reInitTreeTable();
 			if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?\r\nATTENTION: si cet element possede des sous elements, ils seront inaccessibles', 'evarisk') . '")){
@@ -1102,7 +1102,7 @@ class EvaDisplayDesign {
 		});
 		//	The user click on the delete button of a node
 		evarisk("#' . $idTable . ' .edit-node").click(function(){
-			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 			selectRowInTreeTable("' . $idTable . '");
 			evarisk("#menu").val("gestiongrptut");
 			var expanded = reInitTreeTable();
@@ -1122,7 +1122,7 @@ class EvaDisplayDesign {
 		});
 		//	The user click on the delete button of a node
 		evarisk("#' . $idTable . ' .risq-node").click(function(){
-			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 			selectRowInTreeTable("' . $idTable . '");
 			evarisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
@@ -1141,24 +1141,31 @@ class EvaDisplayDesign {
 			});
 		});
 		//	The user click on the delete button of a node
-		evarisk("#' . $idTable . ' .nomNoeudArbre").click(function(){
-			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
-			selectRowInTreeTable("' . $idTable . '");
-			evarisk("#menu").val("risq");
-			var expanded = reInitTreeTable();
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
-				"post": "true", 
-				"table": "' . $table . '",
-				"act": "edit",
-				"id": nodeId,
-				"partie": "right",
-				"menu": evarisk("#menu").val(),
-				"affichage": "affichageListe",
-				"partition": "tout",
-				"expanded": expanded
-			});
+		evarisk("#' . $idTable . ' .nomNoeudArbre, #' . $idTable . ' .treeTableGroupInfoColumn").click(function(e){
+			if(!evarisk(e.target).hasClass("expander")){
+				if(evarisk(e.target).hasClass("nomNoeudArbre")){
+					var nodeId = evarisk(this).attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+				}
+				else if(evarisk(e.target).hasClass("treeTableGroupInfoColumn")){
+					var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+				}
+				selectRowInTreeTable("' . $idTable . '");
+				evarisk("#menu").val("risq");
+				var expanded = reInitTreeTable();
+				evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+				evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post": "true", 
+					"table": "' . $table . '",
+					"act": "edit",
+					"id": nodeId,
+					"partie": "right",
+					"menu": evarisk("#menu").val(),
+					"affichage": "affichageListe",
+					"partition": "tout",
+					"expanded": expanded
+				});
+			}
 		});';
 			}
 			break;
@@ -1266,7 +1273,7 @@ class EvaDisplayDesign {
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
 					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('le danger', 'evarisk')) . '" /></td>';
-					$subAffichage = $subElement->nom;
+					$subAffichage = '<span class="italic" >D' . $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPEMENT :
@@ -1275,7 +1282,7 @@ class EvaDisplayDesign {
 							<td colspan="2">&nbsp;</td>
 							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
-					$subAffichage = $subElement->nom;
+					$subAffichage = '<span class="italic" >UT' . $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_TACHE :
@@ -1283,7 +1290,7 @@ class EvaDisplayDesign {
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
-					$subAffichage = $subElement->nom;
+					$subAffichage = '<span class="italic" >ST' . $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPE_QUESTION :
@@ -1297,7 +1304,7 @@ class EvaDisplayDesign {
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
 			$monCorpsSubElements .= '
 				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' feuilleArbre">
-					<td id="leaf-' . $subElement->id . '-name" ><span class="nomFeuilleArbre" >' . $subAffichage . '</span></td>';
+					<td id="leaf-' . $subElement->id . '-name" class="nomFeuilleArbre" >' . $subAffichage . '</td>';
 				if($titreInfo != null)
 				{
 					$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
@@ -1342,7 +1349,7 @@ class EvaDisplayDesign {
 					switch($table)
 					{
 						case TABLE_CATEGORIE_DANGER :
-							$affichage = $element->nom;
+							$affichage = '<span class="italic" >CD' . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
 							if(count($elements_fils) > 0)
@@ -1369,7 +1376,7 @@ class EvaDisplayDesign {
 								' . $tdDelete;
 						break;
 						case TABLE_GROUPEMENT :
-							$affichage = $element->nom;
+							$affichage = '<span class="italic" >GP' . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
 							if(count($elements_fils) > 0)
@@ -1398,7 +1405,7 @@ class EvaDisplayDesign {
 								' . $tdDelete;
 						break;
 						case TABLE_TACHE :
-							$affichage = $element->nom;
+							$affichage = '<span class="italic" >T' . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
 							if(count($elements_fils) > 0)
@@ -1425,7 +1432,7 @@ class EvaDisplayDesign {
 								' . $tdDelete;
 						break;
 						case TABLE_GROUPE_QUESTION :
-							$affichage = $element->code . '-' . ucfirst($element->nom);
+							$affichage = '<span class="italic" >GQ' . $element->id . '</span> - ' . $element->code . '-' . ucfirst($element->nom);
 							$tdAdd = '<td class="noPadding addMain" id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
 							$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
 							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
@@ -1440,7 +1447,7 @@ class EvaDisplayDesign {
 					}
 					$monCorpsTable .= '
 						<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' noeudArbre parent">
-							<td id="node-' . $idTable . '-' . $element->id . '-name" ><span class="nomNoeudArbre" >' . $affichage . '</span></td>
+							<td id="node-' . $idTable . '-' . $element->id . '-name" class="nomNoeudArbre" >' . $affichage . '</td>
 							' . $info . $actions . '
 						</tr>';
 
@@ -1467,11 +1474,11 @@ class EvaDisplayDesign {
 		{
 			case TABLE_DANGER :
 				$info['value'] = '';
-				$info['class'] = '';
+				$info['class'] = 'treeTableInfoColumn';
 				break;
 			case TABLE_CATEGORIE_DANGER :
 				$info['value'] = '';
-				$info['class'] = '';
+				$info['class'] = 'treeTableGroupInfoColumn';
 				break;
 			case TABLE_TACHE :
 				$tache = new EvaTask($elementId);
@@ -1479,6 +1486,9 @@ class EvaDisplayDesign {
 				$statutProgression = '';
 				switch($tache->getProgressionStatus())
 				{
+					case 'notStarted';
+						$statutProgression = __('Non commenc&eacute;e', 'evarisk');
+					break;
 					case 'inProgress';
 						$statutProgression = __('En cours', 'evarisk');
 					break;
@@ -1488,7 +1498,7 @@ class EvaDisplayDesign {
 					break;
 				}
 				$info['value'] = $tache->getProgression() . '%&nbsp;(' . $statutProgression . ')';
-				$info['class'] = '';
+				$info['class'] = 'treeTableGroupInfoColumn taskInfoContainer-' . $elementId;
 				break;
 			case TABLE_ACTIVITE :
 				$action = new EvaActivity($elementId);
@@ -1496,6 +1506,9 @@ class EvaDisplayDesign {
 				$statutProgression = '';
 				switch($action->getProgressionStatus())
 				{
+					case 'notStarted';
+						$statutProgression = __('Non commenc&eacute;e', 'evarisk');
+					break;
 					case 'inProgress';
 						$statutProgression = __('En cours', 'evarisk');
 					break;
@@ -1505,27 +1518,27 @@ class EvaDisplayDesign {
 					break;
 				}
 				$info['value'] = $action->getProgression() . '%&nbsp;(' . $statutProgression . ')';
-				$info['class'] = '';
+				$info['class'] = 'treeTableInfoColumn activityInfoContainer-' . $elementId;
 				break;
 			case TABLE_GROUPEMENT :
 				$scoreRisqueGroupement = 0;
-				$riskAndSubRisks = documentUnique::listRisk(TABLE_GROUPEMENT, $elementId);
+				$riskAndSubRisks = eva_documentUnique::listRisk(TABLE_GROUPEMENT, $elementId);
 				foreach($riskAndSubRisks as $risk)
 				{
 					$scoreRisqueGroupement += $risk[1]['value'];
 				}
 				$info['value'] = '<span id="LeftRiskSum' . $table . $elementId . '" >' . $scoreRisqueGroupement . '</span>&nbsp;-&nbsp;<span id="LeftRiskNb' . $table . $elementId . '" >' . count($riskAndSubRisks) . '</span> ' . __('risque(s)', 'evarisk');
-				$info['class'] = '';
+				$info['class'] = 'treeTableGroupInfoColumn';
 				break;
 			case TABLE_UNITE_TRAVAIL :
 				$scoreRisqueGroupement = 0;
-				$riskAndSubRisks = documentUnique::listRisk(TABLE_UNITE_TRAVAIL, $elementId);
+				$riskAndSubRisks = eva_documentUnique::listRisk(TABLE_UNITE_TRAVAIL, $elementId);
 				foreach($riskAndSubRisks as $risk)
 				{
 					$scoreRisqueGroupement += $risk[1]['value'];
 				}
 				$info['value'] = '<span id="LeftRiskSum' . $table . $elementId . '" >' . $scoreRisqueGroupement . '</span>&nbsp;-&nbsp;<span id="LeftRiskNb' . $table . $elementId . '" >' . count($riskAndSubRisks) . '</span> ' . __('risque(s)', 'evarisk');
-				$info['class'] = '';
+				$info['class'] = 'treeTableInfoColumn';
 				break;
 		}
 		return $info;
@@ -1825,9 +1838,9 @@ class EvaDisplayDesign {
 				case TABLE_UNITE_TRAVAIL:
 					$mainTable = TABLE_GROUPEMENT;
 					$sousTable = TABLE_UNITE_TRAVAIL;
-					$element = UniteDeTravail::getWorkingUnit($idElement);
+					$element = eva_UniteDeTravail::getWorkingUnit($idElement);
 					$defaultPicto = DEFAULT_WORKING_UNIT_PICTO;
-					$infosElement = UniteDeTravail::getWorkingUnitInfos($idElement);
+					$infosElement = eva_UniteDeTravail::getWorkingUnitInfos($idElement);
 					$ligneSelect[] = array('value' => '', 'class' => 'boutonsInfoElement');
 					$ligneEditer[count($ligneEditer)-1]['value'] = $ligneEditer[count($ligneEditer)-1]['value'] . '<a id="risq' . $table . $idElement . '" class="button boutonInfos"><img alt="" title="' . __('Risques', 'evarisk') . '" src="' . PICTO_LTL_EVAL_RISK . '"/>' . __('Risques', 'evarisk') . '</a>';
 					$aFilsNoeud = 'false';
@@ -2464,7 +2477,7 @@ class EvaDisplayDesign {
 					<li>
 						<span class="bold" >' . __('Envoyez votre mod&egrave;le', 'evarisk') . '</span>
 						<ul>
-							<li>' . gestionDoc::getFormulaireUpload(TABLE_DUER, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, __('S&eacute;lectionner le mod&egrave;le &agrave; envoyer', 'evarisk')) . '</li>
+							<li>' . eva_gestionDoc::getFormulaireUpload(TABLE_DUER, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, __('S&eacute;lectionner le mod&egrave;le &agrave; envoyer', 'evarisk')) . '</li>
 						</ul>
 					</li>
 				</ol>
@@ -2480,7 +2493,7 @@ class EvaDisplayDesign {
 	function getExistingModelList($tableElement, $idElement)
 	{
 		$moreModelChoice = '';
-		$documentList = gestionDoc::getCompleteDocumentList('document_unique', 
+		$documentList = eva_gestionDoc::getCompleteDocumentList('document_unique', 
 		"	AND id NOT IN (
 				SELECT id 
 				FROM " . TABLE_GED_DOCUMENTS . " 

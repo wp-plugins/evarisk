@@ -332,6 +332,8 @@ function evarisk_insertions($insertions = null)
 		}
 		case 5:
 		{
+			$sqlInsertion = 'INSERT INTO ' . TABLE_TACHE . ' (nom, limiteGauche, limiteDroite) VALUES ("Tache Racine", 0, 1);';
+			$wpdb->query($sqlInsertion);
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}
@@ -595,6 +597,52 @@ function evarisk_insertions($insertions = null)
 			$wpdb->query($sql);
 			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'export_tasks', '%s', 'non', 'Moderated', 'ouinon');", __('exporter les actions correctives', 'evarisk'));
 			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 33:
+		{
+			$sql = "UPDATE " . TABLE_TACHE . " SET ProgressionStatus = 'notStarted' WHERE avancement = '0' ";
+			$wpdb->query($sql);
+
+			$sql = "UPDATE " . TABLE_ACTIVITE . " SET ProgressionStatus = 'notStarted' WHERE avancement = '0' ";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 34:
+		{
+			$sql = "INSERT INTO " . TABLE_GED_DOCUMENTS . " (id, status, dateCreation, idCreateur, dateSuppression, idSuppresseur, id_element, table_element, categorie, nom, chemin) VALUES('', 'valid', NOW(), 1, '0000-00-00 00:00:00', 0, 0, 'all', 'fiche_de_poste', 'modeleDefaut.odt', 'medias/uploads/modeles/ficheDePoste/');";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 35:
+		{
+			$sql = "UPDATE " . TABLE_GED_DOCUMENTS . " SET chemin = REPLACE(chemin, 'medias/uploads/', 'uploads/');";
+			$wpdb->query($sql);
+			$sql = "UPDATE " . TABLE_GED_DOCUMENTS . " SET chemin = REPLACE(chemin, 'medias/results/', 'results/');";
+			$wpdb->query($sql);
+
+			$sql = "UPDATE " . TABLE_PHOTO . " SET photo = REPLACE(photo, 'medias/uploads/', 'uploads/');";
+			$wpdb->query($sql);
+			$sql = "UPDATE " . TABLE_PHOTO . " SET photo = REPLACE(photo, 'medias/results/', 'results/');";
+			$wpdb->query($sql);
+
+			eva_tools::make_recursiv_dir(EVA_GENERATED_DOC_DIR);
+			/*	Move the directory containing the different models	*/
+			if(is_dir(EVA_UPLOADS_PLUGIN_OLD_DIR) && !is_dir(EVA_UPLOADS_PLUGIN_DIR))
+			{
+				rename(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
+			}
+			/*	Move the directory containing the different models	*/
+			if(is_dir(EVA_RESULTATS_PLUGIN_OLD_DIR) && !is_dir(EVA_RESULTATS_PLUGIN_DIR))
+			{
+				rename(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
+			}
 
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;

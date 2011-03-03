@@ -342,4 +342,42 @@ class Arborescence {
 		return $sousElements;
 	}
 
+	/**
+	*	Return an array with the complete list of work unit placed under a group
+	*
+	*	@param mixed $tableElement The element type we want to have the work unit list
+	*	@param integer $idElement The element identifier we want to have the work unit list
+	*
+	*	@return array $unit An array with the list of work unit
+	*/
+	function getCompleteUnitList($tableElement, $idElement)
+	{
+		$completeTree = arborescence::completeTree($tableElement, $idElement);
+		$unit = array();
+		if( is_array($completeTree) )
+		{
+			foreach($completeTree as $key => $content)
+			{
+				if(isset($content['content']) && is_array($content['content']))
+				{
+					foreach($content['content'] as $index => $subContent)
+					{
+						if( isset($subContent['table']) && isset($subContent['id']) )
+						{
+							$unit = array_merge($unit, arborescence::getCompleteUnitList($subContent['table'], $subContent['id']));
+						}
+						else
+						{
+							foreach($subContent as $subContentIndex => $subContentContent)
+							{
+								$unit[] = $subContentContent;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return $unit;
+	}
 }

@@ -37,13 +37,13 @@
 			$responsables = null;
 			if($idElement!=null)
 			{	
-				$uniteTravail = UniteDeTravail::getWorkingUnit($idElement);
+				$uniteTravail = eva_UniteDeTravail::getWorkingUnit($idElement);
 				$nomUniteTravail = $uniteTravail->nom;
 				$groupementPere = EvaGroupement::getGroupement($uniteTravail->id_groupement);
-				// $responsables = UniteDeTravail::getResponsables($idElement);
+				// $responsables = eva_UniteDeTravail::getResponsables($idElement);
 
 				$scoreRisqueUniteTravail = 0;
-				$riskAndSubRisks = documentUnique::listRisk($tableElement, $idElement);
+				$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
 				foreach($riskAndSubRisks as $risk)
 				{
 					$scoreRisqueUniteTravail += $risk[1]['value'];
@@ -87,7 +87,7 @@
 				<div id="Informations">
 					<div id="nomElement" class="titleDiv">';
 			$idTitreWU = 'titreWU' . $idElement;
-			$workingUnitsNames = UniteDeTravail::getWorkingUnitsName();
+			$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName();
 			$workingUnitsNames[] = "";
 			
 			$valeurActuelleIn = 'evarisk("#' . $idTitreWU . '").val ()in {';
@@ -114,7 +114,7 @@
 							});
 						})
 					</script>';
-			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
+			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'',true);
 			$script = '<script type="text/javascript">
 						evarisk(document).ready(function(){
 							evarisk("#' . $idTitreWU . '").focus(function(){
@@ -143,7 +143,7 @@
 							});
 						})
 					</script>';
-			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreWU, $nomUniteTravail, null, null, $idTitreWU, false, false, 255,'titleInfo', '','85%', $script, 'left') . '
+			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreWU, $nomUniteTravail, null, null, $idTitreWU, false, false, 255,'titleInfo', '','', $script, 'left') . '
 					</div>
 					<div class="mainInfosDiv">
 						<div class="mainInfos1 alignleft" style="width: 68%">

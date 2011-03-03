@@ -57,7 +57,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentU
 	}
 	else
 	{
-		echo documentUnique::generationDocumentUnique(TABLE_GROUPEMENT, $idElement, 'html', $idDuer);
+		echo eva_documentUnique::generateSummaryDocument(TABLE_GROUPEMENT, $idElement, 'html', $idDuer);
 	}
 
 ?>

@@ -59,7 +59,7 @@ class EvaPhoto {
 		
 		$tableElement = eva_tools::IsValid_Variable($tableElement);
 		$idElement = eva_tools::IsValid_Variable($idElement);
-		$photo = eva_tools::IsValid_Variable(eva_tools::slugify($photo));
+		$photo = eva_tools::IsValid_Variable(eva_tools::slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
 
 		$query = 
 			$wpdb->prepare(
@@ -153,10 +153,35 @@ class EvaPhoto {
 		$photos = evaPhoto::getPhotos($tableElement, $idElement);
 		foreach($photos as $photo)
 		{
+			$isFile = 'notAfile';
+			if(is_file(EVA_GENERATED_DOC_DIR . $photo->photo))
+			{
+				$isFile = 'wpContent';
+			}
+			elseif(is_file(EVA_HOME_DIR . $photo->photo))
+			{
+				$isFile = 'evaContent';
+			}
+			switch($isFile)
+			{
+				case 'wpContent':
+					$is_File = true;
+					$pathToMediasDir = EVA_GENERATED_DOC_URL;
+				break;
+				case 'evaContent':
+					$is_File = true;
+					$pathToMediasDir = EVA_HOME_URL;
+				break;
+				default:
+					$is_File = false;
+				break;
+			}
+			if($is_File)
+			{
 			$gallery .= '
 							<li >
-								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . EVA_HOME_URL . $photo->photo . '" title="' . $photo->description . '">
-									<img src="' . EVA_HOME_URL . $photo->photo . '" alt="' . $photo->description . '" />
+								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" title="' . $photo->description . '">
+									<img src="' . $pathToMediasDir . $photo->photo . '" alt="' . $photo->description . '" />
 								</a>							
 								<div class="caption">';
 
@@ -213,6 +238,7 @@ class EvaPhoto {
 									</div>
 								</div>
 							</li>';
+			}
 		}
 
 		$gallery .= '
@@ -398,19 +424,27 @@ class EvaPhoto {
 
 		/*	Get the main picture for current element */
 		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
+		if(is_file(EVA_GENERATED_DOC_DIR . $defaultPicture))
+		{
+			$pathToMainPicture = EVA_GENERATED_DOC_URL;
+		}
+		elseif(is_file(EVA_HOME_DIR . $defaultPicture))
+		{
+			$pathToMainPicture = EVA_HOME_URL;
+		}
 		switch($tableElement)
 		{
 			case TABLE_CATEGORIE_DANGER:
-				$photoDefaut = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : DEFAULT_DANGER_CATEGORIE_PICTO;
+				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : DEFAULT_DANGER_CATEGORIE_PICTO;
 			break;
 			case TABLE_GROUPEMENT:
-				$photoDefaut = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : DEFAULT_GROUP_PICTO;
+				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : DEFAULT_GROUP_PICTO;
 			break;
 			case TABLE_UNITE_TRAVAIL:
-				$photoDefaut = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : DEFAULT_WORKING_UNIT_PICTO;
+				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : DEFAULT_WORKING_UNIT_PICTO;
 			break;
 			default:
-				$photoDefaut = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : '';
+				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : '';
 			break;
 		}
 
@@ -446,7 +480,7 @@ class EvaPhoto {
 		{
 			$status = $mainPhotoInformation->photo;
 		}
-		if(($status != 'error') && !is_file(EVA_HOME_DIR . $status))
+		if(($status != 'error') && !is_file(EVA_GENERATED_DOC_DIR . $status) && !is_file(EVA_HOME_DIR . $status))
 		{
 			$status = 'error';
 		}
@@ -590,7 +624,7 @@ class EvaPhoto {
 					evarisk("#thumb' . $idUpload . '").parent().show();
 				});
 			</script>';
-			if(($photoDefaut!='') && (is_file(str_replace(EVA_UPLOADS_PLUGIN_URL, EVA_UPLOADS_PLUGIN_DIR, $photoDefaut))))
+			if(($photoDefaut!='') && ((is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $photoDefaut))) || (is_file(str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $photoDefaut)))))
 			{
 			$formulaireUpload .= 
 			'<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >
@@ -735,7 +769,15 @@ class EvaPhoto {
 			break;
 		}
 		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
-		$resultDefaultPicture = ($defaultPicture != 'error') ? (EVA_HOME_URL . $defaultPicture) : $definedDefaultPicture;
+		if(is_file(EVA_GENERATED_DOC_DIR . $defaultPicture))
+		{
+			$pathToMainPicture = EVA_GENERATED_DOC_URL;
+		}
+		elseif(is_file(EVA_HOME_DIR . $defaultPicture))
+		{
+			$pathToMainPicture = EVA_HOME_URL;
+		}
+		$resultDefaultPicture = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : $definedDefaultPicture;
 
 		$messageInfo .= '
 					evarisk("#message' . $tableElement . '_' . $idElement . '").show();

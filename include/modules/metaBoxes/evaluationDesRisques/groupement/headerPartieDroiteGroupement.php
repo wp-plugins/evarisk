@@ -7,6 +7,7 @@
 	$postBoxId = 'postBoxHeaderGroupement';
 	$postBoxCallbackFunction = 'getHeaderGroupementPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
+	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
 	 
 	function getHeaderGroupementPostBoxBody($arguments)
 	{
@@ -43,7 +44,7 @@
 				// $responsables[] = '';
 
 				$scoreRisqueGroupement = 0;
-				$riskAndSubRisks = documentUnique::listRisk($tableElement, $idElement);
+				$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
 				foreach($riskAndSubRisks as $risk)
 				{
 					$scoreRisqueGroupement += $risk[1]['value'];
@@ -114,7 +115,7 @@
 							});
 						})
 					</script>';
-			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', __('Enregistrer'), null, null, 'validChangeTitre', false, false, 1,'','','',$script,'right',true);
+			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', __('Enregistrer'), null, null, 'validChangeTitre', false, false, 1,'','','',$script,'',true);
 			$script = '<script type="text/javascript">
 						evarisk(document).ready(function(){
 							evarisk("#' . $idTitreGp . '").focus(function(){
@@ -143,7 +144,7 @@
 							});
 						})
 					</script>';
-			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', 'alignright','85%', $script, 'left') . '
+			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', 'alignright','', $script, 'left') . '
 					</div>
 					<div class="mainInfosDiv">
 						<div class="mainInfos1 alignleft" style="width: 68%">

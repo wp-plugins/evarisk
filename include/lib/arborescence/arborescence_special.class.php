@@ -154,4 +154,152 @@ class arborescence_special
 		return $hierarchieLine;
 	}
 
+
+
+	function arborescenceActionCorrectives($tableElement, $idElement)
+	{
+		$completeTree = Arborescence::completeTree($tableElement, $idElement);
+		if( is_array($completeTree) )
+		{
+			foreach($completeTree as $key => $content)
+			{
+				if( isset($content['nom']) )
+				{
+					$correctivA = arborescence_special::getACForElement($tableElement, $idElement);
+					$completeTree[$key]['correctivA'] = $correctivA;
+				}
+
+				if(isset($content['content']) && is_array($content['content']))
+				{
+					foreach($content['content'] as $index => $subContent)
+					{
+						if( isset($subContent['table']) && isset($subContent['id']) )
+						{
+							$completeTree[$key]['content'][$index] = arborescence_special::arborescenceRisque($subContent['table'], $subContent['id']);
+						}
+						else
+						{
+							foreach($subContent as $subContentIndex => $subContentContent)
+							{
+								$correctivA = arborescence_special::getACForElement($subContentContent['table'], $subContentContent['id']);
+								$completeTree[$key]['content'][$index][$subContentIndex]['correctivA'] = $correctivA;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $completeTree;
+	}
+	
+	function lectureArborescenceAC($arborescenceALire, $selectedTable, $selectedTableElement, $espacement = '')
+	{
+		$outputContent = '';
+
+		if( is_array($arborescenceALire) )
+		{			
+			foreach($arborescenceALire as $key => $content)
+			{
+				if( isset($content['nom']) )
+				{
+					/*	Risk list for the current element	*/
+					if( is_array($content['correctivA']) )
+					{
+						$riskEspacement = $espacement . '&nbsp;&nbsp;&nbsp;&nbsp;';
+						foreach($content['correctivA'] as $riskId => $riskDefinition)
+						{
+							$outputContent .= arborescence_special::taskContent($riskId);
+						}
+					}
+				}
+				else
+				{
+					$sum = 0;
+					foreach($content as $contentKey => $contentInformations)
+					{
+						/*	Risk list for the current element	*/
+						if( is_array($contentInformations['correctivA']) )
+						{
+							$riskEspacement = $espacement . '&nbsp;&nbsp;&nbsp;&nbsp;';
+							foreach($contentInformations['correctivA'] as $riskId => $riskDefinition)
+							{
+							$outputContent .= arborescence_special::taskContent($riskId);
+							}
+						}
+
+						if(isset($contentInformations['content']) && is_array($contentInformations['content']))
+						{
+							$subespacement = $espacement . '&nbsp;&nbsp;'; 
+							$outputContent .= arborescence_special::lectureArborescenceAC($contentInformations['content'], $selectedTable, $selectedTableElement, $subespacement);
+						}
+					}
+				}
+
+				if(isset($content['content']) && is_array($content['content']))
+				{
+					$subespacement = $espacement . '&nbsp;&nbsp;'; 
+					$outputContent .= arborescence_special::lectureArborescenceAC($content['content'], $selectedTable, $selectedTableElement, $subespacement);
+				}
+			}
+		}
+
+		return $outputContent;
+	}
+
+	function taskContent($id)
+	{
+		$tache = new EvaTask($id);
+		$tache->load();
+		$TasksAndSubTasks = $tache->getDescendants();
+		$TasksAndSubTasks->addTask($tache);
+		$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
+		if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
+		{
+			foreach($TasksAndSubTasks as $task)
+			{
+				if($task->id != $tache->id)
+				{
+					$existingPreconisation .= '* ' . $task->name;
+					if($task->description != '')
+					{
+						$existingPreconisation .= '(' . $task->description . ')';
+					}
+					$existingPreconisation .= " 
+";
+				}
+				$activities = $task->getActivitiesDependOn();
+				$activities = $activities->getActivities();
+				if(($activities != null) AND (count($activities) > 0))
+				{
+					foreach($activities as $activity)
+					{
+						$existingPreconisation .= '* ' . $activity->name;
+						if($activity->description != '')
+						{
+							$existingPreconisation .= '(' . $activity->description . ')';
+						}
+						$existingPreconisation .= " 
+";
+					}
+				}
+			}
+		}
+		return $existingPreconisation;
+	}
+
+	function getACForElement($tableElement, $idElement)
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT id_tache 
+			FROM " . TABLE_LIAISON_TACHE_ELEMENT . "
+			WHERE id_element = %d
+				AND table_element = %s",
+		$idElement, $tableElement);
+
+		return $wpdb->get_results($query);
+	}
+
 }

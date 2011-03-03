@@ -248,8 +248,8 @@ class EvaGroupement {
 		{
 			foreach($unites as $unite)
 			{
-				$score = UniteDeTravail::getScoreRisque($unite->id);
-				$coef = (Risque::getSeuil($score) - 1) * UniteDeTravail::getNombreRisques($unite->id);
+				$score = eva_UniteDeTravail::getScoreRisque($unite->id);
+				$coef = (Risque::getSeuil($score) - 1) * eva_UniteDeTravail::getNombreRisques($unite->id);
 				$scoreTotal = $scoreTotal + $score * $coef;
 				$diviseur = $diviseur + $coef;
 			}
@@ -293,8 +293,8 @@ class EvaGroupement {
 		{
 			foreach($unites as $unite)
 			{
-				$nbRisque += UniteDeTravail::getNombreRisques($unite->id);
-				$scoreTotal += UniteDeTravail::getScoreRisque($unite->id);
+				$nbRisque += eva_UniteDeTravail::getNombreRisques($unite->id);
+				$scoreTotal += eva_UniteDeTravail::getScoreRisque($unite->id);
 			}
 		}
 

@@ -153,6 +153,20 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$rows = 5;
 		$activite_new = $activite_new . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, $rows);
 	}
+	{//Bouton Mettre en cours
+		$idBouttonSetInProgress = 'setActivityInProgress';
+		$scriptEnregistrementInProgress = '<script type="text/javascript">
+			evarisk("#' . $idBouttonSetInProgress . '").click(function(){
+				evarisk("#inProgressButtonContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+				{
+					"post": "true", 
+					"table": "' . TABLE_ACTIVITE . '",
+					"act": "setActivityInProgress",
+					"id": evarisk("#id_activite").val()
+				});
+			});
+		</script>';
+	}
 	{//Bouton Enregistrer
 		$idBouttonEnregistrer = 'save_activite';
 
@@ -280,12 +294,17 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 			</script>';
 	}
 	{//Boutons
-		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || (options::getOptionValue('possibilite_Modifier_Action_Soldee')== 'oui'))
+		$inProgressButton = '';
+		if(($saveOrUpdate == 'update') && ($ProgressionStatus != '') && ($ProgressionStatus != 'inProgress') && ($contenuInputAvancement != '100'))
+		{
+			$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-primary', '', '', $scriptEnregistrementInProgress, 'left') . '</span>';
+		}
+		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui'))
 		{
 			$activite_new .= 
-				'<div class="alignright" id="ActionSaveButton" >';
+				'<div class="alignright" id="ActionSaveButton" >' . $inProgressButton;
 
-			if(($saveOrUpdate == 'update') && (($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress')))
+			if(($saveOrUpdate == 'update') && (($ProgressionStatus == '') || ($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress')))
 			{
 			$activite_new .= 
 					EvaDisplayInput::afficherInput('button', $idBoutton, __('Solder l\'action', 'evarisk'), null, '', $idBoutton, false, true, '', 'button-primary', '', '', $scriptEnregistrementDone, 'left');

@@ -8,7 +8,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php');
 $postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
 $postBoxId = 'postBoxGeneralInformation';
 $postBoxCallbackFunction = 'getGroupGeneralInformationPostBoxBody';
-add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
+add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
 
 function getGroupGeneralInformationPostBoxBody($arguments)
 {

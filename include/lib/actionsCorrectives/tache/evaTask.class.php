@@ -287,7 +287,7 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
-	 * Comput and set the Task start and finish dates
+	 * Compute and set the Task start and finish dates
 	 */
 	function getTimeWindow()
 	{
@@ -346,8 +346,8 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
-	 * Compute and set the Task progression
-	 */
+	* Compute and set the Task progression regarding the sub tasks
+	*/
 	function computeProgression()
 	{
 		global $current_user;
@@ -358,7 +358,8 @@ class EvaTask extends EvaBaseTask
 
 		$taskDuration = $taskCompleteDuration = 0;
 		$totalProgression = $totalSubTask = 0;
-		if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
+		$progressionStatusToSet = $this->getProgressionStatus();
+		if(($TasksAndSubTasks != null) && (count($TasksAndSubTasks) > 0))
 		{
 			foreach($TasksAndSubTasks as $task)
 			{
@@ -377,8 +378,12 @@ class EvaTask extends EvaBaseTask
 							// $taskDuration += $activiteDuration;
 							// $taskCompleteDuration += $activiteDuration * $activity->getProgression() / 100;
 						}
-						
+
 						{
+							if(($progressionStatusToSet != 'inProgress') && ($activity->getProgressionStatus() == 'inProgress'))
+							{
+								$progressionStatusToSet = 'inProgress';
+							}
 							$totalProgression += $activity->getProgression();
 							$totalSubTask++;
 						}
@@ -396,6 +401,10 @@ class EvaTask extends EvaBaseTask
 			// $progressionToSet = round($taskCompleteDuration / $taskDuration * 100);
 			$progressionToSet = round($totalProgression / $totalSubTask);
 			$this->setProgression($progressionToSet);
+			if(($progressionToSet > 0))
+			{
+				$this->setProgressionStatus('inProgress');
+			}
 			if($progressionToSet >= 100)
 			{
 				$this->setProgressionStatus('Done');
@@ -403,10 +412,19 @@ class EvaTask extends EvaBaseTask
 				$this->setdateSolde(date('Y-m-d H:i:s'));
 			}
 		}
+		elseif($progressionStatusToSet == 'inProgress')
+		{
+			$this->setProgressionStatus('inProgress');
+		}
 	}
 
 	/**
+	*	Make the link between a task and an element (risk/work unit/...)
 	*
+	*	@param mixed $table The element type we want to link
+	* @param integer $id The element identifier we want to link
+	* @param mixed $listeTaches A string composed by tasks id to link separeted by a delimiter
+	*	@param mixed $momentLiaison Defines if the link is made before or after, used for the risk evaluation to know risk level before and after an action
 	*/
 	function liaisonTacheElement($table, $id, $listeTaches, $momentLiaison = 'before')
 	{
@@ -437,7 +455,9 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
+	*	Create a new task from a set of value send by a form
 	*
+	*	@return integer The new task identifier
 	*/
 	function saveNewTask()
 	{
@@ -449,7 +469,11 @@ class EvaTask extends EvaBaseTask
 		$tache->setIdFrom($_POST['idProvenance']);
 		$tache->setTableFrom($_POST['tableProvenance']);
 		$tache->setidResponsable($_POST['responsable_activite']);
-		$tache->setProgressionStatus('inProgress');
+		$tache->setProgressionStatus('notStarted');
+		if($_POST['avancement'] > '0')
+		{
+			$tache->setProgressionStatus('inProgress');
+		}
 		if(isset($_POST['hasPriority']))
 		{
 			$tache->sethasPriority($_POST['hasPriority']);
@@ -476,9 +500,13 @@ class EvaTask extends EvaBaseTask
 
 		return $tache->getId();
 	}
-	
+
 	/**
+	*	Return the content of box displayed on the dashboard to get information on the different correctiv actions
 	*
+	*	@param mixed $dashbordParam The type of summary we want to output
+	*
+	*	@param mixed $acDashboardBox The html content of the box
 	*/
 	function getTaskForDashBoard($dashbordParam)
 	{
@@ -498,7 +526,7 @@ class EvaTask extends EvaBaseTask
 					WHERE Status = 'Valid' 
 						AND dateFin <= CURDATE() 
 						AND dateFin != '0000-00-00'
-						AND ProgressionStatus = 'inProgress' 
+						AND ProgressionStatus IN ('inProgress', 'notStarted')
 					ORDER BY dateFin DESC"
 				);
 				$taskList = $wpdb->get_results($query);
@@ -530,11 +558,11 @@ class EvaTask extends EvaBaseTask
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListPassedButNotMarkAsDoneEmpty';
 					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_ac_passed").remove();</script>';
+					$outputDatas = false;
 				}
 
 				$classes = array('cbColumnLarge','','','cbNbUserGroup');
-				$tableOptions = 
-				'';
+				$tableOptions = '';
 			}
 			break;
 			case 'taskToMarkAsDone':
@@ -685,11 +713,11 @@ class EvaTask extends EvaBaseTask
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListToReEvaluateRiskEmpty';
 					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_ac_done").remove();</script>';
+					$outputDatas = false;
 				}
 
 				$classes = array('cbColumnLarge','','','cbNbUserGroup');
-				$tableOptions = 
-				'';
+				$tableOptions = '';
 			}
 			break;
 			default:
@@ -703,10 +731,25 @@ class EvaTask extends EvaBaseTask
 			$script = 
 			'<script type="text/javascript">
 				evarisk(document).ready(function() {
-					evarisk(\'#' . $idTable . '\').dataTable({
-						"bInfo": false
-						' . $tableOptions . '});
-					evarisk(\'#' . $idTable . '\').children("tfoot").remove();
+					evarisk("#' . $idTable . '").dataTable({
+						"bInfo": false,
+						"oLanguage": {
+							"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
+							"sEmptyTable": "' . __('Aucune action trouv&eacute;e', 'evarisk') . '",
+							"sLengthMenu": "' . __('Afficher _MENU_ actions', 'evarisk') . '",
+							"sInfoEmpty": "' . __('Aucune action', 'evarisk') . '",
+							"sZeroRecords": "' . __('Aucune action trouv&eacute;e', 'evarisk') . '",
+							"oPaginate": {
+								"sFirst": "' . __('Premi&eacute;re', 'evarisk') . '",
+								"sLast": "' . __('Derni&egrave;re', 'evarisk') . '",
+								"sNext": "' . __('Suivante', 'evarisk') . '",
+								"sPrevious": "' . __('Pr&eacute;c&eacute;dente', 'evarisk') . '"
+							}
+						}
+						' . $tableOptions . '
+					});
+					evarisk("#' . $idTable . '").children("tfoot").remove();
+					evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 				});
 			</script>';
 			$acDashboardBox .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
@@ -716,7 +759,12 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
+	* Get the priority taks added to a risk
 	*
+	*	@param mixed $tableElement The element type we want to get the priority task for
+	* @param integer $idElement The element identifier we want to get the priority task for
+	*
+	*	@return object A wordpress database object with the task identifier
 	*/
 	function getPriorityTask($tableElement, $idElement)
 	{
@@ -733,6 +781,20 @@ class EvaTask extends EvaBaseTask
 		$tableElement, $idElement);
 
 		return $wpdb->get_row($query);
+	}
+
+
+	/**
+	*
+	*/
+	function correctivAction($tableElement, $idElement)
+	{
+		$completeTreeUnderElement = arborescence::completeTree($tableElement, $idElement);
+		echo '<pre>';print_r($completeTreeUnderElement);echo '</pre>';
+		foreach($completeTreeUnderElement as $element)
+		{
+		
+		}
 	}
 
 }

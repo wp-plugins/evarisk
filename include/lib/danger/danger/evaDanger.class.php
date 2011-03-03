@@ -66,7 +66,7 @@ class EvaDanger {
 /*
  * Autres methodes
  */
-	static function getDanger($id)
+	function getDanger($id)
 	{
 		global $wpdb;
 		$id = (int) $id;
@@ -74,7 +74,7 @@ class EvaDanger {
 		return $resultat;
 	}
 	
-	static function getDangerByName($nom)
+	function getDangerByName($nom)
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_DANGER . " WHERE Status = 'Valid' AND nom='" . $nom . "'");
@@ -82,13 +82,13 @@ class EvaDanger {
 	}
 	
 
-	static function getDangers($where = "1", $order = "id ASC") {
+	function getDangers($where = "1", $order = "id ASC") {
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_DANGER . " WHERE Status = 'Valid' AND " . $where . " ORDER BY " . $order);
 		return $resultat;
 	}
 	
-	static function getDangersName($saufDanger = '')
+	function getDangersName($saufDanger = '')
 	{	
 		$dangers = EvaDanger::getDangers();
 		foreach($dangers as $danger)
@@ -105,7 +105,7 @@ class EvaDanger {
 Persistance
 */
 
-	static function saveNewDanger($nom, $idCategorieMere)
+	function saveNewDanger($nom, $idCategorieMere)
 	{
 		global $wpdb;
 		
@@ -116,7 +116,7 @@ Persistance
 		$wpdb->query($sql);
 	}
 	
-	static function updateDanger($id, $nom, $idCategorieMere, $description)
+	function updateDanger($id, $nom, $idCategorieMere, $description)
 	{
 		global $wpdb;
 		
@@ -130,11 +130,11 @@ Persistance
 	}
 	
 	/**
-	  * Transfer an working unit from a group to an other
-	  * @param int $idDanger Working unit to transfer identifier
-	  * @param int $idCategorieMere Group which receive the transfer identifier
-	  */
-	static function transfertDanger($idDanger, $idCategorieMere)
+	* Transfer an working unit from a group to an other
+	* @param int $idDanger Working unit to transfer identifier
+	* @param int $idCategorieMere Group which receive the transfer identifier
+	*/
+	function transfertDanger($idDanger, $idCategorieMere)
 	{
 		global $wpdb;
 		
@@ -142,7 +142,7 @@ Persistance
 		$wpdb->query($sql);
 	}
 	
-	static function deleteDanger($id)
+	function deleteDanger($id)
 	{
 		global $wpdb;
 		

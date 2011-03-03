@@ -16,6 +16,7 @@
 	DEFINE('TABLE_AVOIR_VARIABLE', PREFIXE_EVARISK . "avoir_variable");
 	DEFINE('TABLE_AVOIR_OPERATEUR', PREFIXE_EVARISK . "avoir_operateur");
 	// Table risque
+	DEFINE('TABLE_FP', PREFIXE_EVARISK . "ged_documents_fiche_de_poste");
 	DEFINE('TABLE_DUER', PREFIXE_EVARISK . "document_unique");
 	DEFINE('TABLE_RISQUE', PREFIXE_EVARISK . "risque");
 	DEFINE('TABLE_AVOIR_VALEUR', PREFIXE_EVARISK . "risque_evaluation");

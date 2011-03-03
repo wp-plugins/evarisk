@@ -36,7 +36,7 @@ if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionsCorrectives, 'after');
 	}
 
-	/*	Check if there are ecommendation to link with this risk	*/
+	/*	Check if there are recommendation to link with this risk	*/
 	$preconisationActionID = eva_tools::IsValid_Variable($_REQUEST['preconisationActionID']);
 	$preconisationAction = eva_tools::IsValid_Variable($_REQUEST['preconisationAction']);
 	$preconisationRisque = eva_tools::IsValid_Variable($_REQUEST['preconisationRisque']);
@@ -45,7 +45,8 @@ if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 		if($preconisationAction == 'creation')
 		{
 			$infosDanger = EvaDanger::getDanger($idDanger);
-			$_POST['nom_activite'] = __('Action prioritaire risque ' . $infosDanger->nom, 'evarisk');
+			// $_POST['nom_activite'] = __('Action prioritaire risque ' . $infosDanger->nom, 'evarisk');
+			$_POST['nom_activite'] = substr($preconisationRisque, 0, 50);
 			$_POST['description'] = $preconisationRisque;
 			$_POST['cout'] = '';
 			$_POST['idProvenance'] = $idRisque;

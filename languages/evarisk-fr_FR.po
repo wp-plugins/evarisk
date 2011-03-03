@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evarisk v5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-11 11:39+0100\n"
-"PO-Revision-Date: 2011-02-11 11:40+0100\n"
+"POT-Creation-Date: 2011-02-23 12:55+0100\n"
+"PO-Revision-Date: 2011-02-23 12:55+0100\n"
 "Last-Translator: Alexandre techer <alexandre.techer@gmail.com>\n"
 "Language-Team: Evarisk <contact@evarisk.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,412 +17,544 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-SearchPath-0: ../include\n"
 
-#: ../include/ajax.php:174
+#: ../include/ajax.php:176
 msgid "Vous ne pouvez pas effectuer ce d&eacute;placement"
 msgstr "Vous ne pouvez pas effectuer ce d&eacute;placement"
 
-#: ../include/ajax.php:193
-#: ../include/ajax.php:348
-#: ../include/ajax.php:595
-#: ../include/ajax.php:671
-#: ../include/ajax.php:1456
-#: ../include/ajax.php:1701
-#: ../include/ajax.php:2959
-#: ../include/ajax.php:2964
-#: ../include/ajax.php:3231
-#: ../include/ajax.php:3236
-#: ../include/ajax.php:3368
-#: ../include/ajax.php:3373
+#: ../include/ajax.php:195
+#: ../include/ajax.php:350
+#: ../include/ajax.php:597
+#: ../include/ajax.php:673
+#: ../include/ajax.php:1469
+#: ../include/ajax.php:1740
+#: ../include/ajax.php:3092
+#: ../include/ajax.php:3097
+#: ../include/ajax.php:3364
+#: ../include/ajax.php:3369
+#: ../include/ajax.php:3501
+#: ../include/ajax.php:3506
 msgid "sauvegard&eacute;e"
 msgstr "sauvegard&eacute;e"
 
-#: ../include/ajax.php:220
-#: ../include/ajax.php:379
-#: ../include/ajax.php:598
-#: ../include/ajax.php:674
-#: ../include/ajax.php:1459
-#: ../include/ajax.php:1705
-#: ../include/ajax.php:1822
+#: ../include/ajax.php:222
+#: ../include/ajax.php:381
+#: ../include/ajax.php:600
+#: ../include/ajax.php:676
+#: ../include/ajax.php:1472
+#: ../include/ajax.php:1744
+#: ../include/ajax.php:1865
 msgid "mise &agrave; jour"
 msgstr "mise &agrave; jour"
 
-#: ../include/ajax.php:229
-#: ../include/ajax.php:390
-#: ../include/ajax.php:605
-#: ../include/ajax.php:681
-#: ../include/ajax.php:1505
-#: ../include/ajax.php:1753
-#: ../include/ajax.php:1895
-#: ../include/ajax.php:2959
-#: ../include/ajax.php:3231
-#: ../include/ajax.php:3368
+#: ../include/ajax.php:231
+#: ../include/ajax.php:392
+#: ../include/ajax.php:607
+#: ../include/ajax.php:683
+#: ../include/ajax.php:1522
+#: ../include/ajax.php:1796
+#: ../include/ajax.php:1942
+#: ../include/ajax.php:3092
+#: ../include/ajax.php:3364
+#: ../include/ajax.php:3501
 #, php-format
 msgid "La fiche %s a correctement &eacute;t&eacute; %s"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:229
-#: ../include/lib/evaDisplayDesign.class.php:1392
+#: ../include/ajax.php:231
+#: ../include/lib/evaDisplayDesign.class.php:1399
 msgid "du groupement"
 msgstr "du groupement"
 
-#: ../include/ajax.php:313
-#: ../include/ajax.php:496
-#: ../include/ajax.php:2466
+#: ../include/ajax.php:315
+#: ../include/ajax.php:498
+#: ../include/ajax.php:2599
 #, fuzzy
 msgid "Sauvegarde r&eacute;ussie"
 msgstr "sauvegard&eacute;e"
 
-#: ../include/ajax.php:317
-#: ../include/ajax.php:500
-#: ../include/ajax.php:2471
+#: ../include/ajax.php:319
+#: ../include/ajax.php:502
+#: ../include/ajax.php:2604
 #, fuzzy
 msgid "La sauvegarde a &eacute;chou&eacute;e"
 msgstr "chaussures de s&eacute;curit&eacute;"
 
-#: ../include/ajax.php:390
-#: ../include/ajax.php:449
-#: ../include/lib/evaDisplayDesign.class.php:1276
+#: ../include/ajax.php:392
+#: ../include/ajax.php:451
+#: ../include/lib/evaDisplayDesign.class.php:1283
 msgid "de l'unit&eacute; de travail"
 msgstr "de l'unit&eacute; de travail"
 
-#: ../include/ajax.php:449
+#: ../include/ajax.php:451
 #, php-format
 msgid "Une erreur est survenue lors de l'enregistrement de la fiche %s"
 msgstr "Une erreur est survenue lors de l'enregistrement de la fiche %s"
 
-#: ../include/ajax.php:586
+#: ../include/ajax.php:588
 #, fuzzy
 msgid "Dangers de la cat&eacute;gorie"
 msgstr "La fiche de la cat&eacute;gorie de danger"
 
-#: ../include/ajax.php:605
+#: ../include/ajax.php:607
 msgid "de la cat&eacute;gorie de dangers"
 msgstr "de la cat&eacute;gorie de dangers"
 
-#: ../include/ajax.php:681
-#: ../include/ajax.php:3410
+#: ../include/ajax.php:683
+#: ../include/ajax.php:3543
 msgid "du danger"
 msgstr "du danger"
 
-#: ../include/ajax.php:799
+#: ../include/ajax.php:795
 #, fuzzy
 msgid "Le risque a bien &eacute;t&eacute; ajout&eacute;"
 msgstr "Le groupe &agrave; &eacute;t&eacute; supprim&eacute; avec succ&eacute;s"
 
-#: ../include/ajax.php:806
+#: ../include/ajax.php:802
 #, fuzzy
 msgid "Le risque n'a pas pu &ecirc;tre ajout&eacute;"
 msgstr "n'&agrave; pas pu &ecirc;tre supprim&eacute;"
 
-#: ../include/ajax.php:814
+#: ../include/ajax.php:810
 #, fuzzy
 msgid "Ajouter un risque pour cette photo"
 msgstr "Ajouter un nouveau groupement"
 
-#: ../include/ajax.php:970
+#: ../include/ajax.php:983
 msgid "M&eacute;thode d'&eacute;valuation"
 msgstr "M&eacute;thode d'&eacute;valuation"
 
-#: ../include/ajax.php:986
-#: ../include/ajax.php:3411
+#: ../include/ajax.php:999
+#: ../include/ajax.php:3544
 #, php-format
 msgid "commentaire %s"
 msgstr "commentaire %s"
 
-#: ../include/ajax.php:986
-#: ../include/ajax.php:3411
+#: ../include/ajax.php:999
+#: ../include/ajax.php:3544
 msgid "sur le risque"
 msgstr "sur le risque"
 
-#: ../include/ajax.php:1149
+#: ../include/ajax.php:1162
 msgid "Des actions correctives sont actuellement en cours et ne sont pas sold&eacute;es. Si vous voulez lier la modification de ce risque &agrave; une de ces actions corrective, vous devez d'abord solder celles-ci."
 msgstr "Des actions correctives sont actuellement en cours et ne sont pas sold&eacute;es. Si vous voulez lier la modification de ce risque &agrave; une de ces actions corrective, vous devez d'abord solder celles-ci."
 
-#: ../include/ajax.php:1155
+#: ../include/ajax.php:1168
 #: ../include/evarisk_admin.php:51
 msgid "Actions correctives"
 msgstr "Actions correctives"
 
-#: ../include/ajax.php:1156
+#: ../include/ajax.php:1169
 #, fuzzy
 msgid "Explications"
 msgstr "Exposition"
 
-#: ../include/ajax.php:1158
+#: ../include/ajax.php:1171
 msgid "Si la r&eacute;-&eacute;valuation du risque d&eacute;coule d'une action corrective. Vous pouvez associer ces &eacute;l&eacute;ments."
 msgstr "Si la r&eacute;-&eacute;valuation du risque d&eacute;coule d'une action corrective. Vous pouvez associer ces &eacute;l&eacute;ments."
 
-#: ../include/ajax.php:1402
+#: ../include/ajax.php:1415
 #, fuzzy
 msgid "L'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:1427
+#: ../include/ajax.php:1440
 msgid "L'affectation de la t&acirc;che n'a pas &eacute;t&eacute; effectu&eacute;e."
 msgstr "L'affectation de la t&acirc;che n'a pas &eacute;t&eacute; effectu&eacute;e."
 
-#: ../include/ajax.php:1462
+#: ../include/ajax.php:1475
 #, fuzzy
 msgid "sold&eacute;e"
 msgstr "sauvegard&eacute;e"
 
-#: ../include/ajax.php:1505
-#: ../include/ajax.php:1511
-#: ../include/ajax.php:1577
-#: ../include/ajax.php:1589
+#: ../include/ajax.php:1522
+#: ../include/ajax.php:1528
+#: ../include/ajax.php:1594
+#: ../include/ajax.php:1606
 #, fuzzy
 msgid "de la t&acirc;che"
 msgstr "protection de la t&ecirc;te"
 
-#: ../include/ajax.php:1511
-#: ../include/ajax.php:1760
-#: ../include/ajax.php:1901
-#: ../include/ajax.php:2964
-#: ../include/ajax.php:3236
-#: ../include/ajax.php:3373
+#: ../include/ajax.php:1528
+#: ../include/ajax.php:1803
+#: ../include/ajax.php:1948
+#: ../include/ajax.php:3097
+#: ../include/ajax.php:3369
+#: ../include/ajax.php:3506
 #, fuzzy, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; %s."
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:1577
-#: ../include/ajax.php:2044
+#: ../include/ajax.php:1594
+#: ../include/ajax.php:2091
 #, fuzzy, php-format
 msgid "La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:1589
+#: ../include/ajax.php:1606
 #, fuzzy, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:1753
-#: ../include/ajax.php:1760
-#: ../include/ajax.php:1895
-#: ../include/ajax.php:1901
-#: ../include/ajax.php:2044
-#: ../include/ajax.php:2056
+#: ../include/ajax.php:1714
+#: ../include/ajax.php:2352
+#: ../include/lib/evaDisplayDesign.class.php:1490
+#: ../include/lib/evaDisplayDesign.class.php:1510
+#, fuzzy
+msgid "Non commenc&eacute;e"
+msgstr "&Eacute;lev&eacute;"
+
+#: ../include/ajax.php:1717
+#: ../include/ajax.php:2355
+#: ../include/lib/evaDisplayDesign.class.php:1493
+#: ../include/lib/evaDisplayDesign.class.php:1513
+msgid "En cours"
+msgstr "En cours"
+
+#: ../include/ajax.php:1721
+#: ../include/ajax.php:2359
+#: ../include/lib/evaDisplayDesign.class.php:1497
+#: ../include/lib/evaDisplayDesign.class.php:1517
+#, fuzzy
+msgid "Sold&eacute;e"
+msgstr "sauvegard&eacute;e"
+
+#: ../include/ajax.php:1796
+#: ../include/ajax.php:1803
+#: ../include/ajax.php:1942
+#: ../include/ajax.php:1948
+#: ../include/ajax.php:2091
+#: ../include/ajax.php:2103
 msgid "de l'action"
 msgstr "de l'action"
 
-#: ../include/ajax.php:1926
+#: ../include/ajax.php:1973
 msgid "Envoyer la photo avant"
 msgstr "Envoyer la photo avant"
 
-#: ../include/ajax.php:1930
+#: ../include/ajax.php:1977
 msgid "Envoyer la photo apr&egrave;s"
 msgstr "Envoyer la photo apr&egrave;s"
 
-#: ../include/ajax.php:2011
-#: ../include/ajax.php:2252
+#: ../include/ajax.php:2058
+#: ../include/ajax.php:2385
 #, fuzzy
 msgid "Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:2016
-#: ../include/ajax.php:2257
+#: ../include/ajax.php:2063
+#: ../include/ajax.php:2390
 msgid "Les modifications n'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es"
 msgstr "Les modifications n'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es"
 
-#: ../include/ajax.php:2056
+#: ../include/ajax.php:2103
 #, fuzzy, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e."
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:2120
+#: ../include/ajax.php:2167
 #, fuzzy
 msgid "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l'action"
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
 
-#: ../include/ajax.php:2125
+#: ../include/ajax.php:2172
 #, fuzzy
 msgid "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo avant l'action"
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
 
-#: ../include/ajax.php:2151
+#: ../include/ajax.php:2198
 #, fuzzy
 msgid "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
 
-#: ../include/ajax.php:2156
+#: ../include/ajax.php:2203
 #, fuzzy
 msgid "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
 
-#: ../include/ajax.php:2182
+#: ../include/ajax.php:2229
 #, fuzzy
 msgid "La photo n'est plus d&eacute;finie comme photo avant l'action"
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
 
-#: ../include/ajax.php:2187
+#: ../include/ajax.php:2234
 msgid "La photo est toujours d&eacute;finie comme photo avant l'action"
 msgstr "La photo est toujours d&eacute;finie comme photo avant l'action"
 
-#: ../include/ajax.php:2213
+#: ../include/ajax.php:2260
 #, fuzzy
 msgid "La photo n'est plus d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre cr&eacute;&eacute;"
 
-#: ../include/ajax.php:2218
+#: ../include/ajax.php:2265
 msgid "La photo est toujours d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "La photo est toujours d&eacute;finie comme photo apr&egrave;s l'action"
 
-#: ../include/ajax.php:2299
-#: ../include/ajax.php:2337
+#: ../include/ajax.php:2432
+#: ../include/ajax.php:2470
 #, fuzzy, php-format
 msgid "Le groupe d'utilisateurs a &eacute;t&eacute; correctement %s %s."
 msgstr "Le groupe &agrave; &eacute;t&eacute; cr&eacute; avec succ&eacute;s"
 
-#: ../include/ajax.php:2299
-#: ../include/ajax.php:2304
-#: ../include/ajax.php:2380
-#: ../include/ajax.php:2385
+#: ../include/ajax.php:2432
+#: ../include/ajax.php:2437
+#: ../include/ajax.php:2513
+#: ../include/ajax.php:2518
 #, fuzzy
 msgid "affect&eacute;"
 msgstr "electricit&eacute;"
 
-#: ../include/ajax.php:2304
-#: ../include/ajax.php:2342
+#: ../include/ajax.php:2437
+#: ../include/ajax.php:2475
 #, fuzzy, php-format
 msgid "Le groupe d'utilisateurs n'a pas pu &ecirc;tre %s %s."
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre mofifi&eacute;"
 
-#: ../include/ajax.php:2337
-#: ../include/ajax.php:2342
-#: ../include/ajax.php:2418
-#: ../include/ajax.php:2423
+#: ../include/ajax.php:2470
+#: ../include/ajax.php:2475
+#: ../include/ajax.php:2551
+#: ../include/ajax.php:2556
 #, fuzzy
 msgid "d&eacute;saffect&eacute;"
 msgstr "&Eacute;lev&eacute;"
 
-#: ../include/ajax.php:2380
-#: ../include/ajax.php:2418
+#: ../include/ajax.php:2513
+#: ../include/ajax.php:2551
 #, fuzzy, php-format
 msgid "Le groupe d'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s."
 msgstr "Le groupe &agrave; &eacute;t&eacute; cr&eacute; avec succ&eacute;s"
 
-#: ../include/ajax.php:2385
-#: ../include/ajax.php:2423
+#: ../include/ajax.php:2518
+#: ../include/ajax.php:2556
 #, fuzzy, php-format
 msgid "Le groupe d'&eacute;valuateurs n'a pas pu &ecirc;tre %s %s."
 msgstr "Le groupe n'&agrave; pas pu &ecirc;tre mofifi&eacute;"
 
-#: ../include/ajax.php:2565
+#: ../include/ajax.php:2698
 #, fuzzy
 msgid "Aucun mod&eacute;le &agrave; pr&eacute;senter"
 msgstr "soci&eacute;t&eacute; ext&eacute;rieure"
 
-#: ../include/ajax.php:2567
+#: ../include/ajax.php:2700
 #, fuzzy
 msgid "Mod&egrave;le &agrave; utiliser"
 msgstr "Mettre &agrave; jour"
 
-#: ../include/ajax.php:2733
-#: ../include/ajax.php:3297
+#: ../include/ajax.php:2866
+#: ../include/ajax.php:3430
 #, fuzzy
 msgid "Vous n\\'avez pas donne de nom a l'action"
 msgstr "Vous n'avez pas donn&eacute; de nom %s"
 
-#: ../include/ajax.php:2850
-#: ../include/ajax.php:3533
+#: ../include/ajax.php:2983
+#: ../include/ajax.php:3666
 #, fuzzy
 msgid "Action non d&eacute;coup&eacute;e"
 msgstr "Soci&eacute;t&eacute;s"
 
-#: ../include/ajax.php:2938
-#: ../include/ajax.php:3615
+#: ../include/ajax.php:3071
+#: ../include/ajax.php:3748
 #, fuzzy
 msgid "ce risque"
 msgstr "les risques"
 
-#: ../include/ajax.php:2941
-#: ../include/ajax.php:3618
+#: ../include/ajax.php:3074
+#: ../include/ajax.php:3751
 #, fuzzy
 msgid "cet &eacute;l&eacute;ment"
 msgstr "l'&eacute;l&eacute;ment"
 
-#: ../include/ajax.php:2944
-#: ../include/ajax.php:3621
+#: ../include/ajax.php:3077
+#: ../include/ajax.php:3754
 #, fuzzy, php-format
 msgid "Il n'y a pas d'action pour %s"
 msgstr "Il n'y a pas d'EPI"
 
-#: ../include/ajax.php:2959
-#: ../include/ajax.php:2964
-#: ../include/ajax.php:3231
-#: ../include/ajax.php:3236
-#: ../include/ajax.php:3368
-#: ../include/ajax.php:3373
+#: ../include/ajax.php:3092
+#: ../include/ajax.php:3097
+#: ../include/ajax.php:3364
+#: ../include/ajax.php:3369
+#: ../include/ajax.php:3501
+#: ../include/ajax.php:3506
 #, fuzzy
 msgid "de l'action corrective"
 msgstr "Actions correctives"
 
-#: ../include/ajax.php:3083
+#: ../include/ajax.php:3216
 #, fuzzy
 msgid "D&eacute;but"
 msgstr "r&eacute;sultat"
 
-#: ../include/ajax.php:3087
+#: ../include/ajax.php:3220
 msgid "Fin"
 msgstr "Fin"
 
-#: ../include/ajax.php:3095
+#: ../include/ajax.php:3228
 #: ../include/lib/evaDisplayDesign.class.php:685
 msgid "Avancement"
 msgstr "Avancement"
 
-#: ../include/ajax.php:3096
+#: ../include/ajax.php:3229
 msgid "Description"
 msgstr "Description"
 
-#: ../include/ajax.php:3097
+#: ../include/ajax.php:3230
 msgid "Co&ucirc;t"
 msgstr "Co&ucirc;t"
 
-#: ../include/ajax.php:3100
+#: ../include/ajax.php:3233
 msgid "Photo avant"
 msgstr "Photo avant"
 
-#: ../include/ajax.php:3115
-#: ../include/ajax.php:3134
+#: ../include/ajax.php:3248
+#: ../include/ajax.php:3267
 #, fuzzy
 msgid "Aucune n'a &eacute;t&eacute; d&eacute;finie"
 msgstr "soci&eacute;t&eacute; ext&eacute;rieure"
 
-#: ../include/ajax.php:3120
+#: ../include/ajax.php:3253
 #, fuzzy
 msgid "Photo apr&egrave;s"
 msgstr "Droit d'acc&egrave;s"
 
-#: ../include/ajax.php:3160
+#: ../include/ajax.php:3293
 msgid "Voir les actions associ&eacute;es &agrave; ce risque"
 msgstr "Voir les actions associ&eacute;es &agrave; ce risque"
 
-#: ../include/ajax.php:3166
+#: ../include/ajax.php:3299
 #, fuzzy
 msgid "Il n'y a aucune action corrective pour ce risque"
 msgstr "Il n'y a pas d'EPI"
 
-#: ../include/ajax.php:3190
+#: ../include/ajax.php:3323
 #, fuzzy
 msgid "Il n'y a aucun risque pour cette &eacute;l&eacute;ment"
 msgstr "l'&eacute;l&eacute;ment"
 
-#: ../include/ajax.php:3301
+#: ../include/ajax.php:3434
 msgid "Vous devez choisir une personne en charge de l\\'action"
 msgstr "Vous devez choisir une personne en charge de l\\'action"
 
-#: ../include/ajax.php:3327
+#: ../include/ajax.php:3460
 msgid "Enregistrer"
 msgstr "Enregistrer"
 
-#: ../include/ajax.php:3409
+#: ../include/ajax.php:3542
 msgid "Quotation"
 msgstr "Quotation"
 
-#: ../include/ajax.php:3410
+#: ../include/ajax.php:3543
 #, php-format
 msgid "nom %s"
 msgstr "nom %s"
+
+#: ../include/ajax.php:3870
+#: ../include/ajax.php:3954
+msgid "Stat index"
+msgstr ""
+
+#: ../include/ajax.php:3870
+#: ../include/ajax.php:3954
+msgid "Statistique"
+msgstr ""
+
+#: ../include/ajax.php:3870
+#: ../include/ajax.php:3954
+msgid "Valeur"
+msgstr "Valeur"
+
+#: ../include/ajax.php:3880
+#, fuzzy
+msgid "Nombre d'utilisateurs total"
+msgstr "Groupe d'utilisateurs"
+
+#: ../include/ajax.php:3886
+#, fuzzy
+msgid "Utilisateur ayant particip&eacute; &agrave; l'audit"
+msgstr "les m&eacute;thodes d'&eacute;valuation"
+
+#: ../include/ajax.php:3903
+#: ../include/ajax.php:3993
+#, fuzzy
+msgid "Aucun r&eacute;sultat trouv&eacute;"
+msgstr "Soci&eacute;t&eacute;s"
+
+#: ../include/ajax.php:3922
+#: ../include/ajax.php:3925
+#, fuzzy
+msgid "Aucune statistique trouv&eacute;e"
+msgstr "Soci&eacute;t&eacute;s"
+
+#: ../include/ajax.php:3923
+#, fuzzy
+msgid "Afficher _MENU_ statistiques"
+msgstr "Afficher _MENU_ risques"
+
+#: ../include/ajax.php:3924
+#, fuzzy
+msgid "Aucune statistique"
+msgstr "un risque"
+
+#: ../include/ajax.php:3927
+#: ../include/ajax.php:4017
+#, fuzzy
+msgid "Premi&eacute;re"
+msgstr "Limit&eacute;"
+
+#: ../include/ajax.php:3928
+#: ../include/ajax.php:4018
+#, fuzzy
+msgid "Derni&egrave;re"
+msgstr "%s p&egrave;re"
+
+#: ../include/ajax.php:3929
+#: ../include/ajax.php:4019
+#, fuzzy
+msgid "Suivante"
+msgstr "Avant"
+
+#: ../include/ajax.php:3930
+#: ../include/ajax.php:4020
+#, fuzzy
+msgid "Pr&eacute;c&eacute;dente"
+msgstr "l'&eacute;l&eacute;ment"
+
+#: ../include/ajax.php:3964
+#, fuzzy
+msgid "Nombre total de risque"
+msgstr "Niveau de risque"
+
+#: ../include/ajax.php:3970
+#, fuzzy
+msgid "Quotation la plus &eacute;lev&eacute;e"
+msgstr "Informations G&eacute;n&eacute;rales"
+
+#: ../include/ajax.php:3976
+#, fuzzy
+msgid "Quotation la plus basse"
+msgstr "manutention manuelle"
+
+#: ../include/ajax.php:4012
+#, fuzzy
+msgid "Aucun risque trouv&eacute;e"
+msgstr "Soci&eacute;t&eacute;s"
+
+#: ../include/ajax.php:4013
+msgid "Afficher _MENU_ risques"
+msgstr "Afficher _MENU_ risques"
+
+#: ../include/ajax.php:4014
+#, fuzzy
+msgid "Aucune risque"
+msgstr "un risque"
+
+#: ../include/ajax.php:4015
+#, fuzzy
+msgid "Aucune risque trouv&eacute;e"
+msgstr "Soci&eacute;t&eacute;s"
+
+#: ../include/ajax.php:4040
+msgid "Disponible prochainement"
+msgstr ""
 
 #: ../include/evarisk_admin.php:16
 #: ../include/evarisk_admin.php:18
@@ -736,61 +868,61 @@ msgstr "les risques"
 #: ../include/lib/evaDisplayDesign.class.php:689
 #: ../include/lib/evaDisplayDesign.class.php:690
 #: ../include/lib/evaDisplayDesign.class.php:691
-#: ../include/lib/evaDisplayDesign.class.php:1361
-#: ../include/lib/evaDisplayDesign.class.php:1362
-#: ../include/lib/evaDisplayDesign.class.php:1388
-#: ../include/lib/evaDisplayDesign.class.php:1389
-#: ../include/lib/evaDisplayDesign.class.php:1417
-#: ../include/lib/evaDisplayDesign.class.php:1418
+#: ../include/lib/evaDisplayDesign.class.php:1368
+#: ../include/lib/evaDisplayDesign.class.php:1369
+#: ../include/lib/evaDisplayDesign.class.php:1395
+#: ../include/lib/evaDisplayDesign.class.php:1396
+#: ../include/lib/evaDisplayDesign.class.php:1424
+#: ../include/lib/evaDisplayDesign.class.php:1425
 #, php-format
 msgid "Ajouter %s"
 msgstr "Ajouter %s"
 
 #: ../include/lib/evaDisplayDesign.class.php:656
 #: ../include/lib/evaDisplayDesign.class.php:658
-#: ../include/lib/evaDisplayDesign.class.php:1388
+#: ../include/lib/evaDisplayDesign.class.php:1395
 msgid "un groupement"
 msgstr "un groupement"
 
 #: ../include/lib/evaDisplayDesign.class.php:657
 #: ../include/lib/evaDisplayDesign.class.php:659
-#: ../include/lib/evaDisplayDesign.class.php:1389
+#: ../include/lib/evaDisplayDesign.class.php:1396
 msgid "une unit&eacute; de travail"
 msgstr "une unit&eacute; de travail"
 
 #: ../include/lib/evaDisplayDesign.class.php:671
 #: ../include/lib/evaDisplayDesign.class.php:673
-#: ../include/lib/evaDisplayDesign.class.php:1361
+#: ../include/lib/evaDisplayDesign.class.php:1368
 msgid "une cat&eacute;gorie de dangers"
 msgstr "une cat&eacute;gorie de dangers"
 
 #: ../include/lib/evaDisplayDesign.class.php:672
 #: ../include/lib/evaDisplayDesign.class.php:674
-#: ../include/lib/evaDisplayDesign.class.php:1362
+#: ../include/lib/evaDisplayDesign.class.php:1369
 msgid "un danger"
 msgstr "un danger"
 
 #: ../include/lib/evaDisplayDesign.class.php:688
 #: ../include/lib/evaDisplayDesign.class.php:690
-#: ../include/lib/evaDisplayDesign.class.php:1417
+#: ../include/lib/evaDisplayDesign.class.php:1424
 msgid "une t&acirc;che"
 msgstr "une t&acirc;che"
 
 #: ../include/lib/evaDisplayDesign.class.php:689
 #: ../include/lib/evaDisplayDesign.class.php:691
-#: ../include/lib/evaDisplayDesign.class.php:1418
+#: ../include/lib/evaDisplayDesign.class.php:1425
 #, fuzzy
 msgid "une action"
 msgstr "Quotation"
 
 #: ../include/lib/evaDisplayDesign.class.php:703
 #: ../include/lib/evaDisplayDesign.class.php:706
-#: ../include/lib/evaDisplayDesign.class.php:1429
+#: ../include/lib/evaDisplayDesign.class.php:1436
 msgid "Inserer sous le titre"
 msgstr "Inserer sous le titre"
 
 #: ../include/lib/evaDisplayDesign.class.php:704
-#: ../include/lib/evaDisplayDesign.class.php:1430
+#: ../include/lib/evaDisplayDesign.class.php:1437
 msgid "Modifier le titre"
 msgstr "Modifier le titre"
 
@@ -819,273 +951,262 @@ msgstr ""
 "Etes vous sur de vouloir supprimer cet element?\\r\\n"
 "ATTENTION: si cet element possede des sous elements, ils seront inaccessibles"
 
-#: ../include/lib/evaDisplayDesign.class.php:1267
-#: ../include/lib/evaDisplayDesign.class.php:1276
-#: ../include/lib/evaDisplayDesign.class.php:1284
-#: ../include/lib/evaDisplayDesign.class.php:1363
-#: ../include/lib/evaDisplayDesign.class.php:1392
-#: ../include/lib/evaDisplayDesign.class.php:1419
+#: ../include/lib/evaDisplayDesign.class.php:1274
+#: ../include/lib/evaDisplayDesign.class.php:1283
+#: ../include/lib/evaDisplayDesign.class.php:1291
+#: ../include/lib/evaDisplayDesign.class.php:1370
+#: ../include/lib/evaDisplayDesign.class.php:1399
+#: ../include/lib/evaDisplayDesign.class.php:1426
 #, php-format
 msgid "&Eacute;diter %s"
 msgstr "&Eacute;diter %s"
 
-#: ../include/lib/evaDisplayDesign.class.php:1267
-#: ../include/lib/evaDisplayDesign.class.php:1268
+#: ../include/lib/evaDisplayDesign.class.php:1274
+#: ../include/lib/evaDisplayDesign.class.php:1275
 msgid "le danger"
 msgstr "le danger"
 
-#: ../include/lib/evaDisplayDesign.class.php:1268
-#: ../include/lib/evaDisplayDesign.class.php:1277
-#: ../include/lib/evaDisplayDesign.class.php:1285
-#: ../include/lib/evaDisplayDesign.class.php:1364
-#: ../include/lib/evaDisplayDesign.class.php:1393
+#: ../include/lib/evaDisplayDesign.class.php:1275
+#: ../include/lib/evaDisplayDesign.class.php:1284
+#: ../include/lib/evaDisplayDesign.class.php:1292
+#: ../include/lib/evaDisplayDesign.class.php:1371
+#: ../include/lib/evaDisplayDesign.class.php:1400
 #, fuzzy, php-format
 msgid "Supprimer %s"
 msgstr "Supprimer le groupe"
 
-#: ../include/lib/evaDisplayDesign.class.php:1276
-#: ../include/lib/evaDisplayDesign.class.php:1392
+#: ../include/lib/evaDisplayDesign.class.php:1283
+#: ../include/lib/evaDisplayDesign.class.php:1399
 #, fuzzy, php-format
 msgid "Risques %s"
 msgstr "Risques"
 
-#: ../include/lib/evaDisplayDesign.class.php:1276
-#: ../include/lib/evaDisplayDesign.class.php:1277
+#: ../include/lib/evaDisplayDesign.class.php:1283
+#: ../include/lib/evaDisplayDesign.class.php:1284
 msgid "l'unit&eacute; de travail"
 msgstr "l'unit&eacute; de travail"
 
-#: ../include/lib/evaDisplayDesign.class.php:1284
-#: ../include/lib/evaDisplayDesign.class.php:1285
+#: ../include/lib/evaDisplayDesign.class.php:1291
+#: ../include/lib/evaDisplayDesign.class.php:1292
 #, fuzzy
 msgid "l'action"
 msgstr "Actions"
 
-#: ../include/lib/evaDisplayDesign.class.php:1292
-#: ../include/lib/evaDisplayDesign.class.php:1420
-#: ../include/lib/evaDisplayDesign.class.php:1431
+#: ../include/lib/evaDisplayDesign.class.php:1299
+#: ../include/lib/evaDisplayDesign.class.php:1427
+#: ../include/lib/evaDisplayDesign.class.php:1438
 #, php-format
 msgid "&Eacute;ffacer %s"
 msgstr "&Eacute;ffacer %s"
 
-#: ../include/lib/evaDisplayDesign.class.php:1292
+#: ../include/lib/evaDisplayDesign.class.php:1299
 msgid "la question"
 msgstr "la question"
 
-#: ../include/lib/evaDisplayDesign.class.php:1363
-#: ../include/lib/evaDisplayDesign.class.php:1364
+#: ../include/lib/evaDisplayDesign.class.php:1370
+#: ../include/lib/evaDisplayDesign.class.php:1371
 msgid "la cat&eacute;gorie de dangers"
 msgstr "la cat&eacute;gorie de dangers"
 
-#: ../include/lib/evaDisplayDesign.class.php:1392
-#: ../include/lib/evaDisplayDesign.class.php:1393
-#: ../include/lib/evaDisplayDesign.class.php:1419
+#: ../include/lib/evaDisplayDesign.class.php:1399
+#: ../include/lib/evaDisplayDesign.class.php:1400
+#: ../include/lib/evaDisplayDesign.class.php:1426
 msgid "le groupement"
 msgstr "le groupement"
 
-#: ../include/lib/evaDisplayDesign.class.php:1419
-#: ../include/lib/evaDisplayDesign.class.php:1420
+#: ../include/lib/evaDisplayDesign.class.php:1426
+#: ../include/lib/evaDisplayDesign.class.php:1427
 msgid "la t&acirc;che"
 msgstr "la t&acirc;che"
 
-#: ../include/lib/evaDisplayDesign.class.php:1431
+#: ../include/lib/evaDisplayDesign.class.php:1438
 msgid "le titre"
 msgstr "le titre"
 
-#: ../include/lib/evaDisplayDesign.class.php:1483
-#: ../include/lib/evaDisplayDesign.class.php:1500
-msgid "En cours"
-msgstr "En cours"
-
-#: ../include/lib/evaDisplayDesign.class.php:1487
-#: ../include/lib/evaDisplayDesign.class.php:1504
-#, fuzzy
-msgid "Sold&eacute;e"
-msgstr "sauvegard&eacute;e"
-
-#: ../include/lib/evaDisplayDesign.class.php:1517
-#: ../include/lib/evaDisplayDesign.class.php:1527
+#: ../include/lib/evaDisplayDesign.class.php:1530
+#: ../include/lib/evaDisplayDesign.class.php:1540
 #, fuzzy
 msgid "risque(s)"
 msgstr "Risques"
 
-#: ../include/lib/evaDisplayDesign.class.php:1609
+#: ../include/lib/evaDisplayDesign.class.php:1622
 msgid "Aucun groupement ni aucune unit&eacute; de travail n'existe dans"
 msgstr "Aucun groupement ni aucune unit&eacute; de travail n'existe dans"
 
-#: ../include/lib/evaDisplayDesign.class.php:1610
+#: ../include/lib/evaDisplayDesign.class.php:1623
 msgid "Ajouter un nouveau groupement"
 msgstr "Ajouter un nouveau groupement"
 
-#: ../include/lib/evaDisplayDesign.class.php:1612
+#: ../include/lib/evaDisplayDesign.class.php:1625
 msgid "Ajouter une nouvelle unit&eacute; de travail"
 msgstr "Ajouter une nouvelle unit&eacute; de travail"
 
-#: ../include/lib/evaDisplayDesign.class.php:1638
+#: ../include/lib/evaDisplayDesign.class.php:1651
 msgid "Aucune categorie ni aucun danger n'existe dans "
 msgstr "Aucune categorie ni aucun danger n'existe dans "
 
-#: ../include/lib/evaDisplayDesign.class.php:1639
+#: ../include/lib/evaDisplayDesign.class.php:1652
 msgid "Ajouter une nouvelle cat&eacute;gorie de dangers."
 msgstr "Ajouter une nouvelle cat&eacute;gorie de dangers."
 
-#: ../include/lib/evaDisplayDesign.class.php:1641
+#: ../include/lib/evaDisplayDesign.class.php:1654
 msgid "Ajouter un nouveau danger."
 msgstr "Ajouter un nouveau danger."
 
-#: ../include/lib/evaDisplayDesign.class.php:1791
+#: ../include/lib/evaDisplayDesign.class.php:1804
 msgid "&Eacute;diter"
 msgstr "&Eacute;diter"
 
-#: ../include/lib/evaDisplayDesign.class.php:1800
+#: ../include/lib/evaDisplayDesign.class.php:1813
 msgid "Parcourir"
 msgstr "Parcourir"
 
-#: ../include/lib/evaDisplayDesign.class.php:1801
-#: ../include/lib/evaDisplayDesign.class.php:1832
+#: ../include/lib/evaDisplayDesign.class.php:1814
+#: ../include/lib/evaDisplayDesign.class.php:1845
 msgid "Risques"
 msgstr "Risques"
 
-#: ../include/lib/evaDisplayDesign.class.php:1807
-#: ../include/lib/evaDisplayDesign.class.php:1849
+#: ../include/lib/evaDisplayDesign.class.php:1820
+#: ../include/lib/evaDisplayDesign.class.php:1862
 #, fuzzy
 msgid "Aj. groupement"
 msgstr "groupement"
 
-#: ../include/lib/evaDisplayDesign.class.php:1807
-#: ../include/lib/evaDisplayDesign.class.php:1849
+#: ../include/lib/evaDisplayDesign.class.php:1820
+#: ../include/lib/evaDisplayDesign.class.php:1862
 msgid "Aj. gpmt"
 msgstr "Aj. gpmt"
 
-#: ../include/lib/evaDisplayDesign.class.php:1815
-#: ../include/lib/evaDisplayDesign.class.php:1857
+#: ../include/lib/evaDisplayDesign.class.php:1828
+#: ../include/lib/evaDisplayDesign.class.php:1870
 #, fuzzy
 msgid "Aj. unit&eacute;"
 msgstr "Unit&eacute;s"
 
-#: ../include/lib/evaDisplayDesign.class.php:1842
+#: ../include/lib/evaDisplayDesign.class.php:1855
 msgid "S&eacute;lectionner"
 msgstr "S&eacute;lectionner"
 
-#: ../include/lib/evaDisplayDesign.class.php:1857
+#: ../include/lib/evaDisplayDesign.class.php:1870
 #, fuzzy
 msgid "Aj. danger"
 msgstr "un danger"
 
-#: ../include/lib/evaDisplayDesign.class.php:2366
+#: ../include/lib/evaDisplayDesign.class.php:2379
 #, fuzzy
 msgid "date de cr&eacute;ation"
 msgstr "M&eacute;thode d'&eacute;valuation"
 
-#: ../include/lib/evaDisplayDesign.class.php:2370
+#: ../include/lib/evaDisplayDesign.class.php:2383
 #, fuzzy
 msgid "date de d&eacute;but d'audit"
 msgstr "Date du d&eacute;but de l'audit"
 
-#: ../include/lib/evaDisplayDesign.class.php:2374
+#: ../include/lib/evaDisplayDesign.class.php:2387
 msgid "date de fin d'audit"
 msgstr "date de fin d'audit"
 
-#: ../include/lib/evaDisplayDesign.class.php:2378
+#: ../include/lib/evaDisplayDesign.class.php:2391
 msgid "nom de l'entreprise"
 msgstr "nom de l'entreprise"
 
-#: ../include/lib/evaDisplayDesign.class.php:2382
+#: ../include/lib/evaDisplayDesign.class.php:2395
 #, fuzzy
 msgid "t&eacute;l&eacute;phone fixe"
 msgstr "T&eacute;l&eacute;phone"
 
-#: ../include/lib/evaDisplayDesign.class.php:2386
+#: ../include/lib/evaDisplayDesign.class.php:2399
 #, fuzzy
 msgid "t&eacute;l&eacute;phone portable"
 msgstr "T&eacute;l&eacute;phone"
 
-#: ../include/lib/evaDisplayDesign.class.php:2390
+#: ../include/lib/evaDisplayDesign.class.php:2403
 #, fuzzy
 msgid "num&eacute;ro de fax"
 msgstr "Ins&eacute;rer %s"
 
-#: ../include/lib/evaDisplayDesign.class.php:2394
+#: ../include/lib/evaDisplayDesign.class.php:2407
 #, fuzzy
 msgid "&eacute;metteur"
 msgstr "&Eacute;diter"
 
-#: ../include/lib/evaDisplayDesign.class.php:2398
+#: ../include/lib/evaDisplayDesign.class.php:2411
 #, fuzzy
 msgid "destinataire"
 msgstr "le titre"
 
-#: ../include/lib/evaDisplayDesign.class.php:2402
+#: ../include/lib/evaDisplayDesign.class.php:2415
 #, fuzzy
 msgid "nom du document"
 msgstr "du groupement"
 
-#: ../include/lib/evaDisplayDesign.class.php:2407
+#: ../include/lib/evaDisplayDesign.class.php:2420
 #, fuzzy
 msgid "m&eacute;thodologie"
 msgstr "M&eacute;thodes"
 
-#: ../include/lib/evaDisplayDesign.class.php:2413
+#: ../include/lib/evaDisplayDesign.class.php:2426
 #, fuzzy
 msgid "sources"
 msgstr "autres"
 
-#: ../include/lib/evaDisplayDesign.class.php:2422
+#: ../include/lib/evaDisplayDesign.class.php:2435
 #, fuzzy
 msgid "Utiliser le mod&egrave;le par d&eacute;faut"
 msgstr "les m&eacute;thodes d'&eacute;valuation"
 
-#: ../include/lib/evaDisplayDesign.class.php:2428
+#: ../include/lib/evaDisplayDesign.class.php:2441
 #, fuzzy
 msgid "g&eacute;n&eacute;rer"
 msgstr "l'&eacute;l&eacute;ment"
 
-#: ../include/lib/evaDisplayDesign.class.php:2455
+#: ../include/lib/evaDisplayDesign.class.php:2468
 #, fuzzy
 msgid "Ajouter un nouveau mod&egrave;le"
 msgstr "Ajouter un nouveau danger."
 
-#: ../include/lib/evaDisplayDesign.class.php:2457
+#: ../include/lib/evaDisplayDesign.class.php:2470
 #, fuzzy
 msgid "T&eacute;l&eacute;chargez le mod&egrave;le par d&eacute;faut"
 msgstr "T&eacute;l&eacute;charger les photos"
 
-#: ../include/lib/evaDisplayDesign.class.php:2459
+#: ../include/lib/evaDisplayDesign.class.php:2472
 #, fuzzy
 msgid "Modifiez le mod&egrave;le"
 msgstr "Modifier le titre"
 
-#: ../include/lib/evaDisplayDesign.class.php:2461
+#: ../include/lib/evaDisplayDesign.class.php:2474
 #, fuzzy
 msgid "Apportez vos modifications au fichier t&eacute;l&eacute;charg&eacute;"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/lib/evaDisplayDesign.class.php:2461
+#: ../include/lib/evaDisplayDesign.class.php:2474
 msgid "Attention &agrave; ne pas supprimer ou modifier les parties du document qui sont sous la forme \"{UnTexte}\""
 msgstr "Attention &agrave; ne pas supprimer ou modifier les parties du document qui sont sous la forme \"{UnTexte}\""
 
-#: ../include/lib/evaDisplayDesign.class.php:2465
+#: ../include/lib/evaDisplayDesign.class.php:2478
 msgid "Envoyez votre mod&egrave;le"
 msgstr "Envoyez votre mod&egrave;le"
 
-#: ../include/lib/evaDisplayDesign.class.php:2467
+#: ../include/lib/evaDisplayDesign.class.php:2480
 msgid "S&eacute;lectionner le mod&egrave;le &agrave; envoyer"
 msgstr "S&eacute;lectionner le mod&egrave;le &agrave; envoyer"
 
-#: ../include/lib/evaDisplayDesign.class.php:2499
+#: ../include/lib/evaDisplayDesign.class.php:2512
 msgid "Affecter un mod&egrave;le existant"
 msgstr "Affecter un mod&egrave;le existant"
 
-#: ../include/lib/evaDisplayDesign.class.php:2502
+#: ../include/lib/evaDisplayDesign.class.php:2515
 #, fuzzy
 msgid "S&eacute;lectionner un mod&eacute;le"
 msgstr "S&eacute;lectionner"
 
-#: ../include/lib/evaDisplayDesign.class.php:2505
+#: ../include/lib/evaDisplayDesign.class.php:2518
 #, fuzzy
 msgid "Affecter"
 msgstr "Affichage"
 
-#: ../include/lib/evaDisplayDesign.class.php:2521
+#: ../include/lib/evaDisplayDesign.class.php:2534
 msgid "ou"
 msgstr "ou"
 
@@ -1169,64 +1290,73 @@ msgstr "Suivi modifications"
 msgid "Le <b>%s</b>, <b>%s</b> dit <i>%s</i>"
 msgstr "Le <b>%s</b>, <b>%s</b> dit <i>%s</i>"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:507
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:573
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:535
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:601
 msgid "Nom T&acirc;che"
 msgstr "Nom T&acirc;che"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:507
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:573
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:535
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:601
 msgid "Progression (%)"
 msgstr "Progression (%)"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:507
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:573
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:535
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:601
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:652
 #, fuzzy
 msgid "Fiche"
 msgstr "Fichier"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:517
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:583
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:545
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:611
 #, fuzzy
 msgid "Voir l'action"
 msgstr "Formation"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:525
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:591
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:681
-#, fuzzy
-msgid "Aucun r&eacute;sultat trouv&eacute;"
-msgstr "Soci&eacute;t&eacute;s"
-
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:652
 #, fuzzy
 msgid "Nom danger"
 msgstr "Nouveau danger"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:652
 #, fuzzy
 msgid "Commentaire sur le risque"
 msgstr "sur le risque"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:624
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:652
 #, fuzzy
 msgid "&Eacute;l&eacute;ment"
 msgstr "l'&eacute;l&eacute;ment"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:651
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:679
 msgid "Il vous faut ajouter le cas "
 msgstr "Il vous faut ajouter le cas "
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:673
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:701
 #, fuzzy
 msgid "Voir le risque"
 msgstr "sur le risque"
 
-#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:696
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:724
 #, php-format
 msgid "Vous devez d&eacute;clarer %s dans le fichier %s &agrave; la ligne %d si vous voulez cette information"
 msgstr "Vous devez d&eacute;clarer %s dans le fichier %s &agrave; la ligne %d si vous voulez cette information"
+
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:738
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:741
+#, fuzzy
+msgid "Aucune action trouv&eacute;e"
+msgstr "Soci&eacute;t&eacute;s"
+
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:739
+#, fuzzy
+msgid "Afficher _MENU_ actions"
+msgstr "Afficher _MENU_ risques"
+
+#: ../include/lib/actionsCorrectives/tache/evaTask.class.php:740
+#, fuzzy
+msgid "Aucune action"
+msgstr "Quotation"
 
 #: ../include/lib/danger/categorieDangers/categorieDangers.class.php:154
 #, fuzzy
@@ -1893,72 +2023,81 @@ msgstr "L'image n'a pas pu &ecirc;tre d&eacute;finie comme n\\&eacute;tant plus 
 msgid "Voir la galerie"
 msgstr "Voir la galerie"
 
-#: ../include/lib/risque/Risque.class.php:429
+#: ../include/lib/risque/Risque.class.php:439
 #, fuzzy
 msgid "Quotation actuelle"
 msgstr "manutention manuelle"
 
-#: ../include/lib/risque/Risque.class.php:480
+#: ../include/lib/risque/Risque.class.php:490
 msgid " "
 msgstr " "
 
-#: ../include/lib/risque/Risque.class.php:508
+#: ../include/lib/risque/Risque.class.php:518
 msgid "Avant"
 msgstr "Avant"
 
-#: ../include/lib/risque/Risque.class.php:540
+#: ../include/lib/risque/Risque.class.php:550
 #, fuzzy
 msgid "Apr&eacute;s"
 msgstr "pr&eacute;nom %s"
 
-#: ../include/lib/risque/Risque.class.php:543
+#: ../include/lib/risque/Risque.class.php:553
 #, fuzzy
 msgid "Non &eacute;valu&eacute;"
 msgstr "&Eacute;lev&eacute;"
 
-#: ../include/lib/risque/Risque.class.php:593
+#: ../include/lib/risque/Risque.class.php:603
 #, fuzzy
 msgid "Supprimer cette liaison"
 msgstr "Supprimer le groupe"
 
-#: ../include/lib/risque/Risque.class.php:607
+#: ../include/lib/risque/Risque.class.php:617
 #, fuzzy
 msgid "&Ecirc;tes vous sur de vouloir supprimer cette liaison?"
 msgstr "&Ecirc;tes vous sur de vouloir supprimer cette entr&eacute;e?"
 
-#: ../include/lib/risque/Risque.class.php:626
+#: ../include/lib/risque/Risque.class.php:636
 msgid "Risques associ&eacute;s &agrave; la photo"
 msgstr "Risques associ&eacute;s &agrave; la photo"
 
-#: ../include/lib/risque/Risque.class.php:626
-#: ../include/lib/risque/Risque.class.php:686
+#: ../include/lib/risque/Risque.class.php:636
+#: ../include/lib/risque/Risque.class.php:696
 msgid "Nom danger(Score) : Commentaire"
 msgstr "Nom danger(Score) : Commentaire"
 
-#: ../include/lib/risque/Risque.class.php:630
+#: ../include/lib/risque/Risque.class.php:640
 msgid "Aucun risque n'est associ&eacute; &agrave; cette photo"
 msgstr "Aucun risque n'est associ&eacute; &agrave; cette photo"
 
-#: ../include/lib/risque/Risque.class.php:681
+#: ../include/lib/risque/Risque.class.php:691
 msgid "collapsor"
 msgstr "collapsor"
 
-#: ../include/lib/risque/Risque.class.php:682
+#: ../include/lib/risque/Risque.class.php:692
 #, fuzzy
 msgid "Risques non associ&eacute;s &agrave; une photo"
 msgstr "%s porte d&eacute;j&agrave; ce nom"
 
-#: ../include/lib/tableauDeBord/tableauDeBord.class.php:32
+#: ../include/lib/tableauDeBord/tableauDeBord.class.php:35
 msgid "Actions correctives non termin&eacute;es dont la date est d&eacute;pass&eacute;e"
 msgstr "Actions correctives non termin&eacute;es dont la date est d&eacute;pass&eacute;e"
 
-#: ../include/lib/tableauDeBord/tableauDeBord.class.php:49
+#: ../include/lib/tableauDeBord/tableauDeBord.class.php:52
 msgid "T&acirc;ches &agrave; solder dont toutes les actions sont termin&eacute;es"
 msgstr "T&acirc;ches &agrave; solder dont toutes les actions sont termin&eacute;es"
 
-#: ../include/lib/tableauDeBord/tableauDeBord.class.php:66
+#: ../include/lib/tableauDeBord/tableauDeBord.class.php:69
 msgid "Risques &agrave; re-&eacute;valuer suite &agrave; une action corrective"
 msgstr "Risques &agrave; re-&eacute;valuer suite &agrave; une action corrective"
+
+#: ../include/lib/tableauDeBord/tableauDeBord.class.php:93
+#, fuzzy
+msgid "Statistiques"
+msgstr "Risques"
+
+#: ../include/lib/tableauDeBord/tableauDeBord.class.php:104
+msgid "Personnel"
+msgstr ""
 
 #: ../include/lib/users/evaUser.class.php:67
 msgid "Informations compl&eacute;mentaires evarisk"
@@ -2072,39 +2211,39 @@ msgstr "pr&eacute;nom %s"
 msgid "Inscription"
 msgstr "Description"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:146
-#: ../include/lib/users/evaUserLinkElement.class.php:213
+#: ../include/lib/users/evaUserLinkElement.class.php:147
+#: ../include/lib/users/evaUserLinkElement.class.php:214
 #, fuzzy
 msgid "Cliquez pour supprimer"
 msgstr "Cliquez ici pour ajouter"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:151
+#: ../include/lib/users/evaUserLinkElement.class.php:152
 #, fuzzy
 msgid "Aucun utilisateur affect&eacute;"
 msgstr "Aucun utilisateur non affect&eacute;"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:163
+#: ../include/lib/users/evaUserLinkElement.class.php:164
 #, fuzzy
 msgid "Ajouter des utilisateurs"
 msgstr "Glisser les utilisateurs ici"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:167
-#: ../include/lib/users/evaUserLinkElement.class.php:243
-#: ../include/lib/users/evaUserLinkElement.class.php:260
+#: ../include/lib/users/evaUserLinkElement.class.php:168
+#: ../include/lib/users/evaUserLinkElement.class.php:244
+#: ../include/lib/users/evaUserLinkElement.class.php:261
 #, fuzzy
 msgid "Rechercher dans la liste des utilisateurs"
 msgstr "les groupes d'utilisateurs"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:171
+#: ../include/lib/users/evaUserLinkElement.class.php:172
 msgid "cochez tout"
 msgstr ""
 
-#: ../include/lib/users/evaUserLinkElement.class.php:171
+#: ../include/lib/users/evaUserLinkElement.class.php:172
 #, fuzzy
 msgid "d&eacute;cochez tout"
 msgstr "S&eacute;lectionner"
 
-#: ../include/lib/users/evaUserLinkElement.class.php:359
+#: ../include/lib/users/evaUserLinkElement.class.php:360
 msgid "Il n'a aucune modification a apporter"
 msgstr "Il n'a aucune modification a apporter"
 
@@ -2795,19 +2934,24 @@ msgstr "(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le 
 msgid "Choisissez..."
 msgstr "choisissez %s"
 
-#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:255
+#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:269
 msgid "Vous &eacute;tes sur le point de solder une action dont l\\'avancement est de #avancement#%.#retour#Etes vous sur de vouloir continuer ?"
 msgstr "Vous &eacute;tes sur le point de solder une action dont l\\'avancement est de #avancement#%.#retour#Etes vous sur de vouloir continuer ?"
 
-#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:291
+#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:300
+#, fuzzy
+msgid "Passer en cours"
+msgstr "Transfert en cours..."
+
+#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:310
 msgid "Solder l'action"
 msgstr "Solder l'action"
 
-#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:299
+#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:318
 msgid "Cette action est sold&eacute;e"
 msgstr "Cette action est sold&eacute;e"
 
-#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:313
+#: ../include/modules/metaBoxes/actionsCorrectives/activite/activite-new.php:332
 msgid "Cette action est sold&eacute;e, vous ne pouvez pas la modifier"
 msgstr "Cette action est sold&eacute;e, vous ne pouvez pas la modifier"
 
@@ -3014,18 +3158,18 @@ msgstr "%s porte d&eacute;j&agrave; ce nom"
 msgid "R&eacute;capitulatif"
 msgstr "r&eacute;sultat"
 
-#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/headerPartieDroiteGroupement.php:78
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/headerPartieDroiteGroupement.php:79
 #: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/headerPartieDroiteUniteTravail.php:76
 msgid "Responsables"
 msgstr "Responsables"
 
-#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/headerPartieDroiteGroupement.php:151
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/headerPartieDroiteGroupement.php:152
 #: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/headerPartieDroiteUniteTravail.php:58
 #, fuzzy
 msgid "Hi&eacute;rarchie"
 msgstr "F&eacute;vrier"
 
-#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/headerPartieDroiteGroupement.php:158
+#: ../include/modules/metaBoxes/evaluationDesRisques/groupement/headerPartieDroiteGroupement.php:159
 #: ../include/modules/metaBoxes/evaluationDesRisques/uniteDeTravail/headerPartieDroiteUniteTravail.php:158
 #, fuzzy
 msgid "Nombre de risques"
@@ -3106,40 +3250,11 @@ msgstr "Entier"
 msgid "Aucun risque trouv&eacute;"
 msgstr "Soci&eacute;t&eacute;s"
 
-#: ../include/modules/metaBoxes/risque/risque.php:312
-#: ../include/modules/methode/methodeEvaluation.php:176
-msgid "Afficher _MENU_ risques"
-msgstr "Afficher _MENU_ risques"
-
 #: ../include/modules/metaBoxes/risque/risque.php:313
 #: ../include/modules/methode/methodeEvaluation.php:177
 #, fuzzy
 msgid "Aucun risque"
 msgstr "un risque"
-
-#: ../include/modules/metaBoxes/risque/risque.php:316
-#: ../include/modules/methode/methodeEvaluation.php:180
-#, fuzzy
-msgid "Premi&eacute;re"
-msgstr "Limit&eacute;"
-
-#: ../include/modules/metaBoxes/risque/risque.php:317
-#: ../include/modules/methode/methodeEvaluation.php:181
-#, fuzzy
-msgid "Derni&egrave;re"
-msgstr "%s p&egrave;re"
-
-#: ../include/modules/metaBoxes/risque/risque.php:318
-#: ../include/modules/methode/methodeEvaluation.php:182
-#, fuzzy
-msgid "Suivante"
-msgstr "Avant"
-
-#: ../include/modules/metaBoxes/risque/risque.php:319
-#: ../include/modules/methode/methodeEvaluation.php:183
-#, fuzzy
-msgid "Pr&eacute;c&eacute;dente"
-msgstr "l'&eacute;l&eacute;ment"
 
 #: ../include/modules/metaBoxes/risque/risque.php:371
 #, fuzzy
@@ -3177,19 +3292,19 @@ msgstr "Supprimer le groupe"
 msgid "Ne pas afficher dans les historiques de modifications"
 msgstr "Ne pas afficher dans les historiques de modifications"
 
-#: ../include/modules/metaBoxes/risque/risque.php:597
+#: ../include/modules/metaBoxes/risque/risque.php:599
 msgid "Envoyer des photos"
 msgstr "Envoyer des photos"
 
-#: ../include/modules/metaBoxes/risque/risque.php:651
+#: ../include/modules/metaBoxes/risque/risque.php:653
 msgid "D&eacute;poser ici pour affecter ce risque &agrave; cette photo"
 msgstr "D&eacute;poser ici pour affecter ce risque &agrave; cette photo"
 
-#: ../include/modules/metaBoxes/risque/risque.php:698
+#: ../include/modules/metaBoxes/risque/risque.php:700
 msgid "Annuler l'ajout du risque"
 msgstr "Annuler l'ajout du risque"
 
-#: ../include/modules/metaBoxes/risque/risque.php:719
+#: ../include/modules/metaBoxes/risque/risque.php:721
 #, fuzzy
 msgid "Enregistrer tout"
 msgstr "Enregistrer"
@@ -3355,10 +3470,6 @@ msgstr "Nom de l'option"
 #: ../include/modules/options/options.php:8
 msgid "Nom de l'option"
 msgstr "Nom de l'option"
-
-#: ../include/modules/options/options.php:9
-msgid "Valeur"
-msgstr "Valeur"
 
 #: ../include/modules/options/options.php:32
 #, fuzzy

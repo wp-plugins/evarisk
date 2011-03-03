@@ -82,16 +82,20 @@ class evaUser
 
 		global $eav_attribute;
 
-		foreach ($_REQUEST['userAttributes'] as $attributeType => $attributeContent) :
-				$eav_attribute->createAttributesValueHeaderQuery($attributeType);
-			foreach ($attributeContent as $attributeCode => $attributeValue) :
-				$eav_attribute->createAttributesValueQuery($attributeCode, $_POST['user_id'], $attributeValue);
+		if(isset($_REQUEST['userAttributes']) && is_array($_REQUEST['userAttributes']) && (count($_REQUEST['userAttributes']) > 0))
+		{
+			foreach ($_REQUEST['userAttributes'] as $attributeType => $attributeContent) :
+					$eav_attribute->createAttributesValueHeaderQuery($attributeType);
+				foreach ($attributeContent as $attributeCode => $attributeValue) :
+					$eav_attribute->createAttributesValueQuery($attributeCode, $_POST['user_id'], $attributeValue);
+				endforeach;
+					$eav_attribute->attributesValueQueryTrimmer();
+					$eav_attribute->setAttributesValue();
+					$eav_attribute->attributesValueQueryTrimmer(true);
 			endforeach;
-				$eav_attribute->attributesValueQueryTrimmer();
-				$eav_attribute->setAttributesValue();
-				$eav_attribute->attributesValueQueryTrimmer(true);
-		endforeach;
+		}
 	}
+
 
 	/**
 	*	Get the wordpress' user list
@@ -109,7 +113,6 @@ class evaUser
 
 		return $userList;
 	}
-
 	/**
 	*	Get the wordpress' user list
 	*
@@ -152,79 +155,6 @@ class evaUser
 
 		return $listeComplete;
 	}
-
-	/**
-	*	Save the new bind between a users group and an element
-	*
-	*	@param integer $groupId The identifier of the group we want to bind
-	*	@param integer $elementId The identifier of the element (in its table) we want to bind
-	*	@param string $elementTable The table of the element we want to bind
-	*
-	*	@return array $status An array containing the result of the method
-	*/
-	function saveUserEvaluationBind($userId, $elementId, $elementTable)
-	{
-		global $wpdb;
-		$status = array();
-
-		$query = $wpdb->prepare("REPLACE INTO " . TABLE_LIAISON_USER_EVALUATION . " 
-				(id_user, table_element, id_element, date)
-			VALUES 
-				(%d, '%s', %d, '" . date('Y-m-d H:i:s') . "')", $userId, $elementTable, $elementId);
-		if($wpdb->query($query))
-		{
-			$status['result'] = 'ok';
-		}
-		else
-		{
-			$status['result'] = 'error'; 
-			$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
-		}
-
-		return $status;
-	}
-
-	function deleteUserEvaluationBind($userId, $elementId, $elementTable)
-	{
-		global $wpdb;
-		$status = array();
-
-		$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_EVALUATION . " 
-				SET status = 'deleted' 
-				WHERE id_user = '%d' AND table_element = '%s' AND id_element = '%d' ", $userId, $elementTable, $elementId);
-		if($wpdb->query($query))
-		{
-			$status['result'] = 'ok';
-		}
-		else
-		{
-			$status['result'] = 'error'; 
-			$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
-		}
-
-		return $status;
-	}
-
-	/**
-	*	Get the identifier of the groups bind with an element
-	*
-	*	@param integer $elementId The identifier of the element (in its table) we want to bind
-	*	@param string $elementTable The table of the element we want to bind
-	*
-	*	@return array An array containing the groups identifiers
-	*/
-	function getBindUsers($elementId, $elementTable)
-	{
-		global $wpdb;
-		
-		$elementId = mysql_real_escape_string($elementId);
-		$elementTable = mysql_real_escape_string($elementTable);
-		
-		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_EVALUATION . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
-		
-		return $wpdb->get_results($queryCleanGroupBind);
-	}
-
 	/**
 	*	Get the wordpress' user list
 	*
@@ -258,6 +188,55 @@ class evaUser
 		$listeComplete[$user_info->ID] = $valeurs;
 
 		return $listeComplete;
+	}
+
+
+	/**
+	*	Get the identifier of the groups bind with an element
+	*
+	*	@param integer $elementId The identifier of the element (in its table) we want to bind
+	*	@param string $elementTable The table of the element we want to bind
+	*
+	*	@return array An array containing the groups identifiers
+	*/
+	function getBindUsers($elementId, $elementTable)
+	{
+		global $wpdb;
+		
+		$elementId = mysql_real_escape_string($elementId);
+		$elementTable = mysql_real_escape_string($elementTable);
+		
+		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_EVALUATION . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
+		
+		return $wpdb->get_results($queryCleanGroupBind);
+	}
+
+
+	/**
+	*	Return different informations about users
+	*/
+	function dashBoardStats()
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT 
+				(
+					SELECT count(USERS.ID)
+					FROM " . $wpdb->prefix . "users AS USERS
+					WHERE USERS.ID != 1
+				) AS TOTAL_USER, 
+				(
+					SELECT COUNT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
+					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
+					WHERE USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation'
+						AND status = 'valid'
+					GROUP BY USER_LINK_EVALUATION.table_element
+				) AS EVALUATED_USER
+			LIMIT 1"
+		);
+
+		return $wpdb->get_row($query);
 	}
 
 }

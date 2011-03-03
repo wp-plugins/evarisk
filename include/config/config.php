@@ -6,7 +6,10 @@
 
 	DEFINE('EVA_HOME_URL', WP_PLUGIN_URL . '/' . EVA_PLUGIN_DIR . '/');
 	DEFINE('EVA_HOME_DIR', WP_PLUGIN_DIR . '/' . EVA_PLUGIN_DIR . '/');
-	
+
+	DEFINE('EVA_GENERATED_DOC_DIR', WP_CONTENT_DIR . '/uploads/' . EVA_PLUGIN_DIR . '/');
+	DEFINE('EVA_GENERATED_DOC_URL', WP_CONTENT_URL . '/uploads/' . EVA_PLUGIN_DIR . '/');
+
 	DEFINE('EVA_INC_PLUGIN_DIR', EVA_HOME_DIR . 'include/');
 	DEFINE('EVA_INC_PLUGIN_URL', EVA_HOME_URL . 'include/');
 	
@@ -14,7 +17,6 @@
 	DEFINE('EVA_MODULES_PLUGIN_DIR', EVA_INC_PLUGIN_DIR . 'modules/');
 	DEFINE('EVA_METABOXES_PLUGIN_DIR', EVA_MODULES_PLUGIN_DIR . 'metaBoxes/');
 	DEFINE('EVA_TEMPLATES_PLUGIN_DIR', EVA_HOME_DIR . 'templates/');
-	DEFINE('EVA_UPLOADS_PLUGIN_DIR', EVA_HOME_DIR . 'medias/uploads/');
 	
 	DEFINE('EVA_IMG_PLUGIN_URL', EVA_HOME_URL . 'medias/images/');
 	DEFINE('EVA_IMG_ICONES_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'Icones/');
@@ -23,19 +25,21 @@
 	DEFINE('EVA_IMG_GOOGLEMAPS_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'GoogleMapIcons/');
 	DEFINE('EVA_IMG_EPI_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'epi/');
 	DEFINE('EVA_LIB_PLUGIN_URL', EVA_INC_PLUGIN_URL . 'lib/');
-	
-	DEFINE('EVA_UPLOADS_PLUGIN_URL', EVA_HOME_URL . 'medias/uploads/');
+
+	DEFINE('EVA_UPLOADS_PLUGIN_DIR', EVA_GENERATED_DOC_DIR . 'uploads/');
+	DEFINE('EVA_UPLOADS_PLUGIN_URL', EVA_GENERATED_DOC_URL . 'uploads/');
 	DEFINE('EVA_PHOTO_UPLOADS_PLUGIN_URL', EVA_UPLOADS_PLUGIN_URL . 'photos/');
 	DEFINE('EVA_TEXTE_VEILLE_UPLOADS_PLUGIN_URL', EVA_UPLOADS_PLUGIN_URL . 'veilleReglementaire/');
-	
-	DEFINE('EVA_RESULTATS_PLUGIN_URL', EVA_HOME_URL . 'medias/results/');
-	DEFINE('EVA_RESULTATS_PLUGIN_DIR', EVA_HOME_DIR . 'medias/results/');
+
+	DEFINE('EVA_RESULTATS_PLUGIN_URL', EVA_GENERATED_DOC_URL . 'results/');
+	DEFINE('EVA_RESULTATS_PLUGIN_DIR', EVA_GENERATED_DOC_DIR . 'results/');
 	DEFINE('EVA_MODELES_PLUGIN_DIR', EVA_UPLOADS_PLUGIN_DIR . 'modeles/');
-	DEFINE('EVA_MODELES_PLUGIN_URL', EVA_UPLOADS_PLUGIN_URL . 'modeles/');
+	DEFINE('EVA_MODELES_PLUGIN_URl', EVA_UPLOADS_PLUGIN_URL . 'modeles/');
 
 	/**
-	 * Risk name define variable
-	 */
+	* Risk name define variable
+	*/
+	{
 	// DEFINE('EVA_RISQUE_SEUIL_1_NOM', __('Nul', 'evarisk'));
 	// DEFINE('EVA_RISQUE_SEUIL_2_NOM', __('Tr&egrave;s limit&eacute;', 'evarisk'));
 	// DEFINE('EVA_RISQUE_SEUIL_3_NOM', __('Limit&eacute;', 'evarisk'));
@@ -65,11 +69,12 @@
 		DEFINE('COULEUR_TEXTE_RISQUE_APLANIFIER', '#000000');
 	DEFINE('COULEUR_RISQUE_FAIBLE', '#FFFFFF');
 		DEFINE('COULEUR_TEXTE_RISQUE_FAIBLE', '#000000');
+	}
 
 
 	/**
-	 * Others variables
-	 */
+	* Others variables
+	*/
 	DEFINE('EVA_PARAM_FORMULE_MAX', 20);
 	DEFINE('EVA_MAX_LONGUEUR_OBSERVATIONS', 30000);
 	DEFINE('LARGEUR_GAUCHE', 49);
@@ -96,10 +101,22 @@
 
 	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 	require_once('configLogiciel.php');
-
 	require_once('configImages.php');
+
 	/**
 	*	Vars to delete when sure that the correspnding version is passed
 	*/
-	DEFINE('EVA_MODELES_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/modeles/'); //version 23
+	{
+		//version 23
+		DEFINE('EVA_MODELES_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/modeles/');
+
+		//version 35
+		DEFINE('EVA_RESULTATS_PLUGIN_OLD_URL', EVA_HOME_URL . 'medias/results/');
+		DEFINE('EVA_RESULTATS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/results/');
+		DEFINE('EVA_UPLOADS_PLUGIN_OLD_URL', EVA_HOME_URL . 'medias/uploads/');
+		DEFINE('EVA_UPLOADS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/uploads/');
+		DEFINE('EVA_MODELES_PLUGIN_OLD_DIR', EVA_UPLOADS_PLUGIN_OLD_DIR . 'modeles/');
+		DEFINE('EVA_MODELES_PLUGIN_OLD_URL', EVA_UPLOADS_PLUGIN_OLD_URL . 'modeles/');
+	}
+
 ?>

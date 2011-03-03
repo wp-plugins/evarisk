@@ -5,11 +5,11 @@
 	$postBoxId = 'postBoxGeolocation';
 	$postBoxCallbackFunction = 'getGeolocationPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
-	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
+	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_EVALUATION_DES_RISQUES, 'normal', 'default');
 	
 	function getGeolocationPostBoxBody($arguments)
-	{		
+	{
 		$idGoogleMapsDivWrap = 'waitingGeoloc' . $arguments['tableElement'] . $arguments['idElement'];
 		echo '<div id="' . $idGoogleMapsDivWrap . '"><img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" alt="" />&nbsp;' . esc_js( __( 'Loading...' ) ) . '</div>';
 		$markers = $arguments['markers'];

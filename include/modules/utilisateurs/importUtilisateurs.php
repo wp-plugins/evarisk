@@ -249,7 +249,7 @@
 				prenom = evarisk('#prenomUtilisateur').val();
 				nom = evarisk('#nomUtilisateur').val();
 				motDePasse = evarisk('#motDePasse').val();
-				emailUtilisateur = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#prenomUtilisateur').val() + '@' + evarisk('#domaineMail').val();
+				emailUtilisateur = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#nomUtilisateur').val() + '@' + evarisk('#domaineMail').val();
 				roleUtilisateur = evarisk('#userRoles').val();
 
 				newline = identifiant + evarisk('#fieldSeparator').val() + prenom + evarisk('#fieldSeparator').val() + nom + evarisk('#fieldSeparator').val() + motDePasse + evarisk('#fieldSeparator').val() + emailUtilisateur + evarisk('#fieldSeparator').val() + roleUtilisateur;

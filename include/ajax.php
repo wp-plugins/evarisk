@@ -35,6 +35,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserEvaluatorGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
@@ -56,29 +57,31 @@ if($_REQUEST['post'] == 'true')
 				$output = '
 					<script type="text/javascript">
 						evarisk(document).ready(function() {
-							initialiseClassicalPage();
-							if("' . $_REQUEST['affichage'] . '" == "affichageTable")
-							{
-								initialiseEditedElementInGridMode("photo' . $_REQUEST['table'] . $_REQUEST['id'] . '");
-							}
-							else
-							{
-								';
-						switch($_REQUEST['table'])
-						{
-							case TABLE_GROUPEMENT:
-							case TABLE_CATEGORIE_DANGER:
-							case TABLE_TACHE:
-								$output .= 'evarisk("#node-' . $tableId . '-' . $_REQUEST['id'] . '").addClass("edited");';
-							break;
-							case TABLE_UNITE_TRAVAIL:
-							case TABLE_DANGER:
-							case TABLE_ACTIVITE:
-								$output .= 'evarisk("#leaf-' . $_REQUEST['id'] . '").addClass("edited");';
-							break;
-						}
-						$output .= '
-							}
+							initialiseClassicalPage();';
+				if($_REQUEST['affichage'] == "affichageTable")
+				{
+					$output .= '
+							initialiseEditedElementInGridMode("photo' . $_REQUEST['table'] . $_REQUEST['id'] . '");';
+				}
+				else
+				{
+					switch($_REQUEST['table'])
+					{
+						case TABLE_GROUPEMENT:
+						case TABLE_CATEGORIE_DANGER:
+						case TABLE_TACHE:
+							$output .= '
+							evarisk("#node-' . $tableId . '-' . $_REQUEST['id'] . '").addClass("edited");';
+						break;
+						case TABLE_UNITE_TRAVAIL:
+						case TABLE_DANGER:
+						case TABLE_ACTIVITE:
+							$output .= '
+							evarisk("#leaf-' . $_REQUEST['id'] . '").addClass("edited");';
+						break;
+					}
+				}
+				$output .= '
 						});
 					</script>';
 				echo $output;
@@ -490,7 +493,7 @@ if($_REQUEST['post'] == 'true')
 							break;
 						}
 
-						$updateGroupement = UniteDeTravail::updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet);
+						$updateGroupement = eva_UniteDeTravail::updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet);
 						if($updateGroupement)
 						{
 							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Sauvegarde r&eacute;ussie', 'evarisk') . '</strong></p>');
@@ -909,7 +912,7 @@ if($_REQUEST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo documentUnique::bilanRisque($tableElement, $idElement, 'ligne');
+						echo eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne');
 					break;
 					case 'reloadRiskForm' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
@@ -923,7 +926,7 @@ if($_REQUEST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo documentUnique::bilanRisque($tableElement, $idElement, 'unite');
+						echo eva_documentUnique::bilanRisque($tableElement, $idElement, 'unite');
 					break;
 					case 'addRiskByPicture':
 					{
@@ -1104,9 +1107,9 @@ if($_REQUEST['post'] == 'true')
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
 						$defaultPicture = evaPhoto::getMainPhoto(TABLE_METHODE, $idMethode);
-						if(($defaultPicture != '') && (is_file(EVA_HOME_DIR . $defaultPicture)))
+						if(($defaultPicture != '') && (is_file(EVA_GENERATED_DOC_DIR . $defaultPicture)))
 						{
-							$methodExplanationPicture = '<img src="' . EVA_HOME_URL . $defaultPicture . '" alt="" style="width:100%;" />';
+							$methodExplanationPicture = '<img src="' . EVA_GENERATED_DOC_URL . $defaultPicture . '" alt="" style="width:100%;" />';
 						}
 						/*	END - Get the explanation picture if exist - END	*/
 
@@ -1232,9 +1235,9 @@ if($_REQUEST['post'] == 'true')
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
 						$defaultPicture = evaPhoto::getMainPhoto(TABLE_METHODE, $idMethode);
-						if(($defaultPicture != '') && (is_file(EVA_HOME_DIR . $defaultPicture)))
+						if(($defaultPicture != '') && (is_file(EVA_GENERATED_DOC_DIR . $defaultPicture)))
 						{
-							$methodExplanationPicture = '<img src="' . EVA_HOME_URL . $defaultPicture . '" alt="" style="width:100%;" />';
+							$methodExplanationPicture = '<img src="' . EVA_GENERATED_DOC_URL . $defaultPicture . '" alt="" style="width:100%;" />';
 						}
 						/*	END - Get the explanation picture if exist - END	*/
 
@@ -1479,7 +1482,11 @@ if($_REQUEST['post'] == 'true')
 						$tache->setDescription($_REQUEST['description']);
 						$tache->setIdFrom($_REQUEST['idProvenance']);
 						$tache->setTableFrom($_REQUEST['tableProvenance']);
-						$tache->setProgressionStatus('inProgress');
+						$tache->setProgressionStatus('notStarted');
+						if(($_REQUEST['avancement'] > '0') || ($tache->getProgressionStatus() == 'inProgress'))
+						{
+							$tache->setProgressionStatus('inProgress');
+						}
 						$tache->setidResponsable($_REQUEST['responsable_tache']);
 						if($_REQUEST['act'] == 'taskDone')
 						{
@@ -1696,6 +1703,28 @@ if($_REQUEST['post'] == 'true')
 						file_put_contents($dirToSaveExportedFile . '/taskExport.txt' ,$existingPreconisation);
 					}
 					break;
+					case 'actualiseProgressionInTree':
+					{
+						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
+						$tache = new EvaTask($id);
+						$tache->load();
+						$statutProgression = '';
+						switch($tache->getProgressionStatus())
+						{
+							case 'notStarted';
+								$statutProgression = __('Non commenc&eacute;e', 'evarisk');
+							break;
+							case 'inProgress';
+								$statutProgression = __('En cours', 'evarisk');
+							break;
+							case 'Done';
+							case 'DoneByChief';
+								$statutProgression = __('Sold&eacute;e', 'evarisk');
+							break;
+						}
+						echo $tache->getProgression() . '%&nbsp;(' . $statutProgression . ')';
+					}
+					break;
 				}
 				break;
 			case TABLE_ACTIVITE:
@@ -1725,7 +1754,11 @@ if($_REQUEST['post'] == 'true')
 						$activite->setFinishDate($_REQUEST['date_fin']);
 						$activite->setCout($_REQUEST['cout']);
 						$activite->setProgression($_REQUEST['avancement']);
-						$activite->setProgressionStatus('inProgress');
+						$activite->setProgressionStatus('notStarted');
+						if(($_REQUEST['avancement'] > '0') || ($activite->getProgressionStatus() == 'inProgress'))
+						{
+							$activite->setProgressionStatus('inProgress');
+						}
 						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone'))
 						{
 							$activite->setProgressionStatus('Done');
@@ -1841,7 +1874,11 @@ if($_REQUEST['post'] == 'true')
 						$activite->setFinishDate($_REQUEST['date_fin']);
 						$activite->setCout($_REQUEST['cout']);
 						$activite->setProgression($_REQUEST['avancement']);
-						$activite->setProgressionStatus('inProgress');
+						$activite->setProgressionStatus('notStarted');
+						if(($_REQUEST['avancement'] > '0') || ($activite->getProgressionStatus() == 'inProgress'))
+						{
+							$activite->setProgressionStatus('inProgress');
+						}
 						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone'))
 						{
 							$activite->setProgressionStatus('Done');
@@ -2240,6 +2277,92 @@ if($_REQUEST['post'] == 'true')
 						echo $messageInfo;
 					}
 					break;
+					case 'setActivityInProgress':
+					{
+						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
+						$activite = new EvaActivity($id);
+						$activite->load();
+						$activite->setProgressionStatus('inProgress');
+						$taskId = $activite->getRelatedTaskId();
+						$activite->save();
+
+						$updateTaskProgressionInTree = '';
+						if(($taskId != '') && ($taskId > 0))
+						{
+							/*	Update the action ancestor	*/
+							$relatedTask = new EvaTask($taskId);
+							$relatedTask->load();
+							$relatedTask->getTimeWindow();
+							$relatedTask->computeProgression();
+							$relatedTask->save();
+							$updateTaskProgressionInTree .= '
+	evarisk(".taskInfoContainer-' . $taskId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+	{
+		"post": "true", 
+		"table": "' . TABLE_TACHE . '",
+		"act": "actualiseProgressionInTree",
+		"id": "' . $taskId . '"
+	});';
+
+							/*	Update the task ancestor	*/
+							$wpdbTasks = Arborescence::getAncetre(TABLE_TACHE, $relatedTask->convertToWpdb());
+							foreach($wpdbTasks as $task)
+							{
+								unset($ancestorTask);
+								$ancestorTask = new EvaTask($task->id);
+								$ancestorTask->load();
+								$ancestorTask->computeProgression();
+								$ancestorTask->save();
+								unset($ancestorTask);
+								/*	Don't update the tree information if it is the root task	*/
+								if($task->id != 1)
+								{
+									$updateTaskProgressionInTree .= '
+	evarisk(".taskInfoContainer-' . $task->id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+	{
+		"post": "true", 
+		"table": "' . TABLE_TACHE . '",
+		"act": "actualiseProgressionInTree",
+		"id": "' . $task->id . '"
+	});';
+								}
+							}
+						}
+
+						echo '
+<script type="text/javascript">
+	evarisk(".activityInfoContainer-' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+	{
+		"post": "true", 
+		"table": "' . TABLE_ACTIVITE . '",
+		"act": "actualiseProgressionInTree",
+		"id": "' . $id . '"
+	});' . $updateTaskProgressionInTree . '
+</script>';
+					}
+					break;
+					case 'actualiseProgressionInTree':
+					{
+						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
+						$action = new EvaActivity($id);
+						$action->load();
+						$statutProgression = '';
+						switch($action->getProgressionStatus())
+						{
+							case 'notStarted';
+								$statutProgression = __('Non commenc&eacute;e', 'evarisk');
+							break;
+							case 'inProgress';
+								$statutProgression = __('En cours', 'evarisk');
+							break;
+							case 'Done';
+							case 'DoneByChief';
+								$statutProgression = __('Sold&eacute;e', 'evarisk');
+							break;
+						}
+						echo $action->getProgression() . '%&nbsp;(' . $statutProgression . ')';
+					}
+					break;
 				}
 				break;
 			case TABLE_ACTIVITE_SUIVI:
@@ -2534,26 +2657,135 @@ if($_REQUEST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
+						echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
 					break;
 					case 'voirHistoriqueDocumentUnique' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo documentUnique::getDUERList($tableElement, $idElement);
+						echo eva_documentUnique::getDUERList($tableElement, $idElement);
 					break;
 					case 'saveDocumentUnique' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUniquePersistance.php');
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
+						echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
 					break;
 					case 'loadNewModelForm':
 						echo evaDisplayDesign::getNewModelUploadForm($tableElement, $idElement);
 					break;
 				}
 				break;
+			case TABLE_FP:
+				require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');
+				switch($_REQUEST['act'])
+				{
+					case 'saveFichePoste':
+					case 'generateWorkUnitSheet':
+						if($_REQUEST['act'] == 'saveFichePoste')
+						{
+							require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
+						}
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
+					break;
+					case 'workUnitSheetHisto':
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'list');
+					break;
+					case 'saveWorkUnitSheetForGroupement':
+					{
+						$file_to_zip = array();
+
+						$mainTableElement = $tableElement = $_REQUEST['tableElement'];
+						$mainIDElement = $idElement = $_REQUEST['idElement'];
+						$groupementParent = EvaGroupement::getGroupement($idElement);
+						$arbre = arborescence::getCompleteUnitList($tableElement, $idElement);
+						$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'documentUnique/' . $tableElement . '/' . $idElement. '/';
+						foreach($arbre as $workUnit)
+						{
+							$_POST['tableElement'] = $workUnit['table'];
+							$_POST['idElement'] = $workUnit['id'];
+							$_POST['nomDuDocument'] = date('Ymd') . '_UT' . $workUnit['id'] . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $workUnit['nom']));
+							$_POST['nomEntreprise'] = $groupementParent->nom;
+
+							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
+							$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+							$odtFile = 'ficheDePoste/' . $workUnit['table'] . '/' . $workUnit['id'] . '/' . $lastDocument->name . '_V' . $lastDocument->revision . '.odt';
+							if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
+							{
+								$file_to_zip[] = EVA_RESULTATS_PLUGIN_DIR . $odtFile;
+							}
+						}
+
+						eva_tools::make_recursiv_dir($pathToZip);
+						if(count($file_to_zip) > 0)
+						{
+							/*	ZIP THE FILE	*/
+							$archive = new eva_Zip(date('YmdHis') . '_fichesDePoste.zip');
+							$archive->setFiles($file_to_zip);
+							$archive->compressToPath($pathToZip);
+							eva_gestionDoc::saveNewDoc('fiche_de_poste_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . date('YmdHis') . '_fichesDePoste.zip'));
+						}
+
+						echo '
+<script type="text/javascript" >
+	evarisk("#divFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_FP . '",
+		"act":"voirHistoriqueFicheDePosteGroupement",
+		"tableElement":"' . $mainTableElement . '",
+		"idElement":' . $mainIDElement . '
+	});
+</script>';
+					}
+					break;
+					case 'voirHistoriqueFicheDePosteGroupement':
+					{
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						$output = '
+<input type="button" class="clear button-primary alignright" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" style="margin:0px 0px 18px;" >  
+<script type="text/javascript" >
+	evarisk("#saveWorkUnitSheetForGroupement").click(function(){
+		evarisk("#divFicheDePoste").html(evarisk("#loadingImg").html());
+		evarisk("#divFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . TABLE_FP . '",
+			"act":"saveWorkUnitSheetForGroupement",
+			"tableElement":"' . $tableElement . '",
+			"idElement":' . $idElement . '
+		});
+	});
+</script>
+<div class="clear" >';
+						$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiche_de_poste_groupement', "dateCreation DESC");
+						if(count($ficheDePoste_du_Groupement) > 0)
+						{
+							foreach($ficheDePoste_du_Groupement as $fdpGpt)
+							{
+								if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
+								{
+									$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: <a href="%s" >%s</a>', 'evarisk'), eva_tools::transformeDate($fdpGpt->dateCreation), EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
+								}
+							}
+						}
+						else
+						{
+							$output .= __('Aucune fiche n\'a &eacute;t&eacute; cr&eacute;e pour le moment', 'evarisk');
+						}
+						$output .= '
+</div>';
+						echo $output;
+					}
+					break;
+				}
+			break;
 			case TABLE_GED_DOCUMENTS:
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
@@ -2562,7 +2794,7 @@ if($_REQUEST['post'] == 'true')
 					case 'loadDocument':
 						$category = $_REQUEST['category'];
 						$selection = (isset($_REQUEST['selection']) && ($_REQUEST['selection'] != '') && ($_REQUEST['selection'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['selection']) : '';
-						$documentList = gestionDoc::getDocumentList($tableElement, $idElement, $category);
+						$documentList = eva_gestionDoc::getDocumentList($tableElement, $idElement, $category);
 						if(count($documentList) > 0)
 						{
 							$modelList = evaDisplayInput::afficherComboBox($documentList, 'DUERModelToUse', '', 'DUERModelToUse', '', $selection);
@@ -2579,7 +2811,7 @@ if($_REQUEST['post'] == 'true')
 					break;
 					case 'duplicateDocument':
 						$idDocument = $_REQUEST['idDocument'];
-						gestionDoc::duplicateDocument($tableElement, $idElement, $idDocument);
+						eva_gestionDoc::duplicateDocument($tableElement, $idElement, $idDocument);
 					break;
 					case 'loadExistingDocument':
 						echo EvaDisplayDesign::getExistingModelList($tableElement, $idElement);
@@ -2594,7 +2826,7 @@ if($_REQUEST['post'] == 'true')
 		switch($_REQUEST['nom'])
 		{
 			case "installerEvarisk":
-				{
+			{
 					$insertions = $_REQUEST;
 					unset($insertions['EPI']);
 					foreach($_REQUEST["EPI"] as $epi)
@@ -2613,9 +2845,9 @@ if($_REQUEST['post'] == 'true')
 					evarisk_init_permission();
 					echo '<script type="text/javascript">window.top.location.href = "' . admin_url("plugins.php") . '"</script>';
 				}
-				break;
+			break;
 			case "loadFieldsNewVariable":
-				{
+			{
 					for($i=$_REQUEST['min']; $i<=$_REQUEST['max']; $i++)
 					{
 						$idInput = 'newVariableAlterValueFor' . $i;
@@ -2624,9 +2856,9 @@ if($_REQUEST['post'] == 'true')
 						echo EvaDisplayInput::afficherInput('text', $idInput, '', '', $labelInput, $nomChamps, true, false, 100, '', 'Float');
 					}
 				}
-				break;
+			break;
 			case "veilleSummary":
-				{
+			{
 					$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
 					$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
 					$veilleResult = evaAnswerToQuestion::getAnswersForStats(date('Y-m-d'), $tableElement, $idElement, 2); 
@@ -2653,16 +2885,16 @@ if($_REQUEST['post'] == 'true')
 					};
 					echo $messageInfo;
 				}
-				break;
+			break;
 			case "veilleClicPagination":
-				{
+			{
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/formulaireReponse.php');
 					$summary = ($_REQUEST['act'] == 'summary') ? true : false ;
 					echo '<div id="plotLocation"></div><div id="interractionVeille">' . getFormulaireReponse($_REQUEST['idElement'], $_REQUEST['tableElement'], $summary) . '</div>';
 				}
-				break;
+			break;
 			case "veilleClicValidation":
-				{
+			{
 					$questionID = eva_tools::IsValid_Variable($_REQUEST['idQuestion']);
 					$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
 					$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
@@ -2709,21 +2941,21 @@ if($_REQUEST['post'] == 'true')
 					// }
 					echo $messageInfo;
 				}
-				break;
+			break;
 			case "generationPDF" :
-				{
+			{
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/creationPDF.php');
 				}
-				break;
+			break;
 			case "chargerInfosGeneralesVeille" :
-				{
+			{
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/infoGeneraleVeille.php');
 				}
-				break;
+			break;
 
 
 			case "demandeAction" :
-				{
+			{
 				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']) . '<br />';
 				
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/activite-new.php');
@@ -2762,9 +2994,9 @@ if($_REQUEST['post'] == 'true')
 						})
 					</script>';
 				}
-				break;
+			break;
 			case "suiviAction" :
-				{
+			{
 				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']) . '<br />';
 
 				$taches = new EvaTaskTable();
@@ -2909,7 +3141,7 @@ if($_REQUEST['post'] == 'true')
 								});
 								</script>';
 
-							if( ($actionCorrective->getProgressionStatus() == 'inProgress') && (options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') )
+							if( (($actionCorrective->getProgressionStatus() == 'notStarted') || ($actionCorrective->getProgressionStatus() == 'inProgress')) && (options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') )
 							{
 								echo EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, 'Enregistrer', null, '', $idDiv . 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 							}
@@ -2954,10 +3186,10 @@ if($_REQUEST['post'] == 'true')
 					}
 					echo sprintf(__('Il n\'y a pas d\'action pour %s', 'evarisk'), $complement);
 				}
-				}
-				break;
+			}
+			break;
 			case "addAction" :
-				{
+			{
 					$_POST['parentTaskId'] = evaTask::saveNewTask();
 					$actionSave = evaActivity::saveNewActivity();
 
@@ -2985,9 +3217,9 @@ if($_REQUEST['post'] == 'true')
 						</script>';
 					echo $messageInfo;
 				}
-				break;
+			break;
 			case "loadPictureAC":
-				{
+			{
 					switch($_REQUEST['act'])
 					{
 						case 'before':
@@ -2999,7 +3231,7 @@ if($_REQUEST['post'] == 'true')
 								$_REQUEST['idProvenance']
 							);
 							$picture = $wpdb->get_row($query);
-							echo '<img src="' . EVA_HOME_URL . $picture->photo . '" alt="picture before corrective action" style="width:40%;" />';
+							echo '<img src="' . EVA_GENERATED_DOC_URL . $picture->photo . '" alt="picture before corrective action" style="width:40%;" />';
 						break;
 						case 'after':
 							$query = $wpdb->prepare(
@@ -3010,13 +3242,13 @@ if($_REQUEST['post'] == 'true')
 								$_REQUEST['idProvenance']
 							);
 							$picture = $wpdb->get_row($query);
-							echo '<img src="' . EVA_HOME_URL . $picture->photo . '" alt="picture after corrective action" style="width:40%;" />';
+							echo '<img src="' . EVA_GENERATED_DOC_URL . $picture->photo . '" alt="picture after corrective action" style="width:40%;" />';
 						break;
 					}
 				}
-				break;
+			break;
 			case "ficheAction" :
-				{
+			{
 				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']);
 
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/simple-activite-new.php');
@@ -3029,9 +3261,9 @@ if($_REQUEST['post'] == 'true')
 						})
 					</script>';
 				}
-				break;
+			break;
 			case "suiviFicheAction" :
-				{
+			{
 					$tableElement = $_REQUEST['tableElement'];
 					$idElement = $_REQUEST['idElement'];
 					$risques = array();
@@ -3114,10 +3346,10 @@ if($_REQUEST['post'] == 'true')
 											if($activiteDeLaTache->idPhotoAvant > 0)
 											{
 												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " PICTURE.id = '" . $activiteDeLaTache->idPhotoAvant . "' ");
-												if(is_file(EVA_HOME_DIR . $infosPhoto[0]->photo))
+												if(is_file(EVA_GENERATED_DOC_DIR . $infosPhoto[0]->photo))
 												{
 											$actionsCorrectives .= '
-														<img src="' . EVA_HOME_URL . $infosPhoto[0]->photo . '" alt="before corrective action picture" class="pictureThumbs" />';
+														<img src="' . EVA_GENERATED_DOC_URL . $infosPhoto[0]->photo . '" alt="before corrective action picture" class="pictureThumbs" />';
 													$noPictureBefore = false;
 												}
 											}
@@ -3133,10 +3365,10 @@ if($_REQUEST['post'] == 'true')
 											if($activiteDeLaTache->idPhotoApres > 0)
 											{
 												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " PICTURE.id = '" . $activiteDeLaTache->idPhotoApres . "' ");
-												if(is_file(EVA_HOME_DIR . $infosPhoto[0]->photo))
+												if(is_file(EVA_GENERATED_DOC_DIR . $infosPhoto[0]->photo))
 												{
 											$actionsCorrectives .= '
-														<img src="' . EVA_HOME_URL . $infosPhoto[0]->photo . '" alt="after corrective action picture" class="pictureThumbs" />';
+														<img src="' . EVA_GENERATED_DOC_URL . $infosPhoto[0]->photo . '" alt="after corrective action picture" class="pictureThumbs" />';
 													$noPictureAfter = false;
 												}
 											}
@@ -3150,7 +3382,6 @@ if($_REQUEST['post'] == 'true')
 												</div>
 											</div>
 											<hr/>';
-
 										}
 									}
 
@@ -3201,9 +3432,9 @@ if($_REQUEST['post'] == 'true')
 						echo __('Il n\'y a aucun risque pour cette &eacute;l&eacute;ment', 'evarisk');
 					}
 				}
-				break;
+			break;
 			case "addActionPhoto" :
-				{
+			{
 					$_POST['parentTaskId'] = evaTask::saveNewTask();
 					$actionSave = evaActivity::saveNewActivity();
 
@@ -3271,9 +3502,9 @@ if($_REQUEST['post'] == 'true')
 						</script>';
 					echo $messageInfo;
 				}
-				break;
+			break;
 			case "addActionPhotoSaveButtonReload":
-				{
+			{
 					//Bouton Enregistrer
 					$idBouttonEnregistrer = 'save_activite';
 					$idTitre = "nom_activite";
@@ -3337,9 +3568,9 @@ if($_REQUEST['post'] == 'true')
 						</script>';
 					echo EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left');
 				}
-				break;
+			break;
 			case "addAction-FAC" :
-				{
+			{
 					$_POST['parentTaskId'] = evaTask::saveNewTask();
 					$actionSave = evaActivity::saveNewActivity();
 
@@ -3394,9 +3625,9 @@ if($_REQUEST['post'] == 'true')
 					</script>';
 					echo $messageInfo;
 				}
-				break;
+			break;
 			case "OLDsuiviAction" :
-				{
+			{
 				switch($_REQUEST['tableProvenance'])
 				{
 					case TABLE_RISQUE :
@@ -3632,7 +3863,7 @@ if($_REQUEST['post'] == 'true')
 					echo sprintf(__('Il n\'y a pas d\'action pour %s', 'evarisk'), $complement);
 				}
 				}
-				break;
+			break;
 		}
 	}
 
@@ -3736,5 +3967,190 @@ else
 					}
 			}
 			break;
+		case 'dashboardStats':
+		{
+			switch($_REQUEST['tab'])
+			{
+				case 'user':
+				{
+					$userDashboardStats = evaUser::dashBoardStats();
+
+					$idTable = 'userDashBordStats';
+					$titres = array( __('Stat index', 'evarisk'), __('Statistique', 'evarisk'), __('Valeur', 'evarisk') );
+					if(count($userDashboardStats) > 0)
+					{
+						foreach($userDashboardStats as $statName => $statValue)
+						{
+							switch($statName)
+							{
+								case 'TOTAL_USER':
+								{
+									$statId = 1;
+									$statName = __('Nombre d\'utilisateurs total', 'evarisk');
+								}
+								break;
+								case 'EVALUATED_USER':
+								{
+									$statId = 2;
+									$statName = __('Utilisateur ayant particip&eacute; &agrave; l\'audit', 'evarisk');
+								}
+								break;
+							}
+							unset($valeurs);
+							$valeurs[] = array('value' => $statId);
+							$valeurs[] = array('value' => $statName);
+							$valeurs[] = array('value' => $statValue);
+							$lignesDeValeurs[] = $valeurs;
+							$idLignes[] = 'userDashboardStat' . $statId;
+							$outputDatas = true;
+						}
+					}
+					else
+					{
+						unset($valeurs);
+						$valeurs[] = array('value'=>'');
+						$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
+						$valeurs[] = array('value'=>'');
+						$lignesDeValeurs[] = $valeurs;
+						$idLignes[] = 'userDashboardStatEmpty';
+						$outputDatas = false;
+					}
+
+					$classes = array('','','');
+					$tableOptions = '';
+
+					if($outputDatas)
+					{
+						$script = 
+						'<script type="text/javascript">
+							evarisk(document).ready(function() {
+								evarisk("#' . $idTable . '").dataTable({
+									"bInfo": false,
+									"oLanguage": {
+										"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
+										"sEmptyTable": "' . __('Aucune statistique trouv&eacute;e', 'evarisk') . '",
+										"sLengthMenu": "' . __('Afficher _MENU_ statistiques', 'evarisk') . '",
+										"sInfoEmpty": "' . __('Aucune statistique', 'evarisk') . '",
+										"sZeroRecords": "' . __('Aucune statistique trouv&eacute;e', 'evarisk') . '",
+										"oPaginate": {
+											"sFirst": "' . __('Premi&eacute;re', 'evarisk') . '",
+											"sLast": "' . __('Derni&egrave;re', 'evarisk') . '",
+											"sNext": "' . __('Suivante', 'evarisk') . '",
+											"sPrevious": "' . __('Pr&eacute;c&eacute;dente', 'evarisk') . '"
+										}
+									},
+									"aoColumns":	[
+										{"bVisible": false},
+										null,
+										null
+									]
+									' . $tableOptions . '
+								});
+								evarisk("#' . $idTable . '").children("tfoot").remove();
+								evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+							});
+						</script>';
+						echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+					}
+				}
+				break;
+				case 'risk':
+				{
+					$userDashboardStats = (array) Risque::dashBoardStats();
+					$userDashboardStats = array_merge($userDashboardStats, Risque::getRiskRange('higher'));
+
+					$idTable = 'riskDashBordStats';
+					$titres = array( __('Stat index', 'evarisk'), __('Statistique', 'evarisk'), __('Valeur', 'evarisk') );
+					if(count($userDashboardStats) > 0)
+					{
+						foreach($userDashboardStats as $statName => $statValue)
+						{
+							switch($statName)
+							{
+								case 'TOTAL_RISK_NUMBER':
+								{
+									$statId = 1;
+									$statName = __('Nombre total de risque', 'evarisk');
+								}
+								break;
+								case 'HIGHER_RISK':
+								{
+									$statId = 2;
+									$statName = __('Quotation la plus &eacute;lev&eacute;e', 'evarisk');
+								}
+								break;
+								case 'LOWER_RISK':
+								{
+									$statId = 3;
+									$statName = __('Quotation la plus basse', 'evarisk');
+								}
+								break;
+							}
+							unset($valeurs);
+							$valeurs[] = array('value' => $statId);
+							$valeurs[] = array('value' => $statName);
+							$valeurs[] = array('value' => $statValue);
+							$lignesDeValeurs[] = $valeurs;
+							$idLignes[] = 'riskDashboardStat' . $statId;
+							$outputDatas = true;
+						}
+					}
+					else
+					{
+						unset($valeurs);
+						$valeurs[] = array('value'=>'');
+						$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
+						$valeurs[] = array('value'=>'');
+						$lignesDeValeurs[] = $valeurs;
+						$idLignes[] = 'riskDashboardStatEmpty';
+						$outputDatas = false;
+					}
+
+					$classes = array('','','');
+					$tableOptions = '';
+
+					if($outputDatas)
+					{
+						$script = 
+						'<script type="text/javascript">
+							evarisk(document).ready(function() {
+								evarisk("#' . $idTable . '").dataTable({
+									"bInfo": false,
+									"oLanguage": {
+										"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
+										"sEmptyTable": "' . __('Aucun risque trouv&eacute;e', 'evarisk') . '",
+										"sLengthMenu": "' . __('Afficher _MENU_ risques', 'evarisk') . '",
+										"sInfoEmpty": "' . __('Aucune risque', 'evarisk') . '",
+										"sZeroRecords": "' . __('Aucune risque trouv&eacute;e', 'evarisk') . '",
+										"oPaginate": {
+											"sFirst": "' . __('Premi&eacute;re', 'evarisk') . '",
+											"sLast": "' . __('Derni&egrave;re', 'evarisk') . '",
+											"sNext": "' . __('Suivante', 'evarisk') . '",
+											"sPrevious": "' . __('Pr&eacute;c&eacute;dente', 'evarisk') . '"
+										}
+									},
+									"aoColumns":	[
+										{"bVisible": false},
+										null,
+										null
+									]
+									' . $tableOptions . '
+								});
+								evarisk("#' . $idTable . '").children("tfoot").remove();
+								evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+							});
+						</script>';
+						echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+					}
+				}
+				break;
+				case 'danger':
+				{
+					echo __('Disponible prochainement', 'evarisk');
+				}
+				break;
+			}
+		}
+		break;
 	}
 }

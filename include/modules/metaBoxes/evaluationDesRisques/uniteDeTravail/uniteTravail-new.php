@@ -27,7 +27,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		if($id!=null)
 		{	
 			$saveOrUpdate = 'update';
-			$uniteTravail = UniteDeTravail::getWorkingUnit($id);
+			$uniteTravail = eva_UniteDeTravail::getWorkingUnit($id);
 			$saufUniteTravail = $uniteTravail->nom;
 			$groupementPere = EvaGroupement::getGroupement($uniteTravail->id_groupement);
 			$contenuInputTitre = $uniteTravail->nom;
@@ -182,7 +182,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
 		$valeurActuelleIn = "false";
-		$workingUnitsNames = UniteDeTravail::getWorkingUnitsName($saufUniteTravail);
+		$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName($saufUniteTravail);
 		if(count($workingUnitsNames) != 0)
 		{
 			$valeurActuelleIn = "valeurActuelle in {";

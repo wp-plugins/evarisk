@@ -1,4 +1,5 @@
 <?php
+
 	$_POST['tableElement'] = $_POST['table'];
 	$_POST['idElement'] = isset($_POST['id']) ? $_POST['id'] : null;
 	$menu = isset($_POST['menu'])?$_POST['menu']:'';
@@ -17,7 +18,7 @@
 				case TABLE_GROUPEMENT:
 					require_once(EVA_MODULES_PLUGIN_DIR . 'gestionGroupementUniteTravail/includesGestionGroupementUniteTravail.php');
 					require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
-					$pageHook = PAGE_HOOK_EVARISK_GROUPEMENTS;
+					$pageHook = PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION;
 					$markers = array(EvaGroupement::getMarkersGeoLoc($idElement));
 					includesGestionGroupementUniteTravail($idElement, $partition);
 					break;
@@ -25,7 +26,7 @@
 					require_once(EVA_MODULES_PLUGIN_DIR . 'gestionGroupementUniteTravail/includesGestionGroupementUniteTravail.php');
 					require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
 					$pageHook = PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL;
-					$markers = array(UniteDeTravail::getMarkersGeoLoc($idElement));
+					$markers = array(eva_UniteDeTravail::getMarkersGeoLoc($idElement));
 					includesGestionGroupementUniteTravail($idElement, $partition);
 					break;
 			}
@@ -45,7 +46,7 @@
 					require_once(EVA_MODULES_PLUGIN_DIR . 'evaluationDesRisques/includesEvaluationDesRisques.php');
 					require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
 					$pageHook = PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL;
-					$markers = array(UniteDeTravail::getMarkersGeoLoc($idElement));
+					$markers = array(eva_UniteDeTravail::getMarkersGeoLoc($idElement));
 					includesEvaluationDesRisques($idElement, $partition);
 					break;
 				case TABLE_CATEGORIE_DANGER:
@@ -87,9 +88,9 @@
 
 	echo $script . '<div class="metabox-holder clear">';
 		//Add the postBoxes
-		do_meta_boxes( $pageHook, $partie . 'Side', array('tableElement'=>$tableElement, 'idElement'=>$idElement, 'idPere'=>$idPere, 'affichage'=>$affichage, 'idsFilAriane'=>$idsFilAriane, 'markers' =>$markers, 'page'=>$page, 'expanded'=>$expanded));
+		do_meta_boxes($pageHook, $partie . 'Side', array('tableElement' => $tableElement, 'idElement' => $idElement, 'idPere' => $idPere, 'affichage' => $affichage, 'idsFilAriane' => $idsFilAriane, 'markers' => $markers, 'page' => $page, 'expanded' => $expanded));
 		//To preserve postBoxes order
-		wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false);
+		wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false);
 		//To preserve postBoxes closure state
-		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false);
+		wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false);
 	echo '</div>';

@@ -990,8 +990,6 @@ function evarisk_creationTables()
 					Status ENUM( \'Valid\', \'Moderated\', \'Deleted\', \'Aborded\' ) NOT NULL DEFAULT \'Valid\' COMMENT "Task status"
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT = "Table containing the task (for corrective actions)";';
 			$wpdb->query($sqlCreationTable);
-			$sqlInsertion = 'INSERT INTO ' . TABLE_TACHE . ' (nom, limiteGauche, limiteDroite) VALUES ("Tache Racine", 0, 1);';
-			$wpdb->query($sqlInsertion);
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
@@ -1129,6 +1127,7 @@ function evarisk_creationTables()
 			$wpdb->query($sql);
 			$sql = "ALTER TABLE " . TABLE_PHOTO . " DROP INDEX idDestination";
 			$wpdb->query($sql);
+
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
@@ -1500,6 +1499,67 @@ function evarisk_creationTables()
 
 			$sql = "ALTER TABLE " . TABLE_OPTION . " ADD INDEX(typeOption);";
 			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 33)
+		{//Ajout du statut "non-commencé" dans les taches et actions
+			$sql = "ALTER TABLE " . TABLE_TACHE . " CHANGE ProgressionStatus ProgressionStatus ENUM( 'notStarted', 'inProgress', 'Done', 'DoneByChief' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'notStarted' COMMENT 'Task status' ";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_ACTIVITE . " CHANGE ProgressionStatus ProgressionStatus ENUM( 'notStarted', 'inProgress', 'Done', 'DoneByChief' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'notStarted' COMMENT 'Activity status' ";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 34)
+		{//Ajout de la table pour stocker l'historique des fiches postes générées
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE planDUER planDUER LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'The single document scheme';";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE groupesUtilisateurs groupesUtilisateurs LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'A serialise array with the different users'' group'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE groupesUtilisateursAffectes groupesUtilisateursAffectes LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'A serialise array with the different users'' group affected to the current element'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE risquesUnitaires risquesUnitaires LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'A serialise array with the different single risqs'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE risquesParUnite risquesParUnite LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'A serialise array with the different risqs by unit'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE methodologieDUER methodologieDUER LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'Methodology used to create the single document'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE sourcesDUER sourcesDUER LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'The different document used to create the single document'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE alerteDUER alerteDUER LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'Warning about the single document'";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE conclusionDUER conclusionDUER LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'conclusion about the sthe single document'";
+			$wpdb->query($sql);
+
+			$sql = "CREATE TABLE " . TABLE_FP . " (
+				id int(10) NOT NULL AUTO_INCREMENT,
+				creation_date datetime default NULL,
+				revision int(3) default NULL COMMENT 'Document version',
+				id_element int(10) unsigned NOT NULL COMMENT 'The element''s id associated to the document',
+				table_element char(255) collate utf8_unicode_ci NOT NULL COMMENT 'The element''s type associated to the document',
+				reference varchar(64) NOT NULL default '',
+				name varchar(128) default NULL,
+				defaultPicturePath varchar(255) default NULL,
+				societyName TEXT default NULL,
+				users LONGTEXT COMMENT 'A serialised array containing the different users',
+				userGroups LONGTEXT COMMENT 'A serialised array containing the different users group',
+				evaluators LONGTEXT COMMENT 'A serialised array containing the different users who were present during evaluation',
+				evaluatorsGroups LONGTEXT COMMENT 'A serialised array containing the different evaluators group',
+				unitRisk LONGTEXT COMMENT 'A serialised array containing the different risks',
+				PRIMARY KEY  (id),
+				UNIQUE  (reference)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT = 'Table containing the different single document';";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 35)
+		{//Changements de gestion des stockages des documents générés ainsi que des fichiers envoyés
 
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();

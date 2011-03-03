@@ -26,7 +26,7 @@ if($_POST['act'] == 'saveDocumentUnique')
 	$informationDocumentUnique['id_model'] = ($_POST['id_model']);
 
 	$lienVersDUER = '';
-	$sauvegardeDocumentUnique = documentUnique::saveNewDocumentUnique($tableElement, $idElement, $informationDocumentUnique);
+	$sauvegardeDocumentUnique = eva_documentUnique::saveNewDocumentUnique($tableElement, $idElement, $informationDocumentUnique);
 	$messageInfo = '<script type="text/javascript">
 			evarisk(document).ready(function(){
 				evarisk("#message' . TABLE_DUER . '").addClass("updated");';
@@ -37,7 +37,7 @@ if($_POST['act'] == 'saveDocumentUnique')
 				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk') . '</strong></p>') . '");
 				evarisk("#ongletHistoriqueDocumentUnique").click();';
 
-		$lastDocumentUnique = documentUnique::getDernierDocumentUnique($tableElement, $idElement);
+		$lastDocumentUnique = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement);
 		/*	Check if an odt file exist to be downloaded	*/
 		$outputOdtFile = '';
 		$odtFile = 'documentUnique/' . $tableElement . '/' . $idElement . '/' . $lastDocumentUnique->nomDUER . '_V' . $lastDocumentUnique->revisionDUER . '.odt';

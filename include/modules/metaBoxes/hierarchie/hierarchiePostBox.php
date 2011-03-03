@@ -57,7 +57,7 @@
 					arborescence_special::lectureArborescenceRisque($arborescenceRisque, $currentTaskAffectedTable, $currentTaskAffectedTableId);
 
 				$saveButtonOuput = 'no';
-				if( ($ProgressionStatus == 'inProgress') || (options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') )
+				if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') )
 				{
 					$saveButtonOuput = 'yes';
 				}

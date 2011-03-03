@@ -11,5 +11,5 @@
 	DEFINE('PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION', 'evarisk-groupements-gestion');
 	DEFINE('PAGE_HOOK_EVARISK_VEILLE_CREATION', 'evarisk-veille-creation');
 	DEFINE('PAGE_HOOK_EVARISK_ATTRIBUTS_UTILISATEURS', 'evarisk-attributs-utilisateurs');
-	DEFINE('PAGE_HOOK_EVARISK_TACHE', 'evarisk-categorie-dangers');
-	DEFINE('PAGE_HOOK_EVARISK_ACTIVITE', 'evarisk-dangers');
+	DEFINE('PAGE_HOOK_EVARISK_TACHE', 'evarisk-taches');
+	DEFINE('PAGE_HOOK_EVARISK_ACTIVITE', 'evarisk-activite');

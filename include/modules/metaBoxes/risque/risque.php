@@ -191,12 +191,7 @@
 					$idligne = 'risque-' . $risque[0]->id;
 					$scriptRisque .= 
 					'<script type="text/javascript">
-						evarisk(document).ready(function() {
-							evarisk("#' . $idligne . '-edit").click(function(){
-								evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
-								tabChange("#divFormRisque", "#ongletAjouterRisque");
-								evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": "' . $risque[0]->id . '", "idElement":"' . $idElement . '", "tableElement":"' . $tableElement . '"});
-							});';
+						evarisk(document).ready(function() {';
 
 					if(options::getOptionValue('action_correctives_avancees') == 'oui')
 					{
@@ -217,33 +212,8 @@
 								evarisk("#divSuiviAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
 							});';
 					}
-					else
-					{
-						$scriptRisque .= 
-							'evarisk("#' . $idligne . '-FAC").click(function(){
-								tabChange("#divFicheAction' . TABLE_RISQUE . '", "#ongletFicheActionCorrective' . TABLE_RISQUE . '");
-								hideExtraTab();
-								evarisk("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
-								evarisk("#divFicheAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
-								evarisk("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "nom":"ficheAction",	"tableProvenance":"' . TABLE_RISQUE . '", "idProvenance": "' . $risque[0]->id . '"});
-							});';
-					}
 
-					$scriptRisque .= 
-							'evarisk("#' . $idligne . '-delete").click(function(){
-								if(confirm("' . __('Etes vous sur de vouloir supprimer cet enregistrement?', 'evarisk') . '\r\n' . $risque[0]->nomDanger . '\r\n\t' . nl2br($risque[0]->commentaire) . '")){
-									evarisk("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-										{
-											"post":"true",
-											"table":"' . TABLE_RISQUE . '",
-											"act":"delete",
-											"idRisque": "' . $risque[0]->id . '",
-											"idElement":"' . $idElement . '",
-											"tableElement":"' . $tableElement . '"
-										}
-									);
-								}
-							});
+					$scriptRisque .= '
 						});
 					</script>';
 					$idLignes[] = $idligne;
@@ -257,12 +227,12 @@
 					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
 					$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
-					$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Fiche d\'action corrective', 'evarisk') . '" title="' . __('Fiche d\'action corrective', 'evarisk') . '"/>';
+					$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Fiche d\'action corrective', 'evarisk') . '" title="' . __('Fiche d\'action corrective', 'evarisk') . '" class="simple-FAC" />';
 					if(options::getOptionValue('action_correctives_avancees') == 'oui')
 					{
 						$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-demandeAction" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . _c('Demande AC|AC pour action corrective', 'evarisk') . '" title="' . __('Demande d\'action corrective', 'evarisk') . '"/><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-suiviAction" src="' . PICTO_LTL_SUIVI_ACTION . '" alt="' . _c('Suivi AC|AC pour action corrective', 'evarisk') . '" title="' . __('Suivi des actions correctives', 'evarisk') . '"/>';
 					}
-					$ligneDeValeurs[] = array('value' => $correctiveActions . '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '"/><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '"/>', 'class' => '');
+					$ligneDeValeurs[] = array('value' => $correctiveActions . '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '" class="edit-risk" /><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '" class="delete-risk" />', 'class' => '');
 					$lignesDeValeurs[] = $ligneDeValeurs;
 				}
 			}
@@ -273,12 +243,12 @@
 					$scoreRisque = EvaGroupement::getScoreRisque($idElement);
 					break;
 				case TABLE_UNITE_TRAVAIL :
-					$scoreRisque = UniteDeTravail::getScoreRisque($idElement);
+					$scoreRisque = eva_UniteDeTravail::getScoreRisque($idElement);
 					break;
 			}
 
 			$scoreRisqueUniteTravail = 0;
-			$riskAndSubRisks = documentUnique::listRisk($tableElement, $idElement);
+			$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
 			foreach($riskAndSubRisks as $risk)
 			{
 				$scoreRisqueUniteTravail += $risk[1]['value'];
@@ -289,6 +259,49 @@
 				$scriptVoirRisque = $scriptRisque . '
 <script type="text/javascript">
 	evarisk(document).ready(function() {
+		evarisk(".edit-risk").click(function(){
+			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
+			tabChange("#divFormRisque", "#ongletAjouterRisque");
+			evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post":"true",
+				"table":"' . TABLE_RISQUE . '",
+				"act":"load",
+				"idRisque": evarisk(this).attr("id").replace("risque-", "").replace("-edit", ""),
+				"idElement":"' . $idElement . '",
+				"tableElement":"' . $tableElement . '"
+			});
+		});
+		evarisk(".delete-risk").click(function(){
+			var nameDanger = evarisk(this).closest("tr").children("td").eq(1).html();
+			var commentaireRisque = evarisk(this).closest("tr").children("td").eq(2).html().replace("<br>", "\r\n");
+			if(confirm("' . __('Etes vous sur de vouloir supprimer cet enregistrement?', 'evarisk') . '\r\n" + nameDanger + "\r\n\t" + commentaireRisque)){
+				evarisk("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				{
+					"post":"true",
+					"table":"' . TABLE_RISQUE . '",
+					"act":"delete",
+					"idRisque": evarisk(this).attr("id").replace("risque-", "").replace("-delete", ""),
+					"idElement":"' . $idElement . '",
+					"tableElement":"' . $tableElement . '"
+				});
+			}
+		});
+		evarisk(".simple-FAC").click(function(){
+			tabChange("#divFicheAction' . TABLE_RISQUE . '", "#ongletFicheActionCorrective' . TABLE_RISQUE . '");
+			hideExtraTab();
+			evarisk("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
+			evarisk("#divFicheAction' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
+			evarisk("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post":"true",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '",
+				"nom":"ficheAction",
+				"tableProvenance":"' . TABLE_RISQUE . '",
+				"idProvenance": evarisk(this).attr("id").replace("risque-", "").replace("-FAC", "")
+			});
+		});
 
 		//	Update The risk number and score in the different part of the screen
 		evarisk("#riskSum' . $tableElement . $idElement .'").html("' . $scoreRisqueUniteTravail . '");
@@ -475,7 +488,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $idRisque);
 				if(count($pictureAssociated) > 0)
 				{
-					$formRisque .= '<div class="alignleft pointer" id="' . $currentId . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $currentId . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_HOME_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
+					$formRisque .= '<div class="alignleft pointer" id="' . $currentId . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $currentId . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
 					$script .= '
 		evarisk("#' . $currentId . 'deletePictureAssociation").click(function(){
 			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
@@ -604,7 +617,7 @@ EvaDisplayInput::fermerForm('formRisque') . '
 		{
 			$currentId = 'picture_' . $picture->id . '_';
 
-			if(is_file(EVA_HOME_DIR . $picture->photo))
+			if(is_file(EVA_GENERATED_DOC_DIR . $picture->photo))
 			{
 				/*	Check if there are already risks that are associated to this picture	*/
 				$riskListForPicture = '';
@@ -614,7 +627,7 @@ EvaDisplayInput::fermerForm('formRisque') . '
 				$advancedForm .= '
 <div id="' . $currentId . '" class="clear" style="margin:0px 0px 12px;" >
 	<div class="clear" >
-		<img id="addRiskByPictureId' . $currentId . '" class="alignleft riskPictureThumbs" src="' . EVA_HOME_URL . $picture->photo . '" alt="picture to associated to a risk ' . $picture->id . '" />
+		<img id="addRiskByPictureId' . $currentId . '" class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $picture->photo . '" alt="picture to associated to a risk ' . $picture->id . '" />
 		<div style="width:75%;" id="addRiskByPictureButtonId' . $currentId . '" class="alignleft pointer" >
 			<img id="divDangerContainerSwitchPic' . $currentId . '" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" class="expandablePics addRiskByPictureButton" />
 			<span style="vertical-align:middle;" class="addRiskByPictureButton" id="addRiskForPictureText' . $currentId . '" >' . __('Ajouter un risque pour cette photo', 'evarisk') . '</span>

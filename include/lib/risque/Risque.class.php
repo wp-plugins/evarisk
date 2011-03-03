@@ -10,7 +10,7 @@ include_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');
 
 class Risque {
 	
-	static function getScoreRisque($risque)
+	function getScoreRisque($risque)
 	{
 		$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
 		$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
@@ -89,7 +89,7 @@ class Risque {
 		return $scoreRisque;
 	}	
 	
-	static function getEquivalenceEtalon($idMethode, $score, $date=null)
+	function getEquivalenceEtalon($idMethode, $score, $date=null)
 	{
 		global $wpdb;
 		
@@ -118,7 +118,7 @@ class Risque {
 		return $resultat->equivalenceEtalon;
 	}	
 	
-	static function getSeuil($quotation)
+	function getSeuil($quotation)
 	{
 		global $wpdb;
 		
@@ -144,7 +144,7 @@ class Risque {
 		return (int)$resultat->niveauSeuil;
 	}	
 	
-	static function getNiveauRisque($niveauSeuil)
+	function getNiveauRisque($niveauSeuil)
 	{
 		switch($niveauSeuil)
 		{
@@ -173,7 +173,7 @@ class Risque {
 		return $niveauRisque;
 	}
 	
-	static function getRisque($id)
+	function getRisque($id)
 	{
 		global $wpdb;
 		$id = eva_tools::IsValid_Variable($id);
@@ -193,7 +193,7 @@ class Risque {
 		return $resultat;
 	}
 	
-	static function getRisques($nomTableElement, $idElement, $status='all', $where = '1', $order='tableRisque.id ASC')
+	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC')
 	{
 		global $wpdb;
 		$where = eva_tools::IsValid_Variable($where);
@@ -207,6 +207,16 @@ class Risque {
 			$status = "tableRisque.Status = '" . $status . "'";
 		}
 
+		$tableElement = $idElement = "1";
+		if($nomTableElement != 'all')
+		{
+			$tableElement = "tableRisque.nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' ";
+		}
+		if($idTableElement != 'all')
+		{
+			$idElement = "tableRisque.id_element = '" . mysql_real_escape_string($idTableElement) . "' ";
+		}
+
 		$query = 
 			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
 				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, 
@@ -214,8 +224,8 @@ class Risque {
 			FROM " . TABLE_RISQUE . " tableRisque, 
 				" . TABLE_AVOIR_VALEUR . " tableAvoirValeur, 
 				" . TABLE_DANGER . " tableDanger 
-			WHERE tableRisque.id_element=" . mysql_real_escape_string($idElement) . " 
-				AND tableRisque.nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' 
+			WHERE " . $tableElement . "
+				AND " . $idElement . "
 				AND " . $status . " 
 				AND " . mysql_real_escape_string($where) . " 
 				AND tableAvoirValeur.id_risque = tableRisque.id 
@@ -227,7 +237,7 @@ class Risque {
 		return $resultat;
 	}	
 
-	static function getriskLinkToTask($idRisque, $id_tache, $beforeAfter)
+	function getriskLinkToTask($idRisque, $id_tache, $beforeAfter)
 	{
 		global $wpdb;
 
@@ -247,7 +257,7 @@ class Risque {
 		return $listeVariableAvecValeur;
 	}
 
-	static function getNombreRisques($nomTableElement, $idElement, $status='all', $where = '1', $order='id ASC')
+	function getNombreRisques($nomTableElement, $idElement, $status='all', $where = '1', $order='id ASC')
 	{
 		global $wpdb;
 		$where = eva_tools::IsValid_Variable($where);
@@ -264,7 +274,7 @@ class Risque {
 		return $resultat->nombreRisques;
 	}
 	
-	static function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo)
+	function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo)
 	{
 		global $wpdb;
 		global $current_user;
@@ -345,7 +355,7 @@ class Risque {
 		return $idRisque;
 	}
 
-	static function deleteRisk($idRisque, $tableElement, $idElement)
+	function deleteRisk($idRisque, $tableElement, $idElement)
 	{
 		global $wpdb;
 		$status = 'error';
@@ -374,7 +384,7 @@ class Risque {
 	*
 	*	@return array $info An array with the sum of risqs
 	*/
-	static function getSommeRisque($table, $elementId)
+	function getSommeRisque($table, $elementId)
 	{
 		$temp = Risque::getRisques($table, $elementId, "Valid");
 		if($temp != null)
@@ -691,5 +701,59 @@ class Risque {
 
 		return $output;
 	}
+
+/*	START OF RISK STAT	*/
+	function getRiskRange($rangeType)
+	{
+		$completeRiskList = Risque::getRisques('all', 'all', 'Valid', '1', 'tableRisque.id ASC');
+		if($completeRiskList != null)
+		{
+			foreach($completeRiskList as $risque)
+			{
+				$risques["'" . $risque->id . "'"][] = $risque; 
+			}
+		}
+		$lowerRisk = $higherRisk = 0;
+		if(isset($risques) && ($risques != null))
+		{
+			foreach($risques as $risque)
+			{
+				$idMethode = $risque[0]->id_methode;
+				$score = Risque::getScoreRisque($risque);
+				$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+				if(($riskLevel > $higherRisk))
+				{
+					$higherRisk = $riskLevel;
+				}
+				if(($riskLevel < $lowerRisk))
+				{
+					$lowerRisk = $riskLevel;
+				}
+			}
+		}
+
+		$riskRange['HIGHER_RISK'] = $higherRisk;
+		$riskRange['LOWER_RISK'] = $lowerRisk;
+
+		return $riskRange;
+	}
+
+	function dashBoardStats()
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT 
+				(
+					SELECT COUNT(id)
+					FROM " . TABLE_RISQUE . " 
+					WHERE Status = 'Valid'
+				) AS TOTAL_RISK_NUMBER
+			"
+		);
+
+		return $wpdb->get_row($query);
+	}
+/*	END OF RISK STAT	*/
 
 }

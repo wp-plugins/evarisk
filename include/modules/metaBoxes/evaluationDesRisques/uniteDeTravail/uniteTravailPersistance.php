@@ -19,7 +19,7 @@ if($_REQUEST['act'] == 'save')
 	$groupementDescendant = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
 	if(count($groupementDescendant) == 0)
 	{
-		$workingUnitResult = UniteDeTravail::saveNewWorkingUnit($nom, $idGroupementPere);
+		$workingUnitResult = eva_UniteDeTravail::saveNewWorkingUnit($nom, $idGroupementPere);
 		
 		$_REQUEST['act'] = 'update';
 		$_REQUEST['id'] = $wpdb->insert_id;
@@ -44,7 +44,7 @@ if($_REQUEST['act'] == 'update')
 	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
 	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['groupementPere']));
 	
-	$uniteTravailUpdate = UniteDeTravail::getWorkingUnitByName($nom);
+	$uniteTravailUpdate = eva_UniteDeTravail::getWorkingUnitByName($nom);
 	
 	$ligne1 = $_REQUEST['adresse_ligne_1'];
 	$ligne2 = $_REQUEST['adresse_ligne_2'];
@@ -72,9 +72,9 @@ if($_REQUEST['act'] == 'update')
 		$telephone = null;
 	}
 	
-	$workingUnitResult = UniteDeTravail::updateWorkingUnit($id_unite_travail, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
+	$workingUnitResult = eva_UniteDeTravail::updateWorkingUnit($id_unite_travail, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
 }
 if($_REQUEST['act'] == 'delete')
 {
-	$workingUnitResult = UniteDeTravail::deleteWorkingUnit($_REQUEST['id']);
+	$workingUnitResult = eva_UniteDeTravail::deleteWorkingUnit($_REQUEST['id']);
 }

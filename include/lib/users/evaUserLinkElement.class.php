@@ -81,6 +81,7 @@ class evaUserLinkElement
 			"aaSorting": [[3,"desc"]],
 		});
 		evarisk("#' . $idTable . '").children("tfoot").remove();
+		evarisk("#' . $idTable . '").removeClass("dataTables_wrapper");
 		evarisk(".buttonActionUserLinkList").click(function(){
 			if(evarisk(this).hasClass("addUserToLinkList")){
 				var currentId = evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");

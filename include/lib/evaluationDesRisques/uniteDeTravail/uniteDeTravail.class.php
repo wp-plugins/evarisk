@@ -10,7 +10,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 
-class UniteDeTravail {
+class eva_UniteDeTravail {
 	
 	/**
 	 * @var int The working unit identifier
@@ -137,7 +137,7 @@ class UniteDeTravail {
 	 */
 	static function getWorkingUnitsName($saufUnite = '')
 	{	
-		$unites = UniteDeTravail::getWorkingUnits();
+		$unites = eva_UniteDeTravail::getWorkingUnits();
 		foreach($unites as $unite)
 		{
 			if($unite->nom != $saufUnite)
@@ -156,11 +156,11 @@ class UniteDeTravail {
 	static function getWorkingUnitInfos($idWorkingUnit)
 	{
 		unset($infos, $info);
-		$uniteDeTravail = UniteDeTravail::getWorkingUnit($idWorkingUnit);
+		$uniteDeTravail = eva_UniteDeTravail::getWorkingUnit($idWorkingUnit);
 		
 		$info['nom'] = __('Niveau de risque', 'evarisk');
-		$scoreRisqueUniteTravail = UniteDeTravail::getScoreRisque($idWorkingUnit);
-		$info['valeur'] = UniteDeTravail::getNiveauRisque($scoreRisqueUniteTravail);
+		$scoreRisqueUniteTravail = eva_UniteDeTravail::getScoreRisque($idWorkingUnit);
+		$info['valeur'] = eva_UniteDeTravail::getNiveauRisque($scoreRisqueUniteTravail);
 		$info['classeValeur'] = 'risque' . Risque::getSeuil($scoreRisqueUniteTravail) . 'Text risqueText' . TABLE_UNITE_TRAVAIL . $idWorkingUnit;
 		$infos[] = $info;
 		$info['nom'] = __('Employ&eacute;s', 'evarisk');
@@ -241,8 +241,8 @@ class UniteDeTravail {
 			$address = new EvaAddress($workingUnit->id_adresse);
 			$address->load();
 			$geoLoc = $address->getGeoLoc();
-			$scoreRisque = UniteDeTravail::getScoreRisque($workingUnit->id);
-			$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_WORKING_UNIT_ICON . '" alt="Unit&eacute; de travail : "/><strong>' . $workingUnit->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . UniteDeTravail::getNiveauRisque($scoreRisque) . '</span></em>';
+			$scoreRisque = eva_UniteDeTravail::getScoreRisque($workingUnit->id);
+			$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_WORKING_UNIT_ICON . '" alt="Unit&eacute; de travail : "/><strong>' . $workingUnit->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . eva_UniteDeTravail::getNiveauRisque($scoreRisque) . '</span></em>';
 			$geoLoc['type'] = "unit&eacute; de travail"; 
 			$geoLoc['image'] = GOOGLEMAPS_UNITE;
 		}
