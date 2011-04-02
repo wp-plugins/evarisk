@@ -542,7 +542,7 @@ class EvaTask extends EvaBaseTask
 						$valeurs[] = array('value'=>$task->dateDebut);
 						$valeurs[] = array('value'=>$task->dateFin);
 						$valeurs[] = array('value'=>$task->avancement);
-						$valeurs[] = array('value'=>'<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=' . EVA_PLUGIN_DIR . '/include/modules/actionsCorrectives/actionsCorrectives.php&amp;elt=edit-node' . $task->id . '" target="seePassedFac" >' . __('Voir l\'action', 'evarisk') . '</a>');
+						$valeurs[] = array('value'=>'<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=digirisk_correctiv_actions&amp;elt=edit-node' . $task->id . '" target="seePassedFac" >' . __('Voir l\'action', 'evarisk') . '</a>');
 						$lignesDeValeurs[] = $valeurs;
 						$idLignes[] = 'taskListPassedButNotMarkedAsDone' . $task->id;
 					}
@@ -608,7 +608,7 @@ class EvaTask extends EvaBaseTask
 						$valeurs[] = array('value'=>$task->dateDebut);
 						$valeurs[] = array('value'=>$task->dateFin);
 						$valeurs[] = array('value'=>$task->avancement);
-						$valeurs[] = array('value'=>'<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=' . EVA_PLUGIN_DIR . '/include/modules/actionsCorrectives/actionsCorrectives.php&amp;elt=edit-node' . $task->id . '" target="seePassedFac" >' . __('Voir l\'action', 'evarisk') . '</a>');
+						$valeurs[] = array('value'=>'<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=digirisk_correctiv_actions&amp;elt=edit-node' . $task->id . '" target="seePassedFac" >' . __('Voir l\'action', 'evarisk') . '</a>');
 						$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListToMarkAsDone' . $task->id;
 					}
@@ -698,7 +698,7 @@ class EvaTask extends EvaBaseTask
 							$completeName .= $groupementPere->nom . ' &raquo; ';
 						}
 						$valeurs[] = array('value'=>$completeName . $nomElementCourant);
-						$valeurs[] = array('value'=>'<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=' . EVA_PLUGIN_DIR . '/include/modules/evaluationDesRisques/evaluationDesRisques.php&amp;elt=' . $elementToSee . '&amp;risk=risque-' . $risk->id . '-edit" target="seeRiskToEvaluate" >' . __('Voir le risque', 'evarisk') . '</a>');
+						$valeurs[] = array('value'=>'<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=digirisk_risk_evaluation&amp;elt=' . $elementToSee . '&amp;risk=risque-' . $risk->id . '-edit" target="seeRiskToEvaluate" >' . __('Voir le risque', 'evarisk') . '</a>');
 						$lignesDeValeurs[] = $valeurs;
 						$idLignes[] = 'taskListToReEvaluateRisk' . $risk->id;
 					}

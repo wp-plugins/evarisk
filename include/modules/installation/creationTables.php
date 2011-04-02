@@ -1564,6 +1564,75 @@ function evarisk_creationTables()
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(EvaVersion::getVersion('base_evarisk') <= 36)
+		{//Ajout de l'option pour configurer la taille de la photo dans les fiches de poste
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 37)
+		{//Deplacement de la table d'historique des documents unique générés avec le "groupe" de la GED + Ajout du champs contenant le model a utiliser pour les fiches de postes
+			$sql = "RENAME TABLE " . TABLE_DUER_OLD . " TO " . TABLE_DUER . " ;";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_GED_DOCUMENTS . " ADD parDefaut ENUM('oui','non') NOT NULL DEFAULT 'non' COMMENT 'Define if the document is the deault document for the category' AFTER status;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_GED_DOCUMENTS . " ADD INDEX ( parDefaut );";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_FP . " ADD id_model INT( 10 ) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'The model used to generate the document' AFTER creation_date;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE " . TABLE_FP . " ADD INDEX ( id_model );";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 38)
+		{//Ajout des preconisation
+			$sql = "CREATE TABLE " . TABLE_CATEGORIE_PRECONISATION . " (
+				id int(10) NOT NULL AUTO_INCREMENT,
+				status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+				creation_date datetime default NULL,
+				nom varchar(128) default NULL,
+				PRIMARY KEY (id),
+				INDEX status (status)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT = 'Table containing the different recommendation categories';";
+			$wpdb->query($sql);
+
+			$sql = "CREATE TABLE " . TABLE_PRECONISATION . " (
+				id int(10) NOT NULL AUTO_INCREMENT,
+				status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+				id_categorie_preconisation int(10) unsigned NOT NULL,
+				creation_date datetime default NULL,
+				nom varchar(128) default NULL,
+				description TEXT default NULL,
+				PRIMARY KEY (id),
+				INDEX status (status),
+				INDEX id_categorie_preconisation (id_categorie_preconisation)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT = 'Table containing the different recommendation';";
+			$wpdb->query($sql);
+
+			$sql = 
+				"CREATE TABLE " . TABLE_LIAISON_PRECONISATION_ELEMENT . " (
+					id int(10) NOT NULL auto_increment,
+					status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					id_preconisation int(10) NOT NULL,
+					efficacite int(3) NOT NULL,
+					id_element int(10) NOT NULL,
+					table_element char(255) collate utf8_unicode_ci NOT NULL,
+					commentaire TEXT default NULL,
+					PRIMARY KEY (id),
+					KEY status (status),
+					KEY id_preconisation (id_preconisation),
+					KEY id_element (id_element),
+					KEY table_element (table_element)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 ?>

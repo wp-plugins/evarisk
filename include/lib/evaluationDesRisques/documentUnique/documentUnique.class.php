@@ -667,8 +667,7 @@ class eva_documentUnique
 
 			$output = 
 			EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationDUER(), $formulaireDocumentUniqueParams) . 
-			'<input type="hidden" name="oldIdModel" id="oldIdModel" value="' . $lastDocumentUnique->id_model . '" />
-			<script type="text/javascript" >
+			'<script type="text/javascript" >
 				evarisk(document).ready(function(){
 					evarisk("#dateCreation").datepicker();
 					evarisk("#dateCreation").datepicker("option", {dateFormat: "yy-mm-dd"});
@@ -680,6 +679,7 @@ class eva_documentUnique
 					evarisk("#dateFinAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
 
 					evarisk("#genererDUER").click(function(){
+						evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
 						evarisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 							"post":"true", 
 							"table":"' . TABLE_DUER . '", 
@@ -697,14 +697,12 @@ class eva_documentUnique
 							"destinataire":evarisk("#destinataire").val(),
 							"nomDuDocument":evarisk("#nomDuDocument").val(),
 							"methodologie":evarisk("#methodologie").val(),
-							"id_model":evarisk("#DUERModelToUse").val(),
+							"id_model":evarisk("#modelToUse' . $tableElement . '").val(),
 							"sources":evarisk("#sources").val()
 						});
-						evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
-						evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
 					});';
 
-					if($lastDocumentUnique->id_model > 1)
+					if($lastDocumentUnique->id_model != eva_gestionDoc::getDefaultDocument('document_unique'))
 					{
 						$output .= '
 						setTimeout(function(){
@@ -712,25 +710,25 @@ class eva_documentUnique
 						},100);';
 					}
 
-					$output .= 'evarisk("#ui-datepicker-div").hide();
+					$output .= '
+					evarisk("#ui-datepicker-div").hide();
 					evarisk("#modelDefaut").click(function(){
 						clearTimeout();
 						setTimeout(function(){
 							if(!evarisk("#modelDefaut").is(":checked"))
 							{
 								evarisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-								evarisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});
-								evarisk("#modelListForDUERGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique", "selection":evarisk("#oldIdModel").val()});
-								evarisk("#modelListForDUERGeneration").show();
+								evarisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
+								evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
+								evarisk("#modelListForGeneration").show();
 							}
 							else
 							{
 								evarisk("#documentUniqueResultContainer").html("");
-								evarisk("#modelListForDUERGeneration").html("");
-								evarisk("#modelListForDUERGeneration").hide();
+								evarisk("#modelListForGeneration").html("");
+								evarisk("#modelListForGeneration").hide();
 							}
-							},500
-						);
+						},500);
 					});
 				});
 			</script>';

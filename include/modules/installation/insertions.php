@@ -636,16 +636,49 @@ function evarisk_insertions($insertions = null)
 			/*	Move the directory containing the different models	*/
 			if(is_dir(EVA_UPLOADS_PLUGIN_OLD_DIR) && !is_dir(EVA_UPLOADS_PLUGIN_DIR))
 			{
-				rename(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
+				eva_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
 			}
 			/*	Move the directory containing the different models	*/
 			if(is_dir(EVA_RESULTATS_PLUGIN_OLD_DIR) && !is_dir(EVA_RESULTATS_PLUGIN_DIR))
 			{
-				rename(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
+				eva_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 			}
 
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}
+		case 36:
+		{
+			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'fichedeposte', 'taille_photo_poste_fiche_de_poste', '%s', '8', 'Valid', 'numerique');", __('taille de la photo du poste dans la fiche de poste (cm)', 'evarisk'));
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}		
+		case 37:
+		{
+			$sql = "UPDATE " . TABLE_GED_DOCUMENTS . " SET parDefaut = 'oui' WHERE id_element = '0' AND table_element = 'all';";
+			$wpdb->query($sql);
+
+			require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
+			$sql = "UPDATE " . TABLE_FP . " SET id_model = '" . eva_gestionDoc::getDefaultDocument('fiche_de_poste') . "';";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 38:
+		{
+			$sql = "INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " (id, status, creation_date, nom) VALUES ('1', 'valid', NOW(), 'obligation');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " (id, status, creation_date, nom) VALUES ('2', 'valid', NOW(), 'interdiction');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " (id, status, creation_date, nom) VALUES ('3', 'valid', NOW(), 'recommandation');";
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
 	}
+
 }

@@ -354,6 +354,13 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .optionsActionColumn{	width:30px !important;	}
 /* -- End options -- */
 
+/* -- Recommandation -- */
+.recommandationActionColumn{	width:40px !important;	}
+#recommandationForm label, #recommandationForm input{	display:block;	}
+.recommandationInput { margin-bottom:12px; width:95% !important; padding: .4em; }
+#recommandationForm fieldset { padding:0; border:0; margin-top:0px; }
+/* -- End Recommandation -- */
+
 .editDataTableRow{	cursor:pointer; background-position: -64px -112px;	}
 .closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
 .closeLightBoxIcon{	background-position: -80px -128px !important; }
@@ -363,5 +370,6 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .noResultInBox{	margin:6px auto; width:60% !important; font-weight:bold;	}
 .italic{	font-style:italic;	}
 
-
 #divFicheDePoste{	padding:12px 3px;	}
+
+.messageIcone{	vertical-align:middle;	}

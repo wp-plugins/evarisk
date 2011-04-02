@@ -263,7 +263,8 @@ function emptyOptionForm()
 	evarisk("#light").hide();
 	evarisk("#fade").hide();
 }
-function goTo(ancre){
+function goTo(ancre)
+{
 	var speed = 1000;
 	jQuery("html,body").animate({scrollTop:jQuery(ancre).offset().top},speed,"swing",function(){
 		if(ancre != "body")
@@ -275,3 +276,34 @@ function goTo(ancre){
 		jQuery(ancre).removeAttr("tabindex");
 	});
 }
+
+function updateTips( t, container )
+{
+	container
+		.text( t )
+		.addClass( "ui-state-highlight" );
+	setTimeout(function() {
+		tips.removeClass( "ui-state-highlight", 1500 );
+	}, 500 );
+}
+function checkLength( o, n, min, max, msg, errorContainer )
+{
+	if ( o.val().length > max || o.val().length < min ) {
+		o.addClass( "ui-state-error" );
+		updateTips( msg.replace("term", n).replace("minlength", min).replace("maxlength", max), errorContainer );
+		return false;
+	} else {
+		return true;
+	}
+}
+function checkRegexp( o, regexp, n, errorContainer  )
+{
+	if ( !( regexp.test( o.val() ) ) ) {
+		o.addClass( "ui-state-error" );
+		updateTips( n, errorContainer );
+		return false;
+	} else {
+		return true;
+	}
+}
+		

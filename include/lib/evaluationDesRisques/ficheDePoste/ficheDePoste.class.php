@@ -17,24 +17,22 @@ class eva_WorkUnitSheet
 		return 
 '<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
 	<tr>
-		<td style="width:60%;" >
+		<td style="width:60%;vertical-align:top;" >
 			<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire" style="width:100%;" >
 				<tr>
 					<td ><label for="nomFicheDePoste">' . __('nom de la fiche', 'evarisk') . '</label></td>
 					<td >' . EvaDisplayInput::afficherInput('text', 'nomFicheDePoste', '#NOMDOCUMENT#', '', '', 'nomFicheDePoste', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
 				</tr>
-			<!--
 				<tr>
 					<td >&nbsp;</td>
 					<td style="padding:12px 0px;" >
 						<div>
-							<input type="checkbox" id="modelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
-							<label for="modelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+							<input type="checkbox" id="FPmodelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
+							<label for="FPmodelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
 						</div>
 						<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 					</td>
 				</tr>
-			-->
 				<tr>
 					<td colspan="2">
 						' . EvaDisplayInput::afficherInput('hidden', 'nomEntreprise', '#NOMENTREPRISE#', '', '', 'nomEntreprise', false, false, 150, '', '', '100%', '', 'left', false) . '
@@ -80,6 +78,16 @@ class eva_WorkUnitSheet
 		}
 		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = eva_tools::slugify_noaccent($arborescence) . eva_tools::slugify_noaccent($workUnitinformations->nom);
 
+		$modelChoice = '';
+		$lastWorkUnitSheet = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+		if($lastWorkUnitSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_poste'))
+		{
+			$modelChoice = '
+			setTimeout(function(){
+				evarisk("#FPmodelDefaut").click();
+			},100);';
+		}
+
 		$output = EvaDisplayDesign::feedTemplate(eva_WorkUnitSheet::getWorkUnitSheetForm(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
@@ -92,10 +100,29 @@ class eva_WorkUnitSheet
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
 				"nomDuDocument":evarisk("#nomFicheDePoste").val(),
-				"nomEntreprise":evarisk("#nomEntreprise").val()
+				"nomEntreprise":evarisk("#nomEntreprise").val(),
+				"id_model":evarisk("#modelToUse' . $tableElement . '").val()
 			});
 			evarisk("#divImpressionFicheDePoste").html(evarisk("#loadingImg").html());
 		});
+		evarisk("#FPmodelDefaut").click(function(){
+			clearTimeout();
+			setTimeout(function(){
+				if(!evarisk("#FPmodelDefaut").is(":checked")){
+					evarisk("#workUnitSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					evarisk("#workUnitSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
+					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":"' . $lastWorkUnitSheet->id_model . '"});
+					evarisk("#modelListForGeneration").show();
+				}
+				else{
+					evarisk("#workUnitSheetResultContainer").html("");
+					evarisk("#modelListForGeneration").html("");
+					evarisk("#modelListForGeneration").hide();
+				}
+			},500
+			);
+		});
+		' . $modelChoice . '
 	});
 </script>';
 
@@ -317,7 +344,7 @@ class eva_WorkUnitSheet
 		/*	Récupération des informations concernant les risques	*/
 		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement));
 
-		/*	Récupération de la phot par défaut pour l'unité de travail	*/
+		/*	Récupération de la photo par défaut pour l'unité de travail	*/
 		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
 		$defaultPictureToSet = '';
 		if($defaultPicture != 'error')
@@ -329,13 +356,20 @@ class eva_WorkUnitSheet
 			$defaultPictureToSet = 'noDefaultPicture';
 		}
 
+		/*	Vérification du modèle à utiliser pour la génration de la fiche de poste	*/
+		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
+		if(($informations['id_model'] != 'undeifned') && ($informations['id_model'] > 0))
+		{
+			$modelToUse = $informations['id_model'];
+		}
+
 		/*	Enregistrement du document	*/
 		$query = $wpdb->prepare(
 			"INSERT INTO " . TABLE_FP . " 
-				(id, creation_date, revision, id_element, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
-			VALUES	
-				('', NOW(), %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array($revisionDocument, $idElement, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk)
+				(id, creation_date, revision, id_element, id_model, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
+			VALUES 
+				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk)
 		);
 		if($wpdb->query($query) === false)
 		{

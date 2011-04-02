@@ -12,32 +12,22 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 	$workUnitSheetInfos['nomDuDocument'] = eva_tools::IsValid_Variable($_POST['nomDuDocument']);
 	$workUnitSheetInfos['nomEntreprise'] = eva_tools::IsValid_Variable($_POST['nomEntreprise']);
 	$workUnitSheetInfos['dateCreation'] = date('Ymd');
+	$workUnitSheetInfos['id_model'] = eva_tools::IsValid_Variable($_POST['id_model']);
 
-	$lienVersDUER = '';
-	$sauvegardeDocumentUnique = eva_WorkUnitSheet::saveWorkUnitSheet($tableElement, $idElement, $workUnitSheetInfos);
 	$messageInfo = $moremessageInfo = '';
+	$sauvegardeFicheDePoste = eva_WorkUnitSheet::saveWorkUnitSheet($tableElement, $idElement, $workUnitSheetInfos);
 
-	if($sauvegardeDocumentUnique['result'] != 'error')
+	if($sauvegardeFicheDePoste['result'] != 'error')
 	{
-		$messageToOutput = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' alt=\'success\' />' . __('La fiche de poste &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk');
-
-		$lastDocumentUnique = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement);
-		/*	Check if an odt file exist to be downloaded	*/
-		$outputOdtFile = '';
-		$odtFile = 'ficheDePoste/' . $tableElement . '/' . $idElement . '/' . $lastDocumentUnique->nomDUER . '_V' . $lastDocumentUnique->revisionDUER . '.odt';
-		if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
-		{
-			$outputOdtFile = '<br/><br/><br/><a href=\'' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '\' target=\'evaDUEROdt\' >' . __('T&eacute;l&eacute;charger au format odt', 'evarisk') . '</a><br/><br/><br/><br/><a href=\'' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '\' target=\'OOffice\' >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a>';
-		}
-		$lienVersDUER = 'evarisk("#documentUniqueResultContainer").html("<div style=\'float:right;width:80%;\' >' . $outputOdtFile . '</div>");';
+		$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La fiche de poste &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
+		$moremessageInfo = 'evarisk("#ongletHistoriqueFicheDePoste").click();';
 	}
 	else
 	{
-		$messageToOutput = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' alt=\'error\' />' . __('La fiche de poste n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
-		echo $sauvegardeDocumentUnique['errors']['query'];
+		$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('La fiche de poste n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
 	}
 
-	$messageInfo .= '
+	$messageInfo = '
 		<script type="text/javascript">
 			evarisk(document).ready(function(){
 				actionMessageShow("#message' . TABLE_FP . '", "' . $messageToOutput . '");
@@ -45,9 +35,6 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 				' . $moremessageInfo . '
 			});
 		</script>';
-	echo $messageInfo;
-}
-if($_POST['act'] == 'delete')
-{
 
+	echo $messageInfo;
 }

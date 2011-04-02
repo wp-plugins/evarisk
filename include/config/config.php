@@ -34,7 +34,11 @@
 	DEFINE('EVA_RESULTATS_PLUGIN_URL', EVA_GENERATED_DOC_URL . 'results/');
 	DEFINE('EVA_RESULTATS_PLUGIN_DIR', EVA_GENERATED_DOC_DIR . 'results/');
 	DEFINE('EVA_MODELES_PLUGIN_DIR', EVA_UPLOADS_PLUGIN_DIR . 'modeles/');
-	DEFINE('EVA_MODELES_PLUGIN_URl', EVA_UPLOADS_PLUGIN_URL . 'modeles/');
+	DEFINE('EVA_MODELES_PLUGIN_URL', EVA_UPLOADS_PLUGIN_URL . 'modeles/');
+
+	/*	Do not delete even if old sufix has been added!!! Used to check if directory are well created on each plugin loading	*/
+	DEFINE('EVA_UPLOADS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/uploads/');
+	DEFINE('EVA_RESULTATS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/results/');
 
 	/**
 	* Risk name define variable
@@ -104,7 +108,7 @@
 	require_once('configImages.php');
 
 	/**
-	*	Vars to delete when sure that the correspnding version is passed
+	*	Vars to delete when sure that the corresponding version is passed
 	*/
 	{
 		//version 23
@@ -112,9 +116,7 @@
 
 		//version 35
 		DEFINE('EVA_RESULTATS_PLUGIN_OLD_URL', EVA_HOME_URL . 'medias/results/');
-		DEFINE('EVA_RESULTATS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/results/');
 		DEFINE('EVA_UPLOADS_PLUGIN_OLD_URL', EVA_HOME_URL . 'medias/uploads/');
-		DEFINE('EVA_UPLOADS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/uploads/');
 		DEFINE('EVA_MODELES_PLUGIN_OLD_DIR', EVA_UPLOADS_PLUGIN_OLD_DIR . 'modeles/');
 		DEFINE('EVA_MODELES_PLUGIN_OLD_URL', EVA_UPLOADS_PLUGIN_OLD_URL . 'modeles/');
 	}

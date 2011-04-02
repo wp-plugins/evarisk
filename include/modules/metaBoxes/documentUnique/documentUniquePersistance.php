@@ -25,7 +25,7 @@ if($_POST['act'] == 'saveDocumentUnique')
 	$informationDocumentUnique['sources'] = ($_POST['sources']);
 	$informationDocumentUnique['id_model'] = ($_POST['id_model']);
 
-	$lienVersDUER = '';
+	$messageInfo = $moremessageInfo = '';
 	$sauvegardeDocumentUnique = eva_documentUnique::saveNewDocumentUnique($tableElement, $idElement, $informationDocumentUnique);
 	$messageInfo = '<script type="text/javascript">
 			evarisk(document).ready(function(){
@@ -33,37 +33,22 @@ if($_POST['act'] == 'saveDocumentUnique')
 
 	if($sauvegardeDocumentUnique['result'] != 'error')
 	{
-		$messageInfo .= '
-				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk') . '</strong></p>') . '");
-				evarisk("#ongletHistoriqueDocumentUnique").click();';
-
-		$lastDocumentUnique = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement);
-		/*	Check if an odt file exist to be downloaded	*/
-		$outputOdtFile = '';
-		$odtFile = 'documentUnique/' . $tableElement . '/' . $idElement . '/' . $lastDocumentUnique->nomDUER . '_V' . $lastDocumentUnique->revisionDUER . '.odt';
-		if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
-		{
-			$outputOdtFile = '<br/><br/><br/><a href=\'' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '\' target=\'evaDUEROdt\' >' . __('T&eacute;l&eacute;charger au format odt', 'evarisk') . '</a><br/><br/><br/><br/><a href=\'' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '\' target=\'OOffice\' >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a>';
-		}
-		$lienVersDUER = 'evarisk("#documentUniqueResultContainer").html("<div style=\'float:right;width:80%;\' >' . $outputOdtFile . '</div>");';
+		$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk');
+		$moremessageInfo = 'evarisk("#ongletHistoriqueDocumentUnique").click();';
 	}
 	else
 	{
-		$messageInfo = $messageInfo . '
-				evarisk("#message' . TABLE_DUER . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le document unique n\'&agrave; pas pu &ecirc;tre sauvegard&eacute;', 'evarisk') . '</strong></p>') . '");';
+		$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('Le document unique n\'&agrave; pas pu &ecirc;tre sauvegard&eacute;', 'evarisk');
 	}
 
-	$messageInfo .= '
-				evarisk("#message' . TABLE_DUER . '").show();
-				setTimeout(function(){
-					evarisk("#message' . TABLE_DUER . '").removeClass("updated");
-					evarisk("#message' . TABLE_DUER . '").hide();
-				},5000);
+	$messageInfo = '
+		<script type="text/javascript">
+			evarisk(document).ready(function(){
+				actionMessageShow("#message' . TABLE_DUER . '", "' . $messageToOutput . '");
+				setTimeout(\'actionMessageHide("#message' . TABLE_DUER . '")\',5000);
+				' . $moremessageInfo . '
 			});
 		</script>';
-	echo $messageInfo;
-}
-if($_POST['act'] == 'delete')
-{
 
+	echo $messageInfo;
 }

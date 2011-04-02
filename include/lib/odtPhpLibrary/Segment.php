@@ -158,8 +158,17 @@ class Segment implements IteratorAggregate, Countable
             throw new OdfException("Invalid image");
         }
         list ($width, $height) = $size;
-        $width *= Odf::PIXEL_TO_CM;
-        $height *= Odf::PIXEL_TO_CM;
+				$ratio = 0;$ratio = options::getOptionValue('taille_photo_poste_fiche_de_poste') / $width;
+				if($ratio > 0)
+				{
+					$width *= $ratio;
+					$height *= $ratio;
+				}
+				else
+				{
+					$width *= self::PIXEL_TO_CM;
+					$height *= self::PIXEL_TO_CM;
+				}
         $xml = <<<IMG
 <draw:frame draw:style-name="fr1" draw:name="$filename" text:anchor-type="char" svg:width="{$width}cm" svg:height="{$height}cm" draw:z-index="3"><draw:image xlink:href="Pictures/$file" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame>
 IMG;

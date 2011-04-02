@@ -216,7 +216,7 @@ function getMethodForm()
 		$methode_new = $methode_new . '</div>';
 		{//Save Button (top)
 			$idBouttonEnregistrer = 'save';
-			$methodes = getMethodsName($saufMethode);
+			$methodes = MethodeEvaluation::getMethodsName($saufMethode);
 			$valeurActuelleIn = "false";
 			if(count($methodes) != 0)
 			{

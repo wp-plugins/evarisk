@@ -38,7 +38,7 @@
 
 <tbody id="users" class="list:user user-list">
 <?php
-	$evaUserEvaluatorGroup->RowOutput();
+	evaUserEvaluatorGroup::RowOutput();
 ?>
 </tbody>
 </table>

@@ -35,6 +35,8 @@ require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserEvaluatorGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandation.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
@@ -182,7 +184,7 @@ if($_REQUEST['post'] == 'true')
 						else //Le fils est une unité
 						{
 							$idFils = str_replace('leaf-','', $fils);
-							uniteDeTravail::transfertUnit($idFils, $idPere);
+							eva_uniteDeTravail::transfertUnit($idFils, $idPere);
 						}
 					}
 					break;
@@ -2794,13 +2796,13 @@ if($_REQUEST['post'] == 'true')
 					case 'loadDocument':
 						$category = $_REQUEST['category'];
 						$selection = (isset($_REQUEST['selection']) && ($_REQUEST['selection'] != '') && ($_REQUEST['selection'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['selection']) : '';
-						$documentList = eva_gestionDoc::getDocumentList($tableElement, $idElement, $category);
+						$documentList = eva_gestionDoc::getDocumentList($tableElement, $idElement, $category, "dateCreation DESC");
 						if(count($documentList) > 0)
 						{
-							$modelList = evaDisplayInput::afficherComboBox($documentList, 'DUERModelToUse', '', 'DUERModelToUse', '', $selection);
+							$modelList = evaDisplayInput::afficherComboBox($documentList, 'modelToUse' . $tableElement . '', '', 'modelToUse' . $tableElement . '', '', $selection);
 							if($selection != '')
 							{
-								$script = '<script type="text/javascript" >evarisk("#DUERModelToUse").val("' . $selection . '")</script>';
+								$script = '<script type="text/javascript" >evarisk("#modelToUse' . $tableElement . '").val("' . $selection . '")</script>';
 							}
 						}
 						else
@@ -2815,6 +2817,113 @@ if($_REQUEST['post'] == 'true')
 					break;
 					case 'loadExistingDocument':
 						echo EvaDisplayDesign::getExistingModelList($tableElement, $idElement);
+					break;
+				}
+				break;
+			case TABLE_PRECONISATION:
+				switch($_REQUEST['act'])
+				{
+					case 'loadInformation':
+					{
+						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
+						$recommandationInfos = evaRecommandation::getRecommandation($id);
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#ui-dialog-title-recommandationForm").html("' . sprintf(__('&Eacute;diter la pr&eacute;conisation %s', 'evarisk'), $recommandationInfos->nom) . '");
+		evarisk("#loadingRecommandationForm").html("");
+		evarisk("#loadingRecommandationForm").hide();
+		evarisk("#id_preconisation").val("' . $id . '");
+		evarisk("#nom_preconisation").val("' . $recommandationInfos->nom . '");
+		evarisk("#description_preconisation").val("' . $recommandationInfos->description . '");
+		evarisk("#recommandationFormContent").show();
+	});
+</script>';
+					}
+					break;
+					case 'saveRecommandation':
+					{
+						$nom_preconisation = (isset($_REQUEST['nom_preconisation']) && ($_REQUEST['nom_preconisation'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['nom_preconisation']) : '';
+						$description_preconisation = (isset($_REQUEST['description_preconisation']) && ($_REQUEST['description_preconisation'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['description_preconisation']) : '';
+						$id_preconisation = (isset($_REQUEST['id_preconisation']) && ($_REQUEST['id_preconisation'] != '') && ($_REQUEST['id_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_preconisation']) : '0';
+						$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '0';
+
+						$recommandations_informations = array();
+						$recommandations_informations['nom'] = $nom_preconisation;
+						$recommandations_informations['description'] = $description_preconisation;
+
+						//Check the value of the recommandation identifier. 
+						if($id_preconisation <= 0)
+						{	//	If the value is equal or less than 0 we create a new recommandation
+							$recommandations_informations['status'] = 'valid';
+							$recommandations_informations['id_categorie_preconisation'] = $id_categorie_preconisation;
+							$recommandations_informations['creation_date'] = date('Y-m-d H:i:s');
+							$recommandationActionResult = evaRecommandation::saveRecommandation($recommandations_informations);
+						}
+						else
+						{	//	If the value is more than 0 we update the corresponding recommandation
+							$recommandationActionResult = evaRecommandation::updateRecommandation($recommandations_informations, $id_preconisation);
+						}
+
+						$moreRecommandationScript = '';
+						if($recommandationActionResult == 'error')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						else
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
+							$moreRecommandationScript = '
+	evarisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_PRECONISATION . '",
+		"act":"reloadRecommandationList"
+	});';
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#message", "' . $recommandationActionMessage . '");
+	setTimeout(\'actionMessageHide("#message")\', \'7000\');
+' . $moreRecommandationScript . '
+</script>';
+					}
+					break;
+					case 'reloadRecommandationList':
+					{
+						echo evaRecommandation::getRecommandationTable();
+					}
+					break;
+					case 'deleteRecommandation':
+					{
+						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
+						$recommandations_informations['status'] = 'deleted';
+						$recommandationActionResult = evaRecommandation::updateRecommandation($recommandations_informations, $id);
+						$moreRecommandationScript = '';
+						if($recommandationActionResult == 'error')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la suppression de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						else
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e.', 'evarisk');
+							$moreRecommandationScript = '
+	evarisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_PRECONISATION . '",
+		"act":"reloadRecommandationList"
+	});';
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#message", "' . $recommandationActionMessage . '");
+	setTimeout(\'actionMessageHide("#message")\', \'7000\');
+' . $moreRecommandationScript . '
+</script>';
+					}
 					break;
 				}
 				break;
@@ -3310,6 +3419,10 @@ if($_REQUEST['post'] == 'true')
 									{
 										$actionsCorrectives .= $spacer . '<span>' . $taskDefinition->name . '</span><br/>';
 										$spacer = '&nbsp;&nbsp;';
+									}
+									else
+									{
+										$hasActions = false;
 									}
 
 									if(($activitesDeLaTache != null) && (count($activitesDeLaTache) > 0))

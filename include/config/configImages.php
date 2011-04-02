@@ -10,6 +10,13 @@
 	DEFINE('EVA_GROUPEMENT_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'groupement_icone.png');
 	DEFINE('EVA_EVAL_RISK_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'evaluation_des_risques.png');
 	DEFINE('EVA_WORKING_UNIT_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'unitesDeTravail_icone.png');
+	DEFINE('EVA_OPTIONS_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'options_s.png');
+
+	/**
+	*	Message error / success picture
+	*/
+	DEFINE('EVA_MESSAGE_ERROR', EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png');
+	DEFINE('EVA_MESSAGE_SUCCESS', EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png');
 
 	/**
 	* Default pictogrammes define
@@ -33,6 +40,7 @@
 	DEFINE('PICTO_EXPAND', EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png');
 	DEFINE('PICTO_COLLAPSE', EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-collapse-dark.png');
 	DEFINE('PICTO_LTL_EVAL_RISK', EVA_IMG_ICONES_PLUGIN_URL . 'evaluation_des_risques_s.png');
+	DEFINE('PICTO_EDIT', EVA_IMG_ICONES_PLUGIN_URL . 'edit.png');
 
 	/**
 	* Add/Edit/Delete Pictograms

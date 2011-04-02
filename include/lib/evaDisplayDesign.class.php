@@ -2434,7 +2434,7 @@ class EvaDisplayDesign {
 											<input type="checkbox" id="modelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
 											<label for="modelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
 										</div>
-										<div id="modelListForDUERGeneration" style="display:none;" >&nbsp;</div>
+										<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 									</td>
 								</tr>
 								<tr>
@@ -2454,11 +2454,32 @@ class EvaDisplayDesign {
 	*/
 	static function getNewModelUploadForm($tableElement, $idElement)
 	{
-		$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
 		$idUpload = 'model' . $tableElement;
 		$allowedExtensions = "['odt']";
 		$multiple = false;
 		$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "gestionDocumentaire/uploadFile.php");
+		switch($tableElement)
+		{
+			case TABLE_GROUPEMENT:
+			{
+				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
+				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt';
+				$table = TABLE_DUER;
+			}
+			break;
+			case TABLE_UNITE_TRAVAIL:
+			{
+				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
+				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDePoste/modeleDefaut.odt';
+				$table = TABLE_FP;
+			}
+			break;
+			default:
+			{
+				sprintf(__('Le cas % n\'a pas &eacute;t&eacute; pr&eacute;vu dans %s &agrave; la ligne %s', 'evarisk'), $tableElement, __FILE__, __LINE__);
+			}
+			break;
+		}
 
 		$newModelForm = 
 			'<div style="margin:0px auto;width:92%;" >
@@ -2467,7 +2488,7 @@ class EvaDisplayDesign {
 				</div>
 				<div style="margin:6px 0px;" class="bold" >' . __('Ajouter un nouveau mod&egrave;le', 'evarisk') . '&nbsp:</div>
 				<ol>
-					<li><a class="bold" href="' . EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt" >' . __('T&eacute;l&eacute;chargez le mod&egrave;le par d&eacute;faut', 'evarisk') . '</a></li>
+					<li><a class="bold" href="' . $defaultModelLink . '" >' . __('T&eacute;l&eacute;chargez le mod&egrave;le par d&eacute;faut', 'evarisk') . '</a></li>
 					<li>
 						<span class="bold" >' . __('Modifiez le mod&egrave;le', 'evarisk') . '</span>
 						<ul>
@@ -2477,7 +2498,7 @@ class EvaDisplayDesign {
 					<li>
 						<span class="bold" >' . __('Envoyez votre mod&egrave;le', 'evarisk') . '</span>
 						<ul>
-							<li>' . eva_gestionDoc::getFormulaireUpload(TABLE_DUER, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, __('S&eacute;lectionner le mod&egrave;le &agrave; envoyer', 'evarisk')) . '</li>
+							<li>' . eva_gestionDoc::getFormulaireUpload($table, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, __('S&eacute;lectionner le mod&egrave;le &agrave; envoyer', 'evarisk')) . '</li>
 						</ul>
 					</li>
 				</ol>
@@ -2492,8 +2513,21 @@ class EvaDisplayDesign {
 	*/
 	function getExistingModelList($tableElement, $idElement)
 	{
+		switch($tableElement)
+		{
+			case TABLE_GROUPEMENT:
+			{
+				$documentType = 'document_unique';
+			}
+			break;
+			case TABLE_UNITE_TRAVAIL:
+			{
+				$documentType = 'fiche_de_poste';
+			}
+			break;
+		}
 		$moreModelChoice = '';
-		$documentList = eva_gestionDoc::getCompleteDocumentList('document_unique', 
+		$documentList = eva_gestionDoc::getCompleteDocumentList($documentType, 
 		"	AND id NOT IN (
 				SELECT id 
 				FROM " . TABLE_GED_DOCUMENTS . " 
@@ -2505,7 +2539,7 @@ class EvaDisplayDesign {
 				FROM " . TABLE_GED_DOCUMENTS . " 
 				WHERE id_element = '" . $idElement . "' 
 					AND table_element = '" . $tableElement . "'
-			)			");
+			)			", "dateCreation DESC");
 		if(count($documentList) > 0)
 		{
 			$moreModelChoice = 

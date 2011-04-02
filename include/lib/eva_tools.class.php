@@ -275,4 +275,28 @@ class eva_tools
 		}
 	}
 
+	function copyEntireDirectory($sourceDirectory, $destinationDirectory)
+	{
+		if(is_dir($sourceDirectory))
+		{
+			if(!is_dir($destinationDirectory))
+			{
+				eva_tools::make_recursiv_dir($destinationDirectory);
+			}
+			$hdir = opendir($sourceDirectory);
+			while($item = readdir($hdir))
+			{
+				if(is_dir($sourceDirectory . '/' . $item) && ($item != '.') && ($item != '..')  && ($item != '.svn') )
+				{
+					eva_tools::copyEntireDirectory($sourceDirectory . '/' . $item, $destinationDirectory . '/' . $item);
+				}
+				elseif(is_file($sourceDirectory . '/' . $item))
+				{
+					copy($sourceDirectory . '/' . $item, $destinationDirectory . '/' . $item);
+				} 
+			}
+			closedir( $hdir );
+		}
+	}
+
 }

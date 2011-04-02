@@ -53,7 +53,12 @@ class eva_gestionDoc {
 		{
 			case TABLE_DUER:
 				$formulaireUpload .= '
-							evarisk("#modelListForDUERGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});
+							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});
+							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
+			break;
+			case TABLE_FP:
+				$formulaireUpload .= '
+							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"fiche_de_poste"});
 							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 		}
@@ -102,6 +107,9 @@ class eva_gestionDoc {
 			case TABLE_DUER:
 				$categorie = 'document_unique';
 			break;
+			case TABLE_FP:
+				$categorie = 'fiche_de_poste';
+			break;
 			default:
 				$categorie = $table;
 			break;
@@ -111,7 +119,7 @@ class eva_gestionDoc {
 		$nomDocument = basename($fichier);
 
 		/*	Determination of the file directory	*/
-		$cheminDocument = dirname($fichier) . '/';
+		$cheminDocument = str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', dirname($fichier)) . '/';
 
 		$query = $wpdb->prepare(
 			"INSERT INTO " . TABLE_GED_DOCUMENTS . "
@@ -160,7 +168,7 @@ class eva_gestionDoc {
 					$tableElement, $idElement, $wpdb->insert_id);
 				if($wpdb->query($query))
 				{
-					echo '<script type="text/javascript" >evarisk("#modelListForDUERGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});</script>';
+					echo '<script type="text/javascript" >evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});</script>';
 				}
 			}
 		}
@@ -189,7 +197,7 @@ class eva_gestionDoc {
 		return $wpdb->get_results($query);
 	}
 
-	function getCompleteDocumentList($category = "", $morequery = "")
+	function getCompleteDocumentList($category = "", $morequery = "", $order = "nom ASC")
 	{
 		global $wpdb;
 
@@ -206,7 +214,7 @@ class eva_gestionDoc {
 				" . $morequery . "
 				AND table_element != 'all'
 			GROUP BY chemin, nom 
-			ORDER BY nom ASC",
+			ORDER BY " . $order,
 			$tableElement, $idElement);
 
 		return $wpdb->get_results($query);
@@ -227,6 +235,25 @@ class eva_gestionDoc {
 		$path = $pathComponents->chemin . $pathComponents->nom;
 
 		return $path;
+	}
+
+	function getDefaultDocument($category)
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT id
+			FROM " . TABLE_GED_DOCUMENTS . "
+			WHERE parDefaut = 'oui'
+				AND status = 'valid'
+				AND categorie = '" . $category . "'
+			ORDER BY dateCreation
+			LIMIT 1"
+		);
+
+		$documentDefaultId = $wpdb->get_row($query);
+
+		return $documentDefaultId->id;
 	}
 
 	/**
@@ -322,7 +349,7 @@ class eva_gestionDoc {
 			if($lastDocument->id_model > 1)
 			{
 				$pathToModelFile = eva_gestionDoc::getDocumentPath($lastDocument->id_model);
-				$odf = new odf(EVA_HOME_DIR . $pathToModelFile, $config);
+				$odf = new odf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
 			}
 		}
 
@@ -1004,14 +1031,14 @@ class eva_gestionDoc {
 						$odf->mergeSegment($risque);
 					}
 
-					// if(is_file(EVA_HOME_DIR . $lastDocument->defaultPicturePath))
-					// {
-						// $odf->setImage('photoDefault', EVA_HOME_DIR . $lastDocument->defaultPicturePath);
-					// }
-					// else
-					// {
-						// $odf->setVars('photoDefault', eva_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
-					// }
+					if(is_file(EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath))
+					{
+						$odf->setImage('photoDefault', EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath);
+					}
+					else
+					{
+						$odf->setVars('photoDefault', eva_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
+					}
 
 					$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
 					$fileName = str_replace(' ', '',$lastDocument->name) . '_V' . $lastDocument->revision;
