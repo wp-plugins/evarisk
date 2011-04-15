@@ -80,7 +80,7 @@ class eva_WorkUnitSheet
 
 		$modelChoice = '';
 		$lastWorkUnitSheet = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
-		if($lastWorkUnitSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_poste'))
+		if(($lastWorkUnitSheet->id_model != '') && ($lastWorkUnitSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_poste')))
 		{
 			$modelChoice = '
 			setTimeout(function(){
@@ -356,20 +356,55 @@ class eva_WorkUnitSheet
 			$defaultPictureToSet = 'noDefaultPicture';
 		}
 
-		/*	Vérification du modèle à utiliser pour la génration de la fiche de poste	*/
+		/*	Vérification du modèle à utiliser pour la génération de la fiche de poste	*/
 		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
-		if(($informations['id_model'] != 'undeifned') && ($informations['id_model'] > 0))
+		if(($informations['id_model'] != 'undefined') && ($informations['id_model'] > 0))
 		{
 			$modelToUse = $informations['id_model'];
 		}
 
+		/*	Récupération des préconisations affectées à l'unité actuelle	*/
+		$recommandationList = array();
+		$affectedRecommandation = evaRecommandation::getRecommandationListForElement($tableElement, $idElement);
+		$i = $oldIdRecommandationCategory = 0;
+		foreach($affectedRecommandation as $recommandation)
+		{
+			if($oldIdRecommandationCategory != $recommandation->recommandation_category_id)
+			{
+				$i = 0;
+				$oldIdRecommandationCategory = $recommandation->recommandation_category_id;
+			}
+			$recommandationCategoryMainPicture = evaPhoto::getMainPhoto(TABLE_CATEGORIE_PRECONISATION, $recommandation->recommandation_category_id);
+			$recommandationCategoryMainPicture = evaPhoto::checkIfPictureIsFile($recommandationCategoryMainPicture, TABLE_CATEGORIE_PRECONISATION);
+			if($recommandationCategoryMainPicture != false)
+			{
+				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = str_replace(EVA_HOME_URL, '', str_replace(EVA_GENERATED_DOC_URL, '', $recommandationCategoryMainPicture));
+			}
+			else
+			{
+				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = 'noDefaultPicture';
+			}
+			$recommandationList[$recommandation->recommandation_category_id][$i]['id_preconisation'] = $recommandation->id_preconisation;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['efficacite'] = $recommandation->efficacite;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['commentaire'] = $recommandation->commentaire;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_name'] = $recommandation->recommandation_category_name;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_name'] = $recommandation->recommandation_name;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandationCategorie'] = $recommandation->impressionRecommandationCategorie;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandationCategorie'] = $recommandation->tailleimpressionRecommandationCategorie;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandation'] = $recommandation->impressionRecommandation;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandation'] = $recommandation->tailleimpressionRecommandation;
+			$recommandationList[$recommandation->recommandation_category_id][$i]['photo'] = $recommandation->photo;
+			$i++;
+		}
+		$recommandation = serialize($recommandationList);
+
 		/*	Enregistrement du document	*/
 		$query = $wpdb->prepare(
 			"INSERT INTO " . TABLE_FP . " 
-				(id, creation_date, revision, id_element, id_model, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
+				(id, creation_date, revision, id_element, id_model, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk, recommandation) 
 			VALUES 
-				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk)
+				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
 		);
 		if($wpdb->query($query) === false)
 		{

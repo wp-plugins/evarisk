@@ -47,7 +47,7 @@ function evarisk_add_menu() {
 		add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Options', 'evarisk' ), __( 'Options', 'evarisk' ), 'Evarisk_:_editer_les_options', 'digirisk_options', array('options','optionMainPage'));
 
 		//	On créé le menu des préconisation
-		// add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Pr&eacute;conisations', 'evarisk' ), __( 'Pr&eacute;conisations', 'evarisk' ), 'Evarisk_:_voir_les_preconisations', 'digirisk_recommandation', array('evaRecommandation', 'evaRecommandationMainPage'));
+		add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Pr&eacute;conisations', 'evarisk' ), __( 'Pr&eacute;conisations', 'evarisk' ), 'Evarisk_:_voir_les_preconisations', 'digirisk_recommandation', array('evaRecommandation', 'evaRecommandationMainPage'));
 
 		// On crée le menu des méthodes
 		add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), __( 'M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), 'Evarisk_:_voir_les_methodes', 'digirisk_evaluation_method', array('methodeEvaluation','methodeEvaluationMainPage'));

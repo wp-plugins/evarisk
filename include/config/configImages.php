@@ -11,6 +11,7 @@
 	DEFINE('EVA_EVAL_RISK_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'evaluation_des_risques.png');
 	DEFINE('EVA_WORKING_UNIT_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'unitesDeTravail_icone.png');
 	DEFINE('EVA_OPTIONS_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'options_s.png');
+	DEFINE('EVA_RECOMMANDATION_ICON', EVA_IMG_PICTOS_PLUGIN_URL . 'preconisations/preconisationDefault_s.png');
 
 	/**
 	*	Message error / success picture

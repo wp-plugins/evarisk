@@ -38,6 +38,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandation.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
@@ -112,6 +113,13 @@ if($_REQUEST['post'] == 'true')
 			break;
 			case 'showGallery':
 				echo evaPhoto::getGallery($_REQUEST['table'], $_REQUEST['idElement']);
+			break;
+
+			case 'saveDigiNote':
+				echo evaNotes::saveDigiNote($_REQUEST['notesContent']);
+			break;
+			case 'loadDiginote':
+				echo evaNotes::noteDialogForm();
 			break;
 		}
 	}
@@ -2180,7 +2188,7 @@ if($_REQUEST['post'] == 'true')
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
-									reloadcontainer();
+									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
 								});
 						</script>';
 						echo $messageInfo;
@@ -2211,7 +2219,7 @@ if($_REQUEST['post'] == 'true')
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
-									reloadcontainer();
+									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
 								});
 						</script>';
 						echo $messageInfo;
@@ -2242,7 +2250,7 @@ if($_REQUEST['post'] == 'true')
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
-									reloadcontainer();
+									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
 								});
 						</script>';
 						echo $messageInfo;
@@ -2273,7 +2281,7 @@ if($_REQUEST['post'] == 'true')
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
 										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
 									},7500);
-									reloadcontainer();
+									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
 								});
 						</script>';
 						echo $messageInfo;
@@ -2823,26 +2831,48 @@ if($_REQUEST['post'] == 'true')
 			case TABLE_PRECONISATION:
 				switch($_REQUEST['act'])
 				{
-					case 'loadInformation':
+					case 'loadRecommandationManagementForm':
 					{
-						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
-						$recommandationInfos = evaRecommandation::getRecommandation($id);
-						echo '
+						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '0';
+						if($id <= 0)
+						{
+							$id_preconisation = $nom_preconisation = $description_preconisation = '';
+							$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '0';
+							$moreRecommandationForm = '';
+						}
+						else
+						{
+							$recommandationInfos = evaRecommandation::getRecommandation($id);
+							$id_categorie_preconisation = $recommandationInfos->id_categorie_preconisation;
+							$id_preconisation = $id;
+							$nom_preconisation = html_entity_decode($recommandationInfos->nom, ENT_QUOTES, 'UTF-8');
+							$description_preconisation = html_entity_decode($recommandationInfos->description, ENT_QUOTES, 'UTF-8');
+							$moreRecommandationForm = 
+		'evarisk("#recommandationPictureGalery").show();
+		evarisk("#pictureGallery' . TABLE_PRECONISATION . '_' . $id . '").html(evarisk("#loadingImg").html());
+		evarisk("#pictureGallery' . TABLE_PRECONISATION . '_' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . TABLE_PRECONISATION . '",
+			"act":"reloadGallery",
+			"idElement":"' . $id . '"
+		});';
+						}
+						echo evaRecommandation::recommandationForm($id_categorie_preconisation, $id_preconisation, $nom_preconisation, $description_preconisation) . '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
-		evarisk("#ui-dialog-title-recommandationForm").html("' . sprintf(__('&Eacute;diter la pr&eacute;conisation %s', 'evarisk'), $recommandationInfos->nom) . '");
 		evarisk("#loadingRecommandationForm").html("");
 		evarisk("#loadingRecommandationForm").hide();
-		evarisk("#id_preconisation").val("' . $id . '");
-		evarisk("#nom_preconisation").val("' . $recommandationInfos->nom . '");
-		evarisk("#description_preconisation").val("' . $recommandationInfos->description . '");
-		evarisk("#recommandationFormContent").show();
+		evarisk("#recommandationFormContainer").show();
+' . $moreRecommandationForm . '
 	});
 </script>';
 					}
 					break;
 					case 'saveRecommandation':
 					{
+						$moreRecommandationScript = '';
+
 						$nom_preconisation = (isset($_REQUEST['nom_preconisation']) && ($_REQUEST['nom_preconisation'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['nom_preconisation']) : '';
 						$description_preconisation = (isset($_REQUEST['description_preconisation']) && ($_REQUEST['description_preconisation'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['description_preconisation']) : '';
 						$id_preconisation = (isset($_REQUEST['id_preconisation']) && ($_REQUEST['id_preconisation'] != '') && ($_REQUEST['id_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_preconisation']) : '0';
@@ -2859,13 +2889,25 @@ if($_REQUEST['post'] == 'true')
 							$recommandations_informations['id_categorie_preconisation'] = $id_categorie_preconisation;
 							$recommandations_informations['creation_date'] = date('Y-m-d H:i:s');
 							$recommandationActionResult = evaRecommandation::saveRecommandation($recommandations_informations);
+							$moreRecommandationScript .= 
+'	evarisk("#recommandationFormContainer").hide();
+	evarisk("#loadingRecommandationForm").html(evarisk("#loadingImg").html());
+	evarisk("#loadingRecommandationForm").show();
+	evarisk("#recommandationInterfaceContainer").dialog("open");
+	evarisk("#recommandationInterfaceContainer").dialog({title:"' . __('&Eacute;diter une pr&eacute;conisation', 'evarisk') . '"});
+	evarisk("#recommandationFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_PRECONISATION . '",
+		"act":"loadRecommandationManagementForm",
+		"id":"' . $recommandationActionResult . '"
+	});';
 						}
 						else
 						{	//	If the value is more than 0 we update the corresponding recommandation
 							$recommandationActionResult = evaRecommandation::updateRecommandation($recommandations_informations, $id_preconisation);
 						}
 
-						$moreRecommandationScript = '';
 						if($recommandationActionResult == 'error')
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
@@ -2873,13 +2915,15 @@ if($_REQUEST['post'] == 'true')
 						else
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
-							$moreRecommandationScript = '
+							$moreRecommandationScript .= '
 	evarisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 	{
 		"post":"true",
 		"table":"' . TABLE_PRECONISATION . '",
 		"act":"reloadRecommandationList"
-	});';
+	});
+	//Line below is used when we add a new recommandation in a category from the postbox
+	evarisk("#recommandationCategory' . $id_categorie_preconisation . '").click();';
 						}
 
 						echo '
@@ -2922,6 +2966,243 @@ if($_REQUEST['post'] == 'true')
 	actionMessageShow("#message", "' . $recommandationActionMessage . '");
 	setTimeout(\'actionMessageHide("#message")\', \'7000\');
 ' . $moreRecommandationScript . '
+</script>';
+					}
+					break;
+					case 'loadRecomandationOfCategory':
+					{
+						$outputMode = (isset($_REQUEST['outputMode']) && ($_REQUEST['outputMode'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['outputMode']) : 'pictos';
+						$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '';
+						echo evaRecommandation::getRecommandationListByCategory($id_categorie_preconisation, $outputMode);
+					}
+					break;
+
+					case 'saveRecommandationLink':
+					{
+						$id = (isset($_REQUEST['recommandationId']) && ($_REQUEST['recommandationId'] != '') && ($_REQUEST['recommandationId'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['recommandationId']) : '';
+						$recommandationEfficiency = (isset($_REQUEST['recommandationEfficiency']) && ($_REQUEST['recommandationEfficiency'] != '') && ($_REQUEST['recommandationEfficiency'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['recommandationEfficiency']) : '0';
+						$recommandationComment = (isset($_REQUEST['recommandationComment']) && ($_REQUEST['recommandationComment'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['recommandationComment']) : '';
+						$id_element = (isset($_REQUEST['id_element']) && ($_REQUEST['id_element'] != '') && ($_REQUEST['id_element'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_element']) : '';
+						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['table_element']) : '';
+
+						$recommandation_link_action = (isset($_REQUEST['recommandation_link_action']) && ($_REQUEST['recommandation_link_action'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['recommandation_link_action']) : '';
+						$recommandation_link_id = (isset($_REQUEST['recommandation_link_id']) && ($_REQUEST['recommandation_link_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['recommandation_link_id']) : '';
+
+						$recommandationsinformations = array();
+						$recommandationsinformations['id_preconisation'] = $id;
+						$recommandationsinformations['efficacite'] = $recommandationEfficiency;
+						$recommandationsinformations['commentaire'] = $recommandationComment;
+
+						if($recommandation_link_action == 'update')
+						{
+							$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandationsinformations, $recommandation_link_id);
+						}
+						else
+						{
+							$recommandationsinformations['id_element'] = $id_element;
+							$recommandationsinformations['table_element'] = $table_element;
+							$recommandationsinformations['status'] = 'valid';
+							$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+						}
+
+						$moreRecommandationScript = '';
+						if($recommandationActionResult == 'error')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						else
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
+							$moreRecommandationScript = '
+	evarisk("#ongletAjoutPreconisation").click();
+	evarisk("#recommandation_link_action").val("add");
+	evarisk("#recommandation_link_id").val("");';
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#message' . TABLE_PRECONISATION . '-' . $table_element . '", "' . $recommandationActionMessage . '");
+	setTimeout(\'actionMessageHide("#message' . TABLE_PRECONISATION . '-' . $table_element . '")\', \'7000\');
+' . $moreRecommandationScript . '
+</script>';
+					}
+					break;
+					case 'deleteRecommandationLink':
+					{
+						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
+						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['table_element']) : '';
+						$recommandations_informations['status'] = 'deleted';
+						$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandations_informations, $id);
+						$moreRecommandationScript = '';
+						if($recommandationActionResult == 'error')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la d&eacute;saffectation de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						else
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; d&eacute;saffect&eacute;e.', 'evarisk');
+							$moreRecommandationScript = '
+	evarisk("#ongletListePreconisation").click();';
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#message' . TABLE_PRECONISATION . '-' . $table_element .'", "' . $recommandationActionMessage . '");
+	setTimeout(\'actionMessageHide("#message' . TABLE_PRECONISATION . '-' . $table_element .'")\', \'7000\');
+' . $moreRecommandationScript . '
+</script>';
+					}
+					break;
+					case 'loadRecomandationForElement':
+					{
+						$id_element = (isset($_REQUEST['id_element']) && ($_REQUEST['id_element'] != '') && ($_REQUEST['id_element'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_element']) : '';
+						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['table_element']) : '';
+
+						echo evaRecommandation::getRecommandationListForElementOutput($table_element, $id_element);
+					}
+					break;
+					case 'loadRecomandationLink':
+					{
+						$recommandation_link_id = (isset($_REQUEST['recommandation_link_id']) && ($_REQUEST['recommandation_link_id'] != '') && ($_REQUEST['recommandation_link_id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['recommandation_link_id']) : '0';
+						$recommandation_link_action = (isset($_REQUEST['recommandation_link_action']) && ($_REQUEST['recommandation_link_action'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['recommandation_link_action']) : '';
+						$outputMode = (isset($_REQUEST['outputMode']) && ($_REQUEST['outputMode'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['outputMode']) : '';
+						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['table_element']) : '';
+						$id_element = (isset($_REQUEST['id_element']) && ($_REQUEST['id_element'] != '') && ($_REQUEST['id_element'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_element']) : '0';
+						$selectRecommandation = '';
+
+						if(($recommandation_link_action == 'update') && ($recommandation_link_id > 0))
+						{
+							$selectedRecommandation = evaRecommandation::getRecommandationListForElement($table_element, $id_element, $recommandation_link_id);
+							$selectRecommandation['id_categorie_preconisation'] = $selectedRecommandation[0]->recommandation_category_id;
+							$selectRecommandation['id_preconisation'] = $selectedRecommandation[0]->id_preconisation;
+							$selectRecommandation['commentaire_preconisation'] = $selectedRecommandation[0]->commentaire;
+						}
+
+						echo evaRecommandation::recommandationAssociation($outputMode, $selectRecommandation);;
+					}
+					break;
+				}
+				break;
+			case TABLE_CATEGORIE_PRECONISATION:
+				switch($_REQUEST['act'])
+				{
+					case 'deleteRecommandationCategory':
+					{
+						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
+						$recommandations_informations['status'] = 'deleted';
+						$recommandationActionResult = evaRecommandationCategory::updateRecommandationCategory($recommandations_informations, $id);
+						$moreRecommandationScript = '';
+						if($recommandationActionResult == 'error')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la suppression de la famille de pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						else
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e.', 'evarisk');
+							$moreRecommandationScript = '
+	evarisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_PRECONISATION . '",
+		"act":"reloadRecommandationList"
+	});';
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#message", "' . $recommandationActionMessage . '");
+	setTimeout(\'actionMessageHide("#message")\', \'7000\');
+' . $moreRecommandationScript . '
+</script>';
+					}
+					break;
+					case 'saveRecommandationCategorie':
+					{
+						$moreRecommandationCategoryScript = '';
+
+						$nom_categorie = (isset($_REQUEST['nom_categorie']) && ($_REQUEST['nom_categorie'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['nom_categorie']) : '';
+						$impressionRecommandationCategorie = (isset($_REQUEST['impressionRecommandationCategorie']) && ($_REQUEST['impressionRecommandationCategorie'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['impressionRecommandationCategorie']) : '';
+						$impressionRecommandation = (isset($_REQUEST['impressionRecommandation']) && ($_REQUEST['impressionRecommandation'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['impressionRecommandation']) : '';
+						$tailleimpressionRecommandationCategorie = (isset($_REQUEST['tailleimpressionRecommandationCategorie']) && ($_REQUEST['tailleimpressionRecommandationCategorie'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tailleimpressionRecommandationCategorie']) : '';
+						$tailleimpressionRecommandation = (isset($_REQUEST['tailleimpressionRecommandation']) && ($_REQUEST['tailleimpressionRecommandation'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tailleimpressionRecommandation']) : '';
+						$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '0';
+
+						$recommandationCategory_informations = array();
+						$recommandationCategory_informations['nom'] = $nom_categorie;
+						$recommandationCategory_informations['impressionRecommandation'] = $impressionRecommandation;
+						$recommandationCategory_informations['tailleimpressionRecommandation'] = str_replace(',', '.', $tailleimpressionRecommandation);
+						$recommandationCategory_informations['impressionRecommandationCategorie'] = $impressionRecommandationCategorie;
+						$recommandationCategory_informations['tailleimpressionRecommandationCategorie'] = str_replace(',', '.', $tailleimpressionRecommandationCategorie);
+
+						//Check the value of the recommandation identifier. 
+						if($id_categorie_preconisation <= 0)
+						{	//	If the value is equal or less than 0 we create a new recommandation
+							$recommandationCategory_informations['status'] = 'valid';
+							$recommandationCategory_informations['creation_date'] = date('Y-m-d H:i:s');
+							$recommandationActionResult = evaRecommandationCategory::saveRecommandationCategory($recommandationCategory_informations);
+							$moreRecommandationCategoryScript .= '';
+						}
+						else
+						{	//	If the value is more than 0 we update the corresponding recommandation
+							$recommandationActionResult = evaRecommandationCategory::updateRecommandationCategory($recommandationCategory_informations, $id_categorie_preconisation);
+						}
+
+						if($recommandationActionResult == 'error')
+						{
+							$recommandationCategoryActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la famille de pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						else
+						{
+							$recommandationCategoryActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
+							$moreRecommandationCategoryScript .= '
+	evarisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	{
+		"post":"true",
+		"table":"' . TABLE_PRECONISATION . '",
+		"act":"reloadRecommandationList"
+	});';
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#message", "' . $recommandationCategoryActionMessage . '");
+	setTimeout(\'actionMessageHide("#message")\', \'7000\');
+' . $moreRecommandationCategoryScript . '
+</script>';
+					}
+					break;
+					case 'loadRecommandationCategoryManagementForm':
+					{
+						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '0';
+						if($id <= 0)
+						{
+							$id_preconisation = $nom_preconisation = $description_preconisation = '';
+							$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '0';
+							$moreRecommandationForm = '';
+						}
+						else
+						{
+							$recommandationCategoryInfos = evaRecommandationCategory::getCategoryRecommandation($id);
+							$id_categorie_preconisation = $id;
+							$moreRecommandationForm = 
+		'evarisk("#recommandationCategoryPictureGalery").show();
+		evarisk("#pictureGallery' . TABLE_CATEGORIE_PRECONISATION . '_' . $id . '").html(evarisk("#loadingImg").html());
+		evarisk("#pictureGallery' . TABLE_CATEGORIE_PRECONISATION . '_' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . TABLE_CATEGORIE_PRECONISATION . '",
+			"act":"reloadGallery",
+			"idElement":"' . $id . '"
+		});';
+						}
+						echo evaRecommandationCategory::recommandationCategoryForm($id_categorie_preconisation, $recommandationCategoryInfos) . '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#loadingCategoryRecommandationForm").html("");
+		evarisk("#loadingCategoryRecommandationForm").hide();
+		evarisk("#recommandationCategoryFormContainer").show();
+' . $moreRecommandationForm . '
+	});
 </script>';
 					}
 					break;

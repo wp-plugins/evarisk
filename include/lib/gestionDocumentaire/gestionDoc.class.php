@@ -1031,9 +1031,77 @@ class eva_gestionDoc {
 						$odf->mergeSegment($risque);
 					}
 
+					{/*	Remplissage du template pour les préconisations afffectées à l'unité de travail	*/
+						$listePreconisationsAffectees = array();
+						$listePreconisationsAffectees = unserialize($lastDocument->recommandation);
+
+						$afffectedRecommandation = $odf->setSegment('affectedRecommandation');
+						foreach($listePreconisationsAffectees AS $recommandationCategory)
+						{
+							if(($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textandpicture') || ($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textonly'))
+							{
+								$recommandationCategoryName = str_replace('<br />', "
+", eva_tools::slugify_noaccent($recommandationCategory[0]['recommandation_category_name']));
+							}
+							else
+							{
+								$recommandationCategoryName = '';
+							}
+							$afffectedRecommandation->setVars('recommandationCategoryName', $recommandationCategoryName, true, 'UTF-8');
+
+							if(($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textandpicture') || ($recommandationCategory[0]['impressionRecommandationCategorie'] == 'pictureonly'))
+							{
+								$recommandationCategoryIcon = evaPhoto::checkIfPictureIsFile($recommandationCategory[0]['recommandation_category_photo'], TABLE_CATEGORIE_PRECONISATION);
+								$recommandationCategoryIcon = str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $recommandationCategoryIcon);
+								$recommandationCategoryIcon = str_replace(EVA_HOME_URL, EVA_HOME_DIR, $recommandationCategoryIcon);
+								$afffectedRecommandation->setImage('recommandationCategoryIcon', $recommandationCategoryIcon , $recommandationCategory[0]['tailleImpressionPictoCategorie']);
+							}
+							else
+							{
+								$afffectedRecommandation->setVars('recommandationCategoryIcon', '', true, 'UTF-8');
+							}
+
+							foreach($recommandationCategory as $recommandation)
+							{
+								if($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly')
+								{
+									$recommandation['recommandation_name'] = '';
+									$recommandation['commentaire'] = '';
+								}
+								
+								if($recommandation['commentaire'] != '')
+								{
+									$recommandation['commentaire'] = " : " . $recommandation['commentaire'] . "
+";
+								}
+								$afffectedRecommandation->recommandations->setVars('recommandationName', str_replace('<br />', "
+", eva_tools::slugify_noaccent($recommandation['recommandation_name'])));
+								$afffectedRecommandation->recommandations->setVars('recommandationComment', str_replace('<br />', "
+", eva_tools::slugify_noaccent($recommandation['commentaire'])));
+
+								if(($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly') || ($recommandationCategory[0]['impressionRecommandation'] == 'textandpicture'))
+								{
+									$recommandationIcon = evaPhoto::checkIfPictureIsFile($recommandation['photo'], TABLE_PRECONISATION);
+									$recommandationIcon = str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $recommandationIcon);
+									$recommandationIcon = str_replace(EVA_HOME_URL, EVA_HOME_DIR, $recommandationIcon);
+									$afffectedRecommandation->recommandations->setImage('recommandationIcon', $recommandationIcon , $recommandationCategory[0]['tailleimpressionRecommandation']);
+								}
+								else
+								{
+								$afffectedRecommandation->recommandations->setVars('recommandationIcon', '');
+								}
+
+								$afffectedRecommandation->recommandations->merge();
+							}
+
+							$afffectedRecommandation->merge();
+						}
+						$odf->mergeSegment($afffectedRecommandation);
+					}
+
 					if(is_file(EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath))
 					{
-						$odf->setImage('photoDefault', EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath);
+						$odf->setImage('photoDefault', EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath, options::getOptionValue('taille_photo_poste_fiche_de_poste'));
 					}
 					else
 					{

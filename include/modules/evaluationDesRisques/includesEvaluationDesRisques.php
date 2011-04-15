@@ -25,8 +25,8 @@
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/utilisateurs.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePoste.php' );
-				// require_once(EVA_METABOXES_PLUGIN_DIR . 'recommandation/recommandationPostBox.php' );
-				require_once(EVA_METABOXES_PLUGIN_DIR . 'epi/epi.php' );
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'recommandation/recommandationPostBox.php' );
+				// require_once(EVA_METABOXES_PLUGIN_DIR . 'epi/epi.php' );
 				if(file_exists(EVA_TEMPLATES_PLUGIN_DIR . 'includesEvaluationDesRisquesPerso.php'))
 					include_once(EVA_TEMPLATES_PLUGIN_DIR . 'includesEvaluationDesRisquesPerso.php');
 			}

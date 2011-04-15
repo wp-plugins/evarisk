@@ -16,6 +16,30 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
 
+
+.dataTables_length{	width:50% !important;	}
+.dataTables_paginate{	margin:12px 24px;	}
+.dataTables_filter{	float:right; width:15% !important;	}
+.dataTables_filter .ui-icon{	float:left;	}
+.dataTables_filter input{	float:left;	}
+.searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
+.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
+
+.editDataTableRow{	cursor:pointer;background-position:-64px -112px;	}
+.closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
+.closeLightBoxIcon{	background-position: -80px -128px !important; }
+.hide{	display:none;	}
+.marginSideAuto{	margin:0px auto;}
+.marginBotTopAuto{	margin:auto 0px;}
+.noResultInBox{	margin:6px auto; width:60% !important; font-weight:bold;	}
+.italic{	font-style:italic;	}
+
+#divFicheDePoste{	padding:12px 3px;	}
+
+.messageIcone{	vertical-align:middle;	}
+.evaMessage{	width:60%;margin:0px auto !important;text-align:center !important;padding:6px 0px !important;	}
+
+
 /* -- Boutons choix affichage enlarging -- */
 #choseEnlarging{display: inline; vertical-align: top; margin-bottom:12px; margin-left:10px;}
 #choseEnlarging span{margin:0 10px;}
@@ -182,12 +206,14 @@ div.inside{overflow: hidden; padding: 5px;}
 .favorite-actions a:hover {		color: #FFFFFF;	}
 /* -- END Menu AJOUTER -- */
 
+
 /* -- Liste catégorie danger -- */
 .expander{		display: none;	}
 .aFils .expander{		display: inline;	}
 .actionButtonList{		width: 20%;	}
 .infoList{		width: 20%;	}	
 /* -- END Liste catégorie danger -- */
+
 
 /* -- Galery photo -- */
 ul.thumbs li	{		display: inline;	}
@@ -204,6 +230,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .galeryPhoto .navigation	{		text-align:center;	}
 /* -- END Galery photo -- */
 
+
 /* -- Veille référentiel -- */
 .listeCreationVeille li	{		display: inline;		margin-right: 60px;	}
 .veille-reponse-titre	{		font-weight:bold;	}
@@ -217,6 +244,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .observationTropLongue	{		vertical-align: top;	}
 /* -- END Veille référentiel -- */
 
+
 /* -- Partie droite -- */
 .titleDiv /* bientôt à enlever*/	
 {		font-size: 1.3em;		font-weight: bold;	}
@@ -225,6 +253,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .titleInfoSelected	{		border: 1px solid #646464 !important; }
 .mainInfos2	{		text-align: center;	}
 /* -- END Partie droite -- */
+
 
 /* -- Risques -- */
 .risqueInfo	{		-webkit-border-radius:12px;		-moz-border-radius:12px;		border-radius:12px;	}
@@ -260,6 +289,7 @@ th.columnCommentaireRisque*/
 .riskPictureThumbs{	max-width: 20%;	}
 /* -- END Risques -- */
 
+
 /* -- Tabs -- */
 .eva_tabs_panel	{		border-color:#DFDFDF;		border-style:solid;		border-width:1px;		overflow:auto;		padding:0px;		margin:0px;	}
 ul.eva_tabs	{		margin-top:12px;	}
@@ -269,17 +299,19 @@ ul.eva_tabs li.selected_tab	{		background-color : #F6F6F6;	}
 ul.eva_tabs_button li	{		-webkit-border-radius:1em;		-moz-border-radius:1em;		border-radius:1em;		/*background-color:#F6F6F6;*/	}
 ul.eva_tabs_button 	{		margin-bottom:8px;	}
 ul.eva_tabs_button li label	{		padding-bottom:3px;	}
-
+.tabs{	display:inline; margin-left:0.4em;	}
 .ui-tabs{	padding:0px !important; }
 .ui-tabs .ui-tabs-nav{	padding:0px !important;	}
 #evaDashboard_vracStats .inside{		padding:0px !important;	}
 .ui-tabs .ui-tabs-nav li a{		padding:0.1em 1em !important;	}
 /* -- END Tabs -- */
 
+
 /* -- Sliders -- */
 .sliderValue	{		border:0 none !important;		background:none !important;		font-weight:bold;		width:15%;	}
 .slider_variable	{		width: 100px;	}
 /* -- END Sliders -- */
+
 
 /* -- Setup -- */
 #evariskSetup	{		width: 98%;	}
@@ -290,6 +322,7 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .cbSetup	{		float: left;	}
 .cbEPISetup	{		margin-left: 5%;	}
 /* -- END Setup -- */
+
 
 /* -- Upload -- */
 .thumbnailUpload	{		max-width: 200px;	}
@@ -315,15 +348,6 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .preconisation{	margin-left:9px; font-size:10px; text-decoration:underline;	}
 #taskExportButton{	margin:0px 12px;	}
 /* -- END Actions correctives -- */
-
-
-.dataTables_length{	width:50% !important;	}
-.dataTables_paginate{	margin:12px 24px;	}
-.dataTables_filter{	float:right;	}
-.dataTables_filter .ui-icon{	float:left;	}
-.dataTables_filter input{	float:left;	}
-.searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
-.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
 
 
 /* -- START LINK USER ELEMENT -- */
@@ -355,21 +379,48 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 /* -- End options -- */
 
 /* -- Recommandation -- */
+.recommandationIconColumn{	width:20px !important; text-align:right !important;	}
 .recommandationActionColumn{	width:40px !important;	}
 #recommandationForm label, #recommandationForm input{	display:block;	}
-.recommandationInput { margin-bottom:12px; width:95% !important; padding: .4em; }
 #recommandationForm fieldset { padding:0; border:0; margin-top:0px; }
+.recommandationInterfaceContainerPart{	width:49% !important;	}
+.recommandationInput { margin-bottom:12px; width:95% !important; padding: .4em; }
+.recommandationFormErrorMessage {	margin:3px !important;	}
+.recommandationDefaultPictosList{		vertical-align:middle;max-width:48px !important;	}
+
+.recommandationCategoryDefaultPictosList{		vertical-align:middle;	}
+.recommandationCategoryBloc{	margin:0 1%;width:65px;text-align:center;padding:9px 0px;	}
+.recommandationCategoryName{	font-style:italic; font-size:9px;	}
+
+.recommandationCategorySelected, .recommandationSelected{	background-color:#DDDDDD;	}
+
+.recommandationBloc{	margin:1% 0;width:15%;text-align:center;height:55px;padding:9px 0px;	}
+.recommandationName{	font-style:italic; font-size:9px;	}
+#recommandationContainer{	margin:0px; border:1px solid grey; }
+#recommandationFormContent label{	margin:6px 0px 0px;	}
+
+#divAjoutPreconisation{	padding:1em;overflow:none !important;	}
+.recommandationIconUploadButton{	float:right;width:80%;	}
+.recommandationMainIcon{	float:left;width:19%;	}
+.recommandationMainIcon img{		max-width:95%;	}
+#recommandationPictureGalery .thumbnailUpload, #recommandationCategoryPictureGalery .thumbnailUpload{		max-width:48px !important;	}
+#recommandationPictureGalery div.slideshow img, #recommandationCategoryPictureGalery div.slideshow img{		max-width:48px !important;	}
+#recommandationPictureGalery .qq-upload-button, #recommandationCategoryPictureGalery .qq-upload-button{		width:50% !important;	}
+#divListePreconisation .dataTables_filter{ width:50% !important;}
+.addRecommandationBox{	margin:1.5em 0 0 0.5em; height:30px;	}
+.recommandationCategoryExplanation{	margin:6px 0px 6px;	}
+#recommandationNameIndication{	font-style:italic; font-size:10px; font-weight:bold;	}
+.recommandationCategoryOption{	font-size:11px;	}
+.recommandationCategoryOptionLabel{	font-size:10px; font-style:italic;	}
+.recommandationCategoryOptionChoice{	float:left ;margin:0px 12px 0px;	}
+.recommandationCategoryOptionPicSizeContainer{	 clear: both; margin: 3px auto 0; text-align: center; width: 60%;	}
+.recommandationCategoryOptionPicSizeContainer input{	 width: 20% !important;	}
 /* -- End Recommandation -- */
 
-.editDataTableRow{	cursor:pointer; background-position: -64px -112px;	}
-.closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
-.closeLightBoxIcon{	background-position: -80px -128px !important; }
-.hide{	display:none;	}
-.marginSideAuto{	margin:0px auto;}
-.marginBotTopAuto{	margin:auto 0px;}
-.noResultInBox{	margin:6px auto; width:60% !important; font-weight:bold;	}
-.italic{	font-style:italic;	}
-
-#divFicheDePoste{	padding:12px 3px;	}
-
-.messageIcone{	vertical-align:middle;	}
+/* -- Notes -- */
+#noteTaker{	float:right; margin:15px; }
+#digiNotes{	text-align:center; }
+.noteTakerPic{	max-width:18px;	}
+.noteInput {	width:99%; height:93%; padding: .4em; }
+#noteSaverMessage{	text-align:center;	width:70%;	margin:0px auto;	padding:3px 0px;	}
+/* -- End Notes -- */

@@ -16,11 +16,11 @@
 	$fichier = eva_tools::IsValid_Variable($result['fichier']);
 
 	/*	Ajoute la photo à la table de toutes les photos	(GED Photo) */
-	$uploadStatus = evaPhoto::saveNewPhoto($tableElement, $idElement, $fichier);
+	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
 	if($uploadStatus != 'error')
 	{
 		/*	Défini la photo comme étant par défault	*/
-		$uploadStatusMainPhoto = evaPhoto::setMainPhoto($tableElement, $idElement, $fichier);
+		$uploadStatusMainPhoto = evaPhoto::setMainPhoto($tableElement, $idElement, $uploadStatus);
 		if($uploadStatusMainPhoto == 'error')
 		{
 			$result[success] = $uploadStatusMainPhoto;

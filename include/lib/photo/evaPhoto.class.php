@@ -143,7 +143,6 @@ class EvaPhoto {
 	*/
 	function getGallery($tableElement, $idElement)
 	{
-		//<input style="clear:both;float:right;" type="button" value="' . __('Recharger la gallerie', 'evarisk') . '" id="testreloadme" onclick="javascript:reloadcontainer();" />
 		$gallery = '
 			<div id="galeriePhoto' . $tableElement . $idElement .'">
 				<div class="galeryPhoto alignleft">
@@ -436,19 +435,27 @@ class EvaPhoto {
 		{
 			case TABLE_CATEGORIE_DANGER:
 				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : DEFAULT_DANGER_CATEGORIE_PICTO;
+				$texteBoutton = __('Envoyer une photo', 'evarisk');
 			break;
 			case TABLE_GROUPEMENT:
 				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : DEFAULT_GROUP_PICTO;
+				$texteBoutton = __('Envoyer une photo', 'evarisk');
 			break;
 			case TABLE_UNITE_TRAVAIL:
 				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : DEFAULT_WORKING_UNIT_PICTO;
+				$texteBoutton = __('Envoyer une photo', 'evarisk');
+			break;
+			case TABLE_PRECONISATION:
+				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : EVA_RECOMMANDATION_ICON;
+				$texteBoutton = __('Envoyer une photo', 'evarisk');
 			break;
 			default:
 				$photoDefaut = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : '';
+				$texteBoutton = __('Envoyer une photo', 'evarisk');
 			break;
 		}
 
-		$uploadForm = evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut);
+		$uploadForm = evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut, $texteBoutton);
 
 		return $uploadForm;
 	}
@@ -577,10 +584,9 @@ class EvaPhoto {
 		require_once(EVA_LIB_PLUGIN_DIR . 'upload.php' );
 
 		$texteBoutton = ($texteBoutton == '') ? __("T&eacute;l&eacute;charger un fichier", "evarisk") : $texteBoutton;
-		$onCompleteAction = ($onCompleteAction == '') ? 'reloadcontainer();' : $onCompleteAction;
+		$onCompleteAction = ($onCompleteAction == '') ? 'reloadcontainer(\'' . $tableElement . '\', \'' . $idElement . '\', \'' . PICTO_LOADING_ROUND . '\');' : $onCompleteAction;
 		$actionUpload = ($actionUpload == '') ? EVA_LIB_PLUGIN_URL . 'photo/uploadPhoto.php' : $actionUpload;
 		$photoDefaut = ($photoDefaut == '') ? '' : $photoDefaut;
-		// $photoDefaut = ($photoDefaut == '') ? EVA_HOME_URL . 'medias/images/Icones/Divers/blankThumbnail.png' : $photoDefaut;
 		$repertoireDestination = ($repertoireDestination == '') ? str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/') : $repertoireDestination;
 		$multiple = $multiple ? 'true' : 'false';
 
@@ -672,6 +678,9 @@ class EvaPhoto {
 				break;
 				case TABLE_UNITE_TRAVAIL:
 					$definedDefaultPicture = DEFAULT_WORKING_UNIT_PICTO;
+				break;
+				case TABLE_PRECONISATION:
+					$definedDefaultPicture = EVA_RECOMMANDATION_ICON;
 				break;
 			}
 
@@ -785,7 +794,7 @@ class EvaPhoto {
 						evarisk("#message' . $tableElement . '_' . $idElement . '").removeClass("updated");
 						evarisk("#message' . $tableElement . '_' . $idElement . '").hide();
 					},5000);
-					reloadcontainer();
+					reloadcontainer(\'' . $tableElement . '\', \'' . $idElement . '\', \'' . PICTO_LOADING_ROUND . '\');
 				});
 				evarisk("#photo' . $tableElement . $idElement . '").attr("src", "' . $resultDefaultPicture . '");
 			</script>';
@@ -813,7 +822,7 @@ class EvaPhoto {
 		}
 		elseif(count($listePhotoElement) >= 1)
 		{
-			$galleryOutput = '<input type="button" value="' . __('Voir la galerie', 'evarisk') . '" onclick="javascript:showGallery();" />';
+			$galleryOutput = '<input type="button" value="' . __('Voir la galerie', 'evarisk') . '" onclick="javascript:showGallery(\'' . $tableElement . '\', \'' . $idElement . '\', \'' . PICTO_LOADING_ROUND . '\');" />';
 		}
 
 		return $galleryOutput;
@@ -830,31 +839,55 @@ class EvaPhoto {
 	function galleryContent($tableElement, $idElement)
 	{
 		return 
-'<script type="text/javascript">
-	function reloadcontainer()
-	{
-		evarisk("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-		evarisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-			"post": "true",  
-			"table": "' . $tableElement . '",
-			"idElement": "' . $idElement . '",
-			"act": "reloadGallery"
-		});
-	}
-	function showGallery()
-	{
-		evarisk("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-		evarisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-			"post": "true",  
-			"table": "' . $tableElement . '",
-			"idElement": "' . $idElement . '",
-			"act": "showGallery"
-		});
-	}
-</script>
-<div id="message' . $tableElement . '_' . $idElement . '" ></div>
+'<div id="message' . $tableElement . '_' . $idElement . '" ></div>
 <div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>
 <div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement) . '</div>';
+	}
+
+	/**
+	*
+	*/
+	function checkIfPictureIsFile($pictureToCheck, $tableElement, $putDefaultPicture = true)
+	{
+
+		switch($tableElement)
+		{
+			case TABLE_PRECONISATION:
+			{
+				$defaultPicture = EVA_RECOMMANDATION_ICON;
+			}
+			break;
+			case TABLE_CATEGORIE_PRECONISATION:
+			{
+				$defaultPicture = EVA_RECOMMANDATION_ICON;
+			}
+			break;
+			default:
+			{
+				$defaultPicture = false;
+			}
+			break;
+		}
+
+		$pictureExist = false;
+		if($pictureToCheck != '')
+		{
+			if(is_file(EVA_HOME_DIR . $pictureToCheck))
+			{
+				$pictureExist = EVA_HOME_URL . $pictureToCheck;
+			}
+			elseif(is_file(EVA_GENERATED_DOC_DIR . $pictureToCheck))
+			{
+				$pictureExist = EVA_GENERATED_DOC_URL . $pictureToCheck;
+			}
+		}
+
+		if(($putDefaultPicture) && (!$pictureExist) && ($defaultPicture != false) && (is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $defaultPicture))))
+		{
+			$pictureExist = $defaultPicture;
+		}
+
+		return $pictureExist;
 	}
 
 }

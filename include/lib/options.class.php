@@ -38,6 +38,9 @@ class options
 				case 'fichedeposte':
 					$domaineOption = __('Fiches de poste', 'evarisk');
 				break;
+				case 'recommandation':
+					$domaineOption = __('Pr&eacute;conisations', 'evarisk');
+				break;
 			}
 			$lignesDeValeurs[$i][] = array('value' => $domaineOption, 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => ucfirst($option->nomAffiche), 'class' => '');

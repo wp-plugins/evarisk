@@ -53,7 +53,7 @@ $scriptCB = '
 	}
 	$lignesDeValeurs[] = $insertions;
 }
-{//EPI
+if(false){//EPI
 	$insertions[0]['value'] = '<p class="titreSetup">' . __('&Eacute;quipements de Protection Individuelle', 'evarisk') . '</p>';
 	$insertions[1]['value'] = '';
 	$idEPI = "insertionEPI";
@@ -248,14 +248,16 @@ if(STANDALONEVERSION)
 						"categorieDangers": evarisk("#insertionCategorie").attr("checked"),
 						"danger": evarisk("#insertionDanger").attr("checked"),
 						"methodes": methodes,
-						"theme": evarisk("#activationThemeEvarisk").attr("checked"),
-						"EPIs": evarisk("#insertionEPI").attr("checked"),
-						"EPI": epi
+						"theme": evarisk("#activationThemeEvarisk").attr("checked")
 					});
 				}
 			});
 		});
 		</script>';
+		//	MODIFICATION DES EPI POUR PASSAGE AUX PRECONISATIONS
+		// ,
+						// "EPIs": evarisk("#insertionEPI").attr("checked"),
+						// "EPI": epi
 	$formulaireInstallation .= 
 '	<div id="installLoading" class="alignright" >&nbsp;</div>
 	<div id="installButton" class="alignright" >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Installer Evarisk', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div>

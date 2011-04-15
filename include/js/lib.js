@@ -283,14 +283,17 @@ function updateTips( t, container )
 		.text( t )
 		.addClass( "ui-state-highlight" );
 	setTimeout(function() {
-		tips.removeClass( "ui-state-highlight", 1500 );
+		container.removeClass( "ui-state-highlight", 1500 );
 	}, 500 );
+	setTimeout(function() {
+		container.text( "" );
+	}, 5000 );
 }
 function checkLength( o, n, min, max, msg, errorContainer )
 {
 	if ( o.val().length > max || o.val().length < min ) {
 		o.addClass( "ui-state-error" );
-		updateTips( msg.replace("term", n).replace("minlength", min).replace("maxlength", max), errorContainer );
+		updateTips( convertAccentToJS(msg.replace("!#!term!#!", n).replace("!#!minlength!#!", min).replace("!#!maxlength!#!", max)), errorContainer );
 		return false;
 	} else {
 		return true;
@@ -306,4 +309,52 @@ function checkRegexp( o, regexp, n, errorContainer  )
 		return true;
 	}
 }
-		
+
+/*	Picture galery functions	*/
+function reloadcontainer(tableElement, idElement, PICTO_LOADING_ROUND)
+{
+	evarisk("#pictureGallery" + tableElement + "_" + idElement).html('<img src="' + PICTO_LOADING_ROUND + '" alt="loading" />');
+	evarisk("#pictureGallery" + tableElement + "_" + idElement).load(EVA_AJAX_FILE_URL, {
+		"post": "true",
+		"table": tableElement,
+		"idElement": idElement,
+		"act": "reloadGallery"
+	});
+}
+function showGallery(tableElement, idElement, PICTO_LOADING_ROUND)
+{
+	evarisk("#pictureGallery" + tableElement + "_" + idElement).html('<img src="' + PICTO_LOADING_ROUND + '" alt="loading" />');
+	evarisk("#pictureGallery" + tableElement + "_" + idElement).load(EVA_AJAX_FILE_URL, {
+		"post": "true",
+		"table": tableElement,
+		"idElement": idElement,
+		"act": "showGallery"
+	});
+}
+
+/*	Recommandation functions	*/
+function deleteRecommandationCategory(recommandationCategoryId, tableElement, alertMessage)
+{
+	if(confirm(convertAccentToJS(alertMessage))){
+		evarisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
+			"post":"true",
+			"table":tableElement,
+			"act":"deleteRecommandationCategory",
+			"id":recommandationCategoryId
+		});
+	}
+}
+function editRecommandationCategory(recommandationCategoryId, tableElement)
+{
+	evarisk("#recommandationCategoryFormContainer").hide();
+	evarisk("#loadingCategoryRecommandationForm").html(evarisk("#loadingImg").html());
+	evarisk("#loadingCategoryRecommandationForm").show();
+	evarisk("#recommandationCategoryInterfaceContainer").dialog("open");
+	evarisk("#recommandationCategoryFormContainer").load(EVA_AJAX_FILE_URL, 
+	{
+		"post":"true",
+		"table":tableElement,
+		"act":"loadRecommandationCategoryManagementForm",
+		"id":recommandationCategoryId
+	});
+}

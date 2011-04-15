@@ -238,22 +238,6 @@ class eva_tools
 		}
 		eva_tools::changeAccesAuthorisation($directory);
 	}
-	function make_recursiv_dir_work_before($dir)
-	{
-		$tab=explode('/',$dir);
-		$str='';
-		foreach($tab as $k => $v ){
-			if((trim($v)!='')){
-				$str.='/'.trim($v);
-				if( (trim($v)!='..') &&(trim($v)!='.') ){
-					if(!is_dir(substr($str,1)) && (!is_file(substr($str,1)) ) ){
-						if(!mkdir(substr($str,1), 0755))echo '<hr>erreur mkdir ! '.$str;
-						if(!chmod(substr($str,1), 0755))echo '<hr>erreur chmod ! '.$str;				
-					}
-				}
-			}
-		}
-	}
 
 	function changeAccesAuthorisation($dir)
 	{

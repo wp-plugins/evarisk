@@ -679,6 +679,444 @@ function evarisk_insertions($insertions = null)
 			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
 			break;
 		}
+		case 39:
+		{
+			/*	Add a new recommandation category representing PPE (EPI)	*/
+			$sql = "INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " (id, status, creation_date, nom, impressionRecommandation, tailleimpressionRecommandation) VALUES ('4', 'valid', NOW(), '&eacute;quipements de protection individuelle', 'pictureonly', '2');";
+			$wpdb->query($sql);
+
+			/*	Add a new recommandation category representing Recommandation	*/
+			$sql = "INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " (id, status, creation_date, nom) VALUES ('5', 'valid', NOW(), 'recommandations');";
+			$wpdb->query($sql);
+
+			/*	Add the default picture for each recommandation categories	*/
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationGenerale_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', 1, '" . TABLE_CATEGORIE_PRECONISATION . "');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionGenerale_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', 2, '" . TABLE_CATEGORIE_PRECONISATION . "');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerGeneral_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', 3, '" . TABLE_CATEGORIE_PRECONISATION . "');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/preconisationEPI_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', 4, '" . TABLE_CATEGORIE_PRECONISATION . "');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/recommandations/recommandationsGenerale_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', 5, '" . TABLE_CATEGORIE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			{/*	Add the different basic epi obligation	*/
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '1', NOW(), 'Divers obligation');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationGenerale_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Divers protection individuelle');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/preconisationEPI_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire de la vue');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationVue_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire de la t&ecirc;te');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationTete_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire de l\'ou&iuml;e');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationOuie_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire des voies respiratoires');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationVoiesRespiratoires_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire des pieds');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationPieds_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire des mains');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationMains_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire du corps');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationCorps_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire de la figure');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationFigure_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection individuelle obligatoire contre les chutes');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationChute_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '4', NOW(), 'Protection obligatoire pour pi&eacute;tons');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/obligations/obligationPietons_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+			}
+
+			{/*	Add the different basic prohibition	*/
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Divers interdiction');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionGenerale_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'D&eacute;fense de fumer');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionFumer_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Flamme nue interdite et d&eacute;fense de fumer');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionFlammeNue_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Interdit aux pi&eacute;tons');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionPietons_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'D&eacute;fense d\'&eacute;teindre avec de l\'eau');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionEteindreAvecEau_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Eau non potable');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionEauNonPotable_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Entr&eacute;e interdite aux personnes non autoris&eacute;es');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionPersonnesNonAutorisees_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Interdit aux v&eacute;hicules de manutention');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionVehiculesManutention_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+
+			$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '2', NOW(), 'Ne pas toucher');";
+			$wpdb->query($sql);
+			$lastRecommandation = $wpdb->insert_id;
+			$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/interdictions/interdictionToucher_s.png');";
+			$wpdb->query($sql);
+			$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+			$wpdb->query($sql);
+			}
+
+			{/*	Add the different basic warning	*/
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Divers danger');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerGeneral_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Emplacement o&ugrave; une atmosph&egrave;re explosible peut se pr&eacute;senter');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerEX_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res inflammables ou haute temp&eacute;rature');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerMatieresInflammables_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res explosives
+Risque d'explosion');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerMatieresExplosives_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res toxiques');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerMatieresToxiques_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res corrosives');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerMatieresCorrosives_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res radioactives
+radiations ionisantes');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerRayonnementIonisantes_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Charges suspendues');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerChargesSuspendues_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'V&eacute;hicules de manutention');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerVehiculeManutention_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Danger &eacute;lectrique');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerElectrique_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Rayonnement laser');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerRayonnementLaser_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res comburantes');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerMatieresComburantes_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Radiations non ionisantes');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerRayonnementNonIonisantes_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Champ magn&eacute;tique
+important');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerChampMagnetiqueImportant_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Tr&eacute;buchement');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerTrebuchement_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Chute avec d&eacute;nivellation');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerChuteDenivele_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Risque biologique');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerRisqueBiologique_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Basse temp&eacute;rature');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerBasseTemperature_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '3', NOW(), 'Mati&egrave;res nocives
+ou irritantes');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/avertissements/dangerMatieresNocivesIrritantes_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+			}
+
+			{/*	Add the different basic recommandation	*/
+				$sql = "INSERT INTO " . TABLE_PRECONISATION . " (id, status, id_categorie_preconisation, creation_date, nom) VALUES ('', 'valid', '5', NOW(), 'Divers recommandations');";
+				$wpdb->query($sql);
+				$lastRecommandation = $wpdb->insert_id;
+				$sql = "INSERT INTO " . TABLE_PHOTO . " (id, status, photo) VALUES ('', 'valid', 'medias/images/Pictos/preconisations/recommandations/recommandationsGenerale_s.png');";
+				$wpdb->query($sql);
+				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " (id, status, isMainPicture, idPhoto, idElement, tableElement) VALUES ('', 'valid', 'yes', '" . $wpdb->insert_id . "', '" . $lastRecommandation . "', '" . TABLE_PRECONISATION . "');";
+				$wpdb->query($sql);
+			}
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 40:
+		{
+			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'recommandation', 'recommandation_efficiency_activ', '%s', 'non', 'Valid', 'ouinon');", __('activer la possibilit&eacute; de mettre une efficacit&eacute; dans les pr&eacute;conisations', 'evarisk'));
+			$wpdb->query($sql);
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 41:
+		{
+			{/*	Replace the old ppe management with the new one	*/
+				$sql = "SELECT * FROM " . TABLE_UTILISE_EPI;
+				$epi_utilise_results = $wpdb->get_results($sql);
+
+				$query = "  ";
+				foreach($epi_utilise_results as $epi_utilise)
+				{
+					switch($epi_utilise->ppeId)
+					{
+						case 1:
+							$newEpiId = 5;
+						break;
+						case 2:
+							$newEpiId = 4;
+						break;
+						case 3:
+							$newEpiId = 7;
+						break;
+						case 4:
+							$newEpiId = 9;
+						break;
+						case 5:
+							$newEpiId = 8;
+						break;
+						case 6:
+							$newEpiId = 11;
+						break;
+						case 7:
+							$newEpiId = 3;
+						break;
+						case 8:
+							$newEpiId = 6;
+						break;
+					}
+					$query .= "('', 'valid', '" . $newEpiId . "', '', '" . $epi_utilise->elementId . "', '" . $epi_utilise->elementTable . "', ''), ";
+				}
+
+				$query = trim(substr($query, 0, -2));
+				if($query != "")
+				{
+					$query = "INSERT INTO " . TABLE_LIAISON_PRECONISATION_ELEMENT . " (id, status, id_preconisation, efficacite, id_element, table_element, commentaire) VALUES " . $query;
+					$wpdb->query($query);
+				}
+			}
+
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
+		case 42:
+		{
+			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			break;
+		}
 	}
 
 }

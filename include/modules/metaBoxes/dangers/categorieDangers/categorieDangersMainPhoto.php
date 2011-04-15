@@ -17,29 +17,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php' );
 		$tableElement = $arguments['tableElement'];
 
 		$output =  
-			'<script type="text/javascript">
-				function reloadcontainer()
-				{
-					evarisk("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-					evarisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
-						"table": "' . $tableElement . '",
-						"idElement": "' . $idElement . '",
-						"act": "reloadGallery"
-					});
-				}
-				function showGallery()
-				{
-					evarisk("#pictureGallery' . $tableElement . '_' . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-					evarisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
-						"table": "' . $tableElement . '",
-						"idElement": "' . $idElement . '",
-						"act": "showGallery"
-					});
-				}
-			</script>
-			<div id="message' . $tableElement . '_' . $idElement . '" ></div>
+			'<div id="message' . $tableElement . '_' . $idElement . '" ></div>
 			<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>
 			<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >';
 

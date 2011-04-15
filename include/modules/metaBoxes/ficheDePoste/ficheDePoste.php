@@ -34,7 +34,7 @@
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
 		evarisk("#ongletImpressionFicheDePoste").click(function(){
-			commonTabChange("postBoxFicheDePoste", "#divImpressionFicheDePoste", "#ongletImpressionFicheDePoste");
+			commonTabChange("postBoxFicheDePoste", "#divImpressionFicheDePoste", "#ongletHistoriqueFicheDePoste");
 			evarisk("#divImpressionFicheDePoste").html(evarisk("#loadingImg").html());
 			evarisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{

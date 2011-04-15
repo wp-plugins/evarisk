@@ -35,9 +35,6 @@
 	// Tables danger
 	DEFINE('TABLE_CATEGORIE_DANGER', PREFIXE_EVARISK . "categorie_danger");
 	DEFINE('TABLE_DANGER', PREFIXE_EVARISK . "danger");
-	// Tables EPI
-	DEFINE('TABLE_EPI', PREFIXE_EVARISK . "ppe");
-	DEFINE('TABLE_UTILISE_EPI', PREFIXE_EVARISK . "use_ppe");	
 	// Tables actions correctives
 	DEFINE('TABLE_TACHE', PREFIXE_EVARISK . "actions_correctives_tache");
 	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "actions_correctives_actions");
@@ -116,4 +113,8 @@
 	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 37
 	DEFINE('TABLE_DUER_OLD', PREFIXE_EVARISK . "document_unique");
 
+	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 39
+	// Tables EPI
+	DEFINE('TABLE_EPI', PREFIXE_EVARISK . "ppe");
+	DEFINE('TABLE_UTILISE_EPI', PREFIXE_EVARISK . "use_ppe");	
 ?>

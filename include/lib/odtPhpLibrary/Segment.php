@@ -7,8 +7,9 @@ class SegmentException extends Exception
  * You need PHP 5.2 at least
  * You need Zip Extension or PclZip library
  * Encoding : ISO-8859-1
- * Last commit by $Author: neveldo $
- * Date - $Date: 2009-06-17 12:12:59 +0200 (mer., 17 juin 2009) $
+ * Author: neveldo $
+ * Modified by: Vikas Mahajan http://vikasmahajan.wordpress.com
+ * Date - $Date: 2010-12-09 11:11:57
  * SVN Revision - $Rev: 44 $
  * Id : $Id: Segment.php 44 2009-06-17 10:12:59Z neveldo $
  *
@@ -23,6 +24,7 @@ class Segment implements IteratorAggregate, Countable
     protected $name;
     protected $children = array();
     protected $vars = array();
+    public $manif_vars = array();
 	protected $images = array();
 	protected $odf;
 	protected $file;
@@ -38,7 +40,7 @@ class Segment implements IteratorAggregate, Countable
         $this->xml = (string) $xml;
 		$this->odf = $odf;
         $zipHandler = $this->odf->getConfig('ZIP_PROXY');
-        $this->file = new $zipHandler();	
+        $this->file = new $zipHandler($this->odf->getConfig('PATH_TO_TMP'));	
         $this->_analyseChildren($this->xml);
     }
     /**
@@ -90,6 +92,10 @@ class Segment implements IteratorAggregate, Countable
             foreach ($this->children as $child) {
                 $this->xmlParsed = str_replace($child->xml, ($child->xmlParsed=="")?$child->merge():$child->xmlParsed, $this->xmlParsed);
                 $child->xmlParsed = '';
+                //Store all image names used in child segments in current segment array 
+				foreach ($child->manif_vars as $file) 
+                $this->manif_vars[] = $file; 
+                $child->manif_vars=array();
             }
         }
         $reg = "/\[!--\sBEGIN\s$this->name\s--\](.*)\[!--\sEND\s$this->name\s--\]/sm";
@@ -100,6 +106,7 @@ class Segment implements IteratorAggregate, Countable
 				$this->file->addFile($imageKey, 'Pictures/' . $imageValue);
 			}
         }
+
         $this->file->close();		
         return $this->xmlParsed;
     }
@@ -134,7 +141,8 @@ class Segment implements IteratorAggregate, Countable
     public function setVars($key, $value, $encode = true, $charset = 'ISO-8859')
     {
         if (strpos($this->xml, $this->odf->getConfig('DELIMITER_LEFT') . $key . $this->odf->getConfig('DELIMITER_RIGHT')) === false) {
-            throw new SegmentException("var $key not found in {$this->getName()}");
+            // throw new SegmentException("var $key not found in {$this->getName()}");
+						return;
         }
 		$value = $encode ? htmlspecialchars($value) : $value;
 		$value = ($charset == 'ISO-8859') ? utf8_encode($value) : $value;
@@ -149,7 +157,7 @@ class Segment implements IteratorAggregate, Countable
      * @throws OdfException
      * @return Segment
      */
-    public function setImage($key, $value)
+    public function setImage($key, $value, $finalWidth = 0)
     {
         $filename = strtok(strrchr($value, '/'), '/.');
         $file = substr(strrchr($value, '/'), 1);
@@ -158,21 +166,22 @@ class Segment implements IteratorAggregate, Countable
             throw new OdfException("Invalid image");
         }
         list ($width, $height) = $size;
-				$ratio = 0;$ratio = options::getOptionValue('taille_photo_poste_fiche_de_poste') / $width;
-				if($ratio > 0)
+				if($finalWidth <= 0)
 				{
-					$width *= $ratio;
-					$height *= $ratio;
+					$width *= Odf::PIXEL_TO_CM;
+					$height *= Odf::PIXEL_TO_CM;
 				}
 				else
 				{
-					$width *= self::PIXEL_TO_CM;
-					$height *= self::PIXEL_TO_CM;
+					$ratio = ($finalWidth / $width);
+					$width *= $ratio;
+					$height *= $ratio;
 				}
         $xml = <<<IMG
-<draw:frame draw:style-name="fr1" draw:name="$filename" text:anchor-type="char" svg:width="{$width}cm" svg:height="{$height}cm" draw:z-index="3"><draw:image xlink:href="Pictures/$file" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame>
+<draw:frame draw:style-name="fr1" draw:name="$filename" text:anchor-type="aschar" svg:width="{$width}cm" svg:height="{$height}cm" draw:z-index="3"><draw:image xlink:href="Pictures/$file" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame>
 IMG;
         $this->images[$value] = $file;
+        $this->manif_vars[] = $file;	//save image name as array element
         $this->setVars($key, $xml, false);
         return $this;
     }	

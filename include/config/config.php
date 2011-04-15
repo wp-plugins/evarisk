@@ -35,6 +35,8 @@
 	DEFINE('EVA_RESULTATS_PLUGIN_DIR', EVA_GENERATED_DOC_DIR . 'results/');
 	DEFINE('EVA_MODELES_PLUGIN_DIR', EVA_UPLOADS_PLUGIN_DIR . 'modeles/');
 	DEFINE('EVA_MODELES_PLUGIN_URL', EVA_UPLOADS_PLUGIN_URL . 'modeles/');
+	DEFINE('EVA_NOTES_PLUGIN_DIR', EVA_RESULTATS_PLUGIN_DIR . 'notes/');
+	DEFINE('EVA_NOTES_PLUGIN_URL', EVA_RESULTATS_PLUGIN_URL . 'notes/');
 
 	/*	Do not delete even if old sufix has been added!!! Used to check if directory are well created on each plugin loading	*/
 	DEFINE('EVA_UPLOADS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/uploads/');

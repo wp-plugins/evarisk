@@ -1633,6 +1633,50 @@ function evarisk_creationTables()
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(EvaVersion::getVersion('base_evarisk') <= 39)
+		{//Insertions des icones pour les preconisations et des preconisations par défaut existante
+			/*	Change the name of the category from "recommandation" to "avertissement"	*/
+			$sql = "UPDATE " . TABLE_CATEGORIE_PRECONISATION . " SET nom = 'avertissement' WHERE id = '3';";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_CATEGORIE_PRECONISATION . " ADD impressionRecommandationCategorie ENUM( 'textandpicture', 'textonly', 'pictureonly' ) NOT NULL DEFAULT 'textandpicture' COMMENT 'Define the way to print the recommandation category into the different document' AFTER creation_date ,
+ADD INDEX ( impressionRecommandationCategorie ) ;";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_CATEGORIE_PRECONISATION . " ADD tailleimpressionRecommandationCategorie FLOAT( 3,2 ) NOT NULL DEFAULT '2' COMMENT 'Define the end size of the category picture into the different printed document' AFTER impressionRecommandationCategorie ;";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_CATEGORIE_PRECONISATION . " ADD impressionRecommandation ENUM( 'textandpicture', 'textonly', 'pictureonly' ) NOT NULL DEFAULT 'textandpicture'  COMMENT 'Define the way to print the recommandation into the different document' AFTER tailleimpressionRecommandationCategorie ,
+ADD INDEX ( impressionRecommandation ) ;";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_CATEGORIE_PRECONISATION . " ADD tailleimpressionRecommandation FLOAT( 3,2 ) NOT NULL DEFAULT '0.8' COMMENT 'Define the end size of the recommandation picture into the different printed document' AFTER impressionRecommandation ;";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 40)
+		{//Ajout de l'option pour activer ou non le champs Efficacité dans les préconisations
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 41)
+		{//Remplace l'ancienne version de la gestion des EPI par les préconisations
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(EvaVersion::getVersion('base_evarisk') <= 42)
+		{//Remplace l'ancienne version de la gestion des EPI par les préconisations
+			$sql = "ALTER TABLE " . TABLE_FP . " ADD recommandation LONGTEXT NULL ";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
+
 ?>

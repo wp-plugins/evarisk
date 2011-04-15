@@ -14,6 +14,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaQuestion.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
 
 class EvaDisplayDesign {
 	/**
@@ -33,25 +34,24 @@ class EvaDisplayDesign {
 	{
 		$debutPage = '<div class="wrap">
 			<div class="icon32"><img alt="' . $altIcon . '" src="' . $icone . '"title="' . $titreIcone . '"/></div>
-			<h2>' . $titrePage;
+			<h2 class="alignleft" >' . $titrePage;
 		if($boutonAjouter)
 		{
-			$debutPage = $debutPage . ' <a class="button add-new-h2" onclick="javascript:document.getElementById(\'act\').value=\'add\'; document.forms.form.submit();">' . __('Ajouter', 'evarisk') . '</a>';
+			$debutPage .= ' <a class="button add-new-h2" onclick="javascript:document.getElementById(\'act\').value=\'add\'; document.forms.form.submit();">' . __('Ajouter', 'evarisk') . '</a>';
 		}
-		$debutPage = $debutPage . '</h2>';
-		$debutPage = $debutPage . '<div id="champsCaches" class=""></div>
-			<script type="text/javascript">
-				evarisk(document).ready(function() {
-					setTimeout 
-					( 
-						function() 
-						{ 
-							evarisk("#message").hide();
-						}, 
-						10000
-					);
-				});
-			</script>';
+		$debutPage .= '
+		</h2>
+' . evaNotes::noteDialogMaker() . '
+		<div id="champsCaches" class="clear" ></div>
+		<script type="text/javascript">
+			evarisk(document).ready(function(){
+				setTimeout(function(){
+						evarisk("#message").hide();
+				}, 10000);
+
+' . evaNotes::noteDialogScriptMaker() . '
+			});
+		</script>';
 		if($choixAffichage)
 		{
 			$racine = Arborescence::getRacine($table);
@@ -96,7 +96,7 @@ class EvaDisplayDesign {
 				<span style="" id="leftEnlarging" class="leftEnlarging"></span>
 			</div>';
 		}
-		$debutPage = $debutPage . '<div id="message" class="fade below-h2">' . $messageInfo . '</div>';
+		$debutPage .= '<div id="message" class="fade below-h2 evaMessage">' . $messageInfo . '</div>';
 		return $debutPage;
 	}
 
