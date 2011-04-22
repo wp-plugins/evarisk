@@ -12,6 +12,7 @@ class eva_tools
 	function IsValid_Variable($MyVar2Test,$DefaultValue='')
 	{
 		$MyVar = (trim(strip_tags(stripslashes($MyVar2Test)))!='') ? trim(strip_tags(stripslashes(($MyVar2Test)))) : $DefaultValue ;
+		$MyVar = str_replace("’","'", $MyVar);
 
 		return $MyVar;
 	}

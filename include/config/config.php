@@ -1,4 +1,6 @@
 <?php
+	DEFINE('EVA_PLUGIN_VERSION', '5.1.2.8');
+
 	require_once('configDroitAcces.php');
 	require_once('configEavModel.php');
 	require_once('configNomTables.php');

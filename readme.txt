@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.1
-Stable tag: 5.1.2.7
+Stable tag: 5.1.2.8
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -63,11 +63,32 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
+= Version 5.1.2.8 =
+
+Am&eacute;liorations
+
+* Possibilit&eacute; de chosir un mod&egrave;le pour la g&eacute;n&eacute;ration des fiches de poste pour un groupement entier
+* Possibilit&eacute; de renseigner / modifier les informations suivantes pour la g&eacute;n&eacute;ration du document unique : localisation de l'&eacute;tude, remarque importante, source
+* Regroupement des historiques des documents g&eacute;n&eacute;r&eacute;s pour un groupement (document unique et fiche de poste) dans un m&ecirc;me onglet
+* Regroupement des formulaires de g&eacute;n&eacute;ration de documents (document unique et fiche de poste) dans un m&ecirc;me onglet (G&eacute;&eacute;rer le bilan)
+* Ajout du num&eacute;ro de la version actuelle dans l'appel des css et des javascripts pour &eacute;viter d'avoir &agrave; effectuer un ctrl+f5 lors d'une mise &agrave; jour du plugin
+* Mise en conformit&eacute; des appels css et javascript avec les bonnes pratiques de wordpress
+* Ajout d'une interface permettant de modifier les commentaires et les descriptions des actions correctives prioritaires pour tous les risques de tous les &eacute;l&eacute;ments situ&eacute;s sous l'&eacute;l&eacute;ment courant (uniquement disponible sur les groupements)
+
+Corrections
+
+* Appel de la fonction EvaDisplayDesign::afficherFinPage() manquant dans deux interface provoquant des erreurs au niveau du code html g&eacute;n&eacute;r&eacute;
+* Erreur lors de l'affichage du suivi des actions correctives en mode avanc&eacute; (Probl&egrave;me avec la notion de quotation avant et apr&eacute;s le risque non g&eacute;r&eacute; lors de l'ajout d'une action corrective en m&ecirc;me temps que le risque)
+* Modification de certains scripts et de la fonction eva_tools::IsValid_Variable() pour remplacer le caract&egrave;re ’ par ' qui g&eacute;n&eacute;re une erreur lors de la g&eacute;n&eacute;ration des documents en odt
+* Probl&egrave;me de nommage du fichier zip contenant la liste des fiches de poste pour un groupement, qui faisait que la liste des fichiers zip n'&eacute;tait pas affich&eacute;e apr&egrave;s g&eacute;n&eacute;ration
+* Probl&egrave;me lors du rechargement de la box "bilan" des groupements le clic sur le boutton de g&eacute;n&eacute;ration du document unique ne fonctionnait plus
+
+
 = Version 5.1.2.7 =
 
 Am&eacute;liorations
 
-* Mise en place des pr&eacute;conisations sur les unit&eacute;s de travail
+*	Mise en place des pr&eacute;conisations sur les unit&eacute;s de travail
 * Ajout des pr&eacute;conisations dans les fiches de poste
 * Possibilit&eacute; de d&eacute;finir l'affichage voulu pour les familles de pr&eacute;conisations et les pr&eacute;conisations (texte + image, texte seulement, image seulement + taille de l'image)
 * Ajout d'un gestionnaire de notes par utilisateur. Pour le moment au format texte.
@@ -75,7 +96,7 @@ Am&eacute;liorations
 Corrections
 
 * Lorsqu'on supprime un pattern dans le mod&egrave;le odt (exemple: {photoDefaut}) il n'y a plus d'exception lanc&eacute;e par la librairie
-* Le mod&egrave;le par d&eacute;faut est &agrave; nouveau s&eacute;lectionn&eacute; lorsqu'il n'y a pas d'autre mod&egrave;le
+*	Le mod&egrave;le par d&eacute;faut est &agrave; nouveau s&eacute;lectionn&eacute; lorsqu'il n'y a pas d'autre mod&egrave;le
 
 
 = Version 5.1.2.6 =

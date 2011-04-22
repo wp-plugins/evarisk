@@ -39,6 +39,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandation.class.php
 require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
@@ -794,6 +795,7 @@ if($_REQUEST['post'] == 'true')
 						$pictureId = isset($_REQUEST['pictureId']) ? (eva_tools::IsValid_Variable($_REQUEST['pictureId'])) : '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
 						$_REQUEST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']);
+						$_REQUEST['description'] = str_replace("’", "'",$_REQUEST['description']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
@@ -1057,6 +1059,154 @@ if($_REQUEST['post'] == 'true')
 		' . $script . '
 	});
 </script>';
+					}
+					break;
+
+					case 'loadRisqMassUpdater':
+					{
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo '<div id="ajax-response-massUpdater" class="hide" >&nbsp;</div><div id="messageRisqMassUpdater" class="evaMessage hide fade updated" >&nbsp;</div>
+' . eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'massUpdater') . '
+<div class="clear alignright" ><span id="checkAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout cocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="uncheckAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout d&eacutecocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="reverseSelectionBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Inverser la s&eacute;lection', 'evarisk') . '</span><img src="' . EVA_ARROW_TOP . '" alt="arrow_top" class="checkboxRisqMassUpdaterSelector_bottom" /></div>
+<div class="clear alignright risqMassUpdaterChooserExplanation" >' . __('Cochez les cases pour prendre en compte les modifications', 'evarisk') . '</div>
+<div class="clear alignright" >
+	<input type="button" class="button-primary" name="saveRisqMassModification" id="saveRisqMassModification" value="' . __('Enregistrer', 'evarisk') . '" /> 
+	<input type="button" class="button-secondary" name="cancelRisqMassModification" id="cancelRisqMassModification" value="' . __('Annuler', 'evarisk') . '" /> 
+</div>
+<script type="text/javascript" >
+	evarisk("#risqMassUpdater textarea").keypress(function(){
+		if(evarisk(this).hasClass("risqComment")){
+			currentLineIdentifier = evarisk(this).attr("id").replace("risqComment_", "");
+		}
+		else if(evarisk(this).hasClass("risqPrioritaryCA")){
+			currentLineIdentifier = evarisk(this).attr("name").replace("risqPrioritaryCA_", "");
+		}
+		evarisk("#checkboxRisqMassUpdater_" + currentLineIdentifier).attr("checked", "checked");
+	});
+
+	evarisk("#checkAllBoxMassUpdater").click(function(){
+		evarisk(".checkboxRisqMassUpdater").each(function(){
+			evarisk(this).attr("checked", "checked");
+		});
+	});
+	evarisk("#uncheckAllBoxMassUpdater").click(function(){
+		evarisk(".checkboxRisqMassUpdater").each(function(){
+			evarisk(this).attr("checked", "");
+		});
+	});
+	evarisk("#reverseSelectionBoxMassUpdater").click(function(){
+		evarisk(".checkboxRisqMassUpdater").each(function(){
+			if(evarisk(this).is(":checked")){
+				evarisk(this).attr("checked", "");
+			}
+			else{
+				evarisk(this).attr("checked", "checked");
+			}
+		});
+	});
+	evarisk("#saveRisqMassModification").click(function(){
+		risqComment = "";
+		risqPrioritaryAction = "";
+		evarisk(".checkboxRisqMassUpdater").each(function(){
+			if(evarisk(this).is(":checked")){
+				var currentLineRisqIdentifier = evarisk(this).attr("id").replace("checkboxRisqMassUpdater_", "");
+				var currentLinePrioritaryActionIdentifier = evarisk("#prioritaryActionMassUpdater_" + currentLineRisqIdentifier).val();
+				risqComment += currentLineRisqIdentifier  + "XevaValueDelimiteRevaX" + evarisk("#risqComment_" + currentLineRisqIdentifier).val() + "XevaEntryDelimiteRevaX";
+				risqPrioritaryAction += currentLinePrioritaryActionIdentifier  + "XevaValueDelimiteRevaX" + evarisk("#risqPrioritaryCA_" + currentLinePrioritaryActionIdentifier).val() + "XevaEntryDelimiteRevaX";
+			}
+		});
+
+		evarisk("#ajax-response-massUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true", 
+			"table":"' . TABLE_RISQUE . '", 
+			"act":"saveRisqMassUpdater",
+			"risqComment":risqComment,
+			"risqPrioritaryAction":risqPrioritaryAction
+		});
+
+		// evarisk("#risqMassUpdater").dialog("close");
+	});
+	evarisk("#cancelRisqMassModification").click(function(){
+		var hasModification = false;
+		evarisk(".checkboxRisqMassUpdater").each(function(){
+			if(evarisk(this).is(":checked")){
+				hasModification = true;
+			}
+		});
+		if(!hasModification || (confirm(convertAccentToJS("' . __('&Ecirc;tes vous sur de vouloir annuler les modifications en cours?', 'evarisk') . '")))){
+			evarisk("#risqMassUpdater").dialog("close");
+		}
+	});
+</script>';
+					}
+					break;
+					case 'saveRisqMassUpdater':
+					{
+						$risqComment = eva_tools::IsValid_Variable($_REQUEST['risqComment']);
+						$risqPrioritaryAction = eva_tools::IsValid_Variable($_REQUEST['risqPrioritaryAction']);
+
+						/*	Start risq comment update	*/
+						$risqError = false;
+						$risqCommentLines = explode("XevaEntryDelimiteRevaX", $risqComment);
+						foreach($risqCommentLines as $line)
+						{
+							if($line != '')
+							{
+								$query = "";
+								$risqCommentLineValue = explode("XevaValueDelimiteRevaX", $line);
+								$query = $wpdb->prepare("UPDATE " . TABLE_RISQUE . " SET commentaire = %s WHERE id = %d;
+", $risqCommentLineValue[1], $risqCommentLineValue[0]);
+								if( !$wpdb->query($query) && $wpdb->query($query) != 0 )
+								{
+									$risqError = true;
+								}
+							}
+						}
+						if($risqError)
+						{
+							$risqErrorMessage = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />' . __('Une ou plusieurs erreurs sont survenues lors de l\'enregistrement des corrections pour les risques.', 'evarisk');
+						}
+						else
+						{
+							$risqErrorMessage = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />' . __('Tous les risques ont &eacute;t&eacute; mis &agrave; jour', 'evarisk');
+						}
+
+						/*	Start risq associated prioritary action update	*/
+						$risqACError = false;
+						$risqPrioritaryActionLines = explode("XevaEntryDelimiteRevaX", $risqPrioritaryAction);
+						foreach($risqPrioritaryActionLines as $line)
+						{
+							if($line != '')
+							{
+								$query = "";
+								$risqPrioritaryActionLineValue = explode("XevaValueDelimiteRevaX", $line);
+								$query = $wpdb->prepare("UPDATE " . TABLE_TACHE . " SET description = %s WHERE id = %d;
+", $risqPrioritaryActionLineValue[1], $risqPrioritaryActionLineValue[0]);
+								if( !$wpdb->query($query) && $wpdb->query($query) != 0 )
+								{
+									$risqACError = true;
+								}
+							}
+						}
+						if($risqACError)
+						{
+							$risqACErrorMessage = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />' . __('Une ou plusieurs erreurs sont survenues lors de l\'enregistrement des corrections pour les actions prioritaires.', 'evarisk');
+						}
+						else
+						{
+							$risqACErrorMessage = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />' . __('Toutes les actions prioritaires ont &eacute;t&eacute; mise &agrave; jour', 'evarisk');
+						}
+
+						echo '
+<script type="text/javascript" >
+	evarisk("#uncheckAllBoxMassUpdater").click();
+	actionMessageShow("#messageRisqMassUpdater", "' . addslashes($risqErrorMessage) . '<br/>' . addslashes($risqACErrorMessage) . '");
+	setTimeout(\'actionMessageHide("#messageRisqMassUpdater")\',7500);
+</script>';
+
 					}
 					break;
 				}
@@ -2663,17 +2813,26 @@ if($_REQUEST['post'] == 'true')
 				$idElement = $_REQUEST['idElement'];
 				switch($_REQUEST['act'])
 				{
-					case 'voirDocumentUnique' :
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+					case 'generateSummary' :
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
+						echo  eva_documentUnique::getBoxBilan($tableElement, $idElement);
+						// echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
 					break;
-					case 'voirHistoriqueDocumentUnique' :
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+					case 'voirHistoriqueDocument' :
+					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo eva_documentUnique::getDUERList($tableElement, $idElement);
+
+						/*	Start "document unique" part	*/
+						$output .= '<div class="clear" ><div class="clear bold" >' . __('Documents unique pour le groupement', 'evarisk') . '</div>' . eva_documentUnique::getDUERList($tableElement, $idElement) . '</div>';
+
+						/*	Start work unit sheet part	*/
+						$output .= '<div class="clear" >&nbsp;</div><div class="clear" ><div class="clear bold" >' . __('Fiches de poste pour le groupement', 'evarisk') . '</div>
+						' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '
+</div>';
+						echo $output;
+					}
 					break;
 					case 'saveDocumentUnique' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUniquePersistance.php');
@@ -2685,10 +2844,23 @@ if($_REQUEST['post'] == 'true')
 					case 'loadNewModelForm':
 						echo evaDisplayDesign::getNewModelUploadForm($tableElement, $idElement);
 					break;
+					case 'workSheetUnitCollectionGenerationForm':
+					{
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_WorkUnitSheet::getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement);
+					}
+					break;
+					case 'documentUniqueGenerationForm':
+					{
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
+					}
+					break;
 				}
 				break;
 			case TABLE_FP:
-				require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');
 				switch($_REQUEST['act'])
 				{
 					case 'saveFichePoste':
@@ -2731,26 +2903,35 @@ if($_REQUEST['post'] == 'true')
 							}
 						}
 
+						$saveZipFileActionMessage = '';
 						eva_tools::make_recursiv_dir($pathToZip);
 						if(count($file_to_zip) > 0)
 						{
 							/*	ZIP THE FILE	*/
-							$archive = new eva_Zip(date('YmdHis') . '_fichesDePoste.zip');
+							$zipFileName = date('YmdHis') . '_fichesDePoste.zip';
+							$archive = new eva_Zip($zipFileName);
 							$archive->setFiles($file_to_zip);
 							$archive->compressToPath($pathToZip);
-							eva_gestionDoc::saveNewDoc('fiche_de_poste_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . date('YmdHis') . '_fichesDePoste.zip'));
+							$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiche_de_poste_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
+							if($saveWorkSheetUnitStatus == 'error')
+							{
+								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches de postes pour ce groupement', 'evarisk');
+							}
+							else
+							{
+								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les fiches de poste ont correctement &eacute;t&eacute; enregistr&eacute;es.', 'evarisk');
+							}
+						$saveZipFileActionMessage = '
+	evarisk(document).ready(function(){
+			actionMessageShow("#message' . TABLE_DUER . '", "' . $messageInfo . '");
+			setTimeout(\'actionMessageHide("#message' . TABLE_DUER . '")\',7500);
+	});';
 						}
 
 						echo '
 <script type="text/javascript" >
-	evarisk("#divFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-	{
-		"post":"true",
-		"table":"' . TABLE_FP . '",
-		"act":"voirHistoriqueFicheDePosteGroupement",
-		"tableElement":"' . $mainTableElement . '",
-		"idElement":' . $mainIDElement . '
-	});
+	' . $saveZipFileActionMessage . '
+	evarisk("#ongletHistoriqueDocument").click();
 </script>';
 					}
 					break;
@@ -2758,38 +2939,9 @@ if($_REQUEST['post'] == 'true')
 					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						$output = '
-<input type="button" class="clear button-primary alignright" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" style="margin:0px 0px 18px;" >  
-<script type="text/javascript" >
-	evarisk("#saveWorkUnitSheetForGroupement").click(function(){
-		evarisk("#divFicheDePoste").html(evarisk("#loadingImg").html());
-		evarisk("#divFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-		{
-			"post":"true",
-			"table":"' . TABLE_FP . '",
-			"act":"saveWorkUnitSheetForGroupement",
-			"tableElement":"' . $tableElement . '",
-			"idElement":' . $idElement . '
-		});
-	});
-</script>
-<div class="clear" >';
-						$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiche_de_poste_groupement', "dateCreation DESC");
-						if(count($ficheDePoste_du_Groupement) > 0)
-						{
-							foreach($ficheDePoste_du_Groupement as $fdpGpt)
-							{
-								if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
-								{
-									$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: <a href="%s" >%s</a>', 'evarisk'), eva_tools::transformeDate($fdpGpt->dateCreation), EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
-								}
-							}
-						}
-						else
-						{
-							$output .= __('Aucune fiche n\'a &eacute;t&eacute; cr&eacute;e pour le moment', 'evarisk');
-						}
-						$output .= '
+						$output = eva_WorkUnitSheet::getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement) . '
+<div class="clear" >
+	' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '
 </div>';
 						echo $output;
 					}
@@ -3406,12 +3558,14 @@ if($_REQUEST['post'] == 'true')
 						$idDiv = $actionCorrective->getTableFrom() . $actionCorrective->getIdFrom() . '-' . TABLE_TACHE . $actionCorrective->getId();
 						$output = '<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> ' . $actionCorrective->getName() . '</div>';
 
+						$showGantt = true;
 						switch($actionCorrective->getTableFrom())
 						{
 							case TABLE_RISQUE:
 								$output .= Risque::getTableQuotationRisqueAvantApresAC($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], $actionCorrective, $idDiv);
 								$moreSuiviOn = 'evarisk("#' . $idDiv . '-affichage-quotation").show();';
-								$moreSuiviOff = 'evarisk("#' . $idDiv . '-affichage-quotation").hide();';
+								// $moreSuiviOff = 'evarisk("#' . $idDiv . '-affichage-quotation").hide();';
+								$showGantt = false;
 							break;
 						}
 
@@ -3421,7 +3575,7 @@ if($_REQUEST['post'] == 'true')
 						unset($niveaux);
 						$indiceTacheNiveaux = 0;
 						
-						if($tachesDeLAction != null && count($tachesDeLAction) > 0)
+						if(($showGantt) && ($tachesDeLAction != null) && (count($tachesDeLAction) > 0))
 						{
 							foreach($tachesDeLAction as $tacheDeLAction)
 							{
@@ -3485,21 +3639,27 @@ if($_REQUEST['post'] == 'true')
 							</script>';
 						}
 						echo '<script type="text/javascript">
-							evarisk(document).ready(function(){			
+							evarisk(document).ready(function(){
 								evarisk("#' . $idDiv . '-choix").toggle(
 									function()
 									{
-										evarisk("#' . $idDiv . '-affichage").show();
+										//evarisk("#' . $idDiv . '-affichage").show();
 										' . $moreSuiviOn . '
-										evarisk(this).children("span:first").html("-");
+										//evarisk(this).children("span:first").html("-");
 									},
 									function()
 									{
-										evarisk("#' . $idDiv . '-affichage").hide();
+										//evarisk("#' . $idDiv . '-affichage").hide();
 										' . $moreSuiviOff . '
-										evarisk(this).children("span:first").html("+");
+										//evarisk(this).children("span:first").html("+");
 									}
-								);
+								);';
+						if(!$showGantt)
+						{
+							echo '
+								evarisk("#' . $idDiv . '-choix").children("span:first").html("");';
+						}
+						echo '
 							});
 						</script>';
 						{//Bouton enregistrer
@@ -3553,13 +3713,16 @@ if($_REQUEST['post'] == 'true')
 								});
 							</script>';
 						//ajout de l'indentation
-						foreach($niveaux as $key => $niveau)
+						if(is_array($niveaux) && (count($niveaux) > 0))
 						{
-							echo '<script type="text/javascript">
-									evarisk(document).ready(function(){		
-										evarisk("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
-									});
-								</script>';
+							foreach($niveaux as $key => $niveau)
+							{
+								echo '<script type="text/javascript">
+										evarisk(document).ready(function(){		
+											evarisk("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
+										});
+									</script>';
+							}
 						}
 					}
 				}

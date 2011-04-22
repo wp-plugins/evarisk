@@ -49,7 +49,7 @@ class suivi_activite
 			"INSERT INTO " . TABLE_ACTIVITE_SUIVI . "
 				(id, status, date, id_user, id_element, table_element, commentaire)
 			VALUES
-				('', 'valid', NOW(), '" . $current_user->ID . "', '" . $idElement . "', '" . $tableElement . "', '" . $commentaire . "')"
+				('', 'valid', NOW(), '" . $current_user->ID . "', '" . $idElement . "', '" . $tableElement . "', '" . str_replace("’","'", $commentaire) . "')"
 		);
 
 		if($wpdb->query($query))
@@ -107,7 +107,7 @@ class suivi_activite
 					$user_firstname = $user_info->user_firstname;
 				}
 
-				$valeurs[] = array('value' => sprintf(__('Le <b>%s</b>, <b>%s</b> dit <i>%s</i>', 'evarsik'), eva_tools::transformeDate($suivi->date, 0, 0, 0, true), $user_lastname . ' ' . $user_firstname, $suivi->commentaire));
+				$valeurs[] = array('value' => sprintf(__('Le <b>%s</b>, <b>%s</b> dit <i>%s</i>', 'evarisk'), eva_tools::transformeDate($suivi->date, 0, 0, 0, true), $user_lastname . ' ' . $user_firstname, $suivi->commentaire));
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $tableElement . $idElement . 'suiviModification';
 			}

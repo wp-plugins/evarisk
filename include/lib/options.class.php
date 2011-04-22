@@ -122,7 +122,7 @@ class options
 			});
 		</script>';
 		
-		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false) . '<div id="messageOption" class="hide updated fade below-h2"></div><div id="ajax-response" ></div><div class="hide" id="loadingImg" ><center><img class="margin36" src="' . PICTO_LOADING_ROUND . '" alt="loading..." /></center></div><div id="light" class="white_content_option" ><div class="closeLightBoxContainer" ><span class="alignright closeLightBoxIcon ui-icon" >&nbsp;</span><span class="alignright" >' . _('Fermer', 'evarisk') . '</span></div><div class="clear" id="optionEdition" ></div></div><div id="fade" class="black_overlay_option" ></div>' . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false) . '<div id="messageOption" class="hide updated fade below-h2"></div><div class="hide" id="loadingImg" ><center><img class="margin36" src="' . PICTO_LOADING_ROUND . '" alt="loading..." /></center></div><div id="light" class="white_content_option" ><div class="closeLightBoxContainer" ><span class="alignright closeLightBoxIcon ui-icon" >&nbsp;</span><span class="alignright" >' . _('Fermer', 'evarisk') . '</span></div><div class="clear" id="optionEdition" ></div></div><div id="fade" class="black_overlay_option" ></div>' . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script) . EvaDisplayDesign::afficherFinPage();
 	}
 
 	/**

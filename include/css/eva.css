@@ -19,7 +19,7 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 
 .dataTables_length{	width:50% !important;	}
 .dataTables_paginate{	margin:12px 24px;	}
-.dataTables_filter{	float:right; width:15% !important;	}
+.dataTables_filter{	float:right; /*width:15% !important;*/	}
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
 .searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
@@ -276,6 +276,27 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 
 .columnCommentaireRisque	{		width: 40%;		padding: 1px !important;		vertical-align : middle !important;	}
 
+.columnNomElementMassUpdater	{	width:10%; font-size:10px;	}
+.columnQuotationMassUpdater	{	width:10%; font-size:11px; text-align:center;	}
+.columnNomDangerMassUpdater	{	width:10%; font-size:10px;	}
+.columnCommentaireRisqueMassUpdater	{		}
+.columnCommentaireRisqueMassUpdater textarea, .columnActionPrioritaireRisqueMassUpdater textarea{		width: 98%;	}
+.columnCBRisqueMassUpdater{	width:2%; vertical-align:middle !important;	}
+.risqMassUpdaterChooserExplanation{	margin:6px 0px 0px 0px; font-size:11px; font-style:italic;	}
+.massUpdaterChecbkoxAction{	font-size:11px; cursor:pointer;	}
+
+#risqMassUpdater .dataTables_wrapper{	min-height:50px;	}
+
+#divVoirRisques{	padding:9px 0px 3px 4px;	}
+#formRisque{	margin:0px 0px 3px 4px;	}
+#risqManagementselector{	margin:0px 0px 12px;	}
+#addRisqNormalMode, #addRisqAdvancedMode{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
+#addRisqNormalMode.selected, #addRisqAdvancedMode.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
+
+.checkboxRisqMassUpdaterSelector_top, .checkboxRisqMassUpdaterSelector_bottom{	width:18px; vertical-align:middle; margin:0px 12px;	}
+.checkboxRisqMassUpdaterSelector_top{	margin-top:5px;	}
+.checkboxRisqMassUpdaterSelector_bottom{	margin-bottom:10px;	}
+
 .columnQuotation	{		text-align: center !important;	}
 /*,
 th.columnNomDanger,
@@ -406,7 +427,7 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 #recommandationPictureGalery .thumbnailUpload, #recommandationCategoryPictureGalery .thumbnailUpload{		max-width:48px !important;	}
 #recommandationPictureGalery div.slideshow img, #recommandationCategoryPictureGalery div.slideshow img{		max-width:48px !important;	}
 #recommandationPictureGalery .qq-upload-button, #recommandationCategoryPictureGalery .qq-upload-button{		width:50% !important;	}
-#divListePreconisation .dataTables_filter{ width:50% !important;}
+#divListePreconisation .dataTables_filter{ /*width:50% !important;*/}
 .addRecommandationBox{	margin:1.5em 0 0 0.5em; height:30px;	}
 .recommandationCategoryExplanation{	margin:6px 0px 6px;	}
 #recommandationNameIndication{	font-style:italic; font-size:10px; font-weight:bold;	}
@@ -416,6 +437,19 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .recommandationCategoryOptionPicSizeContainer{	 clear: both; margin: 3px auto 0; text-align: center; width: 60%;	}
 .recommandationCategoryOptionPicSizeContainer input{	 width: 20% !important;	}
 /* -- End Recommandation -- */
+
+
+/* -- Document unique -- */
+#divHistoriqueDocumentUnique ..eva_tabs_panel{	overflow:none !important; min-height:80px;	}
+#generateDUER, #generateFP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
+#generateDUER.selected, #generateFP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
+#saveWorkUnitSheetForGroupement{	margin:6px auto;	}
+#workUnitSheetCollectionModelSelector{	margin:6px;	}
+#documentModelContainer{	width:40%;	}
+#documentFormContainer{	width:60%; text-align:center;	}
+/* -- End Document unique -- */
+
+
 
 /* -- Notes -- */
 #noteTaker{	float:right; margin:15px; }

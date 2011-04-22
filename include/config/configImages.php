@@ -13,6 +13,9 @@
 	DEFINE('EVA_OPTIONS_ICON', EVA_IMG_ICONES_PLUGIN_URL . 'options_s.png');
 	DEFINE('EVA_RECOMMANDATION_ICON', EVA_IMG_PICTOS_PLUGIN_URL . 'preconisations/preconisationDefault_s.png');
 
+	DEFINE('EVA_ARROW_TOP', EVA_IMG_ICONES_PLUGIN_URL . 'fleche_haut.png');
+	DEFINE('EVA_ARROW_BOTTOM', EVA_IMG_ICONES_PLUGIN_URL . 'fleche_bas.png');
+
 	/**
 	*	Message error / success picture
 	*/

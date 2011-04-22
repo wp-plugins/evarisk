@@ -62,7 +62,12 @@
 						});
 
 						//	Output the form to add a new risk
-						evarisk("#ongletAjouterRisque").click(function(){
+						evarisk("#ongletAjouterRisque, #addRisqNormalMode").click(function(){
+							evarisk("#risqManagementselector div").each(function(){
+								evarisk(this).show();
+								evarisk(this).removeClass("selected");
+							});
+							evarisk("#addRisqNormalMode").addClass("selected");
 							evarisk("#formRisque").html(evarisk("#loadingImg").html());
 							evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 								{
@@ -74,7 +79,7 @@
 									"idRisque": ""
 								}
 							);
-							tabChange("#divFormRisque", "#ongletAjouterRisque");
+							tabChange("#formRisque", "#ongletAjouterRisque");
 							hideExtraTab();
 							evarisk("#divDangerContainer :radio").each(function(){
 								evarisk(this).attr("checked", "");
@@ -83,9 +88,15 @@
 							evarisk("#divDangerContainerSwitch").css("display", "none");
 							evarisk("#historisationContainer").hide();
 							evarisk("#associatedPictureContainer").hide();
+							evarisk("#divFormRisque").show();
 						});
 
-						evarisk("#ongletAjouterRisquePhoto").click(function(){
+						evarisk("#ongletAjouterRisquePhoto, #addRisqAdvancedMode").click(function(){
+							evarisk("#risqManagementselector div").each(function(){
+								evarisk(this).show();
+								evarisk(this).removeClass("selected");
+							});
+							evarisk("#addRisqAdvancedMode").addClass("selected");
 							evarisk("#formRisque").html(evarisk("#loadingImg").html());
 							evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 							{
@@ -96,8 +107,28 @@
 								"idElement":"' . $idElement . '", 
 								"idRisque": ""
 							});
-							tabChange("#divFormRisque", "#ongletAjouterRisquePhoto");
+							tabChange("#formRisque", "#ongletAjouterRisque");
 							hideExtraTab();
+							evarisk("#divFormRisque").show();
+						});
+
+						evarisk("#risqMassUpdater").dialog({
+							autoOpen:false,
+							height:600,
+							width:800,
+							modal:true
+						});
+						evarisk("#ongletMassUpdate' . TABLE_RISQUE . '").click(function(){
+							evarisk("#risqMassUpdater").html(evarisk("#loadingImg").html());
+							evarisk("#risqMassUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							{
+								"post":"true", 
+								"table":"' . TABLE_RISQUE . '", 
+								"act":"loadRisqMassUpdater", 
+								"tableElement":"' . $tableElement . '", 
+								"idElement":"' . $idElement . '"
+							});
+							evarisk("#risqMassUpdater").dialog("open");
 						});
 					});
 				</script>';
@@ -105,35 +136,50 @@
 			$liEditionRisque = $divEditionRisque = '';
 			if(current_user_can(eva_tools::slugify('Evarisk_:_editer_les_risques')))
 			{
-				$advancedFormRisque = '';
+				$liEditionRisque = '
+					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="2">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>';
+
+				$divEditionRisque = '
+<div id="divFormRisque" class="eva_tabs_panel hide" >';
 				if((options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
 				{
-					$advancedFormRisque = '<li id="ongletAjouterRisquePhoto" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(__('Ajouter des risques depuis des photos', 'evarisk'))) . '</label></li>';
+					$divEditionRisque .= 
+	'
+<div class="clear" id="risqManagementselector" >
+	<div class="alignleft selected" id="addRisqNormalMode" >' . ucfirst(strtolower(__('Mode simple', 'evarisk'))) . '</div>
+	<div class="alignleft" id="addRisqAdvancedMode" >' . ucfirst(strtolower(__('Mode avanc&eacute; (par photo)', 'evarisk'))) . '</div>
+</div>';
 				}
-				$liEditionRisque = '
-					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>' . $advancedFormRisque;
-
-				// $divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none">' . getFormulaireCreationRisque($tableElement, $idElement) . '</div>';
-				$divEditionRisque = '<div id="divFormRisque" class="eva_tabs_panel" style="display:none"><div id="formRisque" ></div></div>';
+				$divEditionRisque .= 
+'<div class="clear" >&nbsp;</div>
+<div class="clear" id="formRisque" >&nbsp;</div>
+</div>';
 			}
 
 			$taskList = evaActivity::activityList($tableElement, $idElement);
 			$liSuiviActionCorrective = '';
 			if(count($taskList) > 0)
 			{
-				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:inline" ><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
+				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:inline" ><label tabindex="4">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
 			}
 
 			$corpsPostBoxRisque = $scriptRisque . '
-				<div id="message' . TABLE_RISQUE . '" class="updated fade" style="cursor:pointer; display:none;"></div>
-				<ul class="eva_tabs eva_tabs_button">
-					<li id="ongletVoirLesRisques" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="3">' . ucfirst(strtolower(sprintf(__('voir %s', 'evarisk'), __('les risques', 'evarisk')))) . '</label></li>' . $liEditionRisque . '
+				<div class="hide" id="risqMassUpdater" title="' . __('V&eacute;rification en masse de l\'&eacute;valuation', 'evarisk') . '" >&nbsp;</div>
+				<div id="message' . TABLE_RISQUE . '" class="updated fade hide" ></div>
+				<ul class="eva_tabs" style="margin-bottom:2px;" >
+					<li id="ongletVoirLesRisques" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower(sprintf(__('voir %s', 'evarisk'), __('les risques', 'evarisk')))) . '</label></li>' . $liEditionRisque . '
 					' . $liSuiviActionCorrective . '
-					<li id="ongletDemandeActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="3">' . ucfirst(strtolower(__('Demande d\'action corrective', 'evarisk'))) . '</label></li>
-					<li id="ongletSuiviActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="3">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>
-					<li id="ongletFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="3">' . ucfirst(strtolower(__('Fiche d\'action corrective', 'evarisk'))) . '</label></li>
-				</ul>
-				<div id="divVoirRisques" class="eva_tabs_panel">' . getVoirRisque ($tableElement, $idElement) . '</div>' . $divEditionRisque . '
+					<li id="ongletDemandeActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="5">' . ucfirst(strtolower(__('Demande d\'action corrective', 'evarisk'))) . '</label></li>
+					<li id="ongletSuiviActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="6">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>
+					<li id="ongletFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="7">' . ucfirst(strtolower(__('Fiche d\'action corrective', 'evarisk'))) . '</label></li>';
+			if($tableElement == TABLE_GROUPEMENT)
+			{
+				$corpsPostBoxRisque .=
+					'<li id="ongletMassUpdate' . TABLE_RISQUE . '" class="tabs" ><label tabindex="8">' . ucfirst(strtolower(__('Vue d\'ensemble', 'evarisk'))) . '</label></li>';
+			}
+			$corpsPostBoxRisque .=
+				'</ul>
+				<div id="divVoirRisques" class="eva_tabs_panel" >' . getVoirRisque ($tableElement, $idElement) . '</div>' . $divEditionRisque . '
 				<div id="divDemandeAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divSuiviAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
@@ -260,9 +306,9 @@
 <script type="text/javascript">
 	evarisk(document).ready(function() {
 		evarisk(".edit-risk").click(function(){
-			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
-			tabChange("#divFormRisque", "#ongletAjouterRisque");
-			evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			evarisk("#formRisque").html(evarisk("#loadingImg").html());
+			tabChange("#formRisque", "#ongletAjouterRisque");
+			evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post":"true",
 				"table":"' . TABLE_RISQUE . '",
@@ -270,6 +316,10 @@
 				"idRisque": evarisk(this).attr("id").replace("risque-", "").replace("-edit", ""),
 				"idElement":"' . $idElement . '",
 				"tableElement":"' . $tableElement . '"
+			});
+			evarisk("#divFormRisque").show();
+			evarisk("#risqManagementselector div").each(function(){
+				evarisk(this).hide();
 			});
 		});
 		evarisk(".delete-risk").click(function(){
@@ -474,7 +524,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 					}
 				}
 			}
-			$labelInput = ucfirst(strtolower(__("pr&eacute;conisation pour le risque", 'evarisk'))) . $moreLabelInput;
+			$labelInput = ucfirst(strtolower(__("Action corrective prioritaire pour le risque", 'evarisk'))) . $moreLabelInput;
 			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 			if($existingPreconisation != '')
 			{
@@ -554,7 +604,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			});';
 			}
 			$scriptEnregistrement .= '
-			evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post":"true", 
 				"table":"' . TABLE_RISQUE . '", 
@@ -573,7 +623,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				"idRisque":evarisk("#' . $formId . 'idRisque").val(), 
 				"pictureId":"' . $formId . '"
 			});
-			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
+			evarisk("#formRisque").html(evarisk("#loadingImg").html());
 			evarisk("#divVoirRisques").html(evarisk("#loadingImg").html());
 			setTimeout(function(){evarisk("#ongletVoirLesRisques").click();},1000);
 			return false;
@@ -609,7 +659,7 @@ EvaDisplayInput::fermerForm('formRisque') . '
 		$script = '';
 
 		/*	Add The form button to add a new picture	*/
-		$advancedForm = '<div style="display:table;width:95%;margin:0px 0px 12px 0px;" ><div class="alignleft" >' . Risque::getRisqueNonAssociePhoto($tableElement, $idElement) . '</div><div id="sendNewPictureForm" class="alignright" style="margin:12px 0px;" >' . evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/'), 'pictureToAssociateToRisk', "['jpeg','jpg','png','gif']", true, '', '', __('Envoyer des photos', 'evarisk'), 'evarisk("#ongletAjouterRisquePhoto").click();') . '</div></div>';
+		$advancedForm = '<div style="display:table;width:95%;margin:0px 0px 12px 0px;" ><div class="alignleft" >' . Risque::getRisqueNonAssociePhoto($tableElement, $idElement) . '</div><div id="sendNewPictureForm" class="alignright" style="margin:12px 0px;" >' . evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/'), 'pictureToAssociateToRisk', "['jpeg','jpg','png','gif']", true, '', '', __('Envoyer des photos', 'evarisk'), 'evarisk("#addRisqAdvancedMode").click();') . '</div></div>';
 
 		/*	Get the picture list associated to the current element	*/
 		$pictureList = evaPhoto::getPhotos($tableElement, $idElement);

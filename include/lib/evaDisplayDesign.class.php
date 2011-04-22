@@ -2415,6 +2415,18 @@ class EvaDisplayDesign {
 									<td ><label for="nomDuDocument">' . __('nom du document', 'evarisk') . '</label></td>
 									<td >' . EvaDisplayInput::afficherInput('text', 'nomDuDocument', '#NOMDOCUMENT#', '', '', 'nomDuDocument', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
 								</tr>
+								<tr>
+									<td  ><label for="remarque_important">' . __('remarque importante', 'evarisk') . '</label></td>
+									<td style="text-align:center;"><textarea id="remarque_important" name="remarque_important" class="textarea14" style="width:100%" ;>#REMARQUEIMPORTANT#</textarea></td>
+								</tr> 
+								<tr>
+									<td  ><label for="localisation">' . __('localisation', 'evarisk') . '</label></td>
+									<td style="text-align:center;"><textarea id="localisation" name="localisation" class="textarea14" style="width:100%" ;>#LOCALISATION#</textarea></td>
+								</tr> 
+								<tr>
+									<td  ><label for="sources">' . __('sources', 'evarisk') . '</label></td>
+									<td style="text-align:center;"><textarea id="sources" name="sources" class="textarea14" style="width:100%" ;>#SOURCES#</textarea></td>
+								</tr> 
 		<!-- 
 								<tr>
 									<td  colspan="2" ><label for="methodologie">' . __('m&eacute;thodologie', 'evarisk') . '</label></td>
@@ -2422,10 +2434,6 @@ class EvaDisplayDesign {
 								<tr>
 									<td colspan="2" style="text-align:center;"><textarea id="methodologie" name="methodologie" class="textarea">#METHODOLOGIE#</textarea></td>
 								</tr>
-								<tr>
-									<td  ><label for="sources">' . __('sources', 'evarisk') . '</label></td>
-									<td style="text-align:center;"><textarea id="sources" name="sources" class="textarea14" style="width:100%" ;>#SOURCES#</textarea></td>
-								</tr> 
 		-->
 								<tr>
 									<td >&nbsp;</td>
@@ -2438,7 +2446,7 @@ class EvaDisplayDesign {
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2"><input class="button-primary alignright" type="button" id="genererDUER" name="genererDUER" value="' . __('g&eacute;n&eacute;rer', 'evarisk') . '" /></td>
+									<td colspan="2"><input class="button-primary alignright" type="button" id="genererDUER" name="genererDUER" value="' . __('G&eacute;n&eacute;rer le document unique', 'evarisk') . '" /></td>
 								</tr>
 							</table>' .
 							EvaDisplayInput::fermerForm('infosGenerationDU') .
@@ -2465,6 +2473,13 @@ class EvaDisplayDesign {
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt';
 				$table = TABLE_DUER;
+			}
+			break;
+			case TABLE_GROUPEMENT . '_FP' :
+			{
+				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
+				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDePoste/modeleDefaut.odt';
+				$table = TABLE_FP;
 			}
 			break;
 			case TABLE_UNITE_TRAVAIL:
@@ -2518,6 +2533,11 @@ class EvaDisplayDesign {
 			case TABLE_GROUPEMENT:
 			{
 				$documentType = 'document_unique';
+			}
+			break;
+			case TABLE_GROUPEMENT . '_FP':
+			{
+				$documentType = 'fiche_de_poste';
 			}
 			break;
 			case TABLE_UNITE_TRAVAIL:

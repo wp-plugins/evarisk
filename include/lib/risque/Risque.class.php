@@ -285,6 +285,7 @@ class Risque {
 		$idElement = eva_tools::IsValid_Variable($idElement);
 		$description = eva_tools::IsValid_Variable($description);
 		$description = str_replace("[retourALaLigne]","\n", $description);
+		$description = str_replace("’","'", $description);
 		$histoStatus = 'Valid';
 
 		if($idRisque == '')
@@ -497,6 +498,7 @@ class Risque {
 		{/*	Get the risk before the corrective action	*/
 			unset($risqueAvantAC);$risqueAvantAC = array();
 			$risqueAvantAC = Risque::getriskLinkToTask($actionCorrective->getIdFrom(), $actionCorrective->getId(), 'before');
+
 			unset($tableauVariables);
 			foreach($risqueAvantAC as $ligneRisque)
 			{
@@ -516,12 +518,22 @@ class Risque {
 
 			unset($ligneDeValeurs);
 			$ligneDeValeurs[] = array('value' => __('Avant', 'evarisk'), 'class' => '');
-			$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
-			foreach($tableauVariables as $variable)
+			if(!is_array($tableauVariables) || (count($tableauVariables) <= 0))
 			{
-				$titres[] = substr($variable['nom'], 0, 3) . '.';
-				$classes[] = 'columnVariableRisque';
-				$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
+				$ligneDeValeurs[] = array('value' => __('Non &eacute;valu&eacute;', 'evarisk'), 'class' => '');
+			}
+			else
+			{
+				$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
+			}
+			if(is_array($tableauVariables) && (count($tableauVariables) > 0))
+			{
+				foreach($tableauVariables as $variable)
+				{
+					$titres[] = substr($variable['nom'], 0, 3) . '.';
+					$classes[] = 'columnVariableRisque';
+					$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
+				}
 			}
 			$lignesDeValeurs[] = $ligneDeValeurs;
 		}
@@ -608,9 +620,9 @@ class Risque {
 	evarisk(document).ready(function(){
 		evarisk(".riskAssociatedToPicture").unbind("click");
 		evarisk(".riskAssociatedToPicture").click(function(){
-			evarisk("#divFormRisque").html(evarisk("#loadingImg").html());
-			tabChange("#divFormRisque", "#ongletAjouterRisque");
-			evarisk("#divFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": evarisk(this).attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
+			evarisk("#formRisque").html(evarisk("#loadingImg").html());
+			tabChange("#formRisque", "#ongletAjouterRisque");
+			evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": evarisk(this).attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
 		});
 		evarisk(".deleteLinkBetweenRiskAndPicture").unbind("click");
 		evarisk(".deleteLinkBetweenRiskAndPicture").click(function(){

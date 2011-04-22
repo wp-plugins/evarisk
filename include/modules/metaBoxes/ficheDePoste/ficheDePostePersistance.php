@@ -17,24 +17,27 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 	$messageInfo = $moremessageInfo = '';
 	$sauvegardeFicheDePoste = eva_WorkUnitSheet::saveWorkUnitSheet($tableElement, $idElement, $workUnitSheetInfos);
 
-	if($sauvegardeFicheDePoste['result'] != 'error')
+	if($_POST['act'] != 'saveWorkUnitSheetForGroupement')
 	{
-		$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La fiche de poste &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
-		$moremessageInfo = 'evarisk("#ongletHistoriqueFicheDePoste").click();';
-	}
-	else
-	{
-		$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('La fiche de poste n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
-	}
+		if($sauvegardeFicheDePoste['result'] != 'error')
+		{
+			$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La fiche de poste &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
+			$moremessageInfo = 'evarisk("#ongletHistoriqueFicheDePoste").click();';
+		}
+		else
+		{
+			$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('La fiche de poste n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
+		}
 
-	$messageInfo = '
-		<script type="text/javascript">
-			evarisk(document).ready(function(){
-				actionMessageShow("#message' . TABLE_FP . '", "' . $messageToOutput . '");
-				setTimeout(\'actionMessageHide("#message' . TABLE_FP . '")\',5000);
-				' . $moremessageInfo . '
-			});
-		</script>';
+		$messageInfo = '
+			<script type="text/javascript">
+				evarisk(document).ready(function(){
+					actionMessageShow("#message' . TABLE_FP . '", "' . $messageToOutput . '");
+					setTimeout(\'actionMessageHide("#message' . TABLE_FP . '")\',5000);
+					' . $moremessageInfo . '
+				});
+			</script>';
+	}
 
 	echo $messageInfo;
 }

@@ -90,46 +90,56 @@ function evarisk_add_menu() {
 function evarisk_add_options() {
 }
 
+function eva_admin_js()
+{
+	wp_enqueue_script('jquery');
+	wp_enqueue_script('ui.tabs');
+	wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_google_jsapi', 'http://www.google.com/jsapi', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_min_i18n', EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/i18n/jquery-ui-i18n.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_gantt', EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/ui.gantt.min.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_user_js', EVA_INC_PLUGIN_URL . 'js/users.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_eav_js', EVA_INC_PLUGIN_URL . 'js/eav.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_editable', EVA_INC_PLUGIN_URL . 'js/jquery.editable.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_script('eva_wp_postobox_js', WP_CONTENT_URL . '/../wp-admin/js/postbox.js', '', EVA_PLUGIN_VERSION);
+}
+
+function eva_admin_css()
+{
+	wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_jquery_datatable');
+	wp_register_style('eva_jquery_custom', EVA_INC_PLUGIN_URL . 'css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_jquery_custom');
+	wp_register_style('eva_jquery_treetable', EVA_INC_PLUGIN_URL . 'css/treeTable/treeTable.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_jquery_treetable');
+	wp_register_style('eva_jquery_fileuploader', EVA_INC_PLUGIN_URL . 'css/fileUploader/fileuploader.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_jquery_fileuploader');
+	wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_main_css');
+	wp_register_style('eva_role_css', EVA_INC_PLUGIN_URL . 'css/role.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_role_css');
+	wp_register_style('eva_duer_css', EVA_INC_PLUGIN_URL . 'css/documentUnique.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_duer_css');
+	wp_register_style('eva_autocomplete_css', EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_autocomplete_css');
+	wp_register_style('eva_lightbox_css', EVA_INC_PLUGIN_URL . 'css/lightbox.css', '', EVA_PLUGIN_VERSION);
+	wp_enqueue_style('eva_lightbox_css');
+}
+
 function eva_add_admin_js()
 {
-	echo'<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.js"></script>
-	<script type="text/javascript" >var evarisk = jQuery.noConflict();</script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/lib.js"></script>
-	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/i18n/jquery-ui-i18n.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/ui.gantt.min.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/users.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/role.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/eav.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.editable.js"></script>
-	<script type="text/javascript" src="' . EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js"></script>
-	<script type="text/javascript" src="' . EVA_PLUGIN_DIR . '../../../wp-admin/js/postbox.js"></script>
-
-	
-	<style type="text/css" title="currentStyle">
-		@import "' . EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/treeTable/treeTable.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/fileUploader/fileuploader.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/eva.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/utilisateur.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/eav.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/role.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/documentUnique.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css";
-		@import "' . EVA_INC_PLUGIN_URL . 'css/lightbox.css";
-	</style>
-
-	<script type="text/javascript" >
+	echo '<script type="text/javascript" >
 		var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";
-	</script>
-';
+	</script>';
 }
+
 ?>

@@ -3,7 +3,7 @@
 Plugin Name: Evarisk
 Plugin URI: http://www.evarisk.com/document-unique-logiciel
 Description: Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises et g&eacute;rer toutes les donn&eacute;es li&eacute;es &agrave; la s&eacute;curit&eacute; de votre personnel.
-Version: 5.1.2.7
+Version: 5.1.2.8
 Author: Evarisk
 Author URI: http://www.evarisk.com
 */
@@ -22,6 +22,8 @@ function evarisk_init() {
 	add_action('admin_head', "eva_add_admin_js");
 	// Ajout des options
 	add_action('admin_init', 'evarisk_add_options');
+	add_action('admin_init', 'eva_admin_js');
+	add_action('admin_init', 'eva_admin_css');
 	// Ajout du menu utilisateur
 	add_action('admin_menu', 'evarisk_add_menu');
 	

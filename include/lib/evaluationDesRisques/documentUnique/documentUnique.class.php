@@ -17,7 +17,7 @@ class eva_documentUnique
 	*
 	*	@return array $lignesDeValeurs The different risqs ordered by element
 	*/
-	function listeRisquePourElement($tableElement, $idElement)
+	function listeRisquePourElement($tableElement, $idElement, $outputInterfaceType = '')
 	{
 		$lignesDeValeurs = array();
 		$temp = Risque::getRisques($tableElement, $idElement, "Valid");
@@ -33,7 +33,7 @@ class eva_documentUnique
 			$i = 0;
 			unset($tmpLigneDeValeurs);
 			foreach($risques as $risque)
-			{				
+			{		
 				$idMethode = $risque[0]->id_methode;
 				$score = Risque::getScoreRisque($risque);
 				$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
@@ -52,8 +52,40 @@ class eva_documentUnique
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $element->nom, 'class' => '');
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->nomDanger, 'class' => '');
-				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => nl2br($risque[0]->descriptionDanger), 'class' => '');
-				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
+				if($outputInterfaceType != 'massUpdater')
+				{
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => nl2br($risque[0]->descriptionDanger), 'class' => '');
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
+				}
+				else
+				{
+					{/*	Prioritary action	*/
+						$contenuInput = '';
+						$preconisationAction = 'creation';
+						$preconisationActionID = 0;
+						if($risque[0] != null)
+						{// Si l'on édite un risque, on remplit l'aire de texte avec sa description
+							$tache = EvaTask::getPriorityTask(TABLE_RISQUE, $risque[0]->id);
+							$tache = new EvaTask($tache->id);
+							if($tache->id > 0)
+							{
+								$tache->load();
+								$contenuInput = $tache->description;
+								$preconisationAction = 'update';
+								$preconisationActionID = $tache->id;
+							}
+						}
+					}
+
+					/*	Add the risq comment input	*/
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqComment" id="risqComment_' . $risque[0]->id . '" name="risqComment_' . $risque[0]->id . '" >' . nl2br($risque[0]->commentaire) . '</textarea>', 'class' => '');
+
+					/*	Add the prioritary action input	*/
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqPrioritaryCA" id="risqPrioritaryCA_' . $preconisationActionID . '" name="risqPrioritaryCA_' . $risque[0]->id . '" >' . nl2br($contenuInput) . '</textarea>', 'class' => '');
+
+					/*	Add the checkbox to define if this entry must be updated or not	*/
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<input type="checkbox" id="checkboxRisqMassUpdater_' . $risque[0]->id . '" name="checkboxRisqMassUpdater_' . $risque[0]->id . '" value="" class="checkboxRisqMassUpdater" /><input type="hidden" id="prioritaryActionMassUpdater_' . $risque[0]->id . '" value="' . $preconisationActionID . '" />', 'class' => '');
+				}
 				$i++;
 			}
 
@@ -70,7 +102,7 @@ class eva_documentUnique
 	}
 
 	
-	function listRisk($tableElement, $idElement)
+	function listRisk($tableElement, $idElement, $outputInterfaceType = '')
 	{
 		$lignesDeValeurs = array();
 
@@ -84,14 +116,14 @@ class eva_documentUnique
 					foreach($listeUnitesDeTravail as $key => $uniteDefinition)
 					{
 						/*	Recuperation des risques associes a l'unite	*/
-						$lignesDeValeurs = array_merge($lignesDeValeurs, eva_documentUnique::listeRisquePourElement($uniteDefinition['table'], $uniteDefinition['value']->id));
+						$lignesDeValeurs = array_merge($lignesDeValeurs, eva_documentUnique::listeRisquePourElement($uniteDefinition['table'], $uniteDefinition['value']->id, $outputInterfaceType));
 					}
 				}
 			break;
 		}
 
 		/*	Recuperation des risques associes au groupement	*/
-		$lignesDeValeurs = array_merge($lignesDeValeurs, eva_documentUnique::listeRisquePourElement($tableElement, $idElement));
+		$lignesDeValeurs = array_merge($lignesDeValeurs, eva_documentUnique::listeRisquePourElement($tableElement, $idElement, $outputInterfaceType));
 
 		return $lignesDeValeurs;
 	}
@@ -113,7 +145,7 @@ class eva_documentUnique
 
 		if($tableElement == TABLE_GROUPEMENT)
 		{
-			$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement);
+			$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement, $outPut);
 
 			if($outPut == 'html')
 			{
@@ -185,6 +217,50 @@ class eva_documentUnique
 							' . eva_documentUnique::readBilanParUnite($bilanParUnite, '', 'html') . '
 						</tbody>
 					</table>';
+
+					return $recapitulatifRisque;
+				}
+			}
+			elseif($outPut == 'massUpdater')
+			{
+				if($typeBilan == 'ligne')
+				{
+					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;
+					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
+					$titres[] = __("Quotation", 'evarisk');
+					$titres[] = ucfirst(strtolower(__("danger", 'evarisk')));
+					$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
+					$titres[] = ucfirst(strtolower(sprintf(__("action prioritaire %s", 'evarisk'), __("pour le risque", 'evarisk'))));
+					$titres[] = '';
+					$classes[] = 'columnNomElementMassUpdater';
+					$classes[] = 'columnQuotationMassUpdater';
+					$classes[] = 'columnNomDangerMassUpdater';
+					$classes[] = 'columnCommentaireRisqueMassUpdater';
+					$classes[] = 'columnActionPrioritaireRisqueMassUpdater';
+					$classes[] = 'columnCBRisqueMassUpdater';
+
+					$scriptVoirRisque = '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#' . $idTable . '").dataTable({
+		"bPaginate": false, 
+		"bLengthChange": false,
+		"bAutoWidth": false,
+		"bFilter": false,
+		"bInfo": false,
+		"aoColumns":[
+			{"bSortable": false},
+			{"bSortable": false},
+			{"bSortable": false},
+			{"bSortable": false},
+			{"bSortable": false},
+			{"bSortable": false}],
+		"aaSorting": [[0,"dasc"]]});
+		evarisk("#' . $idTable . ' tfoot").remove();
+	});
+</script>';
+
+					$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
 
 					return $recapitulatifRisque;
 				}
@@ -662,7 +738,40 @@ class eva_documentUnique
 			$formulaireDocumentUniqueParams['#DESTINATAIRE#'] = (isset($lastDocumentUnique->destinataireDUER) && ($lastDocumentUnique->destinataireDUER != '')) ? $lastDocumentUnique->destinataireDUER : '';
 			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_documentUnique_GP' . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupementInformations->nom));
 			$formulaireDocumentUniqueParams['#METHODOLOGIE#'] = (isset($lastDocumentUnique->methodologieDUER) && ($lastDocumentUnique->methodologieDUER != '')) ? $lastDocumentUnique->methodologieDUER : ($methodologieParDefaut);
-			$formulaireDocumentUniqueParams['#SOURCES#'] = (isset($lastDocumentUnique->sourcesDUER) && ($lastDocumentUnique->sourcesDUER != '')) ? $lastDocumentUnique->sourcesDUER : ($sourcesParDefaut);
+
+			$gpmt = EvaGroupement::getGroupement($idElement);
+			$groupementAdressComponent = new EvaBaseAddress($gpmt->id_adresse);
+			$groupementAdressComponent->load();
+			if(($groupementAdressComponent->getFirstLine() != '') && ($groupementAdressComponent->getSecondLine() != '') && ($groupementAdressComponent->getPostalCode() != '') && ($groupementAdressComponent->getCity() != ''))
+			{
+				$groupementAdress = $groupementAdressComponent->getFirstLine() . " " . $groupementAdressComponent->getSecondLine() . " " . $groupementAdressComponent->getPostalCode() . " " . $groupementAdressComponent->getCity() ;
+			}
+			else
+			{
+				$groupementAdress = __('La localisation est indisponible', 'evarisk');
+			}
+			$formulaireDocumentUniqueParams['#LOCALISATION#'] = (isset($lastDocumentUnique->planDUER) && ($lastDocumentUnique->planDUER != '') && ($lastDocumentUnique->planDUER != 'undefined')) ? $lastDocumentUnique->planDUER : ($groupementAdress);
+
+			$sourcesParDefaut = __("Le document de l'INRS ED 840 pour la sensibilisation aux risques, les pages 3 et 4 de ce document contenant : 
+La d&eacute;finition d'un risque et d'un danger, un sch&eacute;ma d'explication
+Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risque", 'evarisk');
+			$formulaireDocumentUniqueParams['#SOURCES#'] = (isset($lastDocumentUnique->sourcesDUER) && ($lastDocumentUnique->sourcesDUER != '') && ($lastDocumentUnique->sourcesDUER != 'undefined')) ? $lastDocumentUnique->sourcesDUER : ($sourcesParDefaut);
+
+			$pourcentageParticipant = 0;
+			if(evaUserGroup::getUserNumberInWorkUnit($idElement, $tableElement) > 0)
+			{
+				$pourcentageParticipant = (count(evaUser::getBindUsers($idElement, $tableElement)) * 100) / evaUserGroup::getUserNumberInWorkUnit($idElement, $tableElement);
+			}
+			if($pourcentageParticipant >= 75)
+			{
+				$alerte = __("Le pr&eacute;sent document a &eacute;t&eacute; r&eacute;alis&eacute; pour permettre au chef d'entreprise d'avoir une vision des risques hi&eacute;rarchis&eacute;s dans son &eacute;tablissement. Lors de l'&eacute;valuation, " . $pourcentageParticipant . "% des salari&eacute;s de l'entreprise ont particip&eacute; &agrave; la d&eacute;marche d'&eacute;valuation des risques. Nous consid&eacute;rons que le quota des 75% des salari&eacute;s impliqu&eacute;s dans la d&eacute;marche a donc &eacute;t&eacute; atteint. Ce ratio est significatif de la participation du personnel, gage de r&eacute;ussite de la d&eacute;marche.");
+			}
+			else
+			{
+				$alerte = __("La tranche des 75% des salari&eacute;s &eacute;valu&eacute;s n'a pas &eacute;t&eacute; atteinte, puisque seul " . $pourcentageParticipant . "% de ces derniers ont &eacute;t&eacute;s impliqu&eacute;s, et la participation du personnel n'est donc pas suffisament significative.");
+			}
+			$formulaireDocumentUniqueParams['#REMARQUEIMPORTANT#'] = (isset($lastDocumentUnique->alerteDUER) && ($lastDocumentUnique->alerteDUER != '') && ($lastDocumentUnique->alerteDUER != 'undefined')) ? $lastDocumentUnique->alerteDUER : ($alerte);
+
 			$lastDocumentUnique->id_model = (isset($lastDocumentUnique->id_model) && ($lastDocumentUnique->id_model != '')) ? $lastDocumentUnique->id_model : 0;
 
 			$output = 
@@ -679,7 +788,6 @@ class eva_documentUnique
 		evarisk("#dateFinAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
 
 		evarisk("#genererDUER").click(function(){
-			evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
 			evarisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true", 
 				"table":"' . TABLE_DUER . '", 
@@ -698,11 +806,14 @@ class eva_documentUnique
 				"nomDuDocument":evarisk("#nomDuDocument").val(),
 				"methodologie":evarisk("#methodologie").val(),
 				"id_model":evarisk("#modelToUse' . $tableElement . '").val(),
-				"sources":evarisk("#sources").val()
+				"sources":evarisk("#sources").val(),
+				"localisation":evarisk("#localisation").val(),
+				"alerte":evarisk("#remarque_important").val()
 			});
+			evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
 		});';
 
-					if(($lastDocumentUnique->id_model != '') && ($lastDocumentUnique->id_model != eva_gestionDoc::getDefaultDocument('document_unique')))
+					if(($lastDocumentUnique->id_model != '') && ($lastDocumentUnique->id_model != '0') && ($lastDocumentUnique->id_model != eva_gestionDoc::getDefaultDocument('document_unique')))
 					{
 						$output .= '
 		setTimeout(function(){
@@ -780,22 +891,6 @@ class eva_documentUnique
 		$tableElement = eva_tools::IsValid_Variable($tableElement);
 		$idElement = eva_tools::IsValid_Variable($idElement);
 
-		{	/*	Calcul du pourcentage de participant &agrave; l'&eacute;valuation */
-			$pourcentageParticipant = 0;
-			if(evaUserGroup::getUserNumberInWorkUnit($idElement, $tableElement) > 0)
-			{
-				$pourcentageParticipant = (count(evaUser::getBindUsers($idElement, $tableElement)) * 100) / evaUserGroup::getUserNumberInWorkUnit($idElement, $tableElement);
-			}
-			if($pourcentageParticipant >= 75)
-			{
-				$alerte = __("Le pr&eacute;sent document a &eacute;t&eacute; r&eacute;alis&eacute; pour permettre au chef d'entreprise d'avoir une vision des risques hi&eacute;rarchis&eacute;s dans son &eacute;tablissement. Lors de l'&eacute;valuation, " . $pourcentageParticipant . "% des salari&eacute;s de l'entreprise ont particip&eacute; &agrave; la d&eacute;marche d'&eacute;valuation des risques. Nous consid&eacute;rons que le quota des 75% des salari&eacute;s impliqu&eacute;s dans la d&eacute;marche a donc &eacute;t&eacute; atteint. Ce ratio est significatif de la participation du personnel, gage de r&eacute;ussite de la d&eacute;marche.");
-			}
-			else
-			{
-				$alerte = __("La tranche des 75% des salari&eacute;s &eacute;valu&eacute;s n'a pas &eacute;t&eacute; atteinte, puisque seul " . $pourcentageParticipant . "% de ces derniers ont &eacute;t&eacute;s impliqu&eacute;s, et la participation du personnel n'est donc pas suffisament significative.");
-			}
-		}
-
 		{	/*	R&eacute;vision du document unique, en fonction de l'element et de la date de g&eacute;n&eacute;ration	*/
 			$revision = '';
 			$query = 
@@ -835,19 +930,12 @@ class eva_documentUnique
 			}
 		}
 
-		{	/*	Génération de l'adresse du groupement	*/
-			$gpmt = EvaGroupement::getGroupement($idElement);
-			$groupementAdressComponent = new EvaBaseAddress($gpmt->id_adresse);
-			$groupementAdressComponent->load();
-			$groupementAdress = $groupementAdressComponent->getFirstLine() . " " . $groupementAdressComponent->getSecondLine() . " " . $groupementAdressComponent->getPostalCode() . " " . $groupementAdressComponent->getCity() ;
-		}
-
 		{	/*	Enregistrement d'un document unique	*/
 			$query = 
 				"INSERT INTO " . TABLE_DUER . " 
 					(id, element, elementId, id_model, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER) 
 				VALUES	
-					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . mysql_real_escape_string($groupementAdress) . "', '" . mysql_escape_string(serialize(evaUserGroup::getUserGroup())) . "', '" . mysql_escape_string(serialize(eva_documentUnique::listeGroupeUtilisateurAffectes($tableElement, $idElement))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanParUnite($tableElement, $idElement))) . "', '" . ($informationDocumentUnique['methodologie']) . "', '" . ($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($alerte) . "', '')";
+					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . mysql_real_escape_string($informationDocumentUnique['localisation']) . "', '" . mysql_escape_string(serialize(evaUserGroup::getUserGroup())) . "', '" . mysql_escape_string(serialize(eva_documentUnique::listeGroupeUtilisateurAffectes($tableElement, $idElement))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanParUnite($tableElement, $idElement))) . "', '" . ($informationDocumentUnique['methodologie']) . "', '" . mysql_escape_string($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($informationDocumentUnique['alerte']) . "', '')";
 			if($wpdb->query($query) === false)
 			{
 				$status['result'] = 'error'; 
@@ -982,6 +1070,56 @@ class eva_documentUnique
 		}
 
 		return $outputListeDocumentUnique;
+	}
+
+	/**
+	* Generate an html output for the box to generate the "documet unique" and the work unit sheet
+	*
+	*	@param mixed $tableElement The element type we are working on
+	*	@param integer $idElement The element identifier we are working on
+	*
+	*	@return mixed $output An html code with the generated output
+	*/
+	function getBoxBilan($tableElement, $idElement)
+	{
+		$output = '
+<div class="clear" id="summaryDocumentGeneratorSlector" >
+	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
+	<div class="alignleft" id="generateFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+</div>
+<div class="clear" id="bilanBoxContainer" >' . eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '</div>
+<script type="text/javascript" >
+		evarisk("#generateDUER").click(function(){
+			evarisk("#summaryDocumentGeneratorSlector div").each(function(){
+				evarisk(this).removeClass("selected");
+			});
+			evarisk(this).addClass("selected");
+			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
+			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true", 
+				"table":"' . TABLE_DUER . '",
+				"act":"documentUniqueGenerationForm",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '"
+			});
+		});
+		evarisk("#generateFP").click(function(){
+			evarisk("#summaryDocumentGeneratorSlector div").each(function(){
+				evarisk(this).removeClass("selected");
+			});
+			evarisk(this).addClass("selected");
+			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
+			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true", 
+				"table":"' . TABLE_DUER . '",
+				"act":"workSheetUnitCollectionGenerationForm",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '"
+			});
+		});
+</script>';
+
+		return $output;
 	}
 
 }

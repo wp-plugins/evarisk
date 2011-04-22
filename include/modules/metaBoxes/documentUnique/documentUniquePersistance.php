@@ -22,7 +22,9 @@ if($_POST['act'] == 'saveDocumentUnique')
 	$informationDocumentUnique['destinataire'] = eva_tools::IsValid_Variable($_POST['destinataire']);
 	$informationDocumentUnique['nomDuDocument'] = eva_tools::IsValid_Variable($_POST['nomDuDocument']);
 	$informationDocumentUnique['methodologie'] = ($_POST['methodologie']);
-	$informationDocumentUnique['sources'] = ($_POST['sources']);
+	$informationDocumentUnique['sources'] = eva_tools::IsValid_Variable($_POST['sources']);
+	$informationDocumentUnique['alerte'] = eva_tools::IsValid_Variable($_POST['alerte']);
+	$informationDocumentUnique['localisation'] = eva_tools::IsValid_Variable($_POST['localisation']);
 	$informationDocumentUnique['id_model'] = ($_POST['id_model']);
 
 	$messageInfo = $moremessageInfo = '';
@@ -34,7 +36,7 @@ if($_POST['act'] == 'saveDocumentUnique')
 	if($sauvegardeDocumentUnique['result'] != 'error')
 	{
 		$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk');
-		$moremessageInfo = 'evarisk("#ongletHistoriqueDocumentUnique").click();';
+		$moremessageInfo = 'evarisk("#ongletHistoriqueDocument").click();';
 	}
 	else
 	{

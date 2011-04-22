@@ -422,4 +422,98 @@ class eva_WorkUnitSheet
 		return $status;
 	}
 
+	/**
+	*	Generate a form to save work unit sheet collection for a groupment
+	*
+	*	@param mixed $tableElement The element type we want to get form for
+	*	@param integer $idElement The element identifier we wan to get form for
+	*
+	*	@return string The hmtl code outputing the form to generate work unit sheet collection for a groupment
+	*/
+	function getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement)
+	{
+		$tableElementForDoc = $tableElement . '_FP';
+		$output = '
+<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
+	<tr>
+		<td id="documentFormContainer" >
+			<div id="workUnitSheetCollectionModelSelector" >
+				<div>
+					<input type="checkbox" id="modelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
+					<label for="modelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+				</div>
+				<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
+			</div>
+			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" />  
+		</td>
+		<td id="documentModelContainer" >&nbsp;</td>
+	</tr>
+</table>
+<script type="text/javascript" >
+	evarisk("#saveWorkUnitSheetForGroupement").click(function(){
+		evarisk("#divFicheDePoste").html(evarisk("#loadingImg").html());
+		evarisk("#divFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . TABLE_FP . '",
+			"act":"saveWorkUnitSheetForGroupement",
+			"tableElement":"' . $tableElement . '",
+			"idElement":' . $idElement . ',
+			"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
+		});
+	});
+
+	evarisk("#modelDefaut").click(function(){
+		setTimeout(function(){
+			if(!evarisk("#modelDefaut").is(":checked"))
+			{
+				evarisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+				evarisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
+				evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":""});
+				evarisk("#modelListForGeneration").show();
+			}
+			else
+			{
+				evarisk("#documentModelContainer").html("");
+				evarisk("#modelListForGeneration").html("");
+				evarisk("#modelListForGeneration").hide();
+			}
+		},600);
+	});
+</script>';
+
+		return $output;
+	}
+
+	/**
+	*	Get the history of work unit sheet generated for a given element
+	*
+	*	@param mixed $tableElement The element type we want to get form for
+	*	@param integer $idElement The element identifier we wan to get form for
+	*
+	*	@return string The html code output with the list of document or a message saying there no document for this element
+	*/
+	function getWorkUnitSheetCollectionHistory($tableElement, $idElement)
+	{
+		$output = '';
+
+		$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiche_de_poste_groupement', "dateCreation DESC");
+		if(count($ficheDePoste_du_Groupement) > 0)
+		{
+			foreach($ficheDePoste_du_Groupement as $fdpGpt)
+			{
+				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
+				{
+					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: <a href="%s" >%s</a>', 'evarisk'), eva_tools::transformeDate($fdpGpt->dateCreation), EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
+				}
+			}
+		}
+		else
+		{
+			$output .= __('Aucune fiche n\'a &eacute;t&eacute; cr&eacute;e pour le moment', 'evarisk');
+		}
+
+		return $output;
+	}
+	
 }

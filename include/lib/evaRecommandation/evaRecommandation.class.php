@@ -862,7 +862,6 @@ class evaRecommandation
 	{
 		_e(EvaDisplayDesign::afficherDebutPage(__('Pr&eacute;conisations', 'evarisk'), EVA_RECOMMANDATION_ICON, __('Pr&eacute;conisations', 'evarisk'), __('Pr&eacute;conisations', 'evarisk'), TABLE_PRECONISATION, false, '', false));
 ?>
-<div id="ajax-response" ></div>
 <div class="hide" id="loadingImg" ><center><img class="margin36" src="<?php echo _e(PICTO_LOADING_ROUND); ?>" alt="loading..." /></center></div>
 <?php echo evaRecommandation::getRecommandationForm(); ?>
 <?php echo evaRecommandationCategory::getRecommandationCategoryForm(); ?>
@@ -872,6 +871,7 @@ class evaRecommandation
 ?>
 </div>
 <?php
+		_e(EvaDisplayDesign::afficherFinPage());
 	}
 
 

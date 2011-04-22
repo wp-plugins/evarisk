@@ -675,6 +675,9 @@ class eva_gestionDoc {
 					$odf->setVars('remarqueImportante', str_replace('<br />', "
 ", eva_tools::slugify_noaccent($documentUniqueParam['#ALERTE#'])));
 
+					$odf->setVars('sources', str_replace('<br />', "
+", eva_tools::slugify_noaccent($documentUniqueParam['#SOURCES#'])));
+
 					// $odf->setVars('methodologie', $documentUniqueParam['#METHODOLOGIE#']);
 
 					{/*	Remplissage du template pour les groupes d'utilisateurs	*/

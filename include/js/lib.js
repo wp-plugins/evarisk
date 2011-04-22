@@ -1,3 +1,5 @@
+var evarisk = jQuery.noConflict();
+
 function convertAccentToJS(text)
 {
 	text = text.replace(/&Agrave;/g, "\300");

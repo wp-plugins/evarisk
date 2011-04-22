@@ -1676,6 +1676,14 @@ ADD INDEX ( impressionRecommandation ) ;";
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(EvaVersion::getVersion('base_evarisk') <= 43)
+		{//Remplace l'ancienne version de la gestion des EPI par les préconisations
+			$sql = "ALTER TABLE " . TABLE_DUER . " CHANGE planDUER planDUER TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'The single document scheme'";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

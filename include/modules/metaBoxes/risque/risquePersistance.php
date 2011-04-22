@@ -17,22 +17,23 @@ if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 	$description = eva_tools::IsValid_Variable($_REQUEST['description']);
 	$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 
+	/*	Make the link between a corrective action and a risk evaluation	*/
+	$query = 
+		$wpdb->prepare(
+			"SELECT id_evaluation 
+			FROM " . TABLE_AVOIR_VALEUR . " 
+			WHERE id_risque = '%d' 
+				AND Status = 'Valid' 
+			ORDER BY id DESC 
+			LIMIT 1", 
+			$idRisque
+		);
+	$evaluation = $wpdb->get_row($query);
+
 	/*	Check if there are correctiv actions to link with this risk	*/
 	$actionsCorrectives = eva_tools::IsValid_Variable($_REQUEST['actionsCorrectives']);
 	if($actionsCorrectives != '')
 	{
-		/*	Make the link between a corrective action and a risk evaluation	*/
-		$query = 
-			$wpdb->prepare(
-				"SELECT id_evaluation 
-				FROM " . TABLE_AVOIR_VALEUR . " 
-				WHERE id_risque = '%d' 
-					AND Status = 'Valid' 
-				ORDER BY id DESC 
-				LIMIT 1", 
-				$idRisque
-			);
-		$evaluation = $wpdb->get_row($query);
 		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionsCorrectives, 'after');
 	}
 
@@ -58,6 +59,7 @@ if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 			$_POST['hasPriority'] = 'yes';
 
 			$_POST['parentTaskId'] = evaTask::saveNewTask();
+			evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $_POST['parentTaskId'], 'before');
 			if(options::getOptionValue('creation_sous_tache_preconisation') == 'oui')
 			{
 				evaActivity::saveNewActivity();
