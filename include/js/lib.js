@@ -360,3 +360,103 @@ function editRecommandationCategory(recommandationCategoryId, tableElement)
 		"id":recommandationCategoryId
 	});
 }
+
+/*	User link functions	*/
+function userDeletion(userId, tableElement){
+	id = userId.replace("affectedUser" + tableElement, "");
+	deleteUserIdFiedList(id, tableElement);
+	checkUserListModification(tableElement, "save_group" + tableElement);
+}
+function addUserIdFieldList(name, id, tableElement){
+	evarisk("#noUserSelected" + tableElement).remove();
+	evarisk("#userListOutput" + tableElement).attr("scrollTop",0);
+
+	evarisk(evarisk("#userBlocContainer").html()).prependTo("#userListOutput" + tableElement);
+	evarisk("#userListOutput" + tableElement + " div:first").attr("id", "affectedUser" + tableElement + id);
+	evarisk("#affectedUser" + tableElement + id).html(evarisk("#affectedUser" + tableElement + id).html().replace("#USERNAME#", name));
+}
+function checkUserListModification(tableElement, idButton){
+	var actualUserList = evarisk("#actuallyAffectedUserIdList" + tableElement).val();
+	var userList = evarisk("#affectedUserIdList" + tableElement).val();
+
+	if(actualUserList == userList){
+		evarisk("#" + idButton).attr("disabled", "disabled");
+		evarisk("#" + idButton).addClass("button-secondary");
+		evarisk("#" + idButton).removeClass("button-primary");
+	}
+	else{
+		evarisk("#" + idButton).attr("disabled", "");
+		evarisk("#" + idButton).removeClass("button-secondary");
+		evarisk("#" + idButton).addClass("button-primary");
+	}
+}
+function cleanUserIdFiedList(id, tableElement){
+	var actualAffectedUserList = evarisk("#affectedUserIdList" + tableElement).val().replace(" " + id + ", ", "");
+	evarisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList + id + ", ");
+
+	if(evarisk("#affectedUser" + tableElement + id)){
+		evarisk("#affectedUser" + tableElement + id).remove();
+	}
+
+	evarisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsLinked");
+	evarisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsNotLinked");
+}
+function deleteUserIdFiedList(id, tableElement){
+	var actualAffectedUserList = evarisk("#affectedUserIdList" + tableElement).val().replace(id + ", ", "");
+	evarisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList );
+	evarisk("#affectedUser" + tableElement + id).remove();
+
+	evarisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsLinked");
+	evarisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsNotLinked");
+}
+
+/*	Element link functions	*/
+function elementDeletion(elementId, tableElement, idButton){
+	id = elementId.replace("affectedElement" + tableElement, "");
+	deleteElementIdFiedList(id, tableElement);
+	checkElementListModification(tableElement, idButton);
+}
+function addElementIdFieldList(name, id, tableElement){
+	evarisk("#noElementSelected" + tableElement).remove();
+	evarisk("#affectedListOutput" + tableElement).attr("scrollTop",0);
+
+	evarisk(evarisk("#elementBlocContainer" + tableElement).html()).prependTo("#affectedListOutput" + tableElement);
+
+	evarisk("#affectedListOutput" + tableElement + " div:first").attr("id", "affectedElement" + tableElement + id);
+	evarisk("#affectedElement" + tableElement + id).html(evarisk("#affectedElement" + tableElement + id).html().replace("#ELEMENTNAME#", name));
+}
+function checkElementListModification(tableElement, idButton){
+	var actuallyAffectedList = evarisk("#actuallyAffectedList" + tableElement).val();
+	var affectedList = evarisk("#affectedList" + tableElement).val();
+
+	if(actuallyAffectedList == affectedList){
+		evarisk("#" + idButton).attr("disabled", "disabled");
+		evarisk("#" + idButton).addClass("button-secondary");
+		evarisk("#" + idButton).removeClass("button-primary");
+	}
+	else{
+		evarisk("#" + idButton).attr("disabled", "");
+		evarisk("#" + idButton).removeClass("button-secondary");
+		evarisk("#" + idButton).addClass("button-primary");
+	}
+}
+function cleanElementIdFiedList(id, tableElement){
+	var actualAffectedUserList = evarisk("#affectedList" + tableElement).val().replace(" " + id + ", ", "");
+	evarisk("#affectedList" + tableElement).val( actualAffectedUserList + id + ", ");
+
+	if(evarisk("#affectedElement" + tableElement + id)){
+		evarisk("#affectedElement" + tableElement + id).remove();
+	}
+
+	evarisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsLinked");
+	evarisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsNotLinked");
+}
+function deleteElementIdFiedList(id, tableElement){
+	var actualAffectedUserList = evarisk("#affectedList" + tableElement).val().replace(id + ", ", "");
+	evarisk("#affectedList" + tableElement).val( actualAffectedUserList );
+	evarisk("#affectedElement" + tableElement + id).remove();
+
+	evarisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsLinked");
+	evarisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsNotLinked");
+}
+

@@ -212,7 +212,7 @@ class eva_WorkUnitSheet
 						{
 							$outputListeDocumentUnique .= '
 									<tr>
-										<td colspan="3" style="text-decoration:underline;font-weight:bold;" >Le ' . eva_tools::transformeDate($date) . '</td>
+										<td colspan="3" style="text-decoration:underline;font-weight:bold;" >Le ' . mysql2date('d M Y', $date, true) . '</td>
 									</tr>';
 							foreach($listeDUDate as $index => $DUER)
 							{
@@ -264,9 +264,6 @@ class eva_WorkUnitSheet
 	{
 		$status = array();
 
-		require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserGroup.class.php');
-		require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php');
-		require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserEvaluatorGroup.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
 		global $wpdb;
@@ -317,13 +314,7 @@ class eva_WorkUnitSheet
 			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
 		}
 		$affectedUser = serialize($affectedUserTmp);
-		$affectedUserGroupTmp = array();
-		$affectedGroupList = evaUserGroup::getBindGroups($idElement, $tableElement);
-		foreach($affectedGroupList as $group)
-		{
-			$affectedUserGroupTmp[] = evaUserGroup::getUserGroup($group->id_group);
-		}
-		$affectedUserGroups = serialize($affectedUserGroupTmp);
+		$affectedUserGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_employee'));
 
 		/*	Récupération des informations concernant les évaluateurs et les groupes d'évaluateurs	*/
 		$affectedUserTmp = array();
@@ -333,13 +324,7 @@ class eva_WorkUnitSheet
 			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
 		}
 		$affectedEvaluators = serialize($affectedUserTmp);
-		$affectedEvaluatorsGroupTmp = array();
-		$affectedEvaluatorsGroupList = evaUserEvaluatorGroup::getBindGroups($idElement, $tableElement);
-		foreach($affectedEvaluatorsGroupList as $group)
-		{
-			$affectedEvaluatorsGroupTmp[] = evaUserEvaluatorGroup::getUserEvaluatorGroup($group->id_group);
-		}
-		$affectedEvaluatorsGroups = serialize($affectedEvaluatorsGroupTmp);
+		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
 
 		/*	Récupération des informations concernant les risques	*/
 		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement));
@@ -504,7 +489,7 @@ class eva_WorkUnitSheet
 			{
 				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
 				{
-					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: <a href="%s" >%s</a>', 'evarisk'), eva_tools::transformeDate($fdpGpt->dateCreation), EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
+					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
 				}
 			}
 		}

@@ -7,7 +7,6 @@
 require_once(EVA_CONFIG);
 require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 
 class eva_UniteDeTravail {
@@ -162,10 +161,6 @@ class eva_UniteDeTravail {
 		$scoreRisqueUniteTravail = eva_UniteDeTravail::getScoreRisque($idWorkingUnit);
 		$info['valeur'] = eva_UniteDeTravail::getNiveauRisque($scoreRisqueUniteTravail);
 		$info['classeValeur'] = 'risque' . Risque::getSeuil($scoreRisqueUniteTravail) . 'Text risqueText' . TABLE_UNITE_TRAVAIL . $idWorkingUnit;
-		$infos[] = $info;
-		$info['nom'] = __('Employ&eacute;s', 'evarisk');
-		$info['valeur'] = evaUserGroup::getUserNumberInWorkUnit($idWorkingUnit, TABLE_UNITE_TRAVAIL);
-		$info['classeValeur'] = '';
 		$infos[] = $info;
 		$info['nom'] = __('Employ&eacute;s &eacute;valu&eacute;s', 'evarisk');
 		$info['valeur'] = count(evaUser::getBindUsers($idWorkingUnit, TABLE_UNITE_TRAVAIL));

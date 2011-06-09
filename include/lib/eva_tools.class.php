@@ -12,74 +12,7 @@ class eva_tools
 	function IsValid_Variable($MyVar2Test,$DefaultValue='')
 	{
 		$MyVar = (trim(strip_tags(stripslashes($MyVar2Test)))!='') ? trim(strip_tags(stripslashes(($MyVar2Test)))) : $DefaultValue ;
-		$MyVar = str_replace("’","'", $MyVar);
-
 		return $MyVar;
-	}
-
-	function DoPagination($link, $nbitems=1, $page=1, $nbitemsparpage=1, $offset=2, $background='#CCCCCC',$color='#333333',$slctdbackground='#000000', $slctdcolor='#FFFFFF' , $option=0 )
-	{
-		if($nbitems<0)$nbitems=0;
-		$nbpage=ceil($nbitems/$nbitemsparpage);
-
-		if($page<1)$page=1;if($page>$nbpage)$page=$nbpage;
-		$pluriel='';if($nbitems>1)$pluriel='s';
-		$pluriel1='';if($nbpage>1)$pluriel1='s';
-
-		$pagination='<div style="display:table;width:100%;margin:3px 0 0 0;padding:3 0 3px 0;background:'.$background.';color:'.$color.';" >
-		<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-		'.str_replace('#PAGE#',1, $link).' 
-				style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;" >';
-				if($option==0)$pagination.=''.number_format($nbitems,0,'',' ').'&nbsp;';
-				if($option!=-1)$pagination.=__('r&eacute;sultat','annonces').$pluriel.'&nbsp;/';
-				$pagination.='&nbsp;'.$nbpage.'&nbsp;'.__('page','annonces').$pluriel1.'</span>
-				<span style="display:table;float:left;padding:1px;margin:0 3px;" >&nbsp;:&nbsp;</span>';
-
-		$min=$page-$offset;
-		if($min<1)$min=1;
-
-		$max=$min+(2*$offset);
-		if($max>=$nbpage){$max=$nbpage;$min=$max-(2*$offset)-1;}
-
-		if($min<1)$min=1;
-
-		$minto=$min - ($offset)-1;
-		if($minto<1){$minto=1;}
-		$maxto=$min + (3*$offset)+1;
-		if($maxto>$nbpage){$max=$nbpage;}
-
-		if($option<2){	//	sens croissant
-			if($min>1)$pagination.='<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-			'.str_replace('#PAGE#',$minto, $link).' style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;" ><<</span>';
-			else $pagination.='<span style="display:table;float:left;padding:1px 6px;margin:0 3px;" >&nbsp;&nbsp;&nbsp;&nbsp;</span>';
-
-			for($i=$min;$i<=$max;$i++){
-				$selected='';if($i==$page)$selected='color:'.$slctdcolor.';background:'.$slctdbackground.';font-weight:bold;';
-				$pagination.='<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-				'.str_replace('#PAGE#',$i, $link).' style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;'.$selected.' " >'.$i.'</span>';
-			}
-
-			if($max<$nbpage)$pagination.='<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-			'.str_replace('#PAGE#',$maxto, $link).' style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;" >>></span>';
-		}
-		else{						//	sens decroissant
-			if($max<$nbpage)$pagination.='<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-			'.str_replace('#PAGE#',$maxto, $link).' style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;" ><<</span>';
-
-			for($i=$max;$i>=$min;$i--){
-				$selected='';if($i==$page)$selected='color:'.$slctdcolor.';background:'.$slctdbackground.';font-weight:bold;';
-				$pagination.='<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-			'.str_replace('#PAGE#',$i, $link).' style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;'.$selected.' " >'.$i.'</span>';
-			}
-
-			if($min>1)$pagination.='<span onmouseover="this.style.textDecoration=\'underline\';" onmouseout="this.style.textDecoration=\'\';" 
-			'.str_replace('#PAGE#',$minto, $link).' style="display:table;cursor:pointer;float:left;padding:1px 6px;margin:0 3px;" >>></span>';
-			else $pagination.='<span style="display:table;float:left;padding:1px 6px;margin:0 3px;" >&nbsp;&nbsp;&nbsp;&nbsp;</span>';
-		}
-
-		$pagination.='</div >';
-
-		return $pagination;
 	}
 
 	function slugify_nospace($text)
@@ -153,40 +86,6 @@ class eva_tools
 	  }
 	  
 	  return $text;
-	}
-
-	function transformeDate($date, $ajoutJour=0, $ajoutMois=0, $ajoutAnnee=0)
-	{	
-		if($date == "" OR $date == '00-00-0000')
-		{
-			$date = "NA";
-		}
-		else
-		{
-			$moisAnnee['01']['nom'] = __('Janvier', 'evarisk');
-			$moisAnnee['02']['nom'] = __('F&eacute;vrier', 'evarisk');
-			$moisAnnee['03']['nom'] = __('Mars', 'evarisk');
-			$moisAnnee['04']['nom'] = __('Avril', 'evarisk');
-			$moisAnnee['05']['nom'] = __('Mai', 'evarisk');
-			$moisAnnee['06']['nom'] = __('Juin', 'evarisk');
-			$moisAnnee['07']['nom'] = __('Juillet', 'evarisk');
-			$moisAnnee['08']['nom'] = __('Ao&uuml;t', 'evarisk');
-			$moisAnnee['09']['nom'] = __('Septembre', 'evarisk');
-			$moisAnnee['10']['nom'] = __('Octobre', 'evarisk');
-			$moisAnnee['11']['nom'] = __('Novembre', 'evarisk');
-			$moisAnnee['12']['nom'] = __('D&eacute;cembre', 'evarisk');
-			$elementDate = explode("-",$date); 
-			$annee = $elementDate[0];
-			$mois = $elementDate[1];
-			$jour = $elementDate[2];
-			$date = date('Y-m-d', mktime(0,0,0, $elementDate[1], $elementDate[2], $elementDate[0]));
-			$elementDate = explode("-",$date); 
-			$annee = $elementDate[0];
-			$mois = $elementDate[1];
-			$jour = $elementDate[2];
-			$date = $jour . ' ' . $moisAnnee[$mois]['nom'] . ' ' . $annee;
-		}
-		return $date;
 	}
 
 	function stripAccents($string)
@@ -266,7 +165,7 @@ class eva_tools
 		{
 			if(!is_dir($destinationDirectory))
 			{
-				eva_tools::make_recursiv_dir($destinationDirectory);
+				mkdir($destinationDirectory, 0755, true);
 			}
 			$hdir = opendir($sourceDirectory);
 			while($item = readdir($hdir))

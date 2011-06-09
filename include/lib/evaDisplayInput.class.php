@@ -246,9 +246,9 @@ class EvaDisplayInput {
 	*
 	*	@return mixed $output The combo box output
 	*/
-	function createComboBox($identifier, $content, $selectedValue)
+	function createComboBox($identifier, $name, $content, $selectedValue)
 	{
-		$output = '<select id="' . $identifier . '" name="' . $identifier . '" >';
+		$output = '<select id="' . $identifier . '" name="' . $name . '" >';
 
 		foreach($content as $index => $datas)
 		{

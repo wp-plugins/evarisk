@@ -16,6 +16,8 @@
 	DEFINE('EVA_ARROW_TOP', EVA_IMG_ICONES_PLUGIN_URL . 'fleche_haut.png');
 	DEFINE('EVA_ARROW_BOTTOM', EVA_IMG_ICONES_PLUGIN_URL . 'fleche_bas.png');
 
+	DEFINE('DIGI_USER_GROUP_ICON_S', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/groupeUtilisateur_s.png');
+
 	/**
 	*	Message error / success picture
 	*/

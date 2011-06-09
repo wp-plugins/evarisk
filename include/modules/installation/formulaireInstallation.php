@@ -53,110 +53,8 @@ $scriptCB = '
 	}
 	$lignesDeValeurs[] = $insertions;
 }
-if(false){//EPI
-	$insertions[0]['value'] = '<p class="titreSetup">' . __('&Eacute;quipements de Protection Individuelle', 'evarisk') . '</p>';
-	$insertions[1]['value'] = '';
-	$idEPI = "insertionEPI";
-	$scriptCBEPI = '
-		<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk(\'#%1$s\').addClass("cbEPISetup");
-				evarisk(\'#%1$s\').click(function(){
-					var check = "";
-					evarisk(\'.cbEPISetup\').each(function(){
-						if(evarisk(this).attr("checked"))
-							check = "checked";
-					});
-					evarisk(\'#' . $idEPI . '\').attr("checked", check);
-				});
-			});
-		</script>';
-	{//Détail
-		{//Ins&eacute;rer BAB
-			$labelInput = ucfirst(__('protection auditive', 'evarisk'));
-			$id = "bab";
-			$nomChamps = "bab";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer casque
-			$labelInput = ucfirst(__('protection de la t&ecirc;te', 'evarisk'));
-			$id = "casque";
-			$nomChamps = "casque";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer chaussures
-			$labelInput = ucfirst(__('chaussures de s&eacute;curit&eacute;', 'evarisk'));
-			$id = "chaussures";
-			$nomChamps = "chaussures";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer combi
-			$labelInput = ucfirst(__('combinaison', 'evarisk'));
-			$id = "combi";
-			$nomChamps = "combi";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer gants
-			$labelInput = ucfirst(__('protection des mains', 'evarisk'));
-			$id = "gants";
-			$nomChamps = "gants";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer harnais
-			$labelInput = ucfirst(__('protection anti-chute', 'evarisk'));
-			$id = "harnais";
-			$nomChamps = "harnais";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer lunettes
-			$labelInput = ucfirst(__('protection des yeux', 'evarisk'));
-			$id = "lunettes";
-			$nomChamps = "lunettes";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-		{//Ins&eacute;rer masque
-			$labelInput = ucfirst(__('protection respiratoire', 'evarisk'));
-			$id = "masque";
-			$nomChamps = "masque";
-			$script = sprintf($scriptCB, $id);
-			$script = $script . sprintf($scriptCBEPI, $id);
-			$insertions[1]['value'] = $insertions[1]['value'] . EvaDisplayInput::afficherInput('checkbox', $id, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script);
-		}
-	}
-	{//Ins&eacute;rer les EPIs
-		$labelInput = '<b>' . ucfirst(strtolower(sprintf(__("Ins&eacute;rer %s", 'evarisk'),__("les &eacute;quipements de protection individuelle", 'evarisk')))) . '</b>';
-		$nomChamps = "insertionEPI";
-		$script = sprintf($scriptCB, $idEPI);
-		$script = $script . '
-			<script type="text/javascript">
-				evarisk(document).ready(function(){
-					evarisk(\'#' . $idEPI . '\').click(function(){
-						var check = "";
-						if(evarisk(this).attr("checked"))
-							check = "checked";
-						evarisk(\'.cbEPISetup\').each(function(){
-							evarisk(this).attr("checked", check);
-						});
-					});
-				});
-			</script>';
-		$insertions[1]['value'] = EvaDisplayInput::afficherInput('checkbox', $idEPI, '', '', $labelInput, $nomChamps, false, false, 1, '', '', '', $script) . $insertions[1]['value'];
-	}
-	$lignesDeValeurs[] = $insertions;
+{//EPI 																										/!\	PLUS UTILISE/!\
+	//DELETE FROM VERSION 44
 }
 {//Theme Evarisk
 	$insertions[0]['value'] = '<p class="titreSetup">' . __('Th&egrave;me', 'evarisk') . '</p>';
@@ -199,31 +97,6 @@ if(STANDALONEVERSION)
 			' . $autoLaunch . '
 		
 			evarisk("#' . $idBouttonEnregistrer . '").click(function() {
-				var epi = new Array();
-				epi[0] = new Array();
-				epi[0][0] = evarisk(\'#bab\').attr("checked");
-				epi[0][1] = "bab";
-				epi[1] = new Array();
-				epi[1][0] = evarisk(\'#casque\').attr("checked");
-				epi[1][1] = "casque";
-				epi[2] = new Array();
-				epi[2][0] = evarisk(\'#chaussures\').attr("checked");
-				epi[2][1] = "chaussures";
-				epi[3] = new Array();
-				epi[3][0] = evarisk(\'#combi\').attr("checked");
-				epi[3][1] = "combi";
-				epi[4] = new Array();
-				epi[4][0] = evarisk(\'#gants\').attr("checked");
-				epi[4][1] = "gants";
-				epi[5] = new Array();
-				epi[5][0] = evarisk(\'#harnais\').attr("checked");
-				epi[5][1] = "harnais";
-				epi[6] = new Array();
-				epi[6][0] = evarisk(\'#lunettes\').attr("checked");
-				epi[6][1] = "lunettes";
-				epi[7] = new Array();
-				epi[7][0] = evarisk(\'#masque\').attr("checked");
-				epi[7][1] = "masque";
 				var methodes = new Array();
 				methodes[0] = new Array();
 				methodes[0][0] = evarisk(\'#insertionMethodeEvarisk\').attr("checked");
@@ -254,10 +127,6 @@ if(STANDALONEVERSION)
 			});
 		});
 		</script>';
-		//	MODIFICATION DES EPI POUR PASSAGE AUX PRECONISATIONS
-		// ,
-						// "EPIs": evarisk("#insertionEPI").attr("checked"),
-						// "EPI": epi
 	$formulaireInstallation .= 
 '	<div id="installLoading" class="alignright" >&nbsp;</div>
 	<div id="installButton" class="alignright" >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Installer Evarisk', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div>

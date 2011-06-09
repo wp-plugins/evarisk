@@ -9,40 +9,6 @@ require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.p
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswerToQuestion.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswer.class.php' );
 
-//attention, ne gère pas les année Bisextiles
-function transformeDate($date, $ajoutJour=0, $ajoutMois=0, $ajoutAnnee=0)
-{	
-	if($date == "" OR $date == '00-00-0000')
-	{
-		$date = "NA";
-	}
-	else
-	{
-		$moisAnnee['01']['nom'] = __('Janvier', 'evarisk');
-		$moisAnnee['02']['nom'] = __('F&eacute;vrier', 'evarisk');
-		$moisAnnee['03']['nom'] = __('Mars', 'evarisk');
-		$moisAnnee['04']['nom'] = __('Avril', 'evarisk');
-		$moisAnnee['05']['nom'] = __('Mai', 'evarisk');
-		$moisAnnee['06']['nom'] = __('Juin', 'evarisk');
-		$moisAnnee['07']['nom'] = __('Juillet', 'evarisk');
-		$moisAnnee['08']['nom'] = __('Ao&uuml;t', 'evarisk');
-		$moisAnnee['09']['nom'] = __('Septembre', 'evarisk');
-		$moisAnnee['10']['nom'] = __('Octobre', 'evarisk');
-		$moisAnnee['11']['nom'] = __('Novembre', 'evarisk');
-		$moisAnnee['12']['nom'] = __('D&eactue;cembre', 'evarisk');
-		$elementDate = explode("-",$date); 
-		$annee = $elementDate[0];
-		$mois = $elementDate[1];
-		$jour = $elementDate[2];
-		$date = date('Y-m-d', mktime(0,0,0, $elementDate[1], $elementDate[2], $elementDate[0]));
-		$elementDate = explode("-",$date); 
-		$annee = $elementDate[0];
-		$mois = $elementDate[1];
-		$jour = $elementDate[2];
-		$date = $jour . ' ' . $moisAnnee[$mois]['nom'] . ' ' . $annee;
-	}
-	return $date;
-}
 
 function stripAccents($string)
 {
@@ -154,7 +120,7 @@ function starToLi($string)
 	$dateArrete = $textReferentiel->datePremiereRatification ;
 	$dateDernierArrete = $textReferentiel->dateDerniereModification;
 	$texteSousIntro = $textReferentiel->texteSousIntro . "
-*Arrêté du " . transformeDate($dateDernierArrete) . " modifiant l'arrêté du " . transformeDate($dateArrete) . " relatif aux prescriptions générales applicables aux installations classées soumises à déclaration sous la " . $rubrique . " " . $relativiteRubrique . "";
+*Arrêté du " . mysql2date('d M Y', $dateDernierArrete, true) . " modifiant l'arrêté du " . mysql2date('d M Y', $dateArrete, true) . " relatif aux prescriptions générales applicables aux installations classées soumises à déclaration sous la " . $rubrique . " " . $relativiteRubrique . "";
 	
 	$dateDeclarationInstallation = $_POST['dateDeclarationInstallation'];
 	
@@ -281,7 +247,7 @@ $pdf->AjouterSousTitre($sousTitre);
 
 $numeroChapitre = 1;
 {//Chapitre 1 : Introduction
-	$pdf->AjouterChapitre($numeroChapitre++,"Introduction", "Ce contrôle est réalisé conformément aux dispositions de l'arrêté modifié du " . transformeDate($dateArrete) . " relatif aux prescriptions générales applicables aux installations classées soumises à déclaration sous la " . $rubrique . ".");
+	$pdf->AjouterChapitre($numeroChapitre++,"Introduction", "Ce contrôle est réalisé conformément aux dispositions de l'arrêté modifié du " . mysql2date('d M Y', $dateArrete, true) . " relatif aux prescriptions générales applicables aux installations classées soumises à déclaration sous la " . $rubrique . ".");
 }
 {//Chapitre 2 : Rappel de règlementation
 	$pdf->AjouterChapitre($numeroChapitre++,"Rappel de règlementation", "<ul><li>Arrêté du 17 juin 2005 relatif aux prescriptions générales applicables aux installations classées soumises à déclaration sous la " . $rubrique . " <b>" . $relativiteRubrique . ".</b><br />" . nl2br(starToLi($texteSousIntro)) . "</li></ul>");
@@ -337,16 +303,16 @@ $pdf->AddPage();
 		</tr>
 		<tr>
 			<th " . $styleTH[$largeurGauche] . ">Date de mise en service de l'installation</th>
-			<td style=\"width: " . $largeurDroite/4	. "%\">" . transformeDate($dateMiseServiceInstallation) . "</td>
+			<td style=\"width: " . $largeurDroite/4	. "%\">" . mysql2date('d M Y', $dateMiseServiceInstallation, true) . "</td>
 			<th " . $styleTH[$largeurDroite/2] . ">Date de déclaration de l'installation</th>
-			<td style=\"width: " . $largeurDroite/4	. "%\">" . transformeDate($dateDeclarationInstallation) . "</td>
+			<td style=\"width: " . $largeurDroite/4	. "%\">" .  mysql2date('d M Y', $dateDeclarationInstallation, true) . "</td>
 		</tr>
 	</table>");
 	$largeurGauche = 20;
 	$pdf->AjouterChapitre("", null, "<table cellspacing=\"0\" cellpadding=\"3\" border=\"1\">
 		<tr>
 			<th " . $styleTH[$largeurGauche] . ">Date du dernier contrôle</th>
-			<td style=\"width: " . $largeurGauche . "%\">" . transformeDate($dateDernierControle) . "</td>
+			<td style=\"width: " . $largeurGauche . "%\">" .  mysql2date('d M Y', $dateDernierControle, true) . "</td>
 			<th " . $styleTH[$largeurGauche] . ">Contrôleur et Organisme : </th>
 			<td style=\"width: " . $largeurGauche . "%\">" . nl2br($controleurDernierControle) . "</td>
 			<td style=\"width: " . $largeurGauche . "%\">" . nl2br($organismeDernierControle) . "</td>
@@ -379,11 +345,11 @@ $pdf->AddPage();
 		</tr>
 		<tr>
 			<td style=\"width: 50%\">Date du contrôle : </td>
-			<td style=\"width: 50%\">" . transformeDate($dateControle) . "</td>
+			<td style=\"width: 50%\">" . mysql2date('d M Y', $dateControle, true) . "</td>
 		</tr>
 		<tr>
 			<td style=\"width: 50%\">Date d'émission du rapport</td>
-			<td style=\"width: 50%\">" . transformeDate(date("Y-m-d")) . "</td>
+			<td style=\"width: 50%\">" . mysql2date('d M Y', date("Y-m-d"), true) . "</td>
 		</tr>
 	</table>");
 }
@@ -473,7 +439,7 @@ $pdf->AjouterChapitre("", null, "
 		<tr>
 			<td><div>L'inspecteur : <br />&nbsp;&nbsp;&nbsp;&nbsp;" . $inspecteur . "</div>
 	<div>Visa<br /></div>
-	<div>Le " . transformeDate(date("Y-m-d")) . "</div></td>
+	<div>Le " . mysql2date('d M Y', date("Y-m-d"), true) . "</div></td>
 			<td></td>
 			<td></td>
 			<td></td>

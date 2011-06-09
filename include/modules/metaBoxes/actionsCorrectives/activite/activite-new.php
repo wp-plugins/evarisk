@@ -115,7 +115,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 	{//Responsable
 		$contenuAideDescription = "";		
 		$labelInput = __("Responsable", 'evarisk');
-		if(options::getOptionValue('responsable_Action_Obligatoire') == 'oui')
+		if(digirisk_options::getOptionValue('responsable_Action_Obligatoire') == 'oui')
 		{
 			$labelInput .= '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span>';
 		}
@@ -171,7 +171,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$idBouttonEnregistrer = 'save_activite';
 
 		/*	Check if the user in charge of the action are mandatory */
-		$idResponsableIsMandatory = options::getOptionValue('responsable_Action_Obligatoire');
+		$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Action_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
 			evarisk(document).ready(function() {
@@ -230,7 +230,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$idBoutton = 'actionDone';
 
 		/*	Check if the user in charge of the action are mandatory */
-		$alertWhenMarkActionAsDone = options::getOptionValue('avertir_Solde_Action_Non_100');
+		$alertWhenMarkActionAsDone = digirisk_options::getOptionValue('avertir_Solde_Action_Non_100');
 
 		$scriptEnregistrementDone = '<script type="text/javascript">
 			evarisk(document).ready(function() {				
@@ -299,7 +299,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		{
 			$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-primary', '', '', $scriptEnregistrementInProgress, 'left') . '</span>';
 		}
-		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui'))
+		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui'))
 		{
 			$activite_new .= 
 				'<div class="alignright" id="ActionSaveButton" >' . $inProgressButton;

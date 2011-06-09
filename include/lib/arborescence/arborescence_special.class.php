@@ -55,7 +55,18 @@ class arborescence_special
 					{
 						$selected = ' checked="checked" ';
 					}
-					$outputContent .= arborescence_special::getTreeLine($content['nom'], $content['table'] . '_-_' . $content['id'], $content['table'], $espacement, $selected);
+
+					$elementPrefix = '';
+					switch($content['table'])
+					{
+						case TABLE_GROUPEMENT:
+							$elementPrefix = 'GP' . $content['id'] . ' - ';
+							break;
+						case TABLE_UNITE_TRAVAIL:
+							$elementPrefix = 'UT' . $content['id'] . ' - ';
+							break;
+					}
+					$outputContent .= arborescence_special::getTreeLine($elementPrefix . $content['nom'], $content['table'] . '_-_' . $content['id'], $content['table'], $espacement, $selected);
 
 					/*	Risk list for the current element	*/
 					if( is_array($content['risks']) )
@@ -68,7 +79,7 @@ class arborescence_special
 							{
 								$selected = ' checked="checked" ';
 							}
-							$outputContent .= $outputContent .= arborescence_special::getTreeLine($riskDefinition->nomDanger, TABLE_RISQUE . '_-_' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
+							$outputContent .= arborescence_special::getTreeLine($elementPrefix . $riskDefinition->nomDanger, TABLE_RISQUE . '_-_' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
 						}
 					}
 				}
@@ -82,7 +93,17 @@ class arborescence_special
 						{
 							$selected = ' checked="checked" ';
 						}
-						$outputContent .= arborescence_special::getTreeLine($contentInformations['nom'], $contentInformations['table'] . '_-_' . $contentInformations['id'], $contentInformations['table'], $espacement, $selected);
+						$elementPrefix = '';
+						switch($contentInformations['table'])
+						{
+							case TABLE_GROUPEMENT:
+								$elementPrefix = 'GP' . $contentInformations['id'] . ' - ';
+								break;
+							case TABLE_UNITE_TRAVAIL:
+								$elementPrefix = 'UT' . $contentInformations['id'] . ' - ';
+								break;
+						}
+						$outputContent .= arborescence_special::getTreeLine($elementPrefix . $contentInformations['nom'], $contentInformations['table'] . '_-_' . $contentInformations['id'], $contentInformations['table'], $espacement, $selected);
 
 						/*	Risk list for the current element	*/
 						if( is_array($contentInformations['risks']) )
@@ -95,7 +116,8 @@ class arborescence_special
 								{
 									$selected = ' checked="checked" ';
 								}
-								$outputContent .= arborescence_special::getTreeLine($riskDefinition->nomDanger, TABLE_RISQUE . '_-_' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
+								$elementPrefix = 'R' . $riskId . ' - ';
+								$outputContent .= arborescence_special::getTreeLine($elementPrefix . $riskDefinition->nomDanger, TABLE_RISQUE . '_-_' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
 							}
 						}
 

@@ -1,303 +1,428 @@
 <?php
+/**
+* Plugin options' management
+* 
+* Define the settings page, with the different field to output and field's validators
+* @author Eoxia <dev@eoxia.com>
+* @version 1.0
+* @package evarisk
+* @subpackage librairies
+*/
 
-class options
+/**
+* Define the settings page, with the different field to output and field's validators
+* @package evarisk
+* @subpackage librairies
+*/
+class digirisk_options
 {
+	/**
+	*	Declare the different options for the plugin	
+	*/
+	function evarisk_add_options() 
+	{
+		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
+		register_setting('digirisk_db_option', 'digirisk_db_option');
 
+		{/* Declare the different options for the correctiv actions	*/
+			add_settings_section('digi_options_ac', __('Options pour les actions correctives', 'evarisk'), array('digirisk_options', 'options_output_ac'), 'digirisk_options_settings');
+			/*	Add the different field for the correctives actions	*/
+			add_settings_field('digi_ac_supervisormandatory_field', __('Responsable des t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_supervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_subsupervisormandatory_field', __('Responsable des sous-t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_subsupervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_changesold_field', __('Possibilit&eacute; de modifier une t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesold_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_changesubsold_field', __('Possibilit&eacute; de modifier une sous-t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesubsold_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_alertsoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che qui n\'a pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertsoldnot100_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_alertundersoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che ayant des sous-t&acirc;ches qui n\'ont pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertundersoldnot100_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_displayonlysoldtaskinrisk_field', __('Affecter uniquement les t&acirc;ches sold&eacute;es aux risques', 'evarisk'), array('digirisk_options', 'digi_ac_displayonlysoldtaskinrisk_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_advancedCA_field', __('Activer les actions correctives avanc&eacute;es', 'evarisk'), array('digirisk_options', 'digi_ac_advancedCA_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_createUtaks4PA_field', __('Cr&eacute;er une sous-t&acirc;che pour les actions prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_createUtaks4PA_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_settings', 'digi_options_ac');
+		}
+
+		{/*	Declare the different options for the risks	*/
+			add_settings_section('digi_risk_options', __('Options pour les risques', 'evarisk'), array('digirisk_options', 'options_output_risk'), 'digirisk_options_settings');
+			/*	Add the different field for the correctives actions	*/
+			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_settings', 'digi_risk_options');
+		}
+
+		{/*	Declare the different options for the work unit sheet	*/
+			add_settings_section('digi_fp_options', __('Options pour les fiches de poste', 'evarisk'), array('digirisk_options', 'options_output_fp'), 'digirisk_options_settings');
+			/*	Add the different field for the correctives actions	*/
+			add_settings_field('digi_fp_picsize_field', __('Taille de la photo dans la fiche de poste (cm)', 'evarisk'), array('digirisk_options', 'digi_fp_picsize_field'), 'digirisk_options_settings', 'digi_fp_options');
+		}
+
+		{/*	Declare the different options for the recommandation	*/
+			add_settings_section('digi_recommandation_options', __('Options pour les pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'options_output_recommandation'), 'digirisk_options_settings');
+			/*	Add the different field for the correctives actions	*/
+			add_settings_field('digi_recommandation_efficiency_field', __('Activer l\'efficacit&eacute; des pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'digi_recommandation_efficiency_field'), 'digirisk_options_settings', 'digi_recommandation_options');
+		}
+
+		{/*	Declare the different options for the users	*/
+			add_settings_section('digi_users_options', __('Options pour les utilisateurs', 'evarisk'), array('digirisk_options', 'options_output_users'), 'digirisk_options_settings');
+			/*	Add the different field for the correctives actions	*/
+			add_settings_field('digi_recommandation_efficiency_field', __('Domaine par d&eacute;faut pour les e-mail utilisateurs (sans @)', 'evarisk'), array('digirisk_options', 'digi_users_emaildomain_field'), 'digirisk_options_settings', 'digi_users_options');
+		}
+
+		{/*	Declare the different options for the products if plugin exists and is active	*/
+			if (is_plugin_active('wpshop/wp-shop.php'))
+			{
+				add_settings_section('digi_product_options', __('Options pour les produits', 'evarisk'), array('digirisk_options', 'options_output_products'), 'digirisk_options_settings');
+			/*	Add the different field for the correctives actions	*/
+				add_settings_field('digi_product_categories_field', __('Cat&eacute;gorie(s) de produits &agrave; afficher pour affectation aux &eacute;l&eacute;ments', 'evarisk'), array('digirisk_options', 'digi_product_categories_field'), 'digirisk_options_settings', 'digi_product_options');
+			}
+		}
+	}
+
+	/**
+	*	Create the html ouput code for the options page
+	*
+	*	@return The html code to output for option page
+	*/
 	function optionMainPage()
 	{
-		unset($titres,$classes, $idLignes, $lignesDeValeurs);
-		$idLignes = null;
-		$idTable = 'pluginOptions';
-		$titres[] = __("Domaine de l'option", 'evarisk');
-		$titres[] = __("Nom de l'option", 'evarisk');
-		$titres[] = __("Valeur", 'evarisk');
-		$titres[] = __("Actions", 'evarisk');
-		$classes[] = '';
-		$classes[] = '';
-		$classes[] = '';
-		$classes[] = 'optionsActionColumn';
-		$optionList = options::getOptionList();
+		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel Digirisk', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false);
+?>
+<div id="digirisk_options_container" >
+	<form action="options.php" method="post">
+
+	<?php settings_fields('digirisk_options'); ?>
+	<?php do_settings_sections('digirisk_options_settings'); ?>
+
+	<br/><br/>
+	<input class="button-primary" name="Submit" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" />
+	</form>
+</div>
+<?php
+		echo EvaDisplayDesign::afficherFinPage();
+	}
+
+	/**
+	*	Validate the different data sent for the option
+	*
+	*	@param array $input An array which will receive the values sent by the user with the form
+	*
+	*	@return array $newinput An array with the send values cleaned for more secure usage
+	*/
+	function digirisk_options_validator($input)
+	{
+		$newinput['responsable_Tache_Obligatoire'] = trim($input['responsable_Tache_Obligatoire']);
+		$newinput['responsable_Action_Obligatoire'] = trim($input['responsable_Action_Obligatoire']);
+		$newinput['possibilite_Modifier_Tache_Soldee'] = trim($input['possibilite_Modifier_Tache_Soldee']);
+		$newinput['possibilite_Modifier_Action_Soldee'] = trim($input['possibilite_Modifier_Action_Soldee']);
+		$newinput['avertir_Solde_Action_Non_100'] = trim($input['avertir_Solde_Action_Non_100']);
+		$newinput['avertir_Solde_Tache_Ayant_Action_Non_100'] = trim($input['avertir_Solde_Tache_Ayant_Action_Non_100']);
+		$newinput['affecter_uniquement_tache_soldee_a_un_risque'] = trim($input['affecter_uniquement_tache_soldee_a_un_risque']);
+		$newinput['action_correctives_avancees'] = trim($input['action_correctives_avancees']);
+		$newinput['creation_sous_tache_preconisation'] = trim($input['creation_sous_tache_preconisation']);
+		$newinput['export_only_priority_task'] = trim($input['export_only_priority_task']);
+		$newinput['export_tasks'] = trim($input['export_tasks']);
+
+		$newinput['risques_avances'] = trim($input['risques_avances']);
+
+		$newinput['taille_photo_poste_fiche_de_poste'] = trim($input['taille_photo_poste_fiche_de_poste']);
+
+		$newinput['recommandation_efficiency_activ'] = trim($input['recommandation_efficiency_activ']);
+
+		$newinput['emailDomain'] = trim(str_replace('@', '', $input['emailDomain']));
+
+		$newinput['product_categories'] = serialize($input['product_categories']);
+
+		return $newinput;
+	}
+
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_ac()
+	{
 		
-		unset($ligneDeValeurs);
-		$i=0;
-		foreach($optionList as $option)
-		{
-			$idLignes[] = 'option' . $option->id;
-			$domaineOption = $option->domaine;
-			switch($domaineOption)
-			{
-				case 'risk':
-					$domaineOption = __('Risques', 'evarisk');
-				break;
-				case 'task':
-					$domaineOption = __('Actions correctives', 'evarisk');
-				break;
-				case 'user':
-					$domaineOption = __('Utilisateurs', 'evarisk');
-				break;
-				case 'fichedeposte':
-					$domaineOption = __('Fiches de poste', 'evarisk');
-				break;
-				case 'recommandation':
-					$domaineOption = __('Pr&eacute;conisations', 'evarisk');
-				break;
-			}
-			$lignesDeValeurs[$i][] = array('value' => $domaineOption, 'class' => '');
-			$lignesDeValeurs[$i][] = array('value' => ucfirst($option->nomAffiche), 'class' => '');
-			$lignesDeValeurs[$i][] = array('value' => '<span class="pointer optionValueContainer" id="optionValueContainer' . $option->id . '" >' . $option->valeur . '</span>', 'class' => $option->nom);
-			$lignesDeValeurs[$i][] = array('value' => '<span id="editOption-' . $option->id . '" class="editDataTableRow ui-icon" >&nbsp;</span>', 'class' => $option->nom);
-			$i++;
-		}
-
-		$script = '<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk("#' . $idTable . ' tfoot").remove();
-				oTable = evarisk("#' . $idTable . '").dataTable({
-					"fnDrawCallback": function ( oSettings ) {
-						if ( oSettings.aiDisplay.length == 0 )
-						{
-							return;
-						}
-						
-						var nTrs = evarisk("#' . $idTable . ' tbody tr");
-						var iColspan = nTrs[0].getElementsByTagName("td").length;
-						var sLastGroup = "";
-						var ntrsLength = nTrs.length;
-						for(i=0; i < ntrsLength; i++)
-						{
-							var iDisplayIndex = oSettings._iDisplayStart + i;
-							var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
-							if ( sGroup != sLastGroup )
-							{
-								var nGroup = document.createElement( "tr" );
-								var nCell = document.createElement( "td" );
-								nCell.colSpan = iColspan;
-								nCell.className = "group";
-								nCell.innerHTML = sGroup;
-								nGroup.appendChild( nCell );
-								nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
-								sLastGroup = sGroup;
-							}
-						}
-					},
-					"aoColumns": [ 
-						{ "bVisible":    false },
-						null,
-						null,
-						null
-					],
-					"bPaginate": false,
-					"bInfo": false,
-					"bLengthChange": false,
-					"oLanguage": {
-						"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
-					}
-				});
-				evarisk(".optionValueContainer").click(function(){
-					evarisk("#messageOption").hide();
-					evarisk("#light").show();
-					evarisk("#fade").show();
-					evarisk("#optionEdition").html(evarisk("#loadingImg").html());
-					evarisk("#optionEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-					{
-						"post":"true",
-						"table":"' . TABLE_OPTION . '",
-						"act":"editOption",
-						"id":evarisk(this).attr("id").replace("optionValueContainer", "editOption-")
-					});
-				});
-				evarisk(".editDataTableRow").click(function(){
-					evarisk("#messageOption").hide();
-					evarisk("#light").show();
-					evarisk("#fade").show();
-					evarisk("#optionEdition").html(evarisk("#loadingImg").html());
-					evarisk("#optionEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-					{
-						"post":"true",
-						"table":"' . TABLE_OPTION . '",
-						"act":"editOption",
-						"id":evarisk(this).attr("id")
-					});
-				});
-			});
-		</script>';
-		
-		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false) . '<div id="messageOption" class="hide updated fade below-h2"></div><div class="hide" id="loadingImg" ><center><img class="margin36" src="' . PICTO_LOADING_ROUND . '" alt="loading..." /></center></div><div id="light" class="white_content_option" ><div class="closeLightBoxContainer" ><span class="alignright closeLightBoxIcon ui-icon" >&nbsp;</span><span class="alignright" >' . _('Fermer', 'evarisk') . '</span></div><div class="clear" id="optionEdition" ></div></div><div id="fade" class="black_overlay_option" ></div>' . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script) . EvaDisplayDesign::afficherFinPage();
 	}
-
 	/**
-	*	Return complete options list
-	*
-	*	@return object $optionList The complete list of option for the softare
+	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
-	function getOptionList()
-	{
-		global $wpdb;
-
-		$sql = $wpdb->prepare("SELECT * FROM " . TABLE_OPTION . " WHERE Status = 'Valid' ");
-		$optionList = $wpdb->get_results($sql);
-
-		return $optionList;
-	}
-
-	/**
-	*	Return a specific option from it's name
-	*
-	*	@param string $optionName The option name of the option we want to get the value
-	*	@param string $optionStatus The option status
-	*
-	*	@return object $optionValue The option value
-	*/
-	function getOptionValue($optionName, $optionStatus = 'Valid')
-	{
-		global $wpdb;
-
-		$sql = $wpdb->prepare("SELECT valeur FROM " . TABLE_OPTION . " WHERE Status = '%s' AND nom = '%s' ", $optionStatus, $optionName);
-		$option = $wpdb->get_row($sql);
-
-		$optionValue = $option->valeur;
-
-		return $optionValue;
-	}
-
-	/**
-	*	Return a specific option it's id
-	*
-	*	@param string $optionId The option identifier we want to get
-	*
-	*	@return object $option The option informations
-	*/
-	function getOption($optionId)
-	{
-		global $wpdb;
-
-		$sql = $wpdb->prepare("SELECT * FROM " . TABLE_OPTION . " WHERE id = '%s' ", $optionId);
-		$option = $wpdb->get_row($sql);
-
-		return $option;
-	}
-
-	/**
-	*	Update an option
-	*
-	*	@param integer $optionId The option id we want to update
-	*	@param string $optionName The option value we want to set
-	*
-	*	@return object $option The option query result
-	*/
-	function updateOption($optionId, $optionValue)
-	{
-		global $wpdb;
-
-		$sql = $wpdb->prepare("UPDATE " . TABLE_OPTION . " SET valeur = '%s' WHERE id = '%s' ", $optionValue, $optionId);
-		$option = $wpdb->query($sql);
-
-		return $option;
-	}
-
-	/**
-	*	Update an option from it's name
-	*
-	*	@param string $optionName The option name we want to update
-	*	@param string $optionValue The option value we want to update
-	*
-	*	@return object $option The option query result
-	*/
-	function updateOptionFromName($optionName, $optionValue)
-	{
-		global $wpdb;
-
-		$sql = $wpdb->prepare("UPDATE " . TABLE_OPTION . " SET valeur = '%s' WHERE nom = '%s' ", $optionValue, $optionName);
-		$option = $wpdb->query($sql);
-	}
-
-	/**
-	*	Create an option
-	*
-	*	@param string $optionName The option name we want to create
-	*	@param string $optionValue The option value we want to create
-	*	@param string $optionShownName The option shown name we want to create
-	*	@param string $optionDomain The option domain we want to create
-	*	@param string $optionType The option type we want to create
-	*	@param string $optionStatus The option status we want to create
-	*
-	*	@return object $option The option query result
-	*/
-	function createOption($optionName, $optionValue, $optionShownName, $optionDomain, $optionType, $optionStatus)
-	{
-		global $wpdb;
-
-		$sql = $wpdb->prepare(
-			"INSERT INTO " . TABLE_OPTION . " 
-				(domaine, nom, nomAffiche, valeur, status, typeOption)
-			VALUES 
-				('%s', '%s', '%s', '%s', '%s', '%s')", 
-		$optionDomain, $optionName, $optionShownName, $optionValue, $optionStatus, $optionType);
-
-		$option = $wpdb->query($sql);
-
-		return $option;
-	}
-
-
-	/**
-	*	Create the form to create a new option
-	*
-	*	@return string $formOutput The complet html output for the form
-	*/
-	function editOptionForm($optionType = 'ouinon')
+	function digi_ac_supervisormandatory_field()
 	{
 		global $optionYesNoList;
-		$formOutput = '';
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_supervisormandatory_field', 'digirisk_options[responsable_Tache_Obligatoire]', $optionYesNoList, $options['responsable_Tache_Obligatoire']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_subsupervisormandatory_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_subsupervisormandatory_field', 'digirisk_options[responsable_Action_Obligatoire]', $optionYesNoList, $options['responsable_Action_Obligatoire']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_changesold_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_changesold_field', 'digirisk_options[possibilite_Modifier_Tache_Soldee]', $optionYesNoList, $options['possibilite_Modifier_Tache_Soldee']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_changesubsold_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_changesubsold_field', 'digirisk_options[possibilite_Modifier_Action_Soldee]', $optionYesNoList, $options['possibilite_Modifier_Action_Soldee']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_alertsoldnot100_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_alertsoldnot100_field', 'digirisk_options[avertir_Solde_Action_Non_100]', $optionYesNoList, $options['avertir_Solde_Action_Non_100']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_alertundersoldnot100_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_alertundersoldnot100_field', 'digirisk_options[avertir_Solde_Tache_Ayant_Action_Non_100]', $optionYesNoList, $options['avertir_Solde_Tache_Ayant_Action_Non_100']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_displayonlysoldtaskinrisk_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_displayonlysoldtaskinrisk_field', 'digirisk_options[affecter_uniquement_tache_soldee_a_un_risque]', $optionYesNoList, $options['affecter_uniquement_tache_soldee_a_un_risque']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_advancedCA_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_advancedCA_field', 'digirisk_options[action_correctives_avancees]', $optionYesNoList, $options['action_correctives_avancees']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_createUtaks4PA_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_createUtaks4PA_field', 'digirisk_options[creation_sous_tache_preconisation]', $optionYesNoList, $options['creation_sous_tache_preconisation']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_exportprioritytaskonly_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_exportprioritytaskonly_field', 'digirisk_options[export_only_priority_task]', $optionYesNoList, $options['export_only_priority_task']);
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_taskexport_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_ac_taskexport_field', 'digirisk_options[export_tasks]', $optionYesNoList, $options['export_tasks']);
+	}
 
-		$typeValeur = EvaDisplayInput::createComboBox('valeur', $optionYesNoList, '');
-		if($optionType != 'ouinon')
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_risk()
+	{
+		
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_risk_advancedrisk_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_risk_advancedrisk_field', 'digirisk_options[risques_avances]', $optionYesNoList, $options['risques_avances']);
+	}
+
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_fp()
+	{
+		
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_fp_picsize_field()
+	{
+		$options = get_option('digirisk_options');
+		echo "<input id='taille_photo_poste_fiche_de_poste' name='digirisk_options[taille_photo_poste_fiche_de_poste]' size='40' type='text' value='{$options['taille_photo_poste_fiche_de_poste']}' />";
+	}
+
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_recommandation()
+	{
+		
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_recommandation_efficiency_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		echo EvaDisplayInput::createComboBox('digi_recommandation_efficiency_field', 'digirisk_options[recommandation_efficiency_activ]', $optionYesNoList, $options['recommandation_efficiency_activ']);
+	}
+
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_users()
+	{
+		
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_users_emaildomain_field()
+	{
+		$options = get_option('digirisk_options');
+		echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='{$options['emailDomain']}' />";
+	}
+
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_products()
+	{
+		_e('Cochez les cases correspondantes aux cat&eacute;gories de produits que vous souhaitez ajouter dans la partie &eacute;valuation des risques. Une cat&eacute;gorie sera affich&eacute;e dans une boite', 'evarisk');
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_product_categories_field()
+	{
+		$options = get_option('digirisk_options');
+		$productCategories = wpshop_attributes::getElementWithAttributeAndValue(WPSHOP_DBT_CATEGORY, wpshop_entities::getEntityIdFromCode('product_category'), 1, 'code', '', "'valid'");
+		$i = 1;
+		$tableContent = '';
+		$choosenCategories = unserialize($options['product_categories']);
+		foreach($productCategories as $productCategoryId => $productCategoryDef)
 		{
-			$typeValeur = '<input type="text" value="" name="valeur" id="valeur" />';
+			$checked = (is_array($choosenCategories) && in_array($productCategoryId, $choosenCategories)) ? ' checked="checked" ' : '';
+			if($i == 1)
+			{
+				$tableContent .= '<tr>';
+			}
+			$tableContent .= '<td><input ' . $checked . ' id="productCategory' . $productCategoryId . '" name="digirisk_options[product_categories][]" type="checkbox" value="' . $productCategoryId . '" /><label for="productCategory' . $productCategoryId . '" >' . $productCategoryDef['attributes']['product_category_name']['value'] . '</label></td>';
+			if($i == 2)
+			{
+				$tableContent .= '</tr>';
+				$i = 0;
+			}
+			$i++;
+		}
+		if($i == 2)
+		{
+			$tableContent .= '</tr>';
 		}
 
-		/*	The form definition	*/
-		$formOutput = 
-		'<div id="createOption" >
-			<input type="hidden" id="actionOption" name="actionOption" value="update" />
-			<input type="hidden" id="idOption" name="idOption" value="" />
-			<div class="hide" id="loadingOptionForm" ><center><img class="margin36" src="' . PICTO_LOADING_ROUND . '" alt="loading..." /></center></div>
-			<table cellpadding="0" cellspacing="0" summary="option creation form" id="addOptionTable" style="margin:12px 0px 0px;" >
-				<tbody>
-					<tr>
-						<td colspan="2">' . __('&Eacute;dition de ', 'evarisk') . '<span class="bold" id="optionName" ></span></td>
-					</tr>
-					<tr>
-						<td id="optionTypeField" >' . $typeValeur . '</td>
-						<td id="saveOption" ><input type="button" class="alignleft button-primary" name="saveCodeButton" id="saveCodeButton" value="' . __('Enregistrer', 'evarisk') . '" /><input type="button" class="alignleft button-primary" name="cancelCodeEditionButton" id="cancelCodeEditionButton" value="' . __('Annuler', 'evarisk') . '" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>';
+		echo '<table summary="product categories listing" cellpadding="0" cellspacing="0" >' . $tableContent . '</table>';
+	}
 
-		/*	Javascript associated to the form	*/
-		$script = 
-		'<script type="text/javascript" >
-			evarisk(document).ready(function(){
-				evarisk("#saveCodeButton").click(function(){
-					evarisk("#loadingOptionForm").show();
-					evarisk("#addOptionTable").hide();
-					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-					{
-						"post":"true",
-						"table":"' . TABLE_OPTION . '",
-						"act":evarisk("#actionOption").val(),
-						"id":evarisk("#idOption").val(),
-						"valeur":evarisk("#valeur").val()
-					});
-				});
-				evarisk("#cancelCodeEditionButton").click(function(){
-					emptyOptionForm();
-				});
-			});
-		</script>';
+	/**
+	*	Return the option value from a given option name
+	*
+	*	@param string $optionName The option name of the option we want to get the value
+	*
+	*	@return mixed The option value
+	*/
+	function getOptionValue($optionName)
+	{
+		$digirisk_options = get_option('digirisk_options');
 
-		return $formOutput . $script;
+		return $digirisk_options[$optionName];
+	}
+
+
+	/**
+	*	Return the current database version for the plugin
+	*
+	*	@param string $subOptionName The option we want to get the value for
+	*
+	*	@return mixed $optionSubValue The value of the option
+	*/
+	function getDbOption($subOptionName)
+	{
+		$optionSubValue = -1;
+
+		/*	Get the db option 	*/
+		$optionValue = get_option('digirisk_db_option');
+		if($optionValue != '')
+		{
+			if(is_array($optionValue))
+			{
+				$optionSubValue = $optionValue[$subOptionName];
+			}
+			elseif(is_string($optionValue))
+			{
+				$optionValue = unserialize($optionValue);
+				$optionSubValue = $optionValue[$subOptionName];
+			}
+		}
+		/*	Keep the old method to get plugin version because of update	*/
+		if($optionSubValue == -1)
+		{
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			global $wpdb;
+			$subOptionName = eva_tools::IsValid_Variable($subOptionName);
+			if( $wpdb->get_var("show tables like '" . TABLE_VERSION . "'") == TABLE_VERSION)
+			{
+				$query = $wpdb->prepare("SELECT version version
+					FROM " . TABLE_VERSION . "
+					WHERE nom = %s", $subOptionName);
+				$resultat = $wpdb->get_row($query);
+				$optionSubValue = $resultat->version;
+			}
+		}
+
+		return $optionSubValue;
+	}
+	/**
+	*	Update the database option
+	*
+	* @param string $nom The sub option name we want to update
+	* @param string $value the sub option value we want to put
+	*
+	*/
+	function updateDbOption($nom, $value)
+	{
+		$option = get_option('digirisk_db_option');
+		if(is_array($option))
+		{
+			$option[$nom] = $value;
+			update_option('digirisk_db_option', $option);
+		}
+		elseif(is_string($option))
+		{
+			$optionValue = unserialize($optionValue);
+			$optionSubValue = $optionValue[$subOptionName];
+			update_option('digirisk_db_option', serialize($optionValue));
+		}
 	}
 
 }

@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.1
-Stable tag: 5.1.2.8
+Stable tag: 5.1.2.9
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -49,19 +49,59 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 
 == Screenshots ==
 
-1. Interface gestion des m&eacute;thodes d'&eacute;valuation
-2. Interface de gestion des dangers
-3. Interface de gestion des groupes d'utilisateurs, ces groupes permettent de mettre en place des regroupements de personnes travaillant sur les memes unit&eacute;s de travail.
-4. Modification d'un groupe utilisateur par glisser d&eacute;poser
-5. Groupe d'&eacute;valuateurs interne et ou externe
-6. Ecran de gestion des groupements, cette partie permet de g&eacute;rer la hi&eacute;rarchie et les groupes des unit&eacute;s de travail en services, sous service etc...la modification se fait par glisser d&eacute;poser
-7. Ecran de modification de groupement avec la g&eacute;olocalisation des groupements dans google maps
-8. Ecran d'&eacute;valuation des risques rajout et suppression d'un risque
-9. Ecran d'ajout d'un risque avec la liste de l'INRS et 4 risques propre &agrave; l'entreprise, on voit les jauges qui permettent d'&eacute;valuer, Gravit&eacute;, Exposition, Occurrence, Formation, Protection.
+1. Tableau de bord du logiciel digirisk
+2. Interface de gestion des options du logiciel digirisk
+3. Interface d'import des utilisateurs
+4. Liste des groupes du logiciel digirisk. Groupes d'utilisateurs: personnes affect&eacute;es &agrave; un groupement/unit&eacute; de travail/etc. Groupes d'&eacute;valuateurs: personnes participant &agrave; l'&eacute;valuation des risques
+5. Interface d'ajout/&eacute;dition d'un groupe (utilisateur et &eacute;valuateur)
+6. Liste des pr&eacute;conisations existantes
+7. Interface d'&eacute;dition d'une famille de pr&eacute;conisation (avec les options pour l'impression dans les diff&eacute;rents documents)
+8. Interface d'&eacute;dition d'une pr&eacute;conisation
+9. Liste des m&eacute;thodes d'&eacute;valuation
+10. Interface d'&eacute;dition des m&eacute;thodes d'&eacute;valuation
+11. Interface de gestion des cat&eacute;gories de danger et des dangers
+12. Interface d'&eacute;valuation des risques: Gestion des informations concernant la soci&eacute;t&eacute;, ajout de photos, g&eacute;olocalisation
+13. Interface d'&eacute;valuation des risques: &Eacute;valuation des risques, affectations des utilisateurs/&eacute;valuateurs/groupes/pr&eacute;conisations
+14. Interface d'&eacute;valuation des risques: G&eacute;n&eacute;ration des documents (document unique/fiche de pose)
+15. Interface d'&eacute;valuation des risques: &Eacute;dition d'un risque
+16. Interface d'&eacute;valuation des risques: Vue d'ensemble sur les risques et actions prioritaires affect&eacute;es &agrave; ce risque (Disponible dans les groupements uniquement avec les risques des sous-&eacute;l&eacute;ments)
+17. Interface d'&eacute;valuation des risques: Ajout d'un risque depuis une photo
+18. Interface de prise de notes (Un fichier par utilisateur accessible depuis toutes les interfaces)
+19. Interface de gestion des actions correctives
+
 
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.2.9 =
+
+Am&eacute;liorations 
+
+* Reprendre le mod&egrave;le du document unique(Int&eacute;gration du plan d'action en premi&egrave;re version: avec les actions correctives pr&eacute;vues) 
+* Les boutons d'enregistrement dans l'interface vue d'ensemble sont toujours visible 
+* Reprise de la gestion pour reprendre les bonnes pratiques de wordpress (Tout est stock&eacute; dans une seule option pour le moment, &agrave; voir pour la performance et &agrave; splitter en plusieurs options si on voit des probl&egrave;me de performance dans les diff&eacute;rentes interface utilisant ces options) 
+* Int&eacute;gration de la gestion des produits (Ajout d'une option permettant de s&eacute;lectionner les cat&eacute;gories a afficher:Cette option va prendre la liste des cat&eacute;gories dans le plugin wpshop d&eacute;velopp&eacute; par la soci&eacute;t&eacute; eoxia.La liste sera disponible uniquement si le plugin wpshop est activ&eacute; dans le wordpress courant)
+* Ajout d'une box dans l'&eacute;valuation des risques pour affecter les produits aux &eacute;l&eacute;ments
+* Possibilit&eacute; de filtrer les r&eacute;sultats de la box par cat&eacute;gorie
+* Recherche instantan&eacute;e de produits
+* Conservation d'informations sur le produit: Nom du produit, identifiant du produit, date de derni&egrave;re modification du produit, nom de la ou des cat&eacute;gorie(s), identifiant de la ou des cat&eacute;gories. Si le produit n'a jamais &eacute;t&eacute; utilis&eacute; dans le plugin, il sera ins&eacute;r&eacute; sinon on compare les dates de modifications si le produit a &eacute;t&eacute; modifi&eacute; depuis l'insertion dans digirisk alors on fait une nouvelle insertion
+* Modification des interfaces de gestion des groupes(Reprise des interfaces d'affectation d'utilisateurs &agrave; un &eacute;l&eacute;ment) 
+* Transf&eacute;rer les donn&eacute;es des anciennes aux nouvelles tables(Options : de la table evarisk &agrave; la table wp / Utilisateurs : Liste des groupes (utilisateur et &eacute;valuateur) vers la nouvelle table unique de groupes / Utilisateurs : Liste des utilisateurs affect&eacute;s aux groupes dans la table de liaison entre un &eacute;l&eacute;ment et un utilisateur / Utilisateurs : Liste des groupes affect&eacute;s aux &eacute;l&eacute;ments vers la nouvelle table / Version de la base de donn&eacute;es transf&eacute;r&eacute;e dans la table des options de wordpress dans une option digirisk_db_option)
+* Un clic droit ou gauche dans la vue d'ensemble coche la ligne pour modification 
+* D&eacute;placement des tables non-utilis&eacute;es vers wp_evatrash__(option/ppe/ppe_use/eav/users/roles/version/user_group/user_evaluator) 
+* Ajout de l'identifiant de l'&eacute;l&eacute;ment des les listing(vue d'ensemble/document unique) 
+* Int&eacute;gration des options dans la table des options de wordpress lors d'une nouvelle installation 
+* Ajout du bouton de r&eacute;g&eacute;n&eacute;ration des documents unique manquants 
+* Ajout du bouton de suppression d'un document unique 
+
+Corrections
+
+* Remplacer les br dans l'interface de vue d'ensemble 
+* L'activation de l'efficacit&eacute; dans les pr&eacute;conisations d&eacute;sactive tous les clics(Lorsque l'option "efficacit&eacute; pour les pr&eacute;conisations" &eacute;tait activ&eacute;e alors on ne pouvait plus ajouter de pr&eacute;conisations/La prise en compte de l'efficacit&eacute; lors de la modification de la pr&eacute;conisation ne se faisait pas) 
+* Erreur fatale lanc&eacute;e &agrave; la g&eacute;n&eacute;ration d'un document (DUER ou fiche de poste) due &agrave; la suppression d'un segment du fichier (Modification de la librairie odt) 
+* Suppression d'un utilisateur de la liste des utilisateurs(L'hirondelle ne disparaissait pas) 
+
 
 = Version 5.1.2.8 =
 
@@ -79,7 +119,7 @@ Corrections
 
 * Appel de la fonction EvaDisplayDesign::afficherFinPage() manquant dans deux interface provoquant des erreurs au niveau du code html g&eacute;n&eacute;r&eacute;
 * Erreur lors de l'affichage du suivi des actions correctives en mode avanc&eacute; (Probl&egrave;me avec la notion de quotation avant et apr&eacute;s le risque non g&eacute;r&eacute; lors de l'ajout d'une action corrective en m&ecirc;me temps que le risque)
-* Modification de certains scripts et de la fonction eva_tools::IsValid_Variable() pour remplacer le caract&egrave;re ’ par ' qui g&eacute;n&eacute;re une erreur lors de la g&eacute;n&eacute;ration des documents en odt
+* Modification de certains scripts et de la fonction eva_tools::IsValid_Variable() pour remplacer le caract&egrave;re &#8217; par ' qui g&eacute;n&eacute;re une erreur lors de la g&eacute;n&eacute;ration des documents en odt
 * Probl&egrave;me de nommage du fichier zip contenant la liste des fiches de poste pour un groupement, qui faisait que la liste des fichiers zip n'&eacute;tait pas affich&eacute;e apr&egrave;s g&eacute;n&eacute;ration
 * Probl&egrave;me lors du rechargement de la box "bilan" des groupements le clic sur le boutton de g&eacute;n&eacute;ration du document unique ne fonctionnait plus
 

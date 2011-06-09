@@ -60,7 +60,7 @@ if(($_REQUEST['act'] == 'save') || ($_REQUEST['act'] == 'saveAdvanced'))
 
 			$_POST['parentTaskId'] = evaTask::saveNewTask();
 			evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $_POST['parentTaskId'], 'before');
-			if(options::getOptionValue('creation_sous_tache_preconisation') == 'oui')
+			if(digirisk_options::getOptionValue('creation_sous_tache_preconisation') == 'oui')
 			{
 				evaActivity::saveNewActivity();
 			}

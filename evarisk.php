@@ -3,78 +3,43 @@
 Plugin Name: Evarisk
 Plugin URI: http://www.evarisk.com/document-unique-logiciel
 Description: Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises et g&eacute;rer toutes les donn&eacute;es li&eacute;es &agrave; la s&eacute;curit&eacute; de votre personnel.
-Version: 5.1.2.8
+Version: 5.1.2.9
 Author: Evarisk
 Author URI: http://www.evarisk.com
 */
+
+/**
+* Plugin main file.
+* 
+*	This file is the main file called by wordpress for our plugin use. It define the basic vars and include the different file needed to use the plugin
+* @author Evarisk <dev@evarisk.com>
+* @version 5.0
+* @package Digirisk
+*/
+
+/**
+*	First thing we define the main directory for our plugin in a super global var	
+*/
 DEFINE('EVA_PLUGIN_DIR', basename(dirname(__FILE__)));
 
-global $wpdb;
-	
-require_once('include/config/config.php' );
+/**
+*	Include the different config for the plugin	
+*/
+require_once(WP_PLUGIN_DIR . '/' . EVA_PLUGIN_DIR . '/include/config/config.php' );
+/**
+*	Define the path where to get the config file for the plugin
+*/
 DEFINE('EVA_CONFIG', EVA_INC_PLUGIN_DIR . 'config/config.php');
-require_once('include/evarisk_admin.php' );
+/**
+*	Include the file which includes the different files used by all the plugin
+*/
+require_once(EVA_INC_PLUGIN_DIR . 'includes.php');
 
-// Fonction d'initialisation du plugin
-add_action('plugins_loaded', 'evarisk_init');
-function evarisk_init() {
-	// Ajout des script de eva_admin
-	add_action('admin_head', "eva_add_admin_js");
-	// Ajout des options
-	add_action('admin_init', 'evarisk_add_options');
-	add_action('admin_init', 'eva_admin_js');
-	add_action('admin_init', 'eva_admin_css');
-	// Ajout du menu utilisateur
-	add_action('admin_menu', 'evarisk_add_menu');
-	
-	$locale = get_locale();
-	if( !empty( $locale ))
-	{
-		$mofile = EVA_HOME_DIR . '/languages/evarisk-' . $locale . '.mo';
-		load_textdomain('evarisk', $mofile);
-	}
-}
-
-
-	require_once(EVA_LIB_PLUGIN_DIR . 'eav/eav_attribute.class.php');
-	$eav_attribute = new eav_attribute();
-
-	$editUser = false;
-	$userId = 0;
-	$environnementName = '';
-	if(strstr($_SERVER['REQUEST_URI'], 'user-edit.php') !== false)
-	{
-		$editUser = true;
-
-		/*	Get the environnement	name	*/
-		$environnementName = 'edit_user_profile';
-
-		/*	Get the user id regarding the environnement	*/
-		$userId = $_REQUEST['user_id'];
-	}
-	if(strstr($_SERVER['REQUEST_URI'], 'profile.php') !== false)
-	{
-		$editUser = true;
-
-		/*	Get the environnement	name	*/
-		$environnementName = 'show_user_profile';
-
-		/*	Get the user id regarding the environnement	*/
-		require_once(ABSPATH . WPINC . '/pluggable.php');
-		$current_user = wp_get_current_user();
-		$userId = $current_user->ID;
-	}
-	if( $editUser && ($userId > 0) )
-	{
-		include_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
-		$evaUser = new evaUser('user_profile');
-
-		add_action($environnementName, array($evaUser,'evaUserAttributeForm'));
-
-		$evaUser->setUserToUpdate($userId);
-
-		/*	We launch the userUpdate Function - We test in the function if there is a post user if not the case we do nothing	*/
-		add_action('init', array($evaUser, 'evaUserUpdateProfile'));
-	}
-
-?>
+/**
+*	Include tools that will launch different action when plugin will be loaded
+*/
+require_once(EVA_LIB_PLUGIN_DIR . 'init.class.php' );
+/**
+*	On plugin loading, call the different element for creation output for our plugin	
+*/
+add_action('plugins_loaded', array('digirisk_init', 'digirisk_plugin_load'));

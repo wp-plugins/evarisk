@@ -1,9 +1,9 @@
 <?php
-	DEFINE('EVA_PLUGIN_VERSION', '5.1.2.8');
+	DEFINE('EVA_PLUGIN_VERSION', '5.1.2.9');
 
 	require_once('configDroitAcces.php');
 	require_once('configEavModel.php');
-	require_once('configNomTables.php');
+	require_once('databaseTable.php');
 	require_once('configPagesHooks.php');
 
 	DEFINE('EVA_HOME_URL', WP_PLUGIN_URL . '/' . EVA_PLUGIN_DIR . '/');
@@ -25,7 +25,6 @@
 	DEFINE('EVA_IMG_DIVERS_PLUGIN_URL', EVA_IMG_ICONES_PLUGIN_URL . 'Divers/');
 	DEFINE('EVA_IMG_PICTOS_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'Pictos/');
 	DEFINE('EVA_IMG_GOOGLEMAPS_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'GoogleMapIcons/');
-	DEFINE('EVA_IMG_EPI_PLUGIN_URL', EVA_IMG_PLUGIN_URL . 'epi/');
 	DEFINE('EVA_LIB_PLUGIN_URL', EVA_INC_PLUGIN_URL . 'lib/');
 
 	DEFINE('EVA_UPLOADS_PLUGIN_DIR', EVA_GENERATED_DOC_DIR . 'uploads/');
@@ -79,6 +78,13 @@
 		DEFINE('COULEUR_TEXTE_RISQUE_FAIBLE', '#000000');
 	}
 
+	/**
+	*	Define the url slug
+	*/
+	{
+		DEFINE('DIGI_URL_SLUG_USER_GROUP', 'digirisk_users_group');
+		DEFINE('DIGI_URL_SLUG_MAIN_OPTION', 'digirisk_options');
+	}
 
 	/**
 	* Others variables

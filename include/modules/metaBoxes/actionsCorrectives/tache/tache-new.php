@@ -72,7 +72,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 	{//Dates
 		if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00'))
 		{
-			$tache_new .='<br/>' . __('D&eacute;but', 'evarisk') . '&nbsp;' . eva_tools::transformeDate($startDate) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . eva_tools::transformeDate($endDate) . '&nbsp;<span style="font-size:9px;" >(' . __('Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches', 'evarisk') . ')</span><br/>';
+			$tache_new .='<br/>' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $startDate, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $endDate, true) . '&nbsp;<span style="font-size:9px;" >(' . __('Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches', 'evarisk') . ')</span><br/>';
 		}
 	}
 	{//Responsable
@@ -115,7 +115,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$idBouttonEnregistrer = 'saveTache';
 
 		/*	Check if the user in charge of the action and the maker are mandatory */
-		$idResponsableIsMandatory = options::getOptionValue('responsable_Tache_Obligatoire');
+		$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Tache_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
 			evarisk(document).ready(function() {				
@@ -206,7 +206,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 			</script>';
 	}
 	{//Boutons
-		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui'))
+		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui'))
 		{
 			$tache_new .= 
 				'<div class="alignright" id="TaskSaveButton" >';
@@ -240,7 +240,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 				'</div>';
 		}
 
-		if(options::getOptionValue('export_tasks', 'Moderated') == 'oui')
+		if(digirisk_options::getOptionValue('export_tasks') == 'oui')
 		{
 			$tache_new .= 
 				'<br/>

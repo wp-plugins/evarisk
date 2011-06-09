@@ -9,6 +9,8 @@ define('WP_ADMIN', true);
 require_once('../../../../wp-load.php');
 require_once(ABSPATH . 'wp-admin/includes/admin.php');
 require_once('../evarisk.php');
+require_once(EVA_INC_PLUGIN_DIR . 'includes.php' );
+
 require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php');
@@ -26,12 +28,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTaskTable.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'epi/evaEPITable.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'epi/evaEPI.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'epi/evaEPI.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserGroup.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserEvaluatorGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
@@ -750,43 +747,6 @@ if($_REQUEST['post'] == 'true')
 					break;
 				}
 				break;
-			case TABLE_UTILISE_EPI:
-				{
-					global $wpdb;
-					$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
-					$idElement = (int)eva_tools::IsValid_Variable($_REQUEST['idElement']);
-					$sql = "DELETE FROM " . TABLE_UTILISE_EPI . " WHERE elementID = " . $idElement . " AND elementTable='" . $tableElement . "';";
-					$wpdb->query($sql);
-					unset($epiId);
-					$insert = '';
-					if(count($_REQUEST['epis']) > 0)
-						foreach($_REQUEST['epis'] as $epi)
-						{
-							$epiId = (int)eva_tools::IsValid_Variable($epi);
-							$insert = $insert . "(" . $epiId . ", " . $idElement . ", '" . $tableElement . "'), ";
-						}
-					if($insert != '')
-					{
-						$insert = substr($insert, 0, strlen($insert) - 2);
-						$sql = "INSERT INTO " . TABLE_UTILISE_EPI . " (`ppeId`, `elementID`, `elementTable`) VALUES " . $insert;
-						if($wpdb->query($sql))
-							$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;Succ&egrave;s de l\'enregistrement</strong></p>';
-						else
-							$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;Probl&egrave;me lors de l\'enregistrement</strong></p>';
-					}
-					else
-					{
-						$message = '<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;Pas de probl&egrave;me lors de l\'enregistrement</strong></p>';
-					}
-					echo '
-						<script type="text/javascript">
-							evarisk(document).ready(function() {
-								actionMessageShow("#messageEPI", "' . addslashes($message) . ');
-								setTimeout(\'actionMessageHide("#message")\',7500);
-							});
-						</script>';
-				}
-				break;
 			case TABLE_RISQUE:
 				switch($_REQUEST['act'])
 				{
@@ -1068,7 +1028,7 @@ if($_REQUEST['post'] == 'true')
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo '<div id="ajax-response-massUpdater" class="hide" >&nbsp;</div><div id="messageRisqMassUpdater" class="evaMessage hide fade updated" >&nbsp;</div>
-' . eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'massUpdater') . '
+<div class="massUpdaterListing" >' . eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'massUpdater') . '</div>
 <div class="clear alignright" ><span id="checkAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout cocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="uncheckAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout d&eacutecocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="reverseSelectionBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Inverser la s&eacute;lection', 'evarisk') . '</span><img src="' . EVA_ARROW_TOP . '" alt="arrow_top" class="checkboxRisqMassUpdaterSelector_bottom" /></div>
 <div class="clear alignright risqMassUpdaterChooserExplanation" >' . __('Cochez les cases pour prendre en compte les modifications', 'evarisk') . '</div>
 <div class="clear alignright" >
@@ -1077,6 +1037,15 @@ if($_REQUEST['post'] == 'true')
 </div>
 <script type="text/javascript" >
 	evarisk("#risqMassUpdater textarea").keypress(function(){
+		if(evarisk(this).hasClass("risqComment")){
+			currentLineIdentifier = evarisk(this).attr("id").replace("risqComment_", "");
+		}
+		else if(evarisk(this).hasClass("risqPrioritaryCA")){
+			currentLineIdentifier = evarisk(this).attr("name").replace("risqPrioritaryCA_", "");
+		}
+		evarisk("#checkboxRisqMassUpdater_" + currentLineIdentifier).attr("checked", "checked");
+	});
+	evarisk("#risqMassUpdater textarea").mousedown(function(){
 		if(evarisk(this).hasClass("risqComment")){
 			currentLineIdentifier = evarisk(this).attr("id").replace("risqComment_", "");
 		}
@@ -1126,8 +1095,6 @@ if($_REQUEST['post'] == 'true')
 			"risqComment":risqComment,
 			"risqPrioritaryAction":risqPrioritaryAction
 		});
-
-		// evarisk("#risqMassUpdater").dialog("close");
 	});
 	evarisk("#cancelRisqMassModification").click(function(){
 		var hasModification = false;
@@ -1282,7 +1249,7 @@ if($_REQUEST['post'] == 'true')
 							$tacheLike = new EvaTask();
 							$tacheLike->setIdFrom($idRisque);
 							$tacheLike->setTableFrom(TABLE_RISQUE);
-							if(options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui')
+							if(digirisk_options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui')
 							{
 								$tacheLike->setProgressionStatus("'Done', 'DoneByChief'");
 							}
@@ -1318,7 +1285,7 @@ if($_REQUEST['post'] == 'true')
 								$taskToMatch .= '</table>';
 							}
 
-							if(is_array($tachesAssocieesNonSoldees) && (options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui'))
+							if(is_array($tachesAssocieesNonSoldees) && (digirisk_options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui'))
 							{
 								$taskToMatch .= '<div style="text-align:justify;color:red;" >' . __('Des actions correctives sont actuellement en cours et ne sont pas sold&eacute;es. Si vous voulez lier la modification de ce risque &agrave; une de ces actions corrective, vous devez d\'abord solder celles-ci.', 'evarisk') . '</div>';
 							}
@@ -2568,237 +2535,6 @@ if($_REQUEST['post'] == 'true')
 					break;
 				}
 			break;
-			case TABLE_LIAISON_USER_GROUPS:
-				switch($_REQUEST['act'])
-				{
-					case "save":
-					{
-						$status = evaUserGroup::saveBind($_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
-
-						switch($_REQUEST['tableElement'])
-						{
-							case TABLE_GROUPEMENT:
-								$complement = "au groupement";
-								break;
-							case TABLE_UNITE_TRAVAIL:
-								$complement = "&agrave; l'unit&eacute;";
-								break;
-						}
-						$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").addClass("updated");';
-						if($status['result'] != 'error')
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						else
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
-									setTimeout(function(){
-										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").removeClass("updated");
-										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").hide();
-									},7500);
-									evarisk("#ongletVoirLesRisques").click();
-								});
-							</script>';
-						echo $messageInfo . evaUserGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
-					}
-					break;
-					case "delete":
-					{
-						$status = evaUserGroup::deleteBind($_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
-
-						switch($_REQUEST['tableElement'])
-						{
-							case TABLE_GROUPEMENT:
-								$complement = "du groupement";
-								break;
-							case TABLE_UNITE_TRAVAIL:
-								$complement = "du l'unit&eacute;";
-								break;
-						}
-						$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").addClass("updated");';
-						if($status['result'] != 'error')
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						else
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'utilisateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").show();
-									setTimeout(function(){
-										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").removeClass("updated");
-										evarisk("#message' . TABLE_LIAISON_USER_GROUPS . '").hide();
-									},7500);
-									evarisk("#ongletVoirLesRisques").click();
-								});
-							</script>';
-						echo $messageInfo . evaUserGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
-					}
-					break;
-				}
-				break;
-			case TABLE_EVA_EVALUATOR_GROUP_BIND:
-				switch($_REQUEST['act'])
-				{
-					case "save":
-					{
-						$status = evaUserEvaluatorGroup::saveBind($_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
-
-						switch($_REQUEST['tableElement'])
-						{
-							case TABLE_GROUPEMENT:
-								$complement = "au groupement";
-								break;
-							case TABLE_UNITE_TRAVAIL:
-								$complement = "&agrave; l'unit&eacute;";
-								break;
-						}
-						$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").addClass("updated");';
-						if($status['result'] != 'error')
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						else
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('affect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
-									setTimeout(function(){
-										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").removeClass("updated");
-										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").hide();
-									},7500);
-									evarisk("#ongletVoirLesRisques").click();
-								});
-							</script>';
-						echo $messageInfo . evaUserEvaluatorGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
-					}
-					break;
-					case "delete":
-					{
-						$status = evaUserEvaluatorGroup::deleteBind($_REQUEST['idBind'], $_REQUEST['idGroupe'], $_REQUEST['idElement'], $_REQUEST['tableElement']);
-
-						switch($_REQUEST['tableElement'])
-						{
-							case TABLE_GROUPEMENT:
-								$complement = "du groupement";
-								break;
-							case TABLE_UNITE_TRAVAIL:
-								$complement = "du l'unit&eacute;";
-								break;
-						}
-						$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").addClass("updated");';
-						if($status['result'] != 'error')
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs a &eacute;t&eacute; correctement %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						else
-						{
-							$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupe d\'&eacute;valuateurs n\'a pas pu &ecirc;tre %s %s.', 'evarisk') . '</strong></p>', __('d&eacute;saffect&eacute;', 'evarisk'), __($complement, 'evarisk'))) . '");';
-						}
-						$messageInfo = $messageInfo . '
-									evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").show();
-									setTimeout(function(){
-										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").removeClass("updated");
-										evarisk("#message' . TABLE_EVA_EVALUATOR_GROUP_BIND . '").hide();
-									},7500);
-									evarisk("#ongletVoirLesRisques").click();
-								});
-							</script>';
-						echo $messageInfo . evaUserEvaluatorGroup::boxGroupesUtilisateursEvaluation($_REQUEST['tableElement'], $_REQUEST['idElement']);
-					}
-					break;
-				}
-				break;
-			case TABLE_OPTION:
-				switch($_REQUEST['act'])
-				{
-					case 'editOption':
-					{
-						$id = (isset($_REQUEST['id'])) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
-						$id = str_replace('editOption-', '', $id);
-
-						$option = options::getOption($id);
-
-						echo options::editOptionForm($option->typeOption) . '
-<script type="text/javascript" >
-	evarisk("#idOption").val("' . $id . '");
-	evarisk("#valeur").val("' . $option->valeur . '");
-	evarisk("#optionName").html("' . $option->nomAffiche . '");
-	evarisk(".closeLightBoxContainer").click(function(){emptyOptionForm();});
-</script>';
-					}
-					break;
-					case 'update':
-					{
-						$optionId = eva_tools::IsValid_Variable($_REQUEST['id']);
-						$optionValue = eva_tools::IsValid_Variable($_REQUEST['valeur']);
-
-						$update = options::updateOption($optionId, $optionValue);
-						if($update)
-						{
-							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Sauvegarde r&eacute;ussie', 'evarisk') . '</strong></p>');
-							$actionAfterSuccess = 'evarisk("#optionValueContainer' . $optionId . '").html("' . $optionValue . '");';
-						}
-						else
-						{
-							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La sauvegarde a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
-							$actionAfterSuccess = '';
-						}
-						echo 
-'<script type="text/javascript">
-	evarisk(document).ready(function(){
-		emptyOptionForm();
-		actionMessageShow("#messageOption", "' . $messageInfo . '");
-		setTimeout(\'actionMessageHide("#messageOption")\',7500);
-
-		' . $actionAfterSuccess . '
-	});
-</script>';
-					}
-					break;
-					case 'save':
-					{
-						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
-						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
-						$optionShownName = eva_tools::IsValid_Variable($_REQUEST['optionShownName']);
-						$optionDomain = eva_tools::IsValid_Variable($_REQUEST['optionDomain']);
-						$optionType = eva_tools::IsValid_Variable($_REQUEST['optionType']);
-						$optionStatus = eva_tools::IsValid_Variable($_REQUEST['optionStatus']);
-
-						$createOption = options::createOption($optionName, $optionValue, $optionShownName, $optionDomain, $optionType, $optionStatus);
-					}
-					break;
-					case 'updateFromName':
-					{
-						$optionValue = eva_tools::IsValid_Variable($_REQUEST['value']);
-						$optionName = eva_tools::IsValid_Variable($_REQUEST['optionName']);
-
-						$createOption = options::updateOptionFromName($optionName, $optionValue);
-					}
-					break;
-				}
-				break;
 			case TABLE_LIAISON_USER_ELEMENT:
 				require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php');
 				switch($_REQUEST['act'])
@@ -2825,12 +2561,13 @@ if($_REQUEST['post'] == 'true')
 						$idElement = $_REQUEST['idElement'];
 
 						/*	Start "document unique" part	*/
-						$output .= '<div class="clear" ><div class="clear bold" >' . __('Documents unique pour le groupement', 'evarisk') . '</div>' . eva_documentUnique::getDUERList($tableElement, $idElement) . '</div>';
+						$output .= '<div class="clear" ><div class="clear bold" >' . __('Documents unique pour le groupement', 'evarisk') . '</div><div class="DUERContainer" >' . eva_documentUnique::getDUERList($tableElement, $idElement) . '</div></div>';
 
 						/*	Start work unit sheet part	*/
 						$output .= '<div class="clear" >&nbsp;</div><div class="clear" ><div class="clear bold" >' . __('Fiches de poste pour le groupement', 'evarisk') . '</div>
-						' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '
-</div>';
+						<div class="FPContainer" >' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '</div>
+</div>
+<div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>';
 						echo $output;
 					}
 					break;
@@ -2856,6 +2593,45 @@ if($_REQUEST['post'] == 'true')
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
+					}
+					break;
+					case 'reGenerateDUER':
+					{
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						$idDocument = $_REQUEST['idDocument'];
+						eva_gestionDoc::generateSummaryDocument($tableElement, $idElement, 'odt', $idDocument);
+						$documentUniqueInfos = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement, $idDocument);
+						$odtFile = 'documentUnique/' . $tableElement . '/' . $idElement . '/' . $documentUniqueInfos->nomDUER . '_V' . $documentUniqueInfos->revisionDUER . '.odt';
+						if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
+						{
+							echo 
+'<script type="text/javascript" >
+	(function(){
+		jQuery("#reGenerateDUER' . $idDocument . 'Container").html(\'' . __('Nouveau', 'evarisk') . '&nbsp;<a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaDUEROdt" >Odt</a>\');
+	})(evarisk)
+</script>';
+						}
+					}
+					break;
+					case 'deleteDUER':
+					{
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						$idDocument = $_REQUEST['idDocument'];
+						$query = $wpdb->prepare("UPDATE " . TABLE_DUER . " SET status = 'deleted' WHERE id= %d", $idDocument);
+						if( $wpdb->query($query) )
+						{
+							$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('Le document unique &agrave; bien &eacute;t&eacute; supprim&eacute;.', 'evarisk');
+							echo 
+'<script type="text/javascript" >
+	(function(){
+		actionMessageShow("#message' . TABLE_DUER . '", "' . $messageToOutput . '");
+		setTimeout(\'actionMessageHide("#message' . TABLE_DUER . '")\',5000);
+		evarisk("#ongletHistoriqueDocument").click();
+	})(evarisk)
+</script>';
+						}
 					}
 					break;
 				}
@@ -3228,6 +3004,7 @@ if($_REQUEST['post'] == 'true')
 							$selectRecommandation['id_categorie_preconisation'] = $selectedRecommandation[0]->recommandation_category_id;
 							$selectRecommandation['id_preconisation'] = $selectedRecommandation[0]->id_preconisation;
 							$selectRecommandation['commentaire_preconisation'] = $selectedRecommandation[0]->commentaire;
+							$selectRecommandation['efficacite_preconisation'] = $selectedRecommandation[0]->efficacite;
 						}
 
 						echo evaRecommandation::recommandationAssociation($outputMode, $selectRecommandation);;
@@ -3360,6 +3137,25 @@ if($_REQUEST['post'] == 'true')
 					break;
 				}
 				break;
+			case DIGI_DBT_LIAISON_USER_GROUP:
+				switch($_REQUEST['act'])
+				{
+					case 'save':
+						digirisk_groups::setLinkGroupElement($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['element']);
+					break;
+				}
+				break;
+			case DIGI_DBT_LIAISON_PRODUIT_ELEMENT:
+				switch($_REQUEST['act'])
+				{
+					case 'save':
+						digirisk_product::setLinkProductElement($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['element']);
+					break;
+					case 'reloadCategoryChoice':
+						echo digirisk_product::affectationPostBoxContent($_REQUEST['tableElement'], $_REQUEST['idElement'], true, $_REQUEST['category']);
+					break;
+				}
+				break;
 		}
 	}
 
@@ -3371,9 +3167,12 @@ if($_REQUEST['post'] == 'true')
 			{
 					$insertions = $_REQUEST;
 					unset($insertions['EPI']);
-					foreach($_REQUEST["EPI"] as $epi)
+					if(isset($_REQUEST["EPI"]) && is_array($_REQUEST["EPI"]))
 					{
-						$insertions['EPI'][$epi[1]] = $epi[0];
+						foreach($_REQUEST["EPI"] as $epi)
+						{
+							$insertions['EPI'][$epi[1]] = $epi[0];
+						}
 					}
 					foreach($_REQUEST["methodes"] as $methode)
 					{
@@ -3691,7 +3490,7 @@ if($_REQUEST['post'] == 'true')
 								});
 								</script>';
 
-							if( (($actionCorrective->getProgressionStatus() == 'notStarted') || ($actionCorrective->getProgressionStatus() == 'inProgress')) && (options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') )
+							if( (($actionCorrective->getProgressionStatus() == 'notStarted') || ($actionCorrective->getProgressionStatus() == 'inProgress')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') )
 							{
 								echo EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, 'Enregistrer', null, '', $idDiv . 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 							}
@@ -3880,11 +3679,11 @@ if($_REQUEST['post'] == 'true')
 
 											if($activiteDeLaTache->startDate != '0000-00-00')
 											{
-												$actionsCorrectives .= '<span class="bold" >' . __('D&eacute;but', 'evarisk') . '</span>&nbsp;:&nbsp;' . eva_tools::transformeDate($activiteDeLaTache->startDate);
+												$actionsCorrectives .= '<span class="bold" >' . __('D&eacute;but', 'evarisk') . '</span>&nbsp;:&nbsp;' . mysql2date('d M Y', $activiteDeLaTache->startDate, true);
 											}
 											if($activiteDeLaTache->finishDate != '0000-00-00')
 											{
-												$actionsCorrectives .= '<br/><span class="bold" >' . __('Fin', 'evarisk') . '</span>&nbsp;:&nbsp;' . eva_tools::transformeDate($activiteDeLaTache->finishDate);
+												$actionsCorrectives .= '<br/><span class="bold" >' . __('Fin', 'evarisk') . '</span>&nbsp;:&nbsp;' . mysql2date('d M Y', $activiteDeLaTache->finishDate, true);
 											}
 
 											$actionsCorrectives .= '
@@ -4067,7 +3866,7 @@ if($_REQUEST['post'] == 'true')
 					$idTitre = "nom_activite";
 
 					/*	Check if the user in charge of the action are mandatory */
-					$idResponsableIsMandatory = options::getOptionValue('responsable_Action_Obligatoire');
+					$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Action_Obligatoire');
 
 					$scriptEnregistrementSave = '<script type="text/javascript">
 						evarisk(document).ready(function() {

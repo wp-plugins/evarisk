@@ -141,7 +141,7 @@
 
 				$divEditionRisque = '
 <div id="divFormRisque" class="eva_tabs_panel hide" >';
-				if((options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
+				if((digirisk_options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
 				{
 					$divEditionRisque .= 
 	'
@@ -239,7 +239,7 @@
 					'<script type="text/javascript">
 						evarisk(document).ready(function() {';
 
-					if(options::getOptionValue('action_correctives_avancees') == 'oui')
+					if(digirisk_options::getOptionValue('action_correctives_avancees') == 'oui')
 					{
 						$scriptRisque .= 
 							'evarisk("#' . $idligne . '-demandeAction").click(function(){
@@ -274,7 +274,7 @@
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
 					$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
 					$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Fiche d\'action corrective', 'evarisk') . '" title="' . __('Fiche d\'action corrective', 'evarisk') . '" class="simple-FAC" />';
-					if(options::getOptionValue('action_correctives_avancees') == 'oui')
+					if(digirisk_options::getOptionValue('action_correctives_avancees') == 'oui')
 					{
 						$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-demandeAction" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . _c('Demande AC|AC pour action corrective', 'evarisk') . '" title="' . __('Demande d\'action corrective', 'evarisk') . '"/><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-suiviAction" src="' . PICTO_LTL_SUIVI_ACTION . '" alt="' . _c('Suivi AC|AC pour action corrective', 'evarisk') . '" title="' . __('Suivi des actions correctives', 'evarisk') . '"/>';
 					}

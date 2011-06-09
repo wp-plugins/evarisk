@@ -2,12 +2,11 @@
 
 function evarisk_insertions($insertions = null)
 {
-	require_once(EVA_LIB_PLUGIN_DIR . 'version/EvaVersion.class.php');
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	global $wpdb;
 	
 
-	if(EvaVersion::getVersion('base_evarisk') < 1)
+	if(digirisk_options::getDbOption('base_evarisk') < 1)
 	{
 		$dateInstallation = date('Y-m-d H:i:s');
 		{// Tables dangers
@@ -181,97 +180,20 @@ function evarisk_insertions($insertions = null)
 			}
 		}
 		{// Table EPI
-			if($insertions['EPIs'] == 'true')
-			{
-				__('protection auditive', 'evarisk');
-				__('protection de la t&ecirc;te', 'evarisk');
-				__('chaussures de s&eacute;curit&eacute;', 'evarisk');
-				__('combinaison', 'evarisk');
-				__('protection des mains', 'evarisk');
-				__('protection anti-chute', 'evarisk');
-				__('protection des yeux', 'evarisk');
-				__('protection respiratoire', 'evarisk');
-				$epis = '';
-				foreach($insertions['EPI'] as $epi => $value)
-				{
-					if($value == 'true')
-					{
-						switch($epi)
-						{
-							case 'bab' :
-								$nom = 'protection auditive';
-								break;
-							case 'casque' :
-								$nom = 'protection de la t&ecirc;te';
-								break;
-							case 'chaussures' :
-								$nom = 'chaussures de s&eacute;curit&eacute';
-								break;
-							case 'combi' :
-								$nom = 'combinaison';
-								break;
-							case 'gants' :
-								$nom = 'protection des mains';
-								break;
-							case 'harnais' :
-								$nom = 'protection anti-chute';
-								break;
-							case 'lunettes' :
-								$nom = 'protection des yeux';
-								break;
-							case 'masque' :
-								$nom = 'protection respiratoire';
-								break;
-						}
-						$epis = $epis . "
-							(NULL, '" . $nom . "', 'medias/images/Epi/" . $epi . ".png'),";
-					}
-				}
-				if($epis != '')
-				{
-					$epis = substr($epis, 0, strlen($epis) - 1);
-					$epis = $epis . ";";
-					$sql = "
-						INSERT INTO " . TABLE_EPI . " (id, name, path) VALUES " . $epis;
-					$wpdb->query($sql);
-				}
-			}
+			//DELETE FROM VERSION 44
 		}
 		{// Theme Evarisk
-			function copy_directory( $source, $destination ) {
-				if ( is_dir( $source ) ) {
-					@mkdir( $destination );
-					$directory = dir( $source );
-					while ( FALSE !== ( $readdirectory = $directory->read() ) ) {
-						if ( $readdirectory == '.' || $readdirectory == '..' || $readdirectory == '.svn' ) {
-							continue;
-						}
-						$PathDir = $source . '/' . $readdirectory; 
-						if ( is_dir( $PathDir ) ) {
-							copy_directory( $PathDir, $destination . '/' . $readdirectory );
-							continue;
-						}
-						copy( $PathDir, $destination . '/' . $readdirectory );
-					}
-			 
-					$directory->close();
-				}
-				else {
-					copy( $source, $destination );
-				}
-				return true;
-			}
-			copy_directory(EVA_HOME_DIR . 'evariskthemeplugin', WP_CONTENT_DIR . '/themes/Evarisk');
+			eva_tools::copyEntireDirectory(EVA_HOME_DIR . 'evariskthemeplugin', WP_CONTENT_DIR . '/themes/Evarisk');
 
 			if($insertions['theme'] == 'true')
 			{
 				switch_theme('Evarisk', 'Evarisk');
 			}
 		}
-		EvaVersion::updateVersion('base_evarisk', 1);
+		digirisk_options::updateDbOption('base_evarisk', 1);
 	}
 
-	switch(EvaVersion::getVersion('base_evarisk'))
+	switch(digirisk_options::getDbOption('base_evarisk'))
 	{
 		case 1:
 		{
@@ -312,74 +234,74 @@ function evarisk_insertions($insertions = null)
 			$sql = 'UPDATE ' . TABLE_CATEGORIE_DANGER . ' SET photo = "medias/images/Pictos/categorieDangers/manqueFormation_PictoCategorie.png" WHERE id = 18 AND nom="Manque de formation";';
 			$wpdb->query($sql);
 			
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 2:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 3:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 4:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 5:
 		{
 			$sqlInsertion = 'INSERT INTO ' . TABLE_TACHE . ' (nom, limiteGauche, limiteDroite) VALUES ("Tache Racine", 0, 1);';
 			$wpdb->query($sqlInsertion);
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 6:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 7:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 8:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 9:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 10:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 11:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 12:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 13:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 14:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 15:
@@ -420,12 +342,12 @@ function evarisk_insertions($insertions = null)
 			$wpdb->query($sql);
 			$sql = "INSERT INTO " . TABLE_PHOTO . " (idDestination, tableDestination, photo, isMainPicture) VALUES ('19', '" . TABLE_CATEGORIE_DANGER . "', 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png', 'yes');";
 			$wpdb->query($sql);
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 16:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 17:
@@ -434,12 +356,12 @@ function evarisk_insertions($insertions = null)
 			$wpdb->query($sql);
 			$sql = "UPDATE " . TABLE_DUER . " SET groupesUtilisateursAffectes = groupesUtilisateurs ";
 			$wpdb->query($sql);
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 18:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 19:
@@ -447,7 +369,7 @@ function evarisk_insertions($insertions = null)
 			$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET idEvaluateur = '1' ";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 20:
@@ -455,27 +377,16 @@ function evarisk_insertions($insertions = null)
 			$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET Status = 'Moderated' WHERE Status != 'Valid' ";
 			$wpdb->query($sql);
 
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'responsable_Tache_Obligatoire', 'non', 'Valid')";
-			$wpdb->query($sql);
+			//Add options for task and sub task responsible
+			//DELETE FROM VERSION 44
 
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'responsable_Action_Obligatoire', 'non', 'Valid');";
-			$wpdb->query($sql);
-
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 21:
 		{
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'possibilite_Modifier_Tache_Soldee', 'non', 'Valid');";
-			$wpdb->query($sql);
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'possibilite_Modifier_Action_Soldee', 'non', 'Valid');";
-			$wpdb->query($sql);
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'avertir_Solde_Action_Non_100', 'oui', 'Valid');";
-			$wpdb->query($sql);
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'avertir_Solde_Tache_Ayant_Action_Non_100', 'oui', 'Valid');";
-			$wpdb->query($sql);
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id ,nom ,valeur ,Status) VALUES (NULL , 'affecter_uniquement_tache_soldee_a_un_risque', 'oui', 'Valid');";
-			$wpdb->query($sql);
+			//Add options
+			//DELETE FROM VERSION 44
 
 			$sql = "SELECT GROUP_CONCAT( id ) as LIST FROM " . TABLE_AVOIR_VALEUR . " GROUP BY id_risque, DATE";
 			$listToUpdate = $wpdb->get_results($sql);
@@ -488,7 +399,7 @@ function evarisk_insertions($insertions = null)
 				$wpdb->query($sql);
 			}
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 22:
@@ -504,20 +415,20 @@ function evarisk_insertions($insertions = null)
 			$sql = "UPDATE  " . TABLE_VALEUR_ETALON . " SET niveauSeuil = 4 WHERE valeur = 80;";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 23:
 		{
-			$sql = "INSERT INTO  " . TABLE_OPTION . " (id, nom, valeur, Status) VALUES ('', 'action_correctives_avancees', 'non', 'Valid');";
-			$wpdb->query($sql);
+			//Add option for advanced correctiv actions
+			//DELETE FROM VERSION 44
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 24:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 25:
@@ -525,7 +436,7 @@ function evarisk_insertions($insertions = null)
 			$sql = $wpdb->prepare("INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " SELECT '', status, date, 1, '', 0, id_user, id_element, table_element FROM " . TABLE_LIAISON_USER_EVALUATION);
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 26:
@@ -536,7 +447,7 @@ function evarisk_insertions($insertions = null)
 				rename(EVA_MODELES_PLUGIN_OLD_DIR, EVA_MODELES_PLUGIN_DIR);
 			}
 			
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 27:
@@ -544,15 +455,15 @@ function evarisk_insertions($insertions = null)
 			$sql = "INSERT INTO " . TABLE_GED_DOCUMENTS . " (id, status, dateCreation, idCreateur, dateSuppression, idSuppresseur, id_element, table_element, categorie, nom, chemin) VALUES('', 'valid', NOW(), 1, '0000-00-00 00:00:00', 0, 0, 'all', 'document_unique', 'modeleDefaut.odt', 'medias/uploads/modeles/documentUnique/');";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 28:
 		{
-			$sql = "INSERT INTO " . TABLE_OPTION . " (id, nom, valeur, Status) VALUES ('', 'risques_avances', 'non', 'Valid');";
-			$wpdb->query($sql);
+			//Add option for advanced risk
+			//DELETE FROM VERSION 44
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}		
 		case 29:
@@ -562,7 +473,7 @@ function evarisk_insertions($insertions = null)
 			$sql = "ALTER TABLE " . TABLE_PHOTO . " DROP isMainPicture,  DROP idDestination, DROP tableDestination;;";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 30:
@@ -572,33 +483,23 @@ function evarisk_insertions($insertions = null)
 			$sql = "UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET table_element = '" . TABLE_GROUPEMENT . "_evaluation' WHERE table_element='" . TABLE_GROUPEMENT . "' ;";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 31:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 32:
 		{
-			$sql = "UPDATE " . TABLE_OPTION . " SET nomAffiche = LOWER(REPLACE(nom, '_', ' '));";
-			$wpdb->query($sql);
-			$sql = "UPDATE " . TABLE_OPTION . " SET domaine = 'task';";
-			$wpdb->query($sql);
-			$sql = $wpdb->prepare("UPDATE " . TABLE_OPTION . " SET typeOption = 'text', Status = 'Valid', nomAffiche = '%s', domaine = 'user' WHERE nom = 'emailDomain';", __('domaine pour l\'email des utilisateurs import&eacute;', 'evarisk'));
-			$wpdb->query($sql);
-			$sql = "UPDATE " . TABLE_OPTION . " SET domaine = 'risk' WHERE nom = 'risques_avances';";
-			$wpdb->query($sql);
+			//Change option table field definition
+			//DELETE FROM VERSION 44
 
-			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'creation_sous_tache_preconisation', '%s', 'non', 'Valid', 'ouinon');", __('cr&eacute;er une sous-t&acirc;che pour les pr&eacute;conisations', 'evarisk'));
-			$wpdb->query($sql);
-			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'export_only_priority_task', '%s', 'oui', 'Valid', 'ouinon');", __('exporter uniquement les t&acirc;ches prioritaires dans le plan d\'action', 'evarisk'));
-			$wpdb->query($sql);
-			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'task', 'export_tasks', '%s', 'non', 'Moderated', 'ouinon');", __('exporter les actions correctives', 'evarisk'));
-			$wpdb->query($sql);
+			//Add options for correctiv actions
+			//DELETE FROM VERSION 44
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 33:
@@ -609,7 +510,7 @@ function evarisk_insertions($insertions = null)
 			$sql = "UPDATE " . TABLE_ACTIVITE . " SET ProgressionStatus = 'notStarted' WHERE avancement = '0' ";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 34:
@@ -617,7 +518,7 @@ function evarisk_insertions($insertions = null)
 			$sql = "INSERT INTO " . TABLE_GED_DOCUMENTS . " (id, status, dateCreation, idCreateur, dateSuppression, idSuppresseur, id_element, table_element, categorie, nom, chemin) VALUES('', 'valid', NOW(), 1, '0000-00-00 00:00:00', 0, 0, 'all', 'fiche_de_poste', 'modeleDefaut.odt', 'medias/uploads/modeles/ficheDePoste/');";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 35:
@@ -644,15 +545,29 @@ function evarisk_insertions($insertions = null)
 				eva_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 			}
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 36:
 		{
-			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'fichedeposte', 'taille_photo_poste_fiche_de_poste', '%s', '8', 'Valid', 'numerique');", __('taille de la photo du poste dans la fiche de poste (cm)', 'evarisk'));
-			$wpdb->query($sql);
+			$digiriskOptions = array();
+			$digiriskOptions['responsable_Tache_Obligatoire'] = 'non';
+			$digiriskOptions['responsable_Action_Obligatoire'] = 'non';
+			$digiriskOptions['possibilite_Modifier_Tache_Soldee'] = 'non';
+			$digiriskOptions['possibilite_Modifier_Action_Soldee'] = 'non';
+			$digiriskOptions['avertir_Solde_Action_Non_100'] = 'oui';
+			$digiriskOptions['avertir_Solde_Tache_Ayant_Action_Non_100'] = 'oui';
+			$digiriskOptions['affecter_uniquement_tache_soldee_a_un_risque'] = 'oui';
+			$digiriskOptions['action_correctives_avancees'] = 'non';
+			$digiriskOptions['risques_avances'] = 'non';
+			$digiriskOptions['creation_sous_tache_preconisation'] = 'non';
+			$digiriskOptions['export_only_priority_task'] = 'oui';
+			$digiriskOptions['export_tasks'] = 'non';
+			$digiriskOptions['taille_photo_poste_fiche_de_poste'] = '8';
+			//Add option for the work unit sheet picture size
+			//DELETE FROM VERSION 44
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}		
 		case 37:
@@ -664,7 +579,7 @@ function evarisk_insertions($insertions = null)
 			$sql = "UPDATE " . TABLE_FP . " SET id_model = '" . eva_gestionDoc::getDefaultDocument('fiche_de_poste') . "';";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 38:
@@ -676,7 +591,7 @@ function evarisk_insertions($insertions = null)
 			$sql = "INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " (id, status, creation_date, nom) VALUES ('3', 'valid', NOW(), 'recommandation');";
 			$wpdb->query($sql);
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 39:
@@ -1051,15 +966,15 @@ ou irritantes');";
 				$wpdb->query($sql);
 			}
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 40:
 		{
-			$sql = $wpdb->prepare("INSERT INTO " . TABLE_OPTION . " (id, domaine, nom, nomAffiche, valeur, Status, typeOption) VALUES ('', 'recommandation', 'recommandation_efficiency_activ', '%s', 'non', 'Valid', 'ouinon');", __('activer la possibilit&eacute; de mettre une efficacit&eacute; dans les pr&eacute;conisations', 'evarisk'));
-			$wpdb->query($sql);
+			//Add option recommandation efficiency activation
+			//DELETE FROM VERSION 44
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 41:
@@ -1109,17 +1024,144 @@ ou irritantes');";
 				}
 			}
 
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 42:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 		case 43:
 		{
-			EvaVersion::updateVersion('base_evarisk', (EvaVersion::getVersion('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}		
+		case 44:
+		{/*	Transfer user group db table into new scheme		*/
+			if(($wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP . "'") == TABLE_EVA_USER_GROUP) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP . "'") == TABLE_EVA_EVALUATOR_GROUP))
+			{/*	Transfert des anciens groupes dans la nouvelle table	*/
+				/*	Groupes d'employé	*/
+				$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP);
+				$employeeGroups = $wpdb->get_results($query);
+				$subQuery = "  ";
+				foreach($employeeGroups as $employeeGroup)
+				{
+					$subQuery .= "('', '" . $wpdb->escape($employeeGroup->user_group_id) . "', '" . $wpdb->escape($employeeGroup->user_group_status) . "', 'employee', NOW(), 1, '', '', '" . $wpdb->escape($employeeGroup->user_group_name) . "', '" . $wpdb->escape($employeeGroup->user_group_description) . "'), ";
+				}
+				/*	Groupes	d'evaluateur	*/
+				$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP);
+				$employeeGroups = $wpdb->get_results($query);
+				foreach($employeeGroups as $employeeGroup)
+				{
+					$subQuery .= "('', '" . $wpdb->escape($employeeGroup->evaluator_group_id) . "', '" . $wpdb->escape($employeeGroup->evaluator_group_status) . "', 'evaluator', '" . $wpdb->escape($employeeGroup->evaluator_group_creation_date) . "', '" . $wpdb->escape($employeeGroup->evaluator_group_creation_user_id) . "', '" . $wpdb->escape($employeeGroup->evaluator_group_deletion_date) . "', '" . $wpdb->escape($employeeGroup->evaluator_deletion_user_id) . "', '" . $wpdb->escape($employeeGroup->evaluator_group_name) . "', '" . $wpdb->escape($employeeGroup->evaluator_group_description) . "'), ";
+				}
+				/*	Transfert dans la nouvelle table	*/
+				$subQuery = trim(substr($subQuery, 0, -2));
+				if($subQuery != "")
+				{
+					$query = 
+						"INSERT INTO " . DIGI_DBT_USER_GROUP . " 
+							(id, old_id, status, group_type, creation_date, creation_user_id, deletion_date, deletion_user_id, name, description) 
+						VALUES 
+							" . $subQuery;
+					$wpdb->query($query);
+				}
+
+				/*	Transfert les tables non utilisées vers la "trash" section	*/
+				$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP . " TO " . TRASH_DIGI_DBT_USER_GROUP);
+				$wpdb->query($query);
+				$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP);
+				$wpdb->query($query);
+			}
+
+			if(($wpdb->get_var("show tables like '" . TABLE_LIAISON_USER_GROUPS . "'") == TABLE_LIAISON_USER_GROUPS) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP_BIND . "'") == TABLE_EVA_EVALUATOR_GROUP_BIND))
+			{/*	Transfert la liaison des anciens groupes vers les nouveaux	*/
+				/*	Groupes d'employé	*/
+				$query = $wpdb->prepare("SELECT * FROM " . TABLE_LIAISON_USER_GROUPS);
+				$employeeGroupsLink = $wpdb->get_results($query);
+				$subQuery = "  ";
+				foreach($employeeGroupsLink as $employeeGroupLink)
+				{
+					$query = $wpdb->prepare("SELECT id FROM " . DIGI_DBT_USER_GROUP . " WHERE old_id = %d AND group_type = %s", $employeeGroupLink->id_group, 'employee');
+					$newGroupId = $wpdb->get_row($query);
+					$subQuery .= "('', '" . $wpdb->escape($employeeGroupLink->Status) . "', '" . $wpdb->escape($employeeGroupLink->date) . "', 1, '', '', '" . $wpdb->escape($newGroupId->id) . "', '" . $wpdb->escape($employeeGroupLink->id_element) . "', '" . $wpdb->escape($employeeGroupLink->table_element) . "_employee'), ";
+				}
+				/*	Groupes d'evaluateurs	*/
+				$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_BIND);
+				$evaluatorsGroupsLink = $wpdb->get_results($query);
+				foreach($evaluatorsGroupsLink as $evaluatorsGroupLink)
+				{
+					$query = $wpdb->prepare("SELECT id FROM " . DIGI_DBT_USER_GROUP . " WHERE old_id = %d AND group_type = %s", $evaluatorsGroupLink->id_group, 'evaluator');
+					$newGroupId = $wpdb->get_row($query);
+					$subQuery .= "('', '" . $wpdb->escape($evaluatorsGroupLink->Status) . "', '" . $wpdb->escape($evaluatorsGroupLink->dateAffectation) . "', '" . $wpdb->escape($evaluatorsGroupLink->affectationUserId) . "', '" . $wpdb->escape($evaluatorsGroupLink->dateDesaffectation) . "', '" . $wpdb->escape($evaluatorsGroupLink->desaffectationUserId) . "', '" . $wpdb->escape($newGroupId->id) . "', '" . $wpdb->escape($evaluatorsGroupLink->id_element) . "', '" . $wpdb->escape($evaluatorsGroupLink->table_element) . "_evaluator'), ";
+				}
+				/*	Transfert dans la nouvelle table	*/
+				$subQuery = trim(substr($subQuery, 0, -2));
+				if($subQuery != "")
+				{
+					$query = 
+						"INSERT INTO " . DIGI_DBT_LIAISON_USER_GROUP . " 
+							(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_group, id_element, table_element) 
+						VALUES 
+							" . $subQuery;
+					$wpdb->query($query);
+				}
+
+				/*	Transfert les tables non utilisées vers la "trash" section	*/
+				$query = $wpdb->prepare("RENAME TABLE " . TABLE_LIAISON_USER_GROUPS . " TO " . TRASH_DIGI_DBT_LIAISON_USER_GROUPS);
+				$wpdb->query($query);
+				$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_BIND . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_BIND);
+				$wpdb->query($query);
+			}
+
+			if(($wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP_DETAILS . "'") == TABLE_EVA_USER_GROUP_DETAILS) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP_DETAILS . "'") == TABLE_EVA_EVALUATOR_GROUP_DETAILS))
+			{/*	Transfert des utilisateurs vers la table de liaison utilisateur element	*/
+				/*	Groupes d'employé	*/
+				$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP_DETAILS);
+				$employeeGroupsDetail = $wpdb->get_results($query);
+				$subQuery = "  ";
+				foreach($employeeGroupsDetail as $employeeGroupDetail)
+				{
+					$query = $wpdb->prepare("SELECT id FROM " . DIGI_DBT_USER_GROUP . " WHERE old_id = %d AND group_type = %s", $employeeGroupDetail->user_group_id, 'employee');
+					$newGroupId = $wpdb->get_row($query);
+					$subQuery .= "('', 'valid', NOW(), 1, '', '', '" . $wpdb->escape($employeeGroupDetail->user_id) . "', '" . $wpdb->escape($newGroupId->id) . "', '" . DIGI_DBT_USER_GROUP . "'), ";
+				}
+				/*	Groupes d'evaluateurs	*/
+				$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_DETAILS);
+				$evaluatorsGroupsDetail = $wpdb->get_results($query);
+				foreach($evaluatorsGroupsDetail as $evaluatorsGroupDetail)
+				{
+					$query = $wpdb->prepare("SELECT id FROM " . DIGI_DBT_USER_GROUP . " WHERE old_id = %d AND group_type = %s", $evaluatorsGroupDetail->evaluator_group_id, 'evaluator');
+					$newGroupId = $wpdb->get_row($query);
+					$subQuery .= "('', '" . $wpdb->escape($evaluatorsGroupDetail->Status) . "', '" . $wpdb->escape($evaluatorsGroupDetail->dateEntree) . "', '" . $wpdb->escape($evaluatorsGroupDetail->affectationUserId) . "', '" . $wpdb->escape($evaluatorsGroupDetail->dateSortie) . "', '" . $wpdb->escape($evaluatorsGroupDetail->desaffectationUserId) . "', '" . $wpdb->escape($evaluatorsGroupDetail->user_id) . "', '" . $wpdb->escape($newGroupId->id) . "', '" . DIGI_DBT_USER_GROUP . "'), ";
+				}
+				/*	Transfert dans la nouvelle table	*/
+				$subQuery = trim(substr($subQuery, 0, -2));
+				if($subQuery != "")
+				{
+					$query = 
+						"INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " 
+							(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_user, id_element, table_element) 
+						VALUES 
+							" . $subQuery;
+					$wpdb->query($query);
+				}
+
+				/*	Transfert les tables non utilisées vers la "trash" section	*/
+				$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_USER_GROUP_DETAILS);
+				$wpdb->query($query);
+				$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_DETAILS);
+				$wpdb->query($query);
+			}
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 45:
+		{
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
 	}

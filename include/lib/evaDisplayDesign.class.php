@@ -30,7 +30,7 @@ class EvaDisplayDesign {
 	 * @param bool $choixAffichage Must the page offer a choice of display ?
 	 * @return string HTML code of the header display.
 	 */
-	static function afficherDebutPage($titrePage, $icone, $titreIcone, $altIcon, $table, $boutonAjouter=true, $messageInfo='', $choixAffichage=false)
+	static function afficherDebutPage($titrePage, $icone, $titreIcone, $altIcon, $table, $boutonAjouter=true, $messageInfo='', $choixAffichage=false, $affichageNotes = true)
 	{
 		$debutPage = '<div class="wrap">
 			<div class="icon32"><img alt="' . $altIcon . '" src="' . $icone . '"title="' . $titreIcone . '"/></div>
@@ -41,7 +41,10 @@ class EvaDisplayDesign {
 		}
 		$debutPage .= '
 		</h2>
-' . evaNotes::noteDialogMaker() . '
+';
+		if($affichageNotes)
+		{
+			$debutPage .= evaNotes::noteDialogMaker() . '
 		<div id="champsCaches" class="clear" ></div>
 		<script type="text/javascript">
 			evarisk(document).ready(function(){
@@ -52,6 +55,7 @@ class EvaDisplayDesign {
 ' . evaNotes::noteDialogScriptMaker() . '
 			});
 		</script>';
+		}
 		if($choixAffichage)
 		{
 			$racine = Arborescence::getRacine($table);

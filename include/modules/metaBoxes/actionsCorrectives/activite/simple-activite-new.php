@@ -121,7 +121,7 @@ EvaDisplayInput::afficherInput('text', $id, $contenuInputAvancement, $contenuAid
 	{//Responsable
 		$contenuAideDescription = "";
 		$labelInput = __("Responsable", 'evarisk');
-		if(options::getOptionValue('responsable_Action_Obligatoire') == 'oui')
+		if(digirisk_options::getOptionValue('responsable_Action_Obligatoire') == 'oui')
 		{
 			$labelInput .= '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span>';
 		}
@@ -192,7 +192,7 @@ EvaDisplayInput::afficherInput('text', $id, $contenuInputAvancement, $contenuAid
 	}
 	{//Bouton Enregistrer
 		/*	Check if the user in charge of the action are mandatory */
-		$idResponsableIsMandatory = options::getOptionValue('responsable_Action_Obligatoire');
+		$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Action_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
 			evarisk(document).ready(function() {

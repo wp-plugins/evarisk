@@ -107,7 +107,7 @@ class suivi_activite
 					$user_firstname = $user_info->user_firstname;
 				}
 
-				$valeurs[] = array('value' => sprintf(__('Le <b>%s</b>, <b>%s</b> dit <i>%s</i>', 'evarisk'), eva_tools::transformeDate($suivi->date, 0, 0, 0, true), $user_lastname . ' ' . $user_firstname, $suivi->commentaire));
+				$valeurs[] = array('value' => sprintf(__('Le <b>%s</b>, <b>%s</b> dit <i>%s</i>', 'evarisk'), mysql2date('d M Y (H:i:s)', $suivi->date, true), $user_lastname . ' ' . $user_firstname, $suivi->commentaire));
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $tableElement . $idElement . 'suiviModification';
 			}

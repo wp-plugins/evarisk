@@ -240,7 +240,7 @@ IMG;
         $reg = "#\[!--\sBEGIN\s$segment\s--\](.*)\[!--\sEND\s$segment\s--\]#sm";
         if (preg_match($reg, html_entity_decode($this->contentXml), $m) == 0) {
             // throw new OdfException("'$segment' segment not found in the document");
-						return;
+						return false;
         }
         $this->segments[$segment] = new Segment($segment, $m[1], $this);
         return $this->segments[$segment];

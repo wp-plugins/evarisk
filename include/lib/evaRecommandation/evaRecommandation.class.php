@@ -606,7 +606,7 @@ class evaRecommandation
 */
 	function recommandationAssociation($outputMode, $selectedRecommandation = '')
 	{
-		$recommandationAssociationOutput = $efficacite_preconisation_script = '';
+		$recommandationAssociationOutput = $efficacite_preconisation_script = $efficatiteForm = '';
 		$recommandationContainer = '&nbsp;';
 		$recommandationContainerClass = 'hide';
 		$saveRecommandationAssociationButton = __('Enregistrer', 'evarisk');
@@ -620,11 +620,11 @@ class evaRecommandation
 
 		$selectedRecommandationCategory = (is_array($selectedRecommandation) && (isset($selectedRecommandation['id_categorie_preconisation'])) && ($selectedRecommandation['id_categorie_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['id_categorie_preconisation']) : '';
 		$commentaire_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['commentaire_preconisation'])) && ($selectedRecommandation['commentaire_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['commentaire_preconisation']) : '';
-		$efficacite_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['efficacite_preconisation'])) && ($selectedRecommandation['efficacite_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['efficacite_preconisation']) : '"0"';
+		$efficacite_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['efficacite_preconisation'])) && ($selectedRecommandation['efficacite_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['efficacite_preconisation']) : '0';
 
-		if(options::getOptionValue('recommandation_efficiency_activ') == 'oui')
+		if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
 		{
-			$recommandationForm .= 
+			$efficatiteForm = 
 '<label for="efficacite_preconisation">' . __('Efficacit&eacute; (%)', 'evarisk') . '</label>
 <input type="text" class="sliderValue" disabled="disabled" id="efficacite_preconisation" name="efficacite_preconisation" value="' . $efficacite_preconisation . '" /><div id="slider-efficacite_preconisation" class="slider_variable"></div>
 <div class="clear" >&nbsp;</div>';
@@ -632,7 +632,7 @@ class evaRecommandation
 			$efficacite_preconisation_script = '
 		evarisk("#slider-efficacite_preconisation").slider({
 			range:"min",
-			value:' . str_replace('"', '', $efficacite_preconisation) . ',
+			value:' . $efficacite_preconisation . ',
 			min:0,
 			max:100,
 			slide:function(event, ui){
@@ -649,6 +649,7 @@ class evaRecommandation
 	<div id="recommandationContainer" >' . $recommandationContainer . '</div>
 	<div class="clear" >&nbsp;</div>
 	<div id="recommandationFormContent" >
+		' . $efficatiteForm . '
 		<label for="commentaire_preconisation" >' . __('Commentaire', 'evarisk') . '&nbsp;<span id="recommandationNameIndication" >&nbsp;</span></label>
 		<textarea id="commentaire_preconisation" name="commentaire_preconisation" rows="3" cols="10" class="recommandationInput" >' . $commentaire_preconisation . '</textarea>
 		<div class="clear" >&nbsp;</div>
@@ -724,11 +725,19 @@ class evaRecommandation
 		$titres[] = __("Ic&ocirc;ne", 'evarisk');
 		$titres[] = __("Intitul&eacute;", 'evarisk');
 		$titres[] = __("Commentaire", 'evarisk');
+		if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
+		{
+			$titres[] = __("Efficacit&eacute;", 'evarisk');
+		}
 		$titres[] = __("Actions", 'evarisk');
 		$classes[] = '';
 		$classes[] = 'recommandationIconColumn';
 		$classes[] = '';
 		$classes[] = '';
+		if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
+		{
+			$classes[] = 'recommandationEfficiencyColumn';
+		}
 		$classes[] = 'recommandationActionColumn';
 
 		unset($ligneDeValeurs);
@@ -760,6 +769,10 @@ class evaRecommandation
 				$lignesDeValeurs[$i][] = array('value' => $recommandationMainPicture, 'class' => '');
 				$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >P' . $recommandation->id_preconisation . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_name) . '</span>', 'class' => '');
 				$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->commentaire), 'class' => '');
+				if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
+				{
+					$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->efficacite), 'class' => '');
+				}
 				$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationLink" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationLink" />', 'class' => '');
 				$i++;
 			}
@@ -770,6 +783,7 @@ class evaRecommandation
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => __('Aucune pr&eacute;conisation n\'a &eacute;t&eacute; affect&eacute;e &agrave; cet &eacute;l&eacute;ment', 'evarisk'), 'class' => '');
+			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 		}
@@ -803,6 +817,7 @@ class evaRecommandation
 					},
 					"aoColumns": [ 
 						{ "bVisible":    false },
+						null,
 						null,
 						null,
 						null,

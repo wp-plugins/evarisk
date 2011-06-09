@@ -6,7 +6,6 @@
  */
 include_once(EVA_CONFIG );
 include_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserGroup.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 
 class EvaGroupement {
@@ -224,10 +223,6 @@ class EvaGroupement {
 		$infos[] = $info;
 		$info['nom'] = __('Sous groupements', 'evarisk');
 		$info['valeur'] = count($sousEntitesGroupement) . '(' . count($entitesDescendanteGroupement) . ')';
-		$info['classeValeur'] = '';
-		$infos[] = $info;
-		$info['nom'] = __('Employ&eacute;s', 'evarisk');
-		$info['valeur'] = evaUserGroup::getUserNumberInWorkUnit($idGroupement, TABLE_GROUPEMENT);
 		$info['classeValeur'] = '';
 		$infos[] = $info;
 		$info['nom'] = __('Employ&eacute;s &eacute;valu&eacute;s', 'evarisk');

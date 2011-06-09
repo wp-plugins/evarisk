@@ -16,14 +16,18 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
 
+#digirisk_options_container th{	width:45% !important; padding:2px;	}
+#digirisk_options_container td{	padding:2px;	}
+#taille_photo_poste_fiche_de_poste{	width:46px;	}
+#digirisk_options_container .form-table{		margin:0px 12px !important;	}
 
 .dataTables_length{	width:50% !important;	}
 .dataTables_paginate{	margin:12px 24px;	}
 .dataTables_filter{	float:right; /*width:15% !important;*/	}
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
-.searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
-.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
+.searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -160px -112px !important; width:16px; height:16px; margin:3px 0px;}
+.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .editDataTableRow{	cursor:pointer;background-position:-64px -112px;	}
 .closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
@@ -43,10 +47,10 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 /* -- Boutons choix affichage enlarging -- */
 #choseEnlarging{display: inline; vertical-align: top; margin-bottom:12px; margin-left:10px;}
 #choseEnlarging span{margin:0 10px;}
-#choseEnlarging span#rightEnlarging {height:19px; width:32px;background:url(../../medias/images/Icones/Divers/btn_rightEnlarging.png);display:inline-block;cursor:pointer;}
+#choseEnlarging span#rightEnlarging {height:19px; width:32px;background:url(../../medias/images/Icones/Divers/btn_rightEnlarging.png) !important;display:inline-block;cursor:pointer;}
 #choseEnlarging div#enlarging{display:inline-block;}
 #choseEnlarging div#enlarging.ui-slider-horizontal {width:100px;}
-#choseEnlarging span#leftEnlarging {height:19px; width:32px;background:url(../../medias/images/Icones/Divers/btn_leftEnlarging.png);display:inline-block;cursor:pointer;}
+#choseEnlarging span#leftEnlarging {height:19px; width:32px;background:url(../../medias/images/Icones/Divers/btn_leftEnlarging.png) !important;display:inline-block;cursor:pointer;}
 /* -- END Boutons choix affichage enlarging -- */
 
 .titleInput{font-size:1.3em;}
@@ -281,11 +285,14 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .columnNomDangerMassUpdater	{	width:10%; font-size:10px;	}
 .columnCommentaireRisqueMassUpdater	{		}
 .columnCommentaireRisqueMassUpdater textarea, .columnActionPrioritaireRisqueMassUpdater textarea{		width: 98%;	}
+.columnActionPrioritaireRisqueMassUpdater{	text-align:center; vertical-align:middle;	}
 .columnCBRisqueMassUpdater{	width:2%; vertical-align:middle !important;	}
 .risqMassUpdaterChooserExplanation{	margin:6px 0px 0px 0px; font-size:11px; font-style:italic;	}
 .massUpdaterChecbkoxAction{	font-size:11px; cursor:pointer;	}
 
 #risqMassUpdater .dataTables_wrapper{	min-height:50px;	}
+#risqMassUpdater{		}
+.massUpdaterListing{	overflow:auto !important; height:450px;	}
 
 #divVoirRisques{	padding:9px 0px 3px 4px;	}
 #formRisque{	margin:0px 0px 3px 4px;	}
@@ -371,20 +378,27 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 /* -- END Actions correctives -- */
 
 
+/* -- START USER GROUPS -- */
+.digirisk_user_groups_column_action{	width:50px !important;	}
+.digiriskUserGroupEditionName{	font-style:italic;text-decoration:underline;	}
+.digiriskUserGroupDetails{	width:50%;	}
+/* -- END USER GROUPS -- */
+
+
 /* -- START LINK USER ELEMENT -- */
 .userListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
 .selecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .selecteduserOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
-.deleteUserFromList{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
-.deleteUserFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px; width:16px; height:16px;	}
+.deleteUserFromList{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteUserFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .searchUserToAffect{	float:left; width:90%; color:#888888;	}
 .searchUserInput{	float:left; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
 
-.userIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66cc33_256x240.png"); background-position: -64px -144px; width:16px; height:16px;}
-.userIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px; width:16px; height:16px;}
-.userIsNotLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png"); background-position: -96px -144px; width:16px; height:16px;}
-.userIsNotLinked:hover, .linkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png"); background-position: -64px -144px; width:16px; height:16px;}
+.userIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66cc33_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+.userIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;}
+.userIsNotLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -96px -144px !important; width:16px; height:16px;}
+.userIsNotLinked:hover, .linkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
 
 .addLinkUserElement{	padding:3px 0px;	}
 .addUserButtonDTable{	width:5%;	}
@@ -392,6 +406,10 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .completeUserList .odd, .completeUserList .even{	cursor:pointer;	}
 
 .checkAll, .uncheckAll{ font-size:9px;cursor:pointer;	}
+
+
+.ac_results li{	color:#242424 !important;	}
+.ac_over {		background-color:#DDDDDD !important;	}
 /* -- END LINK USER ELEMENT -- */
 
 
@@ -402,6 +420,7 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 /* -- Recommandation -- */
 .recommandationIconColumn{	width:20px !important; text-align:right !important;	}
 .recommandationActionColumn{	width:40px !important;	}
+.recommandationEfficiencyColumn{	width:40px !important; text-align:center !important;		}
 #recommandationForm label, #recommandationForm input{	display:block;	}
 #recommandationForm fieldset { padding:0; border:0; margin-top:0px; }
 .recommandationInterfaceContainerPart{	width:49% !important;	}
@@ -440,13 +459,19 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 
 
 /* -- Document unique -- */
-#divHistoriqueDocumentUnique ..eva_tabs_panel{	overflow:none !important; min-height:80px;	}
 #generateDUER, #generateFP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
 #generateDUER.selected, #generateFP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
 #saveWorkUnitSheetForGroupement{	margin:6px auto;	}
 #workUnitSheetCollectionModelSelector{	margin:6px;	}
 #documentModelContainer{	width:40%;	}
 #documentFormContainer{	width:60%; text-align:center;	}
+.duerODTFileLink{	text-align:right; padding:0px 6px;	}
+.DUERReGenerationButton{	border:0px solid black;	}
+.DUERContainer{ height:200px; overflow:auto; }
+.FPContainer{ height:150px; overflow:auto; }
+#divHistoriqueDocument{	height:410px !important; overflow:hidden !important;	}
+.duerDeleteContainer{	width:20px !important;	}
+.duerDeleteContainer img{	width:15px !important;	}
 /* -- End Document unique -- */
 
 
@@ -458,3 +483,44 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .noteInput {	width:99%; height:93%; padding: .4em; }
 #noteSaverMessage{	text-align:center;	width:70%;	margin:0px auto;	padding:3px 0px;	}
 /* -- End Notes -- */
+
+
+/* -- Start Affectation box -- */
+.affectationCompleteListOutput{	width:40%;	}
+.affectedElementListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
+.selectedelementOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
+.selectedelementOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
+.deleteElementFromList{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteElementFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+
+.searchElementToAffect{	float:left; width:90%; color:#888888;	}
+.searchElementInput{	float:left; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
+
+.elementIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66cc33_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+.elementIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;}
+.elementIsNotLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -96px -144px !important; width:16px; height:16px;}
+.elementIsNotLinked:hover, .linkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+
+.noElementLinked{	margin:5px 10px;color:#646464;	}
+.addLinkElement{	padding:3px 0px;	}
+.addElementButtonDTable{	width:5%;	}
+.completeList{	height:190px; overflow:auto;	}
+.completeList .odd, .completeList .even{	cursor:pointer;	}
+
+.checkAll, .uncheckAll{ font-size:9px;cursor:pointer;	}
+
+
+.ac_results li{	color:#242424 !important;	}
+.ac_over {		background-color:#DDDDDD !important;	}
+/* -- End Affectation box -- */
+
+
+/* -- Start form -- */
+.digirisk_form_label{	width:20%; vertical-align:top;	}
+.digirisk_form_input{	width:50%;	}
+.digirisk_form_input textarea, .digirisk_form_input select, .digirisk_form_input input[type=text], .digirisk_form_input input[type=file]{	width:60% !important;	}
+.digirisk_form_input input[type=radio], .digirisk_form_input input[type=checkbox]{	margin:0px 1px 0px 6px; vertical-align:middle;	}
+
+.pageHeaderButton{	float:right; padding:17px 18px 0px 0px;	}
+.cancelButton{	padding:8px 0px 0px !important;	}
+/* -- End form -- */

@@ -2,9 +2,9 @@
 /**
 *	The different utilities to manage users in evarisk
 *
-*	@package 		Evarisk
-*	@subpackage Users
-* @author			Evarisk team <contact@evarisk.com>
+*	@package 		Digirisk
+*	@subpackage users
+* @author			Evarisk <dev@evarisk.com>
 */
 
 class evaUser
@@ -18,83 +18,6 @@ class evaUser
 	*/
 	protected $_userToUpdate = '';
 
-	/**
-	*	Create an instance for a user. Initialize the entity id related to the user
-	*/
-	function evaUser($AttributeGroupName)
-	{
-		global $eav_attribute;
-
-		$eav_attribute->setCurrentEntityTypeId($eav_attribute->getEntityInformation('eva_users'));
-
-		$this->_currentAttributeGroup = $AttributeGroupName;
-	}
-
-	/**
-	*	Get the query that will be launch to update different attribute
-	*
-	*	@return mixed $this->_attributesValueQuery The query we will launch to update information
-	*/
-	function setUserToUpdate($userId)
-	{
-		$this->_userToUpdate = $userId;
-	}
-
-	/**
-	*	Get the list of attribute available for a given group
-	*
-	*	@return mixed $attributeForm The different element to output
-	*/
-	function evaUserAttributeForm()
-	{
-		global $eav_attribute;
-
-		$attributeForm = $eav_attribute->attributeFormOutput($this->_currentAttributeGroup, $this->_userToUpdate);
-
-		return $this->evaUserAttributeFormTemplate($attributeForm);
-	}
-
-	/**
-	*	Output a container with the different element for user
-	*
-	*	@param mixed $content The different element to output in the template
-	*/
-	function evaUserAttributeFormTemplate($content)
-	{
-		if(trim($content) != '')
-		{
-?>
-<h3><?php _e('Informations compl&eacute;mentaires evarisk'); ?></h3>
-<div class="form-table" id="evaUserInformation" >
-	<?php echo $content; ?>
-</div>
-<?php
-		}
-	}
-
-	/**
-	*	Update the different information for an user profile. First we check that there is an user update form that were send, then if it's the case we do the job
-	*/
-	function evaUserUpdateProfile()
-	{
-		/* Check if we send the user update form, if it is not the case we return to the normal output */
-		if(!isset($_POST['user_id'])) return;
-
-		global $eav_attribute;
-
-		if(isset($_REQUEST['userAttributes']) && is_array($_REQUEST['userAttributes']) && (count($_REQUEST['userAttributes']) > 0))
-		{
-			foreach ($_REQUEST['userAttributes'] as $attributeType => $attributeContent) :
-					$eav_attribute->createAttributesValueHeaderQuery($attributeType);
-				foreach ($attributeContent as $attributeCode => $attributeValue) :
-					$eav_attribute->createAttributesValueQuery($attributeCode, $_POST['user_id'], $attributeValue);
-				endforeach;
-					$eav_attribute->attributesValueQueryTrimmer();
-					$eav_attribute->setAttributesValue();
-					$eav_attribute->attributesValueQueryTrimmer(true);
-			endforeach;
-		}
-	}
 
 
 	/**
@@ -206,11 +129,10 @@ class evaUser
 		$elementId = mysql_real_escape_string($elementId);
 		$elementTable = mysql_real_escape_string($elementTable);
 		
-		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_EVALUATION . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
+		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_ELEMENT . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
 		
 		return $wpdb->get_results($queryCleanGroupBind);
 	}
-
 
 	/**
 	*	Return different informations about users
@@ -251,7 +173,7 @@ class evaUser
 
 		$optionEmailDomain = '';
 		$checkEmailDomain = '';
-		$checkEmailDomain = options::getOptionValue('emailDomain', 'Valid');
+		$checkEmailDomain = digirisk_options::getOptionValue('emailDomain');
 		if($checkEmailDomain == '')
 		{
 			$optionEmailDomain = '
@@ -615,5 +537,88 @@ class evaUser
 </form>
 <?php
 	}
+
+
+
+
+
+
+
+
+
+	/**
+	*	Create an instance for a user. Initialize the entity id related to the user
+	*/
+	function evaUser($AttributeGroupName)
+	{
+		global $eav_attribute;
+
+		$eav_attribute->setCurrentEntityTypeId($eav_attribute->getEntityInformation('eva_users'));
+
+		$this->_currentAttributeGroup = $AttributeGroupName;
+	}
+	/**
+	*	Get the query that will be launch to update different attribute
+	*
+	*	@return mixed $this->_attributesValueQuery The query we will launch to update information
+	*/
+	function setUserToUpdate($userId)
+	{
+		$this->_userToUpdate = $userId;
+	}
+	/**
+	*	Get the list of attribute available for a given group
+	*
+	*	@return mixed $attributeForm The different element to output
+	*/
+	function evaUserAttributeForm()
+	{
+		global $eav_attribute;
+
+		$attributeForm = $eav_attribute->attributeFormOutput($this->_currentAttributeGroup, $this->_userToUpdate);
+
+		return $this->evaUserAttributeFormTemplate($attributeForm);
+	}
+	/**
+	*	Output a container with the different element for user
+	*
+	*	@param mixed $content The different element to output in the template
+	*/
+	function evaUserAttributeFormTemplate($content)
+	{
+		if(trim($content) != '')
+		{
+?>
+<h3><?php _e('Informations compl&eacute;mentaires evarisk'); ?></h3>
+<div class="form-table" id="evaUserInformation" >
+	<?php echo $content; ?>
+</div>
+<?php
+		}
+	}
+	/**
+	*	Update the different information for an user profile. First we check that there is an user update form that were send, then if it's the case we do the job
+	*/
+	function evaUserUpdateProfile()
+	{
+		/* Check if we send the user update form, if it is not the case we return to the normal output */
+		if(!isset($_POST['user_id'])) return;
+
+		global $eav_attribute;
+
+		if(isset($_REQUEST['userAttributes']) && is_array($_REQUEST['userAttributes']) && (count($_REQUEST['userAttributes']) > 0))
+		{
+			foreach ($_REQUEST['userAttributes'] as $attributeType => $attributeContent) :
+					$eav_attribute->createAttributesValueHeaderQuery($attributeType);
+				foreach ($attributeContent as $attributeCode => $attributeValue) :
+					$eav_attribute->createAttributesValueQuery($attributeCode, $_POST['user_id'], $attributeValue);
+				endforeach;
+					$eav_attribute->attributesValueQueryTrimmer();
+					$eav_attribute->setAttributesValue();
+					$eav_attribute->attributesValueQueryTrimmer(true);
+			endforeach;
+		}
+	}
+
 
 }
