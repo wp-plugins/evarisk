@@ -12,6 +12,8 @@ class eva_tools
 	function IsValid_Variable($MyVar2Test,$DefaultValue='')
 	{
 		$MyVar = (trim(strip_tags(stripslashes($MyVar2Test)))!='') ? trim(strip_tags(stripslashes(($MyVar2Test)))) : $DefaultValue ;
+		$MyVar = html_entity_decode(str_replace("&rsquo;", "'", htmlentities($MyVar, ENT_COMPAT, 'UTF-8')), ENT_COMPAT, 'UTF-8');
+
 		return $MyVar;
 	}
 

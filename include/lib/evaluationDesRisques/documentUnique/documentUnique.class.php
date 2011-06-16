@@ -312,6 +312,7 @@ class eva_documentUnique
 	*/
 	function readBilanUnitaire($bilanALire, $outputType = '')
 	{
+	echo '<pre>';print_r($bilanALire);echo '</pre>';
 		$listeRisque = $listeRisque[SEUIL_BAS_FAIBLE] = $listeRisque[SEUIL_BAS_APLANIFIER] = $listeRisque[SEUIL_BAS_ATRAITER] = $listeRisque[SEUIL_BAS_INACCEPTABLE] = array();
 
 		$listeTousRisques = $bilanALire;
@@ -325,14 +326,14 @@ class eva_documentUnique
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
-					if($outputType == '')
-					{
-						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
-					elseif($outputType == 'plan_d_action')
+					if($outputType == 'plan_d_action')
 					{
 						// $listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+					}
+					else
+					{
+						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
 					}
 				}
 				elseif(($informationsRisque[1]['value'] >= SEUIL_BAS_ATRAITER) && ($informationsRisque[1]['value'] <= SEUIL_HAUT_ATRAITER))
@@ -340,14 +341,14 @@ class eva_documentUnique
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
-					if($outputType == '')
-					{
-						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
-					elseif($outputType == 'plan_d_action')
+					if($outputType == 'plan_d_action')
 					{
 						// $listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+					}
+					else
+					{
+						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
 					}
 				}
 				elseif(($informationsRisque[1]['value'] >= SEUIL_BAS_APLANIFIER) && ($informationsRisque[1]['value'] <= SEUIL_HAUT_APLANIFIER))
@@ -355,14 +356,14 @@ class eva_documentUnique
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
-					if($outputType == '')
-					{
-						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
-					elseif($outputType == 'plan_d_action')
+					if($outputType == 'plan_d_action')
 					{
 						// $listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+					}
+					else
+					{
+						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
 					}
 				}
 				elseif(($informationsRisque[1]['value'] <= SEUIL_HAUT_FAIBLE))
@@ -370,14 +371,14 @@ class eva_documentUnique
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
-					if($outputType == '')
-					{
-						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
-					elseif($outputType == 'plan_d_action')
+					if($outputType == 'plan_d_action')
 					{
 						// $listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+					}
+					else
+					{
+						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
 					}
 				}
 			}
@@ -454,7 +455,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			}
 			else
 			{
-				$alerte = __("La tranche des 75% des salari&eacute;s &eacute;valu&eacute;s n'a pas &eacute;t&eacute; atteinte, puisque seul " . $pourcentageParticipant . "% de ces derniers ont &eacute;t&eacute;s impliqu&eacute;s, et la participation du personnel n'est donc pas suffisament significative.");
+				$alerte = __("La tranche des 75% des salari&eacute;s &eacute;valu&eacute;s n'a pas &eacute;t&eacute; atteinte, puisque seul " . $pourcentageParticipant . "% de ces derniers ont &eacute;t&eacute;s impliqu&eacute;s, et la participation du personnel n'est donc pas suffisamment significative.");
 			}
 			$formulaireDocumentUniqueParams['#REMARQUEIMPORTANT#'] = ($alerte);
 

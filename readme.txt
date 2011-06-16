@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
-Tested up to: 3.1
-Stable tag: 5.1.2.9
+Tested up to: 3.1.3
+Stable tag: 5.1.3.0
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -74,6 +74,21 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
+
+= Version 5.1.3.0 =
+
+Am&eacute;liorations
+
+*	R&eacute;duction de la taille des screenshots
+
+Corrections
+
+* Corrections des fautes d'orthographe dans les fiches de postes
+* Corrections des fautes d'orthographe dans la partie concernant les utilisateurs participant &agrave; l'&eacute;valuation
+* Correction de la prise en compte des commentaires sur les risques lors de la g&eacute;n&eacute;ration du document unique
+* Correction du caract&egrave;re &rsquo; qui g&eacute;n&eacute;rait une erreur lors de l'ouverture du document open office
+
+
 = Version 5.1.2.9 =
 
 Am&eacute;liorations 
@@ -119,7 +134,7 @@ Corrections
 
 * Appel de la fonction EvaDisplayDesign::afficherFinPage() manquant dans deux interface provoquant des erreurs au niveau du code html g&eacute;n&eacute;r&eacute;
 * Erreur lors de l'affichage du suivi des actions correctives en mode avanc&eacute; (Probl&egrave;me avec la notion de quotation avant et apr&eacute;s le risque non g&eacute;r&eacute; lors de l'ajout d'une action corrective en m&ecirc;me temps que le risque)
-* Modification de certains scripts et de la fonction eva_tools::IsValid_Variable() pour remplacer le caract&egrave;re &#8217; par ' qui g&eacute;n&eacute;re une erreur lors de la g&eacute;n&eacute;ration des documents en odt
+* Modification de certains scripts et de la fonction eva_tools::IsValid_Variable() pour remplacer le caract&egrave;re &rsquo; par ' qui g&eacute;n&eacute;re une erreur lors de la g&eacute;n&eacute;ration des documents en odt
 * Probl&egrave;me de nommage du fichier zip contenant la liste des fiches de poste pour un groupement, qui faisait que la liste des fichiers zip n'&eacute;tait pas affich&eacute;e apr&egrave;s g&eacute;n&eacute;ration
 * Probl&egrave;me lors du rechargement de la box "bilan" des groupements le clic sur le boutton de g&eacute;n&eacute;ration du document unique ne fonctionnait plus
 

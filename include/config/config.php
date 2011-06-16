@@ -76,6 +76,18 @@
 		DEFINE('COULEUR_TEXTE_RISQUE_APLANIFIER', '#000000');
 	DEFINE('COULEUR_RISQUE_FAIBLE', '#FFFFFF');
 		DEFINE('COULEUR_TEXTE_RISQUE_FAIBLE', '#000000');
+
+		$typeRisque = array();
+		$typeRisque['risq80'] = SEUIL_BAS_INACCEPTABLE;
+		$typeRisque['risq51'] = SEUIL_BAS_ATRAITER;
+		$typeRisque['risq48'] = SEUIL_BAS_APLANIFIER;
+		$typeRisque['risq'] = SEUIL_BAS_FAIBLE;
+
+		$typeRisquePlanAction = array();
+		$typeRisquePlanAction['planDactionRisq80'] = SEUIL_BAS_INACCEPTABLE;
+		$typeRisquePlanAction['planDactionRisq51'] = SEUIL_BAS_ATRAITER;
+		$typeRisquePlanAction['planDactionRisq48'] = SEUIL_BAS_APLANIFIER;
+		$typeRisquePlanAction['planDactionRisq'] = SEUIL_BAS_FAIBLE;
 	}
 
 	/**
