@@ -556,6 +556,12 @@ function evarisk_creationTables()
 		{//	Users roles tables
 			//DELETE FROM VERSION 44
 		}
+
+		/*	Add the permission table	*/
+		if($wpdb->get_var("show tables like '" . DIGI_DBT_PERMISSION . "'") != DIGI_DBT_PERMISSION)
+		{
+			digirisk_permission::create_permission_db();
+		}
 	}
 	else
 	{//Version 1 : cas particulier -- formulaire inscription
@@ -1411,6 +1417,46 @@ ADD INDEX ( impressionRecommandation ) ;";
 			/*	On supprime la clé unique de la table de liaison entre les utilisateurs et les éléments pour améliorer l'historisation	*/
 			$query = "ALTER TABLE " . TABLE_LIAISON_USER_ELEMENT . " DROP INDEX uniqueKey";
 			$wpdb->query($query);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 46)
+		{
+			if($wpdb->get_var("show tables like '" . DIGI_DBT_PERMISSION . "'") != DIGI_DBT_PERMISSION)
+			{
+				digirisk_permission::create_permission_db();
+			}
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 47)
+		{
+			/*	On vérifie si la table de liaison entre les produits et les éléments n'existe pas	*/
+			if( $wpdb->get_var("show tables like '" . DIGI_DBT_PERMISSION_ROLE . "'") != DIGI_DBT_PERMISSION_ROLE)
+			{
+				$query = 
+				"CREATE TABLE " . DIGI_DBT_PERMISSION_ROLE . " (
+					id int(10) NOT NULL auto_increment,
+					status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime NOT NULL,
+					creation_user_id bigint(20) NOT NULL,
+					deletion_date datetime NOT NULL,
+					deletion_user_id bigint(20) NOT NULL,
+					last_update_date datetime NOT NULL,
+					role_internal_name char(255) collate utf8_unicode_ci NOT NULL,
+					role_name char(255) collate utf8_unicode_ci NOT NULL,
+					PRIMARY KEY (id),
+					KEY status (status)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+				$wpdb->query($query);
+			}
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 48)
+		{
 
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();

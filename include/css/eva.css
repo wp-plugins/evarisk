@@ -16,6 +16,32 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
 
+/* -- START PERMISSION -- */
+.menuUserRight{	font-style:italic; font-size:9px; font-weight:bold;	}
+.sub_module{	margin-right:5px; float:left;	}
+.sub_module_name{	text-decoration:underline; font-weight:bold;	}
+.sub_module_content{	font-style:italic; }
+.permission_module_menu{	width:25% !important;	}
+.permissionGranted{	color:green;	}
+.permissionGrantedFromParent{	color:blue;	}
+.userForbiddenActionCursor{	cursor:url("../../medias/images/Icones/forbidden_vs.png"),auto;	}
+
+.digirisk_user_role_column_name{	width:60px !important;	}
+.digirisk_user_role_column_action{	width:60px !important; text-align:right !important;	}
+.digirisk_user_role_cell_action{	text-align:right !important;	}
+.digi_permission_category_name{ font-weight:bold; }
+.digi_permission_explanation{	margin:6px 0px 0px 0px; font-size:11px; font-style:italic;	}
+.digi_permission_check_all{	margin:6px 0px 0px 0px; font-size:10px; font-style:italic;	}
+.checkall, .uncheckall, .checkall_link, .uncheckall_link, .checkall_right, .uncheckall_right{	cursor:pointer;	}
+
+.rightColumn{	width:70px; text-align:center !important;	}
+.rightCell{	text-align:center;	}
+.userAffecte{	background-color:#99FF66;	font-weight:bold; }
+.userAffecteExplanation{	margin:6px 3px; padding:2px 0px; text-align:center; width:50%; }
+
+.userTableContainer {	height:200px !important; overflow:auto !important;	}
+/* -- END PERMISSION -- */
+
 #digirisk_options_container th{	width:45% !important; padding:2px;	}
 #digirisk_options_container td{	padding:2px;	}
 #taille_photo_poste_fiche_de_poste{	width:46px;	}
@@ -27,7 +53,7 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
 .searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -160px -112px !important; width:16px; height:16px; margin:3px 0px;}
-.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_CD0A0A_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .editDataTableRow{	cursor:pointer;background-position:-64px -112px;	}
 .closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
@@ -379,9 +405,9 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 
 
 /* -- START USER GROUPS -- */
-.digirisk_user_groups_column_action{	width:50px !important;	}
-.digiriskUserGroupEditionName{	font-style:italic;text-decoration:underline;	}
-.digiriskUserGroupDetails{	width:50%;	}
+.digirisk_user_groups_column_action{	width:60px !important;	}
+.digiriskUserGroupEditionName{	font-style:italic; text-decoration:underline;	}
+.digiriskUserGroupDetails{	width:70%;	}
 /* -- END USER GROUPS -- */
 
 
@@ -508,7 +534,6 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .completeList .odd, .completeList .even{	cursor:pointer;	}
 
 .checkAll, .uncheckAll{ font-size:9px;cursor:pointer;	}
-
 
 .ac_results li{	color:#242424 !important;	}
 .ac_over {		background-color:#DDDDDD !important;	}

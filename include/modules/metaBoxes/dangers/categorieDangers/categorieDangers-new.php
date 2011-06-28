@@ -141,9 +141,12 @@ function getCategorieDangersGeneralInformationPostBoxBody($arguments)
 				});
 			});
 			</script>';
-		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+		if(current_user_can('digi_add_danger_category') || current_user_can('digi_edit_danger_category'))
+		{
+			$categorieDanger_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+		}
 	}
 	$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::fermerForm('informationGeneralesCategorieDangers');
 	echo $categorieDanger_new;
 }
-?>
+

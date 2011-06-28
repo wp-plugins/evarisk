@@ -170,6 +170,25 @@ class digirisk_product
 </script>';
 
 		if($showButton)
+		{
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT:
+					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement))
+					{
+						$showButton = false;
+					}
+				break;
+				case TABLE_UNITE_TRAVAIL:
+					if(!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement))
+					{
+						$showButton = false;
+					}
+				break;
+			}
+		}
+		
+		if($showButton)
 		{//Bouton Enregistrer
 			$scriptEnregistrement = '
 <script type="text/javascript">

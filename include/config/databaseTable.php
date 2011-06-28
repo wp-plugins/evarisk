@@ -98,6 +98,11 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('DIGI_DBT_LIAISON_PRODUIT_ELEMENT', PREFIXE_EVARISK . "liaison_produit_element");
 }
 
+{/*	Permissions	*/
+	DEFINE('DIGI_DBT_PERMISSION', PREFIXE_EVARISK . "permission");
+	DEFINE('DIGI_DBT_PERMISSION_ROLE', PREFIXE_EVARISK . "permission_role");
+}
+
 
 {/*	Trash table	*/
 	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 18

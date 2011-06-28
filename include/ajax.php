@@ -1027,12 +1027,31 @@ if($_REQUEST['post'] == 'true')
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo '<div id="ajax-response-massUpdater" class="hide" >&nbsp;</div><div id="messageRisqMassUpdater" class="evaMessage hide fade updated" >&nbsp;</div>
+						$output = '<div id="ajax-response-massUpdater" class="hide" >&nbsp;</div><div id="messageRisqMassUpdater" class="evaMessage hide fade updated" >&nbsp;</div>
 <div class="massUpdaterListing" >' . eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'massUpdater') . '</div>
 <div class="clear alignright" ><span id="checkAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout cocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="uncheckAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout d&eacutecocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="reverseSelectionBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Inverser la s&eacute;lection', 'evarisk') . '</span><img src="' . EVA_ARROW_TOP . '" alt="arrow_top" class="checkboxRisqMassUpdaterSelector_bottom" /></div>
 <div class="clear alignright risqMassUpdaterChooserExplanation" >' . __('Cochez les cases pour prendre en compte les modifications', 'evarisk') . '</div>
-<div class="clear alignright" >
-	<input type="button" class="button-primary" name="saveRisqMassModification" id="saveRisqMassModification" value="' . __('Enregistrer', 'evarisk') . '" /> 
+<div class="clear alignright" >';
+	switch($tableElement)
+	{
+		case TABLE_GROUPEMENT:
+			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
+			{
+				$output .= 
+	'
+	<input type="button" class="button-primary" name="saveRisqMassModification" id="saveRisqMassModification" value="' . __('Enregistrer', 'evarisk') . '" />';;
+			}
+		break;
+		case TABLE_UNITE_TRAVAIL:
+			if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $idElement))
+			{
+				$output .= 
+	'
+	<input type="button" class="button-primary" name="saveRisqMassModification" id="saveRisqMassModification" value="' . __('Enregistrer', 'evarisk') . '" />';;
+			}
+		break;
+	}
+	$output .= '
 	<input type="button" class="button-secondary" name="cancelRisqMassModification" id="cancelRisqMassModification" value="' . __('Annuler', 'evarisk') . '" /> 
 </div>
 <script type="text/javascript" >
@@ -1108,6 +1127,8 @@ if($_REQUEST['post'] == 'true')
 		}
 	});
 </script>';
+
+echo $output;
 					}
 					break;
 					case 'saveRisqMassUpdater':
@@ -2134,7 +2155,6 @@ if($_REQUEST['post'] == 'true')
 							});
 						</script>';
 						echo $gallery;
-						// echo evaPhoto::galleryContent($_REQUEST['table'], $_REQUEST['idElement']);
 					}
 					break;
 					case 'actualiserAvancement':
@@ -2811,7 +2831,7 @@ if($_REQUEST['post'] == 'true')
 						$recommandations_informations['description'] = $description_preconisation;
 
 						//Check the value of the recommandation identifier. 
-						if($id_preconisation <= 0)
+						if(($id_preconisation <= 0) && current_user_can('digi_add_recommandation'))
 						{	//	If the value is equal or less than 0 we create a new recommandation
 							$recommandations_informations['status'] = 'valid';
 							$recommandations_informations['id_categorie_preconisation'] = $id_categorie_preconisation;
@@ -2831,14 +2851,22 @@ if($_REQUEST['post'] == 'true')
 		"id":"' . $recommandationActionResult . '"
 	});';
 						}
-						else
+						elseif(($id_preconisation > 0) && current_user_can('digi_edit_recommandation'))
 						{	//	If the value is more than 0 we update the corresponding recommandation
 							$recommandationActionResult = evaRecommandation::updateRecommandation($recommandations_informations, $id_preconisation);
+						}
+						else
+						{
+							$recommandationActionResult = 'userNotAllowed';
 						}
 
 						if($recommandationActionResult == 'error')
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						elseif($recommandationActionResult == 'userNotAllowed')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Vous n\'avez pas les droits n&eacute;cessaire pour effectuer cette action', 'evarisk');
 						}
 						else
 						{
@@ -2871,11 +2899,22 @@ if($_REQUEST['post'] == 'true')
 					{
 						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
 						$recommandations_informations['status'] = 'deleted';
-						$recommandationActionResult = evaRecommandation::updateRecommandation($recommandations_informations, $id);
+						if(current_user_can('digi_delete_recommandation'))
+						{
+							$recommandationActionResult = evaRecommandation::updateRecommandation($recommandations_informations, $id);
+						}
+						else
+						{
+							$recommandationActionResult = 'userNotAllowed';
+						}
 						$moreRecommandationScript = '';
 						if($recommandationActionResult == 'error')
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la suppression de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						elseif($recommandationActionResult == 'userNotAllowed')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Vous n\'avez pas les droits n&eacute;cessaire pour effectuer cette action', 'evarisk');
 						}
 						else
 						{
@@ -3019,11 +3058,22 @@ if($_REQUEST['post'] == 'true')
 					{
 						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
 						$recommandations_informations['status'] = 'deleted';
-						$recommandationActionResult = evaRecommandationCategory::updateRecommandationCategory($recommandations_informations, $id);
+						if(current_user_can('digi_delete_recommandation_cat'))
+						{
+							$recommandationActionResult = evaRecommandationCategory::updateRecommandationCategory($recommandations_informations, $id);
+						}
+						else
+						{
+							$recommandationActionResult = 'userNotAllowed';
+						}
 						$moreRecommandationScript = '';
 						if($recommandationActionResult == 'error')
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la suppression de la famille de pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						elseif($recommandationActionResult == 'userNotAllowed')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Vous n\'avez pas les droits n&eacute;cessaire pour effectuer cette action', 'evarisk');
 						}
 						else
 						{
@@ -3064,21 +3114,29 @@ if($_REQUEST['post'] == 'true')
 						$recommandationCategory_informations['tailleimpressionRecommandationCategorie'] = str_replace(',', '.', $tailleimpressionRecommandationCategorie);
 
 						//Check the value of the recommandation identifier. 
-						if($id_categorie_preconisation <= 0)
+						if(($id_categorie_preconisation <= 0) && current_user_can('digi_edit_recommandation_cat'))
 						{	//	If the value is equal or less than 0 we create a new recommandation
 							$recommandationCategory_informations['status'] = 'valid';
 							$recommandationCategory_informations['creation_date'] = date('Y-m-d H:i:s');
 							$recommandationActionResult = evaRecommandationCategory::saveRecommandationCategory($recommandationCategory_informations);
 							$moreRecommandationCategoryScript .= '';
 						}
-						else
+						elseif(($id_categorie_preconisation > 0) && current_user_can('digi_edit_recommandation_cat'))
 						{	//	If the value is more than 0 we update the corresponding recommandation
 							$recommandationActionResult = evaRecommandationCategory::updateRecommandationCategory($recommandationCategory_informations, $id_categorie_preconisation);
+						}
+						else
+						{
+							$recommandationActionResult = 'userNotAllowed';
 						}
 
 						if($recommandationActionResult == 'error')
 						{
 							$recommandationCategoryActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la famille de pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+						}
+						elseif($recommandationActionResult == 'userNotAllowed')
+						{
+							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Vous n\'avez pas les droits n&eacute;cessaire pour effectuer cette action', 'evarisk');
 						}
 						else
 						{
@@ -3156,6 +3214,103 @@ if($_REQUEST['post'] == 'true')
 					break;
 				}
 				break;
+			case DIGI_DBT_PERMISSION:
+				switch($_REQUEST['act'])
+				{
+					case 'save':
+					{
+						$actionResponse = '';
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+
+						$rightType = array('user_see', 'user_edit', 'user_delete', 'user_add_gpt', 'user_add_unit');
+
+						foreach($rightType as $rightName)
+						{
+							$right = (isset($_REQUEST[$rightName]) && ($_REQUEST[$rightName] != '')) ? eva_tools::IsValid_Variable($_REQUEST[$rightName]) : '';
+							$oldRight = (isset($_REQUEST[$rightName . '_old']) && ($_REQUEST[$rightName . '_old'] != '')) ? eva_tools::IsValid_Variable($_REQUEST[$rightName . '_old']) : '';
+
+							if($oldRight != '')
+							{
+								$userElements = explode('#!#', $oldRight);
+								foreach($userElements as $userElement)
+								{
+									$userRight = explode('!#!', $userElement);
+									if(isset($userRight[1]) && ($userRight[1] != ''))
+									{
+										$oldAssignedRight[$userRight[0]][] = $userRight[1];
+									}
+								}
+							}
+
+							if($right != '')
+							{
+								$userElements = explode('#!#', $right);
+								foreach($userElements as $userElement)
+								{
+									$userRight = explode('!#!', $userElement);
+									if(isset($userRight[1]) && ($userRight[1] != ''))
+									{
+										$newAssignedRight[$userRight[0]][] = $userRight[1];
+										$user = new WP_User($userRight[1]);
+										if(!$user->has_cap($userRight[0]))
+										{
+											$user->add_cap($userRight[0]);
+										}
+									}
+								}
+							}
+
+							$actionResponse .= 'evarisk("#' . $rightName . '_old' . '").val("' . $right . '");
+	';
+
+							if(is_array($oldAssignedRight))
+							{
+								foreach($oldAssignedRight as $permissionName => $permissionUser)
+								{
+									foreach($permissionUser as $userId)
+									{
+										if((is_array($newAssignedRight) && isset($newAssignedRight[$permissionName]) && (!in_array($userId, $newAssignedRight[$permissionName]))) || !is_array($newAssignedRight))
+										{
+											$user = new WP_User($userId);
+											if($user->has_cap($permissionName))
+											{
+												$user->remove_cap($permissionName);
+											}
+										}
+									}
+								}
+
+								unset($oldAssignedRight);
+								unset($newAssignedRight);
+							}
+						}
+
+						$message = '<img src=\'' . EVA_MESSAGE_SUCCESS . '\' alt=\'' . $actionResult . '\' class=\'messageIcone\' />' . __('Les droits ont bien &eacute;t&eacute; mis &agrave; jour', 'evarisk');
+
+						echo '
+<script type="text/javascript" >
+	' . $actionResponse . '
+	evarisk("#saveButtonLoading_userRight' . $tableElement . '").hide();
+	evarisk("#saveButtonContainer_userRight' . $tableElement . '").show();
+	actionMessageShow("#message_' . $tableElement . '_' . $idElement . '_userRight", "' . $message . '");
+	setTimeout(\'actionMessageHide("#message_' . $tableElement . '_' . $idElement . '_userRight")\',7500);
+	evarisk("#userRightContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+		"post": "true", 
+		"table": "' . DIGI_DBT_PERMISSION . '",
+		"act": "reload_user_right_box",
+
+		"tableElement": "' . $tableElement . '",
+		"idElement": "' . $idElement . '"
+	});
+</script>';
+					}
+					break;
+					case 'reload_user_right_box':
+						digirisk_permission::userRightPostBox($_REQUEST);
+					break;
+				}
+				break;
 		}
 	}
 
@@ -3180,11 +3335,10 @@ if($_REQUEST['post'] == 'true')
 					}
 					require_once(EVA_MODULES_PLUGIN_DIR . 'installation/creationTables.php');
 					require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
-					require_once(EVA_MODULES_PLUGIN_DIR . 'installation/initialisationPermissions.php');
 					evarisk_creationTables();
 					evarisk_insertions($insertions);
-					evarisk_init_permission();
-					echo '<script type="text/javascript">window.top.location.href = "' . admin_url("plugins.php") . '"</script>';
+					digirisk_permission::digirisk_init_permission();
+					echo '<script type="text/javascript">window.top.location.href = "' . admin_url("options-general.php?page=digirisk_options") . '"</script>';
 				}
 			break;
 			case "loadFieldsNewVariable":

@@ -214,7 +214,7 @@ function getMethodForm()
 			}
 		}
 		$methode_new = $methode_new . '</div>';
-		{//Save Button (top)
+		if(current_user_can('digi_edit_method')){//Save Button (top)
 			$idBouttonEnregistrer = 'save';
 			$methodes = MethodeEvaluation::getMethodsName($saufMethode);
 			$valeurActuelleIn = "false";
@@ -264,7 +264,7 @@ function getMethodForm()
 			$postBox['id'] = 'galeriePhotoMethodePostBox';
 			$postBox['titre']= __('Photo explicative de la m&eacute;thode', 'evarisk');
 			$postBox['pagination'] = false;
-			$postBox['corps'] = evaPhoto::galleryContent(TABLE_METHODE, $postId);
+			$postBox['corps'] = evaPhoto::galleryContent(TABLE_METHODE, $postId, current_user_can('digi_edit_method'));
 			$postBoxes[] = $postBox;
 			$methode_new .= EvaDisplayDesign::displayPostBoxes($postBoxes) . EvaDisplayDesign::fermerMetaboxHolder() . '<!-- /galeriePhoto -->';
 		}
@@ -319,7 +319,7 @@ function getMethodForm()
 			$methode_new = $methode_new . EvaDisplayDesign::displayPostBoxes($postBoxes);
 			$methode_new = $methode_new . EvaDisplayDesign::fermerMetaboxHolder();
 		}
-		{//Save Button (bottom)
+		if(current_user_can('digi_edit_method')){//Save Button (bottom)
 			$idBouttonEnregistrerBas = 'save2';
 			$scriptEnregistrement = '<script type="text/javascript">
 				evarisk(document).ready(function() {				
@@ -380,16 +380,17 @@ function getMethodForm()
 				</script>';
 			$postBox['corps'] = $postBox['corps'] . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptTable);				
 		}
+		if(current_user_can('digi_add_method_var'))
+		{
 		{//New variable display switcher
-			$script = '
+			$postBox['corps'] .= '
 				<script type="text/javascript">
 					evarisk(document).ready(function() {
 						evarisk("#variable-add-toggle").click(function(){
 							evarisk("#variable-add").toggleClass("hide-if-js");
 						});
 					});
-				</script>';
-			$postBox['corps'] = $postBox['corps'] . $script . '<br class="clear" /><div class="wp-hidden-children" id="variable-adder">
+				</script><br class="clear" /><div class="wp-hidden-children" id="variable-adder">
 				<h4><a class="hide-if-no-js" id="variable-add-toggle">+ Ajouter une nouvelle variable</a></h4>
 				<div class="hide-if-js" id="variable-add">';
 		}
@@ -470,6 +471,7 @@ function getMethodForm()
 		}
 		$postBox['corps'] = $postBox['corps'] . '</div>
 			</div>';
+		}
 		$postBoxes[] = $postBox;
 		$variablesSide = $variablesSide . evaDisplayDesign::displayPostBoxes($postBoxes);
 		$variablesSide = $variablesSide . EvaDisplayDesign::fermerMetaboxHolder();

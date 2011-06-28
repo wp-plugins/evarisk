@@ -1164,6 +1164,30 @@ ou irritantes');";
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
+		case 46:
+		{/*	User permission	initialisation	*/
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 47:
+		{
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}	
+		case 48:
+		{
+			$query = $wpdb->prepare(
+				"INSERT INTO " . DIGI_DBT_PERMISSION . " (id, status, creation_date, set_by_default, permission_type, permission_sub_type, permission_module, permission_sub_module, permission) 
+					VALUES 
+				('', 'moderated', NOW(), 'no', 'write', 'edit', 'user', 'right', 'digi_manage_user_right')
+				");
+			// $wpdb->query($query);
+
+			// digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}	
 	}
 
 }

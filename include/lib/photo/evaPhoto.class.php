@@ -810,13 +810,13 @@ class EvaPhoto {
 	*
 	*	@return mixed $galleryOutput The html code with the gallery if there are picture to show or a button to show the gallery when only one picture is present for the element
 	*/
-	function outputGallery($tableElement, $idElement){
+	function outputGallery($tableElement, $idElement, $userCanUploadPhoto = true){
 		$galleryOutput = '';
 
 		$listePhotoElement = evaPhoto::getPhotos($tableElement, $idElement);
 		$elementMainPhoto = evaPhoto::getMainPhoto($tableElement, $idElement);
 
-		if((count($listePhotoElement) > 1) || (($elementMainPhoto == 'error') && (count($listePhotoElement) > 0)))
+		if((!$userCanUploadPhoto) ||(count($listePhotoElement) > 1) || (($elementMainPhoto == 'error') && (count($listePhotoElement) > 0)))
 		{
 			$galleryOutput = evaPhoto::getGallery($tableElement, $idElement);
 		}
@@ -836,12 +836,21 @@ class EvaPhoto {
 	*
 	*	@return mixed The code wich will be shown in source code
 	*/
-	function galleryContent($tableElement, $idElement)
+	function galleryContent($tableElement, $idElement, $userCanUploadPhoto = true)
 	{
-		return 
-'<div id="message' . $tableElement . '_' . $idElement . '" ></div>
-<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>
-<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement) . '</div>';
+		$galleryOutput = '';
+
+		$galleryOutput = 
+'<div id="message' . $tableElement . '_' . $idElement . '" ></div>';
+		if($userCanUploadPhoto)
+		{
+			$galleryOutput .= 
+'<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>';
+		}
+		$galleryOutput .= 
+'<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement, $userCanUploadPhoto) . '</div>';
+
+		return $galleryOutput;
 	}
 
 	/**

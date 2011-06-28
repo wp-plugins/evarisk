@@ -51,16 +51,46 @@ class digirisk_groups
 			$message = '<img src="' . EVA_MESSAGE_SUCCESS . '" alt="' . $actionResult . '" class="messageIcone" />' . __('Le groupe a &eacute;t&eacute; correctement ajout&eacute;', 'evarisk');
 		}
 
-		if((($action == 'edit') && ($id > 0)) || ($action == 'add') || ($action == 'emadd') || ($action == 'evadd'))
+		if((($action == 'view') || ($action == 'edit') && ($id > 0)) || ($action == 'add') || ($action == 'emadd') || ($action == 'evadd'))
 		{
+			/*	On vérifie que l'utilisateur a bien les droits sur la page courante, sinon on lui affiche un message en le remettant sur la page principale	*/
+			$userHasAccess = '';
 			/*	Get informations about the current element being edited	*/
 			$currentEditedElement = digirisk_groups::getElement($id);
 
 			/*	Check if the wanted element realy exist	*/
-			if(count($currentEditedElement) > 0)
+			if((count($currentEditedElement) > 0) && ($action != 'add') && ($action != 'emadd') && ($action != 'evadd'))
 			{
 				$editionPageTitle = sprintf(__('&Eacute;dition du groupe: %s', 'evarisk'), '<span class="digiriskUserGroupEditionName" >' . $currentEditedElement[0]->name . '</span>');
 				$editionInProgress = true;
+				/*	Si on est dans le cas d'un ajout de groupe d'utilisateur	*/
+				if($currentEditedElement[0]->group_type == 'evaluator')
+				{
+					if(!current_user_can('digi_edit_evaluator_group') && !current_user_can('digi_view_detail_evaluator_group'))
+					{
+						$editionInProgress = false;
+						$userHasAccess = 'userNotAllowed';
+					}
+					elseif(current_user_can('digi_view_detail_evaluator_group'))
+					{
+						$editionInProgress = true;
+						$userHasAccess = '';
+					}
+				}
+				/*	Si on est dans le cas d'un ajout de groupe d'évaluateur	*/
+				if($currentEditedElement[0]->group_type == 'employee')
+				{
+					if(!current_user_can('digi_edit_user_group') && !current_user_can('digi_view_detail_user_group'))
+					{
+						$editionInProgress = false;
+						$userHasAccess = 'userNotAllowed';
+					}
+					elseif(current_user_can('digi_view_detail_user_group'))
+					{
+						$editionInProgress = true;
+						$userHasAccess = '';
+					}
+				}
 			}
 			elseif(($action == 'add') || ($action == 'emadd') || ($action == 'evadd'))
 			{
@@ -73,25 +103,71 @@ class digirisk_groups
 				$currentEditedElement = '';
 				$editionPageTitle = sprintf(__('Ajouter un groupe %s', 'evarisk'), $moreTitle);
 				$editionInProgress = true;
+				/*	Si on est dans le cas d'un ajout de groupe d'utilisateur	*/
+				if(!current_user_can('digi_add_evaluator_group') && !current_user_can('digi_add_user_group') && ($action == 'add'))
+				{
+					$editionInProgress = false;
+					$userHasAccess = 'userNotAllowed';
+				}
+				/*	Si on est dans le cas d'un ajout de groupe d'utilisateur	*/
+				if(!current_user_can('digi_add_evaluator_group') && ($action == 'evadd'))
+				{
+					$editionInProgress = false;
+					$userHasAccess = 'userNotAllowed';
+				}
+				/*	Si on est dans le cas d'un ajout de groupe d'évaluateur	*/
+				if(!current_user_can('digi_add_user_group') && ($action == 'emadd'))
+				{
+					$editionInProgress = false;
+					$userHasAccess = 'userNotAllowed';
+				}
+			}
+			/*	On vérifie si l'utilisateur peut accéder à la page qu'il demande	*/
+			if($userHasAccess == 'userNotAllowed')
+			{
+				$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Vous n\'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;', 'evarisk') . '</strong>');
+				$output .= 
+'<script type="text/javascript">
+evarisk(document).ready(function(){
+	actionMessageShow("#message", "' . $message . '");
+	setTimeout(\'actionMessageHide("#message")\',7500);
+});
+</script>';
 			}
 		}
 
 		if(!$editionInProgress)
 		{	/*	In case that we are on the listing page	*/
-			/*	Start the page content	*/
-			$output .= EvaDisplayDesign::afficherDebutPage(__('Groupes d\'utilisateurs', 'evarisk'), DIGI_USER_GROUP_ICON_S, __('Groupes d\'utilisateurs', 'evarisk'), __('Groupes d\'utilisateurs', 'evarisk'), self::dbTable, false, $message, false) . '<h2 class="clear" ><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . '&amp;action=emadd') . '" class="button add-new-h2" >' . __('Ajouter un groupe d\'utilisateur', 'evarisk') . '</a></h2>';
-
 			/*	Output the list of employees groups	*/
-			$elementList = digirisk_groups::getElement('', "'valid', 'moderated'", 'employee');
-			$output .= digirisk_groups::elementList($elementList, 'employee');
+			if(current_user_can('digi_view_user_group'))
+			{
+				$output .= EvaDisplayDesign::afficherDebutPage(__('Groupes d\'utilisateurs', 'evarisk'), DIGI_USER_GROUP_ICON_S, __('Groupes d\'utilisateurs', 'evarisk'), __('Groupes d\'utilisateurs', 'evarisk'), self::dbTable, false, $message, false);
+				if(current_user_can('digi_add_user_group'))
+				{
+					$output .= '<h2 class="clear" ><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . '&amp;action=emadd') . '" class="button add-new-h2" >' . __('Ajouter un groupe d\'utilisateur', 'evarisk') . '</a></h2>';
+				}
+				$elementList = digirisk_groups::getElement('', "'valid', 'moderated'", 'employee');
+				$output .= digirisk_groups::elementList($elementList, 'employee');
+			}
 
 			/*	Output the list of evaluators groups	*/
-			$elementList = digirisk_groups::getElement('', "'valid', 'moderated'", 'evaluator');
-			$output .= '<div class="icon32"><img alt="digirisk_evaluator_icon" src="' . DIGI_USER_GROUP_ICON_S . '"title="' . __('Groupes d\'utilisateurs', 'evarisk') . '"/></div>
-				<h2 class="alignleft" >' . __('Groupes d\'&eacute;valuateurs', 'evarisk') . '</h2><h2 class="clear" ><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . '&amp;action=evadd') . '" class="button add-new-h2" >' . __('Ajouter un groupe d\'&eacute;valuateur', 'evarisk') . '</a></h2><form method="post" id="' . self::dbTable . '_delete_form" action="" ><input type="hidden" name="' . self::dbTable . '_action" id="' . self::dbTable . '_action" value="delete" /><input type="hidden" name="' . self::dbTable . '[id]" id="' . self::dbTable . '_delete_form_id" value="" /></form>' . digirisk_groups::elementList($elementList, 'evaluator');
+			if(current_user_can('digi_view_evaluator_group'))
+			{
+				$elementList = digirisk_groups::getElement('', "'valid', 'moderated'", 'evaluator');
+				$output .= '<div class="icon32"><img alt="digirisk_evaluator_icon" src="' . DIGI_USER_GROUP_ICON_S . '"title="' . __('Groupes d\'utilisateurs', 'evarisk') . '"/></div>
+				<h2 class="alignleft" >' . __('Groupes d\'&eacute;valuateurs', 'evarisk') . '</h2>';
+				if(current_user_can('digi_add_evaluator_group'))
+				{
+					$output .= '<h2 class="clear" ><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . '&amp;action=evadd') . '" class="button add-new-h2" >' . __('Ajouter un groupe d\'&eacute;valuateur', 'evarisk') . '</a></h2>';
+				}
+				$output .= digirisk_groups::elementList($elementList, 'evaluator');
+			}
+
+			/*	Ajoute le formulaire de suppression d'un element	*/
+			$output .= '<form method="post" id="' . self::dbTable . '_delete_form" action="" ><input type="hidden" name="' . self::dbTable . '_action" id="' . self::dbTable . '_action" value="delete" /><input type="hidden" name="' . self::dbTable . '[id]" id="' . self::dbTable . '_delete_form_id" value="" /></form>';
 		}
 		else
-		{	/*	In case that we are on the edition/addition date	*/
+		{	/*	In case that we are on the edition/addition page	*/
 			/*	Start the page content	*/
 			$output .= EvaDisplayDesign::afficherDebutPage($editionPageTitle, DIGI_USER_GROUP_ICON_S, __('Groupes d\'utilisateurs', 'evarisk'), __('Groupes d\'utilisateurs', 'evarisk'), self::dbTable, false, $message, false);
 
@@ -215,7 +291,38 @@ class digirisk_groups
 				$lignesDeValeurs[$i][] = array('value' => $element->userNumber, 'class' => 'digirisk_user_groups_cell_usernumber');
 				$lignesDeValeurs[$i][] = array('value' => $userListOutput, 'class' => 'digirisk_user_groups_cell_userdetail');
 				$lignesDeValeurs[$i][] = array('value' => sprintf(__('Cr&eacute;&eacute; le %s', 'evarisk'), mysql2date('d M Y', $element->creation_date, true)) . '<br/>' . sprintf(__('Modifi&eacute; le %s', 'evarisk'), mysql2date('d M Y', $element->last_update_date, true)), 'class' => 'digirisk_user_groups_cell_infos');
-				$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer ce groupe', 'evarisk') . '" title="' . __('Supprimer ce groupe', 'evarisk') . '" class="alignright deleteGroup" /><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . "&amp;action=edit&amp;id=" . $element->id) . '" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cegroupe', 'evarisk') . '" title="' . __('&Eacute;diter ce groupe', 'evarisk') . '" class="alignright editGroup" /></a>', 'class' => 'digirisk_user_groups_cell_action');
+				$userGroupAction = '';
+				if($table_identifier == 'employee')
+				{
+					if(current_user_can('digi_delete_user_group'))
+					{
+						$userGroupAction .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer ce groupe', 'evarisk') . '" title="' . __('Supprimer ce groupe', 'evarisk') . '" class="alignright deleteGroup" />';
+					}
+					if(current_user_can('digi_edit_user_group'))
+					{
+						$userGroupAction .= '<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . "&amp;action=edit&amp;id=" . $element->id) . '" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter ce groupe', 'evarisk') . '" title="' . __('&Eacute;diter ce groupe', 'evarisk') . '" class="alignright editGroup" /></a>';
+					}
+					elseif(current_user_can('digi_view_detail_user_group'))
+					{
+						$userGroupAction .= '<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . "&amp;action=view&amp;id=" . $element->id) . '" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'view_vs.png" alt="' . __('Voir ce groupe', 'evarisk') . '" title="' . __('Voir ce groupe', 'evarisk') . '" class="alignright editGroup" /></a>';
+					}
+				}
+				elseif($table_identifier == 'evaluator')
+				{
+					if(current_user_can('digi_delete_evaluator_group'))
+					{
+						$userGroupAction .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer ce groupe', 'evarisk') . '" title="' . __('Supprimer ce groupe', 'evarisk') . '" class="alignright deleteGroup" />';
+					}
+					if(current_user_can('digi_edit_evaluator_group') || current_user_can('digi_view_detail_evaluator_group'))
+					{
+						$userGroupAction .= '<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . "&amp;action=edit&amp;id=" . $element->id) . '" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter ce groupe', 'evarisk') . '" title="' . __('&Eacute;diter ce groupe', 'evarisk') . '" class="alignright editGroup" /></a>';
+					}
+					elseif(current_user_can('digi_view_detail_evaluator_group'))
+					{
+						$userGroupAction .= '<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP . "&amp;action=view&amp;id=" . $element->id) . '" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('Voir ce groupe', 'evarisk') . '" title="' . __('Voir ce groupe', 'evarisk') . '" class="alignright editGroup" /></a>';
+					}
+				}
+				$lignesDeValeurs[$i][] = array('value' => $userGroupAction, 'class' => 'digirisk_user_groups_cell_action');
 				$i++;
 			}
 		}
@@ -248,7 +355,7 @@ class digirisk_groups
 		});
 	});
 	evarisk(".deleteGroup").click(function(){
-		if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce groupe 2?', 'evarisk') . '"))){
+		if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce groupe?', 'evarisk') . '"))){
 			var clickedId = evarisk(this).parent("td").parent("tr").attr("id").replace("digirisk_users_groups_", "");
 			evarisk("#' . self::dbTable . '_delete_form_id").val(clickedId);
 			evarisk("#' . self::dbTable . '_delete_form").submit();
@@ -309,14 +416,17 @@ class digirisk_groups
 
 		if(($action == 'add') || ($action == 'evadd') || ($action == 'emadd'))
 		{
-			$currentPageButton .= '<input type="submit" class="button-primary" id="add" name="add" value="' . __('Ajouter', 'evarisk') . '" />';
+			if((($action == 'evadd') && current_user_can('digi_edit_evaluator_group')) || (($action == 'emadd') && current_user_can('digi_edit_user_group')))
+			{
+				$currentPageButton .= '<input type="submit" class="button-primary" id="add" name="add" value="' . __('Ajouter', 'evarisk') . '" />';
+			}
 		}
-		else
+		elseif(current_user_can('digi_edit_user_group'))
 		{
 			$currentPageButton .= '<input type="submit" class="button-primary" id="save" name="save" value="' . __('Enregistrer', 'evarisk') . '" />';
 			//<input type="button" class="button-primary" id="saveandcontinue" name="saveandcontinue" value="' . __('Enregistrer et continuer l\'&eacute;dition', 'evarisk') . '" />';
 		}
-		if(($action != 'add') && ($action != 'evadd') && ($action != 'emadd'))
+		if(($action != 'add') && ($action != 'evadd') && ($action != 'emadd') && current_user_can('digi_delete_user_group'))
 		{
 			$currentPageButton .= '<input type="button" class="button-primary" id="delete" name="delete" value="' . __('Supprimer', 'evarisk') . '" />';
 		}
@@ -347,7 +457,7 @@ class digirisk_groups
 		$the_form_content_hidden = $the_form_general_content = '';
 		foreach($dbFieldList as $input_key => $input_def)
 		{
-			if(!in_array($input_def['name'],$dbFieldToHide))
+			if(!in_array($input_def['name'], $dbFieldToHide))
 			{
 				$requestFormValue = isset($_REQUEST[self::dbTable][$input_def['name']]) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable][$input_def['name']]) : '';
 				$currentFieldValue = $input_def['value'];
@@ -372,6 +482,20 @@ class digirisk_groups
 					{
 						$input_def['type'] = 'hidden';
 						$input_def['value'] = 'evaluator';
+					}
+					else
+					{
+						foreach($input_def['possible_value'] as $possible_value_key => $possible_value)
+						{
+							if(!current_user_can('digi_add_user_group') && ($possible_value == 'employee'))
+							{
+								unset($input_def['possible_value'][$possible_value_key]);
+							}
+							elseif(!current_user_can('digi_add_evaluator_group') && ($possible_value == 'evaluator'))
+							{
+								unset($input_def['possible_value'][$possible_value_key]);
+							}
+						}
 					}
 				}
 				$the_input = digirisk_form::check_input_type($input_def, self::dbTable);
@@ -550,7 +674,38 @@ class digirisk_groups
 </div>
 
 <div class="alignright" style="width:55%;" >
-	<span class="alignright" ><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP) . '">' . __('Ajouter des groupes', 'evarisk') . '</a></span>
+	<span class="alignright" >';
+	
+	switch($tableElement)
+	{
+		case TABLE_GROUPEMENT . '_employee':
+		case TABLE_UNITE_TRAVAIL . '_employee':
+			if(current_user_can('digi_add_user_group'))
+			{
+				$output .= 
+	'<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP) . '">' . __('Ajouter des groupes', 'evarisk') . '</a>';
+			}
+			else
+			{
+				$output .= '&nbsp;';
+			}
+		break;
+		case TABLE_GROUPEMENT . '_evaluator':
+		case TABLE_UNITE_TRAVAIL . '_evaluator':
+			if(current_user_can('digi_add_evaluator_group'))
+			{
+				$output .= 
+	'<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_GROUP) . '">' . __('Ajouter des groupes', 'evarisk') . '</a>';
+			}
+			else
+			{
+				$output .= '&nbsp;';
+			}
+		break;
+	}
+	
+	$output .= '
+	</span>
 	<div class="clear addLinkElementElement" >
 		<div class="clear" >
 			<span class="searchElementInput ui-icon" >&nbsp;</span>
@@ -607,6 +762,26 @@ class digirisk_groups
 		});
 	})(evarisk);
 </script>';
+
+		if($showButton){
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT . '_employee':
+				case TABLE_GROUPEMENT . '_evaluator':
+					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement))
+					{
+						$showButton = false;
+					}
+				break;
+				case TABLE_UNITE_TRAVAIL . '_employee':
+				case TABLE_UNITE_TRAVAIL . '_evaluator':
+					if(!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement))
+					{
+						$showButton = false;
+					}
+				break;
+			}
+		}
 
 		if($showButton)
 		{//Bouton Enregistrer

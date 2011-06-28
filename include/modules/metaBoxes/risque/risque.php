@@ -10,15 +10,12 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
 
-	if(current_user_can('Evarisk_:_voir_les_risques'))
-	{
-		$postBoxTitle = __('Risques', 'evarisk');
-		/*	If the postBoxId change don't forget to replace each iteration in this script	*/
-		$postBoxId = 'postBoxRisques';
-		$postBoxCallbackFunction = 'getRisquesPostBoxBody';
-		add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
-		add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
-	}
+	$postBoxTitle = __('Risques', 'evarisk');
+	/*	If the postBoxId change don't forget to replace each iteration in this script	*/
+	$postBoxId = 'postBoxRisques';
+	$postBoxCallbackFunction = 'getRisquesPostBoxBody';
+	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
+	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
 
 	function getRisquesPostBoxBody($element)
 	{
@@ -133,27 +130,40 @@
 					});
 				</script>';
 
-			$liEditionRisque = $divEditionRisque = '';
-			if(current_user_can(eva_tools::slugify('Evarisk_:_editer_les_risques')))
-			{
-				$liEditionRisque = '
+			
+			$liEditionRisque = '
 					<li id="ongletAjouterRisque" class="tabs" style="display: inline"><label tabindex="2">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>';
 
-				$divEditionRisque = '
+			$divEditionRisque = '
 <div id="divFormRisque" class="eva_tabs_panel hide" >';
-				if((digirisk_options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
-				{
-					$divEditionRisque .= 
+			if((digirisk_options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
+			{
+				$divEditionRisque .= 
 	'
 <div class="clear" id="risqManagementselector" >
 	<div class="alignleft selected" id="addRisqNormalMode" >' . ucfirst(strtolower(__('Mode simple', 'evarisk'))) . '</div>
 	<div class="alignleft" id="addRisqAdvancedMode" >' . ucfirst(strtolower(__('Mode avanc&eacute; (par photo)', 'evarisk'))) . '</div>
 </div>';
-				}
-				$divEditionRisque .= 
+			}
+			$divEditionRisque .= 
 '<div class="clear" >&nbsp;</div>
 <div class="clear" id="formRisque" >&nbsp;</div>
 </div>';
+
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT:
+					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement))
+					{
+						$liEditionRisque = $divEditionRisque = '';
+					}
+				break;
+				case TABLE_UNITE_TRAVAIL:
+					if(!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement))
+					{
+						$liEditionRisque = $divEditionRisque = '';
+					}
+				break;
 			}
 
 			$taskList = evaActivity::activityList($tableElement, $idElement);
@@ -278,7 +288,32 @@
 					{
 						$correctiveActions = '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-demandeAction" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . _c('Demande AC|AC pour action corrective', 'evarisk') . '" title="' . __('Demande d\'action corrective', 'evarisk') . '"/><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-suiviAction" src="' . PICTO_LTL_SUIVI_ACTION . '" alt="' . _c('Suivi AC|AC pour action corrective', 'evarisk') . '" title="' . __('Suivi des actions correctives', 'evarisk') . '"/>';
 					}
-					$ligneDeValeurs[] = array('value' => $correctiveActions . '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '" class="edit-risk" /><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '" class="delete-risk" />', 'class' => '');
+					
+					switch($tableElement)
+					{
+						case TABLE_GROUPEMENT:
+							if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
+							{
+								$ligneDeValeurs[] = array('value' => $correctiveActions . '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '" class="edit-risk" /><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '" class="delete-risk" />', 'class' => '');;
+							}
+							else
+							{
+								$ligneDeValeurs[] = array('value' => '', 'class' => '');
+							}
+						break;
+						case TABLE_UNITE_TRAVAIL:
+							if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $idElement))
+							{
+								$ligneDeValeurs[] = array('value' => $correctiveActions . '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-edit" src="' . PICTO_EDIT . '" alt="' . __('Editer', 'evarisk') . '" title="' . __('Editer', 'evarisk') . '" class="edit-risk" /><img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-delete" src="' . PICTO_DELETE . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '" class="delete-risk" />', 'class' => '');
+							}
+							else
+							{
+								$ligneDeValeurs[] = array('value' => '', 'class' => '');
+							}
+						break;
+					}
+
+					
 					$lignesDeValeurs[] = $ligneDeValeurs;
 				}
 			}

@@ -115,7 +115,10 @@
 							});
 						})
 					</script>';
-			$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', __('Enregistrer'), null, null, 'validChangeTitre', false, false, 1,'','','',$script,'',true);
+			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
+			{
+				$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', __('Enregistrer'), null, null, 'validChangeTitre', false, false, 1,'','','',$script,'',true);
+			}
 			$script = '<script type="text/javascript">
 						evarisk(document).ready(function(){
 							evarisk("#' . $idTitreGp . '").focus(function(){
@@ -144,7 +147,15 @@
 							});
 						})
 					</script>';
-			$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', 'alignright','', $script, 'left') . '
+			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
+			{
+				$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', 'alignright','', $script, 'left');
+			}
+			else
+			{
+				$renduPage .= $nomGroupement;
+			}
+			 $renduPage .= '
 					</div>
 					<div class="mainInfosDiv">
 						<div class="mainInfos1 alignleft" style="width: 68%">

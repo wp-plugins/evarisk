@@ -15,10 +15,31 @@
 		$idElement = $arguments['idElement'];
 		$tableElement = $arguments['tableElement'];
 
-		$output = evaPhoto::galleryContent($tableElement, $idElement);
+		switch($tableElement)
+		{
+			case TABLE_CATEGORIE_DANGER:
+				$userCanUploadPicture = current_user_can('digi_edit_danger_category');
+			break;
+			case TABLE_GROUPEMENT:
+				$userCanUploadPicture = current_user_can('digi_edit_groupement');
+				if(!$userCanUploadPicture)
+				{
+					$userCanUploadPicture = current_user_can('digi_edit_groupement_' . $idElement);
+				}
+			break;
+			case TABLE_UNITE_TRAVAIL:
+				$userCanUploadPicture = current_user_can('digi_edit_unite');
+				if(!$userCanUploadPicture)
+				{
+					$userCanUploadPicture = current_user_can('digi_edit_unite_' . $idElement);
+				}
+			break;
+			default:
+				$userCanUploadPicture = true;
+			break;
+		}
 
-		/*	Output the gallery only if the are several picture to show OR that there is only one picture and that no default picture is selected	*/
-		// $output .= evaPhoto::outputGallery($tableElement, $idElement);
+		$output = evaPhoto::galleryContent($tableElement, $idElement, $userCanUploadPicture);
 
 		echo $output;
 	}

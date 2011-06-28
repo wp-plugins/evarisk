@@ -42,6 +42,13 @@ class digirisk_init
 		add_action('admin_init', array('digirisk_init', 'digirisk_admin_js') );
 		/*	Include the different css	*/
 		add_action('admin_init', array('digirisk_init', 'digirisk_admin_css') );
+
+		/*	Add the right management for users	*/
+		if(current_user_can('digi_manage_user_right'))
+		{
+			add_action('edit_user_profile', array('digirisk_permission', 'user_permission_management'));
+		}
+		add_action('admin_init', array('digirisk_permission', 'user_permission_set'));
 	}
 
 	/**
@@ -51,15 +58,16 @@ class digirisk_init
 	{
 		require_once(EVA_MODULES_PLUGIN_DIR . 'installation/verificationsPlugin.php');
 
-		require_once(EVA_MODULES_PLUGIN_DIR . 'installation/initialisationPermissions.php');
-		evarisk_init_permission();
+		/*	Initialisation des permissions	*/
+		digirisk_permission::digirisk_init_permission();
 
 		if(digirisk_options::getDbOption('base_evarisk') < 1)
 		{
 			// On crée le menu principal
-			add_menu_page( 'Digirisk : ' . __('Installation', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php' , '', EVA_FAVICON, 3);
+			add_menu_page( 'Digirisk : ' . __('Installation', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'activate_plugins', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php' , '', EVA_FAVICON, 3);
 			// On propose le formulaire de création
-			add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php','Evarisk : ' . __('Installation', 'evarisk'), __('Installation', 'evarisk'),  'Evarisk_:_utiliser_le_plugin', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php');
+			add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php','Evarisk : ' . __('Installation', 'evarisk'), __('Installation', 'evarisk'),  'activate_plugins', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php');
+			add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'activate_plugins', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
 		}
 		else
 		{
@@ -67,42 +75,43 @@ class digirisk_init
 			evarisk_creationTables();
 
 			// On crée le menu principal
-			add_menu_page('Digirisk : ' . __('Accueil', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'Evarisk_:_utiliser_le_plugin', 'digirisk_dashboard', array('dashboard', 'dashboardMainPage'), EVA_FAVICON, 3);
+			add_menu_page('Digirisk : ' . __('Accueil', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'digi_view_dashboard_menu', 'digirisk_dashboard', array('dashboard', 'dashboardMainPage'), EVA_FAVICON, 3);
 
 			// On renomme l'accueil
-			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Tableau de bord', 'evarisk' ), __( 'Tableau de bord', 'evarisk' ), 'Evarisk_:_utiliser_le_plugin', 'digirisk_dashboard', array('dashboard','dashboardMainPage'));
+			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Tableau de bord', 'evarisk' ), __( 'Tableau de bord', 'evarisk' ), 'digi_view_dashboard_menu', 'digirisk_dashboard', array('dashboard','dashboardMainPage'));
 
 			//	On créé le menu des préconisation
-			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Pr&eacute;conisations', 'evarisk' ), __( 'Pr&eacute;conisations', 'evarisk' ), 'Evarisk_:_voir_les_preconisations', 'digirisk_recommandation', array('evaRecommandation', 'evaRecommandationMainPage'));
+			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Pr&eacute;conisations', 'evarisk' ), __( 'Pr&eacute;conisations', 'evarisk' ), 'digi_view_recommandation_menu', 'digirisk_recommandation', array('evaRecommandation', 'evaRecommandationMainPage'));
 
 			// On crée le menu des méthodes
-			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), __( 'M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), 'Evarisk_:_voir_les_methodes', 'digirisk_evaluation_method', array('methodeEvaluation','methodeEvaluationMainPage'));
+			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), __( 'M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), 'digi_view_method_menu', 'digirisk_evaluation_method', array('methodeEvaluation','methodeEvaluationMainPage'));
 
 			// On crée le menu des Dangers
-			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Dangers', 'evarisk' ), __( 'Dangers', 'evarisk' ), 'Evarisk_:_voir_les_dangers', 'digirisk_danger', array('danger','dangerMainPage'));
+			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Dangers', 'evarisk' ), __( 'Dangers', 'evarisk' ), 'digi_view_danger_menu', 'digirisk_danger', array('danger','dangerMainPage'));
 
 			// On crée le menu de l'évaluation des risques
-			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('&Eacute;valuation des risques', 'evarisk' ), __( '&Eacute;valuation des risques', 'evarisk' ), 'Evarisk_:_voir_les_groupements', 'digirisk_risk_evaluation', array('evaluationDesRisques','evaluationDesRisquesMainPage'));
+			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('&Eacute;valuation des risques', 'evarisk' ), __( '&Eacute;valuation des risques', 'evarisk' ), 'digi_view_evaluation_menu', 'digirisk_risk_evaluation', array('evaluationDesRisques','evaluationDesRisquesMainPage'));
 
 			// On crée le menu des actions correctives
 			// if(digirisk_options::getOptionValue('action_correctives_avancees') == 'oui')
 			// {
-			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Actions correctives', 'evarisk' ), __( 'Actions correctives', 'evarisk' ), 'Evarisk_:_voir_les_groupements', 'digirisk_correctiv_actions', array('actionsCorrectives','actionsCorrectivesMainPage'));
+			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Actions correctives', 'evarisk' ), __( 'Actions correctives', 'evarisk' ), 'digi_view_correctiv_action_menu', 'digirisk_correctiv_actions', array('actionsCorrectives','actionsCorrectivesMainPage'));
 			// }
 
 			/*	Add the options menu in the options section	*/
-			// On créé le menu des options
-			// add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Options', 'evarisk' ), __( 'Options', 'evarisk' ), 'Evarisk_:_editer_les_options', 'digirisk_options', array('digirisk_options','optionMainPage'));
-			add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'Evarisk_:_editer_les_options', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
+			add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'digi_view_options_menu', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
 
 			// On crée le menu d'import d'utilisateurs
-			add_users_page('Digirisk : ' . __('Import d\'utilisateurs pour l\'&eacute;valuation des risques', 'evarisk' ), __('Import Digirisk', 'evarisk'), 'Evarisk_:_gerer_utilisateurs', 'digirisk_import_users', array('evaUser','importUserPage'));
+			add_users_page('Digirisk : ' . __('Import d\'utilisateurs pour l\'&eacute;valuation des risques', 'evarisk' ), __('Import Digirisk', 'evarisk'), 'digi_view_user_import_menu', 'digirisk_import_users', array('evaUser','importUserPage'));
 
 			// On crée le menu de gestion des groupes d'utilisateurs
-			add_users_page('Digirisk : ' . __('Gestion des groupes d\'utilisateurs', 'evarisk' ), __('Groupes Digirisk', 'evarisk'), 'Evarisk_:_gerer_utilisateurs', DIGI_URL_SLUG_USER_GROUP, array('digirisk_groups','elementMainPage'));
+			add_users_page('Digirisk : ' . __('Gestion des groupes d\'utilisateurs', 'evarisk' ), __('Groupes Digirisk', 'evarisk'), 'digi_view_user_groups_menu', DIGI_URL_SLUG_USER_GROUP, array('digirisk_groups','elementMainPage'));
+
+			// On crée le menu de gestion des droits des utilisateurs
+			add_users_page('Digirisk : ' . __('Gestion des droits des utilisateurs', 'evarisk' ), __('Droits Digirisk', 'evarisk'), 'digi_user_right_management_menu', DIGI_URL_SLUG_USER_RIGHT, array('digirisk_permission','elementMainPage'));
 
 			// On crée le menu de création de veille réglementaire
-			// add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), __( 'Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), 'Evarisk_:_creer_referenciel', 'digirisk_referentials', array('veilleReglementaire','veilleReglementaireMainPage'));
+			// add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), __( 'Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), 'digi_view_regulatory_monitoring_menu', 'digirisk_referentials', array('veilleReglementaire','veilleReglementaireMainPage'));
 		}
 	}
 

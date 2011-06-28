@@ -129,14 +129,18 @@ class MethodeEvaluation {
 			}	
 			$_POST['act'] = 'add';
 		}
-		if ((isset($_POST['act']) && $_POST['act'] == 'edit') OR (isset($_POST['act']) && $_POST['act'] == 'add') OR (isset($_POST['AjouterNouvelleMethode']) && $_POST['AjouterNouvelleMethode'] == 'Ajouter'))
+		if ( (current_user_can('digi_add_method') || current_user_can('digi_edit_method') || current_user_can('digi_view_detail_method')) && (isset($_POST['act']) && $_POST['act'] == 'edit') OR (isset($_POST['act']) && $_POST['act'] == 'add') OR (isset($_POST['AjouterNouvelleMethode']) && $_POST['AjouterNouvelleMethode'] == 'Ajouter'))
 		{
 			include_once(EVA_MODULES_PLUGIN_DIR . 'methode/methodeEvaluation-new.php');
 			displayMethodForm();
 		}
+		elseif( (!current_user_can('digi_add_method') || !current_user_can('digi_edit_method') || !current_user_can('digi_view_detail_method')) && (isset($_POST['act']) && $_POST['act'] == 'edit') OR (isset($_POST['act']) && $_POST['act'] == 'add') OR (isset($_POST['AjouterNouvelleMethode']) && $_POST['AjouterNouvelleMethode'] == 'Ajouter'))
+		{
+			$actionResult = 'userNotAllowed';
+		}
 		else
-		{	
-			if((isset($_POST['act']) && $_POST['act'] == 'save') || (isset($_POST['save']) && $_POST['save'] == 'Enregister'))
+		{
+			if(current_user_can('digi_add_method') && (isset($_POST['act']) && $_POST['act'] == 'save') || (isset($_POST['save']) && $_POST['save'] == 'Enregister'))
 			{
 				global $wpdb;
 				
@@ -150,7 +154,11 @@ class MethodeEvaluation {
 				$id_methode= $methode->id;
 				$_POST['id'] = $id_methode;
 			}
-			if(isset($_POST['act']) && $_POST['act'] == 'update')
+			else
+			{
+				$actionResult = 'userNotAllowed';
+			}
+			if(current_user_can('digi_edit_method') && isset($_POST['act']) && $_POST['act'] == 'update')
 			{
 				global $wpdb;
 
@@ -196,7 +204,11 @@ class MethodeEvaluation {
 					}
 				}
 			}
-			if((isset($_POST['action']) && $_POST['action'] == 'delete') || (isset($_POST['action2']) && $_POST['action2'] == 'delete'))
+			else
+			{
+				$actionResult = 'userNotAllowed';
+			}
+			if(current_user_can('digi_delete_method') && (isset($_POST['action']) && $_POST['action'] == 'delete') || (isset($_POST['action2']) && $_POST['action2'] == 'delete'))
 			{
 				global $wpdb;
 				
@@ -207,9 +219,12 @@ class MethodeEvaluation {
 					$wpdb->query($sql);
 				}
 			}
+			else
+			{
+				$actionResult = 'userNotAllowed';
+			}
 		// Code très légèrement adapté de wordpress
 		?>
-
 		<script type="text/javascript">
 			evarisk(document).ready(function(){
 				evarisk('#table_methode').dataTable({
@@ -241,7 +256,7 @@ class MethodeEvaluation {
 		<div class="wrap">
 			<div class="icon32"><img alt="evarisk Icon" src=<?php echo EVA_METHODE_ICON ?> title="evariskIcon"/></div>
 			<form method="POST" id="methode-filter" name="form">
-				<h2>Methode d'evaluation <input type="submit" class="button add-new-h2" onclick="javascript:document.getElementById('act').value='add'; document.forms.form.submit(); return false;" value="Ajouter" name="AjouterNouvelleMethode"/> </h2>
+				<h2>Methode d'evaluation <?php if(current_user_can('digi_add_method')){ ?><input type="submit" class="button add-new-h2" onclick="javascript:document.getElementById('act').value='add'; document.forms.form.submit(); return false;" value="Ajouter" name="AjouterNouvelleMethode"/><?php } ?></h2>
 				<input type="hidden" value="" name="act" id="act"/>
 				<input type="hidden" value="" name="id" id="id"/>
 				
@@ -249,7 +264,7 @@ class MethodeEvaluation {
 					<div class="alignleft actions">
 						<select name="action">
 							<option selected="selected" value="-1">Actions globales</option>
-							<option value="delete">Supprimer</option>
+							<?php if(current_user_can('digi_delete_method')){ ?><option value="delete">Supprimer</option><?php } ?>
 						</select>
 						<input type="submit" class="button-secondary action" id="doaction" name="doaction" value="Appliquer"/>
 					</div>
@@ -294,7 +309,7 @@ class MethodeEvaluation {
 								<td class="check-column" scope="row">
 									<input type="checkbox" value="<?php echo $methode_evaluation->id; ?>" name="method[]"/>
 								</td>
-								<td><strong><a onclick="javascript:document.getElementById('act').value='edit';document.getElementById('id').value='<?php echo $methode_evaluation->id; ?>';document.forms.form.submit();"><?php echo stripcslashes($methode_evaluation->nom); ?> </a></strong></td>
+								<td><strong><a <?php if(current_user_can('digi_edit_method') || current_user_can('digi_view_detail_method')){ ?>onclick="javascript:document.getElementById('act').value='edit';document.getElementById('id').value='<?php echo $methode_evaluation->id; ?>';document.forms.form.submit();" <?php } else { ?> class="userForbiddenActionCursor"  <?php } ?>><?php echo stripcslashes($methode_evaluation->nom); ?> </a></strong></td>
 								<td><strong><?php echo $formule ?><strong></td>
 							</tr>
 							<?php
@@ -308,7 +323,7 @@ class MethodeEvaluation {
 					<div class="alignleft actions">
 						<select name="action2">
 							<option selected="selected" value="-1">Actions globales</option>
-							<option value="delete">Supprimer</option>
+							<?php if(current_user_can('digi_delete_method')){ ?><option value="delete">Supprimer</option><?php } ?>
 						</select>
 						<input type="submit" class="button-secondary action" id="doaction2" name="doaction2" value="Appliquer"/>
 					</div>

@@ -160,8 +160,13 @@ class evaUserLinkElement
 	<div id="userListOutput' . $tableElement . '" class="userListOutput ui-widget-content clear" >' . $alreadyLinkedUser . '</div>
 </div>
 
-<div class="alignright" style="width:55%;" >
-	<span class="alignright" ><a href="' . get_option('siteurl') . '/wp-admin/user-new.php">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>
+<div class="alignright" style="width:55%;" >';
+	if(current_user_can('add_users'))
+	{
+	$utilisateursMetaBox .= '
+	<span class="alignright" ><a href="' . get_option('siteurl') . '/wp-admin/user-new.php">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
+	}
+	$utilisateursMetaBox .= '
 	<div class="clear addLinkUserElement" >
 		<div class="clear" >
 			<span class="searchUserInput ui-icon" >&nbsp;</span>
@@ -218,6 +223,26 @@ class evaUserLinkElement
 		});
 	})(evarisk);
 </script>';
+
+		if($showButton){
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT:
+				case TABLE_GROUPEMENT . '_evaluation':
+					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement))
+					{
+						$showButton = false;
+					}
+				break;
+				case TABLE_UNITE_TRAVAIL:
+				case TABLE_UNITE_TRAVAIL . '_evaluation':
+					if(!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement))
+					{
+						$showButton = false;
+					}
+				break;
+			}
+		}
 
 		if($showButton)
 		{//Bouton Enregistrer

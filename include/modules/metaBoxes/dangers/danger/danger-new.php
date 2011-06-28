@@ -138,7 +138,10 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 				});
 			});
 			</script>';
-		$danger_new = $danger_new . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+		if(current_user_can('digi_add_danger') || current_user_can('digi_edit_danger'))
+		{
+			$danger_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
+		}
 	}
 	$danger_new = $danger_new . EvaDisplayInput::fermerForm('informationGeneralesDanger');
 	echo $danger_new;

@@ -17,6 +17,7 @@
 	DEFINE('EVA_ARROW_BOTTOM', EVA_IMG_ICONES_PLUGIN_URL . 'fleche_bas.png');
 
 	DEFINE('DIGI_USER_GROUP_ICON_S', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/groupeUtilisateur_s.png');
+	DEFINE('DIGI_USER_RIGHT_ICON_S', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/groupeUtilisateur_s.png');
 
 	/**
 	*	Message error / success picture
@@ -47,6 +48,7 @@
 	DEFINE('PICTO_COLLAPSE', EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-collapse-dark.png');
 	DEFINE('PICTO_LTL_EVAL_RISK', EVA_IMG_ICONES_PLUGIN_URL . 'evaluation_des_risques_s.png');
 	DEFINE('PICTO_EDIT', EVA_IMG_ICONES_PLUGIN_URL . 'edit.png');
+	DEFINE('PICTO_VIEW', EVA_IMG_ICONES_PLUGIN_URL . 'view.png');
 
 	/**
 	* Add/Edit/Delete Pictograms

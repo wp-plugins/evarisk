@@ -25,8 +25,18 @@
 
 			$corpsPostBoxRisque = '
 <div id="message' . TABLE_FP . '" class="updated fade" style="cursor:pointer; display:none;"></div>
-<ul class="eva_tabs">
-	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>
+<ul class="eva_tabs">';
+	if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
+	{
+		$userNotAllowed = '';
+		$corpsPostBoxRisque .= '
+	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>';
+	}
+	else
+	{
+		$userNotAllowed = 'evarisk("#ongletHistoriqueFicheDePoste").click();';
+	}
+	$corpsPostBoxRisque .= '
 	<li id="ongletHistoriqueFicheDePoste" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Historique des fiches de poste', 'evarisk'))) . '</label></li>
 </ul>
 <div id="divImpressionFicheDePoste" class="eva_tabs_panel">' . eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '</div>
@@ -57,6 +67,7 @@
 				"idElement":' . $idElement . '
 			});
 		});
+		' . $userNotAllowed . '
 	});
 </script>';
 

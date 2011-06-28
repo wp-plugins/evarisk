@@ -71,7 +71,20 @@ class evaRecommandation
 						$recommandationCategoryMainPicture = '<img class="recommandationCategoryDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_GENERATED_DOC_URL . $mainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_category_name) . '" />';
 					}
 				}
-				$lignesDeValeurs[$i][] = array('value' => 'CP' . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . ucfirst($recommandation->recommandation_category_name). '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationCategory" onclick="javascript:deleteRecommandationCategory(\'' . $recommandation->recommandation_category_id . '\', \'' . TABLE_CATEGORIE_PRECONISATION . '\', \'' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?', 'evarisk') . '\');" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationCategory" onclick="javascript:editRecommandationCategory(\'' . $recommandation->recommandation_category_id . '\', \'' . TABLE_CATEGORIE_PRECONISATION . '\');" />', 'class' => '');
+				$recommandationCategoryButtonForCurrentUser = '';
+				if(current_user_can('digi_delete_recommandation_cat'))
+				{
+					$recommandationCategoryButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationCategory" onclick="javascript:deleteRecommandationCategory(\'' . $recommandation->recommandation_category_id . '\', \'' . TABLE_CATEGORIE_PRECONISATION . '\', \'' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?', 'evarisk') . '\');" />';
+				}
+				if(current_user_can('digi_edit_recommandation_cat'))
+				{
+					$recommandationCategoryButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationCategory" onclick="javascript:editRecommandationCategory(\'' . $recommandation->recommandation_category_id . '\', \'' . TABLE_CATEGORIE_PRECONISATION . '\');" />';
+				}
+				elseif(current_user_can('digi_view_detail_recommandation_cat'))
+				{
+					$recommandationCategoryButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'view_vs.png" alt="' . __('Voir cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" title="' . __('Voir cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationCategory" onclick="javascript:editRecommandationCategory(\'' . $recommandation->recommandation_category_id . '\', \'' . TABLE_CATEGORIE_PRECONISATION . '\');" />';
+				}
+				$lignesDeValeurs[$i][] = array('value' => 'CP' . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . ucfirst($recommandation->recommandation_category_name). $recommandationCategoryButtonForCurrentUser, 'class' => '');
 
 				if(($recommandation->nom == NULL))
 				{
@@ -86,7 +99,14 @@ class evaRecommandation
 					// $lignesDeValeurs[$i][] = array('value' => '<span id="recoCat-add-' . $recommandation->recommandation_category_id . '" class="addNewRecommandation pointer alignright" >' . __('Ajouter une pr&eacute;conisation', '') . '</span>', 'class' => '');
 					$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 					$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
-					$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . __('Ajouter une pr&eacute;conisation', 'evarisk') . '" title="' . __('Ajouter une pr&eacute;conisation', 'evarisk') . '" class="alignright addRecommandation" id="recoCat' . $recommandation->recommandation_category_id . '" />', 'class' => '');
+					if(current_user_can('digi_add_recommandation'))
+					{
+						$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . __('Ajouter une pr&eacute;conisation', 'evarisk') . '" title="' . __('Ajouter une pr&eacute;conisation', 'evarisk') . '" class="alignright addRecommandation" id="recoCat' . $recommandation->recommandation_category_id . '" />', 'class' => '');
+					}
+					else
+					{
+						$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
+					}
 				}
 				else
 				{
@@ -102,7 +122,22 @@ class evaRecommandation
 					$lignesDeValeurs[$i][] = array('value' => $recommandationMainPicture, 'class' => '');
 					$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >P' . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst($recommandation->nom) . '</span>', 'class' => '');
 					$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->description), 'class' => '');
-					$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandation" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandation" />', 'class' => '');
+					/*	Check user right for output creation	*/
+					$recommandationButtonForCurrentUser = '';
+					if(current_user_can('digi_delete_recommandation'))
+					{
+						$recommandationButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandation" />';
+					}
+					if(current_user_can('digi_edit_recommandation'))
+					{
+						$recommandationButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandation" />';
+					}
+					elseif(current_user_can('digi_view_detail_recommandation'))
+					{
+						$recommandationButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'view_vs.png" alt="' . __('Voir cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Voir cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandation" />';
+					}					
+					
+					$lignesDeValeurs[$i][] = array('value' => $recommandationButtonForCurrentUser, 'class' => '');
 				}
 				$i++;
 			}
@@ -184,7 +219,10 @@ class evaRecommandation
 						"act":"loadRecommandationManagementForm",
 						"id_categorie_preconisation":evarisk(this).attr("id").replace("recoCat", "").replace("recoCat-add-", "")
 					});
-				});
+				});';
+		if(current_user_can('digi_edit_recommandation') || current_user_can('digi_view_detail_recommandation'))
+		{
+			$script .= '
 				evarisk(".editRecommandation, .recommandationDefaultPictosList, .recommandationNameManagement").click(function(){
 					evarisk("#recommandationFormContainer").hide();
 					evarisk("#loadingRecommandationForm").html(evarisk("#loadingImg").html());
@@ -198,7 +236,9 @@ class evaRecommandation
 						"act":"loadRecommandationManagementForm",
 						"id":evarisk(this).parent("td").parent("tr").attr("id").replace("recommandation-id-", "")
 					});
-				});
+				});';
+		}
+		$script .= '	
 			});
 		</script>';
 
@@ -562,7 +602,7 @@ class evaRecommandation
 	<li id="ongletAjoutPreconisation" class="tabs selected_tab" ><label tabindex="1">' . ucfirst(strtolower( __('Ajout d\'une pr&eacute;conisation', 'evarisk'))) . '</label></li>
 	<li id="ongletListePreconisation" class="tabs" ><label tabindex="2">' . ucfirst(strtolower( __('Pr&eacute;conisation affect&eacute;es', 'evarisk'))) . '</label></li>
 </ul>
-<div id="divAjoutPreconisation" class="eva_tabs_panel" >' . evaRecommandation::recommandationAssociation($outputMode) . '</div>
+<div id="divAjoutPreconisation" class="eva_tabs_panel" >' . evaRecommandation::recommandationAssociation($outputMode, '', $arguments) . '</div>
 <div id="divListePreconisation" class="eva_tabs_panel hide" >&nbsp;</div>
 <script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -604,7 +644,7 @@ class evaRecommandation
 /**
 *	Get the different component for the recommandation adding
 */
-	function recommandationAssociation($outputMode, $selectedRecommandation = '')
+	function recommandationAssociation($outputMode, $selectedRecommandation = '', $arguments = '')
 	{
 		$recommandationAssociationOutput = $efficacite_preconisation_script = $efficatiteForm = '';
 		$recommandationContainer = '&nbsp;';
@@ -652,8 +692,13 @@ class evaRecommandation
 		' . $efficatiteForm . '
 		<label for="commentaire_preconisation" >' . __('Commentaire', 'evarisk') . '&nbsp;<span id="recommandationNameIndication" >&nbsp;</span></label>
 		<textarea id="commentaire_preconisation" name="commentaire_preconisation" rows="3" cols="10" class="recommandationInput" >' . $commentaire_preconisation . '</textarea>
-		<div class="clear" >&nbsp;</div>
-		<input type="button" class="button-primary alignright" id="saveRecommandationLink" name="saveRecommandationLink" value="' . $saveRecommandationAssociationButton . '" />
+		<div class="clear" >&nbsp;</div>';
+		if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
+		{
+			$recommandationAssociationOutput .= '
+		<input type="button" class="button-primary alignright" id="saveRecommandationLink" name="saveRecommandationLink" value="' . $saveRecommandationAssociationButton . '" />';
+		}
+		$recommandationAssociationOutput .= '
 		<input type="hidden" id="recommandation_id" name="recommandation_id" value="1" />
 	</div>
 </div>';
@@ -773,7 +818,14 @@ class evaRecommandation
 				{
 					$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->efficacite), 'class' => '');
 				}
-				$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationLink" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationLink" />', 'class' => '');
+				if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
+				{
+					$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationLink" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationLink" />', 'class' => '');
+				}
+				else
+				{
+					$lignesDeValeurs[$i][] = array('value' => '&nbsp;', 'class' => '');
+				}
 				$i++;
 			}
 		}
@@ -783,7 +835,10 @@ class evaRecommandation
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => __('Aucune pr&eacute;conisation n\'a &eacute;t&eacute; affect&eacute;e &agrave; cet &eacute;l&eacute;ment', 'evarisk'), 'class' => '');
-			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
+			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
+			{
+				$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
+			}
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 		}
@@ -818,8 +873,13 @@ class evaRecommandation
 					"aoColumns": [ 
 						{ "bVisible":    false },
 						null,
-						null,
-						null,
+						null,';
+			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
+			{
+				$script .= '
+						null,';
+			}
+			$script .= '
 						null,
 						null
 					],
@@ -927,6 +987,10 @@ class evaRecommandation
 			width: <?php _e($dialogWidth); ?>,
 			modal:  false,
 			buttons:{
+<?php 
+			if(current_user_can('digi_edit_recommandation'))
+			{
+?>
 				"<?php _e('Enregistrer', 'evarisk'); ?>": function(){
 					var formIsValid = true;
 						recommandationFields.removeClass("ui-state-error");
@@ -947,6 +1011,9 @@ class evaRecommandation
 						evarisk(this).dialog( "close" );
 					}
 				},
+<?php
+			}
+?>
 				"<?php _e('Annuler', 'evarisk'); ?>": function(){
 					evarisk(this).dialog("close");
 				}

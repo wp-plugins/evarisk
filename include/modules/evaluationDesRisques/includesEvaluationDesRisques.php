@@ -19,6 +19,10 @@
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonGroupesUtilisateursElement.php');
+				if(current_user_can('digi_manage_user_right'))
+				{
+					require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/droitsUtilisateurs.php');
+				}
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePoste.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'recommandation/recommandationPostBox.php' );

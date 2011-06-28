@@ -232,6 +232,10 @@ class evaRecommandationCategory
 			width: <?php _e($dialogWidth); ?>,
 			modal:  false,
 			buttons:{
+<?php 
+			if(current_user_can('digi_edit_recommandation_cat'))
+			{
+?>
 				"<?php _e('Enregistrer', 'evarisk'); ?>": function(){
 					var formIsValid = true;
 						recommandationCategoryFields.removeClass("ui-state-error");
@@ -254,6 +258,9 @@ class evaRecommandationCategory
 						evarisk(this).dialog( "close" );
 					}
 				},
+<?php
+			}
+?>
 				"<?php _e('Annuler', 'evarisk'); ?>": function(){
 					evarisk(this).dialog("close");
 				}

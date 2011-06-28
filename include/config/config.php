@@ -1,7 +1,6 @@
 <?php
-	DEFINE('EVA_PLUGIN_VERSION', '5.1.2.9');
+	DEFINE('EVA_PLUGIN_VERSION', '5.1.3.1');
 
-	require_once('configDroitAcces.php');
 	require_once('configEavModel.php');
 	require_once('databaseTable.php');
 	require_once('configPagesHooks.php');
@@ -96,6 +95,7 @@
 	{
 		DEFINE('DIGI_URL_SLUG_USER_GROUP', 'digirisk_users_group');
 		DEFINE('DIGI_URL_SLUG_MAIN_OPTION', 'digirisk_options');
+		DEFINE('DIGI_URL_SLUG_USER_RIGHT', 'digirisk_user_right');
 	}
 
 	/**

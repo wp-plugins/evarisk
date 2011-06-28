@@ -90,7 +90,14 @@ class digirisk_options
 	<?php do_settings_sections('digirisk_options_settings'); ?>
 
 	<br/><br/>
+<?php
+if(current_user_can('digi_edit_option'))
+{
+?>
 	<input class="button-primary" name="Submit" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" />
+<?php
+}
+?>
 	</form>
 </div>
 <?php
@@ -145,7 +152,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_supervisormandatory_field', 'digirisk_options[responsable_Tache_Obligatoire]', $optionYesNoList, $options['responsable_Tache_Obligatoire']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_supervisormandatory_field', 'digirisk_options[responsable_Tache_Obligatoire]', $optionYesNoList, $options['responsable_Tache_Obligatoire']);
+		}
+		else
+		{
+			echo $options['responsable_Tache_Obligatoire'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -154,7 +168,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_subsupervisormandatory_field', 'digirisk_options[responsable_Action_Obligatoire]', $optionYesNoList, $options['responsable_Action_Obligatoire']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_subsupervisormandatory_field', 'digirisk_options[responsable_Action_Obligatoire]', $optionYesNoList, $options['responsable_Action_Obligatoire']);
+		}
+		else
+		{
+			echo $options['responsable_Action_Obligatoire'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -163,7 +184,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_changesold_field', 'digirisk_options[possibilite_Modifier_Tache_Soldee]', $optionYesNoList, $options['possibilite_Modifier_Tache_Soldee']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_changesold_field', 'digirisk_options[possibilite_Modifier_Tache_Soldee]', $optionYesNoList, $options['possibilite_Modifier_Tache_Soldee']);
+		}
+		else
+		{
+			echo $options['possibilite_Modifier_Tache_Soldee'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -172,7 +200,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_changesubsold_field', 'digirisk_options[possibilite_Modifier_Action_Soldee]', $optionYesNoList, $options['possibilite_Modifier_Action_Soldee']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_changesubsold_field', 'digirisk_options[possibilite_Modifier_Action_Soldee]', $optionYesNoList, $options['possibilite_Modifier_Action_Soldee']);
+		}
+		else
+		{
+			echo $options['possibilite_Modifier_Action_Soldee'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -181,7 +216,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_alertsoldnot100_field', 'digirisk_options[avertir_Solde_Action_Non_100]', $optionYesNoList, $options['avertir_Solde_Action_Non_100']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_alertsoldnot100_field', 'digirisk_options[avertir_Solde_Action_Non_100]', $optionYesNoList, $options['avertir_Solde_Action_Non_100']);
+		}
+		else
+		{
+			echo $options['avertir_Solde_Action_Non_100'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -190,7 +232,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_alertundersoldnot100_field', 'digirisk_options[avertir_Solde_Tache_Ayant_Action_Non_100]', $optionYesNoList, $options['avertir_Solde_Tache_Ayant_Action_Non_100']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_alertundersoldnot100_field', 'digirisk_options[avertir_Solde_Tache_Ayant_Action_Non_100]', $optionYesNoList, $options['avertir_Solde_Tache_Ayant_Action_Non_100']);
+		}
+		else
+		{
+			echo $options['avertir_Solde_Tache_Ayant_Action_Non_100'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -199,7 +248,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_displayonlysoldtaskinrisk_field', 'digirisk_options[affecter_uniquement_tache_soldee_a_un_risque]', $optionYesNoList, $options['affecter_uniquement_tache_soldee_a_un_risque']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_displayonlysoldtaskinrisk_field', 'digirisk_options[affecter_uniquement_tache_soldee_a_un_risque]', $optionYesNoList, $options['affecter_uniquement_tache_soldee_a_un_risque']);
+		}
+		else
+		{
+			echo $options['affecter_uniquement_tache_soldee_a_un_risque'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -208,7 +264,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_advancedCA_field', 'digirisk_options[action_correctives_avancees]', $optionYesNoList, $options['action_correctives_avancees']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_advancedCA_field', 'digirisk_options[action_correctives_avancees]', $optionYesNoList, $options['action_correctives_avancees']);
+		}
+		else
+		{
+			echo $options['action_correctives_avancees'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -217,7 +280,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_createUtaks4PA_field', 'digirisk_options[creation_sous_tache_preconisation]', $optionYesNoList, $options['creation_sous_tache_preconisation']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_createUtaks4PA_field', 'digirisk_options[creation_sous_tache_preconisation]', $optionYesNoList, $options['creation_sous_tache_preconisation']);
+		}
+		else
+		{
+			echo $options['creation_sous_tache_preconisation'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -226,7 +296,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_exportprioritytaskonly_field', 'digirisk_options[export_only_priority_task]', $optionYesNoList, $options['export_only_priority_task']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_exportprioritytaskonly_field', 'digirisk_options[export_only_priority_task]', $optionYesNoList, $options['export_only_priority_task']);
+		}
+		else
+		{
+			echo $options['export_only_priority_task'];
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -235,7 +312,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_ac_taskexport_field', 'digirisk_options[export_tasks]', $optionYesNoList, $options['export_tasks']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_ac_taskexport_field', 'digirisk_options[export_tasks]', $optionYesNoList, $options['export_tasks']);
+		}
+		else
+		{
+			echo $options['export_tasks'];
+		}
 	}
 
 	/**
@@ -252,7 +336,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_risk_advancedrisk_field', 'digirisk_options[risques_avances]', $optionYesNoList, $options['risques_avances']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_risk_advancedrisk_field', 'digirisk_options[risques_avances]', $optionYesNoList, $options['risques_avances']);
+		}
+		else
+		{
+			echo $options['risques_avances'];
+		}
 	}
 
 	/**
@@ -268,7 +359,14 @@ class digirisk_options
 	function digi_fp_picsize_field()
 	{
 		$options = get_option('digirisk_options');
-		echo "<input id='taille_photo_poste_fiche_de_poste' name='digirisk_options[taille_photo_poste_fiche_de_poste]' size='40' type='text' value='{$options['taille_photo_poste_fiche_de_poste']}' />";
+		if(current_user_can('digi_edit_option'))
+		{
+			echo "<input id='taille_photo_poste_fiche_de_poste' name='digirisk_options[taille_photo_poste_fiche_de_poste]' size='40' type='text' value='{$options['taille_photo_poste_fiche_de_poste']}' />";
+		}
+		else
+		{
+			echo $options['taille_photo_poste_fiche_de_poste'];
+		}
 	}
 
 	/**
@@ -285,7 +383,14 @@ class digirisk_options
 	{
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		echo EvaDisplayInput::createComboBox('digi_recommandation_efficiency_field', 'digirisk_options[recommandation_efficiency_activ]', $optionYesNoList, $options['recommandation_efficiency_activ']);
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_recommandation_efficiency_field', 'digirisk_options[recommandation_efficiency_activ]', $optionYesNoList, $options['recommandation_efficiency_activ']);
+		}
+		else
+		{
+			echo $options['recommandation_efficiency_activ'];
+		}
 	}
 
 	/**
@@ -301,7 +406,14 @@ class digirisk_options
 	function digi_users_emaildomain_field()
 	{
 		$options = get_option('digirisk_options');
-		echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='{$options['emailDomain']}' />";
+		if(current_user_can('digi_edit_option'))
+		{
+			echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='{$options['emailDomain']}' />";
+		}
+		else
+		{
+			echo $options['emailDomain'];
+		}
 	}
 
 	/**
