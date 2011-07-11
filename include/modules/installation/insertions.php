@@ -1179,13 +1179,24 @@ ou irritantes');";
 		case 48:
 		{
 			$query = $wpdb->prepare(
-				"INSERT INTO " . DIGI_DBT_PERMISSION . " (id, status, creation_date, set_by_default, permission_type, permission_sub_type, permission_module, permission_sub_module, permission) 
-					VALUES 
-				('', 'moderated', NOW(), 'no', 'write', 'edit', 'user', 'right', 'digi_manage_user_right')
-				");
-			// $wpdb->query($query);
+				"UPDATE " . TABLE_CATEGORIE_PRECONISATION . " SET nom = 'avertissements' WHERE id='3' ");
+			$wpdb->query($query);
+			$query = $wpdb->prepare(
+				"UPDATE " . TABLE_CATEGORIE_PRECONISATION . " SET nom = 'obligations' WHERE id='1' ");
+			$wpdb->query($query);
+			$query = $wpdb->prepare(
+				"UPDATE " . TABLE_CATEGORIE_PRECONISATION . " SET nom = 'interdictions' WHERE id='2' ");
+			$wpdb->query($query);
 
-			// digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 49:
+		{
+			$sql = "INSERT INTO " . TABLE_GED_DOCUMENTS . " (id, status, parDefaut, dateCreation, idCreateur, dateSuppression, idSuppresseur, id_element, table_element, categorie, nom, chemin) VALUES('', 'valid', 'oui', NOW(), 1, '0000-00-00 00:00:00', 0, 0, 'all', 'fiche_de_groupement', 'modeleDefaut_groupement.odt', 'uploads/modeles/ficheDeGroupement/');";
+			$wpdb->query($sql);
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}	
 	}

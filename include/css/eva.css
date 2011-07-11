@@ -34,12 +34,19 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .digi_permission_check_all{	margin:6px 0px 0px 0px; font-size:10px; font-style:italic;	}
 .checkall, .uncheckall, .checkall_link, .uncheckall_link, .checkall_right, .uncheckall_right{	cursor:pointer;	}
 
-.rightColumn{	width:70px; text-align:center !important;	}
+.rightColumn{	width:4em; text-align:center !important;	}
 .rightCell{	text-align:center;	}
 .userAffecte{	background-color:#99FF66;	font-weight:bold; }
-.userAffecteExplanation{	margin:6px 3px; padding:2px 0px; text-align:center; width:50%; }
+.userAffecteExplanation{	margin:6px 3px; padding:2px 0px; text-align:left; width:70%; }
 
 .userTableContainer {	height:200px !important; overflow:auto !important;	}
+#userPermissionManagerForm .userTableContainer {	height:auto !important; overflow:auto !important;	}
+
+.noRight{	text-decoration:line-through;	}
+.userRightMassManagement{	margin:18px 0px 0px 0px;	}
+
+
+.checkAll_user_, .uncheckAll_user_, .checkAll_user_affected_, .uncheckAll_user_affected_{ cursor:pointer;	}
 /* -- END PERMISSION -- */
 
 #digirisk_options_container th{	width:45% !important; padding:2px;	}
@@ -485,8 +492,8 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 
 
 /* -- Document unique -- */
-#generateDUER, #generateFP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
-#generateDUER.selected, #generateFP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
+#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
+#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
 #saveWorkUnitSheetForGroupement{	margin:6px auto;	}
 #workUnitSheetCollectionModelSelector{	margin:6px;	}
 #documentModelContainer{	width:40%;	}
@@ -494,7 +501,8 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .duerODTFileLink{	text-align:right; padding:0px 6px;	}
 .DUERReGenerationButton{	border:0px solid black;	}
 .DUERContainer{ height:200px; overflow:auto; }
-.FPContainer{ height:150px; overflow:auto; }
+.FGPContainer{ height:100px; overflow:auto; }
+.FPContainer{ height:200px; overflow:auto; }
 #divHistoriqueDocument{	height:410px !important; overflow:hidden !important;	}
 .duerDeleteContainer{	width:20px !important;	}
 .duerDeleteContainer img{	width:15px !important;	}

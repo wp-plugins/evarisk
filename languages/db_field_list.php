@@ -60,6 +60,9 @@ __('permission_option_menu', 'evarisk');
 __('permission_referential', 'evarisk');
 __('permission_referential_menu', 'evarisk');
 
+__('permission_unite', 'evarisk');
+__('permission_groupement', 'evarisk');
+
 /*	Menu capabilities	*/
 __('digi_edit_option', 'evarisk');
 

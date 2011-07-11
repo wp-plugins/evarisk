@@ -1,18 +1,28 @@
 <?php
 /**
- * 
- * @author Soci&eacute;t&eacute; Evarisk
- * @version v5.0
- */
+* Plugin group manager
+* 
+*	Define the different method to manage the group into the plugin
+* @author Evarisk <dev@evarisk.com>
+* @version 5.1.3.2
+* @package Digirisk
+* @subpackage librairies
+*/
 
-class eva_WorkUnitSheet
+
+/**
+* Define the different method to manage the group into the plugin
+* @package Digirisk
+* @subpackage librairies
+*/
+class eva_GroupSheet
 {
 
 	/**
 	*	Return the form template for generating a work unit sheet
 	*	@return string HTML code of the form
 	*/
-	function getWorkUnitSheetForm()
+	function getGroupSheetForm()
 	{
 		return 
 '<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
@@ -20,15 +30,15 @@ class eva_WorkUnitSheet
 		<td style="width:60%;vertical-align:top;" >
 			<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire" style="width:100%;" >
 				<tr>
-					<td ><label for="nomFicheDePoste">' . __('nom de la fiche', 'evarisk') . '</label></td>
-					<td >' . EvaDisplayInput::afficherInput('text', 'nomFicheDePoste', '#NOMDOCUMENT#', '', '', 'nomFicheDePoste', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+					<td ><label for="nomFicheDeGroupement">' . __('nom de la fiche', 'evarisk') . '</label></td>
+					<td >' . EvaDisplayInput::afficherInput('text', 'nomFicheDeGroupement', '#NOMDOCUMENT#', '', '', 'nomFicheDeGroupement', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
 				</tr>
 				<tr>
 					<td >&nbsp;</td>
 					<td style="padding:12px 0px;" >
 						<div>
-							<input type="checkbox" id="FPmodelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
-							<label for="FPmodelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+							<input type="checkbox" id="FGPmodelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
+							<label for="FGPmodelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
 						</div>
 						<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 					</td>
@@ -36,12 +46,13 @@ class eva_WorkUnitSheet
 				<tr>
 					<td colspan="2">
 						' . EvaDisplayInput::afficherInput('hidden', 'nomEntreprise', '#NOMENTREPRISE#', '', '', 'nomEntreprise', false, false, 150, '', '', '100%', '', 'left', false) . '
-						<input class="button-primary alignright" type="button" id="genererFP" name="genererFP" value="' . __('g&eacute;n&eacute;rer', 'evarisk') . '" />
+						<input class="button-primary alignright" type="button" id="genereFGP" name="genereFGP" value="' . __('G&eacute;n&eacute;rer la fiche du groupement', 'evarisk') . '" />
+						<input class="button-primary alignright" type="button" id="genereFSGP" name="genereFSGP" value="' . __('G&eacute;n&eacute;rer les fiches des sous-groupements', 'evarisk') . '" />
 					</td>
 				</tr>
 			</table>
 		</td>
-		<td style="width:40%;" id="workUnitSheetResultContainer" >&nbsp;</td>
+		<td style="width:40%;" id="GroupSheetResultContainer" >&nbsp;</td>
 	</tr>
 </table>';
 	}
@@ -54,15 +65,16 @@ class eva_WorkUnitSheet
 	*
 	*	@return mixed The complete html output of the form
 	*/
-	function getWorkUnitSheetGenerationForm($tableElement, $idElement)
+	function getGroupSheetGenerationForm($tableElement, $idElement)
 	{
+		$tableElementForDoc = $tableElement . '_FGP';
 		unset($formulaireDocumentUniqueParams);
 		$formulaireDocumentUniqueParams = array();
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
-		$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
-		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_UT' . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
-		$groupementPere = EvaGroupement::getGroupement($workUnitinformations->id_groupement);
+		$groupInformations = EvaGroupement::getGroupement($idElement);
+		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_GP' . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupInformations->nom));
+		$groupementPere = EvaGroupement::getGroupement($groupInformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
 		foreach($ancetres as $ancetre)
@@ -76,46 +88,60 @@ class eva_WorkUnitSheet
 		{
 			$arborescence .= $groupementPere->nom . ' - ';
 		}
-		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = eva_tools::slugify_noaccent($arborescence) . eva_tools::slugify_noaccent($workUnitinformations->nom);
+		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = eva_tools::slugify_noaccent($arborescence) . eva_tools::slugify_noaccent($groupInformations->nom);
 
 		$modelChoice = '';
-		$lastWorkUnitSheet = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
-		if(($lastWorkUnitSheet->id_model != '') && ($lastWorkUnitSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_poste')))
+		$lastGroupSheet = eva_GroupSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+		if(($lastGroupSheet->id_model != '') && ($lastGroupSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_groupement')))
 		{
 			$modelChoice = '
 			setTimeout(function(){
-				evarisk("#FPmodelDefaut").click();
+				evarisk("#FGPmodelDefaut").click();
 			},100);';
 		}
 
-		$output = EvaDisplayDesign::feedTemplate(eva_WorkUnitSheet::getWorkUnitSheetForm(), $formulaireDocumentUniqueParams) . '
+		$output = EvaDisplayDesign::feedTemplate(eva_GroupSheet::getGroupSheetForm(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
-		evarisk("#genererFP").click(function(){
-			evarisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+		evarisk("#genereFGP").click(function(){
+			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_FP . '",
-				"act":"saveFichePoste",
+				"act":"saveFicheGroupement",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
-				"nomDuDocument":evarisk("#nomFicheDePoste").val(),
+				"nomDuDocument":evarisk("#nomFicheDeGroupement").val(),
 				"nomEntreprise":evarisk("#nomEntreprise").val(),
-				"id_model":evarisk("#modelToUse' . $tableElement . '").val()
+				"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
 			});
-			evarisk("#divImpressionFicheDePoste").html(evarisk("#loadingImg").html());
+			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
 		});
-		evarisk("#FPmodelDefaut").click(function(){
+		evarisk("#genereFSGP").click(function(){
+			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+			{
+				"post":"true",
+				"table":"' . TABLE_FP . '",
+				"act":"saveGroupSheetForGroupement",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '",
+				"nomDuDocument":evarisk("#nomFicheDeGroupement").val(),
+				"nomEntreprise":evarisk("#nomEntreprise").val(),
+				"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
+			});
+			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
+		});
+		evarisk("#FGPmodelDefaut").click(function(){
 			clearTimeout();
 			setTimeout(function(){
-				if(!evarisk("#FPmodelDefaut").is(":checked")){
-					evarisk("#workUnitSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-					evarisk("#workUnitSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
-					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":"' . $lastWorkUnitSheet->id_model . '"});
+				if(!evarisk("#FGPmodelDefaut").is(":checked")){
+					evarisk("#GroupSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					evarisk("#GroupSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
+					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":"' . $lastGroupSheet->id_model . '"});
 					evarisk("#modelListForGeneration").show();
 				}
 				else{
-					evarisk("#workUnitSheetResultContainer").html("");
+					evarisk("#GroupSheetResultContainer").html("");
 					evarisk("#modelListForGeneration").html("");
 					evarisk("#modelListForGeneration").hide();
 				}
@@ -161,8 +187,7 @@ class eva_WorkUnitSheet
 			FROM " . TABLE_FP . "
 			WHERE id_element = %d
 				AND table_element = %s " . $queryOrder,
-			array($idElement, $tableElement, $id)
-		);
+			array($idElement, $tableElement, $id));
 		if($id != '')
 		{
 			$query = $wpdb->prepare(
@@ -221,11 +246,11 @@ class eva_WorkUnitSheet
 										<td>&nbsp;&nbsp;&nbsp;- ' . $DUER['name'] . '_' . $DUER['revision'] . '</td>';
 
 								/*	Check if an odt file exist to be downloaded	*/
-								$odtFile = 'ficheDePoste/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
+								$odtFile = 'ficheDeGroupement/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
 								if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
 								{
 								$outputListeDocumentUnique .= '
-									<td><a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaFPOdt" >Odt</a></td>';
+									<td><a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaFGPOdt" >Odt</a></td>';
 								}
 
 								$outputListeDocumentUnique .= '
@@ -233,9 +258,6 @@ class eva_WorkUnitSheet
 							}
 						}
 						$outputListeDocumentUnique .= '
-									<tr>
-										<td style="padding:18px;" ><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></td>
-									</tr>
 								</tbody>
 							</table>';
 					}
@@ -245,7 +267,7 @@ class eva_WorkUnitSheet
 		}
 		else
 		{
-			$outputListeDocumentUnique = '<div class="noResultInBox" >' . __('Aucune fiche de poste n\'a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e pour le moment', 'evarisk') . '</div>';
+			$outputListeDocumentUnique = '<div class="noResultInBox" >' . __('Aucune fiche de groupement n\'a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e pour le moment', 'evarisk') . '</div>';
 		}
 
 		return $outputListeDocumentUnique;
@@ -260,13 +282,13 @@ class eva_WorkUnitSheet
 	*
 	*	@return array $status An array with the response status, if it's ok or not
 	*/
-	function saveWorkUnitSheet($tableElement, $idElement, $informations)
+	function saveGroupSheet($tableElement, $idElement, $informations)
 	{
+		global $wpdb;
 		$status = array();
 
 		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
-		global $wpdb;
 		$tableElement = eva_tools::IsValid_Variable($tableElement);
 		$idElement = eva_tools::IsValid_Variable($idElement);
 
@@ -341,56 +363,19 @@ class eva_WorkUnitSheet
 			$defaultPictureToSet = 'noDefaultPicture';
 		}
 
-		/*	Vérification du modèle à utiliser pour la génération de la fiche de poste	*/
-		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
+		/*	Vérification du modèle à utiliser pour la génération de la fiche de groupement	*/
+		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_groupement');
 		if(($informations['id_model'] != 'undefined') && ($informations['id_model'] > 0))
 		{
 			$modelToUse = $informations['id_model'];
 		}
 
-		/*	Récupération des préconisations affectées à l'unité actuelle	*/
-		$recommandationList = array();
-		$affectedRecommandation = evaRecommandation::getRecommandationListForElement($tableElement, $idElement);
-		$i = $oldIdRecommandationCategory = 0;
-		foreach($affectedRecommandation as $recommandation)
-		{
-			if($oldIdRecommandationCategory != $recommandation->recommandation_category_id)
-			{
-				$i = 0;
-				$oldIdRecommandationCategory = $recommandation->recommandation_category_id;
-			}
-			$recommandationCategoryMainPicture = evaPhoto::getMainPhoto(TABLE_CATEGORIE_PRECONISATION, $recommandation->recommandation_category_id);
-			$recommandationCategoryMainPicture = evaPhoto::checkIfPictureIsFile($recommandationCategoryMainPicture, TABLE_CATEGORIE_PRECONISATION);
-			if($recommandationCategoryMainPicture != false)
-			{
-				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = str_replace(EVA_HOME_URL, '', str_replace(EVA_GENERATED_DOC_URL, '', $recommandationCategoryMainPicture));
-			}
-			else
-			{
-				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = 'noDefaultPicture';
-			}
-			$recommandationList[$recommandation->recommandation_category_id][$i]['id_preconisation'] = $recommandation->id_preconisation;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['efficacite'] = $recommandation->efficacite;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['commentaire'] = $recommandation->commentaire;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_name'] = $recommandation->recommandation_category_name;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_name'] = $recommandation->recommandation_name;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandationCategorie'] = $recommandation->impressionRecommandationCategorie;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandationCategorie'] = $recommandation->tailleimpressionRecommandationCategorie;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandation'] = $recommandation->impressionRecommandation;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandation'] = $recommandation->tailleimpressionRecommandation;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['photo'] = $recommandation->photo;
-			$i++;
-		}
-		$recommandation = serialize($recommandationList);
-
 		/*	Enregistrement du document	*/
-		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_FP . " 
-				(id, creation_date, revision, id_element, id_model, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk, recommandation) 
+		$query = $wpdb->prepare("INSERT INTO " . TABLE_FP . " 
+				(id, creation_date, revision, id_element, id_model, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
 			VALUES 
-				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
-		);
+				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk));
 		if($wpdb->query($query) === false)
 		{
 			$status['result'] = 'error'; 
@@ -401,7 +386,7 @@ class eva_WorkUnitSheet
 		{
 			$status['result'] = 'ok';
 			/*	Save the odt file	*/
-			eva_gestionDoc::generateSummaryDocument($tableElement, $idElement, 'odt');
+			eva_gestionDoc::generateSummaryDocument($tableElement . '_FGP', $idElement, 'odt');
 		}
 
 		return $status;
@@ -415,9 +400,9 @@ class eva_WorkUnitSheet
 	*
 	*	@return string The hmtl code outputing the form to generate work unit sheet collection for a groupment
 	*/
-	function getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement)
+	function getGroupSheetCollectionGenerationForm($tableElement, $idElement)
 	{
-		$tableElementForDoc = $tableElement . '_FP';
+		$tableElementForDoc = $tableElement . '_FGP';
 		$output = '
 <table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
 	<tr>
@@ -429,19 +414,19 @@ class eva_WorkUnitSheet
 				</div>
 				<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 			</div>
-			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" />  
+			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveGroupSheetForGroupement" />  
 		</td>
 		<td id="documentModelContainer" >&nbsp;</td>
 	</tr>
 </table>
 <script type="text/javascript" >
-	evarisk("#saveWorkUnitSheetForGroupement").click(function(){
+	evarisk("#saveGroupSheetForGroupement").click(function(){
 		evarisk("#documentFormContainer").html(evarisk("#loadingImg").html());
 		evarisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
 			"post":"true",
 			"table":"' . TABLE_FP . '",
-			"act":"saveWorkUnitSheetForGroupement",
+			"act":"saveGroupSheetForGroupement",
 			"tableElement":"' . $tableElement . '",
 			"idElement":' . $idElement . ',
 			"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
@@ -454,7 +439,7 @@ class eva_WorkUnitSheet
 			{
 				evarisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 				evarisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
-				evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":""});
+				evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":""});
 				evarisk("#modelListForGeneration").show();
 			}
 			else
@@ -478,14 +463,14 @@ class eva_WorkUnitSheet
 	*
 	*	@return string The html code output with the list of document or a message saying there no document for this element
 	*/
-	function getWorkUnitSheetCollectionHistory($tableElement, $idElement)
+	function getGroupSheetCollectionHistory($tableElement, $idElement)
 	{
 		$output = '';
 
-		$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiches_de_groupement', "dateCreation DESC");
-		if(count($ficheDePoste_du_Groupement) > 0)
+		$list_FicheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiches_de_groupement', "dateCreation DESC");
+		if(count($list_FicheDePoste_du_Groupement) > 0)
 		{
-			foreach($ficheDePoste_du_Groupement as $fdpGpt)
+			foreach($list_FicheDePoste_du_Groupement as $fdpGpt)
 			{
 				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
 				{

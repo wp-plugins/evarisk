@@ -1,5 +1,5 @@
 <?php
-	DEFINE('EVA_PLUGIN_VERSION', '5.1.3.1');
+	DEFINE('EVA_PLUGIN_VERSION', '5.1.3.2');
 
 	require_once('configEavModel.php');
 	require_once('databaseTable.php');
@@ -128,6 +128,12 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 	require_once('configLogiciel.php');
 	require_once('configImages.php');
+
+	/*	Define if we output a name or a picture into the column header for the right management	*/
+	DEFINE('SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN', true);
+
+	/*	Define the path to wp-shop plugin	*/
+	DEFINE('DIGI_WPSHOP_PLUGIN_MAINFILE', 'wpshop/wpshop.php');
 
 	/**
 	*	Vars to delete when sure that the corresponding version is passed

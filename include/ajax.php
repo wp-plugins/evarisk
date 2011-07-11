@@ -37,6 +37,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDeGroupement.class.php');
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
@@ -2573,21 +2574,67 @@ echo $output;
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo  eva_documentUnique::getBoxBilan($tableElement, $idElement);
-						// echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
 					break;
 					case 'voirHistoriqueDocument' :
 					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 
+						$output .= '
+<div class="clear" id="summaryGeneratedDocumentSlector" >
+	<div class="alignleft selected" id="generatedDUER" >' . __('Document unique', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+</div>';
+
 						/*	Start "document unique" part	*/
-						$output .= '<div class="clear" ><div class="clear bold" >' . __('Documents unique pour le groupement', 'evarisk') . '</div><div class="DUERContainer" >' . eva_documentUnique::getDUERList($tableElement, $idElement) . '</div></div>';
+						$output .= '<div id="generatedDUERContainer" class="generatedDocContainer" ><div class="clear bold" >' . __('Documents unique pour le groupement', 'evarisk') . '</div><div class="DUERContainer" >' . eva_documentUnique::getDUERList($tableElement, $idElement) . '</div></div>';
+
+						/*	Start groupe sheet part	*/
+						$output .= '<div class="hide generatedDocContainer" id="generatedFGPContainer" ><div class="clear bold" >' . __('Fiches du groupement courant', 'evarisk') . '</div>
+						<div class="FGPContainer" >' . eva_GroupSheet::getGeneratedDocument($tableElement, $idElement, 'list') . '</div><div class="clear" >&nbsp;</div>
+						<div class="clear bold" >' . __('Fiches des sous-groupements du groupement courant', 'evarisk') . '</div>
+						<div class="FGPContainer" >' . eva_GroupSheet::getGroupSheetCollectionHistory($tableElement, $idElement) . '</div></div>';
 
 						/*	Start work unit sheet part	*/
-						$output .= '<div class="clear" >&nbsp;</div><div class="clear" ><div class="clear bold" >' . __('Fiches de poste pour le groupement', 'evarisk') . '</div>
-						<div class="FPContainer" >' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '</div>
-</div>
-<div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>';
+						$output .= '<div class="hide generatedDocContainer" id="generatedFPContainer" ><div class="clear bold" >' . __('Fiches de poste pour le groupement', 'evarisk') . '</div>
+						<div class="FPContainer" >' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '</div></div>
+
+<div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
+<script type="text/javascript" >
+	evarisk("#generatedDUER").click(function(){
+		evarisk("#summaryGeneratedDocumentSlector div").each(function(){
+			evarisk(this).removeClass("selected");
+		});
+		evarisk(".generatedDocContainer").each(function(){
+			evarisk(this).hide();
+		});
+		evarisk(this).addClass("selected");
+		evarisk("#generatedDUERContainer").show();
+	});
+
+	evarisk("#generatedFGP").click(function(){
+		evarisk("#summaryGeneratedDocumentSlector div").each(function(){
+			evarisk(this).removeClass("selected");
+		});
+		evarisk(".generatedDocContainer").each(function(){
+			evarisk(this).hide();
+		});
+		evarisk(this).addClass("selected");
+		evarisk("#generatedFGPContainer").show();
+	});
+	
+	evarisk("#generatedFP").click(function(){
+		evarisk("#summaryGeneratedDocumentSlector div").each(function(){
+			evarisk(this).removeClass("selected");
+		});
+		evarisk(".generatedDocContainer").each(function(){
+			evarisk(this).hide();
+		});
+		evarisk(this).addClass("selected");
+		evarisk("#generatedFPContainer").show();
+	});
+</script>';
 						echo $output;
 					}
 					break;
@@ -2652,6 +2699,13 @@ echo $output;
 	})(evarisk)
 </script>';
 						}
+					}
+					break;
+					case 'groupementSheetGeneration':
+					{
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_GroupSheet::getGroupSheetGenerationForm($tableElement, $idElement);
 					}
 					break;
 				}
@@ -2740,6 +2794,70 @@ echo $output;
 	' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '
 </div>';
 						echo $output;
+					}
+					break;
+
+					case 'saveFicheGroupement':
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDeGroupementPersistance.php');
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_GroupSheet::getGroupSheetGenerationForm($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#generateFGP").click();});</script>';
+					break;
+					case 'saveGroupSheetForGroupement':
+					{
+						$file_to_zip = array();
+
+						$mainTableElement = $tableElement = $_REQUEST['tableElement'];
+						$mainIDElement = $idElement = $_REQUEST['idElement'];
+						$groupementParent = EvaGroupement::getGroupement($idElement);
+						$arbre = arborescence::getCompleteGroupList($tableElement, $idElement);
+						$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeGroupement/' . $tableElement . '/' . $idElement. '/';
+						foreach($arbre as $group)
+						{
+							$_POST['tableElement'] = $group['table'];
+							$_POST['idElement'] = $group['id'];
+							$_POST['nomDuDocument'] = date('Ymd') . '_GP' . $group['id'] . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $group['nom']));
+							$_POST['nomEntreprise'] = $groupementParent->nom;
+
+							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDeGroupementPersistance.php');
+							$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+							$odtFile = 'ficheDeGroupement/' . $group['table'] . '/' . $group['id'] . '/' . $lastDocument->name . '_V' . $lastDocument->revision . '.odt';
+							if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
+							{
+								$file_to_zip[] = EVA_RESULTATS_PLUGIN_DIR . $odtFile;
+							}
+						}
+
+						$saveZipFileActionMessage = '';
+						eva_tools::make_recursiv_dir($pathToZip);
+						if(count($file_to_zip) > 0)
+						{
+							/*	ZIP THE FILE	*/
+							$zipFileName = date('YmdHis') . '_fichesDeGroupement.zip';
+							$archive = new eva_Zip($zipFileName);
+							$archive->setFiles($file_to_zip);
+							$archive->compressToPath($pathToZip);
+							$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiches_de_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
+							if($saveWorkSheetUnitStatus == 'error')
+							{
+								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches de groupement pour ce groupement', 'evarisk');
+							}
+							else
+							{
+								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les fiches de groupement ont correctement &eacute;t&eacute; enregistr&eacute;es.', 'evarisk');
+							}
+						$saveZipFileActionMessage = '
+	evarisk(document).ready(function(){
+			actionMessageShow("#message' . TABLE_DUER . '", "' . $messageInfo . '");
+			setTimeout(\'actionMessageHide("#message' . TABLE_DUER . '")\',7500);
+	});';
+						}
+
+						echo '
+<script type="text/javascript" >
+	' . $saveZipFileActionMessage . '
+	evarisk("#ongletHistoriqueDocument").click();
+</script>';
 					}
 					break;
 				}
@@ -3225,6 +3343,23 @@ echo $output;
 
 						$rightType = array('user_see', 'user_edit', 'user_delete', 'user_add_gpt', 'user_add_unit');
 
+						/*	Read the recursiv content to set recursiv right for the selected user	*/
+						$recursivRight = '';
+						$recursivRightUser = (isset($_REQUEST['user_recursif']) && ($_REQUEST['user_recursif'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['user_recursif']) : '';
+						if($recursivRightUser != '')
+						{
+							$recursivUsers = explode('#!#', $recursivRightUser);
+							foreach($recursivUsers as $recursivUser)
+							{
+								$userRecursiv = explode('!#!', $recursivUser);
+								if(isset($userRecursiv[1]) && ($userRecursiv[1] != ''))
+								{
+									$recursivRight[] = $userRecursiv[1];
+								}
+							}
+						}
+
+						/*	Read the different right for user attribution	*/
 						foreach($rightType as $rightName)
 						{
 							$right = (isset($_REQUEST[$rightName]) && ($_REQUEST[$rightName] != '')) ? eva_tools::IsValid_Variable($_REQUEST[$rightName]) : '';
@@ -3257,6 +3392,16 @@ echo $output;
 										{
 											$user->add_cap($userRight[0]);
 										}
+
+										switch($tableElement)
+										{
+											case TABLE_GROUPEMENT:
+												if(is_array($recursivRight) && in_array($userRight[1], $recursivRight))
+												{
+													digirisk_permission::addRecursivRight($tableElement, $idElement, $user, str_replace('groupement_' . $idElement, '', $userRight[0]), 'add');
+												}
+											break;
+										}
 									}
 								}
 							}
@@ -3277,6 +3422,16 @@ echo $output;
 											{
 												$user->remove_cap($permissionName);
 											}
+
+											switch($tableElement)
+											{
+												case TABLE_GROUPEMENT:
+													if(is_array($recursivRight) && in_array($userId, $recursivRight))
+													{
+														digirisk_permission::addRecursivRight($tableElement, $idElement, $user, str_replace('groupement_' . $idElement, '', $permissionName), 'remove');
+													}
+												break;
+											}
 										}
 									}
 								}
@@ -3293,13 +3448,14 @@ echo $output;
 	' . $actionResponse . '
 	evarisk("#saveButtonLoading_userRight' . $tableElement . '").hide();
 	evarisk("#saveButtonContainer_userRight' . $tableElement . '").show();
-	actionMessageShow("#message_' . $tableElement . '_' . $idElement . '_userRight", "' . $message . '");
-	setTimeout(\'actionMessageHide("#message_' . $tableElement . '_' . $idElement . '_userRight")\',7500);
-	evarisk("#userRightContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+
+	actionMessageShow("#' . $_REQUEST['message'] . '", "' . $message . '");
+	setTimeout(\'actionMessageHide("#' . $_REQUEST['message'] . '")\',7500);
+
+	evarisk("#' . $_REQUEST['tableContainer'] . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 		"post": "true", 
 		"table": "' . DIGI_DBT_PERMISSION . '",
 		"act": "reload_user_right_box",
-
 		"tableElement": "' . $tableElement . '",
 		"idElement": "' . $idElement . '"
 	});
@@ -3307,7 +3463,7 @@ echo $output;
 					}
 					break;
 					case 'reload_user_right_box':
-						digirisk_permission::userRightPostBox($_REQUEST);
+						echo digirisk_permission::generateUserListForRightDatatable($_REQUEST['tableElement'], $_REQUEST['idElement']);
 					break;
 				}
 				break;

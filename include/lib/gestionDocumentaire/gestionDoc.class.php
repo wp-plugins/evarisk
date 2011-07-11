@@ -67,8 +67,13 @@ class eva_gestionDoc
 							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 			case TABLE_FP:
+				$category = 'fiche_de_poste';
+				if($tableElement == TABLE_GROUPEMENT . '_FGP')
+				{
+					$category = 'fiche_de_groupement';
+				}
 				$formulaireUpload .= '
-							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"fiche_de_poste"});
+							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});
 							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 		}
@@ -129,6 +134,10 @@ class eva_gestionDoc
 			break;
 			case TABLE_FP:
 				$categorie = 'fiche_de_poste';
+				if($tableElement == TABLE_GROUPEMENT . '_FGP')
+				{
+					$categorie = 'fiche_de_groupement';
+				}
 			break;
 			default:
 				$categorie = $table;
@@ -398,6 +407,22 @@ class eva_gestionDoc
 					$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
 				}
 				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/modeleDefaut.odt';
+			}
+			break;
+			case TABLE_GROUPEMENT . '_FGP':
+			{
+				/**
+				*	Get the last summary document generated for the current element OR Get a given generated summary document
+				*/
+				if($idDocument != '')
+				{
+					$lastDocument = eva_GroupSheet::getGeneratedDocument(TABLE_GROUPEMENT, $idElement, 'last', $idDocument);
+				}
+				else
+				{
+					$lastDocument = eva_GroupSheet::getGeneratedDocument(TABLE_GROUPEMENT, $idElement, 'last');
+				}
+				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/modeleDefaut_groupement.odt';
 			}
 			break;
 		}
@@ -903,12 +928,25 @@ class eva_gestionDoc
 					$fileName = str_replace(' ', '',$lastDocument->nomDUER) . '_V' . $lastDocument->revisionDUER;
 				}
 				break;
+				case TABLE_GROUPEMENT . '_FGP':
 				case TABLE_UNITE_TRAVAIL:
 				{
-					$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
+					if($tableElement == TABLE_GROUPEMENT . '_FGP')
+					{
+						$workUnitinformations = EvaGroupement::getGroupement($idElement);
 
-					$odf->setVars('referenceUnite', $idElement);
-					$odf->setVars('nomUnite', eva_tools::slugify_noaccent($workUnitinformations->nom));
+						$odf->setVars('reference', $idElement);
+						$odf->setVars('nom', eva_tools::slugify_noaccent($workUnitinformations->nom));
+						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeGroupement/' . TABLE_GROUPEMENT . '/' . $idElement . '/';
+					}
+					else
+					{
+						$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
+
+						$odf->setVars('referenceUnite', $idElement);
+						$odf->setVars('nomUnite', eva_tools::slugify_noaccent($workUnitinformations->nom));
+						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
+					}
 
 					{/*	Remplissage du template pour les utilisateurs affectes	*/
 						$listeUser = array();
@@ -1207,7 +1245,7 @@ class eva_gestionDoc
 						$odf->setVars('photoDefault', eva_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
 					}
 
-					$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
+					
 					$fileName = str_replace(' ', '',$lastDocument->name) . '_V' . $lastDocument->revision;
 				}
 				break;

@@ -172,35 +172,11 @@ class evaUser
 		$sendUserMail = isset($_POST['sendUserMail']) ? eva_tools::IsValid_Variable($_POST['sendUserMail']) : '';
 
 		$optionEmailDomain = '';
-		$checkEmailDomain = '';
 		$checkEmailDomain = digirisk_options::getOptionValue('emailDomain');
-		if($checkEmailDomain == '')
+		if(isset($_POST['domaineMail']) && ($checkEmailDomain != $_POST['domaineMail']))
 		{
-			$optionEmailDomain = '
-				evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-				{
-					"post": "true", 
-					"table": "' . TABLE_OPTION . '",
-					"act": "save",
-					"value": evarisk("#domaineMail").val(),
-					"optionStatus": "Valid",
-					"optionName": "emailDomain",
-					"optionShownName": "' . __('domaine pour l\'email des utilisateurs import&eacute;', 'evarisk') . '",
-					"optionDomain": "user",
-					"optionType": "text"
-				});';
-		}
-		else
-		{
-			$optionEmailDomain = '
-				evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-				{
-					"post": "true", 
-					"table": "' . TABLE_OPTION . '",
-					"act": "updateFromName",
-					"value": evarisk("#domaineMail").val(),
-					"optionName": "emailDomain"
-				});';
+			digirisk_options::updateDigiOption('emailDomain', $_POST['domaineMail']);
+			$checkEmailDomain = digirisk_options::getOptionValue('emailDomain');
 		}
 
 		if($importAction != '')

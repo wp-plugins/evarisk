@@ -65,7 +65,7 @@ class digirisk_options
 		}
 
 		{/*	Declare the different options for the products if plugin exists and is active	*/
-			if (is_plugin_active('wpshop/wp-shop.php'))
+			if (is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))
 			{
 				add_settings_section('digi_product_options', __('Options pour les produits', 'evarisk'), array('digirisk_options', 'options_output_products'), 'digirisk_options_settings');
 			/*	Add the different field for the correctives actions	*/
@@ -469,7 +469,29 @@ if(current_user_can('digi_edit_option'))
 
 		return $digirisk_options[$optionName];
 	}
+	/**
+	*	Update the database option
+	*
+	* @param string $nom The sub option name we want to update
+	* @param string $value the sub option value we want to put
+	*
+	*/
+	function updateDigiOption($nom, $value)
+	{
+		$option = get_option('digirisk_options');
 
+		if(is_array($option))
+		{
+			$option[$nom] = $value;
+			update_option('digirisk_options', $option);
+		}
+		elseif(is_string($option))
+		{
+			$optionValue = unserialize($optionValue);
+			$optionSubValue = $optionValue[$subOptionName];
+			update_option('digirisk_options', serialize($optionValue));
+		}
+	}
 
 	/**
 	*	Return the current database version for the plugin

@@ -89,185 +89,13 @@ class digirisk_permission
 		self::permission_management($user);
 		$digiPermissionForm = ob_get_contents();
 		ob_end_clean();
-
 		echo '<h3>' . __('Droits d\'acc&egrave;s de l\'utilisateur pour le logiciel Digirisk', 'digirisk') . '</h3>' . $digiPermissionForm;
-	}
 
-	/**
-	*	Output the html table with the permission list stored by module and sub-module
-	*/
-	function permission_management($elementToManage)
-	{
-		global $digi_wp_role;
-		if(!is_object($digi_wp_role))
-		{
-			/*	Instanciation de l'objet role de worpdress	*/
-			$digi_wp_role = new WP_Roles();
-		}
-		$permissionList = array();
-		$permissionCap = array();
-
-		/*	Récupération des permissions créées pour rangement par module	*/
-		$existingPermission = self::digirisk_get_permission();
-		foreach($existingPermission as $permission)
-		{
-			$permissionList[$permission->permission_module][$permission->permission_sub_module][] = $permission->permission;
-			$permissionCap[$permission->permission]['type'] = $permission->permission_type;
-			$permissionCap[$permission->permission]['subtype'] = $permission->permission_sub_type;
-		}
-
-?>
-<table summary="User rights for digirisk" cellpadding="0" cellspacing="0" class="form-table" >
-<?php
-		if(($_REQUEST['user_id'] != '') && ($_REQUEST['user_id'] > 0))
-		{
-?>
-	<tr>
-		<th><?php _e('L&eacute;gende des couleurs sur les permissions', 'evarisk'); ?></th>
-		<td>
-			<span class="permissionGrantedFromParent" ><?php _e('Permission obtenue par le r&ocirc;le de l\'utilisateur', 'evarisk'); ?></span><br/>
-			<span class="permissionGranted" ><?php _e('Permission ajout&eacute;e en plus de celle du r&ocirc;le de l\'utilisateur', 'evarisk'); ?></span>
-		</td>
-	</tr>
-<?php
-		}
-?>
-	<tr>
-		<th><?php _e('Raccourci d\'attribution', 'evarisk'); ?></th>
-		<td>
-			<span class="checkall_right" id="add_checkall" ><?php _e('Tous les droits', 'evarisk'); ?></span>&nbsp;/&nbsp;<span class="uncheckall_right" id="remove_uncheckall" ><?php _e('Aucun droit', 'evarisk'); ?></span><br/>
-			<span class="checkall_link" id="add_menu" ><?php _e('Tous les menus', 'evarisk'); ?></span>&nbsp;/&nbsp;<span class="uncheckall_link" id="remove_menu" ><?php _e('Aucun menu', 'evarisk'); ?></span><br/>
-			<span class="checkall_link" id="add_read" ><?php _e('Tous les droits en lecture', 'evarisk'); ?></span>&nbsp;/&nbsp;<span  class="uncheckall_link" id="remove_read" ><?php _e('Aucun droit en lecture', 'evarisk'); ?></span><br/>
-			<span class="checkall_link" id="add_write" ><?php _e('Tous les droits en &eacute;criture', 'evarisk'); ?></span>&nbsp;/&nbsp;<span  class="uncheckall_link" id="remove_write" ><?php _e('Aucun droit en &eacute;criture', 'evarisk'); ?></span><br/>
-			<span class="checkall_link" id="add_delete" ><?php _e('Tous les droits en suppression', 'evarisk'); ?></span>&nbsp;/&nbsp;<span  class="uncheckall_link" id="remove_delete" ><?php _e('Aucun droit en suppression', 'evarisk'); ?></span><br/>
-		</td>
-	</tr>
-	<tr>
-		<th>&nbsp;</th>
-	</tr>
-<?php
-		foreach($permissionList as $module => $subModule)
-		{
-?>
-	<tr>
-		<th>
-			<?php _e('permission_' . $module, 'evarisk'); ?>
-			<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
-		</th>
-		<td>
-<?php
-			foreach($subModule as $subModuleName => $moduleContent)
-			{
-?>
-			<div class="sub_module <?php echo ($subModuleName != '') ? 'permission_module_' . $subModuleName : ''; ?>" >
-				<div class="sub_module_name" >
-<?php
-				if($subModuleName)
-				{
-					_e('permission_' . $module . '_' . $subModuleName, 'evarisk');
-				}
-				else
-				{
-					_e('permission_' . $module, 'evarisk');
-				}
-?>
-				</div>
-				<div class="sub_module_content" >
-					<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module . '_' . $subModuleName; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module . '_' . $subModuleName; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
-<?php
-				/*	Liste des permissions pour le module et le sous-module	*/
-				foreach($moduleContent as $permission)
-				{
-					$checked = $permissionNameClass = '';
-					$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : '';
-					$action = isset($_REQUEST['save']) ? eva_tools::IsValid_Variable($_REQUEST['save']) : '';
-					if(($roleToCopy != '') && ($action == 'ok'))
-					{
-						$roleDetails = $digi_wp_role->get_role($roleToCopy);
-						if($roleDetails->has_cap($permission))
-						{
-							$checked = 'checked="checked"';
-						}
-					}
-					elseif(($elementToManage != null) && $elementToManage->has_cap($permission))
-					{
-						$checked = 'checked="checked"';
-						$permissionNameClass = 'permissionGranted';
-						if ( count($elementToManage->caps) > count($elementToManage->roles) && apply_filters('additional_capabilities_display', true, $elementToManage) )
-						{
-							$roleDetails = $digi_wp_role->get_role(implode('', $elementToManage->roles));
-							if ( $roleDetails->has_cap($permission) ) 
-							{
-								$permissionNameClass = 'permissionGrantedFromParent';
-							}
-						}
-					}
-					echo '<input type="checkbox" class="' . $module . ' ' . $subModuleName . ' ' . $module . '_' . $subModuleName . ' ' . $permissionCap[$permission]['type'] . ' ' . $permissionCap[$permission]['subtype'] . ' ' . $permissionCap[$permission]['type'] . '_' . $permissionCap[$permission]['subtype'] . '" name="digi_permission[' . $permission . ']" id="digi_permission_' . $permission . '" value="yes" ' . $checked . ' />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
-				}
-?>
-				</div>
-			</div>
-<?php
-			}
-?>
-		</td>
-	</tr>
-<?php
-		}
-?>
-</table>
-<script type="text/javascript" >
-	evarisk(document).ready(function(){
-		/**
-		*	Define action when clicking on checkall/uncheckall for a module or a sub module
-		*/
-		evarisk('.checkall').click(function(){
-			var module = evarisk(this).attr("id").replace("check_selector_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).attr("checked", true);
-			});
-		});
-		evarisk('.uncheckall').click(function(){
-			var module = evarisk(this).attr("id").replace("uncheck_selector_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).attr("checked", false);
-			});
-		});
-
-		/**
-		*	Define action chen clicking on checkall/uncheckall into the link
-		*/
-		evarisk('.checkall_link').click(function(){
-			var module = evarisk(this).attr("id").replace("add_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).attr("checked", true);
-			});
-		});
-		evarisk('.uncheckall_link').click(function(){
-			var module = evarisk(this).attr("id").replace("remove_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).attr("checked", false);
-			});
-		});
-
-		/**
-		*	Define action chen clicking on checkall/uncheckall into the link
-		*/
-		evarisk('.checkall_right').click(function(){
-			var module = evarisk(this).attr("id").replace("add_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).click();
-			});
-		});
-		evarisk('.uncheckall_right').click(function(){
-			var module = evarisk(this).attr("id").replace("remove_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).click();
-			});
-		});
-	});
-</script>
-<?php
+		ob_start();
+		self::digiSpecificPermission($user);
+		$digiSpecificPermission = ob_get_contents();
+		ob_end_clean();
+		echo '<h3>' . __('Droits d\'acc&egrave;s sp&eacute;cifiques de l\'utilisateur pour le logiciel Digirisk', 'digirisk') . '</h3>' . $digiSpecificPermission;
 	}
 
 	/**
@@ -981,35 +809,278 @@ class digirisk_permission
 
 
 	/**
-	*
+	*	
 	*/
 	function userRightPostBox($arguments, $moreArgs = '')
 	{
 		$idElement = $arguments['idElement'];
 		$tableElement = $arguments['tableElement'];
-		$utilisateursMetaBox = '<div class="hide" id="message_' . $tableElement . '_' . $idElement . '_userRight" ></div>';
-		$idBoutonEnregistrer = 'save_right_' . $tableElement;
-		$userRightDetail_edit_old = $userRightDetail_delete_old = $userRightDetail_see_old = $userRightDetail_add_gpt_old = $userRightDetail_add_unit_old = '';
 
+		/*	Script associé au boutton de sauvegarde	*/
+		$scriptEnregistrement = '
+<script type="text/javascript">
+	evarisk("#save_right_' . $tableElement . '").click(function(){
+		evarisk("#saveButtonLoading_userRight' . $tableElement . '").show();
+		evarisk("#saveButtonContainer_userRight' . $tableElement . '").hide();
+
+		saveRightForUsers("' . $tableElement . '", "' . $idElement . '", "' . DIGI_DBT_PERMISSION . '", "message_' . $tableElement . '_' . $idElement . '_userRight", "userRightContainerBox");
+	});
+</script>';
+
+		/*	Ajout de la pop up d'édition pour les écrans plus petits	*/
+		$utilisateursMetaBox = '
+<div id="userPermissionManager" class="hide" title="' . __('Droits des utilisateurs', 'evarisk') . '" >
+	<div id="rightDialogMessage" class="hide" >&nbsp;</div>
+	<div id="userPermissionManagerForm" class="" >&nbsp;</div>
+	<div id="userPermissionManagerLoading" class="hide" >&nbsp;</div>
+</div>
+<div class="hide" id="message_' . $tableElement . '_' . $idElement . '_userRight" ></div>
+
+<div class="clear" >
+	<div id="openRightManagerDialog" class="alignright " ><img src="' . DIGI_OPEN_POPUP . '" alt="' . __('Ouvrir dans une fen&ecirc;tre externe', 'evarisk') . '" title="' . __('Ouvrir dans une fen&ecirc;tre externe', 'evarisk') . '" /></div>
+</div>
+
+<!--	User list -->
+<div id="userRightContainerBox" class="clear" >' . self::generateUserListForRightDatatable($tableElement, $idElement) . '</div>
+
+<!--	Save button -->
+<div class="clear" id="saveButtonBoxContainer" >
+	<div id="saveButtonLoading_userRight' . $tableElement . '" style="display:none;" class="clear alignright" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading in progress" /></div>
+	<div id="saveButtonContainer_userRight' . $tableElement . '" >' . EvaDisplayInput::afficherInput('button', 'save_right_' . $tableElement , __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div>
+</div>
+
+<script type="text/javascript" >
+	evarisk("#userPermissionManager").dialog({
+		autoOpen: false,
+		height: 600,
+		width: 800,
+		modal: true,
+		buttons: {
+			"' . __('Enregistrer et fermer', 'evarisk') . '": function(){
+				saveRightForUsers("' . $tableElement . '", "' . $idElement . '", "' . DIGI_DBT_PERMISSION . '", "message_' . $tableElement . '_' . $idElement . '_userRight", "userRightContainerBox");
+				setTimeout(evarisk(this).dialog("close"), \'1000\');
+			},
+			"' . __('Enregistrer', 'evarisk') . '": function(){
+				saveRightForUsers("' . $tableElement . '", "' . $idElement . '", "' . DIGI_DBT_PERMISSION . '", "rightDialogMessage", "userPermissionManagerForm");
+			},
+			"' . __('Annuler', 'evarisk') . '": function(){
+				evarisk(this).dialog("close");
+			}
+		},
+		close: function(){
+			evarisk("#userPermissionManagerForm").html("");
+			evarisk("#userRightContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post": "true", 
+				"table": "' . DIGI_DBT_PERMISSION . '",
+				"act": "reload_user_right_box",
+				"tableElement": "' . $tableElement . '",
+				"idElement": "' . $idElement . '"
+			});
+			evarisk("#saveButtonBoxContainer").show();
+		}
+	});
+	evarisk("#openRightManagerDialog").click(function(){
+		evarisk("#userRightContainerBox").html("");
+		evarisk("#saveButtonBoxContainer").hide();
+		evarisk("#userPermissionManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . DIGI_DBT_PERMISSION . '",
+			"act":"reload_user_right_box",
+			"tableElement":"' . $tableElement . '",
+			"idElement":"' . $idElement . '"
+		});
+		evarisk("#userPermissionManager").dialog("open");
+	});
+</script>';
+
+		echo $utilisateursMetaBox;
+	}
+
+	/**
+	*	Create the output for the user list with the different right to affect to the user
+	*
+	*	@param string $tableElement The element type we are editing the right for
+	*	@param integer $idElement The element identifier we are editing the right for
+	*
+	*	@return mixed $outputTable The html output of the user list in a jquery dataTable
+	*/
+	function generateUserListForRightDatatable($tableElement, $idElement)
+	{
+		$outputTable = '';
+		$rightType = array('see', 'edit', 'delete', 'add_gpt', 'add_unit');
+
+		/*	Initialisation des variables recevants les listes des droits des utilisateurs déjà affectés	*/
+		foreach($rightType as $rightName)
+		{
+			$userRightDetail[$rightName] = '';
+		}
+
+		{/*	Affichage des racourcis de cochage/décochage en masse	*/		
+			$idTable = 'checkAllInterface' . $tableElement . $idElement;
+			unset($titres);
+			$titres[] = __('Affect&eacute; &agrave; l\'&eacute;l&eacute;ment', 'evarisk');
+			$titres[] = ucfirst(strtolower(__('Nom', 'evarisk')));
+			$titres[] = __('Voir', 'evarisk');
+			$titres[] = __('&Eacute;diter', 'evarisk');
+			$titres[] = __('Supprimer', 'evarisk');
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT;
+					$titres[] = __('Ajouter un groupement', 'evarisk');
+					$titres[] = __('Ajouter une unit&eacute;', 'evarisk');
+					$titres[] = __('R&eacute;cursif', 'evarisk');
+				break;
+			}
+
+			unset($valeurs);
+			$valeurs[] = array('value'=>'b');
+			$valeurs[] = array('value'=>__('Pour tous les utilisateurs', 'evarisk'));
+			$valeurs[] = array('value'=>'<span class="checkAll_user_" id="see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_see" >' . __('Aucun', 'evarisk'), 'class'=>'rightCell');
+			$valeurs[] = array('value'=>'<span class="checkAll_user_" id="edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_edit" >' . __('Aucun', 'evarisk'), 'class'=>'rightCell');
+			$valeurs[] = array('value'=>'<span class="checkAll_user_" id="delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_delete" >' . __('Aucun', 'evarisk'), 'class'=>'rightCell');
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT;
+					$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_" id="recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+				break;
+			}
+			$lignesDeValeurs[] = $valeurs;
+			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursDroits';
+
+			unset($valeurs);
+			$valeurs[] = array('value'=>'a');
+			$valeurs[] = array('value'=>__('Pour tous les utilisateurs affect&eacute;s', 'evarisk'), 'class'=>'userAffecte');
+			$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_see" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+			$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_edit" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+			$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_delete" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT;
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+				break;
+			}
+			$lignesDeValeurs[] = $valeurs;
+			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursAffectesDroit';
+
+			$classes = array('','','rightColumn','rightColumn','rightColumn');
+			$script = '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk(".checkAll_user_").click(function(){
+			var rightToManage = evarisk(this).attr("id");
+			evarisk("." + rightToManage).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", true);
+				}
+			});
+		});
+		evarisk(".uncheckAll_user_").click(function(){
+			var rightToManage = evarisk(this).attr("id").replace("not_", "");
+			evarisk("." + rightToManage).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", false);
+				}
+			});
+		});
+		evarisk(".checkAll_user_affected_").click(function(){
+			var rightToManage = evarisk(this).attr("id").replace("a_", "");
+			evarisk(".userAffecte ." + rightToManage).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", true);
+				}
+			});
+		});
+		evarisk(".uncheckAll_user_affected_").click(function(){
+			var rightToManage = evarisk(this).attr("id").replace("not_a_", "");
+			evarisk(".userAffecte ." + rightToManage).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", false);
+				}
+			});
+		});
+		evarisk("#' . $idTable . '").dataTable({
+			"bAutoWidth": false,
+			"bInfo": false,
+			"aaSorting": [[0, "asc"]],
+			"sScrollY": "200px",
+			"bPaginate": false,
+			"bFilter": false,
+			"aoColumns": [
+				{ "bVisible": false},
+				null,
+				null,
+				null,';
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT;
+					$script .= '
+				null,
+				null,
+				null,';
+				$classes[] = 'rightColumn';
+				$classes[] = 'rightColumn';
+				$classes[] = 'rightColumn';
+				break;
+			}
+				$script .= '
+				null
+			],
+			"oLanguage":{
+				"sLengthMenu": "' . sprintf(__('Afficher %s enregistrements', 'evarisk'), '_MENU_') . '",
+				"sZeroRecords": "' . __('Aucun r&eacute;sultat', 'evarisk') . '",
+				"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>"
+			}
+		});
+		evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+		evarisk("#' . $idTable . ' tfoot").remove();
+		evarisk("#' . $idTable . ' thead").remove();
+	});
+</script>';
+			$checkAllTable = evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+		}
+		{/*	Affichage de la liste des utilisateurs	*/
 		$idTable = 'listeIndividusPourDroits' . $tableElement . $idElement;
 		unset($titres);
 		$titres[] = __('Affect&eacute; &agrave; l\'&eacute;l&eacute;ment', 'evarisk');
 		$titres[] = ucfirst(strtolower(__('Nom', 'evarisk')));
 		$titres[] = ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk')));
-		$titres[] = __('Voir', 'evarisk');
-		$titres[] = __('&Eacute;diter', 'evarisk');
-		$titres[] = __('Supprimer', 'evarisk');
+		if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN)
+		{
+			$titres[] = __('Voir', 'evarisk');
+			$titres[] = __('&Eacute;diter', 'evarisk');
+			$titres[] = __('Supprimer', 'evarisk');
+		}
+		else
+		{
+			$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="' . __('Voir', 'evarisk') . '" title="' . __('Voir', 'evarisk') . '" />';
+			$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_EDIT) . '" alt="' . __('&Eacute;diter', 'evarisk') . '" title="' . __('&Eacute;diter', 'evarisk') . '" />';
+			$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_DELETE) . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '" />';
+		}
 		switch($tableElement)
 		{
 			case TABLE_GROUPEMENT;
 				/*	Add button for groupement or unit adding	*/
-				$titres[] = __('Ajouter un groupement', 'evarisk');
-				$titres[] = __('Ajouter une unit&eacute;', 'evarisk');
+				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN)
+				{
+					$titres[] = __('Ajouter un groupement', 'evarisk');
+					$titres[] = __('Ajouter une unit&eacute;', 'evarisk');
+				}
+				else
+				{
+					$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_LTL_ADD_GROUPEMENT) . '" alt="' . __('Ajouter un groupement', 'evarisk') . '" title="' . __('Ajouter un groupement', 'evarisk') . '" />';
+					$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_LTL_ADD_UNIT) . '" alt="' . __('Ajouter une unit&eacute;', 'evarisk') . '" title="' . __('Ajouter une unit&eacute;', 'evarisk') . '" />';
+				}
+				$titres[] = ucfirst(strtolower(__('R&eacute;cursif', 'evarisk')));
 			break;
 		}
 		unset($lignesDeValeurs);
 
-		//on récupère les utilisateurs déjà affectés à l'élément en cours.
+		/*	on récupère les utilisateurs affectés à l'élément en cours.	*/
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		if(is_array($utilisateursLies) && (count($utilisateursLies) > 0))
@@ -1020,6 +1091,7 @@ class digirisk_permission
 			}
 		}
 
+		/*	On lit la liste des utilisateurs si elle n'est pas vide	*/
 		$listeUtilisateurs = evaUser::getCompleteUserList();
 		if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0))
 		{
@@ -1058,21 +1130,33 @@ class digirisk_permission
 				if($user->has_cap('digi_view_detail_' . $endPermission) || $user->has_cap('digi_view_detail_' . $endPermission . '_' . $idElement))
 				{
 					$viewCheckBox = ' checked="checked" ';
-					$userRightDetail_see_old .= 'digi_view_detail_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+					if($user->has_cap('digi_view_detail_' . $endPermission))
+					{
+						$viewCheckBox .= ' disabled="disabled" ';
+					}
+					$userRightDetail['see'] .= 'digi_view_detail_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
 				}
 				$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_see[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_view_detail_' . $endPermission . '_' . $idElement . '" id="user_see_' . $utilisateur['user_id'] . '" class="see" ' . $viewCheckBox . ' />');
 				$editCheckBox = '';
 				if($user->has_cap('digi_edit_' . $endPermission) || $user->has_cap('digi_edit_' . $endPermission . '_' . $idElement))
 				{
 					$editCheckBox = ' checked="checked" ';
-					$userRightDetail_edit_old .= 'digi_edit_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+					if($user->has_cap('digi_edit_' . $endPermission))
+					{
+						$editCheckBox .= ' disabled="disabled" ';
+					}
+					$userRightDetail['edit'] .= 'digi_edit_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
 				}
 				$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_edit[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_edit_' . $endPermission . '_' . $idElement . '" id="user_edit_' . $utilisateur['user_id'] . '" class="edit" ' . $editCheckBox . ' />');
 				$deleteCheckBox = '';
 				if($user->has_cap('digi_delete_' . $endPermission) || $user->has_cap('digi_delete_' . $endPermission . '_' . $idElement))
 				{
 					$deleteCheckBox = ' checked="checked" ';
-					$userRightDetail_delete_old .= 'digi_delete_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+					if($user->has_cap('digi_delete_' . $endPermission))
+					{
+						$deleteCheckBox .= ' disabled="disabled" ';
+					}
+					$userRightDetail['delete'] .= 'digi_delete_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
 				}
 				$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_delete[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_delete_' . $endPermission . '_' . $idElement . '" id="user_delete_' . $utilisateur['user_id'] . '" class="delete" ' . $deleteCheckBox . ' />');
 				switch($tableElement)
@@ -1080,19 +1164,28 @@ class digirisk_permission
 					case TABLE_GROUPEMENT;
 						/*	Add button for groupement or unit adding	*/
 						$viewCheckBox = '';
-						if($user->has_cap('digi_add_groupement_' . $endPermission) || $user->has_cap('digi_add_groupement_' . $endPermission . '_' . $idElement))
+						if($user->has_cap('digi_add_groupement') || $user->has_cap('digi_add_groupement_' . $endPermission . '_' . $idElement))
 						{
 							$viewCheckBox = ' checked="checked" ';
-							$userRightDetail_add_gpt_old .= 'digi_add_groupement_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+							if($user->has_cap('digi_add_groupement'))
+							{
+								$viewCheckBox .= ' disabled="disabled" ';
+							}
+							$userRightDetail['add_gpt'] .= 'digi_add_groupement_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
 						}
 						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_add_gpt[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_add_groupement_' . $endPermission . '_' . $idElement . '" id="user_add_gpt' . $utilisateur['user_id'] . '" class="add_groupement" ' . $viewCheckBox . ' />');
 						$viewCheckBox = '';
-						if($user->has_cap('digi_add_unite_' . $endPermission) || $user->has_cap('digi_add_unite_' . $endPermission . '_' . $idElement))
+						if($user->has_cap('digi_add_unite') || $user->has_cap('digi_add_unite_' . $endPermission . '_' . $idElement))
 						{
 							$viewCheckBox = ' checked="checked" ';
-							$userRightDetail_add_unit_old .= 'digi_add_unite_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+							if($user->has_cap('digi_add_unite'))
+							{
+								$viewCheckBox .= ' disabled="disabled" ';
+							}
+							$userRightDetail['add_unit'] .= 'digi_add_unite_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
 						}
 						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_add_unit[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_add_unite_' . $endPermission . '_' . $idElement . '" id="user_add_unit' . $utilisateur['user_id'] . '" class="add_unite" ' . $viewCheckBox . ' />');
+						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_recursif[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_recursif_' . $endPermission . '_' . $idElement . '" id="user_recursif' . $utilisateur['user_id'] . '" class="recursif" />');
 					break;
 				}
 
@@ -1102,11 +1195,23 @@ class digirisk_permission
 		}
 		else
 		{
+			unset($valeurs);
+			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
 			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>'');
+			
+			switch($tableElement)
+			{
+				case TABLE_GROUPEMENT;
+					$valeurs[] = array('value'=>'');
+					$valeurs[] = array('value'=>'');
+					$valeurs[] = array('value'=>'');
+				break;
+			}
+
 			$lignesDeValeurs[] = $valeurs;
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
 		}
@@ -1125,20 +1230,22 @@ class digirisk_permission
 				{ "bVisible": false},
 				null,
 				null,
-				null,
-				null,';
+				{ "bSortable": false},
+				{ "bSortable": false},';
 			switch($tableElement)
 			{
 				case TABLE_GROUPEMENT;
 					$script .= '
-				null,
-				null,';
+				{ "bSortable": false},
+				{ "bSortable": false},
+				{ "bSortable": false},';
+				$classes[] = 'rightColumn';
 				$classes[] = 'rightColumn';
 				$classes[] = 'rightColumn';
 				break;
 			}
 				$script .= '
-				null
+				{ "bSortable": false}
 			],
 			"oLanguage":{
 				"sLengthMenu": "' . sprintf(__('Afficher %s enregistrements', 'evarisk'), '_MENU_') . '",
@@ -1148,79 +1255,34 @@ class digirisk_permission
 		});
 	});
 </script>';
+			$userListTable = evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+		}
 
-		$utilisateursMetaBox .= __('L&eacute;gende', 'evarisk') . '&nbsp;:&nbsp;<div class="userAffecte userAffecteExplanation" >' . __('Utilisateurs affect&eacute;s &agrave; l\'&eacute;l&eacute;ment en cours d\'&eacute;dition', 'evarisk') . '</div>';
+		/*	Ajout de la liste des droits déjà affectés aux utilisateurs et des nouveaux droits en cours d'affectation	*/
+		foreach($rightType as $rightName)
+		{
+			$outputTable .= '
+<input type="hidden" name="userRightDetail_' . $rightName . '" id="userRightDetail_' . $rightName . '" value="" />';
+			$outputTable .= '
+<input type="hidden" name="userRightDetail_' . $rightName . '_old" id="userRightDetail_' . $rightName . '_old" value="' . $userRightDetail[$rightName] . '" />';
+		}
+		$outputTable .= '
+<input type="hidden" name="userRightDetail_recursif" id="userRightDetail_recursif" value="" />';
 
-		$utilisateursMetaBox .= '
-		<input type="hidden" name="userRightDetail_see_old" id="userRightDetail_see_old" value="' . $userRightDetail_see_old . '" /><input type="hidden" name="userRightDetail_delete_old" id="userRightDetail_delete_old" value="' . $userRightDetail_delete_old . '" /><input type="hidden" name="userRightDetail_edit_old" id="userRightDetail_edit_old" value="' . $userRightDetail_edit_old . '" /><input type="hidden" name="userRightDetail_add_gpt_old" id="userRightDetail_add_gpt_old" value="' . $userRightDetail_add_gpt_old . '" /><input type="hidden" name="userRightDetail_add_unit_old" id="userRightDetail_add_unit_old" value="' . $userRightDetail_add_unit_old . '" />
-		<input type="hidden" name="userRightDetail_see" id="userRightDetail_see" value="" /><input type="hidden" name="userRightDetail_delete" id="userRightDetail_delete" value="" /><input type="hidden" name="userRightDetail_edit" id="userRightDetail_edit" value="" /><input type="hidden" name="userRightDetail_add_gpt" id="userRightDetail_add_gpt" value="" /><input type="hidden" name="userRightDetail_add_unit" id="userRightDetail_add_unit" value="" /><div class="userTableContainer" >' . evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script) . '</div>';
+		$outputTable .= '
+<fieldset class="clear" >
+	<legend>' . __('L&eacute;gende', 'evarisk') . '</legend>
+	<div class="userAffecte userAffecteExplanation" >' . __('Utilisateurs affect&eacute;s &agrave; l\'&eacute;l&eacute;ment en cours d\'&eacute;dition', 'evarisk') . '</div>
+	<input type="checkbox" name="explanationBoxDisabled" id="explanationBoxDisabled" value="" checked="checked" disabled="disabled" />&nbsp;' . __('Le droit provient du r&ocirc;le de l\'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface', 'evarisk') . '
+</fieldset>
+<div class="clear userRightMassManagement" >
+	' . $checkAllTable . '
+</div>
+<div class="userTableContainer clear" >
+	' . $userListTable . '
+</div>';
 
-		$scriptEnregistrement = '
-<script type="text/javascript">
-	evarisk("#' . $idBoutonEnregistrer . '").click(function(){
-		evarisk("#saveButtonLoading_userRight' . $tableElement . '").show();
-		evarisk("#saveButtonContainer_userRight' . $tableElement . '").hide();
-
-		evarisk("#userRightDetail_see").val("");
-		evarisk(".see").each(function(){
-			if(evarisk(this).is(":checked")){
-				evarisk("#userRightDetail_see").val( evarisk("#userRightDetail_see").val() + evarisk(this).val() + "!#!" + evarisk(this).attr("id").replace("user_see_", "") + "#!#" );
-			}
-		});
-
-		evarisk("#userRightDetail_delete").val("");
-		evarisk(".delete").each(function(){
-			if(evarisk(this).is(":checked")){
-				evarisk("#userRightDetail_delete").val( evarisk("#userRightDetail_delete").val() + evarisk(this).val() + "!#!" + evarisk(this).attr("id").replace("user_delete_", "") + "#!#" );
-			}
-		});
-
-		evarisk("#userRightDetail_edit").val("");
-		evarisk(".edit").each(function(){
-			if(evarisk(this).is(":checked")){
-				evarisk("#userRightDetail_edit").val( evarisk("#userRightDetail_edit").val() + evarisk(this).val() + "!#!" + evarisk(this).attr("id").replace("user_edit_", "") + "#!#" );
-			}
-		});
-
-		evarisk("#userRightDetail_add_gpt").val("");
-		evarisk(".add_groupement").each(function(){
-			if(evarisk(this).is(":checked")){
-				evarisk("#userRightDetail_add_gpt").val( evarisk("#userRightDetail_add_gpt").val() + evarisk(this).val() + "!#!" + evarisk(this).attr("id").replace("user_add_gpt", "") + "#!#" );
-			}
-		});
-
-		evarisk("#userRightDetail_add_unit").val("");
-		evarisk(".add_unite").each(function(){
-			if(evarisk(this).is(":checked")){
-				evarisk("#userRightDetail_add_unit").val( evarisk("#userRightDetail_add_unit").val() + evarisk(this).val() + "!#!" + evarisk(this).attr("id").replace("user_add_unit", "") + "#!#" );
-			}
-		});
-
-		evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
-			"table": "' . DIGI_DBT_PERMISSION . '",
-			"act": "save",
-			"user_see": evarisk("#userRightDetail_see").val(),
-			"user_delete": evarisk("#userRightDetail_delete").val(),
-			"user_edit": evarisk("#userRightDetail_edit").val(),
-			"user_add_gpt": evarisk("#userRightDetail_add_gpt").val(),
-			"user_add_unit": evarisk("#userRightDetail_add_unit").val(),
-
-			"user_see_old": evarisk("#userRightDetail_see_old").val(),
-			"user_delete_old": evarisk("#userRightDetail_delete_old").val(),
-			"user_edit_old": evarisk("#userRightDetail_edit_old").val(),
-			"user_add_gpt_old": evarisk("#userRightDetail_add_gpt_old").val(),
-			"user_add_unit_old": evarisk("#userRightDetail_add_unit_old").val(),
-
-			"tableElement": "' . $tableElement . '",
-			"idElement": "' . $idElement . '"
-		});
-
-	});
-</script>';
-
-		$utilisateursMetaBox .= '<div class="clear" ><div id="saveButtonLoading_userRight' . $tableElement . '" style="display:none;" class="clear alignright" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading in progress" /></div><div id="saveButtonContainer_userRight' . $tableElement . '" >' . EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div></div>';
-
-		echo '<div id="userRightContainerBox" >' . $utilisateursMetaBox . '</div>';
+		return $outputTable;
 	}
 
 
@@ -1258,6 +1320,387 @@ class digirisk_permission
 			'Evarisk_:_editer_les_options' => sprintf(__('g&eacute;rer %s','evarisk'), __('les options','evarisk')),
 			'Evarisk_:_voir_les_preconisations' => sprintf(__('voir %s','evarisk'), __('les pr&eacute;conisations','evarisk'))
 		);
+	}
+
+	/**
+	*
+	*/
+	function addRecursivRight($tableElement, $idElement, $userToAssociateRight, $rightToAssociate, $associationType)
+	{
+		$completeTree = Arborescence::completeTree($tableElement, $idElement);
+		if( is_array($completeTree) )
+		{
+			foreach($completeTree as $key => $content)
+			{
+				if( isset($content['nom']) )
+				{
+					switch($tableElement)
+					{
+						case TABLE_GROUPEMENT:
+							$elementType = 'groupement';
+						break;
+						case TABLE_UNITE_TRAVAIL:
+							$elementType = 'unite';
+						break;
+					}
+					$right = $rightToAssociate . $elementType . '_' . $idElement;
+					if(($associationType == 'add') && !$userToAssociateRight->has_cap($right))
+					{
+						$userToAssociateRight->add_cap($right);
+					}
+					if(($associationType == 'remove') && $userToAssociateRight->has_cap($right))
+					{
+						$userToAssociateRight->remove_cap($right);
+					}
+				}
+
+				if(isset($content['content']) && is_array($content['content']))
+				{
+					foreach($content['content'] as $index => $subContent)
+					{
+						if( isset($subContent['table']) && isset($subContent['id']) )
+						{
+							$completeTree[$key]['content'][$index] = self::addRecursivRight($subContent['table'], $subContent['id'], $userToAssociateRight, $rightToAssociate, $associationType);
+						}
+						else
+						{
+							foreach($subContent as $subContentIndex => $subContentContent)
+							{
+								switch($subContentContent['table'])
+								{
+									case TABLE_GROUPEMENT:
+										$elementType = 'groupement';
+									break;
+									case TABLE_UNITE_TRAVAIL:
+										$elementType = 'unite';
+									break;
+								}
+								$right = $rightToAssociate . $elementType . '_' . $subContentContent['id'];
+								if(($associationType == 'add') && !$userToAssociateRight->has_cap($right))
+								{
+									$userToAssociateRight->add_cap($right);
+								}
+								if(($associationType == 'remove') && $userToAssociateRight->has_cap($right))
+								{
+									$userToAssociateRight->remove_cap($right);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $completeTree;
+	}
+
+	/**
+	*	Output an html table with the specific permission for the user into the element tree
+	*/
+	function digiSpecificPermission($user)
+	{
+		global $digi_wp_role;
+
+		$specificPermission = array();
+
+		foreach($user->caps as $cap => $value)
+		{
+			if(!$digi_wp_role->is_role($cap) && (substr($cap, 0, 5) == 'digi_'))
+			{
+				/*	On explose la permission pour récupérer les différentes informations	*/
+				$permissionDetail = explode('_', $cap);
+				/*	Comptage du nombre de partie dans la permission	*/
+				$nbElementPermission = count($permissionDetail);
+
+				/*	On récupère le type d'élément auquel le droit est associé, le type de l'élément est toujours en avant dernière position	*/
+				switch($permissionDetail[$nbElementPermission - 2])
+				{
+					case 'unite':
+						$tableElement = TABLE_UNITE_TRAVAIL;
+					break;
+					case 'groupement':
+						$tableElement = TABLE_GROUPEMENT;
+					break;
+				}
+
+				/*	Suppression des éléments inutiles dans le nom de la permission pour garder uniquement les parties permettant de générer les noms des éléments	*/
+				$permission = str_replace('digi_', '', $cap);
+				$permission = str_replace('_' . $permissionDetail[$nbElementPermission - 2] . '_', '', $permission);
+				$permission = str_replace($permissionDetail[$nbElementPermission - 1], '', $permission);
+
+				$specificPermission[$permissionDetail[$nbElementPermission - 2]]['table'] = $tableElement;
+				$specificPermission[$permissionDetail[$nbElementPermission - 2]][$permissionDetail[$nbElementPermission - 1]][] = $permission;
+			}
+		}
+
+?>
+<span class="digi_permission_check_all" ><?php _e('Ces droits sont d&eacute;finis sur chaque &eacute;l&eacute;ment de l\'arbre dans le menu "&Eacute;valuation des risques"', 'evarisk'); ?></span>
+<table summary="User specific rights for digirisk" cellpadding="0" cellspacing="0" class="form-table" >
+	<tr>
+		<th>&nbsp;</th>
+		<td>
+<?php
+			foreach($specificPermission as $elementType => $elementTypeDetails)
+			{
+?>
+			<div class="sub_module <?php echo ($elementType != '') ? 'permission_module_' . $elementType : ''; ?>" >
+				<div class="sub_module_name" >
+<?php
+				_e('permission_' . $elementType, 'evarisk');
+?>
+				</div>
+				<div class="sub_module_content" >
+<?php
+				/*	Liste des permissions pour le module et le sous-module	*/
+				foreach($elementTypeDetails as $elementIdentifier => $elementDetails)
+				{
+					$elementInformations = '';
+					$elementPrefix = '';
+					switch($elementTypeDetails['table'])
+					{
+						case TABLE_UNITE_TRAVAIL:
+							$elementInformations = eva_UniteDeTravail::getWorkingUnit($elementIdentifier);
+							$elementPrefix = 'UT' . $elementIdentifier;
+						break;
+						case TABLE_GROUPEMENT:
+							$elementInformations = EvaGroupement::getGroupement($elementIdentifier);
+							$elementPrefix = 'GP' . $elementIdentifier;
+						break;
+					}
+
+					/*		*/
+					if($elementInformations != '')
+					{
+						if($elementIdentifier != 'table')
+						{
+							$permissionName = '';
+							foreach($elementDetails as $permission)
+							{
+								if($permissionName != '')
+								{
+									$permissionName .= '<br/>';
+								}
+								$permissionName .= '&nbsp;&nbsp;-&nbsp;';
+								switch($permission)
+								{
+									case 'edit':
+										$permissionName .= __('&Eacute;diter', 'evarisk');
+									break;
+									case 'add':
+										$permissionName .= __('Ajouter', 'evarisk');
+									break;
+									case 'delete':
+										$permissionName .= __('Supprimer', 'evarisk');
+									break;
+									case 'view_detail':
+										$permissionName .= __('Voir', 'evarisk');
+									break;
+								}
+							}
+							if($permissionName != '')
+							{
+								$permissionName = '<br/>' . $permissionName;
+							}
+							echo $elementPrefix . '&nbsp;-&nbsp;' . $elementInformations->nom . $permissionName . '<br/><br/>';
+						}
+					}
+				}
+?>
+				</div>
+			</div>
+<?php
+			}
+?>
+		</td>
+	</tr>
+</table>
+<?php
+	}
+
+	/**
+	*	Output the html table with the permission list stored by module and sub-module
+	*/
+	function permission_management($elementToManage)
+	{
+		global $digi_wp_role;
+		if(!is_object($digi_wp_role))
+		{
+			/*	Instanciation de l'objet role de worpdress	*/
+			$digi_wp_role = new WP_Roles();
+		}
+		$permissionList = array();
+		$permissionCap = array();
+
+		/*	Récupération des permissions créées pour rangement par module	*/
+		$existingPermission = self::digirisk_get_permission();
+		foreach($existingPermission as $permission)
+		{
+			$permissionList[$permission->permission_module][$permission->permission_sub_module][] = $permission->permission;
+			$permissionCap[$permission->permission]['type'] = $permission->permission_type;
+			$permissionCap[$permission->permission]['subtype'] = $permission->permission_sub_type;
+		}
+
+?>
+<table summary="User rights for digirisk" cellpadding="0" cellspacing="0" class="form-table" >
+<?php
+		if(($_REQUEST['user_id'] != '') && ($_REQUEST['user_id'] > 0))
+		{
+?>
+	<tr>
+		<th><?php _e('L&eacute;gende', 'evarisk'); ?></th>
+		<td>
+			<span class="permissionGrantedFromParent" ><input type="checkbox" name="explanationBoxDisabled" id="explanationBoxDisabled" value="" checked="checked" disabled="disabled" />&nbsp;<?php _e('Le droit provient du r&ocirc;le de l\'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface', 'evarisk'); ?></span><br/>
+			<span class="permissionGranted" ><input type="checkbox" name="explanationBoxEnabled" id="explanationBoxEnabled" value="" checked="checked" />&nbsp;<?php _e('Permission ajout&eacute;e en plus de celle du r&ocirc;le de l\'utilisateur', 'evarisk'); ?></span>
+		</td>
+	</tr>
+<?php
+		}
+?>
+	<tr>
+		<th><?php _e('Raccourci d\'attribution', 'evarisk'); ?></th>
+		<td>
+			<span class="checkall_right" id="add_checkall" ><?php _e('Tous les droits', 'evarisk'); ?></span>&nbsp;/&nbsp;<span class="uncheckall_right" id="remove_uncheckall" ><?php _e('Aucun droit', 'evarisk'); ?></span><br/>
+			<span class="checkall_link" id="add_menu" ><?php _e('Tous les menus', 'evarisk'); ?></span>&nbsp;/&nbsp;<span class="uncheckall_link" id="remove_menu" ><?php _e('Aucun menu', 'evarisk'); ?></span><br/>
+			<span class="checkall_link" id="add_read" ><?php _e('Tous les droits en lecture', 'evarisk'); ?></span>&nbsp;/&nbsp;<span  class="uncheckall_link" id="remove_read" ><?php _e('Aucun droit en lecture', 'evarisk'); ?></span><br/>
+			<span class="checkall_link" id="add_write" ><?php _e('Tous les droits en &eacute;criture', 'evarisk'); ?></span>&nbsp;/&nbsp;<span  class="uncheckall_link" id="remove_write" ><?php _e('Aucun droit en &eacute;criture', 'evarisk'); ?></span><br/>
+			<span class="checkall_link" id="add_delete" ><?php _e('Tous les droits en suppression', 'evarisk'); ?></span>&nbsp;/&nbsp;<span  class="uncheckall_link" id="remove_delete" ><?php _e('Aucun droit en suppression', 'evarisk'); ?></span><br/>
+		</td>
+	</tr>
+	<tr>
+		<th>&nbsp;</th>
+	</tr>
+<?php
+		foreach($permissionList as $module => $subModule)
+		{
+?>
+	<tr>
+		<th>
+			<?php _e('permission_' . $module, 'evarisk'); ?>
+			<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
+		</th>
+		<td>
+<?php
+			foreach($subModule as $subModuleName => $moduleContent)
+			{
+?>
+			<div class="sub_module <?php echo ($subModuleName != '') ? 'permission_module_' . $subModuleName : ''; ?>" >
+				<div class="sub_module_name" >
+<?php
+				if($subModuleName)
+				{
+					_e('permission_' . $module . '_' . $subModuleName, 'evarisk');
+				}
+				else
+				{
+					_e('permission_' . $module, 'evarisk');
+				}
+?>
+				</div>
+				<div class="sub_module_content" >
+					<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module . '_' . $subModuleName; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module . '_' . $subModuleName; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
+<?php
+				/*	Liste des permissions pour le module et le sous-module	*/
+				foreach($moduleContent as $permission)
+				{
+					$checked = $permissionNameClass = '';
+					$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : '';
+					$action = isset($_REQUEST['save']) ? eva_tools::IsValid_Variable($_REQUEST['save']) : '';
+					if(($roleToCopy != '') && ($action == 'ok'))
+					{
+						$roleDetails = $digi_wp_role->get_role($roleToCopy);
+						if($roleDetails->has_cap($permission))
+						{
+							$checked = 'checked="checked"';
+						}
+					}
+					elseif(($elementToManage != null) && $elementToManage->has_cap($permission))
+					{
+						$checked = 'checked="checked"';
+						$permissionNameClass = 'permissionGranted';
+						if ( count($elementToManage->caps) > count($elementToManage->roles) && apply_filters('additional_capabilities_display', true, $elementToManage) )
+						{
+							$roleDetails = $digi_wp_role->get_role(implode('', $elementToManage->roles));
+							if ( $roleDetails->has_cap($permission) ) 
+							{
+								$permissionNameClass = 'permissionGrantedFromParent';
+								$checked .= ' disabled="disabled" ';
+							}
+						}
+					}
+					echo '<input type="checkbox" class="' . $module . ' ' . $subModuleName . ' ' . $module . '_' . $subModuleName . ' ' . $permissionCap[$permission]['type'] . ' ' . $permissionCap[$permission]['subtype'] . ' ' . $permissionCap[$permission]['type'] . '_' . $permissionCap[$permission]['subtype'] . '" name="digi_permission[' . $permission . ']" id="digi_permission_' . $permission . '" value="yes" ' . $checked . ' />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
+				}
+?>
+				</div>
+			</div>
+<?php
+			}
+?>
+		</td>
+	</tr>
+<?php
+		}
+?>
+</table>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		/**
+		*	Define action when clicking on checkall/uncheckall for a module or a sub module
+		*/
+		evarisk('.checkall').click(function(){
+			var module = evarisk(this).attr("id").replace("check_selector_", "");
+			evarisk("." + module).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", true);
+				}
+			});
+		});
+		evarisk('.uncheckall').click(function(){
+			var module = evarisk(this).attr("id").replace("uncheck_selector_", "");
+			evarisk("." + module).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", false);
+				}
+			});
+		});
+
+		/**
+		*	Define action chen clicking on checkall/uncheckall into the link
+		*/
+		evarisk('.checkall_link').click(function(){
+			var module = evarisk(this).attr("id").replace("add_", "");
+			evarisk("." + module).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", true);
+				}
+			});
+		});
+		evarisk('.uncheckall_link').click(function(){
+			var module = evarisk(this).attr("id").replace("remove_", "");
+			evarisk("." + module).each(function(){
+				if(!evarisk(this).attr("disabled")){
+					evarisk(this).attr("checked", false);
+				}
+			});
+		});
+
+		/**
+		*	Define action chen clicking on checkall/uncheckall into the link
+		*/
+		evarisk('.checkall_right').click(function(){
+			var module = evarisk(this).attr("id").replace("add_", "");
+			evarisk("." + module).each(function(){
+				evarisk(this).click();
+			});
+		});
+		evarisk('.uncheckall_right').click(function(){
+			var module = evarisk(this).attr("id").replace("remove_", "");
+			evarisk("." + module).each(function(){
+				evarisk(this).click();
+			});
+		});
+	});
+</script>
+<?php
 	}
 
 }

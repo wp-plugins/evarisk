@@ -39,7 +39,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 
 {//	Ged
 	DEFINE('TABLE_GED_DOCUMENTS', PREFIXE_EVARISK . "ged_documents");
-	DEFINE('TABLE_FP', PREFIXE_EVARISK . "ged_documents_fiche_de_poste");
+	DEFINE('TABLE_FP', PREFIXE_EVARISK . "ged_documents_fiches");
 	DEFINE('TABLE_DUER', PREFIXE_EVARISK . "ged_documents_document_unique");
 }
 
@@ -190,6 +190,9 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_OPTION', PREFIXE_EVARISK . "option");
 	DEFINE('TRASH_DIGI_DBT_OPTION', PREFIXE_EVARISK_TRASH . "option");
 	DEFINE('TABLE_VERSION', PREFIXE_EVARISK . "version");
+	DEFINE('TRASH_DIGI_DBT_VERSION', PREFIXE_EVARISK_TRASH . "version");
+
+
 	DEFINE('TRASH_DIGI_DBT_VERSION', PREFIXE_EVARISK_TRASH . "version");
 }
 

@@ -179,6 +179,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		// $uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('text', $idChamps, $contenuInputEffectif, '', $labelInput, $nomChamps, $grise, EFFECTIF_UNITE_TRAVAIL_OBLIGATOIRE, $taille, '', 'Number');
 	}
 
+	if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
 		$valeurActuelleIn = "false";

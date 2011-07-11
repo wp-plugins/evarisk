@@ -312,7 +312,6 @@ class eva_documentUnique
 	*/
 	function readBilanUnitaire($bilanALire, $outputType = '')
 	{
-	echo '<pre>';print_r($bilanALire);echo '</pre>';
 		$listeRisque = $listeRisque[SEUIL_BAS_FAIBLE] = $listeRisque[SEUIL_BAS_APLANIFIER] = $listeRisque[SEUIL_BAS_ATRAITER] = $listeRisque[SEUIL_BAS_INACCEPTABLE] = array();
 
 		$listeTousRisques = $bilanALire;
@@ -799,6 +798,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		$output = '
 <div class="clear" id="summaryDocumentGeneratorSlector" >
 	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
+	<div class="alignleft" id="generateFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
 	<div class="alignleft" id="generateFP" >' . __('Fiches de poste', 'evarisk') . '</div>
 </div>
 <div class="clear" id="bilanBoxContainer" >' . eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '</div>
@@ -813,6 +813,20 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				"post":"true", 
 				"table":"' . TABLE_DUER . '",
 				"act":"documentUniqueGenerationForm",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '"
+			});
+		});
+		evarisk("#generateFGP").click(function(){
+			evarisk("#summaryDocumentGeneratorSlector div").each(function(){
+				evarisk(this).removeClass("selected");
+			});
+			evarisk(this).addClass("selected");
+			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
+			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true", 
+				"table":"' . TABLE_DUER . '",
+				"act":"groupementSheetGeneration",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '"
 			});

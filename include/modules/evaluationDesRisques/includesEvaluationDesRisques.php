@@ -30,7 +30,7 @@
 				// require_once(EVA_METABOXES_PLUGIN_DIR . 'accidentDeTravail/accidentDeTravail.php' );
 				// require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/veilleReglementairePostBox.php');
 				/*	Is wpshop plugin exist and is activ so we output the box in order to associate products	*/
-				if (is_plugin_active('wpshop/wp-shop.php'))
+				if (is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))
 				{
 					include_once(EVA_METABOXES_PLUGIN_DIR . 'produits/produitsPostBox.php');
 				}

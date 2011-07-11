@@ -82,7 +82,7 @@ class EvaGroupement {
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_GROUPEMENT . " WHERE id = " . $id);
 		return $resultat;
 	}
-	
+
 	/**
 	 * Returns the group witch is the name
 	 * @param string $nom Group name search
@@ -94,7 +94,7 @@ class EvaGroupement {
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_GROUPEMENT . " WHERE nom='" . $nom . "'");
 		return $resultat;
 	}
-	
+
 	/**
 	 * Returns all group maching with the where condition and order by the order condition
 	 * @param string $where SQL where condition

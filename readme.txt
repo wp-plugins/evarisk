@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.1.3
-Stable tag: 5.1.3.1
+Stable tag: 5.1.3.2
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,25 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.3.2 =
+
+Am&eacute;liorations
+
+* Interface d'affectation des droits des utilisateurs dans chaque &eacute;l&eacute;ment de l'arbre
+* Ajout de l'affectation r&eacute;cursive des droits des utilisateurs
+* Affichage des droits sp&eacute;cifiques des utilisateurs de façon "human-readable"
+* Ajout de la possibilit&eacute; de g&eacute;n&eacute;rer les fiches de groupements (calqu&eacute; sur les fiches de poste sans les pr&eacute;conisations)
+
+Corrections
+
+* Correction pour les droits utilisateurs pour la box d'&eacute;dition d'un groupement ou d'une unit&eacute; de travail, le bouton enregistrer &eacute;tait pr&eacute;sent m&ecirc;me si les droits &eacute;taient en lecture seule
+* Erreur javascript dans la box d'affectation des droits dans chaque &eacute;l&eacute;ment de l'arbre si aucun utilisateur n'avait &eacute;t&eacute; cr&eacute;&eacute;
+* G&eacute;n&eacute;ration des fiches de poste en masse qui ne fonctionnait plus sur les groupements
+* Enregistrement du domaine des emails des utilisateurs dans les options suite au changement de gestion des options
+* Renommage de la cat&eacute;gorie de pr&eacute;conisations anciennement nomm&eacute;e "recommandation" en "avertissements" (CP3)
+* Corrections de l'interfa&ccedil;age de wpshop et de digirisk
 
 
 = Version 5.1.3.1 =

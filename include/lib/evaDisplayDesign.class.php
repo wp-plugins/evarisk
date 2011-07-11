@@ -2682,6 +2682,13 @@ class EvaDisplayDesign {
 				$table = TABLE_FP;
 			}
 			break;
+			case TABLE_GROUPEMENT . '_FGP' :
+			{
+				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/');
+				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDeGroupement/modeleDefaut_groupement.odt';
+				$table = TABLE_FP;
+			}
+			break;
 			case TABLE_UNITE_TRAVAIL:
 			{
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
@@ -2748,7 +2755,8 @@ class EvaDisplayDesign {
 		}
 		$moreModelChoice = '';
 		$documentList = eva_gestionDoc::getCompleteDocumentList($documentType, 
-		"	AND id NOT IN (
+		"	AND SUBSTRING(chemin FROM 1 FOR 8) != 'results/'
+			AND id NOT IN (
 				SELECT id 
 				FROM " . TABLE_GED_DOCUMENTS . " 
 				WHERE id_element = '" . $idElement . "' 

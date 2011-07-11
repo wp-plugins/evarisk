@@ -380,4 +380,59 @@ class Arborescence {
 		
 		return $unit;
 	}
+
+	/**
+	*	Return an array with the complete list of group placed under a group
+	*
+	*	@param mixed $tableElement The element type we want to have the group list
+	*	@param integer $idElement The element identifier we want to have the group list
+	*
+	*	@return array $group An array with the list of work group
+	*/
+	function getCompleteGroupList($tableElement, $idElement)
+	{
+		$completeTree = arborescence::completeTree($tableElement, $idElement);
+		$group = array();
+		if( is_array($completeTree) )
+		{
+			foreach($completeTree as $key => $content)
+			{
+				if($content['table'] == TABLE_GROUPEMENT)
+				{
+					unset($groupInfos);$groupInfos = array();
+					$groupInfos['table'] = $content['table'];
+					$groupInfos['id'] = $content['id'];
+					$groupInfos['nom'] = $content['nom'];
+					$group[] = $groupInfos;
+				}
+
+				if(isset($content['content']) && is_array($content['content']))
+				{
+					foreach($content['content'] as $index => $subContent)
+					{
+						if( isset($subContent['table']) && isset($subContent['id']) )
+						{
+							$group = array_merge($group, arborescence::getCompleteGroupList($subContent['table'], $subContent['id']));
+						}
+						else
+						{
+							if($subContent['table'] == TABLE_GROUPEMENT)
+							{
+								foreach($subContent as $subContentIndex => $subContentContent)
+								{
+									$groupInfos['table'] = $subContentContent['table'];
+									$groupInfos['id'] = $subContentContent['id'];
+									$groupInfos['nom'] = $subContentContent['nom'];
+									$group[] = $groupInfos;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $group;
+	}
+
 }

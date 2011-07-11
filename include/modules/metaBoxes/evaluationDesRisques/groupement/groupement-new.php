@@ -183,6 +183,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		// $groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $id, $contenuInputEffectif, $contenuAideEffectif, $labelInput, $nomChamps, $grise, EFFECTIF_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
 	}
 
+	if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $arguments['idElement']))
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
