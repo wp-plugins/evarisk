@@ -17,9 +17,12 @@
 	DEFINE('EVA_ARROW_BOTTOM', EVA_IMG_ICONES_PLUGIN_URL . 'fleche_bas.png');
 
 	DEFINE('DIGI_OPEN_POPUP', EVA_IMG_ICONES_PLUGIN_URL . 'open_popup_s.png');
+	DEFINE('DIGI_RECURSE', EVA_IMG_ICONES_PLUGIN_URL . 'recursif.png');
 
 	DEFINE('DIGI_USER_GROUP_ICON_S', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/groupeUtilisateur_s.png');
 	DEFINE('DIGI_USER_RIGHT_ICON_S', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/groupeUtilisateur_s.png');
+	DEFINE('DIGI_USER_SELECT_ALL', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/allUser.png');
+	DEFINE('DIGI_USER_SELECT_NOBODY', EVA_IMG_ICONES_PLUGIN_URL . 'gestionUtilisateurs/noUser.png');
 
 	/**
 	*	Message error / success picture

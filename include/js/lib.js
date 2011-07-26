@@ -293,21 +293,23 @@ function updateTips( t, container )
 }
 function checkLength( o, n, min, max, msg, errorContainer )
 {
-	if ( o.val().length > max || o.val().length < min ) {
+	if ( o.val().length > max || o.val().length < min ){
 		o.addClass( "ui-state-error" );
 		updateTips( convertAccentToJS(msg.replace("!#!term!#!", n).replace("!#!minlength!#!", min).replace("!#!maxlength!#!", max)), errorContainer );
 		return false;
-	} else {
+	}
+	else{
 		return true;
 	}
 }
 function checkRegexp( o, regexp, n, errorContainer  )
 {
-	if ( !( regexp.test( o.val() ) ) ) {
+	if ( !( regexp.test( o.val() ) ) ){
 		o.addClass( "ui-state-error" );
 		updateTips( n, errorContainer );
 		return false;
-	} else {
+	}
+	else{
 		return true;
 	}
 }
@@ -380,12 +382,12 @@ function checkUserListModification(tableElement, idButton){
 	var userList = evarisk("#affectedUserIdList" + tableElement).val();
 
 	if(actualUserList == userList){
-		evarisk("#" + idButton).attr("disabled", "disabled");
+		evarisk("#" + idButton).prop("disabled", "disabled");
 		evarisk("#" + idButton).addClass("button-secondary");
 		evarisk("#" + idButton).removeClass("button-primary");
 	}
 	else{
-		evarisk("#" + idButton).attr("disabled", "");
+		evarisk("#" + idButton).prop("disabled", "");
 		evarisk("#" + idButton).removeClass("button-secondary");
 		evarisk("#" + idButton).addClass("button-primary");
 	}
@@ -430,12 +432,12 @@ function checkElementListModification(tableElement, idButton){
 	var affectedList = evarisk("#affectedList" + tableElement).val();
 
 	if(actuallyAffectedList == affectedList){
-		evarisk("#" + idButton).attr("disabled", "disabled");
+		evarisk("#" + idButton).prop("disabled", "disabled");
 		evarisk("#" + idButton).addClass("button-secondary");
 		evarisk("#" + idButton).removeClass("button-primary");
 	}
 	else{
-		evarisk("#" + idButton).attr("disabled", "");
+		evarisk("#" + idButton).prop("disabled", "");
 		evarisk("#" + idButton).removeClass("button-secondary");
 		evarisk("#" + idButton).addClass("button-primary");
 	}
@@ -458,5 +460,52 @@ function deleteElementIdFiedList(id, tableElement){
 
 	evarisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsLinked");
 	evarisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsNotLinked");
+}
+
+
+function createGroupement(action, table){
+	evarisk("#act").val(action);
+	evarisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
+		"post": "true", 
+		"table": table,
+		"act": evarisk("#act").val(),
+		"id": evarisk("#id").val(),
+		"nom_groupement": evarisk("#nom_groupement").val(),
+		"groupementPere": evarisk("#groupementPere :selected").val(),
+		"description": evarisk("#description").val(),
+		"adresse_ligne_1": evarisk("#adresse_ligne_1").val(),
+		"adresse_ligne_2": evarisk("#adresse_ligne_2").val(),
+		"code_postal": evarisk("#code_postal").val(),
+		"ville": evarisk("#ville").val(),
+		"telephone": evarisk("#telephone").val(),
+		"effectif": evarisk("#effectif").val(),
+		"affichage": evarisk("#affichage").val(),
+		"latitude": evarisk("#latitude").val(),
+		"longitude": evarisk("#longitude").val(),
+		"idsFilAriane": evarisk("#idsFilAriane").val()
+	});
+}
+function createUniteTravail(action, table){
+	evarisk("#act").val(action);
+	evarisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
+		"post": "true", 
+		"table": table,
+		"act": evarisk("#act").val(),
+		"id": evarisk("#id").val(),
+		"nom_unite_travail": evarisk("#nom_unite_travail").val(),
+		"groupementPere": evarisk("#groupementPere :selected").val(),
+		"description": evarisk("#description").val(),
+		"adresse_ligne_1": evarisk("#adresse_ligne_1").val(),
+		"adresse_ligne_2": evarisk("#adresse_ligne_2").val(),
+		"code_postal": evarisk("#code_postal").val(),
+		"ville": evarisk("#ville").val(),
+		"telephone": evarisk("#telephone").val(),
+		"effectif": evarisk("#effectif").val(),
+		"effectif": evarisk("#effectif").val(),
+		"affichage": evarisk("#affichage").val(),
+		"latitude": evarisk("#latitude").val(),
+		"longitude": evarisk("#longitude").val(),
+		"idsFilAriane": evarisk("#idsFilAriane").val()
+	});
 }
 

@@ -18,9 +18,9 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php' );
 
-	$postId = '';
+	$postId = $groupement_new = '';
 	if($arguments['idElement']!=null)
-	{	
+	{
 		$saveOrUpdate = 'update';
 		$postId = $arguments['idElement'];
 		$groupement = EvaGroupement::getGroupement($arguments['idElement']);
@@ -71,32 +71,53 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$groupementPere = EvaGroupement::getGroupement($arguments['idPere']);
 	}
 
-	$idForm = 'informationGeneralesGroupement';
-	$groupement_new = EvaDisplayInput::ouvrirForm('POST', $idForm, $idForm);
-	{//Champs cachés
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'latitude', '', '', null, 'latitude', false, false);
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'longitude', '', '', null, 'longitude', false, false);
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'affichage', $arguments['affichage'], '', null, 'affichage', false, false);
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'table', TABLE_GROUPEMENT, '', null, 'table', false, false);
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'id', $postId, '', null, 'id', false, false);
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('hidden', 'idsFilAriane', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false);
+	/*	Add dialog box in case that option is activate	*/
+	if(digirisk_options::getOptionValue('digi_tree_recreation_dialog', 'digirisk_tree_options') == 'oui')
+	{
+		$checkRecreate = (digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') == 'recreate') ? ' checked="checked" ' : '';
+		$checkReactivate = (digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') == 'reactiv') ? ' checked="checked" ' : '';
+		$groupement_new .= '<div id="existingElementDialog" class="hide" title="' . __('&Eacute;l&eacute;ment existant', 'evarisk') . '" ><div class="existingElementMainExplanation" >' . __('Un &eacute;l&eacute;ment portant le nom que vous venez de choisir existe d&eacute;j&agrave;. Vous pouvez d&eacute;cider de l\'action &agrave; effectuer dans la liste ci-dessous.', 'evarisk') . '</div><input type="hidden" name="nameOfElementToActiv" id="nameOfElementToActiv" value="" /><div class="actionForExistingElement" ><input type="radio" id="recreate_gpt" name="actionforexisting_gpt" value="recreate" class="existingElementChoice" ' . $checkRecreate . ' /><label for="recreate_gpt" >' . __('Ignorer l\'existant en recr&eacute;ant un nouveau groupement', 'evarisk') . '</label></div><div class="actionForExistingElement" ><input type="radio" id="reactiv_gpt" name="actionforexisting_gpt" value="reactiv" class="existingElementChoice" ' . $checkReactivate . ' /><label for="reactiv_gpt" >' . __('Restaurer l\'ancien groupement', 'evarisk') . '</label></div><div class="actionForExistingElement" >' . __('Pour changer le nom du nouvel &eacute;l&eacute;ment &agrave; cr&eacute;er, cliquez sur "Annuler"', 'evarisk') . '</div></div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#existingElementDialog").dialog({
+			autoOpen: false, height: 275, width: 500, modal: true,
+			buttons:{
+				"' . __('Annuler', 'evarisk') . '": function(){ evarisk(this).dialog("close"); },
+				"' . __('Valider', 'evarisk') . '": function(){
+					var choice = "";
+					evarisk(".existingElementChoice").each(function(){ if(evarisk(this).is(":checked")){ choice = evarisk(this).val(); } });
+					if(choice != ""){
+						if(choice == "recreate"){ createGroupement("' . $saveOrUpdate . '", "' . TABLE_GROUPEMENT . '"); evarisk(this).dialog("close"); }
+						else if(choice == "reactiv"){ evarisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_GROUPEMENT . '", "act": "reactiv_deleted", "nom_groupement": evarisk("#nameOfElementToActiv").val() }); }
+					}
+					else{ alert(convertAccentToJS("' . __('Merci de choisir l\'action &agrave; effectuer', 'evarisk') . '")); }
+				}
+			},
+			close:function(){ evarisk("#nom_groupement").focus(); }
+		});
+	});
+</script>';
 	}
 
-	$contenuAideTitre = "";
-	$contenuAideDescription = "";
-	$contenuAideLigne1 = "";
-	$contenuAideLigne2 = "";
-	$contenuAideCodePostal = "";
-	$contenuAideVille = "";
-	$contenuAideTelephone = "";
-	$contenuAideEffectif = "";
+	$idForm = 'informationGeneralesGroupement';
+	$groupement_new .= EvaDisplayInput::ouvrirForm('post', $idForm, $idForm);
+	{//Champs cachés
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'latitude', '', '', null, 'latitude', false, false);
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'longitude', '', '', null, 'longitude', false, false);
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'affichage', $arguments['affichage'], '', null, 'affichage', false, false);
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'table', TABLE_GROUPEMENT, '', null, 'table', false, false);
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'id', $postId, '', null, 'id', false, false);
+		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'idsFilAriane', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false);
+	}
+
+	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = "";
 	{//Nom du groupement
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
 		$nomChamps = "nom_groupement";
 		$idTitre = "nom_groupement";
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, '', $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
+		$groupement_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, '', $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
 	{//Groupement père
 		$search = "`Status`='Valid' AND nom<>'Groupement Racine'";
@@ -118,9 +139,9 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$valeurDefaut = "Aucun";
 		$nomRacine = "Groupement Racine";
 		$groupementRacine = EvaGroupement::getGroupementByName($nomRacine);
-		$groupement_new = $groupement_new .  '<div style="display:none">';
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherComboBoxArborescente($groupementRacine, TABLE_GROUPEMENT, $idSelect, $labelSelect, $nameSelect, $valeurDefaut, $selection);
-		$groupement_new = $groupement_new .  '</div>';
+		$groupement_new .=  '<div style="display:none">';
+		$groupement_new .= EvaDisplayInput::afficherComboBoxArborescente($groupementRacine, TABLE_GROUPEMENT, $idSelect, $labelSelect, $nameSelect, $valeurDefaut, $selection);
+		$groupement_new .=  '</div>';
 	}
 	{//Description
 		$labelInput = ucfirst(strtolower(__("Description", 'evarisk'))) . " :";
@@ -128,17 +149,17 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$id = "description";
 		$nomChamps = "description";
 		$rows = 5;
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, DESCRIPTION_GROUPEMENT_OBLIGATOIRE, $rows);
+		$groupement_new .= EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, DESCRIPTION_GROUPEMENT_OBLIGATOIRE, $rows);
 	}
 	{//Adresse
-		$groupement_new = $groupement_new . '<div id="adresseUnite' . $postId . '">';
+		$groupement_new .= '<div id="adresseUnite' . $postId . '">';
 		{//Ligne 1
 			$labelInputL1 = ucfirst(strtolower(__("Adresse ligne 1", 'evarisk'))) . " :";
 			$labelInputL1[1] = ($labelInputL1[0] == "&")?ucfirst($labelInputL1[1]):$labelInputL1[1];
 			$idL1 = "adresse_ligne_1";
 			$nomChamps = "adresse_ligne_1";
 			$taille = 32;
-			$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $idL1, $contenuInputLigne1, $contenuAideLigne1, $labelInputL1, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille);
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $idL1, $contenuInputLigne1, $contenuAideLigne1, $labelInputL1, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille);
 		}
 		{//Ligne 2
 			$labelInputL2 = ucfirst(strtolower(__("Adresse ligne 2", 'evarisk'))) . " :";
@@ -146,7 +167,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 			$idL2 = "adresse_ligne_2";
 			$nomChamps = "adresse_ligne_2";
 			$taille = 32;
-			$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $idL2, $contenuInputLigne2,$contenuAideLigne2,  $labelInputL2, $nomChamps, $grise, false, $taille);
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $idL2, $contenuInputLigne2,$contenuAideLigne2,  $labelInputL2, $nomChamps, $grise, false, $taille);
 		}
 		{//Code Postal
 			$labelInputCP = ucfirst(strtolower(__("Code Postal", 'evarisk'))) . " :";
@@ -154,7 +175,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 			$idCP = "code_postal";
 			$nomChamps = "code_postal";
 			$taille = 5; 
-			$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $idCP, $contenuInputCodePostal, $contenuAideCodePostal, $labelInputCP, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $idCP, $contenuInputCodePostal, $contenuAideCodePostal, $labelInputCP, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
 		}
 		{//Ville
 			$labelInputV = ucfirst(strtolower(__("Ville", 'evarisk'))) . " :";
@@ -162,9 +183,9 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 			$idV = "ville";
 			$nomChamps = "ville";
 			$taille = 32;
-			$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $idV, $contenuInputVille, $contenuAideVille, $labelInputV, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille);
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $idV, $contenuInputVille, $contenuAideVille, $labelInputV, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille);
 		}
-		$groupement_new = $groupement_new . '</div>';
+		$groupement_new .= '</div>';
 	}
 	{//Téléphone
 		$labelInput = ucfirst(strtolower(__("T&eacute;l&eacute;phone", 'evarisk'))) . " :";
@@ -172,7 +193,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$id = "telephone";
 		$nomChamps = "telephone";
 		$taille = 21;
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $id, $contenuInputTelephone, $contenuAideTelephone, $labelInput, $nomChamps, $grise, TELEPHONE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
+		$groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputTelephone, $contenuAideTelephone, $labelInput, $nomChamps, $grise, TELEPHONE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
 	}
 	{//Effectif
 		// $labelInput = ucfirst(strtolower(__("&Eacute;ffectif", 'evarisk'))) . " :";
@@ -180,25 +201,36 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		// $id = "effectif";
 		// $nomChamps = "effectif";
 		// $taille = 10;
-		// $groupement_new = $groupement_new . EvaDisplayInput::afficherInput('text', $id, $contenuInputEffectif, $contenuAideEffectif, $labelInput, $nomChamps, $grise, EFFECTIF_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
+		// $groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputEffectif, $contenuAideEffectif, $labelInput, $nomChamps, $grise, EFFECTIF_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
 	}
 
 	if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $arguments['idElement']))
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
-		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
+		$geolocObligatoire = GEOLOC_OBLIGATOIRE ? "true" : "false";
 		$scriptGeolocalisation = evaGoogleMaps::scriptGeoloc($idBouttonEnregistrer, $postId, $idL1, $idL2, $idCP, $idV, "latitude", "longitude");
 		
-		$groupsNames = EvaGroupement::getGroupementsName($saufGroupement);
-		$valeurActuelleIn = 'false';
+		$groupsNames = EvaGroupement::getGroupementsName($saufGroupement, " Status = 'Deleted' ");
+		$existingDeletedGtp = 'false';
 		if(count($groupsNames) != 0)
 		{
-			$valeurActuelleIn = "valeurActuelle in {";
+			$existingDeletedGtp = "valeurActuelle in {";
 			foreach($groupsNames as $groupName)
 			{
-				$valeurActuelleIn = $valeurActuelleIn . "'" . addslashes($groupName) . "':'', ";
+				$existingDeletedGtp .= "'" . addslashes($groupName) . "':'', ";
 			}
-			$valeurActuelleIn = $valeurActuelleIn . "}";
+			$existingDeletedGtp .= "}";
+		}
+		$groupsNames = EvaGroupement::getGroupementsName($saufGroupement, " Status = 'Valid' ");
+		$existingValidGtp = 'false';
+		if(count($groupsNames) != 0)
+		{
+			$existingValidGtp = "valeurActuelle in {";
+			foreach($groupsNames as $groupName)
+			{
+				$existingValidGtp .= "'" . addslashes($groupName) . "':'', ";
+			}
+			$existingValidGtp .= "}";
 		}
 		{//Script relatif à l'enregistrement
 			$scriptEnregistrement = '
@@ -218,7 +250,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 						}
 						else
 						{
-							valeurActuelle = evarisk(\'#' . $idTitre . '\').val();
+							valeurActuelle = evarisk("#' . $idTitre . '").val();
 							if(valeurActuelle == "")
 							{
 								var message = "' . ucfirst(sprintf(__('Vous n\'avez pas donn&eacute; de nom %s', 'evarisk'), __('au groupement', 'evarisk'))) . '";
@@ -226,32 +258,30 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 							}
 							else
 							{
-								if(' . $valeurActuelleIn . ')
+								if(' . $existingDeletedGtp . ')
+								{
+									if("' . digirisk_options::getOptionValue('digi_tree_recreation_dialog', 'digirisk_tree_options') . '" == "oui")
+									{
+										evarisk("#nameOfElementToActiv").val(valeurActuelle);
+										evarisk("#existingElementDialog").dialog("open");
+									}
+									else if("' . digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') . '" == "recreate")
+									{
+										createGroupement("' . $saveOrUpdate . '", "' . TABLE_GROUPEMENT . '");
+									}
+									else if("' . digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') . '" == "reactiv")
+									{
+										evarisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_GROUPEMENT . '", "act": "reactiv_deleted", "nom_groupement": valeurActuelle });
+									}
+								}
+								else if(' . $existingValidGtp . ')
 								{
 									var message = "' . ucfirst(sprintf(__('%s porte d&eacute;j&agrave; ce nom', 'evarisk'), __('un groupement', 'evarisk'))) . '";
 									alert(convertAccentToJS(message));
 								}
 								else
 								{
-									evarisk(\'#act\').val("' . $saveOrUpdate . '");
-									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
-										"table": "' . TABLE_GROUPEMENT . '",
-										"act": evarisk(\'#act\').val(),
-										"id": evarisk(\'#id\').val(),
-										"nom_groupement": evarisk(\'#nom_groupement\').val(),
-										"groupementPere": evarisk(\'#groupementPere :selected\').val(),
-										"description": evarisk(\'#description\').val(),
-										"adresse_ligne_1": evarisk(\'#adresse_ligne_1\').val(),
-										"adresse_ligne_2": evarisk(\'#adresse_ligne_2\').val(),
-										"code_postal": evarisk(\'#code_postal\').val(),
-										"ville": evarisk(\'#ville\').val(),
-										"telephone": evarisk(\'#telephone\').val(),
-										"effectif": evarisk(\'#effectif\').val(),
-										"affichage": evarisk(\'#affichage\').val(),
-										"latitude": evarisk(\'#latitude\').val(),
-										"longitude": evarisk(\'#longitude\').val(),
-										"idsFilAriane": evarisk(\'#idsFilAriane\').val()
-									});
+									createGroupement("' . $saveOrUpdate . '", "' . TABLE_GROUPEMENT . '");
 								}
 							}
 						}
@@ -261,9 +291,11 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 				</script>';
 		}
 		$script = $scriptEnregistrement . $scriptGeolocalisation;
-		$groupement_new = $groupement_new . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $script);
+		$groupement_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $script);
 	}
-	$groupement_new = $groupement_new . EvaDisplayInput::fermerForm($idForm);
+	$groupement_new .= EvaDisplayInput::fermerForm($idForm);
+
 	echo $groupement_new;
 }
+
 ?>

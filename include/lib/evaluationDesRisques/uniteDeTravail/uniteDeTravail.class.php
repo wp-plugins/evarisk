@@ -12,28 +12,27 @@ require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 class eva_UniteDeTravail {
 	
 	/**
-	 * @var int The working unit identifier
-	 */
+	* @var int The working unit identifier
+	*/
 	var $id;
 	/**
-	 * @var string The working unit name
-	 */
+	* @var string The working unit name
+	*/
 	var $name;
 	/**
-	 * @var string The working unit picture path
-	 */
+	* @var string The working unit picture path
+	*/
 	var $picture;
 	
 /*
- *	Constructeur et accesseurs
- */
-	
+*	Constructeur et accesseurs
+*/
 	/**
-	 * Constructor of the working unit class
-	 * @param int $id The identifier to set
-	 * @param string $name The name to set
-	 * @param string $picture The picture path to set
-	 */
+	* Constructor of the working unit class
+	* @param int $id The identifier to set
+	* @param string $name The name to set
+	* @param string $picture The picture path to set
+	*/
 	function UniteDeTravail($id = NULL, $name = '', $picture = EVA_DEFAULT_UT_IMAGE) {
 		$this->id = $id;
 		$this->name = $name;
@@ -41,64 +40,64 @@ class eva_UniteDeTravail {
 	}
 	
 	/**
-	 * Returns the working unit identifier
-	 * @return int The identifier
-	 */
+	* Returns the working unit identifier
+	* @return int The identifier
+	*/
 	function getId()
 	{
 		return $this->id;
 	}
 	/**
-	 * Set the working unit identifier
-	 * @param int $id The identifier to set
-	 */
+	* Set the working unit identifier
+	* @param int $id The identifier to set
+	*/
 	function setId($id)
 	{
 		$this->id = $id;
 	}
 	/**
-	 * Returns the working unit name
-	 * @return string The name
-	 */
+	* Returns the working unit name
+	* @return string The name
+	*/
 	function getName()
 	{
 		return $this->name;
 	}
 	/**
-	 * Set the working unit name
-	 * @param string $name The name to set
-	 */
+	* Set the working unit name
+	* @param string $name The name to set
+	*/
 	function setName($name)
 	{
 		$this->name = $name;
 	}
 	/**
-	 * Returns the working unit picture path
-	 * @return string The picture path
-	 */
+	* Returns the working unit picture path
+	* @return string The picture path
+	*/
 	function getPicture()
 	{
 		return $this->picture;
 	}
 	/**
-	 * Set the working unit picture path
-	 * @param string $picture The picture path to set
-	 */
+	* Set the working unit picture path
+	* @param string $picture The picture path to set
+	*/
 	function setpicture($picture)
 	{
 		$this->picture = $picture;
 	}
 	
 /*
- * Autres Methodes
- */
+* Autres Methodes
+*/
 	
 	/**
-	 * Returns the working unit witch is the identifier
-	 * @param int $id Working unit identifier search
-	 * @return The working unit  witch is the identifier
-	 */
-	static function getWorkingUnit($id)
+	* Returns the working unit witch is the identifier
+	* @param int $id Working unit identifier search
+	* @return The working unit  witch is the identifier
+	*/
+	function getWorkingUnit($id)
 	{
 		global $wpdb;
 		$id = (int) $id;
@@ -106,11 +105,11 @@ class eva_UniteDeTravail {
 	}
 	
 	/**
-	 * Returns the working unit witch is the name
-	 * @param string $nom Working unit name search
-	 * @return The working unit 
-	 */
-	static function getWorkingUnitByName($nom)
+	* Returns the working unit witch is the name
+	* @param string $nom Working unit name search
+	* @return The working unit 
+	*/
+	function getWorkingUnitByName($nom)
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE nom='" . $nom . "'");
@@ -118,25 +117,25 @@ class eva_UniteDeTravail {
 	}
 	
 	/**
-	 * Returns all working units maching with the where condition and order by the order condition
-	 * @param string $where SQL where condition
-	 * @param string $order SQL order condition
-	 * @return The working units  maching with the where condition and order by the order condition
-	 */
-	static function getWorkingUnits($where = "1", $order = "id ASC") {
+	* Returns all working units maching with the where condition and order by the order condition
+	* @param string $where SQL where condition
+	* @param string $order SQL order condition
+	* @return The working units  maching with the where condition and order by the order condition
+	*/
+	function getWorkingUnits($where = "1", $order = "id ASC") {
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
 	}
 	
 	/**
-	 * Returns all working units name whitout the specifie
-	 * @param string $saufUnite Working unit name not consider
-	 * @return All the  working unit name whitout the specifie
-	 */
-	static function getWorkingUnitsName($saufUnite = '')
+	* Returns all working units name whitout the specifie
+	* @param string $saufUnite Working unit name not consider
+	* @return All the  working unit name whitout the specifie
+	*/
+	function getWorkingUnitsName($saufUnite = '', $workingUnitStatus = '')
 	{	
-		$unites = eva_UniteDeTravail::getWorkingUnits();
+		$unites = eva_UniteDeTravail::getWorkingUnits($workingUnitStatus);
 		foreach($unites as $unite)
 		{
 			if($unite->nom != $saufUnite)
@@ -150,9 +149,9 @@ class eva_UniteDeTravail {
 	}
 	
 	/**
-	  * @todo
-	  */
-	static function getWorkingUnitInfos($idWorkingUnit)
+	* @todo
+	*/
+	function getWorkingUnitInfos($idWorkingUnit)
 	{
 		unset($infos, $info);
 		$uniteDeTravail = eva_UniteDeTravail::getWorkingUnit($idWorkingUnit);
@@ -202,12 +201,12 @@ class eva_UniteDeTravail {
 		return $scoreToReturn;
 	}
 	
-	static function getNiveauRisque($quotation)
+	function getNiveauRisque($quotation)
 	{
 		return Risque::getNiveauRisque(Risque::getSeuil($quotation));
 	}
 	
-	static function getNombreRisques($id)
+	function getNombreRisques($id)
 	{
 		return Risque::getNombreRisques(TABLE_UNITE_TRAVAIL, $id, "Valid");
 	}
@@ -219,11 +218,11 @@ class eva_UniteDeTravail {
 	}
 
 	/**
-	  * Returns the marker informations of a working unit for the google maps
-	  * @param string $id Working unit identifier
-	  * @return the marker informations for the google maps
-	  */
-	static function getMarkersGeoLoc($id)
+	* Returns the marker informations of a working unit for the google maps
+	* @param string $id Working unit identifier
+	* @return the marker informations for the google maps
+	*/
+	function getMarkersGeoLoc($id)
 	{
 		global $wpdb;
 		if($id == null)
@@ -245,54 +244,54 @@ class eva_UniteDeTravail {
 	}
 	
 /*
-  * Persistance
-  */
-  
+* Persistance
+*/ 
 	/**
-	 * Save a new working unit.
-	 * @param string $nom Working unit name.
-	 * @param string $idGroupementPere Father group id.
-	 */
-  static function saveNewWorkingUnit($nom, $idGroupementPere)
+	* Save a new working unit.
+	* @param string $nom Working unit name.
+	* @param string $idGroupementPere Father group id.
+	*/
+  function saveNewWorkingUnit($nom, $idGroupementPere)
 	{
 		global $wpdb;
 		
-		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid')";
+		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`, creation_date) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid', NOW())";
 		return $wpdb->query($sql);
 	}
 	
 	/**
-	 * Update the working unit which is the identifier.
-	 * @param int $id_unite Working unit identifier (not update).
-	 * @param string $nom Working unit name .
-	 * @param string $description Working unit description.
-	 * @param string $telephone Working unit telephone.
-	 * @param string $effectif Working unit effective .
-	 * @param string $idAdresse Identifier of the address working unit name in the Adress Table.
-	 * @param string $idGroupementPere  father group id.
-	 */
-	static function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
+	* Update the working unit which is the identifier.
+	* @param int $id_unite Working unit identifier (not update).
+	* @param string $nom Working unit name .
+	* @param string $description Working unit description.
+	* @param string $telephone Working unit telephone.
+	* @param string $effectif Working unit effective .
+	* @param string $idAdresse Identifier of the address working unit name in the Adress Table.
+	* @param string $idGroupementPere  father group id.
+	*/
+	function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "' WHERE `id`='" . $id_unite . "'";
+		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "', lastupdate_date = NOW() WHERE `id`='" . $id_unite . "'";
 		return $wpdb->query($sql);
 	}
 
 	/**
-	 * Update a given working unit
-	 *
-	 * @param string $id_unite The wordking unit identifier we want to update
-	 * @param string $whatToUpdate The wordking unit information we want to update
-	 * @param string $whatToSet The value of the information we want to update
-	 */
+	* Update a given working unit
+	*
+	* @param string $id_unite The wordking unit identifier we want to update
+	* @param string $whatToUpdate The wordking unit information we want to update
+	* @param string $whatToSet The value of the information we want to update
+	*/
 	function updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet)
 	{
 		global $wpdb;
 		
 		$query = $wpdb->prepare(
 			"UPDATE " . TABLE_UNITE_TRAVAIL . " 
-				SET " . $whatToUpdate . " = '%s' 
+				SET " . $whatToUpdate . " = '%s', 
+					lastupdate_date = NOW()
 			WHERE id='" . $id_unite . "'",
 			 $whatToSet
 		);
@@ -300,27 +299,26 @@ class eva_UniteDeTravail {
 		return $wpdb->query($query);
 	}
 	/**
-	  * Transfer an working unit from a group to an other
-	  * @param int $idUnite Working unit to transfer identifier
-	  * @param int $idGroupementPere Group which receive the transfer identifier
-	  */
-	static function transfertUnit($idUnite, $idGroupementPere)
+	* Transfer an working unit from a group to an other
+	* @param int $idUnite Working unit to transfer identifier
+	* @param int $idGroupementPere Group which receive the transfer identifier
+	*/
+	function transfertUnit($idUnite, $idGroupementPere)
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `id_groupement`='" . $idGroupementPere . "' WHERE `id`=" . $idUnite;
+		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `id_groupement`='" . $idGroupementPere . "', lastupdate_date = NOW() WHERE `id`=" . $idUnite;
 		$wpdb->query($sql);
 	}
-	
 	/**
-	  * Set the status of the  working unit wich is the identifier to Delete 
-	 * @param int $id Working unit identifier
-	  */
-	static function deleteWorkingUnit($id)
+	* Set the status of the  working unit wich is the identifier to Delete 
+	* @param int $id Working unit identifier
+	*/
+	function deleteWorkingUnit($id)
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `Status`='Deleted' WHERE `id`=" . $id;
+		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `Status`='Deleted', lastupdate_date = NOW() WHERE `id`=" . $id;
 		if($wpdb->query($sql))
 		{
 			echo 
@@ -352,4 +350,5 @@ class eva_UniteDeTravail {
 				</script>';
 		}
 	}
+
 }

@@ -1463,8 +1463,34 @@ ADD INDEX ( impressionRecommandation ) ;";
 		}
 		if(digirisk_options::getDbOption('base_evarisk') <= 49)
 		{
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 50)
+		{
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_GROUPEMENT . " DROP INDEX nom, ADD creation_date DATETIME NOT NULL , ADD lastupdate_date DATETIME NOT NULL ");
+			$wpdb->query($query);
+
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_UNITE_TRAVAIL . " DROP INDEX nom, ADD creation_date DATETIME NOT NULL , ADD lastupdate_date DATETIME NOT NULL ");
+			$wpdb->query($query);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 51)
+		{
 			$sql = "RENAME TABLE " . TABLE_FP_OLD . " TO " . TABLE_FP . " ;";
 			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 52)
+		{
+			$digirisk_tree_options['digi_tree_recreation_dialog'] = 'non';
+			$digirisk_tree_options['digi_tree_recreation_default'] = 'recreate';
+			add_option('digirisk_tree_options', $digirisk_tree_options, '', 'yes');
 
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();

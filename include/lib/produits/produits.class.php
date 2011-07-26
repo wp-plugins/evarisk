@@ -36,13 +36,14 @@ class digirisk_product
 			foreach($digiriskSelectedCategories as $digiriskCategories)
 			{
 				$digiriskCategory = wpshop_attributes::getElementWithAttributeAndValue(WPSHOP_DBT_CATEGORY, wpshop_entities::getEntityIdFromCode('product_category'), 1, 'code', $digiriskCategories, "'valid'");
-				/*	For each selected categoriesin digirisk, read informations to build an array with the needed information for the end 	*/
+				/*	For each selected categories in digirisk, read informations to build an array with the needed information for the end 	*/
 				foreach($digiriskCategory as $categoryId => $category)
 				{
 					$categories[$categoryId] = $category['attributes']['product_category_name']['value'];
 				}
 			}
 		}
+
 		$input_def['type'] = 'select';
 		$input_def['possible_value'] = $categories;
 		$input_def['value'] = '';
@@ -311,7 +312,7 @@ class digirisk_product
 			else
 			{/*	In case that no product is available into the selected categories	*/
 				/*	Overwrite the datatable titles and class	*/
-				$titres = array(ucfirst(strtolower(__('Aucune produit disponible', 'evarisk'))));
+				$titres = array(ucfirst(strtolower(__('Aucun produit disponible', 'evarisk'))));
 				$classes = array('');
 				/*	Define the content of the table	*/
 				$valeurs = array();

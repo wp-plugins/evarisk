@@ -15,7 +15,7 @@ $insertions[1]['class'] = 'setupAction';
 $scriptCB = '
 	<script type="text/javascript">
 		evarisk(document).ready(function(){
-			evarisk(\'#%1$s\').attr("checked", "checked");
+			evarisk(\'#%1$s\').prop("checked", "checked");
 			evarisk(\'#%1$s\').addClass("cbSetup");
 		});
 	</script>';
@@ -99,7 +99,7 @@ if(STANDALONEVERSION)
 			evarisk("#' . $idBouttonEnregistrer . '").click(function() {
 				var methodes = new Array();
 				methodes[0] = new Array();
-				methodes[0][0] = evarisk(\'#insertionMethodeEvarisk\').attr("checked");
+				methodes[0][0] = evarisk(\'#insertionMethodeEvarisk\').prop("checked");
 				methodes[0][1] = "evarisk";
 				var goOnInstall = false;
 				if( !evarisk("#activationThemeEvarisk").is(":checked") || (autoInstall))
@@ -118,10 +118,10 @@ if(STANDALONEVERSION)
 					evarisk("#wrap' . $idForm . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true", 
 						"nom": "installerEvarisk", 
-						"categorieDangers": evarisk("#insertionCategorie").attr("checked"),
-						"danger": evarisk("#insertionDanger").attr("checked"),
+						"categorieDangers": evarisk("#insertionCategorie").prop("checked"),
+						"danger": evarisk("#insertionDanger").prop("checked"),
 						"methodes": methodes,
-						"theme": evarisk("#activationThemeEvarisk").attr("checked")
+						"theme": evarisk("#activationThemeEvarisk").prop("checked")
 					});
 				}
 			});

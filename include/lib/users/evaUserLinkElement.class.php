@@ -170,7 +170,7 @@ class evaUserLinkElement
 	<div class="clear addLinkUserElement" >
 		<div class="clear" >
 			<span class="searchUserInput ui-icon" >&nbsp;</span>
-			<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="affectedUser' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />
+			<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="searchUser' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />
 		</div>
 		<div id="completeUserList' . $tableElement . '" class="completeUserList clear" >' . evaUserLinkElement::afficheListeUtilisateurTable($tableElement, $idElement) . '</div>
 	</div>
@@ -206,20 +206,20 @@ class evaUserLinkElement
 		});
 
 		/*	User Search autocompletion	*/
-		jQuery("#affectedUser' . $tableElement . '").click(function(){
+		jQuery("#searchUser' . $tableElement . '").click(function(){
 			jQuery(this).val("");
 		});
-		jQuery("#affectedUser' . $tableElement . '").blur(function(){
+		jQuery("#searchUser' . $tableElement . '").blur(function(){
 			jQuery(this).val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
 		});
-		jQuery("#affectedUser' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php");
-		jQuery("#affectedUser' . $tableElement . '").result(function(event, data, formatted){
+		jQuery("#searchUser' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php");
+		jQuery("#searchUser' . $tableElement . '").result(function(event, data, formatted){
 			cleanUserIdFiedList(data[1], "' . $tableElement . '");
 			addUserIdFieldList(data[0], data[1], "' . $tableElement . '");
 
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 
-			jQuery("#affectedUser' . $tableElement . '").val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
+			jQuery("#searchUser' . $tableElement . '").val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
 		});
 	})(evarisk);
 </script>';

@@ -22,11 +22,12 @@ class digirisk_options
 	function evarisk_add_options() 
 	{
 		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
+		register_setting('digirisk_options', 'digirisk_tree_options', array('digirisk_options', 'digirisk_tree_options_validator'));
 		register_setting('digirisk_db_option', 'digirisk_db_option');
 
 		{/* Declare the different options for the correctiv actions	*/
 			add_settings_section('digi_options_ac', __('Options pour les actions correctives', 'evarisk'), array('digirisk_options', 'options_output_ac'), 'digirisk_options_settings');
-			/*	Add the different field for the correctives actions	*/
+			/*	Add the different field for current section	*/
 			add_settings_field('digi_ac_supervisormandatory_field', __('Responsable des t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_supervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
 			add_settings_field('digi_ac_subsupervisormandatory_field', __('Responsable des sous-t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_subsupervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
 			add_settings_field('digi_ac_changesold_field', __('Possibilit&eacute; de modifier une t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesold_field'), 'digirisk_options_settings', 'digi_options_ac');
@@ -42,25 +43,25 @@ class digirisk_options
 
 		{/*	Declare the different options for the risks	*/
 			add_settings_section('digi_risk_options', __('Options pour les risques', 'evarisk'), array('digirisk_options', 'options_output_risk'), 'digirisk_options_settings');
-			/*	Add the different field for the correctives actions	*/
+			/*	Add the different field for current section	*/
 			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_settings', 'digi_risk_options');
 		}
 
 		{/*	Declare the different options for the work unit sheet	*/
 			add_settings_section('digi_fp_options', __('Options pour les fiches de poste', 'evarisk'), array('digirisk_options', 'options_output_fp'), 'digirisk_options_settings');
-			/*	Add the different field for the correctives actions	*/
+			/*	Add the different field for current section	*/
 			add_settings_field('digi_fp_picsize_field', __('Taille de la photo dans la fiche de poste (cm)', 'evarisk'), array('digirisk_options', 'digi_fp_picsize_field'), 'digirisk_options_settings', 'digi_fp_options');
 		}
 
 		{/*	Declare the different options for the recommandation	*/
 			add_settings_section('digi_recommandation_options', __('Options pour les pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'options_output_recommandation'), 'digirisk_options_settings');
-			/*	Add the different field for the correctives actions	*/
+			/*	Add the different field for current section	*/
 			add_settings_field('digi_recommandation_efficiency_field', __('Activer l\'efficacit&eacute; des pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'digi_recommandation_efficiency_field'), 'digirisk_options_settings', 'digi_recommandation_options');
 		}
 
 		{/*	Declare the different options for the users	*/
 			add_settings_section('digi_users_options', __('Options pour les utilisateurs', 'evarisk'), array('digirisk_options', 'options_output_users'), 'digirisk_options_settings');
-			/*	Add the different field for the correctives actions	*/
+			/*	Add the different field for current section	*/
 			add_settings_field('digi_recommandation_efficiency_field', __('Domaine par d&eacute;faut pour les e-mail utilisateurs (sans @)', 'evarisk'), array('digirisk_options', 'digi_users_emaildomain_field'), 'digirisk_options_settings', 'digi_users_options');
 		}
 
@@ -68,9 +69,16 @@ class digirisk_options
 			if (is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))
 			{
 				add_settings_section('digi_product_options', __('Options pour les produits', 'evarisk'), array('digirisk_options', 'options_output_products'), 'digirisk_options_settings');
-			/*	Add the different field for the correctives actions	*/
+			/*	Add the different field for current section	*/
 				add_settings_field('digi_product_categories_field', __('Cat&eacute;gorie(s) de produits &agrave; afficher pour affectation aux &eacute;l&eacute;ments', 'evarisk'), array('digirisk_options', 'digi_product_categories_field'), 'digirisk_options_settings', 'digi_product_options');
 			}
+		}
+
+		{/*	Declare the different options for the products if plugin exists and is active	*/
+			add_settings_section('digi_tree_options', __('Options pour les arbres', 'evarisk'), array('digirisk_options', 'options_output_tree'), 'digirisk_options_settings');
+			/*	Add the different field for current section	*/
+			add_settings_field('digi_tree_recreation_dialog', __('Afficher la bo&icirc;te de dialogue lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_dialog'), 'digirisk_options_settings', 'digi_tree_options');
+			add_settings_field('digi_tree_recreation_default', __('Choix par d&eacute;fault lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_default'), 'digirisk_options_settings', 'digi_tree_options');
 		}
 	}
 
@@ -102,6 +110,21 @@ if(current_user_can('digi_edit_option'))
 </div>
 <?php
 		echo EvaDisplayDesign::afficherFinPage();
+	}
+
+	/**
+	*	Validate the different data sent for the option
+	*
+	*	@param array $input An array which will receive the values sent by the user with the form
+	*
+	*	@return array $newinput An array with the send values cleaned for more secure usage
+	*/
+	function digirisk_tree_options_validator($input)
+	{
+		$newinput['digi_tree_recreation_dialog'] = $input['digi_tree_recreation_dialog'];
+		$newinput['digi_tree_recreation_default'] = $input['digi_tree_recreation_default'];
+
+		return $newinput;
 	}
 
 	/**
@@ -421,7 +444,7 @@ if(current_user_can('digi_edit_option'))
 	*/
 	function options_output_products()
 	{
-		_e('Cochez les cases correspondantes aux cat&eacute;gories de produits que vous souhaitez ajouter dans la partie &eacute;valuation des risques. Une cat&eacute;gorie sera affich&eacute;e dans une boite', 'evarisk');
+		_e('Cochez les cases correspondantes aux cat&eacute;gories de produits que vous souhaitez ajouter dans la partie &eacute;valuation des risques.', 'evarisk');
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -457,15 +480,55 @@ if(current_user_can('digi_edit_option'))
 	}
 
 	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function options_output_tree()
+	{
+		
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_tree_recreation_dialog()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_tree_options');
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_tree_recreation_dialog', 'digirisk_tree_options[digi_tree_recreation_dialog]', $optionYesNoList, $options['digi_tree_recreation_dialog']);
+		}
+		else
+		{
+			echo $options['digi_tree_recreation_dialog'];
+		}
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_tree_recreation_default()
+	{
+		global $optionExistingTreeElementList;
+		$options = get_option('digirisk_tree_options');
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_tree_recreation_default', 'digirisk_tree_options[digi_tree_recreation_default]', $optionExistingTreeElementList, $options['digi_tree_recreation_default']);
+		}
+		else
+		{
+			echo $options['digi_tree_recreation_default'];
+		}
+	}
+
+	/**
 	*	Return the option value from a given option name
 	*
 	*	@param string $optionName The option name of the option we want to get the value
 	*
 	*	@return mixed The option value
 	*/
-	function getOptionValue($optionName)
+	function getOptionValue($optionName, $option = 'digirisk_options')
 	{
-		$digirisk_options = get_option('digirisk_options');
+		$digirisk_options = get_option($option);
 
 		return $digirisk_options[$optionName];
 	}

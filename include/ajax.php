@@ -340,6 +340,44 @@ if($_REQUEST['post'] == 'true')
 	</script>';
 					}
 					break;
+					case 'reactiv_deleted':
+					{
+						$nom_groupement = (isset($_REQUEST['nom_groupement']) && ($_REQUEST['nom_groupement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['nom_groupement']) : '';
+						$currentGpt = EvaGroupement::getGroupements(" nom = '" . $nom_groupement . "' ");
+						if(EvaGroupement::updateGroupementByField($currentGpt[0]->id, 'Status', 'Valid'))
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La restauration a r&eacute;ussie', 'evarisk') . '</strong></p>');
+							$moreAction = 'evarisk("#partieEdition").html(" ");evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+		var expanded = new Array();
+		evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+		evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			"post": "true", 
+			"table": "' . TABLE_GROUPEMENT . '",
+			"act": "edit",
+			"id": "' . $_REQUEST['id'] . '",
+			"partie": "left",
+			"menu": evarisk("#menu").val(),
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});';
+						}
+						else
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La restauration a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
+							$moreAction = '';
+						}
+
+						echo 
+	'<script type="text/javascript">
+		evarisk("#existingElementDialog").dialog("close");
+
+		actionMessageShow("#message", "' . $messageInfo . '");
+		setTimeout(\'actionMessageHide("#message")\',7500);
+
+	' . $moreAction . '
+	</script>';
+					}
+					break;
 				}
 				break;
 			case TABLE_UNITE_TRAVAIL:
@@ -523,6 +561,43 @@ if($_REQUEST['post'] == 'true')
 	</script>';
 					}
 					break;
+					case 'reactiv_deleted':
+					{
+						$nom_groupement = (isset($_REQUEST['nom_groupement']) && ($_REQUEST['nom_groupement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['nom_groupement']) : '';
+						$currentGpt = EvaGroupement::getGroupements(" nom = '" . $nom_groupement . "' ");
+						if(EvaGroupement::updateGroupementByField($currentGpt[0]->id, 'Status', 'Valid'))
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La restauration a r&eacute;ussie', 'evarisk') . '</strong></p>');
+							$moreAction = 'evarisk("#partieEdition").html(" ");
+		var expanded = new Array();
+		evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
+		evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			"post": "true", 
+			"table": "' . TABLE_GROUPEMENT . '",
+			"act": "edit",
+			"id": "' . $_REQUEST['id'] . '",
+			"partie": "left",
+			"menu": evarisk("#menu").val(),
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});';
+						}
+						else
+						{
+							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La restauration a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
+							$moreAction = '';
+						}
+
+						echo 
+	'<script type="text/javascript">
+		evarisk("#existingElementDialog").dialog("close");
+
+		actionMessageShow("#message", "' . $messageInfo . '");
+		setTimeout(\'actionMessageHide("#message")\',7500);
+
+	' . $moreAction . '
+	</script>';
+					}
 				}
 				break;
 			case TABLE_CATEGORIE_DANGER:
@@ -1063,7 +1138,7 @@ if($_REQUEST['post'] == 'true')
 		else if(evarisk(this).hasClass("risqPrioritaryCA")){
 			currentLineIdentifier = evarisk(this).attr("name").replace("risqPrioritaryCA_", "");
 		}
-		evarisk("#checkboxRisqMassUpdater_" + currentLineIdentifier).attr("checked", "checked");
+		evarisk("#checkboxRisqMassUpdater_" + currentLineIdentifier).prop("checked", "checked");
 	});
 	evarisk("#risqMassUpdater textarea").mousedown(function(){
 		if(evarisk(this).hasClass("risqComment")){
@@ -1072,26 +1147,26 @@ if($_REQUEST['post'] == 'true')
 		else if(evarisk(this).hasClass("risqPrioritaryCA")){
 			currentLineIdentifier = evarisk(this).attr("name").replace("risqPrioritaryCA_", "");
 		}
-		evarisk("#checkboxRisqMassUpdater_" + currentLineIdentifier).attr("checked", "checked");
+		evarisk("#checkboxRisqMassUpdater_" + currentLineIdentifier).prop("checked", "checked");
 	});
 
 	evarisk("#checkAllBoxMassUpdater").click(function(){
 		evarisk(".checkboxRisqMassUpdater").each(function(){
-			evarisk(this).attr("checked", "checked");
+			evarisk(this).prop("checked", "checked");
 		});
 	});
 	evarisk("#uncheckAllBoxMassUpdater").click(function(){
 		evarisk(".checkboxRisqMassUpdater").each(function(){
-			evarisk(this).attr("checked", "");
+			evarisk(this).prop("checked", "");
 		});
 	});
 	evarisk("#reverseSelectionBoxMassUpdater").click(function(){
 		evarisk(".checkboxRisqMassUpdater").each(function(){
 			if(evarisk(this).is(":checked")){
-				evarisk(this).attr("checked", "");
+				evarisk(this).prop("checked", "");
 			}
 			else{
-				evarisk(this).attr("checked", "checked");
+				evarisk(this).prop("checked", "checked");
 			}
 		});
 	});
@@ -3812,7 +3887,7 @@ echo $output;
 										evarisk(this).html("<input type=\"text\" value=\"" + evarisk(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
 										if(evarisk(this).parent("tr").children("td:first").html().match("^T")=="T")
 										{
-											evarisk(this).children("input").attr("disabled","disabled");
+											evarisk(this).children("input").prop("disabled","disabled");
 										}
 										else
 										{
@@ -4495,7 +4570,7 @@ echo $output;
 										evarisk(this).html("<input type=\"text\" value=\"" + evarisk(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
 										if(evarisk(this).parent("tr").children("td:first").html().match("^T")=="T")
 										{
-											evarisk(this).children("input").attr("disabled","disabled");
+											evarisk(this).children("input").prop("disabled","disabled");
 										}
 										else
 										{

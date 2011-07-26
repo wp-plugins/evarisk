@@ -64,7 +64,7 @@
 					{// Script of checking box
 						$script = '
 							<script type="text/javascript">
-								evarisk(document).ready(function(){evarisk(\'#' . $idChamps . '\').attr("checked", "checked");});
+								evarisk(document).ready(function(){evarisk(\'#' . $idChamps . '\').prop("checked", "checked");});
 							</script>';
 					}
 					$EPIPostBoxBody = $EPIPostBoxBody . EvaDisplayInput::afficherInput('checkbox', $idChamps, '', '', $labelInput, $nomChamps, false, true, 255, 'eva_epi', '', '', $script, 'left; text-align:center; max-width: 24%', true);
@@ -75,7 +75,7 @@
 						evarisk(\'#' . $idBouttonEnregistrer . '\').click(function(){
 							var epis = new Array();
 							evarisk(\'.eva_epi\').each(function(){
-								if(evarisk(this).attr("checked"))
+								if(evarisk(this).prop("checked"))
 								{
 									epis.push(evarisk(this).attr("id").replace(/epi_/,""));
 								}

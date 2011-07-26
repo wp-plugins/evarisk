@@ -916,6 +916,17 @@ class digirisk_permission
 			$userRightDetail[$rightName] = '';
 		}
 
+		/*	on récupère les utilisateurs affectés à l'élément en cours.	*/
+		$listeUtilisateursLies = array();
+		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
+		if(is_array($utilisateursLies) && (count($utilisateursLies) > 0))
+		{
+			foreach($utilisateursLies as $utilisateur)
+			{
+				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
+			}
+		}
+
 		{/*	Affichage des racourcis de cochage/décochage en masse	*/		
 			$idTable = 'checkAllInterface' . $tableElement . $idElement;
 			unset($titres);
@@ -935,37 +946,76 @@ class digirisk_permission
 
 			unset($valeurs);
 			$valeurs[] = array('value'=>'b');
-			$valeurs[] = array('value'=>__('Pour tous les utilisateurs', 'evarisk'));
-			$valeurs[] = array('value'=>'<span class="checkAll_user_" id="see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_see" >' . __('Aucun', 'evarisk'), 'class'=>'rightCell');
-			$valeurs[] = array('value'=>'<span class="checkAll_user_" id="edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_edit" >' . __('Aucun', 'evarisk'), 'class'=>'rightCell');
-			$valeurs[] = array('value'=>'<span class="checkAll_user_" id="delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_delete" >' . __('Aucun', 'evarisk'), 'class'=>'rightCell');
+			$valeurs[] = array('value'=>__('Pour tous les utilisateurs', 'evarisk'), 'class'=>'middleAlign');
+			if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
+			{
+				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_see" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_edit" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_delete" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+			}
+			else
+			{
+				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="see" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_see" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+			}
 			switch($tableElement)
 			{
 				case TABLE_GROUPEMENT;
-					$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
-					$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
-					$valeurs[] = array('value'=>'<span class="checkAll_user_" id="recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+					if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
+					{
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+					}
+					else
+					{
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+					}
 				break;
 			}
 			$lignesDeValeurs[] = $valeurs;
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursDroits';
 
-			unset($valeurs);
-			$valeurs[] = array('value'=>'a');
-			$valeurs[] = array('value'=>__('Pour tous les utilisateurs affect&eacute;s', 'evarisk'), 'class'=>'userAffecte');
-			$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_see" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
-			$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_edit" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
-			$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_delete" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
-			switch($tableElement)
+			if(count($listeUtilisateursLies) > 0)
 			{
-				case TABLE_GROUPEMENT;
-					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
-					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
-					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
-				break;
+				unset($valeurs);
+				$valeurs[] = array('value'=>'a');
+				$valeurs[] = array('value'=>__('Pour tous les utilisateurs affect&eacute;s', 'evarisk'), 'class'=>'userAffecte middleAlign');
+				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
+				{
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_see" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_edit" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_delete" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+				}
+				else
+				{
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_see" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_see" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+				}
+				switch($tableElement)
+				{
+					case TABLE_GROUPEMENT;
+						if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
+						{
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+						}
+						else
+						{
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /><br/></span><span class="uncheckAll_user_affected_" id="not_a_add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+						}
+					break;
+				}
+				$lignesDeValeurs[] = $valeurs;
+				$idLignes[] = $tableElement . $idElement . 'listeUtilisateursAffectesDroit';
 			}
-			$lignesDeValeurs[] = $valeurs;
-			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursAffectesDroit';
 
 			$classes = array('','','rightColumn','rightColumn','rightColumn');
 			$script = '
@@ -974,32 +1024,32 @@ class digirisk_permission
 		evarisk(".checkAll_user_").click(function(){
 			var rightToManage = evarisk(this).attr("id");
 			evarisk("." + rightToManage).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", true);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", true);
 				}
 			});
 		});
 		evarisk(".uncheckAll_user_").click(function(){
 			var rightToManage = evarisk(this).attr("id").replace("not_", "");
 			evarisk("." + rightToManage).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", false);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", false);
 				}
 			});
 		});
 		evarisk(".checkAll_user_affected_").click(function(){
 			var rightToManage = evarisk(this).attr("id").replace("a_", "");
 			evarisk(".userAffecte ." + rightToManage).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", true);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", true);
 				}
 			});
 		});
 		evarisk(".uncheckAll_user_affected_").click(function(){
 			var rightToManage = evarisk(this).attr("id").replace("not_a_", "");
 			evarisk(".userAffecte ." + rightToManage).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", false);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", false);
 				}
 			});
 		});
@@ -1069,27 +1119,17 @@ class digirisk_permission
 				{
 					$titres[] = __('Ajouter un groupement', 'evarisk');
 					$titres[] = __('Ajouter une unit&eacute;', 'evarisk');
+					$titres[] = ucfirst(strtolower(__('R&eacute;cursif', 'evarisk')));
 				}
 				else
 				{
 					$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_LTL_ADD_GROUPEMENT) . '" alt="' . __('Ajouter un groupement', 'evarisk') . '" title="' . __('Ajouter un groupement', 'evarisk') . '" />';
 					$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_LTL_ADD_UNIT) . '" alt="' . __('Ajouter une unit&eacute;', 'evarisk') . '" title="' . __('Ajouter une unit&eacute;', 'evarisk') . '" />';
+					$titres[] = '<img src="' . str_replace('.png', '_vs.png', DIGI_RECURSE) . '" alt="' . __('R&eacute;cursif', 'evarisk') . '" title="' . __('R&eacute;cursif', 'evarisk') . '" />';
 				}
-				$titres[] = ucfirst(strtolower(__('R&eacute;cursif', 'evarisk')));
 			break;
 		}
 		unset($lignesDeValeurs);
-
-		/*	on récupère les utilisateurs affectés à l'élément en cours.	*/
-		$listeUtilisateursLies = array();
-		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		if(is_array($utilisateursLies) && (count($utilisateursLies) > 0))
-		{
-			foreach($utilisateursLies as $utilisateur)
-			{
-				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
-			}
-		}
 
 		/*	On lit la liste des utilisateurs si elle n'est pas vide	*/
 		$listeUtilisateurs = evaUser::getCompleteUserList();
@@ -1216,7 +1256,7 @@ class digirisk_permission
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
 		}
 
-		$classes = array('','','','rightColumn','rightColumn','rightColumn');
+		$classes = array('','middleAlign','middleAlign','rightColumn','rightColumn','rightColumn');
 		$script = '
 <script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -1271,14 +1311,19 @@ class digirisk_permission
 
 		$outputTable .= '
 <fieldset class="clear" >
-	<legend>' . __('L&eacute;gende', 'evarisk') . '</legend>
-	<div class="userAffecte userAffecteExplanation" >' . __('Utilisateurs affect&eacute;s &agrave; l\'&eacute;l&eacute;ment en cours d\'&eacute;dition', 'evarisk') . '</div>
+	<legend>' . __('L&eacute;gende', 'evarisk') . '</legend>';
+		if(count($listeUtilisateursLies) > 0)
+		{
+			$outputTable .= '
+	<div class="userAffecte userAffecteExplanation" >' . __('Utilisateurs affect&eacute;s &agrave; l\'&eacute;l&eacute;ment en cours d\'&eacute;dition', 'evarisk') . '</div>';
+		}
+		$outputTable .= '
 	<input type="checkbox" name="explanationBoxDisabled" id="explanationBoxDisabled" value="" checked="checked" disabled="disabled" />&nbsp;' . __('Le droit provient du r&ocirc;le de l\'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface', 'evarisk') . '
 </fieldset>
-<div class="clear userRightMassManagement" >
+<div class="clear userRightMassManagement userRightManagement_overflow" >
 	' . $checkAllTable . '
 </div>
-<div class="userTableContainer clear" >
+<div class="userTableContainer clear userRightManagement_overflow" >
 	' . $userListTable . '
 </div>';
 
@@ -1649,16 +1694,16 @@ class digirisk_permission
 		evarisk('.checkall').click(function(){
 			var module = evarisk(this).attr("id").replace("check_selector_", "");
 			evarisk("." + module).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", true);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", true);
 				}
 			});
 		});
 		evarisk('.uncheckall').click(function(){
 			var module = evarisk(this).attr("id").replace("uncheck_selector_", "");
 			evarisk("." + module).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", false);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", false);
 				}
 			});
 		});
@@ -1669,16 +1714,16 @@ class digirisk_permission
 		evarisk('.checkall_link').click(function(){
 			var module = evarisk(this).attr("id").replace("add_", "");
 			evarisk("." + module).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", true);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", true);
 				}
 			});
 		});
 		evarisk('.uncheckall_link').click(function(){
 			var module = evarisk(this).attr("id").replace("remove_", "");
 			evarisk("." + module).each(function(){
-				if(!evarisk(this).attr("disabled")){
-					evarisk(this).attr("checked", false);
+				if(!evarisk(this).prop("disabled")){
+					evarisk(this).prop("checked", false);
 				}
 			});
 		});

@@ -79,7 +79,7 @@
 							tabChange("#formRisque", "#ongletAjouterRisque");
 							hideExtraTab();
 							evarisk("#divDangerContainer :radio").each(function(){
-								evarisk(this).attr("checked", "");
+								evarisk(this).prop("checked", "");
 							});
 							evarisk("#divDangerContainer").css("display", "block");
 							evarisk("#divDangerContainerSwitch").css("display", "none");

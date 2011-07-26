@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.1.3
-Stable tag: 5.1.3.2
+Stable tag: 5.1.3.3
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,13 +75,28 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.3.3 =
+
+Am&eacute;liorations
+
+* Mise &agrave; jour des pictos pour la gestion des droits (voir - s&eacute;lectionner tous/aucun - r&eacute;cursif)
+* Mise en place d'une option pour le choix de l'action a effectuer lorsqu'on essaie de cr&eacute;er un &eacute;l&eacute;ment dont le nom existe d&eacute;j&agrave;
+
+Corrections
+
+* Compatibilit&eacute; avec la version 3.2.1 de wordpress (jquery)
+* Affectation des groupes d'utilisateurs aux &eacute;l&eacute;ments
+* Recherche des utilisateurs dans les box d'affectation
+* G&eacute;n&eacute;ration des fiches de poste et des fiches de groupement
+
+
 = Version 5.1.3.2 =
 
 Am&eacute;liorations
 
 * Interface d'affectation des droits des utilisateurs dans chaque &eacute;l&eacute;ment de l'arbre
 * Ajout de l'affectation r&eacute;cursive des droits des utilisateurs
-* Affichage des droits sp&eacute;cifiques des utilisateurs de façon "human-readable"
+* Affichage des droits sp&eacute;cifiques des utilisateurs de fa&ccedil;on "human-readable"
 * Ajout de la possibilit&eacute; de g&eacute;n&eacute;rer les fiches de groupements (calqu&eacute; sur les fiches de poste sans les pr&eacute;conisations)
 
 Corrections
@@ -102,7 +117,7 @@ Am&eacute;liorations
 
 Corrections
 
-* Correction dans la box des pr&eacute;conisations affect&eacute;es &agrave; un &eacute;l&eacute;ment du &agrave; l'option sur l'efficacit&eacute;
+* Box des pr&eacute;conisations affect&eacute;es &agrave; un &eacute;l&eacute;ment du &agrave; l'option sur l'efficacit&eacute;
 
 
 = Version 5.1.3.0 =
@@ -113,10 +128,10 @@ Am&eacute;liorations
 
 Corrections
 
-* Corrections des fautes d'orthographe dans les fiches de postes
-* Corrections des fautes d'orthographe dans la partie concernant les utilisateurs participant &agrave; l'&eacute;valuation
-* Correction de la prise en compte des commentaires sur les risques lors de la g&eacute;n&eacute;ration du document unique
-* Correction du caract&egrave;re &rsquo; qui g&eacute;n&eacute;rait une erreur lors de l'ouverture du document open office
+* Fautes d'orthographe dans les fiches de postes
+* Fautes d'orthographe dans la partie concernant les utilisateurs participant &agrave; l'&eacute;valuation
+* Prise en compte des commentaires sur les risques lors de la g&eacute;n&eacute;ration du document unique
+* Caract&egrave;re &rsquo; qui g&eacute;n&eacute;rait une erreur lors de l'ouverture du document open office
 
 
 = Version 5.1.2.9 =
@@ -494,16 +509,25 @@ Voici les 4 changements fondamentaux qui permettent aujourd'hui &agrave; ce logi
 = 5.1.3 =
 
 * Int&eacute;gration des fonctionnalit&eacute;s de base de la version 4.3.4
-* Integration de la gestion des articles (produits,dechets...)
+* Integration de la gestion des articles (produits, dechets...)  (Fait en version 5.1.2.9)
 * Int&eacute;gration de la gestion des FDS
-* V&eacute;rification des pictos pour les EPI
-* Int&eacute;gration des modeles de fiches de postes complet et simple pour l'affichage
+* V&eacute;rification des pictos pour les EPI (Fait en version 5.1.2.7)
+* Int&eacute;gration des modeles de fiches de postes complet et simple pour l'affichage (Fait en version 5.1.2.5)
+
+= 5.1.3.4 = 
+
+* Int&eacute;gration des accidents
+
+= 5.1.3.5 =
+
+* Int&eacute;gration de la gestion des FDS
+* Modification de l'ergonomie de l'arbre nous allons implementer une nouvelle ergonomie afin de simplifier la repartition des metiers l'arbre va donc contenir les boutons, ajout unite, ajout groupement, suppression, modification, gestion des utilisateurs, ajout risques, actions correctives, gestion des accidents
 
 = 5.2.0 =
 
-* Gestion des utilisateurs
-* Droits d'acces utilisateurs
-* selections global des utilateurs, implementation de l'ergonomie utilis&eacute; sur gmail (recherche ajax + pop up pour recherches sp&eacute;ciales et multiselection)
+* Gestion des utilisateurs (Fait en version 5.1.2.9)
+* Droits d'acces utilisateurs (Fait en version 5.1.3.1)
+* Selection global des utilateurs, implementation de l'ergonomie utilis&eacute; sur gmail (recherche ajax + pop up pour recherches sp&eacute;ciales et multiselection) (Fait en version 5.1.2.9)
 * Possibilit&eacute; d'ordonner les arbres (cat&eacute;gorie etc...)
 * Fil d'ariane en mode liste
 * V&eacute;rification de la coh&eacute;rence des dates dans les historiques
@@ -539,6 +563,7 @@ Mise en place des modeles d'unit&eacute;s de travail, avec un heritage des risqu
 
 Am&eacute;lioration des modeles : int&eacute;gration de champs libres afin qu'ils soient "automatiquement" repris dans le modele .odt
 
+
 * Recensement des dangers :
 
 Machines utilis&eacute;es sur les unit&eacute;s de travail
@@ -552,9 +577,9 @@ Gestion des BSD
 
 * Gestion de l'Homme
 
-Gestion des accidents de travail
+Gestion des accidents de travail  (Version 5.1.3.4)
 
-Gestion des enquetes accident
+Gestion des enquetes accident  (Version 5.1.3.5)
 
 Gestion des formations
 

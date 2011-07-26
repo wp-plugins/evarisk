@@ -21,13 +21,9 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentU
 <html>
 	<head>
 		<title>EVARISK - Document Unique</title>
-		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/jquery.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/lib.js"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/dataTable/jquery.dataTables.js"></script>
-		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/jQueryUI/js/jquery-ui-1.7.2.custom.min.js"></script>
-		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/jQueryUI/development-bundle/ui/i18n/jquery-ui-i18n.js"></script>
-		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/jQueryUI/development-bundle/ui/ui.gantt.min.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/treeTable/jquery.treeTable.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/galleriffic/jquery.galleriffic.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/galleriffic/jquery.opacityrollover.js"></script>
@@ -38,7 +34,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentU
 		<script type="text/javascript" src="<?php echo EVA_INC_PLUGIN_URL; ?>js/eav.js"></script>
 		<script type="text/javascript" src="<?php echo EVA_PLUGIN_DIR; ?>../../../wp-admin/js/postbox.js"></script>
 		<link rel="stylesheet" media="print, screen" type="text/css" href="<?php echo EVA_INC_PLUGIN_URL; ?>css/dataTable/demo_table_jui.css" />
-		<link rel="stylesheet" media="print, screen" type="text/css" href="<?php echo EVA_INC_PLUGIN_URL; ?>css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css" />
+		<link rel="stylesheet" media="print, screen" type="text/css" href="<?php echo EVA_INC_PLUGIN_URL; ?>css/jquery-ui-1.7.2.custom.css" />
 		<link rel="stylesheet" media="print, screen" type="text/css" href="<?php echo EVA_INC_PLUGIN_URL; ?>css/eva.css" />
 		<link rel="stylesheet" media="print, screen" type="text/css" href="<?php echo EVA_INC_PLUGIN_URL; ?>css/eav.css" />
 		<link rel="stylesheet" media="print, screen" type="text/css" href="<?php echo EVA_INC_PLUGIN_URL; ?>css/documentUnique.css" />

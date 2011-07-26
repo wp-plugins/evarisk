@@ -34,7 +34,7 @@ class EvaGroupement {
 	}
 	
 	/**
-	 * Returns the groupement  identifier
+		* Returns the groupement  identifier
 	 * @return int The identifier
 	 */
 	function getId()
@@ -42,40 +42,40 @@ class EvaGroupement {
 		return $this->id;
 	}
 	/**
-	 * Set the groupement  identifier
-	 * @param int $id The identifier to set
-	 */
+	* Set the groupement  identifier
+	* @param int $id The identifier to set
+	*/
 	function setId($id)
 	{
 		$this->id = $id;
 	}
 	/**
-	 * Returns the groupement  name
-	 * @return string The name
-	 */
+	* Returns the groupement  name
+	* @return string The name
+	*/
 	function getName()
 	{
 		return $this->name;
 	}
 	/**
-	 * Set the groupement  name
-	 * @param string $name The name to set
-	 */
+	* Set the groupement  name
+	* @param string $name The name to set
+	*/
 	function setName($name)
 	{
 		$this->name = $name;
 	}
 	
 /*
- * Autres methodes
- */
+* Autres methodes
+*/
 	
 	/**
-	 * Returns the group witch is the identifier
-	 * @param int $id Group identifier search
-	 * @return The group  witch is the identifier
-	 */
-	static function getGroupement($id)
+	* Returns the group witch is the identifier
+	* @param int $id Group identifier search
+	* @return The group  witch is the identifier
+	*/
+	function getGroupement($id)
 	{
 		global $wpdb;
 		$id = (int) $id;
@@ -84,11 +84,11 @@ class EvaGroupement {
 	}
 
 	/**
-	 * Returns the group witch is the name
-	 * @param string $nom Group name search
-	 * @return The group  witch is the name
-	 */
-	static function getGroupementByName($nom)
+	* Returns the group witch is the name
+	* @param string $nom Group name search
+	* @return The group  witch is the name
+	*/
+	function getGroupementByName($nom)
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_GROUPEMENT . " WHERE nom='" . $nom . "'");
@@ -96,25 +96,34 @@ class EvaGroupement {
 	}
 
 	/**
-	 * Returns all group maching with the where condition and order by the order condition
-	 * @param string $where SQL where condition
-	 * @param string $order SQL order condition
-	 * @return The groups maching with the where condition and order by the order condition
-	 */
-	static function getGroupements($where = "1", $order = "id ASC") {
+	* Returns all group maching with the where condition and order by the order condition
+	* @param string $where SQL where condition
+	* @param string $order SQL order condition
+	* @return The groups maching with the where condition and order by the order condition
+	*/
+	function getGroupements($where = "1", $order = "id ASC") 
+	{
 		global $wpdb;
-		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_GROUPEMENT . " WHERE nom<>'Groupement Racine' AND " . $where . " ORDER BY " . $order);
+
+		$query = $wpdb->prepare("
+		SELECT * 
+		FROM " . TABLE_GROUPEMENT . " 
+		WHERE nom <> 'Groupement Racine' 
+			AND " . $where . " 
+		ORDER BY " . $order);
+		$resultat = $wpdb->get_results($query);
+
 		return $resultat;
 	}
 	
 	/**
-	 * Returns all group name whitout the specifie
-	 * @param string $saufGroupement group name not consider
-	 * @return All the  groups name whitout the specifie
-	 */
-	function getGroupementsName($saufGroupement = '')
-	{	
-		$groupements = EvaGroupement::getGroupements();
+	* Returns all group name whitout the specifie
+	* @param string $saufGroupement group name not consider
+	* @return All the  groups name whitout the specifie
+	*/
+	function getGroupementsName($saufGroupement = '', $groupementStatus = '')
+	{
+		$groupements = EvaGroupement::getGroupements($groupementStatus);
 		foreach($groupements as $groupement)
 		{
 			if($groupement->nom != $saufGroupement)
@@ -128,12 +137,12 @@ class EvaGroupement {
 	}
 	
 	/**
-	  * Returns all working unit belonging to the group witch is identifier
-	  * @param string $where The SQL where condition
-	  * @param string $order The SQL order condition
-	  * @return the working units  belonging to the group witch is identifier
-	  */
-	static function getUnitesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
+	* Returns all working unit belonging to the group witch is identifier
+	* @param string $where The SQL where condition
+	* @param string $order The SQL order condition
+	* @return the working units  belonging to the group witch is identifier
+	*/
+	function getUnitesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id_Groupement =" . $idGroupement . " AND " . $where . " AND Status = 'Valid' ORDER BY ". $order);
@@ -141,13 +150,13 @@ class EvaGroupement {
 	}
 	
 	/**
-	  * Returns all working unit belonging to the group witch is identifier or belonging to his descendants
-	  * @param int $idGroupement The group identifier
-	  * @param string $where The SQL where condition
-	  * @param string $order The SQL order condition
-	  * @return the working units  belonging to the group witch is identifier
-	  */
-	static function getUnitesDescendantesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
+	* Returns all working unit belonging to the group witch is identifier or belonging to his descendants
+	* @param int $idGroupement The group identifier
+	* @param string $where The SQL where condition
+	* @param string $order The SQL order condition
+	* @return the working units  belonging to the group witch is identifier
+	*/
+	function getUnitesDescendantesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
 	{
 		global $wpdb;
 		$groupement = EvaGroupement::getGroupement($idGroupement);
@@ -163,11 +172,11 @@ class EvaGroupement {
 	}
 	
 	/**
-	  * Returns all working unit and groups belonging to the group witch is identifier
-	  * @param int $idGroupement The group identifier
-	  * @return the working units and groups belonging to the group witch is identifier
-	  */
-	static function getUnitesEtGroupementDescendants($idGroupement)
+	* Returns all working unit and groups belonging to the group witch is identifier
+	* @param int $idGroupement The group identifier
+	* @return the working units and groups belonging to the group witch is identifier
+	*/
+	function getUnitesEtGroupementDescendants($idGroupement)
 	{
 		global $wpdb;
 		$groupement = EvaGroupement::getGroupement($idGroupement);
@@ -201,9 +210,9 @@ class EvaGroupement {
 	}
 	
 	/**
-	  * @todo employé évalué
-	  */
-	static function getInfosGroupement($idGroupement)
+	* @todo employé évalué
+	*/
+	function getInfosGroupement($idGroupement)
 	{		
 		unset($infos, $info);
 		$groupement = EvaGroupement::getGroupement($idGroupement);
@@ -233,7 +242,7 @@ class EvaGroupement {
 	}
 	
 	//@todo getScoreRisque
-	static function getScoreRisque($id)
+	function getScoreRisque($id)
 	{
 		$scoreTotal = 0;
 		$unites = EvaGroupement::getUnitesDescendantesDuGroupement($id);
@@ -279,7 +288,7 @@ class EvaGroupement {
 		}
 	}
 	
-	static function getSommeRisque($id)
+	function getSommeRisque($id)
 	{
 		$scoreTotal = $nbRisque = 0;
 
@@ -317,17 +326,17 @@ class EvaGroupement {
 		return $risqueDuGroupement;
 	}
 	
-	static function getNiveauRisque($quotation)
+	function getNiveauRisque($quotation)
 	{
 		return Risque::getNiveauRisque(Risque::getSeuil($quotation));
 	}
 
 	/**
-	  * Returns the marker informations of a group for the google maps
-	  * @param string $id Group identifier
-	  * @return the marker informations for the google maps
-	  */
-	static function getMarkersGeoLoc($id)
+	* Returns the marker informations of a group for the google maps
+	* @param string $id Group identifier
+	* @return the marker informations for the google maps
+	*/
+	function getMarkersGeoLoc($id)
 	{
 		global $wpdb;
 		
@@ -348,39 +357,41 @@ class EvaGroupement {
 			return $geoLoc;
 		}
 	}
+
 /*
-  * Persistance
-  */
+* Persistance
+*/
 	/**
-	 * Save a new group
-	 * @param string $nom group unit name
-	 */
-	static function saveNewGroupement($nom)
+	* Save a new group
+	* @param string $nom group unit name
+	*/
+	function saveNewGroupement($nom)
 	{
 		global $wpdb;
 		
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_GROUPEMENT);
-		$sql = "INSERT INTO " . TABLE_GROUPEMENT . " (`nom`, `Status`, `limiteGauche`, `limiteDroite`) VALUES ('" . $nom . "', 'Valid', '" . ($lim) . "', '" . ($lim+1) . "')";
+		$sql = "INSERT INTO " . TABLE_GROUPEMENT . " (`nom`, `Status`, `limiteGauche`, `limiteDroite`, creation_date) VALUES ('" . $nom . "', 'Valid', '" . ($lim) . "', '" . ($lim+1) . "', NOW())";
 		$wpdb->query($sql);
-		$sql = "UPDATE " . TABLE_GROUPEMENT . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = ('Groupement Racine')";
+
+		$sql = "UPDATE " . TABLE_GROUPEMENT . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = 'Groupement Racine'";
 		$wpdb->query($sql);
 	}
 	
 	/**
-	 * Update the group which is the identifier
-	 * @param string $id_Groupement group identifier (not update)
-	 * @param string $nom group name 
-	 * @param string $description group description
-	 * @param string $telephone group telephone
-	 * @param string $effectif group effective 
-	 * @param string $idAdresse Identifier of the address group name in the Adress Table
-	 * @param string $idGroupementPere  father group id
-	 */
-	static function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
+	* Update the group which is the identifier
+	* @param string $id_Groupement group identifier (not update)
+	* @param string $nom group name 
+	* @param string $description group description
+	* @param string $telephone group telephone
+	* @param string $effectif group effective 
+	* @param string $idAdresse Identifier of the address group name in the Adress Table
+	* @param string $idGroupementPere  father group id
+	*/
+	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE `" . TABLE_GROUPEMENT . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneGroupement`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "' WHERE `id`='" . $id_Groupement . "'";
+		$sql = "UPDATE `" . TABLE_GROUPEMENT . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneGroupement`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', lastupdate_date = NOW() WHERE `id`='" . $id_Groupement . "'";
 		$wpdb->query($sql);
 		
 		$groupementFils =  EvaGroupement::getGroupement($id_Groupement);
@@ -394,12 +405,12 @@ class EvaGroupement {
 	}
 
 	/**
-	 * Update the group which is the identifier
-	 *
-	 * @param string $id_Groupement The group identifier we want to update
-	 * @param string $whatToUpdate The group information we want to update
-	 * @param string $whatToSet The value of the information we want to update
-	 */
+	* Update the group which is the identifier
+	*
+	* @param string $id_Groupement The group identifier we want to update
+	* @param string $whatToUpdate The group information we want to update
+	* @param string $whatToSet The value of the information we want to update
+	*/
 	function updateGroupementByField($id_Groupement, $whatToUpdate, $whatToSet)
 	{
 		global $wpdb;
@@ -407,6 +418,7 @@ class EvaGroupement {
 		$query = $wpdb->prepare(
 			"UPDATE " . TABLE_GROUPEMENT . " 
 				SET " . $whatToUpdate . " = '%s' 
+				, lastupdate_date = NOW()
 			WHERE id='" . $id_Groupement . "'",
 			 $whatToSet
 		);
@@ -415,13 +427,13 @@ class EvaGroupement {
 	}
 	
 	/**
-	  * Set the status of the group wich is the identifier to Delete 
-	 */
-	static function deleteGroupement($id)
+	* Set the status of the group wich is the identifier to Delete 
+	*/
+	function deleteGroupement($id)
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE " . TABLE_GROUPEMENT . " set `Status`='Deleted' WHERE `id`=" . $id;
+		$sql = "UPDATE " . TABLE_GROUPEMENT . " set Status = 'Deleted', lastupdate_date = NOW() WHERE id = " . $id;
 		if($wpdb->query($sql))
 		{
 			echo 
@@ -453,4 +465,5 @@ class EvaGroupement {
 				</script>';
 		}
 	}
+
 }

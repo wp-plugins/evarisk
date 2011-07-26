@@ -675,7 +675,7 @@ evarisk(document).ready(function(){
 
 <div class="alignright" style="width:55%;" >
 	<span class="alignright" >';
-	
+
 	switch($tableElement)
 	{
 		case TABLE_GROUPEMENT . '_employee':
@@ -703,7 +703,10 @@ evarisk(document).ready(function(){
 			}
 		break;
 	}
-	
+
+	/*	Get the table type for the current box	*/
+	$tableType = explode('_', $tableElement);
+
 	$output .= '
 	</span>
 	<div class="clear addLinkElementElement" >
@@ -715,7 +718,7 @@ evarisk(document).ready(function(){
 	</div>
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
-<div id="elementBlocContainer" class="clear hide" ><div onclick="javascript:elementDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#ELEMENTNAME#<span class="ui-icon deleteElementFromList" >&nbsp;</span></div></div>
+<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div onclick="javascript:elementDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#ELEMENTNAME#<span class="ui-icon deleteElementFromList" >&nbsp;</span></div></div>
 
 <script type="text/javascript" >
 	(function(){
@@ -751,7 +754,7 @@ evarisk(document).ready(function(){
 		jQuery("#affectedElement' . $tableElement . '").blur(function(){
 			jQuery(this).val("' . __('Rechercher dans la liste des groupes', 'evarisk') . '");
 		});
-		jQuery("#affectedElement' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGroups.php");
+		jQuery("#affectedElement' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGroups_' . $tableType[max(array_keys($tableType))] . '.php");
 		jQuery("#affectedElement' . $tableElement . '").result(function(event, data, formatted){
 			cleanElementIdFiedList(data[1], "' . $tableElement . '");
 			addElementIdFieldList(data[0], data[1], "' . $tableElement . '");
@@ -763,7 +766,8 @@ evarisk(document).ready(function(){
 	})(evarisk);
 </script>';
 
-		if($showButton){
+		if($showButton)
+		{
 			switch($tableElement)
 			{
 				case TABLE_GROUPEMENT . '_employee':

@@ -125,12 +125,20 @@
 	$optionYesNoList['oui'] = __('Oui', 'evarisk');
 	$optionYesNoList['non'] = __('Non', 'evarisk');
 
+	/**
+	*	Define the option possible value
+	*/
+	$optionExistingTreeElementList = array();
+	$optionExistingTreeElementList['recreate'] = __('Cr&eacute;er un nouveau', 'evarisk');
+	$optionExistingTreeElementList['reactiv'] = __('R&eacute;-activer', 'evarisk');
+
 	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 	require_once('configLogiciel.php');
 	require_once('configImages.php');
 
 	/*	Define if we output a name or a picture into the column header for the right management	*/
 	DEFINE('SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN', true);
+	DEFINE('SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN', true);
 
 	/*	Define the path to wp-shop plugin	*/
 	DEFINE('DIGI_WPSHOP_PLUGIN_MAINFILE', 'wpshop/wpshop.php');

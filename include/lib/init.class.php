@@ -124,7 +124,11 @@ class digirisk_init
 		{
 			wp_enqueue_script('jquery-ui-tabs');
 		}
-		if(!wp_script_is('jquery', 'queue'))
+		if($GLOBALS['wp_version'] < '3.2')
+		{
+			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
+		}
+		elseif(!wp_script_is('jquery', 'queue'))
 		{
 			wp_enqueue_script('jquery');
 		}
@@ -132,9 +136,6 @@ class digirisk_init
 		wp_enqueue_script('eva_google_jsapi', 'http://www.google.com/jsapi', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
-		// wp_enqueue_script('eva_jq_min_i18n', EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/i18n/jquery-ui-i18n.js', '', EVA_PLUGIN_VERSION);
-		// wp_enqueue_script('eva_jq_gantt', EVA_INC_PLUGIN_URL . 'js/jQueryUI/development-bundle/ui/ui.gantt.min.js', '', EVA_PLUGIN_VERSION);
-		// wp_enqueue_script('eva_jq_editable', EVA_INC_PLUGIN_URL . 'js/jquery.editable.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
@@ -154,7 +155,7 @@ class digirisk_init
 	{
 		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_datatable');
-		wp_register_style('eva_jquery_custom', EVA_INC_PLUGIN_URL . 'css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css', '', EVA_PLUGIN_VERSION);
+		wp_register_style('eva_jquery_custom', EVA_INC_PLUGIN_URL . 'css/jquery-ui-1.7.2.custom.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_custom');
 		wp_register_style('eva_jquery_treetable', EVA_INC_PLUGIN_URL . 'css/treeTable/treeTable.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_treetable');

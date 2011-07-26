@@ -22,6 +22,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 	$idPere = $arguments['idPere'];
 	$affichage = $arguments['affichage'];
 	$idsFilAriane = $arguments['idsFilAriane'];
+	$uniteDeTravail_new = '';
 
 	{//Initializing
 		if($id!=null)
@@ -75,8 +76,37 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 			$grise = true;
 		}
 	}
+
+	/*	Add dialog box in case that option is activate	*/
+	if(digirisk_options::getOptionValue('digi_tree_recreation_dialog', 'digirisk_tree_options') == 'oui')
+	{
+		$checkRecreate = (digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') == 'recreate') ? ' checked="checked" ' : '';
+		$checkReactivate = (digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') == 'reactiv') ? ' checked="checked" ' : '';
+		$uniteDeTravail_new .= '<div id="existingElementDialog" class="hide" title="' . __('&Eacute;l&eacute;ment existant', 'evarisk') . '" ><div class="existingElementMainExplanation" >' . __('Un &eacute;l&eacute;ment portant le nom que vous venez de choisir existe d&eacute;j&agrave;. Vous pouvez d&eacute;cider de l\'action &agrave; effectuer dans la liste ci-dessous.', 'evarisk') . '</div><input type="hidden" name="nameOfElementToActiv" id="nameOfElementToActiv" value="" /><div class="actionForExistingElement" ><input type="radio" id="recreate_gpt" name="actionforexisting_gpt" value="recreate" class="existingElementChoice" ' . $checkRecreate . ' /><label for="recreate_gpt" >' . __('Ignorer l\'existant en recr&eacute;ant une nouvelle unit&eacute;de travail', 'evarisk') . '</label></div><div class="actionForExistingElement" ><input type="radio" id="reactiv_gpt" name="actionforexisting_gpt" value="reactiv" class="existingElementChoice" ' . $checkReactivate . ' /><label for="reactiv_gpt" >' . __('Restaurer l\'anciene unit&eacute;de travail', 'evarisk') . '</label></div><div class="actionForExistingElement" >' . __('Pour changer le nom du nouvel &eacute;l&eacute;ment &agrave; cr&eacute;er, cliquez sur "Annuler"', 'evarisk') . '</div></div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#existingElementDialog").dialog({
+			autoOpen: false, height: 275, width: 500, modal: true,
+			buttons:{
+				"' . __('Annuler', 'evarisk') . '": function(){ evarisk(this).dialog("close"); },
+				"' . __('Valider', 'evarisk') . '": function(){
+					var choice = "";
+					evarisk(".existingElementChoice").each(function(){ if(evarisk(this).is(":checked")){ choice = evarisk(this).val(); } });
+					if(choice != ""){
+						if(choice == "recreate"){ createUniteTravail("' . $saveOrUpdate . '", "' . TABLE_UNITE_TRAVAIL . '"); evarisk(this).dialog("close"); }
+						else if(choice == "reactiv"){ evarisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_UNITE_TRAVAIL . '", "act": "reactiv_deleted", "nom_unite": evarisk("#nameOfElementToActiv").val() }); }
+					}
+					else{ alert(convertAccentToJS("' . __('Merci de choisir l\'action &agrave; effectuer', 'evarisk') . '")); }
+				}
+			},
+			close:function(){ evarisk("#nom_unite_travail").focus(); }
+		});
+	});
+</script>';
+	}
+
 	$idForm = 'informationGeneralesUT';
-	$uniteDeTravail_new = EvaDisplayInput::ouvrirForm('POST', $idForm, $idForm);
+	$uniteDeTravail_new .= EvaDisplayInput::ouvrirForm('POST', $idForm, $idForm);
 	{//Champs cachés
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'latitude', '', '', null, 'latitude', false, false);
@@ -182,23 +212,34 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 	if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
-		$valeurActuelleIn = "false";
-		$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName($saufUniteTravail);
+		$existingDeletedWU = "false";
+		$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName($saufUniteTravail, " Status = 'Deleted' ");
 		if(count($workingUnitsNames) != 0)
 		{
-			$valeurActuelleIn = "valeurActuelle in {";
+			$existingDeletedWU = "valeurActuelle in {";
 			foreach($workingUnitsNames as $workingUnitName)
 			{
-				$valeurActuelleIn = $valeurActuelleIn . "'" . addslashes($workingUnitName) . "':'', ";
+				$existingDeletedWU .= "'" . addslashes($workingUnitName) . "':'', ";
 			}
-			$valeurActuelleIn = $valeurActuelleIn . "}";
+			$existingDeletedWU .= "}";
+		}
+		$existingValidWU = "false";
+		$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName($saufUniteTravail, " Status = 'Valid' ");
+		if(count($workingUnitsNames) != 0)
+		{
+			$existingValidWU = "valeurActuelle in {";
+			foreach($workingUnitsNames as $workingUnitName)
+			{
+				$existingValidWU .= "'" . addslashes($workingUnitName) . "':'', ";
+			}
+			$existingValidWU .= "}";
 		}
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
 		$scriptGeolocalisation = evaGoogleMaps::scriptGeoloc($idBouttonEnregistrer, $id, $idL1, $idL2, $idCP, $idV, "latitude", "longitude");
 		{//Script relatif à l'enregistrement
 			$scriptEnregistrement = '
 			<script type="text/javascript">
-				evarisk(document).ready(function() {	
+				evarisk(document).ready(function() {
 					evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
 						if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 						{
@@ -221,33 +262,30 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 							}
 							else
 							{
-								if(' . $valeurActuelleIn . ')
+								if(' . $existingDeletedWU . ')
+								{
+									if("' . digirisk_options::getOptionValue('digi_tree_recreation_dialog', 'digirisk_tree_options') . '" == "oui")
+									{
+										evarisk("#nameOfElementToActiv").val(valeurActuelle);
+										evarisk("#existingElementDialog").dialog("open");
+									}
+									else if("' . digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') . '" == "recreate")
+									{
+										createUniteTravail("' . $saveOrUpdate . '", "' . TABLE_UNITE_TRAVAIL . '");
+									}
+									else if("' . digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') . '" == "reactiv")
+									{
+										evarisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_UNITE_TRAVAIL . '", "act": "reactiv_deleted", "nom_groupement": valeurActuelle });
+									}
+								}
+								else if(' . $existingValidWU . ')
 								{
 									var message = "' . ucfirst(sprintf(__('%s porte d&eacute;j&agrave; ce nom', 'evarisk'), __('une unit&eacute; de travail', 'evarisk'))) . '";
 									alert(convertAccentToJS(message));
 								}
 								else
 								{
-									evarisk(\'#act\').val("' . $saveOrUpdate . '");
-									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
-										"table": "' . TABLE_UNITE_TRAVAIL . '",
-										"act": evarisk(\'#act\').val(),
-										"id": evarisk(\'#id\').val(),
-										"nom_unite_travail": evarisk(\'#nom_unite_travail\').val(),
-										"groupementPere": evarisk(\'#groupementPere :selected\').val(),
-										"description": evarisk(\'#description\').val(),
-										"adresse_ligne_1": evarisk(\'#adresse_ligne_1\').val(),
-										"adresse_ligne_2": evarisk(\'#adresse_ligne_2\').val(),
-										"code_postal": evarisk(\'#code_postal\').val(),
-										"ville": evarisk(\'#ville\').val(),
-										"telephone": evarisk(\'#telephone\').val(),
-										"effectif": evarisk(\'#effectif\').val(),
-										"effectif": evarisk(\'#effectif\').val(),
-										"affichage": evarisk(\'#affichage\').val(),
-										"latitude": evarisk(\'#latitude\').val(),
-										"longitude": evarisk(\'#longitude\').val(),
-										"idsFilAriane": evarisk(\'#idsFilAriane\').val()
-									});
+									createUniteTravail("' . $saveOrUpdate . '", "' . TABLE_UNITE_TRAVAIL . '");
 								}
 							}
 						}

@@ -117,6 +117,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 
 	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 37
 	DEFINE('TABLE_DUER_OLD', PREFIXE_EVARISK . "document_unique");
+	DEFINE('TABLE_FP_OLD', PREFIXE_EVARISK . "ged_documents_fiche_de_poste");
 
 	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 39
 	// Tables EPI

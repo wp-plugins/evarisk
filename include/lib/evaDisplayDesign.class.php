@@ -1880,23 +1880,23 @@ class EvaDisplayDesign {
 		}
 		if(' . $page . ' <= 1)
 		{
-			evarisk(\'#first' . $idPostBox . '\').attr("disabled", "disabled");
-			evarisk(\'#previous' . $idPostBox . '\').attr("disabled", "disabled");
+			evarisk(\'#first' . $idPostBox . '\').prop("disabled", "disabled");
+			evarisk(\'#previous' . $idPostBox . '\').prop("disabled", "disabled");
 		}
 		else
 		{
-			evarisk(\'#first' . $idPostBox . '\').attr("disabled", "");
-			evarisk(\'#previous' . $idPostBox . '\').attr("disabled", "");
+			evarisk(\'#first' . $idPostBox . '\').prop("disabled", "");
+			evarisk(\'#previous' . $idPostBox . '\').prop("disabled", "");
 		}
 		if(parseInt(evarisk(\'#pageMax' . $idPostBox . '\').val()) == ' . $page . ')
 		{
-			evarisk(\'#last' . $idPostBox . '\').attr("disabled", "disabled");
-			evarisk(\'#next' . $idPostBox . '\').attr("disabled", "disabled");
+			evarisk(\'#last' . $idPostBox . '\').prop("disabled", "disabled");
+			evarisk(\'#next' . $idPostBox . '\').prop("disabled", "disabled");
 		}
 		else
 		{
-			evarisk(\'#last' . $idPostBox . '\').attr("disabled", "");
-			evarisk(\'#next' . $idPostBox . '\').attr("disabled", "");
+			evarisk(\'#last' . $idPostBox . '\').prop("disabled", "");
+			evarisk(\'#next' . $idPostBox . '\').prop("disabled", "");
 		}
 	});
 </script>';
@@ -2275,7 +2275,7 @@ class EvaDisplayDesign {
 							return false;
 						});
 						evarisk(\'#select' . $table . $idElement . '\').click(function() {
-							if(!(evarisk(this).attr("disabled")))
+							if(!(evarisk(this).prop("disabled")))
 							{
 								if(evarisk(\'#filAriane :last-child\').is("label"))
 									evarisk(\'#filAriane :last-child\').remove();

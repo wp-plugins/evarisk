@@ -13,8 +13,13 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 
 .tabcroisillon{	margin:6px 0px;	}
 
+.middleAlign{	vertical-align:middle !important; }
+
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
+
+.actionForExistingElement{	margin:3px 0px;	}
+.existingElementMainExplanation{	font-size:10px; margin:0px 0px 15px;	}
 
 /* -- START PERMISSION -- */
 .menuUserRight{	font-style:italic; font-size:9px; font-weight:bold;	}
@@ -34,10 +39,10 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .digi_permission_check_all{	margin:6px 0px 0px 0px; font-size:10px; font-style:italic;	}
 .checkall, .uncheckall, .checkall_link, .uncheckall_link, .checkall_right, .uncheckall_right{	cursor:pointer;	}
 
-.rightColumn{	width:4em; text-align:center !important;	}
+.rightColumn{	width:30px; text-align:center !important;	}
 .rightCell{	text-align:center;	}
 .userAffecte{	background-color:#99FF66;	font-weight:bold; }
-.userAffecteExplanation{	margin:6px 3px; padding:2px 0px; text-align:left; width:70%; }
+.userAffecteExplanation{	margin:6px 3px; padding:6px 0px; text-align:left; width:70%; }
 
 .userTableContainer {	height:200px !important; overflow:auto !important;	}
 #userPermissionManagerForm .userTableContainer {	height:auto !important; overflow:auto !important;	}
@@ -46,7 +51,9 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .userRightMassManagement{	margin:18px 0px 0px 0px;	}
 
 
-.checkAll_user_, .uncheckAll_user_, .checkAll_user_affected_, .uncheckAll_user_affected_{ cursor:pointer;	}
+.checkAll_user_, .uncheckAll_user_, .checkAll_user_affected_, .uncheckAll_user_affected_{ cursor:pointer; margin:0px 0px 6px;	}
+
+.userRightManagement_overflow{	overflow-y:scroll;	}
 /* -- END PERMISSION -- */
 
 #digirisk_options_container th{	width:45% !important; padding:2px;	}
@@ -59,8 +66,8 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .dataTables_filter{	float:right; /*width:15% !important;*/	}
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
-.searchDataTableIcon{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -160px -112px !important; width:16px; height:16px; margin:3px 0px;}
-.deleteLinkBetwwenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.searchDataTableIcon{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -160px -112px !important; width:16px; height:16px; margin:3px 0px;}
+.deleteLinkBetwwenRiskAndPicture{	background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .editDataTableRow{	cursor:pointer;background-position:-64px -112px;	}
 .closeLightBoxContainer{	height:16px;font-size:9px;float:right;margin:0px 0px 3px;cursor:pointer;	}
@@ -346,7 +353,7 @@ th.columnCommentaireRisque*/
 
 .explicationVariable	{		border:1px solid #000000;		background-color:#FFFFCC;		text-align:justify;		font-size:11px;		margin:1% 24px;		padding:3px;	}
 #pictureToAssociateToRisk .qq-uploader .qq-upload-button{		width:90% !important;		padding:7px;	}
-.deleteLinkBetweenRiskAndPicture{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px;	width:16px;height:16px;}
+.deleteLinkBetweenRiskAndPicture{	background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px;	width:16px;height:16px;}
 .riskPictureThumbs{	max-width: 20%;	}
 /* -- END Risques -- */
 
@@ -422,16 +429,16 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .userListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
 .selecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .selecteduserOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
-.deleteUserFromList{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
-.deleteUserFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteUserFromList{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteUserFromList:hover{	float:right; background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .searchUserToAffect{	float:left; width:90%; color:#888888;	}
-.searchUserInput{	float:left; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
+.searchUserInput{	float:left; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
 
-.userIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66cc33_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
-.userIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;}
-.userIsNotLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -96px -144px !important; width:16px; height:16px;}
-.userIsNotLinked:hover, .linkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+.userIsLinked{	background: url("../../medias/jquery_pics/ui-icons_66cc33_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+.userIsLinked:hover, .unlinkUser{	background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;}
+.userIsNotLinked{	background: url("../../medias/jquery_pics/ui-icons_888888_256x240.png") !important; background-position: -96px -144px !important; width:16px; height:16px;}
+.userIsNotLinked:hover, .linkUser{	background: url("../../medias/jquery_pics/ui-icons_888888_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
 
 .addLinkUserElement{	padding:3px 0px;	}
 .addUserButtonDTable{	width:5%;	}
@@ -524,16 +531,16 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .affectedElementListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
 .selectedelementOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .selectedelementOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
-.deleteElementFromList{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
-.deleteElementFromList:hover{	float:right; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteElementFromList{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteElementFromList:hover{	float:right; background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .searchElementToAffect{	float:left; width:90%; color:#888888;	}
-.searchElementInput{	float:left; background: url("../js/jQueryUI/css/smoothness/images/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
+.searchElementInput{	float:left; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
 
-.elementIsLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_66cc33_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
-.elementIsLinked:hover, .unlinkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;}
-.elementIsNotLinked{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -96px -144px !important; width:16px; height:16px;}
-.elementIsNotLinked:hover, .linkUser{	background: url("../js/jQueryUI/css/smoothness/images/ui-icons_888888_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+.elementIsLinked{	background: url("../../medias/jquery_pics/ui-icons_66cc33_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
+.elementIsLinked:hover, .unlinkUser{	background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;}
+.elementIsNotLinked{	background: url("../../medias/jquery_pics/ui-icons_888888_256x240.png") !important; background-position: -96px -144px !important; width:16px; height:16px;}
+.elementIsNotLinked:hover, .linkUser{	background: url("../../medias/jquery_pics/ui-icons_888888_256x240.png") !important; background-position: -64px -144px !important; width:16px; height:16px;}
 
 .noElementLinked{	margin:5px 10px;color:#646464;	}
 .addLinkElement{	padding:3px 0px;	}

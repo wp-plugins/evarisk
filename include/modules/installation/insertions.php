@@ -1199,6 +1199,21 @@ ou irritantes');";
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}	
+		case 50:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}	
+		case 51:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}	
+		case 52:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}	
 	}
 
 }

@@ -14,13 +14,12 @@ if (!$q) return;
 
 $items = array();
 
-require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
-$listeUtilisateurs = evaUser::getCompleteUserList();
-if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0))
+$elementList = digirisk_groups::getElement('', "'valid'", 'employee');
+if(is_array($elementList) && (count($elementList) > 0))
 {
-	foreach($listeUtilisateurs as $utilisateur)
+	foreach($elementList as $element)
 	{
-		$items[$utilisateur['user_lastname'] . ' ' . $utilisateur['user_firstname']] = $utilisateur['user_id'];
+		$items[$element->name] = $element->id;
 	}
 }
 

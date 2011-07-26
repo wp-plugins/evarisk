@@ -391,6 +391,7 @@ class eva_WorkUnitSheet
 				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
 		);
+		echo $query;
 		if($wpdb->query($query) === false)
 		{
 			$status['result'] = 'error'; 
@@ -482,7 +483,7 @@ class eva_WorkUnitSheet
 	{
 		$output = '';
 
-		$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiches_de_groupement', "dateCreation DESC");
+		$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiche_de_poste_groupement', "dateCreation DESC");
 		if(count($ficheDePoste_du_Groupement) > 0)
 		{
 			foreach($ficheDePoste_du_Groupement as $fdpGpt)
