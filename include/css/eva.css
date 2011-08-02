@@ -54,6 +54,8 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .checkAll_user_, .uncheckAll_user_, .checkAll_user_affected_, .uncheckAll_user_affected_{ cursor:pointer; margin:0px 0px 6px;	}
 
 .userRightManagement_overflow{	overflow-y:scroll;	}
+
+#evaUserInformation div label		{	width:15em;	}
 /* -- END PERMISSION -- */
 
 #digirisk_options_container th{	width:45% !important; padding:2px;	}

@@ -980,7 +980,6 @@ class evaRecommandation
 ?>
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
-		var nom_preconisation = evarisk("#nom_preconisation"), description_preconisation = evarisk("#description_preconisation"), id_preconisation = evarisk("#id_preconisation"), id_categorie_preconisation = evarisk("#id_categorie_preconisation"), recommandationFormErrorMessage = evarisk(".recommandationFormErrorMessage"), recommandationFields = evarisk( [] ).add( nom_preconisation ).add( description_preconisation ).add( id_preconisation ).add( id_categorie_preconisation );
 		evarisk("#recommandationInterfaceContainer").dialog({
 			autoOpen: false,
 			height: 350,
@@ -993,9 +992,9 @@ class evaRecommandation
 ?>
 				"<?php _e('Enregistrer', 'evarisk'); ?>": function(){
 					var formIsValid = true;
-						recommandationFields.removeClass("ui-state-error");
+						evarisk("#nom_preconisation").removeClass("ui-state-error");
 
-					formIsValid = formIsValid && checkLength( nom_preconisation, "", 1, 128, "<?php _e('Le champs nom de la pr&eacute;conisation doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk'); ?>" , recommandationFormErrorMessage);
+					formIsValid = formIsValid && checkLength( evarisk("#nom_preconisation"), "", 1, 128, "<?php _e('Le champs nom de la pr&eacute;conisation doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk'); ?>" , evarisk(".recommandationFormErrorMessage"));
 
 					if(formIsValid){
 						evarisk("#ajax-response").load("<?php _e(EVA_INC_PLUGIN_URL); ?>ajax.php", 
@@ -1003,10 +1002,10 @@ class evaRecommandation
 							"post":"true",
 							"table":"<?php _e(TABLE_PRECONISATION); ?>",
 							"act":"saveRecommandation",
-							"nom_preconisation": nom_preconisation.val(),
-							"description_preconisation": description_preconisation.val(),
-							"id_categorie_preconisation": id_categorie_preconisation.val(),
-							"id_preconisation": id_preconisation.val()
+							"nom_preconisation": evarisk("#nom_preconisation").val(),
+							"description_preconisation": evarisk("#description_preconisation").val(),
+							"id_categorie_preconisation": evarisk("#id_categorie_preconisation").val(),
+							"id_preconisation": evarisk("#id_preconisation").val()
 						});
 						evarisk(this).dialog( "close" );
 					}
@@ -1019,8 +1018,11 @@ class evaRecommandation
 				}
 			},
 			close: function(){
-				recommandationFields.val("");
-				recommandationFields.removeClass("ui-state-error");
+				evarisk("#nom_preconisation").val("");
+				evarisk("#description_preconisation").val("");
+				evarisk("#id_categorie_preconisation").val("");
+				evarisk("#id_preconisation").val("");
+				evarisk("#nom_preconisation").removeClass("ui-state-error");
 				evarisk("#recommandationInterfaceContainer").dialog({
 					title: "<?php _e('Pr&eacute;conisation', 'evarisk'); ?>"
 				});

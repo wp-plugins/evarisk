@@ -21,8 +21,6 @@ class digirisk_init
 	*/
 	function digirisk_plugin_load()
 	{
-		// Ajout des script de eva_admin
-		add_action('admin_head', array('digirisk_init', 'digirisk_add_admin_js'));
 
 		/*	Call function to create the main left menu	*/
 		add_action('admin_menu', array('digirisk_init', 'digirisk_menu') );
@@ -38,10 +36,15 @@ class digirisk_init
 			load_textdomain('evarisk', $moFile);
 		}
 
-		/*	Include the different javascript	*/
-		add_action('admin_init', array('digirisk_init', 'digirisk_admin_js') );
-		/*	Include the different css	*/
-		add_action('admin_init', array('digirisk_init', 'digirisk_admin_css') );
+		if(isset($_GET['page']) && (substr($_GET['page'], 0, 9) == 'digirisk_'))
+		{
+			// Ajout des script de eva_admin
+			add_action('admin_head', array('digirisk_init', 'digirisk_add_admin_js'));
+			/*	Include the different javascript	*/
+			add_action('admin_init', array('digirisk_init', 'digirisk_admin_js') );
+			/*	Include the different css	*/
+			add_action('admin_init', array('digirisk_init', 'digirisk_admin_css') );
+		}
 
 		/*	Add the right management for users	*/
 		if(current_user_can('digi_manage_user_right'))
@@ -120,11 +123,10 @@ class digirisk_init
 	*/
 	function digirisk_admin_js()
 	{
-		if(!wp_script_is('jquery-ui-tabs', 'queue'))
-		{
-			wp_enqueue_script('jquery-ui-tabs');
-		}
-		if($GLOBALS['wp_version'] < '3.2')
+
+		/*	Check the wp version in order to include the good jquery librairy. Causes issue because of wp core update	*/
+		global $wp_version;
+		if($wp_version < '3.2')
 		{
 			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
 		}
@@ -132,20 +134,20 @@ class digirisk_init
 		{
 			wp_enqueue_script('jquery');
 		}
+
+		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
+
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_google_jsapi', 'http://www.google.com/jsapi', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_user_js', EVA_INC_PLUGIN_URL . 'js/users.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_eav_js', EVA_INC_PLUGIN_URL . 'js/eav.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_wp_postobox_js', WP_CONTENT_URL . '/../wp-admin/js/postbox.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_wp_postbox_js', WP_CONTENT_URL . '/../wp-admin/js/postbox.js', '', EVA_PLUGIN_VERSION);
 	}
 
 	/**
@@ -163,8 +165,6 @@ class digirisk_init
 		wp_enqueue_style('eva_jquery_fileuploader');
 		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_main_css');
-		wp_register_style('eva_role_css', EVA_INC_PLUGIN_URL . 'css/role.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_role_css');
 		wp_register_style('eva_duer_css', EVA_INC_PLUGIN_URL . 'css/documentUnique.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_duer_css');
 		wp_register_style('eva_autocomplete_css', EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css', '', EVA_PLUGIN_VERSION);

@@ -225,7 +225,7 @@ class evaRecommandationCategory
 				evarisk("#pictureRecommandationCategoryContainer").show();
 			}
 		});
-		var nom_categorie = evarisk("#nom_categorie"), id_categorie_preconisation = evarisk("#id_categorie_preconisation"), impressionRecommandationCategorieValue = evarisk("#impressionRecommandationCategorieValue"), tailleimpressionRecommandation = evarisk("#tailleimpressionRecommandation"), tailleimpressionRecommandationCategorie = evarisk("#tailleimpressionRecommandationCategorie"), impressionRecommandationValue = evarisk("#impressionRecommandationValue"), recommandationCategoryFields = evarisk( [] ).add( nom_categorie ), recommandationCategoryFormErrorMessage = evarisk( ".recommandationCategoryFormErrorMessage" );
+
 		evarisk("#recommandationCategoryInterfaceContainer").dialog({
 			autoOpen: false,
 			height: 360,
@@ -238,9 +238,9 @@ class evaRecommandationCategory
 ?>
 				"<?php _e('Enregistrer', 'evarisk'); ?>": function(){
 					var formIsValid = true;
-						recommandationCategoryFields.removeClass("ui-state-error");
+						evarisk("#nom_categorie").removeClass("ui-state-error");
 
-					formIsValid = formIsValid && checkLength( nom_categorie, "", 1, 128, "<?php _e('Le champs nom de la famille de pr&eacute;conisation doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk'); ?>" , recommandationCategoryFormErrorMessage);
+					formIsValid = formIsValid && checkLength( evarisk("#nom_categorie"), "", 1, 128, "<?php _e('Le champs nom de la famille de pr&eacute;conisation doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk'); ?>" , evarisk( ".recommandationCategoryFormErrorMessage" ));
 
 					if(formIsValid){
 						evarisk("#ajax-response").load("<?php _e(EVA_INC_PLUGIN_URL); ?>ajax.php", 
@@ -248,12 +248,12 @@ class evaRecommandationCategory
 							"post":"true",
 							"table":"<?php _e(TABLE_CATEGORIE_PRECONISATION); ?>",
 							"act":"saveRecommandationCategorie",
-							"nom_categorie": nom_categorie.val(),
-							"impressionRecommandation": impressionRecommandationValue.val(),
-							"tailleimpressionRecommandation": tailleimpressionRecommandation.val(),
-							"impressionRecommandationCategorie": impressionRecommandationCategorieValue.val(),
-							"tailleimpressionRecommandationCategorie": tailleimpressionRecommandationCategorie.val(),
-							"id_categorie_preconisation": id_categorie_preconisation.val()
+							"nom_categorie": evarisk("#nom_categorie").val(),
+							"impressionRecommandation": evarisk("#impressionRecommandationValue").val(),
+							"tailleimpressionRecommandation": evarisk("#tailleimpressionRecommandation").val(),
+							"impressionRecommandationCategorie": evarisk("#impressionRecommandationCategorieValue").val(),
+							"tailleimpressionRecommandationCategorie": evarisk("#tailleimpressionRecommandationCategorie").val(),
+							"id_categorie_preconisation": evarisk("#id_categorie_preconisation").val()
 						});
 						evarisk(this).dialog( "close" );
 					}
@@ -266,7 +266,12 @@ class evaRecommandationCategory
 				}
 			},
 			close: function(){
-				recommandationCategoryFields.val("");
+				evarisk("#nom_categorie").val("");
+				evarisk("#impressionRecommandationValue").val("");
+				evarisk("#tailleimpressionRecommandation").val("");
+				evarisk("#impressionRecommandationCategorieValue").val("");
+				evarisk("#tailleimpressionRecommandationCategorie").val("");
+				evarisk("#id_categorie_preconisation").val("");
 			}
 		});
 	});

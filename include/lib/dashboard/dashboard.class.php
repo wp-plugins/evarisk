@@ -155,9 +155,11 @@ class dashboard {
 				<div id="vracStatsContent" ></div>
 			</div>
 			<script type="text/javascript" >
-				evarisk("#vracStatsTabs").tabs();
-				evarisk("#vracStatsTabs ul li a").click(function(){
-					evarisk("#vracStatsContent").html(evarisk("#loadingPicContainer").html());
+				evarisk(document).ready(function(){
+					evarisk("#vracStatsTabs").tabs();
+					evarisk("#vracStatsTabs ul li a").click(function(){
+						evarisk("#vracStatsContent").html(evarisk("#loadingPicContainer").html());
+					});
 				});
 			</script>';
 
