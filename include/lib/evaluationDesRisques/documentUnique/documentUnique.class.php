@@ -93,16 +93,17 @@ class eva_documentUnique
 				{/*	Define the prefix for the current element looking on the type	*/
 					case TABLE_GROUPEMENT:
 						$element = EvaGroupement::getGroupement($idElement);
-						$elementPrefix = 'GP' . $idElement . ' - ';
+						$elementPrefix = ELEMENT_IDENTIFIER_GP . $idElement . ' - ';
 						break;
 					case TABLE_UNITE_TRAVAIL:
 						$element = eva_UniteDeTravail::getWorkingUnit($idElement);
-						$elementPrefix = 'UT' . $idElement . ' - ';
+						$elementPrefix = ELEMENT_IDENTIFIER_UT . $idElement . ' - ';
 						break;
 				}
 
 				/*	Build the output array we the result	*/
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $elementPrefix . $element->nom, 'class' => '');
+				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->nomDanger, 'class' => '');
 				if($outputInterfaceType == '')
@@ -194,10 +195,12 @@ class eva_documentUnique
 						{//Script de d&eacute;finition de la dataTable pour la somme des risques par ligne
 							$idTable = 'tableBilanRisqueUnitaire' . $tableElement . $idElement . $typeBilan;
 							$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
+							$titres[] = __("Id. risque", 'evarisk');
 							$titres[] = __("Quotation", 'evarisk');
 							$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
 							$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
 							$classes[] = 'columnQuotation';
+							$classes[] = 'columnRId';
 							$classes[] = 'columnQuotation';
 							$classes[] = 'columnNomDanger';
 							$classes[] = 'columnCommentaireRisque';
@@ -214,6 +217,7 @@ class eva_documentUnique
 								"bInfo": false,
 								"aoColumns": 
 								[
+									{ "bSortable": true},
 									{ "bSortable": true},
 									{ "bSortable": false, "sType": "numeric"},
 									{ "bSortable": false},
@@ -263,12 +267,14 @@ class eva_documentUnique
 				{
 					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;
 					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
+					$titres[] = __("Id. risque", 'evarisk');
 					$titres[] = __("Quotation", 'evarisk');
 					$titres[] = ucfirst(strtolower(__("danger", 'evarisk')));
 					$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
 					$titres[] = ucfirst(strtolower(sprintf(__("action prioritaire %s", 'evarisk'), __("pour le risque", 'evarisk'))));
 					$titres[] = '';
 					$classes[] = 'columnNomElementMassUpdater';
+					$classes[] = 'columnRIdMassUpdater';
 					$classes[] = 'columnQuotationMassUpdater';
 					$classes[] = 'columnNomDangerMassUpdater';
 					$classes[] = 'columnCommentaireRisqueMassUpdater';
@@ -285,7 +291,7 @@ class eva_documentUnique
 			"bAutoWidth": false,
 			"bFilter": false,
 			"bInfo": false,
-			"aaSorting": [[1,"desc"]]
+			"aaSorting": [[2,"desc"]]
 		});
 		evarisk("#' . $idTable . ' tfoot").remove();
 	});
@@ -318,66 +324,71 @@ class eva_documentUnique
 
 		if( is_array($listeTousRisques) )
 		{
+			$indexQuotation = 2;
 			foreach($listeTousRisques as $key => $informationsRisque)
 			{
-				if($informationsRisque[1]['value'] >= SEUIL_BAS_INACCEPTABLE)
+				if($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_INACCEPTABLE)
 				{
-					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
-					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
-					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
+					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
+					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
 					{
-						// $listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
-						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+						// $listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
 					}
 					else
 					{
-						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
 					}
 				}
-				elseif(($informationsRisque[1]['value'] >= SEUIL_BAS_ATRAITER) && ($informationsRisque[1]['value'] <= SEUIL_HAUT_ATRAITER))
+				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_ATRAITER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_ATRAITER))
 				{
-					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
-					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
-					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
+					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
+					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
 					{
-						// $listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
-						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+						// $listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
 					}
 					else
 					{
-						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
 					}
 				}
-				elseif(($informationsRisque[1]['value'] >= SEUIL_BAS_APLANIFIER) && ($informationsRisque[1]['value'] <= SEUIL_HAUT_APLANIFIER))
+				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_APLANIFIER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_APLANIFIER))
 				{
-					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
-					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
-					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
+					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
+					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
 					{
-						// $listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
-						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+						// $listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
 					}
 					else
 					{
-						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
 					}
 				}
-				elseif(($informationsRisque[1]['value'] <= SEUIL_HAUT_FAIBLE))
+				elseif(($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_FAIBLE))
 				{
-					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
-					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['quotationRisque'] = $informationsRisque[1]['value'];
-					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['nomDanger'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
+					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
+					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
+					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
 					{
-						// $listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
-						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
+						// $listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
 					}
 					else
 					{
-						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[1]['value']][$key]['commentaireRisque'] = $informationsRisque[3]['value'];
+						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
 					}
 				}
 			}
@@ -422,7 +433,7 @@ class eva_documentUnique
 			$formulaireDocumentUniqueParams['#TELFAX#'] = (isset($lastDocumentUnique->telephoneFax) && ($lastDocumentUnique->telephoneFax != '')) ? $lastDocumentUnique->telephoneFax : '';
 			$formulaireDocumentUniqueParams['#EMETTEUR#'] = (isset($lastDocumentUnique->emetteurDUER) && ($lastDocumentUnique->emetteurDUER != '')) ? $lastDocumentUnique->emetteurDUER : '';
 			$formulaireDocumentUniqueParams['#DESTINATAIRE#'] = (isset($lastDocumentUnique->destinataireDUER) && ($lastDocumentUnique->destinataireDUER != '')) ? $lastDocumentUnique->destinataireDUER : '';
-			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_documentUnique_GP' . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupementInformations->nom));
+			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_documentUnique_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupementInformations->nom));
 			$formulaireDocumentUniqueParams['#METHODOLOGIE#'] = (isset($lastDocumentUnique->methodologieDUER) && ($lastDocumentUnique->methodologieDUER != '')) ? $lastDocumentUnique->methodologieDUER : ($methodologieParDefaut);
 
 			$gpmt = EvaGroupement::getGroupement($idElement);
@@ -722,7 +733,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 					{
 						$outputListeDocumentUnique .= '
 		<tr>
-			<td>&nbsp;&nbsp;&nbsp;- ' . $DUER['name'] . '_' . $DUER['revision'] . '</td>
+			<td>&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_DU . $index . ')&nbsp;&nbsp;' . $DUER['name'] . '_' . $DUER['revision'] . '</td>
 			<!-- <td><a href="' . EVA_INC_PLUGIN_URL . 'modules/evaluationDesRisques/documentUnique.php?idElement=' . $idElement . '&table=' . $tableElement . '&id=' . $index . '" target="evaDUERHtml" >Html</a></td> -->';
 
 						/*	Check if an odt file exist to be downloaded	*/

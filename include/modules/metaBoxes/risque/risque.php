@@ -230,10 +230,12 @@
 			unset($titres,$classes, $idLignes, $lignesDeValeurs);
 			$idLignes = null;
 			$idTable = 'tableRisque' . $tableElement . $idElement;
+			$titres[] = __("Id.", 'evarisk');
 			$titres[] = __("Quotation", 'evarisk');
 			$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
 			$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
 			$titres[] = __("Actions", 'evarisk');
+			$classes[] = 'columnRId';
 			$classes[] = 'columnQuotation';
 			$classes[] = 'columnNomDanger';
 			$classes[] = 'columnCommentaireRisque';
@@ -280,6 +282,7 @@
 					$niveauSeuil = Risque::getSeuil($quotation);
 					
 					unset($ligneDeValeurs);
+					$ligneDeValeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
 					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
 					$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
@@ -399,6 +402,7 @@
 			"bAutoWidth": false,
 			"bInfo": false,								
 			"aoColumns": [
+				{ "bSortable": false},
 				{ "bSortable": true, "sType": "numeric"},
 				{ "bSortable": true},
 				{ "bSortable": false},

@@ -1925,6 +1925,9 @@ echo $output;
 							eva_tools::changeAccesAuthorisation($dirToSaveExportedFile);
 						}
 						file_put_contents($dirToSaveExportedFile . '/taskExport.txt' ,$existingPreconisation);
+						if(is_file($dirToSaveExportedFile . '/taskExport.txt')){
+							echo '<a href="' . str_replace(EVA_UPLOADS_PLUGIN_DIR, EVA_UPLOADS_PLUGIN_URL, $dirToSaveExportedFile) . '/taskExport.txt" title="' . __('Pour le t&eacute;l&eacute;charger, faites un clic droit puis enregistrer sous', 'evarisk') . '" >' . __('T&eacute;l&eacute;charger le fichier g&eacute;n&eacute;r&eacute;', 'evarisk') . '</a>';
+						}
 					}
 					break;
 					case 'actualiseProgressionInTree':
@@ -2709,6 +2712,11 @@ echo $output;
 		evarisk(this).addClass("selected");
 		evarisk("#generatedFPContainer").show();
 	});
+	var currentTab = evarisk("#subTabSelector").val();
+	if(currentTab != ""){
+		evarisk("#generated" + currentTab).click();
+	}
+	evarisk("#subTabSelector").val("");
 </script>';
 						echo $output;
 					}
@@ -2790,12 +2798,21 @@ echo $output;
 				{
 					case 'saveFichePoste':
 					case 'generateWorkUnitSheet':
-						if($_REQUEST['act'] == 'saveFichePoste')
-						{
-							require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
-						}
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
+						if($_REQUEST['act'] == 'saveFichePoste')
+						{
+							$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
+
+							$_POST['description'] = $workUnitinformations->description;
+							$_POST['telephone'] = $workUnitinformations->telephoneUnite;
+
+							$workUnitAdress = new EvaBaseAddress($workUnitinformations->id_adresse);
+							$workUnitAdress->load();
+							$_POST['adresse'] = trim($workUnitAdress->getFirstLine() . " " . $workUnitAdress->getSecondLine() . " " . $workUnitAdress->getPostalCode() . " " . $workUnitAdress->getCity());
+
+							require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
+						}
 						echo eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#ui-datepicker-div").hide();});</script>';
 					break;
 					case 'workUnitSheetHisto':
@@ -2814,9 +2831,17 @@ echo $output;
 						$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'documentUnique/' . $tableElement . '/' . $idElement. '/';
 						foreach($arbre as $workUnit)
 						{
+							$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($workUnit['id']);
+							$_POST['description'] = $workUnitinformations->description;
+							$_POST['telephone'] = $workUnitinformations->telephoneUnite;
+
+							$workUnitAddress = new EvaBaseAddress($workUnitinformations->id_adresse);
+							$workUnitAddress->load();
+							$_POST['adresse'] = trim($workUnitAddress->getFirstLine() . " " . $workUnitAddress->getSecondLine() . " " . $workUnitAddress->getPostalCode() . " " . $workUnitAddress->getCity());
+
 							$_POST['tableElement'] = $workUnit['table'];
 							$_POST['idElement'] = $workUnit['id'];
-							$_POST['nomDuDocument'] = date('Ymd') . '_UT' . $workUnit['id'] . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $workUnit['nom']));
+							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $workUnit['id'] . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $workUnit['nom']));
 							$_POST['nomEntreprise'] = $groupementParent->nom;
 
 							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
@@ -2855,6 +2880,7 @@ echo $output;
 
 						echo '
 <script type="text/javascript" >
+	evarisk("#subTabSelector").val("FP");
 	' . $saveZipFileActionMessage . '
 	evarisk("#ongletHistoriqueDocument").click();
 </script>';
@@ -2873,9 +2899,17 @@ echo $output;
 					break;
 
 					case 'saveFicheGroupement':
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDeGroupementPersistance.php');
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
+						$groupementInformations = EvaGroupement::getGroupement($idElement);
+						$_POST['description'] = $groupementInformations->description;
+						$_POST['telephone'] = $groupementInformations->telephoneGroupement;
+
+						$groupementAddress = new EvaBaseAddress($groupementInformations->id_adresse);
+						$groupementAddress->load();
+						$_POST['adresse'] = trim($groupementAddress->getFirstLine() . " " . $groupementAddress->getSecondLine() . " " . $groupementAddress->getPostalCode() . " " . $groupementAddress->getCity());
+
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDeGroupementPersistance.php');
 						echo eva_GroupSheet::getGroupSheetGenerationForm($tableElement, $idElement) . '<script type="text/javascript" >evarisk(document).ready(function(){evarisk("#generateFGP").click();});</script>';
 					break;
 					case 'saveGroupSheetForGroupement':
@@ -2891,8 +2925,16 @@ echo $output;
 						{
 							$_POST['tableElement'] = $group['table'];
 							$_POST['idElement'] = $group['id'];
-							$_POST['nomDuDocument'] = date('Ymd') . '_GP' . $group['id'] . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $group['nom']));
+							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $group['id'] . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $group['nom']));
 							$_POST['nomEntreprise'] = $groupementParent->nom;
+							
+							$_POST['description'] = $groupementParent->description;
+							$_POST['telephone'] = $groupementParent->telephoneGroupement;
+
+							$groupementAddress = new EvaBaseAddress($groupementParent->id_adresse);
+							$groupementAddress->load();
+							$_POST['adresse'] = trim($groupementAddress->getFirstLine() . " " . $groupementAddress->getSecondLine() . " " . $groupementAddress->getPostalCode() . " " . $groupementAddress->getCity());
+
 
 							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDeGroupementPersistance.php');
 							$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
@@ -2930,6 +2972,7 @@ echo $output;
 
 						echo '
 <script type="text/javascript" >
+	evarisk("#subTabSelector").val("FGP");
 	' . $saveZipFileActionMessage . '
 	evarisk("#ongletHistoriqueDocument").click();
 </script>';
@@ -3740,7 +3783,7 @@ echo $output;
 					{
 						$tasksGantt = $moreSuiviOn = $moreSuiviOff = '';
 						$idDiv = $actionCorrective->getTableFrom() . $actionCorrective->getIdFrom() . '-' . TABLE_TACHE . $actionCorrective->getId();
-						$output = '<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> ' . $actionCorrective->getName() . '</div>';
+						$output = '<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> T' . $actionCorrective->getId() . '&nbsp;-&nbsp;' . $actionCorrective->getName() . '</div>';
 
 						$showGantt = true;
 						switch($actionCorrective->getTableFrom())
@@ -4139,7 +4182,7 @@ echo $output;
 									<div class="pointer infoRisqueActuel" id="correctiveAction' . $idRisque . '" >' . Risque::getTableQuotationRisque(TABLE_RISQUE, $idRisque) . '</div>';
 							if($hasActions)
 							{
-							$output .= 
+								$output .= 
 									'<div id="moreCorrectiveAction' . $idRisque . '" ><img id="pictMoreAC' . $idRisque . '" src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png" style="vertical-align:middle;" alt="moreInfoOnAC" /><span class="pointer" style="vertical-align:middle;" >' . __('Voir les actions associ&eacute;es &agrave; ce risque', 'evarisk') . '</span></div>
 									<div id="correctiveActionContent' . $idRisque . '" style="display:none;" >' . $actionsCorrectives . '</div>';
 							}
@@ -4218,7 +4261,7 @@ echo $output;
 						$messageInfo = $messageInfo . '
 								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 					}
-					$messageInfo = $messageInfo . '
+					$messageInfo .= '
 								evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
 								setTimeout(function(){
 									evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
@@ -4447,7 +4490,7 @@ echo $output;
 						$tasksGantt = '';
 						$idDiv = $actionCorrective->getTableFrom() . $actionCorrective->getIdFrom() . '-' . TABLE_TACHE . $actionCorrective->getId();
 						echo 
-							'<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> ' . $actionCorrective->getName() . '</div>
+							'<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> T' . $actionCorrective->getId() . '&nbsp;-&nbsp;' . $actionCorrective->getName() . '</div>
 							<div id="' . $idDiv . '-affichage" class="affichageAction" style="display:none;"></div>';
 						$tachesDeLAction = $actionCorrective->getDescendants($actionCorrective);
 						$tachesDeLAction = array_merge(array($actionCorrective->getId() => $actionCorrective), $tachesDeLAction->getTasks());

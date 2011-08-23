@@ -13,6 +13,9 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 	$workUnitSheetInfos['nomEntreprise'] = eva_tools::IsValid_Variable($_POST['nomEntreprise']);
 	$workUnitSheetInfos['dateCreation'] = date('Ymd');
 	$workUnitSheetInfos['id_model'] = eva_tools::IsValid_Variable($_POST['id_model']);
+	$workUnitSheetInfos['description'] = (isset($_POST['description']) && ($_POST['description'] != '') && ($_POST['description'] != NULL)) ? eva_tools::IsValid_Variable($_POST['description']) : __('NC', 'evarisk');
+	$workUnitSheetInfos['adresse'] = (isset($_POST['adresse']) && ($_POST['adresse'] != '') && ($_POST['adresse'] != NULL)) ? eva_tools::IsValid_Variable($_POST['adresse']) : __('NC', 'evarisk');
+	$workUnitSheetInfos['telephone'] = (isset($_POST['telephone']) && ($_POST['telephone'] != '') && ($_POST['telephone'] != NULL)) ? eva_tools::IsValid_Variable($_POST['telephone']) : __('NC', 'evarisk');
 
 	$messageInfo = $moremessageInfo = '';
 	$sauvegardeFicheDePoste = eva_WorkUnitSheet::saveWorkUnitSheet($tableElement, $idElement, $workUnitSheetInfos);

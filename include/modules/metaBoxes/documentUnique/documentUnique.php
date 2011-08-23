@@ -81,7 +81,8 @@
 				<div id="divDocumentUnique" class="eva_tabs_panel">' . eva_documentUnique::getBoxBilan($tableElement, $idElement) . '</div>
 				<div id="divRisquesUnites" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divRisquesLignes" class="eva_tabs_panel" style="display:none"></div>
-				<div id="divHistoriqueDocument" class="eva_tabs_panel" style="display:none"></div>' . $userNotAllowed;
+				<div id="divHistoriqueDocument" class="eva_tabs_panel" style="display:none"></div>
+				<input type="hidden" name="subTabSelector" id="subTabSelector" value="" />' . $userNotAllowed;
 
 			echo $corpsPostBoxRisque;
 		}

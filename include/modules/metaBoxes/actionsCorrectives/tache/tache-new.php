@@ -244,13 +244,16 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		{
 			$tache_new .= 
 				'<br/>
-				<div class="alignright button-primary" id="taskExportButton" >
-					' . __('Exporter', 'evarisk') . '
+				<div>
+					<div class="alignright button-primary" id="taskExportButton" >
+						' . __('Exporter', 'evarisk') . '
+					</div>
+					<div id="taskExportResult" >&nbsp;</div>
 				</div>
 				<script type="text/javascript" >
 					evarisk(document).ready(function(){
 						evarisk("#taskExportButton").click(function(){
-							evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							evarisk("#taskExportResult").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 							{
 								"post": "true", 
 								"table": "' . TABLE_TACHE . '",

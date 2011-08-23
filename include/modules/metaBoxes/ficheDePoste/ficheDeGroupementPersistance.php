@@ -12,7 +12,11 @@ if(($_POST['act'] == 'saveFicheGroupement') || ($_POST['act'] == 'saveGroupSheet
 	$workUnitSheetInfos['nomDuDocument'] = eva_tools::IsValid_Variable($_POST['nomDuDocument']);
 	$workUnitSheetInfos['nomEntreprise'] = eva_tools::IsValid_Variable($_POST['nomEntreprise']);
 	$workUnitSheetInfos['dateCreation'] = date('Ymd');
-	$workUnitSheetInfos['id_model'] = eva_tools::IsValid_Variable($_POST['id_model']);
+	$workUnitSheetInfos['id_model'] = eva_tools::IsValid_Variable($_POST['id_model']);	
+
+	$workUnitSheetInfos['description'] = (isset($_POST['description']) && ($_POST['description'] != '') && ($_POST['description'] != NULL)) ? eva_tools::IsValid_Variable($_POST['description']) : __('NC', 'evarisk');
+	$workUnitSheetInfos['adresse'] = (isset($_POST['adresse']) && ($_POST['adresse'] != '') && ($_POST['adresse'] != NULL)) ? eva_tools::IsValid_Variable($_POST['adresse']) : __('NC', 'evarisk');
+	$workUnitSheetInfos['telephone'] = (isset($_POST['telephone']) && ($_POST['telephone'] != '') && ($_POST['telephone'] != NULL)) ? eva_tools::IsValid_Variable($_POST['telephone']) : __('NC', 'evarisk');
 
 	$messageInfo = $moremessageInfo = '';
 	$sauvegardeFicheDePoste = eva_GroupSheet::saveGroupSheet($tableElement, $idElement, $workUnitSheetInfos);
@@ -22,7 +26,8 @@ if(($_POST['act'] == 'saveFicheGroupement') || ($_POST['act'] == 'saveGroupSheet
 		if($sauvegardeFicheDePoste['result'] != 'error')
 		{
 			$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La fiche du groupement &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
-			$moremessageInfo = 'evarisk("#ongletHistoriqueDocument").click();';
+			$moremessageInfo = 'evarisk("#subTabSelector").val("FGP");
+				evarisk("#ongletHistoriqueDocument").click();';
 		}
 		else
 		{

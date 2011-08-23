@@ -1315,7 +1315,7 @@ class EvaDisplayDesign {
 						$tdSubDelete .= '&nbsp;';
 					}
 					$tdSubDelete .= '</td>';
-					$subAffichage = '<span class="italic" >D' . $subElement->id . ' - </span>' . $subElement->nom;
+					$subAffichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_D .  $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					if(!current_user_can('digi_move_danger'))
 					{
@@ -1355,7 +1355,7 @@ class EvaDisplayDesign {
 					}
 					$tdSubDelete .= '</td>';
 
-					$subAffichage = '<span class="italic" >UT' . $subElement->id . ' - </span>' . $subElement->nom;
+					$subAffichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_UT .  $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					if(!current_user_can('digi_move_unite'))
 					{
@@ -1372,14 +1372,14 @@ class EvaDisplayDesign {
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
-					$subAffichage = '<span class="italic" >ST' . $subElement->id . ' - </span>' . $subElement->nom;
+					$subAffichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_ST .  $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
 					break;
 				case TABLE_GROUPE_QUESTION :
 					$tdSubDelete = '
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding delete-leaf" id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
-					$subAffichage = 'Q' . $subElement->id . ' : ' . ucfirst($subElement->enonce);
+					$subAffichage = ELEMENT_IDENTIFIER_Q . $subElement->id . ' : ' . ucfirst($subElement->enonce);
 					$subActions = $tdSubDelete;
 					break;
 			}
@@ -1433,7 +1433,7 @@ class EvaDisplayDesign {
 					switch($table)
 					{
 						case TABLE_CATEGORIE_DANGER :
-							$affichage = '<span class="italic" >CD' . $element->id . '</span> - ' . $element->nom;
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_CD . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
 							if(count($elements_fils) > 0)
@@ -1506,7 +1506,7 @@ class EvaDisplayDesign {
 								' . $tdDelete;
 						break;
 						case TABLE_GROUPEMENT :
-							$affichage = '<span class="italic" >GP' . $element->id . '</span> - ' . $element->nom;
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GP . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
 							if(count($elements_fils) > 0)
@@ -1587,7 +1587,7 @@ class EvaDisplayDesign {
 								' . $tdDelete;
 						break;
 						case TABLE_TACHE :
-							$affichage = '<span class="italic" >T' . $element->id . '</span> - ' . $element->nom;
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_T . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
 							if(count($elements_fils) > 0)
@@ -1614,7 +1614,7 @@ class EvaDisplayDesign {
 								' . $tdDelete;
 						break;
 						case TABLE_GROUPE_QUESTION :
-							$affichage = '<span class="italic" >GQ' . $element->id . '</span> - ' . $element->code . '-' . ucfirst($element->nom);
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GQ . $element->id . '</span> - ' . $element->code . '-' . ucfirst($element->nom);
 							$tdAdd = '<td class="noPadding addMain" id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
 							$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
 							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';

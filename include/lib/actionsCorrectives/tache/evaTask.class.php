@@ -532,12 +532,13 @@ class EvaTask extends EvaBaseTask
 				$taskList = $wpdb->get_results($query);
 
 				$idTable = 'taskListPassedButNotMarkAsDone';
-				$titres = array( __('Nom T&acirc;che', 'evarisk'), __('D&eacute;but', 'evarisk'), __('Fin', 'evarisk'), __('Progression (%)', 'evarisk'), __('Fiche', 'evarisk') );
+				$titres = array( __('Id', 'evarisk'),  __('Nom T&acirc;che', 'evarisk'), __('D&eacute;but', 'evarisk'), __('Fin', 'evarisk'), __('Progression (%)', 'evarisk'), __('Fiche', 'evarisk') );
 				if(is_array($taskList) && (count($taskList) > 0))
 				{
 					foreach($taskList as $task)
 					{
 						unset($valeurs);
+						$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_T . $task->id);
 						$valeurs[] = array('value'=>$task->nom);
 						$valeurs[] = array('value'=>$task->dateDebut);
 						$valeurs[] = array('value'=>$task->dateFin);
@@ -550,6 +551,7 @@ class EvaTask extends EvaBaseTask
 				else
 				{
 					unset($valeurs);
+					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
 					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>'');
@@ -598,12 +600,13 @@ class EvaTask extends EvaBaseTask
 				}
 
 				$idTable = 'taskListToMarkAsDone';
-				$titres = array( __('Nom T&acirc;che', 'evarisk'), __('D&eacute;but', 'evarisk'), __('Fin', 'evarisk'), __('Progression (%)', 'evarisk'), __('Fiche', 'evarisk') );
+				$titres = array( __('Id', 'evarisk'), __('Nom T&acirc;che', 'evarisk'), __('D&eacute;but', 'evarisk'), __('Fin', 'evarisk'), __('Progression (%)', 'evarisk'), __('Fiche', 'evarisk') );
 				if(is_array($taskList) && (count($taskList) > 0))
 				{
 					foreach($taskList as $task)
 					{
 						unset($valeurs);
+						$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_T . $task->id);
 						$valeurs[] = array('value'=>$task->nom);
 						$valeurs[] = array('value'=>$task->dateDebut);
 						$valeurs[] = array('value'=>$task->dateFin);
@@ -616,6 +619,7 @@ class EvaTask extends EvaBaseTask
 				else
 				{
 					unset($valeurs);
+					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
 					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>'');
@@ -649,12 +653,13 @@ class EvaTask extends EvaBaseTask
 				);
 				$riskList = $wpdb->get_results($query);
 
-				$titres = array( __('Nom danger', 'evarisk'), __('Commentaire sur le risque', 'evarisk'), __('&Eacute;l&eacute;ment', 'evarisk'), __('Fiche', 'evarisk') );
+				$titres = array(__('Id', 'evarisk'), __('Nom danger', 'evarisk'), __('Commentaire sur le risque', 'evarisk'), __('&Eacute;l&eacute;ment', 'evarisk'), __('Fiche', 'evarisk') );
 				if(is_array($riskList) && (count($riskList) > 0))
 				{
 					foreach($riskList as $risk)
 					{
 						unset($valeurs);
+						$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_R . $risk->id);
 						$valeurs[] = array('value'=>$risk->nomDanger);
 						$valeurs[] = array('value'=>$risk->commentaire);
 

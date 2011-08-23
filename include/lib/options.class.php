@@ -74,11 +74,12 @@ class digirisk_options
 			}
 		}
 
-		{/*	Declare the different options for the products if plugin exists and is active	*/
+		{/*	Declare the different options for tree management	*/
 			add_settings_section('digi_tree_options', __('Options pour les arbres', 'evarisk'), array('digirisk_options', 'options_output_tree'), 'digirisk_options_settings');
 			/*	Add the different field for current section	*/
 			add_settings_field('digi_tree_recreation_dialog', __('Afficher la bo&icirc;te de dialogue lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_dialog'), 'digirisk_options_settings', 'digi_tree_options');
 			add_settings_field('digi_tree_recreation_default', __('Choix par d&eacute;fault lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_default'), 'digirisk_options_settings', 'digi_tree_options');
+			add_settings_field('digi_tree_element_identifier', __('Identifiants pour les diff&eacute;rents &eacute;l&eacute;ments dans les arbres', 'evarisk'), array('digirisk_options', 'digi_tree_element_identifier'), 'digirisk_options_settings', 'digi_tree_options');
 		}
 	}
 
@@ -123,6 +124,7 @@ if(current_user_can('digi_edit_option'))
 	{
 		$newinput['digi_tree_recreation_dialog'] = $input['digi_tree_recreation_dialog'];
 		$newinput['digi_tree_recreation_default'] = $input['digi_tree_recreation_default'];
+		$newinput['digi_tree_element_identifier'] = serialize($input['digi_tree_element_identifier']);
 
 		return $newinput;
 	}
@@ -517,6 +519,55 @@ if(current_user_can('digi_edit_option'))
 		{
 			echo $options['digi_tree_recreation_default'];
 		}
+	}
+	/**
+	*	Define the ouput for the different element identifier (one output per identifier)
+	*/
+	function digi_tree_element_identifier()
+	{
+		global $treeElementList;
+
+		$options = get_option('digirisk_tree_options');
+		$identifierList = unserialize($options['digi_tree_element_identifier']);
+		$optionOutput = '
+<table summary="element identifier definer" cellpadding="0" cellspacing="0" >';
+		$i = 0;
+		foreach($treeElementList as $elementName => $elementDefault){
+			if($i == 0){
+				$optionOutput .= '
+	<tr>';
+			}
+			$optionValue = $elementDefault;
+			if(isset($identifierList[$elementDefault]) && (trim($identifierList[$elementDefault]) != '')){
+				$optionValue = $identifierList[$elementDefault];
+			}
+			$optionOutput .= '
+		<td><label for="digi_tree_element_identifier' . $elementDefault . '" >' . $elementName . '</label></td>
+		<td>';
+			if(current_user_can('digi_edit_option'))
+			{
+				$optionOutput .= '<input type="text" size="3" name="digirisk_tree_options[digi_tree_element_identifier][' . $elementDefault . ']" value="' . $optionValue . '" id="digi_tree_element_identifier' . $elementDefault . '" />';
+			}
+			else
+			{
+				echo $optionValue;
+			}
+			$optionOutput .= '
+		</td>';
+			$i++;
+			if($i >= 3){
+				$optionOutput .= '
+	</tr>';
+				$i = 0;
+			}
+		}
+		if(($i > 0) && ($i < 3)){
+			$optionOutput .= '
+	</tr>';
+		}
+		$optionOutput .= '</table>';
+
+		echo $optionOutput;
 	}
 
 	/**

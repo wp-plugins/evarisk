@@ -20,7 +20,7 @@ if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0))
 {
 	foreach($listeUtilisateurs as $utilisateur)
 	{
-		$items[$utilisateur['user_lastname'] . ' ' . $utilisateur['user_firstname']] = $utilisateur['user_id'];
+		$items[ELEMENT_IDENTIFIER_U . $utilisateur['user_id'] . '&nbsp;-&nbsp;' . $utilisateur['user_lastname'] . ' ' . $utilisateur['user_firstname']] = $utilisateur['user_id'];
 	}
 }
 

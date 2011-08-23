@@ -73,7 +73,7 @@ class eva_GroupSheet
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
 		$groupInformations = EvaGroupement::getGroupement($idElement);
-		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_GP' . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupInformations->nom));
+		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupInformations->nom));
 		$groupementPere = EvaGroupement::getGroupement($groupInformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
@@ -243,7 +243,7 @@ class eva_GroupSheet
 							{
 								$outputListeDocumentUnique .= '
 									<tr>
-										<td>&nbsp;&nbsp;&nbsp;- ' . $DUER['name'] . '_' . $DUER['revision'] . '</td>';
+										<td>&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_FGP . $index . ')&nbsp;&nbsp;' . $DUER['name'] . '_' . $DUER['revision'] . '</td>';
 
 								/*	Check if an odt file exist to be downloaded	*/
 								$odtFile = 'ficheDeGroupement/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
@@ -372,10 +372,10 @@ class eva_GroupSheet
 
 		/*	Enregistrement du document	*/
 		$query = $wpdb->prepare("INSERT INTO " . TABLE_FP . " 
-				(id, creation_date, revision, id_element, id_model, table_element, reference, name, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
+				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
 			VALUES 
-				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk));
+				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk));
 		if($wpdb->query($query) === false)
 		{
 			$status['result'] = 'error'; 
@@ -474,7 +474,7 @@ class eva_GroupSheet
 			{
 				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
 				{
-					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
+					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: (%s) <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), ELEMENT_IDENTIFIER_GFGP . $fdpGpt->id, EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
 				}
 			}
 		}

@@ -246,12 +246,14 @@ evarisk(document).ready(function(){
 		unset($titres,$classes, $idLignes, $lignesDeValeurs);
 		$idLignes = null;
 		$idTable = 'digirisk_user_groups_' . $table_identifier;
+		$titres[] = __("Identifiant", 'evarisk');
 		$titres[] = __("Nom du groupe", 'evarisk');
 		$titres[] = __("Description", 'evarisk');
 		$titres[] = __("Nombre d'utilisateur", 'evarisk');
 		$titres[] = __("D&eacute;tails", 'evarisk');
 		$titres[] = __("Informations", 'evarisk');
 		$titres[] = __("Actions", 'evarisk');
+		$classes[] = 'digirisk_user_groups_column_id';
 		$classes[] = 'digirisk_user_groups_column_name';
 		$classes[] = 'digirisk_user_groups_column_description';
 		$classes[] = 'digirisk_user_groups_column_usernumber';
@@ -286,6 +288,7 @@ evarisk(document).ready(function(){
 				$idLignes[] = 'digirisk_users_groups_' . $element->id;
 
 				/*	Define each column value for each line	*/
+				$lignesDeValeurs[$i][] = array('value' => ELEMENT_IDENTIFIER_GPU . $element->id, 'class' => 'digirisk_user_groups_cell_id');
 				$lignesDeValeurs[$i][] = array('value' => $element->name, 'class' => 'digirisk_user_groups_cell_name');
 				$lignesDeValeurs[$i][] = array('value' => $element->description, 'class' => 'digirisk_user_groups_cell_description');
 				$lignesDeValeurs[$i][] = array('value' => $element->userNumber, 'class' => 'digirisk_user_groups_cell_usernumber');
@@ -333,6 +336,7 @@ evarisk(document).ready(function(){
 
 			/*	Define the line content when no result is found	*/
 			$lignesDeValeurs[$i][] = array('value' => __('Aucun groupe d\'utilisateur n\'a &eacute;t&eacute; trouv&eacute;', 'evarisk'), 'class' => '');
+			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
@@ -657,7 +661,7 @@ evarisk(document).ready(function(){
 				$linkedElementList[$element->id_group] = $element;
 				$alreadyLinked .= $element->id_group . ', ';
 				$currentElement = digirisk_groups::getElement($element->id_group);
-				$alreadyLinkedListOutput .= '<div class="selectedelementOP" id="affectedElement' . $tableElement . $element->id_group . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . $currentElement[0]->name . '<div class="ui-icon deleteElementFromList" >&nbsp;</div></div>';
+				$alreadyLinkedListOutput .= '<div class="selectedelementOP" id="affectedElement' . $tableElement . $element->id_group . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_GPU . $element->id_group . '&nbsp;-&nbsp;' . $currentElement[0]->name . '<div class="ui-icon deleteElementFromList" >&nbsp;</div></div>';
 			}
 		}
 		else
@@ -868,7 +872,7 @@ evarisk(document).ready(function(){
 					$moreLineClass = 'elementIsLinked';
 				}
 				$valeurs[] = array('value'=>'<span id="actionButton' . $tableElement . 'ElementLink' . $element->id . '" class="buttonActionElementLinkList' . $tableElement . ' ' . $moreLineClass . '  ui-icon pointer" >&nbsp;</span>');
-				$valeurs[] = array('value'=>$element->name);
+				$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_GPU . $element->id . '&nbsp;-&nbsp;' . $element->name);
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $idLigne;
 			}

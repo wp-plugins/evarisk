@@ -84,7 +84,7 @@ class evaRecommandation
 				{
 					$recommandationCategoryButtonForCurrentUser .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'view_vs.png" alt="' . __('Voir cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" title="' . __('Voir cette cat&eacute;gorie de pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationCategory" onclick="javascript:editRecommandationCategory(\'' . $recommandation->recommandation_category_id . '\', \'' . TABLE_CATEGORIE_PRECONISATION . '\');" />';
 				}
-				$lignesDeValeurs[$i][] = array('value' => 'CP' . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . ucfirst($recommandation->recommandation_category_name). $recommandationCategoryButtonForCurrentUser, 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => ELEMENT_IDENTIFIER_CP . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . ucfirst($recommandation->recommandation_category_name). $recommandationCategoryButtonForCurrentUser, 'class' => '');
 
 				if(($recommandation->nom == NULL))
 				{
@@ -120,7 +120,7 @@ class evaRecommandation
 						$recommandationMainPicture = '<img class="recommandationDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . $recommandationMainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->nom) . '" />';
 					}
 					$lignesDeValeurs[$i][] = array('value' => $recommandationMainPicture, 'class' => '');
-					$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >P' . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst($recommandation->nom) . '</span>', 'class' => '');
+					$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst($recommandation->nom) . '</span>', 'class' => '');
 					$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->description), 'class' => '');
 					/*	Check user right for output creation	*/
 					$recommandationButtonForCurrentUser = '';
@@ -348,7 +348,7 @@ class evaRecommandation
 							$selectedId = 'evarisk("#recommandation_id").val("' . $recommandation->id . '");
 		evarisk("#recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
-						$recommandationMainPicture = '<div class="alignleft recommandationBloc ' . $selectedClass . '" ><input class="recommandation" type="radio" ' . $checked . ' id="recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" /><label for="recommandation' . $recommandation->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ucfirst(strtolower($recommandation->nom)) . '" /></label></div>';
+						$recommandationMainPicture = '<div class="alignleft recommandationBloc ' . $selectedClass . '" ><input class="recommandation" type="radio" ' . $checked . ' id="recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" /><label for="recommandation' . $recommandation->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($recommandation->nom)) . '" /></label></div>';
 					}
 					$recommandationListOutput .= $recommandationMainPicture;
 					$i++;
@@ -806,13 +806,13 @@ class evaRecommandation
 						$recommandationCategoryMainPicture = '<img class="recommandationCategoryDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_GENERATED_DOC_URL . $mainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_category_name) . '" />';
 					}
 				}
-				$lignesDeValeurs[$i][] = array('value' => $recommandationCategoryMainPicture . '&nbsp;&nbsp;CP' . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_category_name), 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . ELEMENT_IDENTIFIER_CP . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_category_name), 'class' => '');
 
 				$recommandationMainPicture = evaPhoto::checkIfPictureIsFile($recommandation->photo, TABLE_PRECONISATION);
 				$recommandationMainPicture = !$recommandationMainPicture ? '' : '<img class="recommandationDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . $recommandationMainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_name) . '" />';
 
 				$lignesDeValeurs[$i][] = array('value' => $recommandationMainPicture, 'class' => '');
-				$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >P' . $recommandation->id_preconisation . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_name) . '</span>', 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >' . ELEMENT_IDENTIFIER_P . $recommandation->id_preconisation . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_name) . '</span>', 'class' => '');
 				$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->commentaire), 'class' => '');
 				if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
 				{

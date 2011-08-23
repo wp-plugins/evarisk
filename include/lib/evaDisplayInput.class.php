@@ -24,7 +24,7 @@ class EvaDisplayInput {
 	static function ouvrirForm($method, $id, $name)
 	{
 		
-		return '<form method="' . $method . '" id="' . $id . '" name="' . $name . '" enctype="multipart/form-data">';
+		return '<form method="' . strtolower($method) . '" id="' . $id . '" name="' . $name . '" enctype="multipart/form-data" action="" >';
 	}
 	
 	/**
@@ -122,8 +122,9 @@ class EvaDisplayInput {
 				evarisk(\'#ui-datepicker-div\').hide();';
 				break;
 		}
-		$script = $script . '
-          evarisk("#' . $id . '").val("' . $contenuInput . '"); 
+		$script .= '
+          evarisk("#' . $id . '").val("' . str_replace(" 
+", "\\n", $contenuInput) . '"); 
 				});
 			</script>';
 		return $script;
@@ -151,37 +152,38 @@ class EvaDisplayInput {
 	  */
 	static function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false)
 	{
+		$input = '';
 		if($obligatoire)
 		{
 			$classe = 'input_required ' . $classe;
 		}
-		$input = EvaDisplayInput::getScriptInput($id, $contenuInput, $contenuAide, $labelInput, $grise, $classe, $limitation) . '<div style="float:' . $float . '">' . $script;
-		if($labelInput != null)
-		{
-			$input = $input . '<label for="' . $id . '">' . $labelInput . '</label>';
-		}
-		if($type == 'button' AND in_array('button-primary', explode(' ', $classe)))
-		{
-			$input = $input . '<br />';
-		}
+		 $input .= '<div style="float:' . $float . '">';
 		switch($type)
 		{
 			case 'textarea':
-				$input = $input . '
-						<textarea style="clear: both; width: ' . $width . '" id="' . $id . '" rows=\'' . $taille . '\'';
-						$input = $input . ' name="' . $nomChamps . '" cols=\'' . $taille . '\' tabindex="1">' . $contenuInput . '</textarea>';
+				$theInput = '
+						<textarea style="clear: both; width: ' . $width . '" id="' . $id . '" rows="' . $taille . '"  name="' . $nomChamps . '" cols="' . $taille . '" tabindex="1" >' . $contenuInput . '</textarea>';
 				break;
 			default:
-				$input = $input . '
+				$input .= EvaDisplayInput::getScriptInput($id, $contenuInput, $contenuAide, $labelInput, $grise, $classe, $limitation) . $script;
+				$theInput = '
 						<input style="clear: both; width: ' . $width . '" maxlength="' . $taille . '" type="' . $type . '"  id="' . $id . '" value="' . $contenuInput . '" tabindex="1" name="' . $nomChamps . '"/>';
 				break;
 		}
-		$input = $input . '</div>';
+		if($labelInput != null)
+		{
+			$input .= '<label for="' . $id . '">' . $labelInput . '</label>';
+		}
+		if($type == 'button' AND in_array('button-primary', explode(' ', $classe)))
+		{
+			$input .= '<br />';
+		}
+		$input .= $theInput . '</div>';
 		if($type != 'hidden')
 		{
 			if(!$withoutClear)
 			{
-				$input = $input . '<br  class="clear" />';
+				$input .= '<br  class="clear" />';
 			}
 		}
 		return $input;

@@ -24,7 +24,7 @@ class evaUserLinkElement
 		$idBoutonEnregistrer = 'save_group' . $tableElement;
 
 		$idTable = 'listeIndividus' . $tableElement . $idElement;
-		$titres = array( '', ucfirst(strtolower(__('Nom', 'evarisk'))), ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk'))), ucfirst(strtolower(__('Inscription', 'evarisk'))));
+		$titres = array( '', ucfirst(strtolower(__('Id.', 'evarisk'))), ucfirst(strtolower(__('Nom', 'evarisk'))), ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk'))), ucfirst(strtolower(__('Inscription', 'evarisk'))));
 		unset($lignesDeValeurs);
 
 		//on récupère les utilisateurs déjà affectés à l'élément en cours.
@@ -52,6 +52,7 @@ class evaUserLinkElement
 					$moreLineClass = 'userIsLinked';
 				}
 				$valeurs[] = array('value'=>'<span id="actionButton' . $tableElement . 'UserLink' . $utilisateur['user_id'] . '" class="buttonActionUserLinkList ' . $moreLineClass . '  ui-icon pointer" >&nbsp;</span>');
+				$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_U . $utilisateur['user_id']);
 				$valeurs[] = array('value'=>$utilisateur['user_lastname']);
 				$valeurs[] = array('value'=>$utilisateur['user_firstname']);
 				$valeurs[] = array('value'=>mysql2date('d M Y', $utilisateur['user_registered'], true));
@@ -62,6 +63,7 @@ class evaUserLinkElement
 		else
 		{
 			$valeurs[] = array('value'=>'');
+			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
 			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>'');
@@ -69,7 +71,7 @@ class evaUserLinkElement
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
 		}
 
-		$classes = array('addUserButtonDTable','','','');
+		$classes = array('addUserButtonDTable','userIdentifierColumn','','','');
 		$script = 
 '<script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -78,7 +80,7 @@ class evaUserLinkElement
 			"bInfo": false,
 			"bPaginate": false,
 			"bFilter": false,
-			"aaSorting": [[3,"desc"]]
+			"aaSorting": [[4,"desc"]]
 		});
 		evarisk("#' . $idTable . '").children("tfoot").remove();
 		evarisk("#' . $idTable . '").removeClass("dataTables_wrapper");
@@ -86,11 +88,11 @@ class evaUserLinkElement
 			if(evarisk(this).hasClass("addUserToLinkList")){
 				var currentId = evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
 				cleanUserIdFiedList(currentId, "' . $tableElement . '");
-				
-				var lastname = evarisk(this).parent("td").next().html();
-				var firstname = evarisk(this).parent("td").next().next().html();
 
-				addUserIdFieldList(lastname + " " + firstname, currentId, "' . $tableElement . '");
+				var lastname = evarisk(this).parent("td").next().next().html();
+				var firstname = evarisk(this).parent("td").next().next().next().html();
+
+				addUserIdFieldList(' . ELEMENT_IDENTIFIER_U . 'currentId + " - " + lastname + " " + firstname, currentId, "' . $tableElement . '");
 			}
 			else if(evarisk(this).hasClass("deleteUserToLinkList")){
 				deleteUserIdFiedList(evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), "' . $tableElement . '");
@@ -102,10 +104,10 @@ class evaUserLinkElement
 				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
 				cleanUserIdFiedList(currentId, "' . $tableElement . '");
 
-				var lastname = evarisk(this).children("td:nth-child(2)").html();
-				var firstname = evarisk(this).children("td:nth-child(3)").html();
+				var lastname = evarisk(this).children("td:nth-child(3)").html();
+				var firstname = evarisk(this).children("td:nth-child(4)").html();
 
-				addUserIdFieldList(lastname + " " + firstname, currentId, "' . $tableElement . '");
+				addUserIdFieldList("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname, currentId, "' . $tableElement . '");
 			}
 			else{
 				deleteUserIdFiedList(evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", ""), "' . $tableElement . '");
@@ -144,7 +146,7 @@ class evaUserLinkElement
 				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
 				$alreadyLinkedUserId .= $utilisateur->id_user . ', ';
 				$currentUser = evaUser::getUserInformation($utilisateur->id_user);
-				$alreadyLinkedUser .= '<div class="selecteduserOP" id="affectedUser' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . '<div class="ui-icon deleteUserFromList" >&nbsp;</div></div>';
+				$alreadyLinkedUser .= '<div class="selecteduserOP" id="affectedUser' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_U . $utilisateur->id_user . '&nbsp;-&nbsp;' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . '<div class="ui-icon deleteUserFromList" >&nbsp;</div></div>';
 			}
 		}
 		else

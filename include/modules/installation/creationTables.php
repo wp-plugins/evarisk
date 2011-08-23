@@ -1495,6 +1495,14 @@ ADD INDEX ( impressionRecommandation ) ;";
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 53)
+		{
+			$sql = $wpdb->prepare("ALTER TABLE " . TABLE_FP . " ADD description varchar(255) AFTER name, ADD adresse varchar(255) AFTER description, ADD telephone varchar(255) AFTER adresse;");
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

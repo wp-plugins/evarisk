@@ -19,7 +19,7 @@ if(is_array($elementList) && (count($elementList) > 0))
 {
 	foreach($elementList as $element)
 	{
-		$items[$element->name] = $element->id;
+		$items[ELEMENT_IDENTIFIER_GPU . $element->id . '&nbsp;-&nbsp;' . $element->name] = $element->id;
 	}
 }
 

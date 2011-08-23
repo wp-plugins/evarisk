@@ -21,7 +21,6 @@ class digirisk_init
 	*/
 	function digirisk_plugin_load()
 	{
-
 		/*	Call function to create the main left menu	*/
 		add_action('admin_menu', array('digirisk_init', 'digirisk_menu') );
 
@@ -66,10 +65,11 @@ class digirisk_init
 
 		if(digirisk_options::getDbOption('base_evarisk') < 1)
 		{
+			require_once(EVA_LIB_PLUGIN_DIR . 'install.class.php');
 			// On crée le menu principal
-			add_menu_page( 'Digirisk : ' . __('Installation', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'activate_plugins', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php' , '', EVA_FAVICON, 3);
+			add_menu_page('Digirisk : ' . __('Installation', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'activate_plugins', 'digirisk_installation', array('digirisk_install', 'installation_form'), EVA_FAVICON, 3);
 			// On propose le formulaire de création
-			add_submenu_page(EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php','Evarisk : ' . __('Installation', 'evarisk'), __('Installation', 'evarisk'),  'activate_plugins', EVA_MODULES_PLUGIN_DIR . '/installation/formulaireInstallation.php');
+			add_submenu_page('digirisk_installation', 'Evarisk : ' . __('Installation', 'evarisk'), __('Installation', 'evarisk'),  'activate_plugins', 'digirisk_installation', array('digirisk_install', 'installation_form'));
 			add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'activate_plugins', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
 		}
 		else

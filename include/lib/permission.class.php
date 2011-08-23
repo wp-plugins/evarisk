@@ -1097,6 +1097,7 @@ class digirisk_permission
 		$idTable = 'listeIndividusPourDroits' . $tableElement . $idElement;
 		unset($titres);
 		$titres[] = __('Affect&eacute; &agrave; l\'&eacute;l&eacute;ment', 'evarisk');
+		$titres[] = ucfirst(strtolower(__('Id.', 'evarisk')));
 		$titres[] = ucfirst(strtolower(__('Nom', 'evarisk')));
 		$titres[] = ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk')));
 		if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN)
@@ -1152,6 +1153,7 @@ class digirisk_permission
 				}
 
 				$valeurs[] = array('value'=>$utilisateurAffecte, 'class'=>$utilisateurAffecteClass);
+				$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_U . $utilisateur['user_id'], 'class'=>$utilisateurAffecteClass);
 				$valeurs[] = array('value'=>$utilisateur['user_lastname'], 'class'=>$utilisateurAffecteClass);
 				$valeurs[] = array('value'=>$utilisateur['user_firstname'], 'class'=>$utilisateurAffecteClass);
 				switch($tableElement)
@@ -1256,7 +1258,7 @@ class digirisk_permission
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
 		}
 
-		$classes = array('','middleAlign','middleAlign','rightColumn','rightColumn','rightColumn');
+		$classes = array('','userIdentifierColumn','middleAlign','middleAlign','rightColumn','rightColumn','rightColumn');
 		$script = '
 <script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -1268,6 +1270,7 @@ class digirisk_permission
 			"bPaginate": false,
 			"aoColumns": [
 				{ "bVisible": false},
+				null,
 				null,
 				null,
 				{ "bSortable": false},

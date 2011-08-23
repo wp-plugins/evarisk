@@ -150,7 +150,7 @@ class evaRecommandationCategory
 						$checked =  ' checked="checked" ';
 						$selectedClass = 'recommandationCategorySelected';
 					}
-					$recommandationMainPicture = '<div class="alignleft recommandationCategoryBloc ' . $selectedClass . '" ><label for="recommandationCategory' . $category->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($category->nom)) . '" title="' . ucfirst(strtolower($category->nom)) . '" /></label><input class="hide recommandationCategory" type="radio" ' . $checked . ' id="recommandationCategory' . $category->id . '" name="recommandationCategory" value="' . $category->id . '" /></div>';
+					$recommandationMainPicture = '<div class="alignleft recommandationCategoryBloc ' . $selectedClass . '" ><label for="recommandationCategory' . $category->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($category->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $category->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($category->nom)) . '" /></label><input class="hide recommandationCategory" type="radio" ' . $checked . ' id="recommandationCategory' . $category->id . '" name="recommandationCategory" value="' . $category->id . '" /></div>';
 				}
 				$categoryListOutput .= $recommandationMainPicture;
 				$i++;

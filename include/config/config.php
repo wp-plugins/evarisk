@@ -132,6 +132,20 @@
 	$optionExistingTreeElementList['recreate'] = __('Cr&eacute;er un nouveau', 'evarisk');
 	$optionExistingTreeElementList['reactiv'] = __('R&eacute;-activer', 'evarisk');
 
+	/**
+	*	Define the different existing element type
+	*/
+	$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'P', __('Cat&eacute;gorie de produits', 'evarisk') => 'CP', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP');
+	$digirisk_tree_options = get_option('digirisk_tree_options');
+	$identifierList = unserialize($digirisk_tree_options['digi_tree_element_identifier']);
+	foreach($treeElementList as $elementName => $elementDefault){
+		$optionValue = $elementDefault;
+		if(isset($identifierList[$elementDefault]) && (trim($identifierList[$elementDefault]) != '')){
+			$optionValue = $identifierList[$elementDefault];
+		}
+		DEFINE('ELEMENT_IDENTIFIER_' . $elementDefault, $optionValue);
+	}
+
 	require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 	require_once('configLogiciel.php');
 	require_once('configImages.php');

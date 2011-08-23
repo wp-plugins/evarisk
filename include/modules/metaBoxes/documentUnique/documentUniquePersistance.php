@@ -36,7 +36,8 @@ if($_POST['act'] == 'saveDocumentUnique')
 	if($sauvegardeDocumentUnique['result'] != 'error')
 	{
 		$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('Le document unique &agrave; bien &eacute;t&eacute; sauvegard&eacute;.', 'evarisk');
-		$moremessageInfo = 'evarisk("#ongletHistoriqueDocument").click();';
+		$moremessageInfo = 'evarisk("#subTabSelector").val("DUER");
+				evarisk("#ongletHistoriqueDocument").click();';
 	}
 	else
 	{

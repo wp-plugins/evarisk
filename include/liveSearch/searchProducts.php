@@ -20,7 +20,7 @@ if(is_array($elementList) && (count($elementList) > 0))
 {
 	foreach($elementList as $elementId => $element)
 	{
-		$items[$element['attributes']['product_name']['value'] . ' (' . $element['reference'] . ')'] = $elementId;
+		$items[ELEMENT_IDENTIFIER_P . $elementId . '&nbsp;-&nbsp' . $element['attributes']['product_name']['value'] . ' (' . $element['reference'] . ')'] = $elementId;
 	}
 }
 

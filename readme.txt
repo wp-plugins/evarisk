@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.1.3
-Stable tag: 5.1.3.4
+Stable tag: 5.1.3.5
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,7 +75,23 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
-= Version 5.1.3.3 =
+= Version 5.1.3.5 =
+
+Am&eacute;liorations 
+
+* Reprise de la page d'installation pour homog&eacute;n&eacute;isation avec le reste du plugin 
+* Ajout des identifiants aux &eacute;l&eacute;ments manquants (Actions correctives dans le suivi des actions / Risques dans la liste des risques d&eacute;j&agrave; &eacute;valu&eacute;s / &Eacute;l&eacute;ments dans les documents (DUER / FP / FGPT) / Groupes d'utilisateurs / Utilisateurs) 
+* Personnalisation des identifiants (Ajout d'une option pour chaque type d'identifiant) 
+* Informations g&eacute;n&eacute;rales int&eacute;gr&eacute;es (Description / Adresse / T&eacute;l&eacute;phone) 
+* G&eacute;n&eacute;ration d'un document on retombe sur le bon onglet dans l'historique
+* Ajout du lien pour t&eacute;l&eacute;charger le fichier contenant l'export au format txt des actions correctives
+
+Corrections 
+
+* Retour &agrave; la ligne dans le champs commentaire dprovoquait une erreur javascript (Ce qui emp&ecirc;chait l'utilisateur de modifier le contenu de la box) 
+
+
+= Version 5.1.3.4 =
 
 Am&eacute;liorations
 
