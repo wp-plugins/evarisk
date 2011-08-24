@@ -1531,7 +1531,9 @@
 			{
 				var iRow = (typeof mRow == 'object') ? 
 					_fnNodeToDataIndex(oSettings, mRow) : mRow;
-				return oSettings.aoData[iRow]._aData;
+				if( typeof oSettings.aoData[iRow] != 'undefined'){
+					return oSettings.aoData[iRow]._aData;     
+				}
 			}
 			return _fnGetDataMaster( oSettings );
 		};

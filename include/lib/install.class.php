@@ -118,7 +118,6 @@ class digirisk_install
 				
 					evarisk("#' . $idTable . ' tfoot").remove();
 					evarisk("#' . $idTable . ' thead").remove();
-					evarisk("#idTable").
 					evarisk("#' . $idBouttonEnregistrer . '").click(function() {
 						var methodes = new Array();
 						methodes[0] = new Array();

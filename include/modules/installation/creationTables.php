@@ -1503,6 +1503,11 @@ ADD INDEX ( impressionRecommandation ) ;";
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 54)
+		{
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

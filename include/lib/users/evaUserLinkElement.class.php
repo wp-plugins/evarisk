@@ -181,7 +181,7 @@ class evaUserLinkElement
 <div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span></div></div>
 
 <script type="text/javascript" >
-	(function(){
+	evarisk(document).ready(function(){
 		/*	Mass action : check / uncheck all	*/
 		jQuery("#massAction' . $tableElement . ' .checkAll").unbind("click");
 		jQuery("#massAction' . $tableElement . ' .checkAll").click(function(){
@@ -223,7 +223,7 @@ class evaUserLinkElement
 
 			jQuery("#searchUser' . $tableElement . '").val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
 		});
-	})(evarisk);
+	});
 </script>';
 
 		if($showButton){

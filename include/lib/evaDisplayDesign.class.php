@@ -1645,12 +1645,193 @@ class EvaDisplayDesign {
 	}
 
 	/**
-	 * Returns information on an element to be displayed in the list view.
-	 * @param string $table Element table name.
-	 * @param int $elementId Identifier of the element.
-	 * @return string The information.
-	 */
-	static function getInfoArborescence($table, $elementId)
+	* Returns the inner table of the list view tree with scripts that allow you to display the right part by clicking on the elements.
+	* This recursive function path tree from the father element to his leaves.
+	* @param array[Element_of_a_tree] $elementsFils Array of all the elements son of the father element.
+	* @param Element_of_a_tree $elementPere Father element.
+	* @param string $table Father element table name.
+	* @return string HTML code of the inner table.
+	*/
+	function build_tree($elementsFils, $elementPere, $table, $titreInfo, $idTable, $moreInfo)
+	{
+		$monCorpsTable = $monCorpsSubElements = '';
+		$ddFeuilleClass = 'feuilleArbre';
+		$nomFeuilleClass = 'nomFeuilleArbre';
+
+		switch($table)
+		{
+			case TABLE_CATEGORIE_DANGER :
+				$sousTable = TABLE_DANGER;
+				$subElements = categorieDangers::getDangersDeLaCategorie($elementPere->id);
+				$actionSize = 4;
+				break;
+			case TABLE_GROUPEMENT :
+				$sousTable = TABLE_UNITE_TRAVAIL;
+				$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
+				$actionSize = 4;
+				break;
+			case TABLE_TACHE :
+				$sousTable = TABLE_ACTIVITE;
+				$tacheMere = new EvaTask($elementPere->id);
+				$tacheMere->load();
+				$subElements = $tacheMere->getWPDBActivitiesDependOn();
+				$actionSize = 3;
+				break;
+			case TABLE_GROUPE_QUESTION :
+				$sousTable = TABLE_QUESTION;
+				$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($elementPere->id);
+				$actionSize = 3;
+				break;
+		}
+		$monCorpsSubElements = '';
+		foreach($subElements as $subElement)
+		{
+			$ddFeuilleClass = '';
+			$nomFeuilleClass = 'nomFeuilleArbre';
+			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id, $moreInfo);
+			$monCorpsSubElements .= '
+				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddFeuilleClass . '">
+					<td id="leaf-' . $subElement->id . '-name" class="' . $nomFeuilleClass . '" >' . ELEMENT_IDENTIFIER_ST . $subElement->id . '&nbsp;-&nbsp;' . $subElement->nom . '</td>';
+			if($titreInfo != null)
+			{
+				$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
+			}
+			$monCorpsSubElements .= '
+					<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_ST . $subElement->id . '" class="CorrectivActionFollowStateActionColumn" ><img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $sousTable . '_t_elt_' . $subElement->id . '" /></td>
+				</tr>';
+		}
+
+		if(count($elementsFils) != 0)
+		{
+			foreach ($elementsFils as $element )
+			{
+				$elements_fils = '';
+				$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
+				$elements_pere = Arborescence::getPere($table, $element, " Status = 'Deleted' ");
+				$ddNoeudClass = 'noeudArbre';
+				$nomNoeudClass = 'nomNoeudArbre';
+
+				if(count($elements_pere) <= 0)
+				{
+					switch($table)
+					{
+						case TABLE_CATEGORIE_DANGER :
+							$sousTable = TABLE_DANGER;
+							$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
+						break;
+						case TABLE_GROUPEMENT :
+							$sousTable = TABLE_UNITE_TRAVAIL;
+							$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
+						break;
+						case TABLE_TACHE :
+							$sousTable = TABLE_ACTIVITE;
+							$tache = new EvaTask($element->id);
+							$tache->load();
+							$subElements = $tache->getWPDBActivitiesDependOn();
+						break;
+						case TABLE_GROUPE_QUESTION :
+							$sousTable = TABLE_QUESTION;
+							$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element->id);
+						break;
+					}
+					$trouveElement = count($elements_fils) + count($subElements);
+
+					switch($table)
+					{
+						case TABLE_CATEGORIE_DANGER :
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_CD . $element->id . '</span> - ' . $element->nom;
+							$tdAddMainStyle = 'display:none;';
+							$tdAddSecondaryStyle = 'display:none;';
+							if(count($elements_fils) > 0)
+							{
+								$tdAddMainStyle = '';
+							}
+							elseif(count($subElements) > 0)
+							{
+								$tdAddSecondaryStyle = '';
+							}
+							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+							{
+								$tdAddMainStyle = '';
+								$tdAddSecondaryStyle = '';
+							}
+
+						break;
+						case TABLE_GROUPEMENT :
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GP . $element->id . '</span> - ' . $element->nom;
+							$tdAddMainStyle = 'display:none;';
+							$tdAddSecondaryStyle = 'display:none;';
+							if(count($elements_fils) > 0)
+							{
+								$tdAddMainStyle = '';
+							}
+							elseif(count($subElements) > 0)
+							{
+								$tdAddSecondaryStyle = '';
+							}
+							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+							{
+								$tdAddMainStyle = '';
+								$tdAddSecondaryStyle = '';
+							}
+
+						break;
+						case TABLE_TACHE :
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_T . $element->id . '</span> - ' . $element->nom;
+							$tdAddMainStyle = 'display:none;';
+							$tdAddSecondaryStyle = 'display:none;';
+							if(count($elements_fils) > 0)
+							{
+								$tdAddMainStyle = '';
+							}
+							elseif(count($subElements) > 0)
+							{
+								$tdAddSecondaryStyle = '';
+							}
+							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
+							{
+								$tdAddMainStyle = '';
+								$tdAddSecondaryStyle = '';
+							}
+
+						break;
+						case TABLE_GROUPE_QUESTION :
+							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GQ . $element->id . '</span> - ' . $element->code . '-' . ucfirst($element->nom);
+
+						break;
+					}
+					$info = '';
+					if($titreInfo != null)
+					{
+						$info = EvaDisplayDesign::getInfoArborescence($table, $element->id, $moreInfo);
+						$info = '<td id="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
+					}
+					$monCorpsTable .= '
+						<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddNoeudClass . ' parent">
+							<td id="node-' . $idTable . '-' . $element->id . '-name" class="' . $nomNoeudClass . '" >' . $affichage . '</td>
+							' . $info . '
+							<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_T . $element->id . '" class="CorrectivActionFollowStateActionColumn" ><img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $table . '_t_elt_' . $element->id . '" /></td>
+						</tr>';
+
+					if($trouveElement)
+					{
+						$monCorpsTable .= EvaDisplayDesign::build_tree($elements_fils, $element, $table, $titreInfo, $idTable, $moreInfo);
+					}
+				}
+			}
+		}
+
+		return $monCorpsTable . $monCorpsSubElements;
+	}
+
+	
+	/**
+	* Returns information on an element to be displayed in the list view.
+	* @param string $table Element table name.
+	* @param int $elementId Identifier of the element.
+	* @return string The information.
+	*/
+	static function getInfoArborescence($table, $elementId, $more_info = false)
 	{
 		switch($table)
 		{
@@ -1673,41 +1854,21 @@ class EvaDisplayDesign {
 			case TABLE_TACHE :
 				$tache = new EvaTask($elementId);
 				$tache->load();
-				$statutProgression = '';
-				switch($tache->getProgressionStatus())
-				{
-					case 'notStarted';
-						$statutProgression = __('Non commenc&eacute;e', 'evarisk');
-					break;
-					case 'inProgress';
-						$statutProgression = __('En cours', 'evarisk');
-					break;
-					case 'Done';
-					case 'DoneByChief';
-						$statutProgression = __('Sold&eacute;e', 'evarisk');
-					break;
+				$moreInfo = '';
+				if($more_info){
+				 $moreInfo = '&nbsp;-&nbsp;&nbsp;' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $tache->getStartDate(), true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $tache->getFinishDate(), true);
 				}
-				$info['value'] = $tache->getProgression() . '%&nbsp;(' . $statutProgression . ')';
+				$info['value'] = $tache->getProgression() . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($tache->getProgressionStatus()) . ')' . $moreInfo;
 				$info['class'] = 'treeTableGroupInfoColumn taskInfoContainer-' . $elementId;
 				break;
 			case TABLE_ACTIVITE :
 				$action = new EvaActivity($elementId);
 				$action->load();
-				$statutProgression = '';
-				switch($action->getProgressionStatus())
-				{
-					case 'notStarted';
-						$statutProgression = __('Non commenc&eacute;e', 'evarisk');
-					break;
-					case 'inProgress';
-						$statutProgression = __('En cours', 'evarisk');
-					break;
-					case 'Done';
-					case 'DoneByChief';
-						$statutProgression = __('Sold&eacute;e', 'evarisk');
-					break;
+				$moreInfo = '';
+				if($more_info){
+				 $moreInfo = '&nbsp;-&nbsp;&nbsp;' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $action->getStartDate(), true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $action->getFinishDate(), true);
 				}
-				$info['value'] = $action->getProgression() . '%&nbsp;(' . $statutProgression . ')';
+				$info['value'] = $action->getProgression() . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($action->getProgressionStatus()) . ')' . $moreInfo;
 				$info['class'] = 'treeTableInfoColumn activityInfoContainer-' . $elementId;
 				break;
 			case TABLE_GROUPEMENT :
@@ -1745,8 +1906,8 @@ class EvaDisplayDesign {
 	}
 
 	/*
-	 * 
-	 */
+	* 
+	*/
 	static function getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script = '')
 	{
 		$barreTitre = '';

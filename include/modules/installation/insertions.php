@@ -1220,6 +1220,13 @@ ou irritantes');";
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}	
+		case 54:
+		{
+			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '', 'permission' => 'digi_view_correctiv_action'));
+			
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}	
 	}
 
 }

@@ -11,6 +11,8 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .radioPictoCategorie {float:left; margin-right:2%; margin-bottom:2%;}
 .radioPictoCategorie img {vertical-align:middle; max-width:48px; cursor:pointer; }
 
+.white_background th{	background:none #FFFFFF !important;	}
+
 .tabcroisillon{	margin:6px 0px;	}
 
 .middleAlign{	vertical-align:middle !important; }
@@ -314,7 +316,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .risque5Text	{		color: red;	}
 .risque6Text	{		font-size : 1.7em;		font-weight : bolder;		color: black;	}
 
-.columnRId{	width:5%; vertical-align : middle !important;	}
+.columnRId{	width:5% !important; vertical-align : middle !important;	}
 .columnQuotation{	width:10%; vertical-align : middle !important;	}
 .columnNomDanger,
 .columnEtat	{		width: 16%;		padding: 1px !important;		vertical-align : middle !important;	}
@@ -419,6 +421,20 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .preconisationExistante{	border:1px solid #DDDDDD; width:95%;	}
 .preconisation{	margin-left:9px; font-size:10px; text-decoration:underline;	}
 #taskExportButton{	margin:0px 12px;	}
+
+.columnCollapser{	width:2% !important; }
+.columnVariableRisque{	width:5% !important; text-align:center;	}
+#suiviActionsCorrectiveElement_wrapper{	margin:9px 0px;	}
+td.details{	background-color:#FFFFFF !important; padding:0px !important;	}
+td.details table{	margin:0px 0px 24px !important;	}
+.loadAssociatedTask_elt_name{	padding:0px 15px 0px !important;	}
+#suiviActionsCorrectiveElement th{ background:none #FFFFFF !important; }
+.CorrectivActionFollowStateActionColumn{	width:5%;	}
+.correctiveActionSelecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
+.correctivActionDetailsFieldName{	text-decoration:underline; font-weight:bold; padding:3px;	}
+.correctiveActionFollow .dataTables_wrapper{		min-height:50px;	}
+.correctivActionPicture{	text-align:center;	}
+#correctionActionPictureTable{	width:100%;	}
 /* -- END Actions correctives -- */
 
 

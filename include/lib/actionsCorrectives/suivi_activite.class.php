@@ -116,7 +116,10 @@ class suivi_activite
 			'<script type="text/javascript">
 				evarisk(document).ready(function() {
 					evarisk("#' . $idTable . '").dataTable({
-						"bInfo": false
+						"bInfo": false,
+						"oLanguage":{
+							"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
+						}
 					});
 					evarisk("#' . $idTable . '").children("thead").remove();
 					evarisk("#' . $idTable . '").children("tfoot").remove();

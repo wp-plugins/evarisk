@@ -27,6 +27,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.p
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTaskTable.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/suivi_activite.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
@@ -1273,6 +1274,109 @@ echo $output;
 
 					}
 					break;
+					case 'loadAssociatedTask':
+					{
+						$id_risque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
+						$idTable = 'loadAssociatedTask' . $id_risque;
+						/*	Get the different corrective actions for the actual risk	*/
+						$actionsCorrectives = '';
+						$taches = new EvaTaskTable();
+						$tacheLike = new EvaTask();
+						$tacheLike->setIdFrom($id_risque);
+						$tacheLike->setTableFrom(TABLE_RISQUE);
+						$taches->getTasksLike($tacheLike);
+						$tachesActionsCorrectives = $taches->getTasks();
+						if(count($tachesActionsCorrectives) > 0)
+						{
+							$hasActions = true;
+							$spacer = '';
+							$actionsCorrectives .= '
+				<div class="hide" id="riskAssociatedTask' . $id_risque . '" title="' . __('D&eacute;tails d\'une action corrective', 'evarisk') . '" >&nbsp;</div>
+				<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed">
+					<thead>
+						<tr class="white_background" >
+							<th >' . sprintf(__('Actions correctives associ&eacute;s au risque %s', 'evarisk'), ELEMENT_IDENTIFIER_R . $id_risque) . '</th>
+							<th >' . __('Informations', 'evarisk') . '</th>
+							<th class="CorrectivActionFollowStateActionColumn" >&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>';
+							foreach($tachesActionsCorrectives as $taskDefinition)
+							{
+								$monCorpsTable = '';
+								$racine = Arborescence::getRacine(TABLE_TACHE, " id='" . $taskDefinition->id . "' ");
+
+								$actionsCorrectives .= '
+						<tr id="node-' . $idTable . '-' . $racine->id . '" class="parent racineArbre">
+							<td id="tdRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '" class="loadAssociatedTask_elt_name" >' . ELEMENT_IDENTIFIER_T . $racine->id . '&nbsp;-&nbsp;' . $racine->nom . '</td>
+							<td id="tdInfoRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '">' . $racine->avancement . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($racine->ProgressionStatus) . ')&nbsp;-&nbsp;&nbsp;' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $racine->dateDebut, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $racine->dateFin, true) . '</td>
+							<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '" class="CorrectivActionFollowStateActionColumn" ><img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . TABLE_TACHE . '_t_elt_' . $racine->id . '" /></td>
+						</tr>';
+
+								$elements = Arborescence::getFils(TABLE_TACHE, $racine, "nom ASC");
+								$actionsCorrectives .= EvaDisplayDesign::build_tree($elements, $racine, TABLE_TACHE, 'Info', $idTable, true);
+							}
+							$actionsCorrectives .= '
+					</tbody>
+				</table>
+				<script type="text/javascript">
+					evarisk(document).ready(function(){
+						/*	Change the simple table in treetable	*/
+						evarisk("#' . $idTable . '").treeTable();
+						evarisk("#' . $idTable . ' tr.parent").each(function(){
+							var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
+							if(childNodes.length > 0){
+								evarisk(this).addClass("aFils");				
+								var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
+								if(premierFils != premierFils.replace(/node/g,"")){
+									evarisk(this).addClass("aFilsNoeud");
+								}
+								else{
+									evarisk(this).addClass("aFilsFeuille");
+								}
+							}
+							else{
+								evarisk(this).removeClass("aFils");
+								evarisk(this).addClass("sansFils");
+							}
+						});
+
+						/*	Add the dialog box in order to see correctiv action details	*/
+						evarisk("#riskAssociatedTask' . $id_risque . '").dialog({
+							"autoOpen":false,
+							"height":400,
+							"width":800,
+							"modal":true,
+							"buttons":{
+								"' . __('fermer', 'evarisk') . '": function(){
+									evarisk(this).dialog("close");
+								}
+							},
+							"close":function(){
+								evarisk("#riskAssociatedTask' . $id_risque . '").html("");
+							}
+						});
+
+						/*	Add the action when user click on the 	*/
+						evarisk(".CorrectivActionFollowStateActionColumn").click(function(){
+							evarisk("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+								"table": "' . TABLE_TACHE . '",
+								"id": evarisk(this).children("img").attr("id"),
+								"act": "loadDetails"
+							});
+
+							evarisk("#riskAssociatedTask' . $id_risque . '").dialog("open");
+						});
+					});
+				</script>';
+						}
+						else
+						{
+							$actionsCorrectives .= __('Aucune action n\'est associ&eacute;e &agrave; ce risque', 'evarisk');
+						}
+						echo $actionsCorrectives;
+					}
+					break;
 				}
 				break;
 			case TABLE_METHODE:
@@ -1950,6 +2054,155 @@ echo $output;
 							break;
 						}
 						echo $tache->getProgression() . '%&nbsp;(' . $statutProgression . ')';
+					}
+					break;
+					case 'loadDetails':
+					{
+						$output = '';
+						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
+						$element_identifier = explode('_t_elt_', $id);
+
+						/*	On récupère les utilisateurs déjà affectés à l'élément en cours.	*/
+						$linkedUser = '';
+						$utilisateursLies = evaUserLinkElement::getAffectedUser($element_identifier[0], $element_identifier[1]);
+						if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
+							foreach($utilisateursLies as $utilisateur){
+								$currentUser = evaUser::getUserInformation($utilisateur->id_user);
+								$linkedUser .= '<div class="correctiveActionSelecteduserOP" id="affectedUser' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_U . $utilisateur->id_user . '&nbsp;-&nbsp;' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . '</div>';
+							}
+						}
+						else{
+							$linkedUser = __('Aucun utilisateur affect&eacute;', 'evarisk');
+						}
+
+						$description = $name = '';
+						switch($element_identifier[0])
+						{
+							case TABLE_TACHE:
+							{
+								$postId = $element_identifier[1];
+								$tache = new EvaTask($postId);
+								$tache->load();
+								$name = html_entity_decode($tache->getName(), ENT_NOQUOTES, 'UTF-8');
+								$description = $tache->getDescription();
+								$contenuInputResponsable = $tache->getidResponsable();
+								$contenuInputRealisateur = $tache->getidSoldeur();
+								$ProgressionStatus = $tache->getProgressionStatus();
+								$startDate = $tache->getStartDate();
+								$endDate = $tache->getFinishDate();
+								if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00')){
+									$date = '
+	<tr>
+		<td colspan="2" >' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $startDate, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $endDate, true) . '&nbsp;<span style="font-size:9px;" >(' . __('Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches', 'evarisk') . ')</span></td>
+	</tr>';
+								}
+								$moreInfos .= '
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __('&Eacute;valuation du risque associ&eacute;', 'evarisk') . '</td>
+	</tr>
+	<tr>
+		<td colspan="2">' . Risque::getTableQuotationRisqueAvantApresAC($element_identifier[0], $element_identifier[1], $tache, 'correctivActionFollow') . '</td>
+	</tr>';
+							}
+							break;
+							case TABLE_ACTIVITE:
+							{
+								$postId = $element_identifier[1];
+								$tache = new EvaActivity($postId);
+								$tache->load();
+								$name = html_entity_decode($tache->getName(), ENT_NOQUOTES, 'UTF-8');
+								$description = $tache->getDescription();
+								$contenuInputResponsable = $tache->getidResponsable();
+								$contenuInputRealisateur = $tache->getidSoldeur();
+								$ProgressionStatus = $tache->getProgressionStatus();
+								$startDate = $tache->getStartDate();
+								$endDate = $tache->getFinishDate();
+								if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00')){
+									$date = '
+	<tr>
+		<td colspan="2" >' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $startDate, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $endDate, true) . '</td>
+	</tr>';
+								}
+								$query = $wpdb->prepare(
+									"SELECT photo
+									FROM " . TABLE_PHOTO . " AS P
+										INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoAvant = P.id)
+									WHERE A.id = '%s' ", 
+									$postId
+								);
+								$pictureBefore = $wpdb->get_var($query);
+								$pictureBeforeOutput = __('Aucune photo d&eacute;finie', 'evarisk');
+								if($pictureBefore != ''){
+									$pictureBeforeOutput = '<img src="' . EVA_GENERATED_DOC_URL . $pictureBefore . '" alt="picture before corrective action" style="width:40%;" />';
+								}
+								$query = $wpdb->prepare(
+									"SELECT photo
+									FROM " . TABLE_PHOTO . " AS P
+										INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoApres = P.id)
+									WHERE A.id = '%s' ", 
+									$postId
+								);
+								$pictureAfter = $wpdb->get_var($query);
+								$pictureAfterOutput = __('Aucune photo d&eacute;finie', 'evarisk');
+								if($pictureAfter != ''){
+									$pictureAfterOutput = '<img src="' . EVA_GENERATED_DOC_URL . $pictureAfter . '" alt="picture before corrective action" style="width:40%;" />';
+								}
+
+								$moreInfos .= '
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __('Photos', 'evarisk') . '</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table summary="correctiv action picture" cellpadding="0" cellspacing="0" id="correctionActionPictureTable" >
+				<tr>
+					<th>' . __('Photo avant', 'evarisk') . '</td>
+					<th>' . __('Photo apr&egraves', 'evarisk') . '</td>
+				</tr>
+				<tr>
+					<td class="correctivActionPicture" >' . $pictureBeforeOutput . '</td>
+					<td class="correctivActionPicture" >' . $pictureAfterOutput . '</td>
+				</tr>
+			</table>
+		</td>
+	</tr>';
+							}
+							break;
+						}
+
+								$output .= '
+<table summary="task details" cellpadding="0" cellspacing="0" >' . $date . '
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __("Nom", 'evarisk') . '</td>
+		<td>' . $name . '</td>
+	</tr>
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __("Description", 'evarisk') . '</td>
+		<td>' . $description . '</td>
+	</tr>
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __('Utilisateurs affect&eacute;s', 'evarisk') . '</td>
+		<td>' . $linkedUser . '</td>
+	</tr>
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __('Suivi de l\'action corrective', 'evarisk') . '</td>';
+									$suivi = suivi_activite::tableauSuiviActivite($element_identifier[0], $element_identifier[1]);
+									if(trim($suivi) == ''){
+										$output .= '
+		<td >' . __('Aucun suivi pour cette action', 'evarisk');
+									}
+									else{
+										$output .= '
+	</tr>
+	<tr>
+		<td colspan="2" class="correctiveActionFollow" >' . $suivi;
+									}
+									$output .= 
+		'</td>
+	</tr>' . $moreInfos . '
+</table>';
+
+						echo $output;
 					}
 					break;
 				}
@@ -3657,10 +3910,10 @@ echo $output;
 			break;
 			case "veilleClicPagination":
 			{
-					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/formulaireReponse.php');
-					$summary = ($_REQUEST['act'] == 'summary') ? true : false ;
-					echo '<div id="plotLocation"></div><div id="interractionVeille">' . getFormulaireReponse($_REQUEST['idElement'], $_REQUEST['tableElement'], $summary) . '</div>';
-				}
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/formulaireReponse.php');
+				$summary = ($_REQUEST['act'] == 'summary') ? true : false ;
+				echo '<div id="plotLocation"></div><div id="interractionVeille">' . getFormulaireReponse($_REQUEST['idElement'], $_REQUEST['tableElement'], $summary) . '</div>';
+			}
 			break;
 			case "veilleClicValidation":
 			{
@@ -3766,206 +4019,22 @@ echo $output;
 			break;
 			case "suiviAction" :
 			{
-				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']) . '<br />';
-
-				$taches = new EvaTaskTable();
-				$tacheLike = new EvaTask();
-				$tacheLike->setIdFrom($_REQUEST['idProvenance']);
-				$tacheLike->setTableFrom($_REQUEST['tableProvenance']);
-				$taches->getTasksLike($tacheLike);
-				//On demande à l'utilisateur de choisir l'action qui l'intéresse.
-				$actionsCorrectives = $taches->getTasks();
-				//On construit les Gantts des différentes actions
-				$output = '';
-				if(($actionsCorrectives != null) && (count($actionsCorrectives) > 0))
+				$risques = array();
+				$riskList = Risque::getRisque($_REQUEST['idProvenance']);
+				if($riskList != null)
 				{
-					foreach($actionsCorrectives as $actionCorrective)
+					foreach($riskList as $risque)
 					{
-						$tasksGantt = $moreSuiviOn = $moreSuiviOff = '';
-						$idDiv = $actionCorrective->getTableFrom() . $actionCorrective->getIdFrom() . '-' . TABLE_TACHE . $actionCorrective->getId();
-						$output = '<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> T' . $actionCorrective->getId() . '&nbsp;-&nbsp;' . $actionCorrective->getName() . '</div>';
-
-						$showGantt = true;
-						switch($actionCorrective->getTableFrom())
-						{
-							case TABLE_RISQUE:
-								$output .= Risque::getTableQuotationRisqueAvantApresAC($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], $actionCorrective, $idDiv);
-								$moreSuiviOn = 'evarisk("#' . $idDiv . '-affichage-quotation").show();';
-								// $moreSuiviOff = 'evarisk("#' . $idDiv . '-affichage-quotation").hide();';
-								$showGantt = false;
-							break;
-						}
-
-						echo $output . '<div id="' . $idDiv . '-affichage" class="affichageAction" style="display:none;"></div>';
-						$tachesDeLAction = $actionCorrective->getDescendants($actionCorrective);
-						$tachesDeLAction = array_merge(array($actionCorrective->getId() => $actionCorrective), $tachesDeLAction->getTasks());
-						unset($niveaux);
-						$indiceTacheNiveaux = 0;
-						
-						if(($showGantt) && ($tachesDeLAction != null) && (count($tachesDeLAction) > 0))
-						{
-							foreach($tachesDeLAction as $tacheDeLAction)
-							{
-								$niveaux[] = $tacheDeLAction->getLevel();
-								$indiceTacheNiveaux = count($niveaux) - 1;
-								$tacheDeLAction->getTimeWindow();
-								$tacheDeLAction->computeProgression();
-								$tacheDeLAction->save();
-									/*	Updte the task ancestor	*/
-									$wpdbTasks = Arborescence::getAncetre(TABLE_TACHE, $tacheDeLAction->convertToWpdb());
-									foreach($wpdbTasks as $task)
-									{
-										unset($ancestorTask);
-										$ancestorTask = new EvaTask($task->id);
-										$ancestorTask->load();
-										$ancestorTask->computeProgression();
-										$ancestorTask->save();
-										unset($ancestorTask);
-									}
-								$tasksGantt = $tasksGantt . '
-									{"id": "T' . $tacheDeLAction->getId() . '", "task": "' . $tacheDeLAction->getName() . '", "progression": "' . $tacheDeLAction->getProgression() . '", "startDate": "' . $tacheDeLAction->getStartDate() . '", "finishDate": "' . $tacheDeLAction->getFinishDate() . '" },';
-								$activitesDeLaTache = $tacheDeLAction->getActivitiesDependOn()->getActivities();
-								if($activitesDeLaTache != null && count($activitesDeLaTache) > 0)
-								{
-									foreach($activitesDeLaTache as $activiteDeLaTache)
-									{
-										$niveaux[] = $niveaux[$indiceTacheNiveaux] + 1;
-										$tasksGantt = $tasksGantt . '
-											{"id": "A' . $activiteDeLaTache->getId() . '", "task": "' . $activiteDeLaTache->getName() . '", "progression": "' . $activiteDeLaTache->getProgression() . '", "startDate": "' . $activiteDeLaTache->getStartDate() . '", "finishDate": "' . $activiteDeLaTache->getFinishDate() . '" },';
-									}
-								}
-							}
-							
-							$dateDebut = date('Y-m-d', strtotime('-' . DAY_BEFORE_TODAY_GANTT . ' day'));
-							$dateFin = date('Y-m-d', strtotime('+' . DAY_AFTER_TODAY_GANTT . ' day'));
-							
-							echo '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									evarisk("#' . $idDiv . '-affichage").gantt({
-										"tasks":[' . $tasksGantt . '],
-										"titles":[
-											"ID",
-											"T&acirc;ches",
-											"Avanc.(%)",
-											"Date de d&eacute;but",
-											"Date de fin"
-										],
-										"displayStartDate": "' . $dateDebut . '",
-										"displayFinishDate": "' . $dateFin . '",
-										"language": "fr"
-									});
-								});
-							</script>';
-						}
-						else
-						{
-							echo '<script type="text/javascript">
-								evarisk(document).ready(function(){										
-									evarisk("#' . $idDiv . '-affichage").html("&nbsp;&nbsp;&nbsp;&nbsp;' . __('Action non d&eacute;coup&eacute;e', 'evarisk') . '");
-								});
-							</script>';
-						}
-						echo '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#' . $idDiv . '-choix").toggle(
-									function()
-									{
-										//evarisk("#' . $idDiv . '-affichage").show();
-										' . $moreSuiviOn . '
-										//evarisk(this).children("span:first").html("-");
-									},
-									function()
-									{
-										//evarisk("#' . $idDiv . '-affichage").hide();
-										' . $moreSuiviOff . '
-										//evarisk(this).children("span:first").html("+");
-									}
-								);';
-						if(!$showGantt)
-						{
-							echo '
-								evarisk("#' . $idDiv . '-choix").children("span:first").html("");';
-						}
-						echo '
-							});
-						</script>';
-						{//Bouton enregistrer
-							$idBoutonEnregistrer = $idDiv . '-enregistrer';
-							$scriptEnregistrement = '<script type="text/javascript">
-								evarisk(document).ready(function() {	
-									var boutonEnregistrer = evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html();
-									evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html("");
-									evarisk(\'#' . $idDiv . '-affichage\').append(boutonEnregistrer);
-									evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {
-										var idDiv = "' . $idDiv . '";
-										var activites = new Array();
-										evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3) input").each(function(){
-											if(evarisk(this).attr("id") != "")
-											{
-												activites[evarisk(this).attr("id").substr(idDiv.length + 1)] = evarisk(this).val();
-											}
-										});
-										evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-											"post":"true", 
-											"table":"' . TABLE_ACTIVITE . '", 
-											"act":"actualiserAvancement", 
-											"activites":activites,
-											"tableProvenance":"' . $_REQUEST['tableProvenance'] . '",
-											"idProvenance": "' . $_REQUEST['idProvenance'] . '"
-										});
-										return false;
-									});
-								});
-								</script>';
-
-							if( (($actionCorrective->getProgressionStatus() == 'notStarted') || ($actionCorrective->getProgressionStatus() == 'inProgress')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') )
-							{
-								echo EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, 'Enregistrer', null, '', $idDiv . 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
-							}
-						}
-						echo '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									//Transformation du texte des cases avancement en input
-									evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3)").each(function(){
-										evarisk(this).html("<input type=\"text\" value=\"" + evarisk(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
-										if(evarisk(this).parent("tr").children("td:first").html().match("^T")=="T")
-										{
-											evarisk(this).children("input").prop("disabled","disabled");
-										}
-										else
-										{
-											evarisk(this).children("input").attr("id","' . $idDiv . '-" + evarisk(this).parent("tr").children("td:first").html().substr(1, 1));
-										}
-									});
-								});
-							</script>';
-						//ajout de l'indentation
-						if(is_array($niveaux) && (count($niveaux) > 0))
-						{
-							foreach($niveaux as $key => $niveau)
-							{
-								echo '<script type="text/javascript">
-										evarisk(document).ready(function(){		
-											evarisk("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
-										});
-									</script>';
-							}
-						}
+						$risques[$risque->id][] = $risque; 
 					}
 				}
-				else
-				{
-					switch($_REQUEST['tableProvenance'])
-					{
-						case TABLE_RISQUE :
-							$complement	= __('ce risque', 'evarisk');
-							break;
-						default :
-							$complement	= __('cet &eacute;l&eacute;ment', 'evarisk');
-							break;
-					}
-					echo sprintf(__('Il n\'y a pas d\'action pour %s', 'evarisk'), $complement);
-				}
+				echo actionsCorrectives::output_correctiv_action_by_risk($risques, '
+	"bFilter": false,
+	"bPaginate": false,
+	"bLengthChange": false,') . '
+	<script type="text/javascript">
+		evarisk("#pic_line' . ELEMENT_IDENTIFIER_R . $_REQUEST['idProvenance'] . '").click();
+	</script>';
 			}
 			break;
 			case "addAction" :
@@ -4044,178 +4113,19 @@ echo $output;
 			break;
 			case "suiviFicheAction" :
 			{
-					$tableElement = $_REQUEST['tableElement'];
-					$idElement = $_REQUEST['idElement'];
-					$risques = array();
-					$riskList = Risque::getRisques($tableElement, $idElement, "Valid");
-					if($riskList != null)
+				$tableElement = $_REQUEST['tableElement'];
+				$idElement = $_REQUEST['idElement'];
+				$risques = array();
+				$riskList = Risque::getRisques($tableElement, $idElement, "Valid");
+				if($riskList != null)
+				{
+					foreach($riskList as $risque)
 					{
-						foreach($riskList as $risque)
-						{
-							$risques[$risque->id][] = $risque; 
-						}
-					}
-					$output = $script = '';
-					if(count($risques) > 0)
-					{
-						foreach($risques as $idRisque => $infosRisque)
-						{
-							/*	Get the different corrective actions for the actual risk	*/
-							$actionsCorrectives = '';
-							$taches = new EvaTaskTable();
-							$tacheLike = new EvaTask();
-							$tacheLike->setIdFrom($idRisque);
-							$tacheLike->setTableFrom(TABLE_RISQUE);
-							$taches->getTasksLike($tacheLike);
-							$tachesActionsCorrectives = $taches->getTasks();
-							if(count($tachesActionsCorrectives) > 0)
-							{
-								$hasActions = true;
-								$spacer = '';
-								foreach($tachesActionsCorrectives as $taskDefinition)
-								{
-									$actionsCorrectives .= '<div style="padding:3px;margin:0px 0px 12px 0px;background-color:#EEEEEE;" >';
-									$idDiv = $taskDefinition->getTableFrom() . $taskDefinition->getIdFrom() . '-' . TABLE_TACHE . $taskDefinition->getId();
-
-									/*	Get the task children	*/
-									$tacheActionCorrective = $taskDefinition->getDescendants($taskDefinition);
-									$tacheActionCorrective = array_merge(array($taskDefinition->getId() => $taskDefinition), $tacheActionCorrective->getTasks());
-
-									/*	Get the task's actions	*/
-									$activitesDeLaTache = $taskDefinition->getActivitiesDependOn()->getActivities();
-
-								/*	Start output	*/
-									/*	If there are more than one action in the task output the task	*/
-									if((count($activitesDeLaTache) > 1))
-									{
-										$actionsCorrectives .= $spacer . '<span>' . $taskDefinition->name . '</span><br/>';
-										$spacer = '&nbsp;&nbsp;';
-									}
-									else
-									{
-										$hasActions = false;
-									}
-
-									if(($activitesDeLaTache != null) && (count($activitesDeLaTache) > 0))
-									{
-										foreach($activitesDeLaTache as $activiteDeLaTache)
-										{
-											$actionsCorrectives .= 
-												'<div style="margin-bottom:12px;" >
-													<div class="alignleft" >' . $activiteDeLaTache->name . '</div>
-													<div class="alignright" >';
-
-											if($activiteDeLaTache->startDate != '0000-00-00')
-											{
-												$actionsCorrectives .= '<span class="bold" >' . __('D&eacute;but', 'evarisk') . '</span>&nbsp;:&nbsp;' . mysql2date('d M Y', $activiteDeLaTache->startDate, true);
-											}
-											if($activiteDeLaTache->finishDate != '0000-00-00')
-											{
-												$actionsCorrectives .= '<br/><span class="bold" >' . __('Fin', 'evarisk') . '</span>&nbsp;:&nbsp;' . mysql2date('d M Y', $activiteDeLaTache->finishDate, true);
-											}
-
-											$actionsCorrectives .= '
-													</div>
-												</div>' . 
-												Risque::getTableQuotationRisqueAvantApresAC($tableElement, $idElement, $taskDefinition, $idDiv) . 
-											'<div style="margin:12px 0px;" >
-												<div style="margin:3px 0px;" ><span class="bold" >' . __('Avancement', 'evarisk') . '&nbsp;:&nbsp;</span>' . $activiteDeLaTache->progression . '%</div>
-												<div style="margin:3px 0px;" ><span class="bold" >' . __('Description', 'evarisk') . '&nbsp;:&nbsp;</span>' . $activiteDeLaTache->description . '</div>
-												<div style="margin:3px 0px;" ><span class="bold" >' . __('Co&ucirc;t', 'evarisk') . '&nbsp;:&nbsp;</span>' . $activiteDeLaTache->cout . '</div>
-												<div style="display:table;margin:12px 0px;" >
-													<div class="alignleft" style="width:45%;" >
-														<div class="bold" >' . __('Photo avant', 'evarisk') . '&nbsp;:&nbsp;</div>';
-
-											$noPictureBefore = true;
-											if($activiteDeLaTache->idPhotoAvant > 0)
-											{
-												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " PICTURE.id = '" . $activiteDeLaTache->idPhotoAvant . "' ");
-												if(is_file(EVA_GENERATED_DOC_DIR . $infosPhoto[0]->photo))
-												{
-											$actionsCorrectives .= '
-														<img src="' . EVA_GENERATED_DOC_URL . $infosPhoto[0]->photo . '" alt="before corrective action picture" class="pictureThumbs" />';
-													$noPictureBefore = false;
-												}
-											}
-											if($noPictureBefore)
-											{
-											$actionsCorrectives .= __('Aucune n\'a &eacute;t&eacute; d&eacute;finie', 'evarisk');
-											}
-											$actionsCorrectives .= '
-													</div>
-													<div class="alignleft" style="width:45%;margin-left:6px;" >
-														<div class="bold" >' . __('Photo apr&egrave;s', 'evarisk') . '&nbsp;:&nbsp;</div>';
-											$noPictureAfter = true;
-											if($activiteDeLaTache->idPhotoApres > 0)
-											{
-												$infosPhoto = evaPhoto::getPhotos(TABLE_ACTIVITE, $activiteDeLaTache->id, " PICTURE.id = '" . $activiteDeLaTache->idPhotoApres . "' ");
-												if(is_file(EVA_GENERATED_DOC_DIR . $infosPhoto[0]->photo))
-												{
-											$actionsCorrectives .= '
-														<img src="' . EVA_GENERATED_DOC_URL . $infosPhoto[0]->photo . '" alt="after corrective action picture" class="pictureThumbs" />';
-													$noPictureAfter = false;
-												}
-											}
-											if($noPictureAfter)
-											{
-											$actionsCorrectives .= __('Aucune n\'a &eacute;t&eacute; d&eacute;finie', 'evarisk');
-											}
-
-											$actionsCorrectives .= '
-													</div>
-												</div>
-											</div>
-											<hr/>';
-										}
-									}
-
-									$actionsCorrectives .= '</div>';
-								}
-							}
-							else
-							{
-								$hasActions = false;
-							}
-
-							$output .= 
-								'<div style="display:table;margin:12px 0px;" >
-									<div class="pointer infoRisqueActuel" id="correctiveAction' . $idRisque . '" >' . Risque::getTableQuotationRisque(TABLE_RISQUE, $idRisque) . '</div>';
-							if($hasActions)
-							{
-								$output .= 
-									'<div id="moreCorrectiveAction' . $idRisque . '" ><img id="pictMoreAC' . $idRisque . '" src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png" style="vertical-align:middle;" alt="moreInfoOnAC" /><span class="pointer" style="vertical-align:middle;" >' . __('Voir les actions associ&eacute;es &agrave; ce risque', 'evarisk') . '</span></div>
-									<div id="correctiveActionContent' . $idRisque . '" style="display:none;" >' . $actionsCorrectives . '</div>';
-							}
-							else
-							{
-								$output .= 
-									'<div style="width:80%;font-style:italic;margin:3px auto;" >' . __('Il n\'y a aucune action corrective pour ce risque', 'evarisk') . '</div>';
-							}
-							$output .= 
-									'</div>';
-							$script .= 
-									'evarisk("#moreCorrectiveAction' . $idRisque . '").click(function(){
-										evarisk("#correctiveActionContent' . $idRisque . '").toggle();
-										if(evarisk("#correctiveActionContent' . $idRisque . '").css("display") == "none"){
-											evarisk("#pictMoreAC' . $idRisque . '").attr("src", "' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png");
-										}
-										else{
-											evarisk("#pictMoreAC' . $idRisque . '").attr("src", "' . EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-collapse-dark.png");
-										}
-									});';
-						}
-						echo $output . 
-							'<script type="text/javascript" >
-								evarisk(document).ready(function(){
-									' . $script . '
-								});
-							</script>';
-					}
-					else
-					{
-						echo __('Il n\'y a aucun risque pour cette &eacute;l&eacute;ment', 'evarisk');
+						$risques[$risque->id][] = $risque; 
 					}
 				}
+				echo actionsCorrectives::output_correctiv_action_by_risk($risques);
+			}
 			break;
 			case "addActionPhoto" :
 			{

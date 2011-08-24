@@ -497,6 +497,9 @@ class evaUser
 	<h3><?php echo __('Utilisateurs &agrave; importer', 'evarisk'); ?></h3>
 	<table summary="User list to import section" cellpadding="0" cellspacing="0" >
 		<tr>
+			<td colspan="3"><a href="<?php echo EVA_MODELES_PLUGIN_URL; ?>import_users.ods" ><?php echo __('Vous pouvez t&eacute;l&eacute;charger le fichier pour construire l\'import ici', 'evarisk'); ?></a></td>
+		</tr>
+		<tr>
 			<td><?php echo __('Vous pouvez entrer directement le utilisateurs que vous souhaitez cr&eacute;er ici.<br/>Chaques utilisateur sera s&eacute;par&eacute; par un retour &agrave; la ligne', 'evarisk'); ?></td>
 			<td rowspan="2" ><?php echo __('-&nbsp;et&nbsp;/&nbsp;ou&nbsp;-', 'evarisk'); ?></td>
 			<td><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)', 'evarisk'); ?></td>

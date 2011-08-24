@@ -35,7 +35,7 @@ class digirisk_init
 			load_textdomain('evarisk', $moFile);
 		}
 
-		if(isset($_GET['page']) && (substr($_GET['page'], 0, 9) == 'digirisk_'))
+		if((isset($_GET['page']) && (substr($_GET['page'], 0, 9) == 'digirisk_')) || (basename($_SERVER['PHP_SELF']) == 'user-edit.php'))
 		{
 			// Ajout des script de eva_admin
 			add_action('admin_head', array('digirisk_init', 'digirisk_add_admin_js'));
