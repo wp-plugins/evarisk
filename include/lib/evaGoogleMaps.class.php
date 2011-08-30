@@ -73,6 +73,7 @@ class EvaGoogleMaps {
 	  */
 	static function getGoogleMap($idGoogleMapsDiv, $markers)
 	{
+		$google_map_marker_more_content = '';
 		$nbElements = count($markers);
 		$sudMax = 180;
 		$nordMax = -180;
@@ -132,6 +133,17 @@ class EvaGoogleMaps {
 		}
 		$googleMap = '
 			<script type="text/javascript">
+				function getDraggedCoordonees(response){
+					if (!response || response.Status.code != 200){
+						alert("Status Code:" + response.Status.code);
+					} 
+					else {
+						place = response.Placemark[0];
+						alert(place.Point.coordinates[1]);
+						alert(place.Point.coordinates[0]);
+					}
+				}
+
 				function initialize() 
 				{
 					sud = ' . $sudMax . ';
@@ -140,7 +152,7 @@ class EvaGoogleMaps {
 					est = ' . $estMax . ';
 					zoom = 5;
 					centerLat = 46.75;
-					centerLng = 2.5;					
+					centerLng = 2.5;				
 					if (google.loader.ClientLocation)
 					{
 						centerLat = google.loader.ClientLocation.latitude;
@@ -171,18 +183,17 @@ class EvaGoogleMaps {
 						var northEast = new google.maps.LatLng(nord,est);
 						var bounds = new google.maps.LatLngBounds(southWest,northEast);
 						map.fitBounds(bounds);
-					}';
-					if(count($markers)>0 AND $markers[0]!=null)
-					{
+					}
+					';
+					if(count($markers)>0 AND $markers[0]!=null){
 						$i = 0;
-						
-						foreach($markers as $marker)
-						{
+						foreach($markers as $marker){
 							$googleMap = $googleMap . '
 							var image = "' . $marker['image'] . '";
 							var marker' . $idGoogleMapsDiv . '_' . $i . ' = new google.maps.Marker({
 								position: new google.maps.LatLng(' . $marker['latitude'] . ', ' . $marker['longitude'] . '),
 								icon: image,
+								draggable: true
 							});
 							var infowindow' . $idGoogleMapsDiv . '_' . $i . ' = new google.maps.InfoWindow({
 								content: "<div>' . addslashes($marker['info']) . '</div>"
@@ -190,16 +201,37 @@ class EvaGoogleMaps {
 							google.maps.event.addListener(marker' . $idGoogleMapsDiv . '_' . $i . ', \'click\', function() {
 								infowindow' . $idGoogleMapsDiv . '_' . $i . '.open(map,marker' . $idGoogleMapsDiv . '_' . $i . ');
 							});
+							google.maps.event.addListener(marker' . $idGoogleMapsDiv . '_' . $i . ', "dragend", function() {
+								var markerCenter = marker' . $idGoogleMapsDiv . '_' . $i . '.getPosition();
+								evarisk("#adressIdentifier' . $marker['adress'] . '").val(markerCenter);
+								evarisk("#saveNewPosition").show();
+							});
 							marker' . $idGoogleMapsDiv . '_' . $i . '.setMap(map);';
 							$i ++;
+							$google_map_marker_more_content .= '<input type="hidden" value="" class="markerNewPosition" name="newPosition" id="adressIdentifier' . $marker['adress'] . '" >';
 						}
 					}
-					$googleMap = $googleMap . '
+					$googleMap .= '
 				}
-				evarisk(document).ready(function(){google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});});
+				evarisk(document).ready(function(){
+					google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});
+					evarisk("#saveNewPosition").click(function(){
+						var new_position = "_pos_separator_";
+						evarisk(".markerNewPosition").each(function(){
+							new_position += evarisk(this).attr("id") + "-val-" + evarisk(this).val() + "_pos_separator_";
+						});
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+							"post": "true", 
+							"tableProvenance": "' . TABLE_ADRESSE . '",
+							"nom": "saveMarkerNewPosition",
+							"positions": new_position
+						});
+					});
+				});
 				
-			</script>';
-			$googleMap = $googleMap . '<div id="' . $idGoogleMapsDiv . '" style="width: 100%; height: 300px"></div>';
+			</script>
+			' . $google_map_marker_more_content . '
+			<div id="' . $idGoogleMapsDiv . '" style="width: 100%; height: 300px"></div><input type="button" value="' . __('Enregistrer les nouvelles coordonn&eacute;es', 'evarisk') . '" class="button-primary hide" id="saveNewPosition" name="saveNewPosition" />';
 		return $googleMap;
 	}
 }

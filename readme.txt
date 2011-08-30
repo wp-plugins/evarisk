@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.1.3
-Stable tag: 5.1.3.6
+Stable tag: 5.1.3.7
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,26 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.3.7 =
+
+Am&eacute;liorations
+
+* Ajout de la corbeille pour r&eacute;cup&eacute;rer les &eacute;l&eacute;ments pr&eacute;c&eacute;demment supprim&eacute;s (Permettrait de r&eacute;cup&eacute;rer des &eacute;l&eacute;ments qui auraient &eacute;t&eacute; supprim&eacute; par erreur.) 
+* Mise &agrave; jour des informations des taches lorsqu'on solde la tache(On demande de changer les informations pour la tache courante et les sous-&eacute;l&eacute;ments) 
+* Possibilit&eacute; de modifier la position du marqueur dans la carte google map sur les diff&eacute;rents &eacute;l&eacute;ments 
+* La partie m&eacute;thodologie du chapitre administratif est modifiable directement lors de la g&eacute;n&eacute;ration du DUER 
+
+Corrections
+
+* Lors de l'ajout d'une m&eacute;thode, on ne peut pas d&eacute;finir comme photo par d&eacute;faut 
+* Attribution de la photo par d&eacute;faut pour les cat&eacute;gories de danger (Lorsqu'on associe une photo par d&eacute;faut a une nouvelle cat&eacute;gorie de danger, le chemin d'affichage n'&eacute;tait pas correct) 
+* Pr&eacute;fixe de la table utilisateurs inscrit en dur (Impossibilit&eacute; de r&eacute;cup&eacute;rer les utilisateurs lorsqu'on installe avec un pr&eacute;fixe diff&eacute;rent) 
+* Mauvais comportement lors de l'enregistrement d'un risque en cochant la case historisation(Le risque &eacute;tait enregistr&eacute; mais n'apparaissait pas alors qu'il devait apparaitre et faire disparaitre l'ancienne cotation) 
+* Accents dans la description des groupements et/ou fiches de poste mal imprim&eacute;s 
+* Correction de la box d'affectation des droits quand aucun utilisateur 
+* Gestion des dangers et cat&eacute;gories de danger 
 
 
 = Version 5.1.3.6 =

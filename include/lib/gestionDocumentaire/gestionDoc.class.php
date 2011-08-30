@@ -768,6 +768,9 @@ class eva_gestionDoc
 					{
 						$documentUniqueParam['#DISPODESPLANS#'] = __('La localisation n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
 					}
+
+					$odf->setVars('methodologie', str_replace('<br />', "
+", eva_tools::slugify_noaccent($documentUniqueParam['#METHODOLOGIE#'])));
 					$odf->setVars('dispoDesPlans', str_replace('<br />', "
 ", eva_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#'])));
 
@@ -941,7 +944,7 @@ class eva_gestionDoc
 					{
 						$workUnitinformations = EvaGroupement::getGroupement($idElement);
 
-						$odf->setVars('reference', $idElement);
+						$odf->setVars('reference', ELEMENT_IDENTIFIER_GP . $idElement);
 						$odf->setVars('nom', eva_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeGroupement/' . TABLE_GROUPEMENT . '/' . $idElement . '/';
 					}
@@ -949,16 +952,16 @@ class eva_gestionDoc
 					{
 						$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
 
-						$odf->setVars('referenceUnite', $idElement);
+						$odf->setVars('referenceUnite', ELEMENT_IDENTIFIER_UT . $idElement);
 						$odf->setVars('nomUnite', eva_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
 					}
 					$odf->setVars('description', str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($lastDocument->description)));
+", eva_tools::slugify_noaccent($lastDocument->description)));
 					$odf->setVars('telephone', str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($lastDocument->telephone)));
+", eva_tools::slugify_noaccent($lastDocument->telephone)));
 					$odf->setVars('adresse', str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($lastDocument->adresse)));
+", eva_tools::slugify_noaccent($lastDocument->adresse)));
 
 					{/*	Remplissage du template pour les utilisateurs affectes	*/
 						$listeUser = array();

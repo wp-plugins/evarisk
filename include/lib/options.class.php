@@ -26,6 +26,12 @@ class digirisk_options
 		register_setting('digirisk_db_option', 'digirisk_db_option');
 
 		{/* Declare the different options for the correctiv actions	*/
+			add_settings_section('digi_main_options', __('Options g&eacute;n&eacute;rales', 'evarisk'), array('digirisk_options', 'main_options_output'), 'digirisk_options_settings');
+			/*	Add the different field for current section	*/
+			add_settings_field('digi_activ_trash', __('Activer la corbeille', 'evarisk'), array('digirisk_options', 'digi_activ_trash'), 'digirisk_options_settings', 'digi_main_options');
+		}
+
+		{/* Declare the different options for the correctiv actions	*/
 			add_settings_section('digi_options_ac', __('Options pour les actions correctives', 'evarisk'), array('digirisk_options', 'options_output_ac'), 'digirisk_options_settings');
 			/*	Add the different field for current section	*/
 			add_settings_field('digi_ac_supervisormandatory_field', __('Responsable des t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_supervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
@@ -138,6 +144,8 @@ if(current_user_can('digi_edit_option'))
 	*/
 	function digirisk_options_validator($input)
 	{
+		$newinput['digi_activ_trash'] = trim($input['digi_activ_trash']);
+
 		$newinput['responsable_Tache_Obligatoire'] = trim($input['responsable_Tache_Obligatoire']);
 		$newinput['responsable_Action_Obligatoire'] = trim($input['responsable_Action_Obligatoire']);
 		$newinput['possibilite_Modifier_Tache_Soldee'] = trim($input['possibilite_Modifier_Tache_Soldee']);
@@ -162,6 +170,30 @@ if(current_user_can('digi_edit_option'))
 
 		return $newinput;
 	}
+
+	/**
+	*	Function allowing to set a explication area for the settings section
+	*/
+	function main_options_output()
+	{
+		
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_activ_trash()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_activ_trash', 'digirisk_options[digi_activ_trash]', $optionYesNoList, $options['digi_activ_trash']);
+		}
+		else
+		{
+			echo $options['digi_activ_trash'];
+		}
+	}	
 
 	/**
 	*	Function allowing to set a explication area for the settings section
@@ -454,7 +486,7 @@ if(current_user_can('digi_edit_option'))
 	function digi_product_categories_field()
 	{
 		$options = get_option('digirisk_options');
-		$productCategories = wpshop_attributes::getElementWithAttributeAndValue(WPSHOP_DBT_CATEGORY, wpshop_entities::getEntityIdFromCode('product_category'), 1, 'code', '', "'valid'");
+		$productCategories = wpshop_attributes::getElementWithAttributeAndValue(WPSHOP_DBT_CATEGORY, wpshop_entities::get_entity_identifier_from_code('product_category'), 1, 'code', '', "'valid'");
 		$i = 1;
 		$tableContent = '';
 		$choosenCategories = unserialize($options['product_categories']);

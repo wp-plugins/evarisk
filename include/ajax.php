@@ -614,7 +614,7 @@ if($_REQUEST['post'] == 'true')
 						//Le fils est une catégorie
 						{
 							$categorie = categorieDangers::getCategorieDanger($idFils);
-							$pereActu = Arborescence::getPere($_REQUEST['nom'], $categorie);
+							$pereActu = Arborescence::getPere($_REQUEST['table'], $categorie);
 							if($pereActu->id != $idPere)
 							{
 								$_REQUEST['act'] = 'update';
@@ -696,6 +696,7 @@ if($_REQUEST['post'] == 'true')
 									evarisk("#rightEnlarging").show();
 									evarisk("#equilize").click();
 									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
+
 									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
 									{
 										if(evarisk("#filAriane :last-child").is("label"))
@@ -708,7 +709,7 @@ if($_REQUEST['post'] == 'true')
 											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "right",
-				"menu": evarisk("#menu").val(),
+											"menu": "",
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
@@ -722,9 +723,19 @@ if($_REQUEST['post'] == 'true')
 											"act": "edit",
 											"id": "' . $_REQUEST['id'] . '",
 											"partie": "right",
-				"menu": evarisk("#menu").val(),
+											"menu": "",
 											"affichage": "affichageListe",
 											"expanded": expanded
+										});
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+											"table": "' . TABLE_CATEGORIE_DANGER . '",
+											"act": "edit",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+											"partie": "left",
+											"menu": "",
+											"affichage": "affichageListe",
+											"partition": "tout"
 										});
 									}
 								});
@@ -802,6 +813,16 @@ if($_REQUEST['post'] == 'true')
 											"menu": evarisk("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
+										});
+										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+											"table": "' . TABLE_DANGER . '",
+											"act": "edit",
+											"page": evarisk("#pagemainPostBoxReference").val(),
+											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+											"partie": "left",
+											"menu": "",
+											"affichage": "affichageListe",
+											"partition": "tout"
 										});
 									}
 								});
@@ -1664,10 +1685,19 @@ echo $output;
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
 					break;
 					case 'reloadCombo':
-						$racine = $wpdb->get_row( 'SELECT * FROM ' . TABLE_GROUPE_QUESTION . ' where nom="' . $_REQUEST['nomRacine'] . '"');
-						$valeurDefaut = $racine->nom;
-						$selection = $_REQUEST['selection'];
-						echo evaDisplayInput::afficherComboBoxArborescente($racine, TABLE_GROUPE_QUESTION, $_REQUEST['idSelect'], $_REQUEST['labelSelect'], $_REQUEST['nameSelect'], $valeurDefaut, $selection);
+						$nomRacine = (isset($_REQUEST['nomRacine']) && (trim($_REQUEST['nomRacine']) != '') && (is_string($_REQUEST['nomRacine']))) ? eva_tools::IsValid_Variable($_REQUEST['nomRacine']) : '';
+						if($nomRacine != '')
+						{
+							$query = $wpdb->prepare("SELECT * FROM " . TABLE_GROUPE_QUESTION . " WHERE nom = %s", $nomRacine);
+							$racine = $wpdb->get_row($query);
+							$valeurDefaut = $racine->nom;
+							$selection = $_REQUEST['selection'];
+							echo evaDisplayInput::afficherComboBoxArborescente($racine, TABLE_GROUPE_QUESTION, $_REQUEST['idSelect'], $_REQUEST['labelSelect'], $_REQUEST['nameSelect'], $valeurDefaut, $selection);
+						}
+						else
+						{
+							echo __('Vous devez sp&eacute;cifier un nom', 'evarisk');
+						}
 					break;
 					case 'reloadTableArborescente':
 						$racine = EvaGroupeQuestions::getGroupeQuestions($_REQUEST['idRacine']);
@@ -1820,11 +1850,17 @@ echo $output;
 						{
 							global $current_user;
 							$tache->setidSoldeur($current_user->ID);
+							$tache->setProgression($_REQUEST['avancement']);
+							$tache->setStartDate($_REQUEST['date_fin']);
+							$tache->setFinishDate($_REQUEST['date_debut']);
 							$tache->setProgressionStatus('Done');
 							$tache->setdateSolde(date('Y-m-d H:i:s'));
 
 							/*	Get the task subelement to set the progression status to DoneByChief	*/
-							$tache->markAllSubElementAsDone();
+							if($_REQUEST['markAllSubElementAsDone'] == 'true')
+							{
+								$tache->markAllSubElementAsDone($_REQUEST['avancement'], $_REQUEST['date_fin'], $_REQUEST['date_debut']);
+							}
 						}
 						if($tache->getLeftLimit() == 0)
 						{
@@ -1835,7 +1871,10 @@ echo $output;
 							$racine->setRightLimit(($racine->getRightLimit()) + 2);
 							$racine->save();
 						}
-						$tache->computeProgression();
+						if($_REQUEST['act'] != 'taskDone')
+						{
+							$tache->computeProgression();
+						}
 						$tache->save();
 						$tacheMere = new EvaTask();
 						$tacheMere->convertWpdb(Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb()));
@@ -2202,6 +2241,72 @@ echo $output;
 	</tr>' . $moreInfos . '
 </table>';
 
+						echo $output;
+					}
+					break;
+					case 'closeTask':
+					{
+						$output = '';
+						$tache = new EvaTask($_REQUEST['id']);
+						$tache->load();
+						$contenuInputTitre = html_entity_decode($tache->getName(), ENT_NOQUOTES, 'UTF-8');
+						$contenuInputDescription = $tache->getDescription();
+						$idProvenance = $tache->getIdFrom();
+						$tableProvenance = $tache->getTableFrom();
+						$contenuInputResponsable = $tache->getidResponsable();
+						$contenuInputRealisateur = $tache->getidSoldeur();
+						$ProgressionStatus = $tache->getProgressionStatus();
+						$progression = $tache->getProgression();
+						$startDate = $tache->getStartDate();
+						$endDate = $tache->getFinishDate();
+						{//Date de début de l'action
+							$contenuAideTitre = "";
+							$id = "date_debut";
+							$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de d&eacute;but %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionStart" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
+							$labelInput = '';
+							$nomChamps = "date_debut";
+							$output .= $label . EvaDisplayInput::afficherInput('text', $id, $startDate, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date') . '';
+						}
+						{//Date de début de l'action
+							$contenuAideTitre = "";
+							$id = "date_fin";
+							$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de fin %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionEnd" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
+							$labelInput = '';
+							$nomChamps = "date_fin";
+							$output .= $label . EvaDisplayInput::afficherInput('text', $id, $endDate, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date') . '';
+						}
+						{//Avancement
+							$contenuAideDescription = "";
+							$labelInput = __("Avancement", 'evarisk') . ' : ';
+							$id = "avancement";
+							$nomChamps = "avancement";
+							$output .= EvaDisplayInput::afficherInput('text', $id, $progression, $contenuAideDescription, $labelInput, $nomChamps, true, true, 3, '', 'number', '10%') . '<div id="sliderAvancement" ></div>';
+						}
+						{//Mark all sub element as done
+							$output .= '<br/><br/><br/><input type="checkbox" value="markSubAsDone" id="markSubAsDone" name="markSubAsDone" /><label for="markSubAsDone" >' . __('Appliquer ces changements &eacutegalement &agrave; tous les sous-&eacute;l&eacute;ments de l\'&eacute;l&eacute;ment courant', 'evarisk') . '</label>';
+						}
+						$output .= '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#sliderAvancement").slider({
+			value:' . $progression . ',
+			min: 0,
+			max: 100,
+			step: 1,
+			slide: function(event, ui){
+				evarisk( "#' . $id . '" ).val( ui.value );
+			}
+		});
+		evarisk( "#' . $id . '" ).val( evarisk( "#sliderAvancement" ).slider( "value" ) );
+		evarisk( "#' . $id . '" ).attr("style",evarisk( "#' . $id . '" ).attr("style") + "border:0px solid #000000;");
+		evarisk("#putTodayActionStart").click(function(){
+			evarisk("#date_debut").val("' . date('Y-m-d') . '");
+		});
+		evarisk("#putTodayActionEnd").click(function(){
+			evarisk("#date_fin").val("' . date('Y-m-d') . '");
+		});
+	});
+</script>';
 						echo $output;
 					}
 					break;
@@ -3975,6 +4080,495 @@ echo $output;
 				}
 			break;
 
+			case 'updateTrash':
+			{
+				$tableProvenance = eva_tools::IsValid_Variable($_REQUEST['tableProvenance']);
+				$elementToRestore = eva_tools::IsValid_Variable($_REQUEST['elementToRestore']);
+				$elementToRestore = explode(',', $elementToRestore);
+				$queryResult = $i = 0;
+				if(is_array($elementToRestore) && (count($elementToRestore) > 0))
+				{
+					foreach($elementToRestore as $elements){
+						if($elements != '')
+						{
+							$element = explode('_element_to_restore_', $elements);
+							$queryResult += $wpdb->update($element[0], array('Status' => 'Valid'), array('id' => $element[1]));
+							$i++;
+						}
+					}
+				}
+				if($queryResult == $i){
+					$message = __('La restauration des &eacute;l&eacute;ments s&eacute;lectionn&eacute;s a &eacute;t&eacute; effectu&eacute;e avec succ&egrave;s', 'evarisk');
+				}
+				else{
+					$message = __('Des erreurs sont survenues lors de la restauration des &eacute;l&eacute;ments s&eacute;lectionn&eacute;s', 'evarisk');
+				}
+
+switch($tableProvenance)
+{
+	case TABLE_CATEGORIE_PRECONISATION:
+	case TABLE_PRECONISATION:
+	{
+		$actionAfterUpdate = '
+		evarisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		{
+			"post":"true",
+			"table":"' . TABLE_PRECONISATION . '",
+			"act":"reloadRecommandationList"
+		});';
+	}
+	break;
+	case TABLE_METHODE:
+	{
+		$actionAfterUpdate = '
+		evarisk("#methode-filter").submit();';
+	}
+	break;
+	default:
+	{
+		$actionAfterUpdate = '
+		changementPage("left", "' . $tableProvenance . '", 1, 1, "affichageListe", "main");';
+	}
+	break;
+}
+
+				echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#trashContainer").dialog("close");
+
+		actionMessageShow("#message", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . $message . '</strong></p>') . '");
+		setTimeout(\'actionMessageHide("#message")\',7500);
+' . $actionAfterUpdate . '
+	});
+</script>';
+			}
+			break;
+			case 'loadTrash':
+			{
+				$output = '';
+
+				$main_option = get_option('digirisk_options');
+				$tableProvenance = eva_tools::IsValid_Variable($_REQUEST['tableProvenance']);
+				$trash_elements = array();
+				$i =0;
+				$statusFieldValue = 'Deleted';
+				switch($tableProvenance)
+				{
+					case TABLE_GROUPEMENT:
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_groupement_trash'))
+						{
+								$trash_elements[$i]['element'] = $tableProvenance;
+								$trash_elements[$i]['name'] = __('Groupements', 'evarisk');
+								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_GP;
+								$i++;
+						}
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_unite_trash'))
+						{
+							$trash_elements[$i]['element'] = TABLE_UNITE_TRAVAIL;
+							$trash_elements[$i]['name'] = __('Unit&eacute;s de travail', 'evarisk');
+							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_UT;
+							$i++;
+						}
+					break;
+					case TABLE_TACHE:
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_task_trash'))
+						{
+								$trash_elements[$i]['element'] = $tableProvenance;
+								$trash_elements[$i]['name'] = __('T&acirc;ches', 'evarisk');
+								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_T;
+								$i++;
+						}
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_action_trash'))
+						{
+							$trash_elements[$i]['element'] = TABLE_ACTIVITE;
+							$trash_elements[$i]['name'] = __('Sous-t&acirc;ches', 'evarisk');
+							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_ST;
+							$i++;
+						}
+					break;
+					case TABLE_CATEGORIE_DANGER:
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_danger_category_trash'))
+						{
+								$trash_elements[$i]['element'] = $tableProvenance;
+								$trash_elements[$i]['name'] = __('Cat&eacute;gories de danger', 'evarisk');
+								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_CD;
+								$i++;
+						}
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_danger_trash'))
+						{
+							$trash_elements[$i]['element'] = TABLE_DANGER;
+							$trash_elements[$i]['name'] = __('Dangers', 'evarisk');
+							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_D;
+							$i++;
+						}
+					break;
+					case TABLE_METHODE:
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_method_trash'))
+						{
+							$trash_elements[$i]['element'] = $tableProvenance;
+							$trash_elements[$i]['name'] = __('M&eacute;thodes d\'&eacute;valuation', 'evarisk');
+							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_ME;
+							$i++;
+						}
+					break;
+					case DIGI_DBT_PERMISSION_ROLE:
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_user_role_trash'))
+						{
+							$trash_elements[$i]['element'] = $tableProvenance;
+							$trash_elements[$i]['name'] = __('R&ocirc;le pour les utilisateurs', 'evarisk');
+							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_UR;
+							$i++;
+						}
+					break;
+					case TABLE_CATEGORIE_PRECONISATION:
+						$statusFieldValue = 'deleted';
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_recommandation_category_trash'))
+						{
+								$trash_elements[$i]['element'] = $tableProvenance;
+								$trash_elements[$i]['name'] = __('Cat&eacute;gories de pr&eacute;conisations', 'evarisk');
+								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_CP;
+								$i++;
+						}
+						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_recommandation_trash'))
+						{
+								$trash_elements[$i]['element'] = TABLE_PRECONISATION;
+								$trash_elements[$i]['name'] = __('Pr&eacute;conisations', 'evarisk');
+								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_P;
+								$i++;
+						}
+					break;
+				}
+
+				if(is_array($trash_elements) && (count($trash_elements) > 0))
+				{
+					foreach($trash_elements as $element => $element_definition)
+					{
+						$subTrashOutput = '';
+						/*	Check if there are something to display in trash for the current element	*/
+						$query = $wpdb->prepare("SELECT * FROM " . $element_definition['element'] . " WHERE status = '" . $statusFieldValue . "';");
+						$trashedElement = $wpdb->get_results($query);
+						if(count($trashedElement) > 0)
+						{
+							$userIsAllowedToUpdateTrash = false;
+							unset($lignesDeValeurs);
+							$idTable = 'trashedElement' . $element_definition['element'];
+							$titres = array(__('Photo', 'evarisk'), __('Nom', 'evarisk'), __('Description', 'evarisk'));
+							$classes = array('trashPicColumn', 'trashNameColumn', 'trashDescriptionColumn');
+							foreach($trashedElement as $element)
+							{
+								$columnAdded = false;
+								$nameField = 'nom';
+
+								unset($ligne);
+								$elementMainPicture = evaPhoto::getMainPhoto($element_definition['element'], $element->id);
+								$elementMainPicture = evaPhoto::checkIfPictureIsFile($elementMainPicture, $element_definition['element']);
+								$elementPicture = ( $elementMainPicture != '' ) ? '<img class="elementPicture" style="width:' . TAILLE_PICTOS . ';" src="' . $elementMainPicture . '" alt="element picture" />' : __('Pas de photo', 'evarisk');
+								$ligne[] = array('value' => $elementPicture, 'class' => '');
+								$ligne[] = array('value' => $element_definition['prefix_identifier'] . $element->id . '&nbsp;-&nbsp;' . $element->$nameField, 'class' => '');
+								$ligne[] = array('value' => $element->description, 'class' => '');
+
+								/*	Add the different column for each element type	*/
+								switch($element_definition['element'])
+								{
+									case TABLE_GROUPEMENT:
+									{
+										if(current_user_can('digi_edit_groupement_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$titres[] = __('Descendants', 'evarisk');
+											$classes[] = 'trashChildrenColumn';
+											$columnAdded = true;
+										}
+										$ancetres = Arborescence::getAncetre($element_definition['element'], $element);
+										$miniFilAriane = '         ';
+										foreach($ancetres as $ancetre){
+											if($ancetre->nom != "Groupement Racine"){
+												$miniFilAriane .= $element_definition['prefix_identifier'] . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+											}
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+										$miniFilAriane = '         ';
+										$descendants = Arborescence::getDescendants($element_definition['element'], $element);
+										foreach($descendants as $descendant){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										}
+										$descendants = EvaGroupement::getUnitesDescendantesDuGroupement($element->id);
+										foreach($descendants as $descendant){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_UT . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+									}
+									break;
+									case TABLE_UNITE_TRAVAIL:
+									{
+										if(current_user_can('digi_edit_groupement_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$columnAdded = true;
+										}
+										$directParent = EvaGroupement::getGroupement($element->id_groupement);
+										$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent);
+										$miniFilAriane = '         ';
+										foreach($ancetres as $ancetre){
+											if($ancetre->nom != "Groupement Racine"){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+											}
+										}
+										if($directParent->nom != "Groupement Racine"){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $directParent->id . '&nbsp;-&nbsp;' . $directParent->nom . ' &raquo; ';
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+									}
+									break;
+									case TABLE_TACHE:
+									{
+										if(current_user_can('digi_edit_task_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$titres[] = __('Descendants', 'evarisk');
+											$classes[] = 'trashChildrenColumn';
+											$columnAdded = true;
+										}
+										$ancetres = Arborescence::getAncetre(TABLE_TACHE, $element);
+										$miniFilAriane = '         ';
+										foreach($ancetres as $ancetre){
+											if($ancetre->nom != "Tache Racine"){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_T . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+											}
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+										$miniFilAriane = '         ';
+										$descendants = Arborescence::getDescendants($element_definition['element'], $element);
+										foreach($descendants as $descendant){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_T . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										}
+										$descendants = EvaTask::getChildren($element->id);
+										foreach($descendants as $descendant){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_ST . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+									}
+									break;
+									case TABLE_ACTIVITE:
+									{
+										if(current_user_can('digi_edit_action_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$columnAdded = true;
+										}
+										$directParent = new EvaTask();
+										$directParent->setId($element->id_tache);
+										$directParent->load();
+										$directParent->limiteGauche = $directParent->leftLimit;
+										$directParent->limiteDroite = $directParent->rightLimit;
+										$ancetres = Arborescence::getAncetre(TABLE_TACHE, $directParent);
+										$miniFilAriane = '         ';
+										foreach($ancetres as $ancetre){
+											if($ancetre->nom != "Tache Racine"){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_T . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+											}
+										}
+										if($directParent->nom != "Tache Racine"){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_T . $directParent->id . '&nbsp;-&nbsp;' . $directParent->name . ' &raquo; ';
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+									}
+									break;
+									case TABLE_CATEGORIE_DANGER:
+									{
+										if(current_user_can('digi_edit_danger_category_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$titres[] = __('Descendants', 'evarisk');
+											$classes[] = 'trashChildrenColumn';
+											$columnAdded = true;
+										}
+										$ancetres = Arborescence::getAncetre($element_definition['element'], $element);
+										$miniFilAriane = '         ';
+										foreach($ancetres as $ancetre){
+											if($ancetre->nom != "Categorie Racine"){
+												$miniFilAriane .= $element_definition['prefix_identifier'] . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+											}
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+										$miniFilAriane = '         ';
+										$descendants = Arborescence::getDescendants($element_definition['element'], $element);
+										foreach($descendants as $descendant){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_CD . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										}
+										$descendants = categorieDangers::getChildren($element->id);
+										foreach($descendants as $descendant){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_D . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+									}
+									break;
+									case TABLE_DANGER:
+									{
+										if(current_user_can('digi_edit_danger_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$columnAdded = true;
+										}
+										$directParent = categorieDangers::getCategorieDanger($element->id_categorie);
+										$ancetres = Arborescence::getAncetre(TABLE_CATEGORIE_DANGER, $directParent);
+										$miniFilAriane = '         ';
+										foreach($ancetres as $ancetre){
+											if($ancetre->nom != "Categorie Racine"){
+												$miniFilAriane .= $element_definition['prefix_identifier'] . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+											}
+										}
+										if($directParent->nom != "Categorie Racine"){
+											$miniFilAriane .= ELEMENT_IDENTIFIER_CD . $directParent->id . '&nbsp;-&nbsp;' . $directParent->nom . ' &raquo; ';
+										}
+										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
+									}
+									break;
+									case TABLE_METHODE:
+									{
+										if(current_user_can('digi_edit_method_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+									}
+									break;
+									case DIGI_DBT_PERMISSION_ROLE:
+									{
+										if(current_user_can('digi_edit_user_role_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										$nameField = 'role_name';
+									}
+									break;
+									case TABLE_CATEGORIE_PRECONISATION:
+									{
+										if(current_user_can('digi_edit_recommandation_category_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+									}
+									break;
+									case TABLE_PRECONISATION:
+									{
+										if(current_user_can('digi_edit_recommandation_trash')){
+											$userIsAllowedToUpdateTrash = true;
+										}
+										if(!$columnAdded){
+											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
+											$classes[] = 'trashParentColumn';
+											$columnAdded = true;
+										}
+										$directParent = evaRecommandationCategory::getCategoryRecommandation($element->id_categorie_preconisation);
+										$ligne[] = array('value' => ELEMENT_IDENTIFIER_CP . $directParent->id . '&nbsp;-&nbsp;' . $directParent->nom, 'class' => '');
+									}
+									break;
+								}
+
+								if($userIsAllowedToUpdateTrash){
+									$ligne[] = array('value' => '<input type="checkbox" class="alignright elementToRestore" value="' . $element_definition['element'] . '_element_to_restore_' . $element->id . '" />', 'class' => '');
+								}
+
+								$lignesDeValeurs[] = $ligne;
+								$idLignes[] = 't' . $element_definition['prefix_identifier'] . $element->id;
+							}
+							if($userIsAllowedToUpdateTrash){
+								$titres[] = '';
+								$class[] = 'trashActionColumn';
+							}
+							$script = '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk("#' . $idTable . ' tfoot").remove();
+		evarisk("#' . $idTable . '").dataTable({
+			"bPaginate": false,
+			"bInfo": false,
+			"bLengthChange": false,
+			"oLanguage":{
+				"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
+			}
+		});
+	});
+</script>';
+							$subTrashOutput .= EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+						}
+						else
+						{
+							$subTrashOutput .= '<div class="trashContentCenter" >' . __('La corbeille de cet &eacute;l&eacute;ment est vide', 'evarisk') . '</div>';
+						}
+
+						/*	Add output for each element	*/
+						$output .= '
+<fieldset class="elementTrashContainer" >
+	<legend>' . sprintf(__('Contenu de la corbeille pour les %s', 'evarisk'), $element_definition['name']) . '</legend>
+	' . $subTrashOutput . '
+</fieldset>';
+					}
+				}
+				else
+				{
+					$output ='<div class="trashContentCenter" >' .  __('Aucun &eacute;l&eacute;ment n\'a &eacute;t&eacute; s&eacute;lectionn&eacute;', 'evarisk') . '</div>';
+				}
+
+				if($userIsAllowedToUpdateTrash)
+				{
+					$output .= '
+<input type="hidden" value="" name="elementToRestore" id="elementToRestore" />
+<input type="button" class="button-secondary updateTrash alignright" id="updateTrash" disabled="disabled" value="' . __('Restaurer la s&eacute;lection', 'evarisk') . '" />
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		evarisk(".elementToRestore").click(function(){
+			var currentElementToRestore = evarisk("#elementToRestore").val();
+			var elementToAdd = evarisk(this).val() + ", ";
+			currentElementToRestore = currentElementToRestore.replace(elementToAdd, "");
+			if(evarisk(this).is(":checked")){
+				currentElementToRestore = currentElementToRestore.replace(elementToAdd, "") + elementToAdd;
+			}
+			evarisk("#elementToRestore").val(currentElementToRestore);
+			if(evarisk("#elementToRestore").val() != ""){
+				evarisk("#updateTrash").prop("disabled", "");
+				evarisk("#updateTrash").removeClass("button-secondary");
+				evarisk("#updateTrash").addClass("button-primary");
+			}
+			else{
+				evarisk("#updateTrash").prop("disabled", "disabled");
+				evarisk("#updateTrash").removeClass("button-primary");
+				evarisk("#updateTrash").addClass("button-secondary");
+			}
+		});
+
+		evarisk("#updateTrash").click(function(){
+			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"tableProvenance": "' . $tableProvenance . '",
+				"nom": "updateTrash",
+				"elementToRestore" : evarisk("#elementToRestore").val()
+			});
+		});
+	});
+</script>';
+				}
+
+				echo $output;
+			}
+			break;
 
 			case "demandeAction" :
 			{
@@ -4557,6 +5151,38 @@ echo $output;
 					echo sprintf(__('Il n\'y a pas d\'action pour %s', 'evarisk'), $complement);
 				}
 				}
+			break;
+
+			case 'saveMarkerNewPosition':
+			{
+				$newPositions = (isset($_REQUEST['positions']) && (trim($_REQUEST['positions']) != '')) ? eva_tools::IsValid_Variable($_REQUEST['positions']) : '';
+				if(trim($newPositions) != ''){
+					$newPositionsList = explode('_pos_separator_', $newPositions);
+					foreach($newPositionsList as $newPositionsElement){
+						if($newPositionsElement != ''){
+							/*	Make different operation on the posted datas	*/
+							$positionDefinition = explode('-val-', $newPositionsElement);
+							$adressIdentifier = str_replace("adressIdentifier", "", $positionDefinition[0]);
+							$positionComponent = explode(", ", str_replace('(', '', str_replace(')', '', $positionDefinition[1])));
+							
+							/*	Load the current adress	*/
+							$elementAdress = new EvaBaseAddress($adressIdentifier);
+							$elementAdress->load();
+							$elementAdress->setLatitude($positionComponent[0]);
+							$elementAdress->setLongitude($positionComponent[1]);
+							$elementAdress->save();
+						}
+					}
+					echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		actionMessageShow("#geoloc_message", "<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' alt=\'success\' />' . __('Donn&eacute;es enregistr&eacute;es avec succ&eacute;s', 'evarisk') . '");
+		setTimeout(\'actionMessageHide("#geoloc_message")\',5000);
+		evarisk("#saveNewPosition").hide();
+	});
+</script>';
+				}
+			}
 			break;
 		}
 	}

@@ -11,7 +11,7 @@
 	function getGeolocationPostBoxBody($arguments)
 	{
 		$idGoogleMapsDivWrap = 'waitingGeoloc' . $arguments['tableElement'] . $arguments['idElement'];
-		echo '<div id="' . $idGoogleMapsDivWrap . '"><img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" alt="" />&nbsp;' . esc_js( __( 'Loading...' ) ) . '</div>';
+		echo '<div id="geoloc_message" >&nbsp;</div><div id="' . $idGoogleMapsDivWrap . '"><img src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" alt="" />&nbsp;' . esc_js( __( 'Loading...' ) ) . '</div>';
 		$markers = $arguments['markers'];
 		$idGoogleMapsDiv = 'map' . $arguments['tableElement'] . $arguments['idElement'];
 		$script = '<script type="text/javascript">

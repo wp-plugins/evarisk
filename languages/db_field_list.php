@@ -63,7 +63,7 @@ __('permission_referential_menu', 'evarisk');
 __('permission_unite', 'evarisk');
 __('permission_groupement', 'evarisk');
 
-/*	Menu capabilities	*/
+/*	Options capabilities	*/
 __('digi_edit_option', 'evarisk');
 
 /*	Menu capabilities	*/
@@ -99,6 +99,13 @@ __('digi_view_detail_user_role', 'evarisk');
 
 __('digi_manage_user_right', 'evarisk');
 
+__('digi_view_user_group_trash', 'evarisk');
+__('digi_edit_user_group_trash', 'evarisk');
+__('digi_view_evaluator_group_trash', 'evarisk');
+__('digi_edit_evaluator_group_trash', 'evarisk');
+__('digi_view_user_role_trash', 'evarisk');
+__('digi_edit_user_role_trash', 'evarisk');
+
 /*	Recommandation capabilities	*/
 __('digi_add_recommandation_cat', 'evarisk');
 __('digi_view_detail_recommandation_cat', 'evarisk');
@@ -109,12 +116,20 @@ __('digi_view_detail_recommandation', 'evarisk');
 __('digi_edit_recommandation', 'evarisk');
 __('digi_delete_recommandation', 'evarisk');
 
+__('digi_view_recommandation_category_trash', 'evarisk');
+__('digi_edit_recommandation_category_trash', 'evarisk');
+__('digi_view_recommandation_trash', 'evarisk');
+__('digi_edit_recommandation_trash', 'evarisk');
+
 /*	Method capabilities	*/
 __('digi_add_method', 'evarisk');
 __('digi_edit_method', 'evarisk');
 __('digi_view_detail_method', 'evarisk');
 __('digi_delete_method', 'evarisk');
 __('digi_add_method_var', 'evarisk');
+
+__('digi_view_method_trash', 'evarisk');
+__('digi_edit_method_trash', 'evarisk');
 
 /*	Danger capabilities	*/
 __('digi_add_danger_category', 'evarisk');
@@ -129,6 +144,11 @@ __('digi_view_detail_danger', 'evarisk');
 __('digi_delete_danger', 'evarisk');
 __('digi_move_danger', 'evarisk');
 
+__('digi_view_danger_category_trash', 'evarisk');
+__('digi_edit_danger_category_trash', 'evarisk');
+__('digi_view_danger_trash', 'evarisk');
+__('digi_edit_danger_trash', 'evarisk');
+
 /*	Arborescence capabilities	*/
 __('digi_add_groupement', 'evarisk');
 __('digi_edit_groupement', 'evarisk');
@@ -141,4 +161,21 @@ __('digi_edit_unite', 'evarisk');
 __('digi_view_detail_unite', 'evarisk');
 __('digi_delete_unite', 'evarisk');
 __('digi_move_unite', 'evarisk');
+
+__('digi_view_groupement_trash', 'evarisk');
+__('digi_edit_groupement_trash', 'evarisk');
+__('digi_view_unite_trash', 'evarisk');
+__('digi_edit_unite_trash', 'evarisk');
+
+/*	Risks capabilities	*/
+__('digi_view_risk_trash', 'evarisk');
+__('digi_edit_risk_trash', 'evarisk');
+
+/*	Correctiv actions capabilities	*/
+__('digi_view_correctiv_action', 'evarisk');
+
+__('digi_view_task_trash', 'evarisk');
+__('digi_edit_task_trash', 'evarisk');
+__('digi_view_action_trash', 'evarisk');
+__('digi_edit_action_trash', 'evarisk');
 }

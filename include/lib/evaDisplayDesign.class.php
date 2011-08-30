@@ -646,6 +646,7 @@ class EvaDisplayDesign {
 	function getTableArborescence($racine, $table, $idTable, $nomRacine, $draggable = true, $outputAction = true)
 	{
 		$elements = $monCorpsTable = $class = $infoRacine = '';
+		$showTrashUtilities = false;
 		switch($table)
 		{
 			case TABLE_GROUPEMENT:
@@ -669,6 +670,15 @@ class EvaDisplayDesign {
 				}
 				$actions .= '
 							</td>';
+				/*	Add trash	*/
+				$main_option = get_option('digirisk_options');
+				if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash')))
+				{
+					$showTrashUtilities = true;
+					$actions .= '
+							<td colspan="' . ($actionSize - 3) . '" >&nbsp;</td>
+							<td class="noPadding trash" id="trash' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . EVA_IMG_ICONES_PLUGIN_URL . 'trash.png" alt="Trash" title="' . __('Acc&eacute;der &agrave; la corbeille', 'evarisk') . '" /></td>';
+				}
 			}
 			break;
 			case TABLE_CATEGORIE_DANGER:
@@ -692,6 +702,15 @@ class EvaDisplayDesign {
 				$actions .= '</td>';
 				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_CATEGORIE_DANGER . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '\' />';
 				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_DANGER . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('un danger', 'evarisk')) . '\' />';
+				/*	Add trash	*/
+				$main_option = get_option('digirisk_options');
+				if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash')))
+				{
+					$showTrashUtilities = true;
+					$actions .= '
+							<td colspan="' . ($actionSize - 2) . '" >&nbsp;</td>
+							<td class="noPadding trash" id="trash' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . EVA_IMG_ICONES_PLUGIN_URL . 'trash.png" alt="Trash" title="' . __('Acc&eacute;der &agrave; la corbeille', 'evarisk') . '" /></td>';
+				}
 			}
 			break;
 			case TABLE_TACHE:
@@ -709,6 +728,15 @@ class EvaDisplayDesign {
 							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td> -->';
 				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_TACHE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '\' />';
 				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_ACTIVITE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' />';
+				/*	Add trash	*/
+				$main_option = get_option('digirisk_options');
+				if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash')))
+				{
+					$showTrashUtilities = true;
+					$actions .= '
+							<td colspan="' . ($actionSize - 2) . '" >&nbsp;</td>
+							<td class="noPadding trash" id="trash' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . EVA_IMG_ICONES_PLUGIN_URL . 'trash.png" alt="Trash" title="' . __('Acc&eacute;der &agrave; la corbeille', 'evarisk') . '" /></td>';
+				}
 			}
 			break;
 			case TABLE_GROUPE_QUESTION:
@@ -917,6 +945,34 @@ class EvaDisplayDesign {
 					</tbody>
 				</table>';
 
+		/*	Add trash utilities if user is allowed	*/
+		$trashScript = '';
+		if($showTrashUtilities)
+		{
+			$tableArborescente .= '
+				<div id="trashContainer" title="' . __('Liste des &eacute;l&eacute;ments supprim&eacute;s', 'evarisk') . '" >&nbsp;</div>';
+			$trashScript = '
+		evarisk("#trashContainer").dialog({
+			autoOpen: false,
+			modal: true,
+			width: 800,
+			height: 600,
+			close: function(){
+				evarisk(this).html("");
+			}
+		});
+		evarisk(".trash img").click(function(){
+			evarisk("#trashContainer").dialog("open");
+			evarisk("#trashContainer").html(evarisk("#loadingImg").html());
+			evarisk("#trashContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			{
+				"post": "true", 
+				"tableProvenance": "' . $table . '",
+				"nom": "loadTrash"
+			});
+		});';
+		}
+
 		$script = '
 <script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -945,6 +1001,8 @@ class EvaDisplayDesign {
 				evarisk(this).addClass("sansFils");
 			}
 		});
+
+		' . $trashScript . '
 
 		' . $draggableScript . '
 
@@ -2777,6 +2835,14 @@ class EvaDisplayDesign {
 									<td >' . EvaDisplayInput::afficherInput('text', 'nomDuDocument', '#NOMDOCUMENT#', '', '', 'nomDuDocument', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
 								</tr>
 								<tr>
+									<td ><label for="methodologie">' . __('m&eacute;thodologie', 'evarisk') . '</label></td>
+									<td style="text-align:center;"><textarea id="methodologie" name="methodologie" class="textarea14" style="width:100%" ;>#METHODOLOGIE#</textarea></td>
+								</tr> 
+								<tr>
+									<td  ><label for="sources">' . __('sources', 'evarisk') . '</label></td>
+									<td style="text-align:center;"><textarea id="sources" name="sources" class="textarea14" style="width:100%" ;>#SOURCES#</textarea></td>
+								</tr> 
+								<tr>
 									<td  ><label for="remarque_important">' . __('remarque importante', 'evarisk') . '</label></td>
 									<td style="text-align:center;"><textarea id="remarque_important" name="remarque_important" class="textarea14" style="width:100%" ;>#REMARQUEIMPORTANT#</textarea></td>
 								</tr> 
@@ -2784,18 +2850,6 @@ class EvaDisplayDesign {
 									<td  ><label for="localisation">' . __('localisation', 'evarisk') . '</label></td>
 									<td style="text-align:center;"><textarea id="localisation" name="localisation" class="textarea14" style="width:100%" ;>#LOCALISATION#</textarea></td>
 								</tr> 
-								<tr>
-									<td  ><label for="sources">' . __('sources', 'evarisk') . '</label></td>
-									<td style="text-align:center;"><textarea id="sources" name="sources" class="textarea14" style="width:100%" ;>#SOURCES#</textarea></td>
-								</tr> 
-		<!-- 
-								<tr>
-									<td  colspan="2" ><label for="methodologie">' . __('m&eacute;thodologie', 'evarisk') . '</label></td>
-								</tr>
-								<tr>
-									<td colspan="2" style="text-align:center;"><textarea id="methodologie" name="methodologie" class="textarea">#METHODOLOGIE#</textarea></td>
-								</tr>
-		-->
 								<tr>
 									<td >&nbsp;</td>
 									<td style="padding:12px 0px;" >

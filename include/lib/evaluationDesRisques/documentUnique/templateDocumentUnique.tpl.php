@@ -81,26 +81,30 @@
 			</tr>
 		</table>';
 
-		$methodologieParDefaut=
-		'<div class="soustitrenoextrapadding">' . __('Etape 1 : R&eacute;cup&eacute;ration d\'informations', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Visite de l\'usine avec des membres du CHSCT', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Recensement de toutes les machines de l\'usine', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Remise du questionnaire d\'informations', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Traitement des donn&eacute;es et constitution des informations de base (personnel, formation, groupe, atelier, plan, accidents d&eacute;j&agrave; survenus...)', 'evarisk') . '</div>
-		<div class="soustitrenoextrapadding">' . __('Etape 2 : Pr&eacute;sentation de la d&eacute;marche', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('R&eacute;union avec les membres du CHSCT pour la pr&eacute;sentation du projet (D&eacute;finition d\'une fiche de risques type, validation d\'une fiche standard...)', 'evarisk') . '</div>
-		<div class="soustitrenoextrapadding">' . __('Etape 3  : Cr&eacute;ation et validation de la forme du document unique', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Etablissement des fiches de risques d&eacute;finies avec le CHSCT', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Validation des fiches de risques avec le CHSCT', 'evarisk') . '</div>
-		<div class="soustitrenoextrapadding">' . __('Etape 4  : R&eacute;alisation de l\'&eacute;tude de risques', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Sensibilisation des op&eacute;rateurs aux risques', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Cr&eacute;ation des unit&eacute;s de travail avec les responsables d\'ateliers et les op&eacute;rateurs', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Evaluations des risques par unit&eacute;s de travail avec les responsables d\'ateliers et les op&eacute;rateurs', 'evarisk') . '</div>
-		<div class="soustitrenoextrapadding">' . __('Etape 5', 'evarisk') . '</div>
-		<div class="puces">&#149; ' . __('Traitement et r&eacute;daction du document unique', 'evarisk') . '</div>';
+		$methodologieParDefaut = '
+* ' . __('Etape 1 : R&eacute;cup&eacute;ration d\'informations', 'evarisk') . '
+- ' . __('Visite de l\'usine avec des membres du CHSCT', 'evarisk') . '
+- ' . __('Recensement de toutes les machines de l\'usine', 'evarisk') . '
+- ' . __('Remise du questionnaire d\'informations', 'evarisk') . '
+- ' . __('Traitement des donn&eacute;es et constitution des informations de base (personnel, formation, groupe, atelier, plan, accidents d&eacute;j&agrave; survenus...)', 'evarisk') . '
+
+* ' . __('Etape 2 : Pr&eacute;sentation de la d&eacute;marche', 'evarisk') . '
+- ' . __('R&eacute;union avec les membres du CHSCT pour la pr&eacute;sentation du projet (D&eacute;finition d\'une fiche de risques type, validation d\'une fiche standard...)', 'evarisk') . '
+* ' . __('Etape 3  : Cr&eacute;ation et validation de la forme du document unique', 'evarisk') . '
+- ' . __('Etablissement des fiches de risques d&eacute;finies avec le CHSCT', 'evarisk') . '
+- ' . __('Validation des fiches de risques avec le CHSCT', 'evarisk') . '
+
+* ' . __('Etape 4  : R&eacute;alisation de l\'&eacute;tude de risques', 'evarisk') . '
+- ' . __('Sensibilisation des op&eacute;rateurs aux risques', 'evarisk') . '
+- ' . __('Cr&eacute;ation des unit&eacute;s de travail avec les responsables d\'ateliers et les op&eacute;rateurs', 'evarisk') . '
+- ' . __('Evaluations des risques par unit&eacute;s de travail avec les responsables d\'ateliers et les op&eacute;rateurs', 'evarisk') . '
+
+* ' . __('Etape 5', 'evarisk') . '
+- ' . __('Traitement et r&eacute;daction du document unique', 'evarisk');
 
 		$sourcesParDefaut=
-		'<div class="puces">&#149; ' . __('Le document de l\'INRS ED 840 pour la sensibilisation aux risques, le document 20020831_critere_evaluation.doc pour les crit&egrave;res d\'&eacute;valuation', 'evarisk') . '</div>';
+		'
+' . __('Le document de l\'INRS ED 840 pour la sensibilisation aux risques, le document 20020831_critere_evaluation.doc pour les crit&egrave;res d\'&eacute;valuation', 'evarisk') . '</div>';
 	}
 
 $sommaireDocumentUnique = 

@@ -340,19 +340,21 @@ class EvaGroupement {
 	{
 		global $wpdb;
 		
-		if($id == null)
+		if(($id == null) && (!is_int($id)) && ($id <= 0))
 		{
 			$geoLoc = null;
 		}
 		else
 		{
-			$group = $wpdb->get_row( "SELECT * FROM " . TABLE_GROUPEMENT . " WHERE id =" . $id);
+			$query = $wpdb->prepare("SELECT * FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $id);
+			$group = $wpdb->get_row($query);
 			$address = new EvaAddress($group->id_adresse);
 			$address->load();
 			$geoLoc = $address->getGeoLoc();
 			$scoreRisque = EvaGroupement::getScoreRisque($group->id);
 			$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_GROUPEMENT_ICON . '" alt="Groupement : "/><strong>' . $group->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . EvaGroupement::getNiveauRisque($scoreRisque) . '</span></em>';
 			$geoLoc['type'] = "groupement"; 
+			$geoLoc['adress'] = $group->id_adresse; 
 			$geoLoc['image'] = GOOGLEMAPS_GROUPE; 
 			return $geoLoc;
 		}

@@ -935,7 +935,38 @@ class evaRecommandation
 */
 	function evaRecommandationMainPage()
 	{
-		_e(EvaDisplayDesign::afficherDebutPage(__('Pr&eacute;conisations', 'evarisk'), EVA_RECOMMANDATION_ICON, __('Pr&eacute;conisations', 'evarisk'), __('Pr&eacute;conisations', 'evarisk'), TABLE_PRECONISATION, false, '', false));
+		_e(EvaDisplayDesign::afficherDebutPage(__('Pr&eacute;conisations', 'evarisk'), EVA_RECOMMANDATION_ICON, __('Pr&eacute;conisations', 'evarisk'), __('Pr&eacute;conisations', 'evarisk'), TABLE_PRECONISATION, false, '', false));				/*	Add trash	*/
+				$main_option = get_option('digirisk_options');
+				if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_method_trash'))
+				{
+?>
+					<img class="trashPicture" src="<?php echo EVA_IMG_ICONES_PLUGIN_URL; ?>trash_vs.png" alt="Trash" title="<?php _e('Acc&eacute;der &agrave; la corbeille', 'evarisk'); ?>" />
+					<div id="trashContainer" title="<?php _e('Liste des &eacute;l&eacute;ments supprim&eacute;s', 'evarisk'); ?>" >&nbsp;</div>
+					<script type="text/javascript" >
+						evarisk(document).ready(function(){
+							evarisk("#trashContainer").dialog({
+								autoOpen: false,
+								modal: true,
+								width: 800,
+								height: 600,
+								close: function(){
+									evarisk(this).html("");
+								}
+							});
+							evarisk(".trashPicture").click(function(){
+								evarisk("#trashContainer").dialog("open");
+								evarisk("#trashContainer").html(evarisk("#loadingImg").html());
+								evarisk("#trashContainer").load("<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php", 
+								{
+									"post": "true", 
+									"tableProvenance": "<?php echo TABLE_CATEGORIE_PRECONISATION ?>",
+									"nom": "loadTrash"
+								});
+							});
+						});
+					</script>
+<?php
+				}
 ?>
 <div class="hide" id="loadingImg" ><center><img class="margin36" src="<?php echo _e(PICTO_LOADING_ROUND); ?>" alt="loading..." /></center></div>
 <?php echo evaRecommandation::getRecommandationForm(); ?>

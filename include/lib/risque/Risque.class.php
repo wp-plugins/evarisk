@@ -335,7 +335,12 @@ class Risque {
 			}
 			else
 			{
-				$histoStatus = 'Deleted';
+				$sql = "
+					UPDATE " . TABLE_AVOIR_VALEUR . " 
+					SET Status = 'Deleted' 
+					WHERE id_risque = " . mysql_escape_string($idRisque) . "
+					AND Status = 'Valid'";
+				$wpdb->query($sql);
 			}
 		}
 

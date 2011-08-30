@@ -31,7 +31,7 @@ class evaUser
 
 		$query = 
 			"SELECT USERS.ID
-			FROM wp_users AS USERS";
+			FROM " . $wpdb->users . " AS USERS";
 		$userList = $wpdb->get_results($query);
 
 		return $userList;

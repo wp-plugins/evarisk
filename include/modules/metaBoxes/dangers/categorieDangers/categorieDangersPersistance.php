@@ -8,25 +8,25 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 $search = "`Status`='Valid' AND nom<>'Categorie Racine'";
 $categories_danger = categorieDangers::getCategoriesDanger($search);
-			
-if($_POST['act'] == 'save')
+
+if($_REQUEST['act'] == 'save')
 {
-	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['nom_categorie']));
+	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_categorie']));
 	categorieDangers::saveNewCategorie($nom);
 	
-	$_POST['act'] = 'update';
-	$_POST['id'] = $wpdb->insert_id;
+	$_REQUEST['act'] = 'update';
+	$_REQUEST['id'] = $wpdb->insert_id;
 }
-if($_POST['act'] == 'update')
+if($_REQUEST['act'] == 'update')
 {
-	$id_categorie = $_POST['id'];
-	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['nom_categorie']));
-	$description = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['description']));
-	$idCategorieMere = mysql_real_escape_string(eva_tools::IsValid_Variable($_POST['categorieMere']));
+	$id_categorie = $_REQUEST['id'];
+	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_categorie']));
+	$description = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['description']));
+	$idCategorieMere = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['categorieMere']));
 	categorieDangers::updateCategorie($id_categorie, $nom, $description, $idCategorieMere);
 }
-if($_POST['act'] == 'delete')
+if($_REQUEST['act'] == 'delete')
 {
-	$id_categorie = $_POST['id'];
+	$id_categorie = $_REQUEST['id'];
 	categorieDangers::deleteCategorie($id_categorie);
 }

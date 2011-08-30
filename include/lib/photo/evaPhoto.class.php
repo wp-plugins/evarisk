@@ -629,16 +629,21 @@ class EvaPhoto {
 					});
 					evarisk("#thumb' . $idUpload . '").parent().show();
 				});
-			</script>';
+			</script>
+			<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >';
 			if(($photoDefaut!='') && ((is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $photoDefaut))) || (is_file(str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $photoDefaut)))))
 			{
-			$formulaireUpload .= 
-			'<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >
-				<a href="' . $photoDefaut . '" target="mainPicture" ><img id="thumb' . $idUpload . '" src="' . $photoDefaut . '" class="" /></a>
-			</div>';
+				$formulaireUpload .= '
+					<a href="' . $photoDefaut . '" target="mainPicture" ><img id="thumb' . $idUpload . '" src="' . $photoDefaut . '" class="" /></a>';
+			}
+			else
+			{
+				$formulaireUpload .= '
+					&nbsp;';
 			}
 			$formulaireUpload .= 
-			'<div id="' . $idUpload . '" class="divUpload">		
+			'</div>
+			<div id="' . $idUpload . '" class="divUpload">		
 				<noscript>			
 					<p>Please enable JavaScript to use file uploader.</p>
 					<!-- or put a simple form for upload here -->
@@ -869,6 +874,11 @@ class EvaPhoto {
 			case TABLE_CATEGORIE_PRECONISATION:
 			{
 				$defaultPicture = EVA_RECOMMANDATION_ICON;
+			}
+			break;
+			case TABLE_CATEGORIE_DANGER:
+			{
+				$defaultPicture = DEFAULT_DANGER_CATEGORIE_PICTO;
 			}
 			break;
 			default:

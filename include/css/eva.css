@@ -23,6 +23,12 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .actionForExistingElement{	margin:3px 0px;	}
 .existingElementMainExplanation{	font-size:10px; margin:0px 0px 15px;	}
 
+
+
+#saveNewPosition{	margin:12px 0px; float:right;	}
+
+
+
 /* -- START PERMISSION -- */
 .menuUserRight{	font-style:italic; font-size:9px; font-weight:bold;	}
 .sub_module{	margin-right:5px; float:left;	}
@@ -58,6 +64,15 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .userRightManagement_overflow{	overflow-y:scroll;	}
 
 #evaUserInformation div label		{	width:15em;	}
+/* -- END PERMISSION -- */
+
+/* -- START TRASH -- */
+.elementTrashContainer{	border-top:1px solid grey !important; margin:12px 0px; min-height:150px;	}
+.elementTrashContainer th{	background: none #FFFFFF !important;	}
+.elementTrashContainer  .dataTables_wrapper{	min-height:150px;	}
+.trashContentCenter{	text-align:center; width:80%; margin:12px auto;	}
+
+.trashPicColumn{	width:10% !important;	}
 /* -- END PERMISSION -- */
 
 #digirisk_options_container th{	width:45% !important; padding:2px;	}
@@ -132,7 +147,6 @@ div.inside{overflow: hidden; padding: 5px;}
 .boutonInfos img{ vertical-align: middle; padding-right:5px; }
 
 #boutonAvanceRisque:hover { cursor:pointer; color:#8B0304; }
-
 /* -- END Boutons SELECT EDIT -- */
 
 #filAriane {margin:15px 0px 5px 0px;font-size:12px; }
@@ -361,6 +375,8 @@ th.columnCommentaireRisque*/
 #pictureToAssociateToRisk .qq-uploader .qq-upload-button{		width:90% !important;		padding:7px;	}
 .deleteLinkBetweenRiskAndPicture{	background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png"); background-position: -80px -128px;	width:16px;height:16px;}
 .riskPictureThumbs{	max-width: 20%;	}
+
+#choixMethodeEvaluation{	clear:both;	}
 /* -- END Risques -- */
 
 

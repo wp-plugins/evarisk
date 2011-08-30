@@ -164,6 +164,50 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 
 		$scriptEnregistrementDone = '<script type="text/javascript">
 			evarisk(document).ready(function(){
+				evarisk("#updateTaskStatus").dialog({
+					autoOpen: false,
+					width: 800,
+					height: 400,
+					modal: true,
+					buttons:{
+						"' . __('Solder', 'evarisk') . '": function(){
+							if((evarisk("#markSubAsDone").is(":checked") && confirm(convertAccentToJS("' . __('En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments \'en-dessous\'. Etes vous sur?', 'evarisk') . '"))) || (!evarisk("#markSubAsDone").is(":checked"))){
+								if(evarisk("#markSubAsDone").is(":checked")){
+									var markAllSubElementAsDone = true;
+								}
+								else{
+									var markAllSubElementAsDone = false;
+								}
+								evarisk("#taskDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+									"post": "true", 
+									"table": "' . TABLE_TACHE . '",
+									"act": "taskDone",
+									"id": evarisk("#idTache").val(),
+									"nom_tache": evarisk("#' . $idTitre . '").val(),
+									"idPere": evarisk("#idPereTache").val(),
+									"responsable_tache": evarisk("#responsable_tache").val(),
+									"description": evarisk("#descriptionTache").val(),
+									"affichage": evarisk("#affichageTache").val(),
+									"idsFilAriane": evarisk("#idsFilArianeTache").val(),
+									"idProvenance": evarisk("#idProvenanceTache").val(),
+									"tableProvenance": evarisk("#tableProvenanceTache").val(),
+									"avancement": evarisk("#avancement").val(),
+									"date_fin": evarisk("#date_fin").val(),
+									"date_debut": evarisk("#date_debut").val(),
+									"markAllSubElementAsDone": markAllSubElementAsDone
+								})
+								evarisk(this).dialog("close");
+							}
+						},
+						"' . __('Annuler', 'evarisk') . '":	function(){
+							evarisk(this).dialog("close");
+						}
+					},
+					close:function(){
+						evarisk(this).html("");
+					}
+				});
 				evarisk("#' . $idBoutton . '").click(function(){
 					if(evarisk("#' . $idTitre . '").is(".form-input-tip"))
 					{
@@ -176,30 +220,21 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
 					valeurActuelle = evarisk("#' . $idTitre . '").val();
-          if(valeurActuelle == "")
-          {
+          if(valeurActuelle == ""){
             alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
-					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
-					{
+					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui")){
 						alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
 					}
-          else if(confirm(convertAccentToJS("' . __('En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments \'en-dessous\'. Etes vous sur?', 'evarisk') . '")))
-          {
-						evarisk("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-            evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
-              "table": "' . TABLE_TACHE . '",
-              "act": "taskDone",
-              "id": evarisk("#idTache").val(),
-              "nom_tache": evarisk("#' . $idTitre . '").val(),
-              "idPere": evarisk("#idPereTache").val(),
-              "responsable_tache": evarisk("#responsable_tache").val(),
-              "description": evarisk("#descriptionTache").val(),
-              "affichage": evarisk("#affichageTache").val(),
-              "idsFilAriane": evarisk("#idsFilArianeTache").val(),
-              "idProvenance": evarisk("#idProvenanceTache").val(),
-              "tableProvenance": evarisk("#tableProvenanceTache").val()
-            });
+          else{
+						evarisk("#updateTaskStatus").dialog("open");
+						evarisk("#updateTaskStatus").html(evarisk("#loadingImg").html());
+						evarisk("#updateTaskStatus").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+							"post": "true", 
+							"table": "' . TABLE_TACHE . '",
+							"act": "closeTask",
+							"id": evarisk("#idTache").val()
+						});
           }
 				});
 			});
@@ -213,7 +248,8 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 
 			if(($saveOrUpdate != 'save') && (($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted')))
 			{
-			$tache_new .= 
+			$tache_new .= '
+					<div id="updateTaskStatus" class="hide" title="' . __('Mise &agrave; jour du statut de l\'action corrective', 'evarisk') . '" >&nbsp;</div>' . 
 					EvaDisplayInput::afficherInput('button', $idBoutton, __('Solder la tache', 'evarisk'), null, '', $idBoutton, false, true, '', 'button-primary', '', '', $scriptEnregistrementDone, 'left');
 			}
 			elseif($saveOrUpdate == 'update')

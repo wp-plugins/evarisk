@@ -21,7 +21,7 @@ if($_POST['act'] == 'saveDocumentUnique')
 	$informationDocumentUnique['emetteur'] = eva_tools::IsValid_Variable($_POST['emetteur']);
 	$informationDocumentUnique['destinataire'] = eva_tools::IsValid_Variable($_POST['destinataire']);
 	$informationDocumentUnique['nomDuDocument'] = eva_tools::IsValid_Variable($_POST['nomDuDocument']);
-	$informationDocumentUnique['methodologie'] = ($_POST['methodologie']);
+	$informationDocumentUnique['methodologie'] = eva_tools::IsValid_Variable($_POST['methodologie']);
 	$informationDocumentUnique['sources'] = eva_tools::IsValid_Variable($_POST['sources']);
 	$informationDocumentUnique['alerte'] = eva_tools::IsValid_Variable($_POST['alerte']);
 	$informationDocumentUnique['localisation'] = eva_tools::IsValid_Variable($_POST['localisation']);

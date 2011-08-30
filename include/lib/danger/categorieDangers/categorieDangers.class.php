@@ -67,11 +67,11 @@ class categorieDangers {
 /*
  * Autres methodes
  */
-	static function getCategorieDanger($id)
+	static function getCategorieDanger($id, $status = " Status = 'Valid' ")
 	{
 		global $wpdb;
 		$id = (int) $id;
-		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE Status = 'Valid' AND id = " . $id);
+		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE 1 AND id = " . $id);
 		return $resultat;
 	}
 	
@@ -126,13 +126,14 @@ class categorieDangers {
 		
 		$sql = "UPDATE `" . TABLE_CATEGORIE_DANGER . "` SET `nom`='" . $nom . "', description='" . $description . "' WHERE `id`='" . $id_categorie . "'";
 		$wpdb->query($sql);
-		
+
 		$categorieFille =  categorieDangers::getCategorieDanger($id_categorie);
 		$categorieDestination =  categorieDangers::getCategorieDanger($idCategorieMere);
 		$catMere = Arborescence::getPere(TABLE_CATEGORIE_DANGER, $categorieFille);
+
 		if($categorieDestination->nom != $catMere->nom)
 		{
-			$racine =  categorieDangers::getCategorieDangerByName("Categorie Racine");
+			$racine = categorieDangers::getCategorieDangerByName("Categorie Racine");
 			Arborescence::deplacerElements(TABLE_CATEGORIE_DANGER, $racine, $categorieFille, $categorieDestination);
 		}
 	}
@@ -207,15 +208,7 @@ class categorieDangers {
 				}
 				$categoryResult['selectionCategorie'] = $selectionCategorie;
 				$categorieDangerMainPhoto = evaPhoto::getMainPhoto(TABLE_CATEGORIE_DANGER, $categorieDangers->id);
-				if($categorieDangerMainPhoto != 'error')
-				{
-					$categorieDangerMainPhoto = EVA_HOME_URL . $categorieDangerMainPhoto;
-				}
-				else
-				{
-					$categorieDangerMainPhoto = DEFAULT_DANGER_CATEGORIE_PICTO;
-				}
-
+				$categorieDangerMainPhoto = evaPhoto::checkIfPictureIsFile($categorieDangerMainPhoto, TABLE_CATEGORIE_DANGER);
 				$categoryResult['list'] .= '<div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . $categorieDangers->nom . '" title="' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" /></label></div>';
 			}
 			if($categoryResult['list'] != '')
@@ -260,4 +253,25 @@ class categorieDangers {
 		return $categoryResult;
 	}
 
+	/**
+	* Returns all working unit belonging to the group witch is identifier or belonging to his descendants
+	* @param int $elementId The group identifier
+	* @param string $where The SQL where condition
+	* @param string $order The SQL order condition
+	* @return the working units  belonging to the group witch is identifier
+	*/
+	function getChildren($elementId, $where = "1", $order="nom ASC")
+	{
+		global $wpdb;
+		$element = categorieDangers::getCategorieDanger($elementId, '');
+		$subElements = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $element);
+		unset($tabId);
+		$tabId[] = $elementId;
+		foreach($subElements as $subElement)
+		{
+			$tabId[] = $subElement->id;
+		}
+		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_DANGER . " WHERE id_categorie in (" . implode(', ', $tabId) . ") AND " . $where . " ORDER BY ". $order);
+		return $resultat;
+	}
 }

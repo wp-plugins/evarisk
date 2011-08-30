@@ -205,7 +205,7 @@ class EvaTask extends EvaBaseTask
 		return $descendants;
 	}
 
-	function markAllSubElementAsDone()
+	function markAllSubElementAsDone($avancement, $date_debut, $date_fin)
 	{
 		global $current_user;
 
@@ -226,6 +226,9 @@ class EvaTask extends EvaBaseTask
 						/*	Set tasks	*/
 						$subTask->load();
 						$subTask->setProgressionStatus('Done');
+						$subTask->setProgression($avancement);
+						$subTask->setStartDate($date_debut);
+						$subTask->setFinishDate($date_fin);
 						$subTask->setidSoldeurChef($current_user->ID);
 						$subTask->setdateSolde(date('Y-m-d H:i:s'));
 						$subTask->save();
@@ -240,6 +243,9 @@ class EvaTask extends EvaBaseTask
 								$subAction = new EvaActivity($action->id);
 								$subAction->load();
 								$subAction->setProgressionStatus('Done');
+								$subAction->setProgression($avancement);
+								$subAction->setStartDate($date_debut);
+								$subAction->setFinishDate($date_fin);
 								$subAction->setidSoldeurChef($current_user->ID);
 								$subAction->setdateSolde(date('Y-m-d H:i:s'));
 								$subAction->save();
@@ -264,6 +270,9 @@ class EvaTask extends EvaBaseTask
 				$subAction = new EvaActivity($action->id);
 				$subAction->load();
 				$subAction->setProgressionStatus('Done');
+				$subAction->setProgression($avancement);
+				$subAction->setStartDate($date_debut);
+				$subAction->setFinishDate($date_fin);
 				$subAction->setidSoldeurChef($current_user->ID);
 				$subAction->setdateSolde(date('Y-m-d H:i:s'));
 				$subAction->save();
@@ -802,4 +811,30 @@ class EvaTask extends EvaBaseTask
 		}
 	}
 
+	
+	/**
+	* Returns all working unit belonging to the group witch is identifier or belonging to his descendants
+	* @param int $elementId The group identifier
+	* @param string $where The SQL where condition
+	* @param string $order The SQL order condition
+	* @return the working units  belonging to the group witch is identifier
+	*/
+	function getChildren($elementId, $where = "1", $order="nom ASC")
+	{
+		global $wpdb;
+		$element = new EvaTask();
+		$element->setId($elementId);
+		$element->load();
+		$element->limiteGauche = $element->leftLimit;
+		$element->limiteDroite = $element->rightLimit;
+		$subElements = Arborescence::getDescendants(TABLE_TACHE, $element);
+		unset($tabId);
+		$tabId[] = $elementId;
+		foreach($subElements as $subElement)
+		{
+			$tabId[] = $subElement->id;
+		}
+		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_ACTIVITE . " WHERE id_tache in (" . implode(', ', $tabId) . ") AND " . $where . " ORDER BY ". $order);
+		return $resultat;
+	}
 }

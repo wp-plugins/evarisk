@@ -238,6 +238,7 @@ class eva_UniteDeTravail {
 			$scoreRisque = eva_UniteDeTravail::getScoreRisque($workingUnit->id);
 			$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_WORKING_UNIT_ICON . '" alt="Unit&eacute; de travail : "/><strong>' . $workingUnit->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . eva_UniteDeTravail::getNiveauRisque($scoreRisque) . '</span></em>';
 			$geoLoc['type'] = "unit&eacute; de travail"; 
+			$geoLoc['adress'] = $workingUnit->id_adresse; 
 			$geoLoc['image'] = GOOGLEMAPS_UNITE;
 		}
 		return $geoLoc;
