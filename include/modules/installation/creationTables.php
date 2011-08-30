@@ -1470,7 +1470,7 @@ ADD INDEX ( impressionRecommandation ) ;";
 		if(digirisk_options::getDbOption('base_evarisk') <= 50)
 		{
 			$query = $wpdb->prepare("ALTER TABLE " . TABLE_GROUPEMENT . " DROP INDEX nom, ADD creation_date DATETIME NOT NULL , ADD lastupdate_date DATETIME NOT NULL ");
-			$wpdb->query($query);
+			$wpdb->query($query);;
 
 			$query = $wpdb->prepare("ALTER TABLE " . TABLE_UNITE_TRAVAIL . " DROP INDEX nom, ADD creation_date DATETIME NOT NULL , ADD lastupdate_date DATETIME NOT NULL ");
 			$wpdb->query($query);
@@ -1513,6 +1513,18 @@ ADD INDEX ( impressionRecommandation ) ;";
 			$main_options = get_option('digirisk_options');
 			$main_options['digi_activ_trash'] = 'non';
 			update_option('digirisk_options', $main_options);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 56)
+		{
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE `telephoneFixe` `telephoneFixe` CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society phone number';");
+			$wpdb->query($query);
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE `telephonePortable` `telephonePortable` CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society cellular phone number';");
+			$wpdb->query($query);
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE `telephoneFax` `telephoneFax` CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society fax number';");
+			$wpdb->query($query);
 
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
