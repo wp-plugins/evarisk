@@ -14,13 +14,20 @@ if (!$q) return;
 
 $items = array();
 
-$elementList = wpshop_attributes::getElementWithAttributeAndValue(WPSHOP_DBT_PRODUCT, wpshop_entities::getEntityIdFromCode('product'), 1, 'code', '', "'valid'");
-// echo '<pre>';print_r($elementList);echo '</pre>';
-if(is_array($elementList) && (count($elementList) > 0))
-{
+$categories = array();
+/*	Get the list of categories to output. This list is defined by the options set by the administrator	*/
+$categories = digirisk_product_categories::get_selected_categories('', $categoryToDisplay);
+$elementList = array();
+if(is_array($categories) && (count($categories) > 0)){/*	In case that there are categories to output	*/
+	/*	Retrieve product list for current configuration	*/
+	$elementList = digirisk_product::get_product_list($categories);
+}
+
+if(is_array($elementList) && (count($elementList) > 0)){
 	foreach($elementList as $elementId => $element)
 	{
-		$items[ELEMENT_IDENTIFIER_P . $elementId . '&nbsp;-&nbsp' . $element['attributes']['product_name']['value'] . ' (' . $element['reference'] . ')'] = $elementId;
+		$element['reference'] = (isset($element['reference']) && ($element['reference'] != '')) ? $element['reference'] : '&nbsp;NC';
+		$items[ELEMENT_IDENTIFIER_PDT . $elementId . '&nbsp;-&nbsp' . $element['name'] . ' (' . __('R&eacute;f.', 'evarisk') . $element['reference'] . ')'] = $elementId;
 	}
 }
 

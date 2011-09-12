@@ -661,7 +661,7 @@ evarisk(document).ready(function(){
 				$linkedElementList[$element->id_group] = $element;
 				$alreadyLinked .= $element->id_group . ', ';
 				$currentElement = digirisk_groups::getElement($element->id_group);
-				$alreadyLinkedListOutput .= '<div class="selectedelementOP" id="affectedElement' . $tableElement . $element->id_group . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_GPU . $element->id_group . '&nbsp;-&nbsp;' . $currentElement[0]->name . '<div class="ui-icon deleteElementFromList" >&nbsp;</div></div>';
+				$alreadyLinkedListOutput .= '<div class="selectedelementGPU" id="affectedElement' . $tableElement . $element->id_group . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_GPU . $element->id_group . '&nbsp;-&nbsp;' . $currentElement[0]->name . '<div class="ui-icon deleteElementFromList" >&nbsp;</div></div>';
 			}
 		}
 		else
@@ -722,7 +722,7 @@ evarisk(document).ready(function(){
 	</div>
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
-<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div onclick="javascript:elementDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#ELEMENTNAME#<span class="ui-icon deleteElementFromList" >&nbsp;</span></div></div>
+<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div onclick="javascript:elementDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementGPU" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#ELEMENTNAME#<span class="ui-icon deleteElementFromList" >&nbsp;</span></div></div>
 
 <script type="text/javascript" >
 	(function(){
@@ -745,7 +745,7 @@ evarisk(document).ready(function(){
 		});
 
 		/*	Action when click on delete button	*/
-		jQuery(".selectedelementOP").click(function(){
+		jQuery(".selectedelementGPU").click(function(){
 			elementDivId = jQuery(this).attr("id").replace("affectedElement' . $tableElement . '", "");
 			deleteElementIdFiedList(elementDivId, "' . $tableElement . '");
 			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");

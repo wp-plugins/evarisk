@@ -23,6 +23,7 @@ class digirisk_options
 	{
 		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
 		register_setting('digirisk_options', 'digirisk_tree_options', array('digirisk_options', 'digirisk_tree_options_validator'));
+		register_setting('digirisk_options', 'digirisk_product_options', array('digirisk_options', 'digirisk_product_options_validator'));
 		register_setting('digirisk_db_option', 'digirisk_db_option');
 
 		{/* Declare the different options for the correctiv actions	*/
@@ -77,6 +78,8 @@ class digirisk_options
 				add_settings_section('digi_product_options', __('Options pour les produits', 'evarisk'), array('digirisk_options', 'options_output_products'), 'digirisk_options_settings');
 			/*	Add the different field for current section	*/
 				add_settings_field('digi_product_categories_field', __('Cat&eacute;gorie(s) de produits &agrave; afficher pour affectation aux &eacute;l&eacute;ments', 'evarisk'), array('digirisk_options', 'digi_product_categories_field'), 'digirisk_options_settings', 'digi_product_options');
+				add_settings_field('digi_product_status_field', __('Statuts des produits affich&eacute;s', 'evarisk'), array('digirisk_options', 'digi_product_status_field'), 'digirisk_options_settings', 'digi_product_options');
+				add_settings_field('digi_product_uncategorized_field', __('Afficher les produits non affect&eacute;s aux cat&eacute;gories', 'evarisk'), array('digirisk_options', 'digi_product_uncategorized_field'), 'digirisk_options_settings', 'digi_product_options');
 			}
 		}
 
@@ -142,6 +145,23 @@ if(current_user_can('digi_edit_option'))
 	*
 	*	@return array $newinput An array with the send values cleaned for more secure usage
 	*/
+	function digirisk_product_options_validator($input)
+	{
+
+		$newinput['product_categories'] = serialize($input['product_categories']);
+		$newinput['product_status'] = serialize($input['product_status']);
+		$newinput['digi_product_uncategorized_field'] = $input['digi_product_uncategorized_field'];
+
+		return $newinput;
+	}
+
+	/**
+	*	Validate the different data sent for the option
+	*
+	*	@param array $input An array which will receive the values sent by the user with the form
+	*
+	*	@return array $newinput An array with the send values cleaned for more secure usage
+	*/
 	function digirisk_options_validator($input)
 	{
 		$newinput['digi_activ_trash'] = trim($input['digi_activ_trash']);
@@ -165,8 +185,6 @@ if(current_user_can('digi_edit_option'))
 		$newinput['recommandation_efficiency_activ'] = trim($input['recommandation_efficiency_activ']);
 
 		$newinput['emailDomain'] = trim(str_replace('@', '', $input['emailDomain']));
-
-		$newinput['product_categories'] = serialize($input['product_categories']);
 
 		return $newinput;
 	}
@@ -478,39 +496,58 @@ if(current_user_can('digi_edit_option'))
 	*/
 	function options_output_products()
 	{
-		_e('Cochez les cases correspondantes aux cat&eacute;gories de produits que vous souhaitez ajouter dans la partie &eacute;valuation des risques.', 'evarisk');
+		_e('D&eacute;finissez les options permettant de g&eacute;rer les produits provenant du plugin WP Shop pour les associer aux diff&eacute;rents &eacute;l&eacute;ments de Digirisk.', 'evarisk');
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
 	function digi_product_categories_field()
 	{
-		$options = get_option('digirisk_options');
-		$productCategories = wpshop_attributes::getElementWithAttributeAndValue(WPSHOP_DBT_CATEGORY, wpshop_entities::get_entity_identifier_from_code('product_category'), 1, 'code', '', "'valid'");
-		$i = 1;
-		$tableContent = '';
-		$choosenCategories = unserialize($options['product_categories']);
-		foreach($productCategories as $productCategoryId => $productCategoryDef)
-		{
-			$checked = (is_array($choosenCategories) && in_array($productCategoryId, $choosenCategories)) ? ' checked="checked" ' : '';
-			if($i == 1)
-			{
-				$tableContent .= '<tr>';
-			}
-			$tableContent .= '<td><input ' . $checked . ' id="productCategory' . $productCategoryId . '" name="digirisk_options[product_categories][]" type="checkbox" value="' . $productCategoryId . '" /><label for="productCategory' . $productCategoryId . '" >' . $productCategoryDef['attributes']['product_category_name']['value'] . '</label></td>';
-			if($i == 2)
-			{
-				$tableContent .= '</tr>';
-				$i = 0;
-			}
-			$i++;
-		}
-		if($i == 2)
-		{
-			$tableContent .= '</tr>';
-		}
+		$tableContent = '<span class="evarisk_options_explanation" > ' . __('Vous pouvez choisir les cat&eacute;gories &agrave; afficher (si aucune n\'est s&eacute;lectionn&eacute;e, elles seront toutes affich&eacute;es)', 'evarisk') . '</span>' . digirisk_product_categories::options_category_tree_output(0);
 
-		echo '<table summary="product categories listing" cellpadding="0" cellspacing="0" >' . $tableContent . '</table>';
+		echo $tableContent;
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_product_status_field()
+	{
+		global $posts_status;
+
+		if(is_array($posts_status) && (count($posts_status) > 0)){
+			$tableContent = '<span class="evarisk_options_explanation" > ' . __('Vous pouvez d&eacute;finir le statut des produits que vous voulez afficher (si aucun n\'est s&eacute;lectionn&eacute; seul les produits avec le statut "publi&eacute;" seront affich&eacute;s dans Digirisk)', 'evarisk') . '</span><br/>';
+			$options = get_option('digirisk_product_options');
+			$choosenStatus = unserialize($options['product_status']);
+			foreach($posts_status as $status){
+				$checked = (is_array($choosenStatus) && in_array($status, $choosenStatus)) ? ' checked="checked" ' : '';
+				$tableContent .= '
+<ul class="digirisk_options_product_status_list" >
+	<li><input ' . $checked . ' type="checkbox" name="digirisk_product_options[product_status][]" value="' . $status . '" id="wpshop_product_categories_' . $status . '" /><label for="wpshop_product_categories_' . $status . '" >' . __($status) . '</label>
+	</li>
+</ul>';
+			}
+		}
+		else{
+			$tableContent = '<span class="evarisk_options_explanation" > ' . __('Une erreur est survenue lors de la r&eacute;cup&eacute;ration des statuts des produits. Seuls les produits "publi&eacute;s" seront affich&eacute;s', 'evarisk') . '</span><br/>';
+		}		
+
+		echo $tableContent;
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_product_uncategorized_field()
+	{
+		global $optionYesNoList;
+		$options = get_option('digirisk_product_options');
+		if(current_user_can('digi_edit_option'))
+		{
+			echo EvaDisplayInput::createComboBox('digi_product_uncategorized_field', 'digirisk_product_options[digi_product_uncategorized_field]', $optionYesNoList, $options['digi_product_uncategorized_field']);
+		}
+		else
+		{
+			echo $options['digi_product_uncategorized_field'];
+		}
 	}
 
 	/**

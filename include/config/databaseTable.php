@@ -96,6 +96,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 {/*	Produits	*/
 	DEFINE('DIGI_DBT_PRODUIT', PREFIXE_EVARISK . "produit");
 	DEFINE('DIGI_DBT_LIAISON_PRODUIT_ELEMENT', PREFIXE_EVARISK . "liaison_produit_element");
+	DEFINE('DIGI_DBT_PRODUIT_ATTACHEMENT', PREFIXE_EVARISK . "produit_document");
 }
 
 {/*	Permissions	*/

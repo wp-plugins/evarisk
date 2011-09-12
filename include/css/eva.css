@@ -79,6 +79,8 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 #digirisk_options_container td{	padding:2px;	}
 #taille_photo_poste_fiche_de_poste{	width:46px;	}
 #digirisk_options_container .form-table{		margin:0px 12px !important;	}
+.digirisk_options_categories_list{	margin-left: 1.3em;	}
+.evarisk_options_explanation{	font-weight:bold; font-style:italic;	}
 
 .dataTables_length{	width:50% !important;	}
 .dataTables_paginate{	margin:12px 24px;	}
@@ -566,10 +568,13 @@ td.details table{	margin:0px 0px 24px !important;	}
 /* -- Start Affectation box -- */
 .affectationCompleteListOutput{	width:40%;	}
 .affectedElementListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
-.selectedelementOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
+.selectedelementOPContainer{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
+.trashed_product{	background-color:red !important;	}
 .selectedelementOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
-.deleteElementFromList{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
-.deleteElementFromList:hover{	float:right; background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.selectedelementGPU{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
+.selectedelementGPU:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
+.deleteElementFromList{	cursor:pointer; float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
+.deleteElementFromList:hover{	cursor:pointer; float:right; background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
 .searchElementToAffect{	float:left; width:90%; color:#888888;	}
 .searchElementInput{	float:left; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
@@ -590,6 +595,12 @@ td.details table{	margin:0px 0px 24px !important;	}
 .ac_results li{	color:#242424 !important;	}
 .ac_over {		background-color:#DDDDDD !important;	}
 /* -- End Affectation box -- */
+
+
+/* -- Start Product affectation box -- */
+.view_affected_product_sheet, .edit_affected_product_sheet{	width:20px; vertical-align:middle	}
+.affected_product_action{	text-decoration:none !important;	}
+/* -- End Product affectation box -- */
 
 
 /* -- Start form -- */

@@ -1529,6 +1529,41 @@ ADD INDEX ( impressionRecommandation ) ;";
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 57)
+		{
+			$product_options = get_option('digirisk_product_options');
+			$product_options['digi_product_uncategorized_field'] = 'oui';
+			update_option('digirisk_product_options', $product_options);
+
+			$query = $wpdb->prepare("ALTER TABLE " . DIGI_DBT_PRODUIT . " ADD product_description longtext AFTER product_name;");
+			$wpdb->query($query);
+			$query = $wpdb->prepare("ALTER TABLE " . DIGI_DBT_PRODUIT . " ADD product_metadata longtext AFTER product_description;");
+			$wpdb->query($query);
+
+			/*	Add the table that will receive the product attachment definition		*/
+			$query = 
+				"CREATE TABLE " . DIGI_DBT_PRODUIT_ATTACHEMENT . " (
+					id INT( 10 ) NOT NULL AUTO_INCREMENT,
+					status enum('valid', 'moderated', 'deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime default NULL,
+					last_update_date datetime default NULL,
+					product_attachment_id int(10) unsigned,
+					product_id int(10) unsigned,
+					product_attachment_last_update_date datetime default NULL,
+					product_attachment_name varchar(200) NOT NULL,
+					product_attachment_title text NOT NULL,
+					product_attachment_mime_type varchar(100) NOT NULL,
+					product_attachment_metadata longtext NOT NULL,
+					PRIMARY KEY (id),
+					KEY status (status),
+					KEY product_id (product_id),
+					KEY product_attachment_id (product_attachment_id)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

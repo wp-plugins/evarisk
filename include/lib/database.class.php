@@ -150,36 +150,6 @@ class eva_database
 	}
 
 	/**
-	*	Prepare the different field before use them in the query
-	*
-	*	@param array $prm An array containing the fields to prepare
-	*	@param mixed $operation The type of query we are preparing the vars for
-	*
-	*	@return mixed $preparedFields The fields ready to be injected in the query
-	*/
-	function prepare_query($prm, $operation = 'creation')
-	{
-		$preparedFields = array();
-
-		foreach($prm as $field => $value)
-		{
-			if($field != 'id')
-			{
-				if($operation == 'creation')
-				{
-					$preparedFields['fields'][] = $field;
-					$preparedFields['values'][] = "'" . mysql_real_escape_string($value) . "'";
-				}
-				elseif($operation == 'update')
-				{
-					$preparedFields['values'][] = $field . " = '" . mysql_real_escape_string($value) . "'";
-				}
-			}
-		}
-
-		return $preparedFields;
-	}
-	/**
 	*	Save a new attribute in database
 	*
 	*	@param array $informationsToSet An array with the different information we want to set
@@ -191,15 +161,8 @@ class eva_database
 		global $wpdb;
 		$requestResponse = '';
 
-		$whatToUpdate = eva_database::prepare_query($informationsToSet, 'creation');
-		$query = $wpdb->prepare(
-			"INSERT INTO " . $dataBaseTable . " 
-			(" . implode(', ', $whatToUpdate['fields']) . ")
-			VALUES
-			(" . implode(', ', $whatToUpdate['values']) . ") "
-		);
-
-		if( $wpdb->query($query) )
+		$updateResult = $wpdb->insert($dataBaseTable, $informationsToSet, '%s');
+		if( $updateResult != false )
 		{
 			$requestResponse = 'done';
 		}
@@ -222,22 +185,17 @@ class eva_database
 		global $wpdb;
 		$requestResponse = '';
 
-		$whatToUpdate = eva_database::prepare_query($informationsToSet, 'update');
-		$query = $wpdb->prepare(
-			"UPDATE " . $dataBaseTable . " 
-			SET " . implode(', ', $whatToUpdate['values']) . "
-			WHERE id = '%s' ",
-			$id
-		);
-		if( $wpdb->query($query) )
+		$updateResult = $wpdb->update($dataBaseTable, $informationsToSet , array( 'id' => $id ), '%s', array('%d') );
+
+		if( $updateResult == 1 )
 		{
 			$requestResponse = 'done';
 		}
-		elseif( $wpdb->query($query) == 0 )
+		elseif( $updateResult == 0 )
 		{
 			$requestResponse = 'nothingToUpdate';
 		}
-		else
+		elseif( $updateResult == false )
 		{
 			$requestResponse = 'error';
 		}

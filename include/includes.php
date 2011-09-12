@@ -37,5 +37,6 @@ require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/veilleReglementaire.class
 require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandation.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'produits/produits.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'produits/categories.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'permission.class.php' );
