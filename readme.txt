@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
-Tested up to: 3.1.3
-Stable tag: 5.1.3.9
+Tested up to: 3.2.1
+Stable tag: 5.1.4.0
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -74,6 +74,12 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
+
+= Version 5.1.4.0 =
+
+Corrections 
+
+* probl&egrave; de s&eacute;curit&eacute; lors de l'envoie de documents / photos
 
 = Version 5.1.3.9 =
 

@@ -601,9 +601,7 @@ class EvaPhoto {
 						params: {
 							"tableElement": "' . $tableElement . '",
 							"idElement": "' . $idElement . '",
-							"folder": "' . $repertoireDestination . '",
-							"abspath": "' . str_replace("\\", "/", ABSPATH) . '",
-							"evarisk": "' . str_replace("\\", "/", EVA_HOME_DIR . "evarisk.php") . '"
+							"folder": "' . $repertoireDestination . '"
 						},
 						onComplete: function(file, response){
 							//evarisk("#thumb' . $idUpload . '").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $tableElement . "/" . $idElement  . '/" + response);

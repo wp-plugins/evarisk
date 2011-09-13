@@ -52,9 +52,7 @@ class eva_gestionDoc
 							"table": "' . $table . '",
 							"tableElement": "' . $tableElement . '",
 							"idElement": "' . $idElement . '",
-							"folder": "' . $repertoireDestination . '",
-							"abspath": "' . str_replace("\\", "/", ABSPATH) . '",
-							"evarisk": "' . str_replace("\\", "/", EVA_HOME_DIR . "evarisk.php") . '"
+							"folder": "' . $repertoireDestination . '"
 						},
 						onComplete: function(file, response){
 							evarisk(".qq-upload-list").hide();';

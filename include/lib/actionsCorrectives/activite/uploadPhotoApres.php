@@ -3,10 +3,13 @@
  * @version v5.0
  */
  
-	require_once($_GET['abspath'] . 'wp-load.php');
-	require_once($_GET['abspath'] . 'wp-admin/includes/admin.php');
-	require_once($_GET['evarisk']);
-	require_once(EVA_CONFIG);
+	define('DOING_AJAX', true);
+	define('WP_ADMIN', true);
+	require_once('../../../../../../../wp-load.php');
+	require_once(ABSPATH . 'wp-admin/includes/admin.php');
+	require_once('../../../../evarisk.php');
+	require_once(EVA_INC_PLUGIN_DIR . 'includes.php' );
+
 	require_once(EVA_LIB_PLUGIN_DIR . 'upload.php');
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 	require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class.php');
