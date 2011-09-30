@@ -1934,7 +1934,7 @@ class EvaDisplayDesign {
 				$riskAndSubRisks = eva_documentUnique::listRisk(TABLE_GROUPEMENT, $elementId);
 				foreach($riskAndSubRisks as $risk)
 				{
-					$scoreRisqueGroupement += $risk[1]['value'];
+					$scoreRisqueGroupement += $risk[2]['value'];
 				}
 				$info['value'] = '<span id="LeftRiskSum' . $table . $elementId . '" >' . $scoreRisqueGroupement . '</span>&nbsp;-&nbsp;<span id="LeftRiskNb' . $table . $elementId . '" >' . count($riskAndSubRisks) . '</span> ' . __('risque(s)', 'evarisk');
 				$info['class'] = 'treeTableGroupInfoColumn';
@@ -1949,7 +1949,7 @@ class EvaDisplayDesign {
 				$riskAndSubRisks = eva_documentUnique::listRisk(TABLE_UNITE_TRAVAIL, $elementId);
 				foreach($riskAndSubRisks as $risk)
 				{
-					$scoreRisqueGroupement += $risk[1]['value'];
+					$scoreRisqueGroupement += $risk[2]['value'];
 				}
 				$info['value'] = '<span id="LeftRiskSum' . $table . $elementId . '" >' . $scoreRisqueGroupement . '</span>&nbsp;-&nbsp;<span id="LeftRiskNb' . $table . $elementId . '" >' . count($riskAndSubRisks) . '</span> ' . __('risque(s)', 'evarisk');
 				$info['class'] = 'treeTableInfoColumn';

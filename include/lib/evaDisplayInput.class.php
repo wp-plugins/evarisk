@@ -133,48 +133,50 @@ class EvaDisplayInput {
 	
 	
 	/**
-	  * Create the script needed by the input.
-	  * @see getScriptInput.
-	  * @param string $type Type of the input (text, button, textarea, hidden).
-	  * @param int $id Id attribut of the input.
-	  * @param string $contenuInput Initial filling of the input.
-	  * @param string $contenuAide Filling of the input if it is empty.
-	  * @param string $labelInput Label text.
-	  * @param string $nomChamps Name attribut of the input.
-	  * @param bool $grise Is the input initially fill by non persistante data.
-	  * @param int $tailleMaximum length of the input/Number of rows for a textarea.
-	  * @param string $class Class to add to the input.
-	  * @param string $limitation If this variable is equal to "Number", only number can fill the input. <br />If this variable is equal to "Float", only number and one "." can fill the input. <br />If this variable is equal to "Date", the input become a date picker.
-	  * @param string $width Width attribut of the input.
-	  * @param string $script Additional script for the input.
-	  * @param string $float Where must float the div : right or left.
-	  * @return string The input.
-	  */
-	static function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false)
-	{
+	* Create the script needed by the input.
+	* @see getScriptInput.
+	* @param string $type Type of the input (text, button, textarea, hidden).
+	* @param int $id Id attribut of the input.
+	* @param string $contenuInput Initial filling of the input.
+	* @param string $contenuAide Filling of the input if it is empty.
+	* @param string $labelInput Label text.
+	* @param string $nomChamps Name attribut of the input.
+	* @param bool $grise Is the input initially fill by non persistante data.
+	* @param int $tailleMaximum length of the input/Number of rows for a textarea.
+	* @param string $class Class to add to the input.
+	* @param string $limitation If this variable is equal to "Number", only number can fill the input. <br />If this variable is equal to "Float", only number and one "." can fill the input. <br />If this variable is equal to "Date", the input become a date picker.
+	* @param string $width Width attribut of the input.
+	* @param string $script Additional script for the input.
+	* @param string $float Where must float the div : right or left.
+	* @return string The input.
+	*/
+	function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false){
 		$input = '';
 		if($obligatoire)
 		{
 			$classe = 'input_required ' . $classe;
 		}
-		 $input .= '<div style="float:' . $float . '">';
+		$float = ($float != '') ? 'class="align' . $float . '" ' : '';
+		$input .= '<div ' . $float . ' >';
+		$width = ($width != '') ? 'width:' . $width . ';' : '';
+		$id_content = ($id != '') ? 'id="' . $id . '"' : '';
 		switch($type)
 		{
 			case 'textarea':
 				$theInput = '
-						<textarea style="clear: both; width: ' . $width . '" id="' . $id . '" rows="' . $taille . '"  name="' . $nomChamps . '" cols="' . $taille . '" tabindex="1" >' . $contenuInput . '</textarea>';
+						<textarea style="clear: both;' . $width . '" ' . $id_content . ' rows="' . $taille . '" cols="' . $taille . '"  name="' . $nomChamps . '" tabindex="1" >' . $contenuInput . '</textarea>';
 				break;
 			default:
-				$input .= EvaDisplayInput::getScriptInput($id, $contenuInput, $contenuAide, $labelInput, $grise, $classe, $limitation) . $script;
+				$input .= ($id != '') ? EvaDisplayInput::getScriptInput($id, $contenuInput, $contenuAide, $labelInput, $grise, $classe, $limitation) . $script : '';
 				$theInput = '
-						<input style="clear: both; width: ' . $width . '" maxlength="' . $taille . '" type="' . $type . '"  id="' . $id . '" value="' . $contenuInput . '" tabindex="1" name="' . $nomChamps . '"/>';
+						<input style="clear: both;' . $width . '" maxlength="' . $taille . '" type="' . $type . '" ' . $id_content . ' value="' . $contenuInput . '" tabindex="1" name="' . $nomChamps . '"/>';
 				break;
 		}
 		if($labelInput != null)
 		{
 			$input .= '<label for="' . $id . '">' . $labelInput . '</label>';
 		}
-		if($type == 'button' AND in_array('button-primary', explode(' ', $classe)))
+		if(($type == 'button') && in_array('button-primary', explode(' ', $classe)))
 		{
 			$input .= '<br />';
 		}
@@ -183,9 +185,10 @@ class EvaDisplayInput {
 		{
 			if(!$withoutClear)
 			{
-				$input .= '<br  class="clear" />';
+				$input .= '<br class="clear" />';
 			}
 		}
+
 		return $input;
 	}
 	
@@ -248,9 +251,10 @@ class EvaDisplayInput {
 	*
 	*	@return mixed $output The combo box output
 	*/
-	function createComboBox($identifier, $name, $content, $selectedValue)
+	function createComboBox($identifier, $name, $content, $selectedValue, $class = '')
 	{
-		$output = '<select id="' . $identifier . '" name="' . $name . '" >';
+		$class = ($class != '') ? 'class="' . $class . '" ' : '';
+		$output = '<select id="' . $identifier . '" name="' . $name . '" ' . $class . ' >';
 
 		foreach($content as $index => $datas)
 		{

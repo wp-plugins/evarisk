@@ -136,10 +136,8 @@
 
 			$divEditionRisque = '
 <div id="divFormRisque" class="eva_tabs_panel hide" >';
-			if((digirisk_options::getOptionValue('risques_avances') == 'oui') && ($idRisque == ''))
-			{
-				$divEditionRisque .= 
-	'
+			if((digirisk_options::getOptionValue('risques_avances') == 'oui') && ($idRisque == '')){
+				$divEditionRisque .= '
 <div class="clear" id="risqManagementselector" >
 	<div class="alignleft selected" id="addRisqNormalMode" >' . ucfirst(strtolower(__('Mode simple', 'evarisk'))) . '</div>
 	<div class="alignleft" id="addRisqAdvancedMode" >' . ucfirst(strtolower(__('Mode avanc&eacute; (par photo)', 'evarisk'))) . '</div>

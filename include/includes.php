@@ -14,6 +14,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'doc.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'form.class.php');
@@ -29,6 +30,8 @@ require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php' );
+	add_action('edit_user_profile', array('evaUser', 'user_additionnal_field'));
+	add_action('edit_user_profile_update', array('evaUser', 'user_additionnal_field_save'));
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'users/groups.class.php' );
 
@@ -38,5 +41,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandation.class.php
 
 require_once(EVA_LIB_PLUGIN_DIR . 'produits/produits.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'produits/categories.class.php' );
+
+require_once(EVA_LIB_PLUGIN_DIR . 'accident/accident.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'permission.class.php' );

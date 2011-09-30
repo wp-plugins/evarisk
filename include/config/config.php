@@ -1,5 +1,5 @@
 <?php
-	DEFINE('EVA_PLUGIN_VERSION', '5.1.3.2');
+	DEFINE('EVA_PLUGIN_VERSION', '5.1.4.1');
 
 	require_once('configEavModel.php');
 	require_once('databaseTable.php');
@@ -128,14 +128,70 @@
 	/**
 	*	Define the option possible value
 	*/
+	$optionUserGender = array();
+	$optionUserGender['F'] = __('Femme', 'evarisk');
+	$optionUserGender['H'] = __('Homme', 'evarisk');
+
+	/**
+	*	Define the option possible value
+	*/
+	$optionUserNationality = array();
+	$optionUserNationality['FR'] = __('Fran&ccedil;aise', 'evarisk');
+	$optionUserNationality['CEE'] = __('C.E.E', 'evarisk');
+	$optionUserNationality['OTHER'] = __('Autre', 'evarisk');
+
+	/**
+	*	Define the option possible value
+	*/
+	$optionAccidentDeclarationType = array();
+	$optionAccidentDeclarationType['found'] = __('constat&eacute;', 'evarisk');
+	$optionAccidentDeclarationType['known'] = __('connu', 'evarisk');
+	$optionAccidentDeclarationType['registered'] = __('Inscrit au registre d\'infirmerie', 'evarisk');
+	$optionAccidentDeclarationBy = array();
+	$optionAccidentDeclarationBy['employer'] = __('par l\'employeur', 'evarisk');
+	$optionAccidentDeclarationBy['attendants'] = __('par ses pr&eacute;pos&eacute;s', 'evarisk');
+	$optionAccidentDeclarationBy['victim'] = __('D&eacute;crit par la victime', 'evarisk');
+	/**
+	*	Define the option possible value
+	*/
+	$optionAciddentConsequence = array();
+	$optionAciddentConsequence['without_work_stop'] = __('Sans arr&ecirc;t de travail', 'evarisk');
+	$optionAciddentConsequence['with_work_stop'] = __('Avec arr&ecirc;t de travail', 'evarisk');
+	$optionAciddentConsequence['death'] = __('D&eacute;c&egrave;s', 'evarisk');
+	/**
+	*	Define information about the work accident document
+	*/
+	DEFINE('CERFA_ACCIDENT_TRAVAIL_IDENTIFIER', '50261#01');
+	DEFINE('CERFA_ACCIDENT_TRAVAIL_LINK', 'http://www.ameli.fr/fileadmin/user_upload/formulaires/S6200.pdf');
+
+	/**
+	*	Define the option possible value
+	*/
 	$optionExistingTreeElementList = array();
 	$optionExistingTreeElementList['recreate'] = __('Cr&eacute;er un nouveau', 'evarisk');
 	$optionExistingTreeElementList['reactiv'] = __('R&eacute;-activer', 'evarisk');
 
 	/**
+	*	Define the list of hour and minute
+	*/
+	$digi_hour = $digi_minute = array();
+	for($i=0;$i<24;$i++){
+		$digi_hour[$i] = sprintf('%02d', $i);
+	}
+	for($i=0;$i<60;$i++){
+		$digi_minute[$i] = sprintf('%02d', $i);
+	}
+
+
+	/**
+	*	Define the different mandatory field for user to ve valid for work accident
+	*/
+	$userWorkAccidentMandatoryFields = array('user_imatriculation', 'user_imatriculation_key', 'user_birthday', 'user_gender', 'user_nationnality', 'user_adress', 'user_adress_2', 'user_hiring_date', 'user_profession', 'user_professional_qualification');
+
+	/**
 	*	Define the different existing element type
 	*/
-	$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP');
+	$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT');
 	$digirisk_tree_options = get_option('digirisk_tree_options');
 	$identifierList = unserialize($digirisk_tree_options['digi_tree_element_identifier']);
 	foreach($treeElementList as $elementName => $elementDefault){

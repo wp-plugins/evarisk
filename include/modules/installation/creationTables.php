@@ -1519,11 +1519,11 @@ ADD INDEX ( impressionRecommandation ) ;";
 		}
 		if(digirisk_options::getDbOption('base_evarisk') <= 56)
 		{
-			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE `telephoneFixe` `telephoneFixe` CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society phone number';");
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE telephoneFixe telephoneFixe CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society phone number';");
 			$wpdb->query($query);
-			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE `telephonePortable` `telephonePortable` CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society cellular phone number';");
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE telephonePortable telephonePortable CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society cellular phone number';");
 			$wpdb->query($query);
-			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE `telephoneFax` `telephoneFax` CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society fax number';");
+			$query = $wpdb->prepare("ALTER TABLE " . TABLE_DUER . " CHANGE telephoneFax telephoneFax CHAR( 30 ) NULL DEFAULT NULL COMMENT 'Society fax number';");
 			$wpdb->query($query);
 
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
@@ -1561,6 +1561,149 @@ ADD INDEX ( impressionRecommandation ) ;";
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 			$wpdb->query($query);
 
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 58)
+		{
+			/*	Create a table for accident	*/
+			$query = 
+				"CREATE TABLE IF NOT EXISTS " . DIGI_DBT_ACCIDENT . " (
+					id INT( 10 ) NOT NULL AUTO_INCREMENT,
+					status enum('valid', 'moderated', 'deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime default NULL,
+					last_update_date datetime default NULL,
+					id_element INT(10) UNSIGNED NOT NULL,
+					table_element char(255) collate utf8_unicode_ci NOT NULL,
+					accident_caused_by_third_party enum('oui', 'non') collate utf8_unicode_ci NOT NULL default 'non',
+					accident_make_other_victim enum('oui', 'non') collate utf8_unicode_ci NOT NULL default 'non',
+					police_report enum('oui', 'non') collate utf8_unicode_ci NOT NULL default 'non',
+					declaration_state enum('in_progress', 'done') collate utf8_unicode_ci NOT NULL default 'in_progress',
+					declaration_step INT(2) UNSIGNED NOT NULL,
+					accident_date DATE default NULL,
+					accident_hour TIME default NULL,
+					accident_title char(255) collate utf8_unicode_ci NOT NULL,
+					police_report_writer char(255) collate utf8_unicode_ci NOT NULL,
+					PRIMARY KEY (id),
+					KEY status (status),
+					KEY declaration_state (declaration_state),
+					KEY declaration_step (declaration_step),
+					KEY id_element (id_element),
+					KEY table_element (table_element)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			/*	Create a table for accident victim	*/
+			$query = 
+				"CREATE TABLE IF NOT EXISTS " . DIGI_DBT_ACCIDENT_VICTIM . " (
+					id INT( 10 ) NOT NULL AUTO_INCREMENT,
+					status enum('valid', 'moderated', 'deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime default NULL,
+					last_update_date datetime default NULL,
+					id_accident INT( 10 ) UNSIGNED NOT NULL,
+					id_user BIGINT( 20 ) UNSIGNED NOT NULL,
+					victim_seniority date default NULL,
+					victim_meta TEXT NOT NULL,
+					PRIMARY KEY (id),
+					KEY status (status),
+					KEY id_accident (id_accident)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			/*	Create a table for accident details	*/
+			$query = 
+				"CREATE TABLE IF NOT EXISTS " . DIGI_DBT_ACCIDENT_DETAILS . " (
+					id INT( 10 ) NOT NULL AUTO_INCREMENT,
+					status enum('valid', 'moderated', 'deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime default NULL,
+					last_update_date datetime default NULL,
+					accident_date DATE default NULL,
+					accident_hour TIME default NULL,
+					id_accident bigint(20) unsigned NOT NULL default '0',
+					accident_victim_transported_at char(65) collate utf8_unicode_ci NOT NULL,
+					accident_place char(80) collate utf8_unicode_ci NOT NULL,
+					accident_consequence char(80) collate utf8_unicode_ci NOT NULL,
+					accident_hurt_place char(255) collate utf8_unicode_ci NOT NULL,
+					accident_hurt_nature char(255) collate utf8_unicode_ci NOT NULL,
+					accident_victim_work_shedule char(255) collate utf8_unicode_ci NOT NULL,
+					accident_details TEXT NOT NULL,
+					accident_declaration TEXT NOT NULL,
+					PRIMARY KEY (id),
+					KEY status (status),
+					KEY id_accident (id_accident)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			/*	Create a table for accident third party	*/
+			$query = 
+				"CREATE TABLE IF NOT EXISTS " . DIGI_DBT_ACCIDENT_THIRD_PARTY . " (
+					id INT(10) unsigned NOT NULL auto_increment,
+					status enum('valid', 'moderated', 'deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime default NULL,
+					last_update_date datetime default NULL,
+					id_accident bigint(20) unsigned NOT NULL default '0',
+					id_user BIGINT( 20 ) UNSIGNED NOT NULL,
+					third_party_type enum('witness', 'third_party') collate utf8_unicode_ci NOT NULL default 'witness',
+					firstname varchar(255) default NULL,
+					lastname varchar(255) default NULL,
+					insurance_corporation varchar(255) default NULL,
+					adress_line_1 varchar(255) default NULL,
+					adress_line_2 varchar(255) default NULL,
+					PRIMARY KEY (id),
+					KEY id_accident (id_accident),
+					KEY id_user (id_user)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8  COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			/*	Create a table for accident location	*/
+			$query = 
+				"CREATE TABLE IF NOT EXISTS " . DIGI_DBT_ACCIDENT_LOCATION . " (
+					id INT(10) unsigned NOT NULL auto_increment,
+					status enum('valid', 'moderated', 'deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+					creation_date datetime default NULL,
+					last_update_date datetime default NULL,
+					id_accident bigint(20) unsigned NOT NULL default '0',
+					id_location INT( 20 ) UNSIGNED NOT NULL,
+					location_type enum('employer', 'establishment') collate utf8_unicode_ci NOT NULL default 'employer',
+					siret char(15) default NULL,
+					siren char(15) default NULL,
+					social_activity_number char(15) default NULL,
+					adress_postal_code char(15) default NULL,
+					adress_city char(26) default NULL,
+					adress_line_1 char(32) default NULL,
+					adress_line_2 char(32) default NULL,
+					telephone char(21) default NULL,
+					name varchar(255) default NULL,
+					PRIMARY KEY (id),
+					KEY id_accident (id_accident),
+					KEY id_location (id_location)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8  COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			/*	Add missing field to the groupment table	*/
+			$sql = "ALTER TABLE " . TABLE_GROUPEMENT . " ADD typeGroupement ENUM('none', 'employer') NOT NULL DEFAULT 'none' AFTER id, ADD siren char(15) NOT NULL, ADD siret char(15) NOT NULL, ADD social_activity_number char(15) NOT NULL";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 59)
+		{
+			/* Table : documentation */	
+			$queryDoc = 'CREATE TABLE IF NOT EXISTS ' . $wpdb->prefix.digirisk_doc::prefix . '__documentation (
+				doc_id int(11) unsigned NOT NULL AUTO_INCREMENT,
+				doc_page_name varchar(255) NOT NULL,
+				doc_url varchar(255) NOT NULL,
+				doc_html text NOT NULL,
+				doc_creation_date datetime NOT NULL,
+				PRIMARY KEY ( doc_id )
+			) ENGINE=MyISAM';
+			$resultDoc = $wpdb->query($queryDoc);
+
+			/* Mise à jour de la table documentation */
+			$sql = 'ALTER TABLE ' . $wpdb->prefix.digirisk_doc::prefix . '__documentation ADD doc_active ENUM( "active", "deleted" ) default "active"';
+			$wpdb->query($sql);
+	
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}

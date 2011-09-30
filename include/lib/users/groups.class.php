@@ -758,7 +758,7 @@ evarisk(document).ready(function(){
 		jQuery("#affectedElement' . $tableElement . '").blur(function(){
 			jQuery(this).val("' . __('Rechercher dans la liste des groupes', 'evarisk') . '");
 		});
-		jQuery("#affectedElement' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGroups_' . $tableType[max(array_keys($tableType))] . '.php");
+		jQuery("#affectedElement' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGroups.php?group_type=' . $tableType[max(array_keys($tableType))] . '");
 		jQuery("#affectedElement' . $tableElement . '").result(function(event, data, formatted){
 			cleanElementIdFiedList(data[1], "' . $tableElement . '");
 			addElementIdFieldList(data[0], data[1], "' . $tableElement . '");

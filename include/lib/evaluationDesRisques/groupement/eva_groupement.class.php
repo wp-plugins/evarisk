@@ -180,7 +180,7 @@ class EvaGroupement {
 	{
 		global $wpdb;
 		$groupement = EvaGroupement::getGroupement($idGroupement);
-		$sousEntitesGroupement = Arborescence::getFils(TABLE_GROUPEMENT, $groupement, 1, "nom ASC");
+		$sousEntitesGroupement = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement, 1, "nom ASC");
 		unset($resultats);
 		$unites = EvaGroupement::getUnitesDescendantesDuGroupement($idGroupement, 1, "nom ASC");
 		$indiceGroupement = 0;
@@ -213,7 +213,7 @@ class EvaGroupement {
 	* @todo employé évalué
 	*/
 	function getInfosGroupement($idGroupement)
-	{		
+	{
 		unset($infos, $info);
 		$groupement = EvaGroupement::getGroupement($idGroupement);
 		$sousEntitesGroupement = Arborescence::getFils(TABLE_GROUPEMENT, $groupement);
@@ -372,8 +372,7 @@ class EvaGroupement {
 		global $wpdb;
 		
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_GROUPEMENT);
-		$sql = "INSERT INTO " . TABLE_GROUPEMENT . " (`nom`, `Status`, `limiteGauche`, `limiteDroite`, creation_date) VALUES ('" . $nom . "', 'Valid', '" . ($lim) . "', '" . ($lim+1) . "', NOW())";
-		$wpdb->query($sql);
+		$wpdb->insert(TABLE_GROUPEMENT, array('nom' => $nom, 'Status' => 'Valid', 'limiteGauche' => $lim, 'limiteDroite' => ($lim+1), 'creation_date' => date('Y-m-d H:i:s')), '%s');
 
 		$sql = "UPDATE " . TABLE_GROUPEMENT . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = 'Groupement Racine'";
 		$wpdb->query($sql);
@@ -389,12 +388,14 @@ class EvaGroupement {
 	* @param string $idAdresse Identifier of the address group name in the Adress Table
 	* @param string $idGroupementPere  father group id
 	*/
-	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
+	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number)
 	{
 		global $wpdb;
-		
-		$sql = "UPDATE `" . TABLE_GROUPEMENT . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneGroupement`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', lastupdate_date = NOW() WHERE `id`='" . $id_Groupement . "'";
-		$wpdb->query($sql);
+		if($typeGroupement == ''){
+			$typeGroupement = 'none';
+		}
+		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => date('Y-m-d H:i:s'));
+		$wpdb->update(TABLE_GROUPEMENT, $groupementInformations, array( 'id' => $id_Groupement ), '%s', array('%d') );
 		
 		$groupementFils =  EvaGroupement::getGroupement($id_Groupement);
 		$groupementDestination =  EvaGroupement::getGroupement($idGroupementPere);

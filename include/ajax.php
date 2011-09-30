@@ -121,6 +121,24 @@ if($_REQUEST['post'] == 'true')
 			case 'loadDiginote':
 				echo evaNotes::noteDialogForm();
 			break;
+
+			case 'loadUserInfo':
+			{
+				echo digirisk_accident::get_victim_accident_informations($_REQUEST['id_user']);
+			}			
+			break;
+
+			case 'loadWitnessInfo':
+			{
+				echo digirisk_accident::get_accident_third_party_informations($_REQUEST['id_user'], 'witness');
+			}			
+			break;
+
+			case 'loadThirdPartyInfo':
+			{
+				echo digirisk_accident::get_accident_third_party_informations($_REQUEST['id_user'], 'third_party');
+			}			
+			break;
 		}
 	}
 
@@ -377,6 +395,35 @@ if($_REQUEST['post'] == 'true')
 
 	' . $moreAction . '
 	</script>';
+					}
+					break;
+
+					case 'load_groupement_form':
+					{
+						include_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupement-new.php');
+						$_REQUEST['dont_display_button'] = 'yes';
+						$_REQUEST['form_id'] = '_accident';
+						getGroupGeneralInformationPostBoxBody($_REQUEST);
+					}
+					break;
+					case 'save_groupement_missing_informations':
+					{
+						$_REQUEST['act'] = 'update';
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');	
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#divAccidenContainer").load(EVA_AJAX_FILE_URL,{
+			"post":"true",
+			"table":"' . DIGI_DBT_ACCIDENT . '",
+			"act":"previous_step",
+			"accident_id": jQuery("#accident_form #tableElement").val(),
+			"tableElement": jQuery("#accident_form #tableElement").val(),
+			"idElement": jQuery("#accident_form #idElement").val(),
+			"step_to_load":jQuery("#accident_form #accident_form_step").val() 
+		});
+	});
+</script>';
 					}
 					break;
 				}
@@ -3940,6 +3987,424 @@ echo $output;
 					break;
 					case 'reload_user_right_box':
 						echo digirisk_permission::generateUserListForRightDatatable($_REQUEST['tableElement'], $_REQUEST['idElement']);
+					break;
+				}
+				break;
+			case DIGI_DBT_ACCIDENT:
+				switch($_REQUEST['act'])
+				{
+					case 'save-accident':
+					{
+						$save_result = '';
+						$current_accident = null;
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						$accident_id = (isset($_REQUEST['accident_id']) && ($_REQUEST['accident_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['accident_id']) : 0;
+						$accident_form_step = (isset($_REQUEST['accident_form_step']) && ($_REQUEST['accident_form_step'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['accident_form_step']) : 1;
+
+						/*	Create the accident if not existing into database	*/
+						if($accident_id <= 0){
+							$accident_main_informations['status'] = 'valid';
+							$accident_main_informations['creation_date'] = date('Y-m-d H:i:s');
+							$accident_main_informations['id_element'] = $idElement;
+							$accident_main_informations['table_element'] = $tableElement;
+							$accident_main_informations['declaration_state'] = 'in_progress';
+							$accident_main_informations['declaration_step'] = 1;
+							$save_result = eva_database::save($accident_main_informations, DIGI_DBT_ACCIDENT);
+							$accident_id = $wpdb->insert_id;
+						}
+						else{
+							$current_accident = digirisk_accident::getElement($accident_id);
+						}
+
+						/*	Define the message by checking the action result	*/
+						if($save_result == 'error'){
+							$message = '<img src=\'' . EVA_MESSAGE_ERROR . '\' alt=\'' . $save_result . '\' class=\'messageIcone\' />' . __('Une erreur est survenue lors de l\'enregistrement de l\'accident de travail', 'evarisk');
+						}
+						elseif(in_array($save_result, array('done', 'nothingToUpdate'))){/*	If creation	*/
+							$message = '<img src=\'' . EVA_MESSAGE_SUCCESS . '\' alt=\'' . $save_result . '\' class=\'messageIcone\' />' . __('L\'accident de travail a bien &eacute;t&eacute; sauvegard&eacute;', 'evarisk');
+						}
+
+						if($accident_form_step >= 1){/*	Save first step => Employer and establishment	*/
+							/*	Save employer informations	*/
+							$location['employer']['status'] = 'valid';
+							$location['employer']['id_accident'] = $accident_id;
+							$location['employer']['id_location'] = $_POST['employer']['id'];
+							$location['employer']['location_type'] = 'employer';
+							$location['employer']['telephone'] = $_POST['employer']['telephone'];
+							$location['employer']['name'] = $_POST['employer']['name'];
+							$location['employer']['adress_line_1'] = $_POST['employer']['address_1'];
+							$location['employer']['adress_line_2'] = $_POST['employer']['address_2'];
+							$location['employer']['adress_postal_code'] = $_POST['employer']['postal_code'];
+							$location['employer']['adress_city'] = $_POST['employer']['city'];
+							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->employer_location_id > 0)){
+								$location['employer']['last_update_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::update($location['employer'], $current_accident->employer_location_id, DIGI_DBT_ACCIDENT_LOCATION);
+							}
+							else{
+								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
+									$location_employer['last_update_date'] = date('Y-m-d H:i:s');
+									$location_employer['status'] = 'moderated';
+									$save_result = eva_database::update($location_employer, $current_accident->employer_location_id, DIGI_DBT_ACCIDENT_LOCATION);
+								}
+								$location['employer']['creation_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::save($location['employer'], DIGI_DBT_ACCIDENT_LOCATION);
+							}
+
+							/*	Save establishment informations	*/
+							$location['establishment']['status'] = 'valid';
+							$location['establishment']['id_accident'] = $accident_id;
+							$location['establishment']['id_location'] = $_POST['establishment']['id'];
+							$location['establishment']['location_type'] = 'establishment';
+							$location['establishment']['telephone'] = $_POST['establishment']['telephone'];
+							$location['establishment']['name'] = $_POST['establishment']['name'];
+							$location['establishment']['siret'] = $_POST['establishment']['siret'];
+							$location['establishment']['social_activity_number'] = $_POST['establishment']['social_activity_number'];
+							$location['establishment']['adress_line_1'] = $_POST['establishment']['address_1'];
+							$location['establishment']['adress_line_2'] = $_POST['establishment']['address_2'];
+							$location['establishment']['adress_postal_code'] = $_POST['establishment']['postal_code'];
+							$location['establishment']['adress_city'] = $_POST['establishment']['city'];
+							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->establishment_location_id > 0)){
+								$location['establishment']['last_update_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::update($location['establishment'], $current_accident->establishment_location_id, DIGI_DBT_ACCIDENT_LOCATION);
+							}
+							else{
+								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
+									$location_establishment['last_update_date'] = date('Y-m-d H:i:s');
+									$location_establishment['status'] = 'moderated';
+									$save_result = eva_database::update($location_establishment, $current_accident->establishment_location_id, DIGI_DBT_ACCIDENT_LOCATION);
+								}
+								$location['establishment']['creation_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::save($location['establishment'], DIGI_DBT_ACCIDENT_LOCATION);
+							}
+
+							unset($location);
+
+							/*	Update accident form step	*/
+							if($save_result != 'error'){
+								$accident_main_informations['declaration_step'] = 2;
+								$accident_main_informations['declaration_state'] = 'in_progress';
+							}
+						}
+						if($accident_form_step >= 2){/*	Save second step => Victim	*/
+							$victim['status'] = 'valid';
+							$victim['id_accident'] = $accident_id;
+							$victim['id_user'] = $_POST['accident_user']['victim_id'];
+							$victim['victim_seniority'] = $_POST['accident_user']['accident_user_seniority'];
+							$accident_main_informations['accident_make_other_victim'] = $_POST['accident_user']['accident_make_other_victims'];
+							$user_meta = get_user_meta($_POST['accident_user']['victim_id'], 'digirisk_information', false);
+							$victim['victim_meta'] = serialize($user_meta[0]);
+							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->accident_victim_id > 0)){
+								$victim['last_update_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::update($victim, $current_accident->accident_victim_id, DIGI_DBT_ACCIDENT_VICTIM);
+							}
+							else{
+								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
+									$current_victim['last_update_date'] = date('Y-m-d H:i:s');
+									$current_victim['status'] = 'moderated';
+									$save_result = eva_database::update($current_victim, $current_accident->accident_victim_id, DIGI_DBT_ACCIDENT_VICTIM);
+								}
+								$victim['creation_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::save($victim, DIGI_DBT_ACCIDENT_VICTIM);
+							}
+
+							unset($victim);
+
+							/*	Update accident form step	*/
+							if($save_result != 'error'){
+								$accident_main_informations['declaration_step'] = 3;
+								$accident_main_informations['declaration_state'] = 'in_progress';
+							}
+						}
+						if($accident_form_step >= 3){/*	Save third step => accident	*/
+							$accident['status'] = 'valid';
+							$accident['id_accident'] = $accident_id;
+							$accident['accident_victim_transported_at'] = $_POST['accident']['accident_victim_transported_at'];
+							$accident['accident_place'] = $_POST['accident']['accident_place'];
+							$accident['accident_consequence'] = $_POST['accident']['accident_consequence'];
+							$accident['accident_victim_work_shedule'] = serialize(array('from1' => sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_from_hour_1']) . ':' . sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_from_minute_1']), 'to1' => sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_to_hour_1']) . ':' . sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_to_minute_1']), 'from2' => sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_from_hour_2']) . ':' . sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_from_minute_2']), 'to2' => sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_to_hour_2']) . ':' . sprintf('%02d', $_POST['accident']['accident_victim_work_shedule']['accident_to_minute_2'])));
+							$accident['accident_declaration'] = serialize($_POST['accident']['accident_declaration']);
+							$accident['accident_details'] = $_POST['accident']['accident_details'];
+							$accident['accident_hurt_place'] = $_POST['accident']['accident_hurt_place'];
+							$accident['accident_hurt_nature'] = $_POST['accident']['accident_hurt_nature'];
+
+							$accident_time = explode(" ", $_POST['accident']['accident_date']);
+							$accident['accident_date'] = $accident_time[0];
+							$accident['accident_hour'] = $accident_time[1];
+
+							$accident_main_informations['accident_date'] = $accident['accident_date'];
+							$accident_main_informations['accident_hour'] = $accident['accident_hour'];
+							$accident_main_informations['accident_title'] = $_POST['accident']['accident_title'];
+	
+							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->accident_details_id > 0)){
+								$accident['last_update_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::update($accident, $current_accident->accident_details_id, DIGI_DBT_ACCIDENT_DETAILS);
+							}
+							else{
+								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
+									$current_accident_details['last_update_date'] = date('Y-m-d H:i:s');
+									$current_accident_details['status'] = 'moderated';
+									$save_result = eva_database::update($current_accident_details, $current_accident->accident_details_id, DIGI_DBT_ACCIDENT_DETAILS);
+								}
+								$accident['creation_date'] = date('Y-m-d H:i:s');
+								$save_result = eva_database::save($accident, DIGI_DBT_ACCIDENT_DETAILS);
+							}
+
+							unset($accident);
+
+							/*	Update accident form step	*/
+							if($save_result != 'error'){
+								$accident_main_informations['declaration_step'] = 4;
+								$accident_main_informations['declaration_state'] = 'in_progress';
+							}
+						}
+						if($accident_form_step >= 4){/*	Save four step => witnesses	*/
+							if(isset($_POST['accident_witness']) && is_array($_POST['accident_witness'])){
+								foreach($_POST['accident_witness'] as $witness_index => $witness_infos){
+									$user_meta = get_user_meta($witness_infos['user_id'], 'digirisk_information', false);
+									$user_main_info = evaUser::getUserInformation($witness_infos['user_id']);
+									$accident_witness['status'] = 'valid';
+									$accident_witness['third_party_type'] = 'witness';
+									$accident_witness['id_user'] = $witness_infos['user_id'];
+									$accident_witness['id_accident'] = $accident_id;
+									$accident_witness['firstname'] = $user_main_info[$witness_infos['user_id']]['user_firstname'];
+									$accident_witness['lastname'] = $user_main_info[$witness_infos['user_id']]['user_lastname'];
+									$accident_witness['adress_line_1'] = $user_meta[0]['user_adress'];
+									$accident_witness['adress_line_2'] = $user_meta[0]['user_adress_2'];
+
+									if($witness_infos['user_id'] > 0){
+										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') 
+												&& (isset($witness_infos['tparty_id']) && ($witness_infos['tparty_id'] > 0)) ){
+											$accident_witness['last_update_date'] = date('Y-m-d H:i:s');
+											$save_hurt_result = eva_database::update($accident_witness, $witness_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
+										}
+										else{
+											if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
+												$current_accident_witness['last_update_date'] = date('Y-m-d H:i:s');
+												$current_accident_witness['status'] = 'moderated';
+												$save_result = eva_database::update($current_accident_witness, $witness_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
+											}
+											$accident_witness['creation_date'] = date('Y-m-d H:i:s');
+											$save_hurt_result = eva_database::save($accident_witness, DIGI_DBT_ACCIDENT_THIRD_PARTY);
+										}
+									}
+								}
+							}
+							$accident_main_informations['police_report'] = $_POST['accident_police_report'];
+							$accident_main_informations['police_report_writer'] = $_POST['accident_police_report_writer'];
+
+							unset($accident_witness);
+
+							/*	Update accident form step	*/
+							if($save_result != 'error'){
+								$accident_main_informations['declaration_step'] = 5;
+								$accident_main_informations['declaration_state'] = 'in_progress';
+							}
+						}
+						if($accident_form_step >= 5){/*	Save four step => third party	*/
+							if(isset($_POST['accident_third_party']) && is_array($_POST['accident_third_party'])){
+								foreach($_POST['accident_third_party'] as $third_party_index => $third_party_infos){
+									$user_meta = get_user_meta($third_party_infos['user_id'], 'digirisk_information', false);
+									$user_main_info = evaUser::getUserInformation($third_party_infos['user_id']);
+									$accident_third_party['status'] = 'valid';
+									$accident_third_party['third_party_type'] = 'third_party';
+									$accident_third_party['id_user'] = $third_party_infos['user_id'];
+									$accident_third_party['id_accident'] = $accident_id;
+									$accident_third_party['firstname'] = $user_main_info[$third_party_infos['user_id']]['user_firstname'];
+									$accident_third_party['lastname'] = $user_main_info[$third_party_infos['user_id']]['user_lastname'];
+									$accident_third_party['adress_line_1'] = $user_meta[0]['user_adress'];
+									$accident_third_party['adress_line_2'] = $user_meta[0]['user_adress_2'];
+
+									if($third_party_infos['user_id'] > 0){
+										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') 
+												&& (isset($third_party_infos['tparty_id']) && ($third_party_infos['tparty_id'] > 0)) ){
+											$accident_third_party['last_update_date'] = date('Y-m-d H:i:s');
+											$save_hurt_result = eva_database::update($accident_third_party, $third_party_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
+										}
+										else{
+											if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
+												$current_accident_third_party['last_update_date'] = date('Y-m-d H:i:s');
+												$current_accident_third_party['status'] = 'moderated';
+												$save_result = eva_database::update($current_accident_third_party, $third_party_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
+											}
+											$accident_witness['creation_date'] = date('Y-m-d H:i:s');
+											$save_hurt_result = eva_database::save($accident_third_party, DIGI_DBT_ACCIDENT_THIRD_PARTY);
+										}
+									}
+								}
+							}
+							$accident_main_informations['accident_caused_by_third_party'] = $_POST['accident_caused_by_third_party'];
+
+							unset($accident_third_party);
+
+							/*	Update accident form step	*/
+							if($save_result != 'error'){
+								$accident_main_informations['declaration_step'] = 5;
+								$accident_main_informations['declaration_state'] = 'done';
+							}
+						}
+
+						$accident_main_informations['last_update_date'] = date('Y-m-d H:i:s');
+						$save_result = eva_database::update($accident_main_informations, $accident_id, DIGI_DBT_ACCIDENT);
+						if(($save_result == 'done') || ($save_result == 'nothingToUpdate')){
+							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' alt=\'response\' style=\'vertical-align:middle;\' />&nbsp;' . __('L\'accident a &eacute;t&eacute; correctement mis &agrave; jour', 'evarisk');
+						}
+						elseif($save_result == 'error'){
+							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' alt=\'response\' style=\'vertical-align:middle;\' />&nbsp;' . __('Une erreur est survenue lors de l\'enregistrement de l\'accident', 'evarisk');
+						}
+
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		actionMessageShow("#message_accident", "' . $message . '");
+		setTimeout(\'actionMessageHide("#message_accident")\',7500);			
+		jQuery("#divAccidenContainer").html(jQuery("#loadingImg").html());
+		jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			"post":"true",
+			"table":"' . DIGI_DBT_ACCIDENT . '",
+			"act":"load",
+			"accident_id": "' . $accident_id . '",
+			"idElement":"' . $idElement . '",
+			"tableElement":"' . $tableElement . '"
+		});
+	});
+</script>';
+					}
+					break;
+
+					case 'reloadVoirAccident':
+					{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						echo digirisk_accident::get_accident_list($tableElement, $idElement);
+					}
+					break;
+
+					case 'addAccident':
+					{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						echo digirisk_accident::get_accident_form($tableElement, $idElement);
+					}
+					break;
+
+					case 'load':
+					{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						$accident_id = (isset($_REQUEST['accident_id']) && ($_REQUEST['accident_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['accident_id']) : '';
+						echo digirisk_accident::get_accident_form($tableElement, $idElement, $accident_id);
+					}
+					break;
+
+					case 'delete_accident':
+					{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						$accident_id = (isset($_REQUEST['accident_id']) && ($_REQUEST['accident_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['accident_id']) : '';
+
+						$accident_main_informations['status'] = 'deleted';
+						$accident_main_informations['last_update_date'] = date('Y-m-d H:i:s');
+						$save_result = eva_database::update($accident_main_informations, $accident_id, DIGI_DBT_ACCIDENT);
+						if(($save_result == 'done') || ($save_result == 'nothingToUpdate')){
+							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' alt=\'response\' style=\'vertical-align:middle;\' />&nbsp;' . __('L\'accident a &eacute;t&eacute; correctement supprim&eacute;', 'evarisk');
+						}
+						elseif($save_result == 'error'){
+							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' alt=\'response\' style=\'vertical-align:middle;\' />&nbsp;' . __('Une erreur est survenue lors de la suppression de l\'accident', 'evarisk');
+						}
+
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		actionMessageShow("#message_accident", "' . $message . '");
+		setTimeout(\'actionMessageHide("#message_accident")\',7500);			
+		jQuery("#divAccidenContainer").html(jQuery("#loadingImg").html());
+		jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			"post":"true",
+			"table":"' . DIGI_DBT_ACCIDENT . '",
+			"act":"reloadVoirAccident",
+			"idElement":"' . $idElement . '",
+			"tableElement":"' . $tableElement . '"
+		});
+	});
+</script>';
+					}
+					break;
+
+					case 'delete_accident_hurt':
+					{
+						$hurt_id = (isset($_REQUEST['hurt_id']) && ($_REQUEST['hurt_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['hurt_id']) : '';
+						$line_id = (isset($_REQUEST['line_id']) && ($_REQUEST['line_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['line_id']) : '';
+						$hurt['status'] = 'deleted';
+						$hurt['last_update_date'] = date('Y-m-d H:i:s');
+						$save_hurt_result = eva_database::update($hurt, $hurt_id, DIGI_DBT_ACCIDENT_LESION);
+						if(($save_hurt_result == 'done') || ($save_hurt_result == 'nothingToUpdate')){
+							echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		remove_current_line(' . $line_id . ');
+	});
+</script>';
+						}
+					}
+					break;
+
+					case 'reload_accident_place_part':
+					{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						$part = (isset($_REQUEST['part']) && ($_REQUEST['part'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['part']) : '';
+						$outputPart = digirisk_accident::get_accident_form_part($part, $tableElement, $idElement);
+						echo $outputPart['part'] . '
+						<script type="text/javascript" >
+							evarisk(document).ready(function(){
+								jQuery("#accident_form_error_nb").val(parseInt(jQuery("#accident_form_error_nb").val()) + parseInt(' . $outputPart['error'] . '));
+								jQuery(".edit_missing_information").click(function(){
+									jQuery("#accident_form_error_nb").val(0);
+									jQuery("#accident_element_updater").dialog("open");
+									jQuery("#accident_element_updater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+										"post": "true", 
+										"table": "' . TABLE_GROUPEMENT . '",
+										"act": "load_groupement_form",
+										"tableElement": "' . TABLE_GROUPEMENT . '",
+										"idElement": jQuery(this).attr("id").replace("element_", "")
+									});
+								});
+								if(jQuery("#accident_form_error_nb").val() > 0){
+									jQuery("#save_accident").attr("disabled", "disabled");
+								}
+								else{
+									jQuery("#save_accident").attr("disabled", false);
+								}
+							});
+						</script>';
+					}
+					break;
+
+					case 'previous_step':
+					{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						$accident_id = (isset($_REQUEST['accident_id']) && ($_REQUEST['accident_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['accident_id']) : '';
+						$step_to_load = (isset($_REQUEST['step_to_load']) && ($_REQUEST['step_to_load'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['step_to_load']) : '';
+						$accident_main_informations['last_update_date'] = date('Y-m-d H:i:s');
+						$accident_main_informations['declaration_step'] = $step_to_load;
+						$accident_main_informations['declaration_state'] = ($step_to_load < 5) ? 'in_progress' : 'done';
+						$save_result = eva_database::update($accident_main_informations, $accident_id, DIGI_DBT_ACCIDENT);
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			"post":"true",
+			"table":"' . DIGI_DBT_ACCIDENT . '",
+			"act":"load",
+			"accident_id": "' . $accident_id . '",
+			"idElement":"' . $idElement . '",
+			"tableElement":"' . $tableElement . '"
+		});
+	});
+</script>';
+					}
 					break;
 				}
 				break;

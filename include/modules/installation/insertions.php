@@ -1256,6 +1256,8 @@ ou irritantes');";
 			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'user', 'permission' => 'digi_edit_user_group_trash'));
 			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator', 'permission' => 'digi_edit_evaluator_group_trash'));
 			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'role', 'permission' => 'digi_edit_user_role_trash'));
+
+			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'documentation', 'permission_sub_module' => '', 'permission' => 'digi_documentation_management_menu'));
 			
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
@@ -1267,6 +1269,18 @@ ou irritantes');";
 		}
 		case 57:
 		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 58:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 59:
+		{
+			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'documentation', 'permission_sub_module' => '', 'permission' => 'digi_documentation_management_menu'));
+
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}

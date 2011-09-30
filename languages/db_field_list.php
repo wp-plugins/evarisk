@@ -179,3 +179,19 @@ __('digi_edit_task_trash', 'evarisk');
 __('digi_view_action_trash', 'evarisk');
 __('digi_edit_action_trash', 'evarisk');
 }
+
+{/*	User_work accident field	*/
+__('user_imatriculation', 'evarisk');
+__('user_imatriculation_key', 'evarisk');
+__('user_birthday', 'evarisk');
+__('user_gender', 'evarisk');
+__('user_nationnality', 'evarisk');
+__('user_adress', 'evarisk');
+__('user_adress_2', 'evarisk');
+__('user_hiring_date', 'evarisk');
+__('user_profession', 'evarisk');
+__('user_professional_qualification', 'evarisk');
+}
+
+__('in_progress', 'evarisk');
+__('done', 'evarisk');

@@ -470,6 +470,7 @@ function createGroupement(action, table){
 		"table": table,
 		"act": evarisk("#act").val(),
 		"id": evarisk("#id").val(),
+		"typeGroupement": evarisk("#typeGroupement").val(),
 		"nom_groupement": evarisk("#nom_groupement").val(),
 		"groupementPere": evarisk("#groupementPere :selected").val(),
 		"description": evarisk("#description").val(),
@@ -482,6 +483,9 @@ function createGroupement(action, table){
 		"affichage": evarisk("#affichage").val(),
 		"latitude": evarisk("#latitude").val(),
 		"longitude": evarisk("#longitude").val(),
+		"siren": evarisk("#siren").val(),
+		"siret": evarisk("#siret").val(),
+		"social_activity_number": evarisk("#social_activity_number").val(),
 		"idsFilAriane": evarisk("#idsFilAriane").val()
 	});
 }

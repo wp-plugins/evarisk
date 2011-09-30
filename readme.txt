@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 5.1.4.0
+Stable tag: 5.1.4.1
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,11 +75,27 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.4.1 =
+
+Am&eacute;liorations
+
+* Gestion des accidents de travail 
+* Modification de l'import des utilisateurs (Ajout de champs compl&eacute;mentaires facultatifs) 
+* Ajout d'informations concernant les groupements (Siret / Siren / Type de groupement / Num&eacute;ro de risque associ&eacute;) 
+* Changement de la gestion des options en ongle t(Les options sont rang&eacute;es par cat&eacute;gories dans des onglets ce qui permet une meilleure lisibilit&eacute;) 
+* Int&eacute;gration d'une gestion de documentation 
+
+Corrections
+
+* Probl&egrave;me de remont&eacute;e d'information dans l'arborescence(La somme des risques n'&eacute;taient pas remont&eacute;es correctement &agrave; cause des sous-groupements / La somme de cotation des risques n'&eacute;taient plus calcul&eacute;es) 
+
+
 = Version 5.1.4.0 =
 
 Corrections 
 
-* probl&egrave; de s&eacute;curit&eacute; lors de l'envoie de documents / photos
+* Probl&egrave;me de s&eacute;curit&eacute; lors de l'envoie de documents / photos
+
 
 = Version 5.1.3.9 =
 

@@ -36,6 +36,10 @@ if($_REQUEST['act'] == 'update')
 	$idAdresse = $address->getId();
 	
 	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$typeGroupement = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['typeGroupement']));
+	$siren = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['siren']));
+	$siret = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['siret']));
+	$social_activity_number = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['social_activity_number']));
 	
 	$effectif = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['effectif']));
 	if($effectif == '')
@@ -52,8 +56,7 @@ if($_REQUEST['act'] == 'update')
 	{
 		$telephone = null;
 	}
-	
-	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
+	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number);
 }
 if($_REQUEST['act'] == 'delete')
 {

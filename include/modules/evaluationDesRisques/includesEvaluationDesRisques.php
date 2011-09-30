@@ -27,7 +27,7 @@
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePoste.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'recommandation/recommandationPostBox.php' );
 				//require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/actionCorrective.php' );
-				// require_once(EVA_METABOXES_PLUGIN_DIR . 'accidentDeTravail/accidentDeTravail.php' );
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'accidentDeTravail/accidentDeTravail.php' );
 				// require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/veilleReglementairePostBox.php');
 				/*	Is wpshop plugin exist and is activ so we output the box in order to associate products	*/
 				if (is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))

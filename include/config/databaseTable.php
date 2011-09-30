@@ -17,13 +17,13 @@ global $wpdb;
 DEFINE('PREFIXE_EVARISK', $wpdb->prefix . "eva__");
 DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 
-{// Etalon
+{/*	Etalon	*/
 	DEFINE('TABLE_ETALON', PREFIXE_EVARISK . "etalon");
 	DEFINE('TABLE_VALEUR_ETALON', PREFIXE_EVARISK . "valeur_etalon");
 	DEFINE('TABLE_EQUIVALENCE_ETALON', PREFIXE_EVARISK . "equivalence_etalon");
 }
 
-{// Méthode
+{/*	Méthode	*/
 	DEFINE('TABLE_METHODE', PREFIXE_EVARISK . "methode");
 	DEFINE('TABLE_OPERATEUR', PREFIXE_EVARISK . "operateur");
 	DEFINE('TABLE_VARIABLE', PREFIXE_EVARISK . "variable");
@@ -32,41 +32,50 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_AVOIR_OPERATEUR', PREFIXE_EVARISK . "avoir_operateur");
 }
 
-{// Risque
+{/*	Risque	*/
 	DEFINE('TABLE_RISQUE', PREFIXE_EVARISK . "risque");
 	DEFINE('TABLE_AVOIR_VALEUR', PREFIXE_EVARISK . "risque_evaluation");
+
+	DEFINE('DIGI_DBT_ACCIDENT', PREFIXE_EVARISK . "accident");
+	DEFINE('DIGI_DBT_ACCIDENT_DETAILS', PREFIXE_EVARISK . "accident_details");
+	DEFINE('DIGI_DBT_ACCIDENT_LESION', PREFIXE_EVARISK . "accident_lesion");
+	DEFINE('DIGI_DBT_ACCIDENT_LOCATION', PREFIXE_EVARISK . "accident_location");
+	DEFINE('DIGI_DBT_ACCIDENT_THIRD_PARTY', PREFIXE_EVARISK . "accident_third_party");
+	DEFINE('DIGI_DBT_ACCIDENT_VICTIM', PREFIXE_EVARISK . "accident_victim");
 }
 
-{//	Ged
+{/*	Ged	*/
 	DEFINE('TABLE_GED_DOCUMENTS', PREFIXE_EVARISK . "ged_documents");
 	DEFINE('TABLE_FP', PREFIXE_EVARISK . "ged_documents_fiches");
 	DEFINE('TABLE_DUER', PREFIXE_EVARISK . "ged_documents_document_unique");
 }
 
-{// Diverses
+{/*	Diverses	*/
 	DEFINE('TABLE_PHOTO', PREFIXE_EVARISK . "photo");
 	DEFINE('TABLE_PHOTO_LIAISON', PREFIXE_EVARISK . "liaison_photo_element");
 	DEFINE('TABLE_ADRESSE', PREFIXE_EVARISK . "adresse");
 }
 
-{// Hierarchie
+{/*	Hierarchie	*/
 	DEFINE('TABLE_GROUPEMENT', PREFIXE_EVARISK . "groupement");
+	DEFINE('TABLE_GROUPEMENT_META', PREFIXE_EVARISK . "groupement_meta");
 	DEFINE('TABLE_UNITE_TRAVAIL', PREFIXE_EVARISK . "unite_travail");
+	DEFINE('TABLE_UNITE_TRAVAIL_META', PREFIXE_EVARISK . "unite_travail_meta");
 }
 
-{// Danger
+{/*	Danger	*/
 	DEFINE('TABLE_CATEGORIE_DANGER', PREFIXE_EVARISK . "categorie_danger");
 	DEFINE('TABLE_DANGER', PREFIXE_EVARISK . "danger");
 }
 
-{// Actions correctives
+{/*	Actions correctives	*/
 	DEFINE('TABLE_TACHE', PREFIXE_EVARISK . "actions_correctives_tache");
 	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "actions_correctives_actions");
 	DEFINE('TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "actions_correctives_suivi");
 	DEFINE('TABLE_LIAISON_TACHE_ELEMENT', PREFIXE_EVARISK . "liaison_tache_element");
 }
 	
-{// Veille référencielle
+{/*	Veille référencielle	*/
 	DEFINE('PREFIXE_VEILLE', PREFIXE_EVARISK . "veille_");
 	// Table veille référencielle
 	DEFINE('TABLE_TEXTE_REFERENCIEL', PREFIXE_VEILLE . "texte_referenciel");
@@ -80,7 +89,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_CONCERNE_PAR_TEXTE_REFERENCIEL', PREFIXE_VEILLE . "concerne_par_texte_referenciel");
 }
 
-{// Tables users
+{/*	Tables users	*/
 	DEFINE('DIGI_DBT_USER_GROUP', PREFIXE_EVARISK . "utilisateurs_groupes");
 	DEFINE('DIGI_DBT_LIAISON_USER_GROUP', PREFIXE_EVARISK . "liaison_utilisateur_groupe_element");
 

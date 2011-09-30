@@ -14,19 +14,15 @@ if (!$q) return;
 
 $items = array();
 
-$elementList = digirisk_groups::getElement('', "'valid'", 'employee');
-if(is_array($elementList) && (count($elementList) > 0))
-{
-	foreach($elementList as $element)
-	{
+$elementList = digirisk_groups::getElement('', "'valid'", strtolower($_GET["group_type"]));
+if(is_array($elementList) && (count($elementList) > 0)){
+	foreach($elementList as $element){
 		$items[ELEMENT_IDENTIFIER_GPU . $element->id . '&nbsp;-&nbsp;' . $element->name] = $element->id;
 	}
 }
 
-foreach ($items as $key => $value)
-{
-	if (strpos(strtolower($key), $q) !== false) 
-	{
+foreach($items as $key => $value){
+	if (strpos(strtolower($key), $q) !== false){
 		echo "$key|$value\n";
 	}
 }

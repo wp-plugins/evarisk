@@ -113,6 +113,207 @@ class evaUser
 		return $listeComplete;
 	}
 
+	/**
+	*	Add the different mandatory fields for the user in case of accident
+	*/
+	function user_additionnal_field_save($user_id){
+		global $userWorkAccidentMandatoryFields;
+		$user_is_valid_for_accident = 'yes';
+		foreach($userWorkAccidentMandatoryFields as $field_identifier){
+			if(isset($_REQUEST['digirisk_user_information'][$field_identifier]) && (trim($_REQUEST['digirisk_user_information'][$field_identifier]) == '')){
+				$user_is_valid_for_accident = 'no';
+			}
+		}
+		$_REQUEST['digirisk_user_information']['user_is_valid_for_accident'] = $user_is_valid_for_accident;
+		update_usermeta($user_id, 'digirisk_information', $_REQUEST['digirisk_user_information']);
+	}
+	/**
+	*	Add the different mandatory fields for the user in case of accident
+	*/
+	function user_additionnal_field($user, $output_type = 'normal'){
+		global $optionUserGender, $optionUserNationality, $userWorkAccidentMandatoryFields;
+		$user_additionnal_field = $user_additionnal_field_alert = '';
+		$required_class = array();
+
+		/*	Get the current user meta	*/
+		$user_meta = get_user_meta($user->ID, 'digirisk_information', false);
+		if(is_array($user_meta[0]) && (count($user_meta[0]) > 0)){
+			$required_filed_empty = 0;
+			foreach($user_meta[0] as $field_identifier => $field_content){
+				$required_class[$field_identifier] = '';
+				if((trim($field_content) == '') && (in_array($field_identifier, $userWorkAccidentMandatoryFields))){
+					if($field_identifier == 'user_imatriculation_key'){
+						$field_identifier = 'user_imatriculation';
+					}
+					elseif($field_identifier == 'user_adress_2'){
+						$field_identifier = 'user_adress';
+					}
+					$required_class[$field_identifier] = ' class="required" ';
+					$required_filed_empty++;
+				}
+			}
+			if($required_filed_empty > 0){
+				$user_additionnal_field_alert = '<span class="required" >' . __('Les champs marqu&eacutes en rouge sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
+			}
+		}
+		else{
+			$user_additionnal_field_alert = '<span class="required" >' . __('L\'ensemble des champs ci-dessous sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
+			$required_class['user_imatriculation'] = $required_class['user_birthday'] = $required_class['user_gender'] = $required_class['user_nationnality'] = $required_class['user_adress'] =  $required_class['user_hiring_date'] = $required_class['user_profession'] = $required_class['user_professional_qualification'] = ' class="required" ';
+		}
+		if($output_type == 'normal'){
+			$user_additionnal_field .= '
+<h3 id="digi_user_informations" >' . __('Informations compl&eacute;mentaires pour le logiciel Digirisk', 'digirisk') . '</h3>
+' . $user_additionnal_field_alert;
+			if($user_meta[0]['user_is_valid_for_accident'] == 'yes'){
+				$user_additionnal_field .= '<span class="user_is_valid_for_accident" >' . __('L\'utilisateur est &eacute;ligible &agrave; la d&eacute;claration d\'un accident du travail', 'evarisk') . '</span>';
+			}
+			elseif($user_meta[0]['user_is_valid_for_accident'] == 'no'){
+				$user_additionnal_field .= '<span class="user_is_not_valid_for_accident" >' . __('L\'utilisateur n\'est pas &eacute;ligible &agrave; la d&eacute;claration d\'un accident du travail', 'evarisk') . '</span>';
+			}
+		}
+$user_additionnal_field .= '
+<table class="' . (($output_type == 'normal') ? 'form-table' : '') . '" >
+	<tr>
+		<th>
+			<label for="user_imatriculation" ' . $required_class['user_imatriculation'] . ' >' . __('N&ordm; d\'immatriculation', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_imatriculation', $user_meta[0]['user_imatriculation'], '', null, 'digirisk_user_information[user_imatriculation]', false, false, 13, 'regular-text', '', '', '', 'left', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_imatriculation_key', $user_meta[0]['user_imatriculation_key'], '', null, 'digirisk_user_information[user_imatriculation_key]', false, false, 2, '', '', '5%', '', '', true) . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_birthday" ' . $required_class['user_birthday'] . ' >' . __('Date de naissance', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_birthday', $user_meta[0]['user_birthday'], '', null, 'digirisk_user_information[user_birthday]', false, false, 10, 'regular-text', 'date', '') . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_gender" ' . $required_class['user_gender'] . ' >' . __('Sexe', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::createComboBox('user_gender', 'digirisk_user_information[user_gender]', $optionUserGender, $user_meta[0]['user_gender'], 'user_combo') . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_nationnality" ' . $required_class['user_nationnality'] . ' >' . __('Nationalit&eacute;', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::createComboBox('user_nationnality', 'digirisk_user_information[user_nationnality]', $optionUserNationality, $user_meta[0]['user_nationnality'], 'user_combo') . '
+		</td>
+	</tr>';
+	if($output_type == 'normal'){
+		$user_additionnal_field .= 
+	'<tr>
+		<th>
+			&nbsp;
+		</th>
+		<td>
+			&nbsp;
+		</td>
+	</tr>';
+	}
+		$user_additionnal_field .= '
+	<tr>
+		<th>
+			<label for="user_adress" ' . $required_class['user_adress'] . ' >' . __('Adresse ligne 1', 'evarisk') . '</label><br/>
+			<label for="user_adress_2" ' . $required_class['user_adress'] . ' >' . __('Adresse ligne 2', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress', $user_meta[0]['user_adress'], '', null, 'digirisk_user_information[user_adress]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress_2', $user_meta[0]['user_adress_2'], '', null, 'digirisk_user_information[user_adress_2]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_adress_postal_code" ' . $required_class['user_adress'] . ' >' . __('Code postal', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress_postal_code', $user_meta[0]['user_adress_postal_code'], '', null, 'digirisk_user_information[user_adress_postal_code]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_adress_city" ' . $required_class['user_adress'] . ' >' . __('Ville', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress_city', $user_meta[0]['user_adress_city'], '', null, 'digirisk_user_information[user_adress_city]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			&nbsp;
+		</th>
+		<td>
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_hiring_date" ' . $required_class['user_hiring_date'] . ' >' . __('Date d\'embauche', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_hiring_date', $user_meta[0]['user_hiring_date'], '', null, 'digirisk_user_information[user_hiring_date]', false, false, 10, 'regular-text', 'date', '') . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_profession" ' . $required_class['user_profession'] . ' >' . __('Profession', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_profession', $user_meta[0]['user_profession'], '', null, 'digirisk_user_information[user_profession]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_professional_qualification" ' . $required_class['user_professional_qualification'] . ' >' . __('Qualification professionnelle', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_professional_qualification', $user_meta[0]['user_professional_qualification'], '', null, 'digirisk_user_information[user_professional_qualification]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			&nbsp;
+		</th>
+		<td>
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="user_insurance_ste" ' . $required_class['user_insurance_ste'] . ' >' . __('Soci&eacute;t&eacute; d\'assurance', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_insurance_ste', $user_meta[0]['user_insurance_ste'], '', null, 'digirisk_user_information[user_insurance_ste]', false, false, 10, 'regular-text', '', '') . '
+		</td>
+	</tr>';
+
+	$options = get_option('digirisk_options');
+	$user_extra_fields = unserialize($options['digi_users_digirisk_extra_field']);
+	if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
+		foreach($user_extra_fields as $field){
+			$user_additionnal_field .= 
+	'<tr>
+		<th>
+			<label for="user_' . $field . '" ' . $required_class[$field] . ' >' . __($field, 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'user_' . $field, $user_meta[0][$field], '', null, 'digirisk_user_information[' . $field . ']', false, false, 10, 'regular-text', '', '') . '
+		</td>
+	</tr>';
+		}
+	}
+	
+	$user_additionnal_field .= 
+'</table>';
+
+		echo $user_additionnal_field;
+	}
 
 	/**
 	*	Get the identifier of the groups bind with an element
@@ -300,6 +501,36 @@ class evaUser
 							}
 							else
 							{
+								$user_import['user_imatriculation'] = $userInfosComponent[6];
+								$user_import['user_imatriculation_key'] = $userInfosComponent[7];
+								$user_import['user_birthday'] = $userInfosComponent[8];
+								$user_import['user_gender'] = $userInfosComponent[9];
+								$user_import['user_nationnality'] = $userInfosComponent[10];
+								$user_import['user_adress'] = $userInfosComponent[11];
+								$user_import['user_adress_2'] = $userInfosComponent[12];
+								$user_import['user_adress_postal_code'] = $userInfosComponent[13];
+								$user_import['user_adress_city'] = $userInfosComponent[14];
+								$user_import['user_hiring_date'] = $userInfosComponent[15];
+								$user_import['user_profession'] = $userInfosComponent[16];
+								$user_import['user_professional_qualification'] = $userInfosComponent[17];
+								$user_import['user_insurance_ste'] = $userInfosComponent[18];
+								
+								global $userWorkAccidentMandatoryFields;
+								$user_is_valid_for_accident = 'yes';
+								foreach($userWorkAccidentMandatoryFields as $field_identifier){
+									if(isset($user_import[$field_identifier]) && (trim($user_import[$field_identifier]) == '')){
+										$user_is_valid_for_accident = 'no';
+									}
+								}
+								// foreach($user_import as $field_identifier => $field_content){
+									// if((trim($field_content) == '') && (in_array($field_identifier, $userWorkAccidentMandatoryFields))){
+										// $user_is_valid_for_accident = 'no';
+									// }
+								// }
+								$user_import['user_is_valid_for_accident'] = $user_is_valid_for_accident;
+
+								update_usermeta($newUserID, 'digirisk_information', $user_import);
+
 								if($sendUserMail != '')
 								{
 									wp_new_user_notification($newUserID, $userInfosComponent[3]);
@@ -350,7 +581,10 @@ class evaUser
 	<?php
 		}
 
-?>
+?>		
+<div id="icon-users" class="icon32"><br /></div>
+<h2><?php _e('Import d\'utilisateurs', 'evarisk'); ?></h2>
+<br/>
 <div id="ajax-response" style="display:none;" >&nbsp;</div>
 <script type="text/javascript" >
 	function changeSeparator(){
@@ -386,6 +620,7 @@ class evaUser
 				evarisk('#fastAddErrorMessage').show();
 			}
 			else{
+				jQuery("#importSubmit_rapid").attr("disabled", false);
 				identifiant = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#nomUtilisateur').val();
 				prenom = evarisk('#prenomUtilisateur').val();
 				nom = evarisk('#nomUtilisateur').val();
@@ -393,7 +628,23 @@ class evaUser
 				emailUtilisateur = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#nomUtilisateur').val() + '@' + evarisk('#domaineMail').val();
 				roleUtilisateur = evarisk('#userRoles').val();
 
+				user_imatriculation = evarisk('#user_imatriculation').val();
+				user_imatriculation_key = evarisk('#user_imatriculation_key').val();
+				user_birthday = evarisk('#user_birthday').val();
+				user_gender = evarisk('#user_gender').val();
+				user_nationnality = evarisk('#user_nationnality').val();
+				user_adress_1 = evarisk('#user_adress').val();
+				user_adress_2 = evarisk('#user_adress_2').val();
+				user_adress_postal_code = evarisk('#user_adress_postal_code').val();
+				user_adress_city = evarisk('#user_adress_city').val();
+				user_hiring_date = evarisk('#user_hiring_date').val();
+				user_profession = evarisk('#user_profession').val();
+				user_professional_qualification = evarisk('#user_professional_qualification').val();
+				user_insurance_ste = evarisk('#user_insurance_ste').val();
+
 				newline = identifiant + evarisk('#fieldSeparator').val() + prenom + evarisk('#fieldSeparator').val() + nom + evarisk('#fieldSeparator').val() + motDePasse + evarisk('#fieldSeparator').val() + emailUtilisateur + evarisk('#fieldSeparator').val() + roleUtilisateur;
+
+				newline += evarisk('#fieldSeparator').val() + user_imatriculation + evarisk('#fieldSeparator').val() + user_imatriculation_key + evarisk('#fieldSeparator').val() + user_birthday + evarisk('#fieldSeparator').val() + user_gender + evarisk('#fieldSeparator').val() + user_nationnality + evarisk('#fieldSeparator').val() + user_adress_1 + evarisk('#fieldSeparator').val() + user_adress_2 + evarisk('#fieldSeparator').val() + user_adress_postal_code + evarisk('#fieldSeparator').val() + user_adress_city + evarisk('#fieldSeparator').val() + user_hiring_date + evarisk('#fieldSeparator').val() + user_profession + evarisk('#fieldSeparator').val() + user_professional_qualification + evarisk('#fieldSeparator').val() + user_insurance_ste;
 
 				if(evarisk('#userLinesToCreate').val() != ''){
 					newline = '\r\n' + newline;
@@ -402,117 +653,148 @@ class evaUser
 				evarisk('#prenomUtilisateur').val("");
 				evarisk('#nomUtilisateur').val("");
 
+				evarisk('#user_imatriculation').val("");
+				evarisk('#user_imatriculation_key').val("");
+				evarisk('#user_birthday').val("");
+				evarisk('#user_gender').val("");
+				evarisk('#user_nationnality').val("");
+				evarisk('#user_adress').val("");
+				evarisk('#user_adress_2').val("");
+				evarisk('#user_adress_postal_code').val("");
+				evarisk('#user_adress_city').val("");
+				evarisk('#user_hiring_date').val("");
+				evarisk('#user_profession').val("");
+				evarisk('#user_professional_qualification').val("");
+				evarisk('#user_insurance_ste').val("");
+
 <?php echo $optionEmailDomain;	?>
 			}
+		});
+
+		jQuery("#import_user_form_file_container_switcher").click(function(){
+			jQuery("#import_user_form_file_container").toggle();
+			jQuery("#user_import_container_switcher_icon").toggleClass("user_import_container_opener");
+			jQuery("#user_import_container_switcher_icon").toggleClass("user_import_container_closer");
+			// jQuery(".user_rapid_import_button").hide();
+		});
+
+		jQuery("#complementary_fieds_switcher").click(function(){
+			jQuery("#complementary_fieds").toggle();
+				jQuery("#complementary_fieds_icon").toggleClass("user_import_container_opener");
+				jQuery("#complementary_fieds_icon").toggleClass("user_import_container_closer");
 		});
 	});
 </script>
 <form enctype="multipart/form-data" method="post" action="" >
 	<input type="hidden" name="act" id="act" value="1" />
 
-	<!-- 	Start of file specification part	-->
-	<h3><?php echo __('Sp&eacute;cifications pour le fichier', 'evarisk'); ?></h3>
-	<div class="alignleft" >
-		<?php echo __('Chaque ligne de d&eacute;finition devra respecter le format ci-apr&egrave;s&nbsp;:', 'evarisk'); ?>
-		<br/><span style="font-style:italic;font-size:10px;" ><?php echo '<span style="color:#CC0000;" >' . __('Les champs identifiants et email sont obligatoires.', 'evarisk') . '</span><br/>' . __('Vous n\'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent.', 'evarisk') . '<br/>' . __('Exemple&nbsp;', 'evarisk') . '&nbsp;<span style="font-weight:bold;" >' . __('identifiant', 'evarisk') . $separatorExample . $separatorExample . $separatorExample . $separatorExample . __('email', 'evarisk') . $separatorExample . '</span>'; ?></span>
-		<div style="margin:3px 6px;padding:12px;border:1px solid #333333;width:80%;text-align:center;" ><?php echo '<span style="color:#CC0000;" >' . __('identifiant', 'evarisk') . '</span>' . $separatorExample . __('prenom', 'evarisk') . $separatorExample . __('nom', 'evarisk') . $separatorExample . __('mot de passe', 'evarisk') . $separatorExample . '<span style="color:#CC0000;" >' . __('email', 'evarisk') . '</span>' . $separatorExample . __('role', 'evarisk'); ?></div>
-	</div>
-	<div class="floatleft" style="margin: 0px 36px;" >
-		<table style="margin:0px 36px;" summary="" cellpadding="0" cellspacing="0">
-			<tr>
-				<td>
-					<?php echo __('S&eacute;parateur de champs', 'evarisk'); ?>
-				</td>
-				<td>
-					<input type="text" name="fieldSeparator" id="fieldSeparator" value=";" />
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<?php echo __('R&ocirc;le pour les utilisateurs', 'evarisk'); ?><br/>
-					<span style="font-style:italic;font-size:10px;" ><?php echo __('Si aucun r&ocirc;le n\'a &eacute;t&eacute; d&eacute;fini dans le fichier', 'evarisk'); ?></span>
-				</td>
-				<td>
-					<select name="userRoles" id="userRoles" >
-						<?php
-							if ( !isset($wp_roles) )
-							{
-								$wp_roles = new WP_Roles();
-							}
-							foreach ($wp_roles->get_names() as $role => $roleName)
-							{
-								$selected = '';
-								if(($userRoles == '') && ($role == 'subscriber'))
-								{
-									$selected = 'selected = "selected"';
-								}
-								elseif(($userRoles != '') && ($role == $userRoles))
-								{
-									$selected = 'selected = "selected"';
-								}
-								echo '<option value="' . $role . '" ' . $selected . ' >' . $roleName . '</option>';
-							}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<?php echo __('Envoyer le mot de passe aux utilisateurs.', 'evarisk'); ?>
-					<br/><span style="font-weight:bold;font-size:9px;" ><?php echo __('(Peut ne pas fonctionner sur certains serveurs)', 'evarisk'); ?></span>
-				</td>
-				<td>
-					<input type="checkbox" name="sendUserMail" id="sendUserMail" />
-				</td>
-			</tr>
-		</table>
-	</div>
-
-
 	<!-- 	Start of fast add part	-->
 	<h3 class="clear" ><?php echo __('Ajout rapide d\'utilisateurs', 'evarisk'); ?></h3>
-	<table summary="Fast user adding section" cellpadding="0" cellspacing="0" >
+	<table summary="Fast user adding section" cellpadding="0" cellspacing="0" class="digirisk_import_user_easy_form" >
 		<tr>
 			<td id="mailDomainContainer"><?php echo ucfirst(strtolower(__('domaine de l\'adresse email (sans le @)', 'evarisk'))); ?></td>
 			<td><input type="text" value="<?php echo $checkEmailDomain; ?>" id="domaineMail" name="domaineMail" /></td>
-			<td style="text-align:right;" ><?php echo ucfirst(strtolower(__('mot de passe par d&eacute;faut', 'evarisk'))); ?><br/><span style="font-size:9px;" ><?php echo __('Laissez vide pour un mot de passe al&eacute;atoire', 'evarisk'); ?></span></td>
-			<td><input type="text" value="" id="motDePasse" name="motDePasse" /></td>
+			<td rowspan="9" style="text-align:center;" ><input type="button" class="button-primary" value="<?php echo __('Ajouter &agrave; la liste des utilisateurs &agrave; importer', 'evarisk'); ?> -->" id="ajouterUtilisateurListe" name="ajouterUtilisateurListe" /><div id="fastAddErrorMessage" style="display:none;color:#FF0000;" ><?php echo __('Merci de remplir les champs marqu&eacute;s en rouge', 'evarisk'); ?></div></td>
+			<td rowspan="9" ><textarea name="userLinesToCreate" id="userLinesToCreate" cols="70" rows="5"></textarea></td>
 		</tr>
 		<tr>
-			<td colspan="2" >&nbsp;</td>
+			<td ><?php echo ucfirst(strtolower(__('mot de passe par d&eacute;faut', 'evarisk'))); ?></td>
+			<td><input type="text" value="" id="motDePasse" name="motDePasse" /><br/>
+			<span style="font-size:9px;" ><?php echo __('Laissez vide pour un mot de passe al&eacute;atoire', 'evarisk'); ?></span></td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo __('Envoyer le mot de passe aux utilisateurs.', 'evarisk'); ?>
+			</td>
+			<td>
+				<input type="checkbox" name="sendUserMail" id="sendUserMail" /><span style="font-weight:bold;font-size:9px;" ><?php echo __('(Peut ne pas fonctionner sur certains serveurs)', 'evarisk'); ?></span>
+			</td>
+		</tr>
+		<tr>
+			<td id="lastNameContainer"><?php echo ucfirst(strtolower(__('nom', 'evarisk'))); ?></td>
+			<td><input type="text" value="" id="nomUtilisateur" name="nomUtilisateur" /></td>
 		</tr>
 		<tr>
 			<td id="firstNameContainer"><?php echo ucfirst(strtolower(__('prenom', 'evarisk'))); ?></td>
-			<td id="lastNameContainer"><?php echo ucfirst(strtolower(__('nom', 'evarisk'))); ?></td>
-		</tr>
-		<tr>
 			<td><input type="text" value="" id="prenomUtilisateur" name="prenomUtilisateur" /></td>
-			<td><input type="text" value="" id="nomUtilisateur" name="nomUtilisateur" /></td>
-			<td><input type="button" class="button-secondary" value="<?php echo __('Ajouter &agrave; la liste des utilisateurs &agrave; importer', 'evarisk'); ?>" id="ajouterUtilisateurListe" name="ajouterUtilisateurListe" /><div id="fastAddErrorMessage" style="display:none;color:#FF0000;" ><?php echo __('Merci de remplir les champs marqu&eacute;s en rouge', 'evarisk'); ?></div></td>
+		</tr>
+
+		<tr>
+			<td>
+				<?php echo __('R&ocirc;le pour les utilisateurs', 'evarisk'); ?><br/>
+				<span style="font-style:italic;font-size:10px;" ><?php echo __('Si aucun r&ocirc;le n\'a &eacute;t&eacute; d&eacute;fini dans le fichier', 'evarisk'); ?></span>
+			</td>
+			<td>
+				<select name="userRoles" id="userRoles" >
+					<?php
+						if ( !isset($wp_roles) )
+						{
+							$wp_roles = new WP_Roles();
+						}
+						foreach ($wp_roles->get_names() as $role => $roleName)
+						{
+							$selected = '';
+							if(($userRoles == '') && ($role == 'subscriber'))
+							{
+								$selected = 'selected = "selected"';
+							}
+							elseif(($userRoles != '') && ($role == $userRoles))
+							{
+								$selected = 'selected = "selected"';
+							}
+							echo '<option value="' . $role . '" ' . $selected . ' >' . __($roleName) . '</option>';
+						}
+					?>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<td >&nbsp;</td>
+		</tr>
+
+		<tr>
+			<td id="complementary_fieds_switcher" class="pointer" ><span id="complementary_fieds_icon" class="alignleft ui-icon user_import_container_opener" >&nbsp;</span><?php _e('Champs suppl&eacute;mentaires', 'evarisk'); ?></td>
+		</tr>
+		<tr>
+			<td colspan="2" ><div id="complementary_fieds" class="hide" ><?php self::user_additionnal_field(null, 'import'); ?></div></td>
 		</tr>
 	</table>
-
-
-	<!-- 	Start of user list to import part	-->
-	<h3><?php echo __('Utilisateurs &agrave; importer', 'evarisk'); ?></h3>
-	<table summary="User list to import section" cellpadding="0" cellspacing="0" >
-		<tr>
-			<td colspan="3"><a href="<?php echo EVA_MODELES_PLUGIN_URL; ?>import_users.ods" ><?php echo __('Vous pouvez t&eacute;l&eacute;charger le fichier pour construire l\'import ici', 'evarisk'); ?></a></td>
-		</tr>
-		<tr>
-			<td><?php echo __('Vous pouvez entrer directement le utilisateurs que vous souhaitez cr&eacute;er ici.<br/>Chaques utilisateur sera s&eacute;par&eacute; par un retour &agrave; la ligne', 'evarisk'); ?></td>
-			<td rowspan="2" ><?php echo __('-&nbsp;et&nbsp;/&nbsp;ou&nbsp;-', 'evarisk'); ?></td>
-			<td><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)', 'evarisk'); ?></td>
-		</tr>
-		<tr>
-			<td><textarea name="userLinesToCreate" id="userLinesToCreate" cols="70" rows="5"></textarea></td>
-			<td style="vertical-align:top;" ><input type="file" id="userFileToCreate" name="userFileToCreate" /></td>
-		</tr>
-	</table>
-
-
 	<!-- 	Submit form button	-->
-	<input type="submit" class="button-primary" name="importSubmit" id="importSubmit" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" />
+	<div class="user_rapid_import_button" ><input disabled="disabled" type="submit" class="button-primary" name="importSubmit_rapid" id="importSubmit_rapid" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" /></div>
+
+
+	<br/>
+	<br/>
+	<br/>
+
+
+	<!-- 	Start of file specification part	-->
+	<h3 class="pointer" id="import_user_form_file_container_switcher" ><span id="user_import_container_switcher_icon" class="alignleft ui-icon user_import_container_opener" >&nbsp;</span><?php echo __('Ajout d\'utilisateur depuis un fichier', 'evarisk'); ?></h3>
+	<div id="import_user_form_file_container" class="hide" >
+		<div >
+			<div><a href="<?php echo EVA_MODELES_PLUGIN_URL; ?>import_users.ods" ><?php echo __('Vous pouvez t&eacute;l&eacute;charger le fichier pour construire l\'import ici', 'evarisk'); ?></a></div>
+			<?php echo __('Chaque ligne devra respecter le format ci-apr&egrave;s&nbsp;:', 'evarisk'); ?>
+			<br/><span style="font-style:italic;font-size:10px;" ><?php echo '<span style="color:#CC0000;" >' . __('Les champs identifiants et email sont obligatoires.', 'evarisk') . '</span><br/>' . __('Vous n\'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent.', 'evarisk') . '&nbsp;&nbsp;' . __('Exemple&nbsp;', 'evarisk') . '&nbsp;<span style="font-weight:bold;" >' . __('identifiant', 'evarisk') . $separatorExample . $separatorExample . $separatorExample . $separatorExample . __('email', 'evarisk') . $separatorExample . '</span>'; ?></span>
+			<div style="margin:3px 6px;padding:12px;border:1px solid #333333;width:80%;text-align:center;" ><?php echo '<span style="color:#CC0000;" >' . __('identifiant', 'evarisk') . '</span>' . $separatorExample . __('prenom', 'evarisk') . $separatorExample . __('nom', 'evarisk') . $separatorExample . __('mot de passe', 'evarisk') . $separatorExample . '<span style="color:#CC0000;" >' . __('email', 'evarisk') . '</span>' . $separatorExample . __('role', 'evarisk'); ?></div>
+		</div>
+		<div >
+			<table style="margin:0px 36px;" summary="" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						<?php echo __('S&eacute;parateur de champs', 'evarisk'); ?>
+					</td>
+					<td>
+						<input type="text" name="fieldSeparator" id="fieldSeparator" value=";" />
+					</td>
+				</tr>
+			</table>
+		</div><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)', 'evarisk'); ?>
+		<input type="file" id="userFileToCreate" name="userFileToCreate" />
+		<!-- 	Submit form button	-->
+		<div class="user_import_button" ><input type="submit" class="button-primary" name="importSubmit" id="importSubmit" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" /></div>
+	</div>
+
 </form>
 <?php
 	}

@@ -10,8 +10,7 @@ $postBoxId = 'postBoxGeneralInformation';
 $postBoxCallbackFunction = 'getGroupGeneralInformationPostBoxBody';
 add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
 
-function getGroupGeneralInformationPostBoxBody($arguments)
-{
+function getGroupGeneralInformationPostBoxBody($arguments){
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php' ); 
 	require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
@@ -27,6 +26,10 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$saufGroupement = $groupement->nom;
 		$contenuInputTitre = $groupement->nom;
 		$contenuInputDescription = $groupement->description;
+		$contenuInputType = $groupement->typeGroupement;
+		$contenuInputSiren = $groupement->siren;
+		$contenuInputSiret = $groupement->siret;
+		$contenuInputsocial_activity_number = $groupement->social_activity_number;
 		if($groupement->id_adresse != 0 AND $groupement->id_adresse != null)
 		{
 			$address = new EvaAddress($groupement->id_adresse);
@@ -65,6 +68,9 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$contenuInputVille = '';
 		$contenuInputTelephone = '';
 		$contenuInputEffectif = '';
+		$contenuInputType = '';
+		$contenuInputSiret = '';
+		$contenuInputsocial_activity_number = '';
 		$saveOrUpdate = 'save';
 		$saufGroupement = '';
 		$grise = true;
@@ -100,6 +106,9 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 	}
 
 	$idForm = 'informationGeneralesGroupement';
+	if(isset($arguments['form_id']) && ($arguments['form_id'] != '')){
+		$idForm .= $arguments['form_id'];
+	}
 	$groupement_new .= EvaDisplayInput::ouvrirForm('post', $idForm, $idForm);
 	{//Champs cachés
 		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
@@ -111,7 +120,7 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'idsFilAriane', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false);
 	}
 
-	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = "";
+	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = $contenuAideSiret = $contenuAideSiren = $social_activity_number = "";
 	{//Nom du groupement
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
@@ -119,17 +128,23 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$idTitre = "nom_groupement";
 		$groupement_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, '', $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
+	{//Type du groupement
+		$labelInput = ucfirst(strtolower(sprintf(__("Type %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';
+		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
+		$nomChamps = "typeGroupement";
+		$idChamps = "typeGroupement";
+		$type_input_possible_value = array('' => _('Choisir', 'evarisk'), 'employer' => __('Employeur', 'evarisk'));
+		$groupement_new .= '<label for="' . $idChamps . '" >' . __('Type de groupement', 'evarisk') . '</label><br/>' . EvaDisplayInput::createComboBox($idChamps, $nomChamps, $type_input_possible_value, $contenuInputType);
+	}
 	{//Groupement père
 		$search = "`Status`='Valid' AND nom<>'Groupement Racine'";
 		$order = "nom ASC";
 		$groupements = EvaGroupement::getGroupements($search,$order);
 		unset($tabGroupement);
-		foreach($groupements as $groupement)
-		{
+		foreach($groupements as $groupement){
 			$tabGroupement[] = $groupement->nom;
 		}
-		if((isset($groupementPere)))
-		{
+		if((isset($groupementPere))){
 			$selection = $groupementPere->id;
 		}
 		$nameSelect = "groupementPere";
@@ -193,7 +208,33 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		$id = "telephone";
 		$nomChamps = "telephone";
 		$taille = 21;
-		$groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputTelephone, $contenuAideTelephone, $labelInput, $nomChamps, $grise, TELEPHONE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
+		$groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputTelephone, $contenuAideType, $labelInput, $nomChamps, $grise, TELEPHONE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
+	}
+	{//Metas informations
+		{//SIREN
+			$labelInput = ucfirst(strtolower(__("Siren", 'evarisk'))) . " :";
+			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
+			$id = "siren";
+			$nomChamps = "siren";
+			$taille = 9;
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputSiren, $contenuAideSiren, $labelInput, $nomChamps, $grise, false, $taille, '', '');
+		}
+		{//SIRET
+			$labelInput = ucfirst(strtolower(__("Siret", 'evarisk'))) . " :";
+			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
+			$id = "siret";
+			$nomChamps = "siret";
+			$taille = 14;
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputSiret, $contenuAideSiret, $labelInput, $nomChamps, $grise, false, $taille, '', '');
+		}
+		{//SOCIAL_ACTIVITY_NUMBER
+			$labelInput = ucfirst(strtolower(__("Num&eacute;ro de risque S&eacute;curit&eacute; Sociale figurant sur la notification du taux applicable &agrave; l'activit&eacute; dans laquelle est comptabilis&eacute; le salaire de la victime", 'evarisk'))) . " :";
+			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
+			$id = "social_activity_number";
+			$nomChamps = "social_activity_number";
+			$taille = 255;
+			$groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputsocial_activity_number, $contenuAidesocial_activity_number, $labelInput, $nomChamps, $grise, false, $taille, '', '');
+		}
 	}
 	{//Effectif
 		// $labelInput = ucfirst(strtolower(__("&Eacute;ffectif", 'evarisk'))) . " :";
@@ -202,6 +243,15 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 		// $nomChamps = "effectif";
 		// $taille = 10;
 		// $groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputEffectif, $contenuAideEffectif, $labelInput, $nomChamps, $grise, EFFECTIF_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
+	}
+	{//	Champs complémentaires
+		$options = get_option('digirisk_options');
+		$user_extra_fields = unserialize($options['digi_users_digirisk_extra_field']);
+		if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
+			foreach($user_extra_fields as $field){
+				$groupement_new .= EvaDisplayInput::afficherInput('text', 'user_' . $field, $user_meta[0][$field], '', __($field, 'evarisk'), 'digirisk_user_information[' . $field . ']', false, false, 10, 'regular-text', '', '');
+			}
+		}
 	}
 
 	if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $arguments['idElement']))
@@ -291,7 +341,9 @@ function getGroupGeneralInformationPostBoxBody($arguments)
 				</script>';
 		}
 		$script = $scriptEnregistrement . $scriptGeolocalisation;
-		$groupement_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $script);
+		if(!isset($arguments['dont_display_button']) || (isset($arguments['dont_display_button']) && ($arguments['dont_display_button'] == 'no'))){
+			$groupement_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $script);
+		}
 	}
 	$groupement_new .= EvaDisplayInput::fermerForm($idForm);
 

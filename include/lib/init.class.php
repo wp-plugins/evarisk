@@ -51,6 +51,16 @@ class digirisk_init
 			add_action('edit_user_profile', array('digirisk_permission', 'user_permission_management'));
 		}
 		add_action('admin_init', array('digirisk_permission', 'user_permission_set'));
+
+		/* On initialise le formulaire seulement dans la page de création/édition */
+		if (isset($_GET['page'],$_GET['action']) && $_GET['page']=='digirisk_doc' && $_GET['action']=='edit') {
+			add_action('admin_init', array('digirisk_doc', 'init_wysiwyg'));
+		}
+		/* On récupère la liste des pages documentées afin de les comparer a la page courante */
+		$pages_list = digirisk_doc::get_doc_pages_name_array();
+		if (isset($_GET['page']) && in_array($_GET['page'], $pages_list)) {
+			add_action('contextual_help', array('digirisk_doc', 'pippin_contextual_help'), 10, 3);
+		}
 	}
 
 	/**
@@ -113,6 +123,8 @@ class digirisk_init
 			// On crée le menu de gestion des droits des utilisateurs
 			add_users_page('Digirisk : ' . __('Gestion des droits des utilisateurs', 'evarisk' ), __('Droits Digirisk', 'evarisk'), 'digi_user_right_management_menu', DIGI_URL_SLUG_USER_RIGHT, array('digirisk_permission','elementMainPage'));
 
+			add_management_page('digirisk_dashboard', __('Documantation Digirisk', 'evarisk'), 'digi_documentation_management_menu', 'digirisk_doc', array('digirisk_doc', 'mydoc'));
+		
 			// On crée le menu de création de veille réglementaire
 			// add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), __( 'Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), 'digi_view_regulatory_monitoring_menu', 'digirisk_referentials', array('veilleReglementaire','veilleReglementaireMainPage'));
 		}
@@ -134,6 +146,8 @@ class digirisk_init
 		{
 			wp_enqueue_script('jquery');
 		}
+		wp_enqueue_script('jquery-form');
+		wp_enqueue_script('jquery-ui-tabs');
 
 		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
 
@@ -147,6 +161,7 @@ class digirisk_init
 		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_timepicker',  EVA_INC_PLUGIN_URL . 'js/jquery-ui-timepicker.js');
 		wp_enqueue_script('eva_wp_postbox_js', WP_CONTENT_URL . '/../wp-admin/js/postbox.js', '', EVA_PLUGIN_VERSION);
 	}
 
@@ -182,4 +197,5 @@ class digirisk_init
 			var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";
 		</script>';
 	}
+
 }

@@ -29,6 +29,60 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 
 
 
+/* -- START WORK ACCIDENT -- */
+.digi_work_accident_part_separator{	margin:9px 0px 0px; padding:9px 0px 0px; border-top:1px solid grey !important;	}
+.digi_work_accident_part_separator legend{	font-weight:bold !important; padding:9px; font-size:13px; background-color:#D0D0D0; cursor:pointer;	}
+.digi_work_accident_part_separator .searchUserToAffect{	width:60% !important;	}
+.digi_work_accident_part_separator label{	font-style:italic; }
+
+.accident_part{	margin:9px 0px;	display:table; width:100%; }
+.accident_date{	float:left; margin:0px 9px 0px 0px;	}
+.accident_details_explanation{	font-size:10px; font-style:italic;	}
+.accident_victim_work_shedule_1{	float:left; margin:0px 64px 0px 12px;	}
+.accident_declaration_table{	width:100%;	}
+#accident_details label{	font-weight:bold !important;	}
+#infirmary_register{	width:100%;	}
+.accident_hurt{	width:90%; display:table; float:left; vertical-align:middle;	}
+.accident_hurt div{	width:48%;	}
+#add_new_hurt{	float:left; vertical-align:middle; margin:10px 12px 0px;	}
+#delete_selected_hurt_container{	display:none;	}
+.delete_selected_hurt{	float:left; vertical-align:middle; margin:10px 12px 0px;	}
+.accident_declaration_by_date_prefix, .accident_declaration_by_hour_prefix{	float:left; margin:6px 0px;	}
+.accident_declaration_made_by_prefix{	float:left; margin:6px 0px; width:40%;	}
+
+.accident_witness{	width:90%; display:table; float:left; vertical-align:middle;	}
+.accident_witness div{	width:48%;	}
+.alignwitness_adress{	width:80% !important;	}
+.accident_witness{	width:100% !important;	}
+.accident_third_party{	width:100% !important;	}
+#delete_selected_witness_container{	display:none;	}
+#ui_tpicker_hour_accident_date, #ui_tpicker_minute_accident_date{	width:65% !important;	}
+#ui_tpicker_hour_accident_declaration_date, #ui_tpicker_minute_accident_declaration_date{	width:65% !important;	}
+#work_accident_user_information{	width:100%;	}
+#work_accident_user_information td{	text-align:left;	}
+.no_user_available{	text-align:center; font-weight:bold;	}
+
+#work_accident_third_party_information{	width:100%;	}
+#work_accident_witnesses_information{	width:100%;	}
+
+#save_accident{	float:right; margin:18px 0px;	}
+
+.edit_missing_information{	font-weight:bold; font-size:9px; cursor:pointer;	}
+.accident_search_params{	margin:0px 18px;	}
+.wpshop_accident_action_column{	width:10% !important;	}
+.accident_container_opener{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: 0px -211px !important; width:16px; height:16px; margin:3px 0px;	}
+.accident_container_closer{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -16px -211px !important; width:16px; height:16px; margin:3px 0px;	}
+.user_is_valid_for_accident{ color:green; text-align:center;	}
+.user_is_not_valid_for_accident{	color:red; text-align:center;	}
+.valid_accident_col{	width:15%;	}
+.valid_accident_col img{	vertical-align:middle;	}
+#victim_changer{	cursor:pointer;	}
+.accident_done_state_cell{ color:green;	}
+.accident_in_progress_state_cell{ color:orange;	}
+/* -- END WORK ACCIDENT -- */
+
+
+
 /* -- START PERMISSION -- */
 .menuUserRight{	font-style:italic; font-size:9px; font-weight:bold;	}
 .sub_module{	margin-right:5px; float:left;	}
@@ -75,10 +129,16 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .trashPicColumn{	width:10% !important;	}
 /* -- END PERMISSION -- */
 
+
+.digi_user_extra_field{	clear:both;	}
+.user_extra_fields{	clear:both; font-size:13px;	}
+#delete_digi_user_extra_field_container{	display:none;	}
 #digirisk_options_container th{	width:45% !important; padding:2px;	}
 #digirisk_options_container td{	padding:2px;	}
 #taille_photo_poste_fiche_de_poste{	width:46px;	}
 #digirisk_options_container .form-table{		margin:0px 12px !important;	}
+#digirisk_options_container .ui-tabs-panel{	padding:0px !important;	}
+#digirisk_options_container .ui-widget-header{background:none #FFFFFF !important;	}
 .digirisk_options_categories_list{	margin-left: 1.3em;	}
 .evarisk_options_explanation{	font-weight:bold; font-style:italic;	}
 
@@ -463,6 +523,24 @@ td.details table{	margin:0px 0px 24px !important;	}
 /* -- END USER GROUPS -- */
 
 
+/* -- START USER PROFIL -- */
+.user_combo{	width:27em;	}
+/* -- END USER PROFIL -- */
+
+/* -- START USER IMPORT -- */
+.digirisk_import_user_easy_form{	width:99%;	}
+.digirisk_import_user_easy_form td input[type=text], .digirisk_import_user_easy_form td select{	width:99%;	}
+.userLinesToCreate{	height:100%;	}
+.user_rapid_import_button, .user_import_button{	width:60%; margin:12px auto; text-align:right;	}
+.user_import_container_opener{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: 0px -211px !important; width:16px; height:16px; margin:3px 0px;	}
+.user_import_container_closer{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -16px -211px !important; width:16px; height:16px; margin:3px 0px;	}
+#complementary_fieds .required{	color:#000000 !important; font-weight:normal !important;	}
+#complementary_fieds table{	width:100% !important;	}
+#complementary_fieds table th{	text-align:left !important;	}
+#complementary_fieds_switcher{	font-weight:bold;	}
+/* -- END USER IMPORT -- */
+
+
 /* -- START LINK USER ELEMENT -- */
 .userListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
 .selecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
@@ -612,3 +690,10 @@ td.details table{	margin:0px 0px 24px !important;	}
 .pageHeaderButton{	float:right; padding:17px 18px 0px 0px;	}
 .cancelButton{	padding:8px 0px 0px !important;	}
 /* -- End form -- */
+
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }

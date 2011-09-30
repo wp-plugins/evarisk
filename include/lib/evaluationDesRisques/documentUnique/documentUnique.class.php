@@ -219,11 +219,11 @@ class eva_documentUnique
 								[
 									{ "bSortable": true},
 									{ "bSortable": true},
-									{ "bSortable": false, "sType": "numeric"},
+									{ "bSortable": true, "sType": "numeric"},
 									{ "bSortable": false},
 									{ "bSortable": false}
 								],
-									"aaSorting": [[1,"desc"]]});
+									"aaSorting": [[2,"desc"]]});
 								evarisk("#' . $idTable . ' tfoot").remove();
 							});
 							</script>';

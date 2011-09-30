@@ -26,69 +26,72 @@ class digirisk_options
 		register_setting('digirisk_options', 'digirisk_product_options', array('digirisk_options', 'digirisk_product_options_validator'));
 		register_setting('digirisk_db_option', 'digirisk_db_option');
 
-		{/* Declare the different options for the correctiv actions	*/
-			add_settings_section('digi_main_options', __('Options g&eacute;n&eacute;rales', 'evarisk'), array('digirisk_options', 'main_options_output'), 'digirisk_options_settings');
+		{/* Declare the general options	*/
+			add_settings_section('digi_main_options', null, array('digirisk_options', 'main_options_output'), 'digirisk_options_general');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_activ_trash', __('Activer la corbeille', 'evarisk'), array('digirisk_options', 'digi_activ_trash'), 'digirisk_options_settings', 'digi_main_options');
+			add_settings_field('digi_activ_trash', __('Activer la corbeille', 'evarisk'), array('digirisk_options', 'digi_activ_trash'), 'digirisk_options_general', 'digi_main_options');
 		}
 
 		{/* Declare the different options for the correctiv actions	*/
-			add_settings_section('digi_options_ac', __('Options pour les actions correctives', 'evarisk'), array('digirisk_options', 'options_output_ac'), 'digirisk_options_settings');
+			add_settings_section('digi_options_ac', null, array('digirisk_options', 'options_output_ac'), 'digirisk_options_correctivaction');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_ac_supervisormandatory_field', __('Responsable des t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_supervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_subsupervisormandatory_field', __('Responsable des sous-t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_subsupervisormandatory_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_changesold_field', __('Possibilit&eacute; de modifier une t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesold_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_changesubsold_field', __('Possibilit&eacute; de modifier une sous-t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesubsold_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_alertsoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che qui n\'a pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertsoldnot100_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_alertundersoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che ayant des sous-t&acirc;ches qui n\'ont pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertundersoldnot100_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_displayonlysoldtaskinrisk_field', __('Affecter uniquement les t&acirc;ches sold&eacute;es aux risques', 'evarisk'), array('digirisk_options', 'digi_ac_displayonlysoldtaskinrisk_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_advancedCA_field', __('Activer les actions correctives avanc&eacute;es', 'evarisk'), array('digirisk_options', 'digi_ac_advancedCA_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_createUtaks4PA_field', __('Cr&eacute;er une sous-t&acirc;che pour les actions prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_createUtaks4PA_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_settings', 'digi_options_ac');
-			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_settings', 'digi_options_ac');
+			add_settings_field('digi_ac_supervisormandatory_field', __('Responsable des t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_supervisormandatory_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_subsupervisormandatory_field', __('Responsable des sous-t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_subsupervisormandatory_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_changesold_field', __('Possibilit&eacute; de modifier une t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesold_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_changesubsold_field', __('Possibilit&eacute; de modifier une sous-t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesubsold_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_alertsoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che qui n\'a pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertsoldnot100_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_alertundersoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che ayant des sous-t&acirc;ches qui n\'ont pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertundersoldnot100_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_displayonlysoldtaskinrisk_field', __('Affecter uniquement les t&acirc;ches sold&eacute;es aux risques', 'evarisk'), array('digirisk_options', 'digi_ac_displayonlysoldtaskinrisk_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_advancedCA_field', __('Activer les actions correctives avanc&eacute;es', 'evarisk'), array('digirisk_options', 'digi_ac_advancedCA_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_createUtaks4PA_field', __('Cr&eacute;er une sous-t&acirc;che pour les actions prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_createUtaks4PA_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 		}
 
 		{/*	Declare the different options for the risks	*/
-			add_settings_section('digi_risk_options', __('Options pour les risques', 'evarisk'), array('digirisk_options', 'options_output_risk'), 'digirisk_options_settings');
+			add_settings_section('digi_risk_options', null, array('digirisk_options', 'options_output_risk'), 'digirisk_options_risk');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_settings', 'digi_risk_options');
+			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_risk', 'digi_risk_options');
 		}
 
 		{/*	Declare the different options for the work unit sheet	*/
-			add_settings_section('digi_fp_options', __('Options pour les fiches de poste', 'evarisk'), array('digirisk_options', 'options_output_fp'), 'digirisk_options_settings');
+			add_settings_section('digi_fp_options', null, array('digirisk_options', 'options_output_fp'), 'digirisk_options_worksheet');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_fp_picsize_field', __('Taille de la photo dans la fiche de poste (cm)', 'evarisk'), array('digirisk_options', 'digi_fp_picsize_field'), 'digirisk_options_settings', 'digi_fp_options');
+			add_settings_field('digi_fp_picsize_field', __('Taille de la photo dans la fiche de poste (cm)', 'evarisk'), array('digirisk_options', 'digi_fp_picsize_field'), 'digirisk_options_worksheet', 'digi_fp_options');
 		}
 
 		{/*	Declare the different options for the recommandation	*/
-			add_settings_section('digi_recommandation_options', __('Options pour les pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'options_output_recommandation'), 'digirisk_options_settings');
+			add_settings_section('digi_recommandation_options', null, array('digirisk_options', 'options_output_recommandation'), 'digirisk_options_recommandation');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_recommandation_efficiency_field', __('Activer l\'efficacit&eacute; des pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'digi_recommandation_efficiency_field'), 'digirisk_options_settings', 'digi_recommandation_options');
+			add_settings_field('digi_recommandation_efficiency_field', __('Activer l\'efficacit&eacute; des pr&eacute;conisations', 'evarisk'), array('digirisk_options', 'digi_recommandation_efficiency_field'), 'digirisk_options_recommandation', 'digi_recommandation_options');
 		}
 
 		{/*	Declare the different options for the users	*/
-			add_settings_section('digi_users_options', __('Options pour les utilisateurs', 'evarisk'), array('digirisk_options', 'options_output_users'), 'digirisk_options_settings');
+			add_settings_section('digi_users_options', null, array('digirisk_options', 'options_output_users'), 'digirisk_options_user');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_recommandation_efficiency_field', __('Domaine par d&eacute;faut pour les e-mail utilisateurs (sans @)', 'evarisk'), array('digirisk_options', 'digi_users_emaildomain_field'), 'digirisk_options_settings', 'digi_users_options');
+			add_settings_field('digi_users_emaildomain_field', __('Domaine par d&eacute;faut pour les e-mail utilisateurs (sans @)', 'evarisk'), array('digirisk_options', 'digi_users_emaildomain_field'), 'digirisk_options_user', 'digi_users_options');
+			// add_settings_field('digi_users_digirisk_extra_field', __('Champs suppl&eacute;mentaires pour le logiciel Digirisk', 'evarisk'), array('digirisk_options', 'digi_users_digirisk_extra_field'), 'digirisk_options_user', 'digi_users_options');
 		}
 
 		{/*	Declare the different options for the products if plugin exists and is active	*/
 			if (is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))
 			{
-				add_settings_section('digi_product_options', __('Options pour les produits', 'evarisk'), array('digirisk_options', 'options_output_products'), 'digirisk_options_settings');
+				add_settings_section('digi_product_options', null, array('digirisk_options', 'options_output_products'), 'digirisk_options_product');
 			/*	Add the different field for current section	*/
-				add_settings_field('digi_product_categories_field', __('Cat&eacute;gorie(s) de produits &agrave; afficher pour affectation aux &eacute;l&eacute;ments', 'evarisk'), array('digirisk_options', 'digi_product_categories_field'), 'digirisk_options_settings', 'digi_product_options');
-				add_settings_field('digi_product_status_field', __('Statuts des produits affich&eacute;s', 'evarisk'), array('digirisk_options', 'digi_product_status_field'), 'digirisk_options_settings', 'digi_product_options');
-				add_settings_field('digi_product_uncategorized_field', __('Afficher les produits non affect&eacute;s aux cat&eacute;gories', 'evarisk'), array('digirisk_options', 'digi_product_uncategorized_field'), 'digirisk_options_settings', 'digi_product_options');
+				add_settings_field('digi_product_categories_field', __('Cat&eacute;gorie(s) de produits &agrave; afficher pour affectation aux &eacute;l&eacute;ments', 'evarisk'), array('digirisk_options', 'digi_product_categories_field'), 'digirisk_options_product', 'digi_product_options');
+				add_settings_field('digi_product_status_field', __('Statuts des produits affich&eacute;s', 'evarisk'), array('digirisk_options', 'digi_product_status_field'), 'digirisk_options_product', 'digi_product_options');
+				add_settings_field('digi_product_uncategorized_field', __('Afficher les produits non affect&eacute;s aux cat&eacute;gories', 'evarisk'), array('digirisk_options', 'digi_product_uncategorized_field'), 'digirisk_options_product', 'digi_product_options');
 			}
 		}
 
 		{/*	Declare the different options for tree management	*/
-			add_settings_section('digi_tree_options', __('Options pour les arbres', 'evarisk'), array('digirisk_options', 'options_output_tree'), 'digirisk_options_settings');
+			add_settings_section('digi_tree_options', null, array('digirisk_options', 'options_output_tree'), 'digirisk_options_arbo');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_tree_recreation_dialog', __('Afficher la bo&icirc;te de dialogue lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_dialog'), 'digirisk_options_settings', 'digi_tree_options');
-			add_settings_field('digi_tree_recreation_default', __('Choix par d&eacute;fault lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_default'), 'digirisk_options_settings', 'digi_tree_options');
-			add_settings_field('digi_tree_element_identifier', __('Identifiants pour les diff&eacute;rents &eacute;l&eacute;ments dans les arbres', 'evarisk'), array('digirisk_options', 'digi_tree_element_identifier'), 'digirisk_options_settings', 'digi_tree_options');
+			add_settings_field('digi_tree_recreation_dialog', __('Afficher la bo&icirc;te de dialogue lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_dialog'), 'digirisk_options_arbo', 'digi_tree_options');
+			add_settings_field('digi_tree_recreation_default', __('Choix par d&eacute;fault lorsqu\'on tente de cr&eacute;er un &eacute;l&eacute;ment d&eacute;j&agrave; existant mais supprim&eacute;', 'evarisk'), array('digirisk_options', 'digi_tree_recreation_default'), 'digirisk_options_arbo', 'digi_tree_options');
+			add_settings_field('digi_tree_element_identifier', __('Identifiants pour les diff&eacute;rents &eacute;l&eacute;ments dans les arbres', 'evarisk'), array('digirisk_options', 'digi_tree_element_identifier'), 'digirisk_options_arbo', 'digi_tree_options');
+			// add_settings_field('digi_groupement_extra_field', __('Champs suppl&eacute;mentaires pour les groupements', 'evarisk'), array('digirisk_options', 'digi_groupement_extra_field'), 'digirisk_options_arbo', 'digi_tree_options');
+			// add_settings_field('digi_workunit_extra_field', __('Champs suppl&eacute;mentaires pour les unit&eacute;s de travail', 'evarisk'), array('digirisk_options', 'digi_workunit_extra_field'), 'digirisk_options_arbo', 'digi_tree_options');
 		}
 	}
 
@@ -103,21 +106,42 @@ class digirisk_options
 ?>
 <div id="digirisk_options_container" >
 	<form action="options.php" method="post">
-
-	<?php settings_fields('digirisk_options'); ?>
-	<?php do_settings_sections('digirisk_options_settings'); ?>
-
-	<br/><br/>
+	<div id="options_tabs" >
+		<ul>
+			<li><a href="#digirisk_options_general" title="optionsContent" id="tabOptions_General" ><?php _e('G&eacute;n&eacute;ral', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_user" title="optionsContent" id="tabOptions_User" ><?php _e('Utilisateurs', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_arbo" title="optionsContent" id="tabOptions_Arbo" ><?php _e('Arborescence', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_risk" title="optionsContent" id="tabOptions_Risk" ><?php _e('Risques', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_worksheet" title="optionsContent" id="tabOptions_WorkSheet" ><?php _e('Fiches de postes', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_correctivaction" title="optionsContent" id="tabOptions_CActions" ><?php _e('Actions correctives', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_recommandation" title="optionsContent" id="tabOptions_Recommandation" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_options_product" title="optionsContent" id="tabOptions_Product" ><?php _e('Produits', 'evarisk'); ?></a></li>
+		</ul>
+		<div id="digirisk_options_general" ><?php do_settings_sections('digirisk_options_general'); ?></div>
+		<div id="digirisk_options_user" ><?php do_settings_sections('digirisk_options_user'); ?></div>
+		<div id="digirisk_options_arbo" ><?php do_settings_sections('digirisk_options_arbo'); ?></div>
+		<div id="digirisk_options_risk" ><?php do_settings_sections('digirisk_options_risk'); ?></div>
+		<div id="digirisk_options_worksheet" ><?php do_settings_sections('digirisk_options_worksheet'); ?></div>
+		<div id="digirisk_options_correctivaction" ><?php do_settings_sections('digirisk_options_correctivaction'); ?></div>
+		<div id="digirisk_options_recommandation" ><?php do_settings_sections('digirisk_options_recommandation'); ?></div>
+		<div id="digirisk_options_product" ><?php do_settings_sections('digirisk_options_product'); ?></div>
+	</div>
 <?php
+		settings_fields('digirisk_options');
 if(current_user_can('digi_edit_option'))
 {
 ?>
-	<input class="button-primary" name="Submit" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" />
+	<input class="button-primary alignright" name="Submit" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" />
 <?php
 }
 ?>
 	</form>
 </div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#options_tabs").tabs();
+	});
+</script>
 <?php
 		echo EvaDisplayDesign::afficherFinPage();
 	}
@@ -134,6 +158,8 @@ if(current_user_can('digi_edit_option'))
 		$newinput['digi_tree_recreation_dialog'] = $input['digi_tree_recreation_dialog'];
 		$newinput['digi_tree_recreation_default'] = $input['digi_tree_recreation_default'];
 		$newinput['digi_tree_element_identifier'] = serialize($input['digi_tree_element_identifier']);
+		$newinput['digi_groupement_extra_field'] = serialize($input['digi_groupement_extra_field']);
+		$newinput['digi_workunit_extra_field'] = serialize($input['digi_workunit_extra_field']);
 
 		return $newinput;
 	}
@@ -185,6 +211,7 @@ if(current_user_can('digi_edit_option'))
 		$newinput['recommandation_efficiency_activ'] = trim($input['recommandation_efficiency_activ']);
 
 		$newinput['emailDomain'] = trim(str_replace('@', '', $input['emailDomain']));
+		$newinput['digi_users_digirisk_extra_field'] = serialize($input['digi_users_digirisk_extra_field']);
 
 		return $newinput;
 	}
@@ -489,6 +516,61 @@ if(current_user_can('digi_edit_option'))
 		{
 			echo $options['emailDomain'];
 		}
+	}	
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_users_digirisk_extra_field()
+	{
+		$userField = '';
+		global $userWorkAccidentMandatoryFields;
+		$options = get_option('digirisk_options');
+		// $userField .= __('Liste des champs obligatoires pour les utilisateurs', 'evarisk') . '<div class="clear" >';
+		// foreach($userWorkAccidentMandatoryFields as $accident_mandatory_fields){
+			// $userField .= '&nbsp;-&nbsp;<span class="required" >' . __($accident_mandatory_fields, 'evarisk') . '</span>';
+		// }
+		// $userField .= '</div>';
+		if(current_user_can('digi_edit_option'))
+		{
+			$user_extra_fields = unserialize($options['digi_users_digirisk_extra_field']);
+			if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
+				$userField .= __('Liste des champs suppl&eacute;mentaires pour les utilisateurs', 'evarisk') . '
+				<div class="clear user_extra_fields" >' . implode(', ', $user_extra_fields) . '</div>';
+			}
+			$userField .= '
+				<div id="digi_user_extra_field_container" >
+					<div id="digi_user_extra_field" class="digi_user_extra_field" >'
+						. EvaDisplayInput::afficherInput('text', '', '', '', null, 'digirisk_options[digi_users_digirisk_extra_field][]', false, false, 61, '', '', '100%', '', 'left', true) . '
+					</div>
+					<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . __('Ajouter un champs', 'evarisk') . '" id="add_new_user_field" />
+				</div>
+				<div id="delete_digi_user_extra_field_container" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimez ce champs', 'evarisk') . '" id="delete_selected_digi_user_extra_field" class="delete_selected_digi_user_extra_field" /></div>
+				<div id="digi_user_extra_field_details" >&nbsp;</div>
+				<script type="text/javascript" >
+					evarisk(document).ready(function(){
+						jQuery("#add_new_user_field").click(function(){
+							lineNumber = jQuery("#digi_user_extra_field_details div.digi_user_extra_field").length;
+							jQuery("#digi_user_extra_field_details").append(jQuery("#digi_user_extra_field_container").html());
+							jQuery("#digi_user_extra_field_details #add_new_user_field").remove();
+							jQuery("#digi_user_extra_field_details #digi_user_extra_field").attr("id", "user_field_" + lineNumber);
+							jQuery("#digi_user_extra_field_details").append(jQuery("#delete_digi_user_extra_field_container").html());
+							jQuery("#digi_user_extra_field_details #delete_selected_digi_user_extra_field").attr("onclick", "remove_current_user_field_line(" + lineNumber + ");");
+							jQuery("#digi_user_extra_field_details #delete_selected_digi_user_extra_field").attr("id", "delete_selected_digi_user_extra_field_" + lineNumber);
+						});
+					});
+
+					function remove_current_user_field_line(line_number){
+						jQuery("#delete_selected_digi_user_extra_field_" + line_number).remove();
+						jQuery("#user_field_" + line_number).remove();
+					}
+				</script>';
+		}
+		else
+		{
+			$userField .= $options['digi_users_digirisk_extra_field'];
+		}
+
+		echo $userField;
 	}
 
 	/**
@@ -637,6 +719,106 @@ if(current_user_can('digi_edit_option'))
 		$optionOutput .= '</table>';
 
 		echo $optionOutput;
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_groupement_extra_field()
+	{
+		$groupementField = '';
+		global $userWorkAccidentMandatoryFields;
+		$options = get_option('digirisk_tree_options');
+		if(current_user_can('digi_edit_option'))
+		{
+			$user_extra_fields = unserialize($options['digi_groupement_extra_field']);
+			if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
+				$groupementField .= __('Liste des champs suppl&eacute;mentaires pour les groupements', 'evarisk') . '
+				<div class="clear user_extra_fields" >' . implode(', ', $user_extra_fields) . '</div>';
+			}
+			$groupementField .= '
+				<div id="digi_gpt_extra_field_container" >
+					<div id="digi_gpt_extra_field" class="digi_gpt_extra_field" >'
+						. EvaDisplayInput::afficherInput('text', '', '', '', null, 'digirisk_tree_options[digi_groupement_extra_field][]', false, false, 61, '', '', '100%', '', 'left', true) . '
+					</div>
+					<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . __('Ajouter un champs', 'evarisk') . '" id="add_gpt_new_field" />
+				</div>
+				<div id="delete_digi_gpt_extra_field_container" class="hide" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimez ce champs', 'evarisk') . '" id="delete_selected_digi_gpt_extra_field" class="delete_selected_digi_gpt_extra_field" /></div>
+				<div id="digi_gpt_extra_field_details" >&nbsp;</div>
+				<script type="text/javascript" >
+					evarisk(document).ready(function(){
+						jQuery("#add_gpt_new_field").click(function(){
+							lineNumber = jQuery("#digi_gpt_extra_field_details div.digi_gpt_extra_field").length;
+							jQuery("#digi_gpt_extra_field_details").append(jQuery("#digi_gpt_extra_field_container").html());
+							jQuery("#digi_gpt_extra_field_details #add_gpt_new_field").remove();
+							jQuery("#digi_gpt_extra_field_details #digi_gpt_extra_field").attr("id", "gpt_field_" + lineNumber);
+							jQuery("#digi_gpt_extra_field_details").append(jQuery("#delete_digi_gpt_extra_field_container").html());
+							jQuery("#digi_gpt_extra_field_details #delete_selected_digi_gpt_extra_field").attr("onclick", "remove_current_user_field_line(" + lineNumber + ");");
+							jQuery("#digi_gpt_extra_field_details #delete_selected_digi_gpt_extra_field").attr("id", "delete_selected_digi_gpt_extra_field_" + lineNumber);
+						});
+					});
+
+					function remove_current_user_field_line(line_number){
+						jQuery("#delete_selected_digi_gpt_extra_field_" + line_number).remove();
+						jQuery("#gpt_field_" + line_number).remove();
+					}
+				</script>';
+		}
+		else
+		{
+			$groupementField .= $options['digi_groupement_extra_field'];
+		}
+
+		echo $groupementField;
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_workunit_extra_field()
+	{
+		$groupementField = '';
+		global $userWorkAccidentMandatoryFields;
+		$options = get_option('digirisk_tree_options');
+		if(current_user_can('digi_edit_option'))
+		{
+			$user_extra_fields = unserialize($options['digi_workunit_extra_field']);
+			if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
+				$groupementField .= __('Liste des champs suppl&eacute;mentaires pour les unit&eacute;s de travail', 'evarisk') . '
+				<div class="clear user_extra_fields" >' . implode(', ', $user_extra_fields) . '</div>';
+			}
+			$groupementField .= '
+				<div id="digi_ut_extra_field_container" >
+					<div id="digi_ut_extra_field" class="digi_ut_extra_field" >'
+						. EvaDisplayInput::afficherInput('text', '', '', '', null, 'digirisk_tree_options[digi_workunit_extra_field][]', false, false, 61, '', '', '100%', '', 'left', true) . '
+					</div>
+					<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . __('Ajouter un champs', 'evarisk') . '" id="add_ut_new_field" />
+				</div>
+				<div id="delete_digi_ut_extra_field_container" class="hide" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimez ce champs', 'evarisk') . '" id="delete_selected_digi_ut_extra_field" class="delete_selected_digi_ut_extra_field" /></div>
+				<div id="digi_ut_extra_field_details" >&nbsp;</div>
+				<script type="text/javascript" >
+					evarisk(document).ready(function(){
+						jQuery("#add_ut_new_field").click(function(){
+							lineNumber = jQuery("#digi_ut_extra_field_details div.digi_ut_extra_field").length;
+							jQuery("#digi_ut_extra_field_details").append(jQuery("#digi_ut_extra_field_container").html());
+							jQuery("#digi_ut_extra_field_details #add_ut_new_field").remove();
+							jQuery("#digi_ut_extra_field_details #digi_ut_extra_field").attr("id", "ut_field_" + lineNumber);
+							jQuery("#digi_ut_extra_field_details").append(jQuery("#delete_digi_ut_extra_field_container").html());
+							jQuery("#digi_ut_extra_field_details #delete_selected_digi_ut_extra_field").attr("onclick", "remove_current_ut_field_line(" + lineNumber + ");");
+							jQuery("#digi_ut_extra_field_details #delete_selected_digi_ut_extra_field").attr("id", "delete_selected_digi_ut_extra_field_" + lineNumber);
+						});
+					});
+
+					function remove_current_ut_field_line(line_number){
+						jQuery("#delete_selected_digi_ut_extra_field_" + line_number).remove();
+						jQuery("#ut_field_" + line_number).remove();
+					}
+				</script>';
+		}
+		else
+		{
+			$groupementField .= $options['digi_workunit_extra_field'];
+		}
+
+		echo $groupementField;
 	}
 
 	/**
