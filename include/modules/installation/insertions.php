@@ -1222,43 +1222,15 @@ ou irritantes');";
 		}	
 		case 54:
 		{
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '', 'permission' => 'digi_view_correctiv_action'));
-			
+			//DELETE FROM VERSION 60
+
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}	
 		case 55:
 		{
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task', 'permission' => 'digi_view_task_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action', 'permission' => 'digi_view_action_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'risk', 'permission_sub_module' => '', 'permission' => 'digi_view_risk_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => '', 'permission' => 'digi_view_danger_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => 'category', 'permission' => 'digi_view_danger_category_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => '', 'permission' => 'digi_view_recommandation_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category', 'permission' => 'digi_view_recommandation_category_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement', 'permission' => 'digi_view_groupement_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite', 'permission' => 'digi_view_unite_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'method', 'permission_sub_module' => '', 'permission' => 'digi_view_method_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'user', 'permission' => 'digi_view_user_group_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator', 'permission' => 'digi_view_evaluator_group_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'role', 'permission' => 'digi_view_user_role_trash'));
+			//DELETE FROM VERSION 60
 
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task', 'permission' => 'digi_edit_task_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action', 'permission' => 'digi_edit_action_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'risk', 'permission_sub_module' => '', 'permission' => 'digi_edit_risk_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'danger', 'permission_sub_module' => '', 'permission' => 'digi_edit_danger_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'danger', 'permission_sub_module' => 'category', 'permission' => 'digi_edit_danger_category_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'recommandation', 'permission_sub_module' => '', 'permission' => 'digi_edit_recommandation_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category', 'permission' => 'digi_edit_recommandation_category_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement', 'permission' => 'digi_edit_groupement_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite', 'permission' => 'digi_edit_unite_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'method', 'permission_sub_module' => '', 'permission' => 'digi_edit_method_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'user', 'permission' => 'digi_edit_user_group_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator', 'permission' => 'digi_edit_evaluator_group_trash'));
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'role', 'permission' => 'digi_edit_user_role_trash'));
-
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'moderated', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'documentation', 'permission_sub_module' => '', 'permission' => 'digi_documentation_management_menu'));
-			
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
@@ -1279,8 +1251,13 @@ ou irritantes');";
 		}
 		case 59:
 		{
-			$wpdb->insert(DIGI_DBT_PERMISSION, array('id' => '', 'status' => 'valid', 'creation_date' => date('Y-m-d H:i:s'), 'set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'documentation', 'permission_sub_module' => '', 'permission' => 'digi_documentation_management_menu'));
+			//DELETE FROM VERSION 60
 
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 60:
+		{
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}

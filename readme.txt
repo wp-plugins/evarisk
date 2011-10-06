@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 5.1.4.1
+Stable tag: 5.1.4.2
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,23 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.4.2 =
+
+Am&eacute;liorations
+
+* L'onglet des options pour les produits ne s'affiche plus si le plugin wpshop n'est pas activ&eacute; 
+* Affichage de la date d'ajout d'une t&acirc;ches et d'une sous-t&acirc;ches qui peut &ecirc;tre diff&eacute;rente de la date de d&eacute;but 
+* Modification de la façon de choisir un responsable pour les t&acirc;ches et actions (Reprise du bloc standard de s&eacute;lection d'un utilisateur) 
+
+Corrections
+
+* Impossibilit&eacute; de cr&eacute;er un r&ocirc;le dans digirisk sans choisir de r&ocirc;le existant &agrave; copier 
+* Interface d'import des utilisateurs (Taille de l'interface pour les petites r&eacute;solutions d'&eacute;cran / Modification du comportement du bouton d'import suivant le champs texte / Suppression des accents et majuscules aux e mail et identifiant des utilisateurs import&eacute;s / Correction du fichier mod&egrave;le d'import avec les champs pour les accidents du travail) 
+* Changement du comportement de l'interface d'&eacute;dition d'un utilisateurs si tous les champs n&eacute;cessaires aux accidents ne sont pas remplis 
+* Affichage des noms des &eacute;l&eacute;ments dans l'arborescence principale quand un caract&egrave;res sp&eacute;cial &eacute;tait pr&eacute;sent 
+* Message d'erreur lors de l'envoie d'une photo (Le message "Failed" s'affichait alors que la photo &eacute;tait bien envoy&eacute;e)
 
 
 = Version 5.1.4.1 =

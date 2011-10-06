@@ -29,6 +29,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$contenuInputResponsable = $activite->getidResponsable();
 		$contenuInputRealisateur = $activite->getidSoldeur();
 		$ProgressionStatus = $activite->getProgressionStatus();
+		$firstInsert = $activite->getFirstInsert();
 		$grise = false;
 		$idPere = $activite->getRelatedTaskId();
 		$saveOrUpdate = 'update';
@@ -42,6 +43,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$contenuInputRealisateur = '';
 		$contenuInputResponsable = '';
 		$ProgressionStatus = '';
+		$firstInsert = '';
 		$contenuInputAvancement = 0;
 		$idPere = $arguments['idPere'];
 		$grise = true;
@@ -68,6 +70,9 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$activite_new = $activite_new . EvaDisplayInput::afficherInput('text', $idTitre, html_entity_decode($contenuInputTitre, ENT_NOQUOTES, 'UTF-8'), $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
 	{//Date de début de l'action
+		if($firstInsert != ''){
+			$activite_new .='<br/>' . __('Ajout&eacute;e le', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $firstInsert, true) . '<br/><br/>';
+		}
 		$contenuAideTitre = "";
 		$id = "date_debut_activite";
 		$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de d&eacute;but %s", 'evarisk'), __("de l'action",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionStart" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
@@ -119,31 +124,70 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		{
 			$labelInput .= '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span>';
 		}
-		$labelInput .= ' : <span class="fieldInfo" >' . sprintf(__('(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le menu %s du plugin)', 'evarisk'), '<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=' . EVA_PLUGIN_DIR .'/include/modules/options/options.php" target="optionPage" >' . __('Options', 'evarisk') . '</a>') . '</span>'; 
+		$labelInput .= ' : <span class="fieldInfo" >' . sprintf(__('(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le menu %s du plugin)', 'evarisk'), '<a href="' . get_bloginfo('siteurl') . '/wp-admin/options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION . '#digirisk_options_correctivaction" target="optionPage" >' . __('Options', 'evarisk') . '</a>') . '</span>'; 
 		$id = "responsable_activite";
 		$nomChamps = "responsable_activite";
 
-		$tmpListeUtilisateurs = $listeUtilisateurs = $tabValue = $tabDisplay = $selectedUser = array();
-		$tmpListeUtilisateurs = evaUser::getCompleteUserList();
-		$listeUtilisateurs[0] = '';
-		$tabValue[0] = '0';
-		$tabDisplay[0] = __('Choisissez...', 'evarisk');
-		$i=1;
-		foreach($tmpListeUtilisateurs as $idUtilisateur => $informationsUtilisateurs)
-		{
-			$listeUtilisateurs[] = $informationsUtilisateurs;
-			if($idUtilisateur > 0)
-			{
-				$tabValue[$i] = $idUtilisateur;
-				$tabDisplay[$i] = $informationsUtilisateurs['user_lastname'] . ' ' . $informationsUtilisateurs['user_firstname'];
-				if($idUtilisateur == $contenuInputResponsable)
-				{
-					$selectedUser = $informationsUtilisateurs;
-				}
-				$i++;
-			}
+		// $tmpListeUtilisateurs = $listeUtilisateurs = $tabValue = $tabDisplay = $selectedUser = array();
+		// $tmpListeUtilisateurs = evaUser::getCompleteUserList();
+		// $listeUtilisateurs[0] = '';
+		// $tabValue[0] = '0';
+		// $tabDisplay[0] = __('Choisissez...', 'evarisk');
+		// $i=1;
+		// foreach($tmpListeUtilisateurs as $idUtilisateur => $informationsUtilisateurs)
+		// {
+			// $listeUtilisateurs[] = $informationsUtilisateurs;
+			// if($idUtilisateur > 0)
+			// {
+				// $tabValue[$i] = $idUtilisateur;
+				// $tabDisplay[$i] = $informationsUtilisateurs['user_lastname'] . ' ' . $informationsUtilisateurs['user_firstname'];
+				// if($idUtilisateur == $contenuInputResponsable)
+				// {
+					// $selectedUser = $informationsUtilisateurs;
+				// }
+				// $i++;
+			// }
+		// }
+		// EvaDisplayInput::afficherComboBox($listeUtilisateurs, $id, $labelInput, $nomChamps, '', $selectedUser, $tabValue, $tabDisplay);
+
+		$activite_new .= '<br/><label for="search_user_responsable_' . $arguments['tableElement'] . '" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false) . '<div id="responsible_name" >';
+		$search_input_state = '';
+		$change_input_state = 'hide';
+		if($contenuInputResponsable > 0){
+			$search_input_state = 'hide';
+			$change_input_state = '';
+			$responsible = evaUser::getUserInformation($contenuInputResponsable);
+			$activite_new .= ELEMENT_IDENTIFIER_U . $contenuInputResponsable . '&nbsp;-&nbsp;' . $responsible[$contenuInputResponsable]['user_lastname'] . ' ' . $responsible[$contenuInputResponsable]['user_firstname'];
 		}
-		$activite_new .= '<br/>' . EvaDisplayInput::afficherComboBox($listeUtilisateurs, $id, $labelInput, $nomChamps, '', $selectedUser, $tabValue, $tabDisplay);
+		else{
+			$activite_new .= '&nbsp;';
+		}
+		$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
+			jQuery(this).val("");
+			jQuery(".completeUserListActionResponsible").show();
+		});
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur(function(){
+			jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+		});
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '");
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").result(function(event, data, formatted){
+			jQuery("#responsable_activite").val(data[1]);
+			jQuery("#responsible_name").html(data[0]);
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+			jQuery(".completeUserListActionResponsible").hide();
+			jQuery(".searchUserToAffect").hide();
+			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+		});
+		jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
+			jQuery(this).hide();
+		});
+	});
+</script><br class="clear" /><br/><br/><br/>';
 	}
 	{//Description
 		$contenuAideDescription = "";
@@ -151,7 +195,7 @@ function getActivityGeneralInformationPostBoxBody($arguments)
 		$id = "description_activite";
 		$nomChamps = "description";
 		$rows = 5;
-		$activite_new = $activite_new . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, $rows);
+		$activite_new .= '<br/>' . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, $rows);
 	}
 	{//Bouton Mettre en cours
 		$idBouttonSetInProgress = 'setActivityInProgress';

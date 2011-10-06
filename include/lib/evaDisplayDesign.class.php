@@ -1488,6 +1488,7 @@ class EvaDisplayDesign {
 					}
 					$trouveElement = count($elements_fils) + count($subElements);
 
+					$element->nom = stripslashes($element->nom);
 					switch($table)
 					{
 						case TABLE_CATEGORIE_DANGER :

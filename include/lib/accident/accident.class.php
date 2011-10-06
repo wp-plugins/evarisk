@@ -645,7 +645,7 @@ class digirisk_accident
 				$accident_form_part .= '
 					<span class="searchUserInput ui-icon" >&nbsp;</span>
 					<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="searchUser_accident_' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><!-- <div class="accident_search_params clear" ><input type="checkbox" name="accident_victim_search_in_all_user" id="accident_victim_search_in_all_user" value="yes" /><input type="hidden" name="search_in_all_user_' . $tableElement . '" id="search_in_all_user_' . $tableElement . '" value="no" />' . __('Chercher dans tous les utilisteurs', 'evarisk') . '</div> -->
-					<div id="completeUserList' . DIGI_DBT_ACCIDENT . '" class="completeUserList clear" >' . self::afficheListeUtilisateurTable(DIGI_DBT_ACCIDENT, $idElement) . '</div>
+					<div id="completeUserList' . DIGI_DBT_ACCIDENT . '" class="completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_ACCIDENT, $idElement) . '</div>
 				</div>';
 
 				$accident_form_part .= '
@@ -847,7 +847,7 @@ class digirisk_accident
 				<span class="alignright" ><a href="' .  admin_url('users.php?page=digirisk_import_users') . '" >' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
 				}
 				$accident_form_part .= '
-				<div id="completeUserList' . DIGI_DBT_ACCIDENT . 'witness" class="completeUserList clear" >' . self::afficheListeUtilisateurTable(DIGI_DBT_ACCIDENT . 'witness', $idElement) . '</div>
+				<div id="completeUserList' . DIGI_DBT_ACCIDENT . 'witness" class="completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_ACCIDENT . 'witness', $idElement) . '</div>
 				<div id="search_accident_witness_details" class="clear" >' . $witness_list . '</div>
 				<br/><br/>
 				<div>
@@ -892,7 +892,7 @@ class digirisk_accident
 					<span class="alignright" ><a href="' .  admin_url('users.php?page=digirisk_import_users') . '" >' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
 					}
 					$accident_form_part .= '
-					<div id="completeUserList' . DIGI_DBT_ACCIDENT . 'third_party" class="completeUserList clear" >' . self::afficheListeUtilisateurTable(DIGI_DBT_ACCIDENT . 'third_party', $idElement) . '</div>
+					<div id="completeUserList' . DIGI_DBT_ACCIDENT . 'third_party" class="completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_ACCIDENT . 'third_party', $idElement) . '</div>
 					<div id="search_accident_third_party_details" class="clear" >' . $third_party_list . '</div>
 				</div>
 			</div>
@@ -1129,126 +1129,6 @@ class digirisk_accident
 		}
 
 		return $user_form;
-	}
-	/**
-	*	Output a table with the different users binded to an element
-	*
-	*	@param mixed $tableElement The element type we want to get the user list for
-	*	@param integer $idElement The element identifier we want to get the user list for
-	*
-	*	@return mixed $utilisateursMetaBox The entire html code to output
-	*/
-	function afficheListeUtilisateurTable($tableElement, $idElement){
-		$utilisateursMetaBox = '';
-		$idBoutonEnregistrer = 'save_group' . $tableElement;
-
-		$idTable = 'listeIndividus' . $tableElement . $idElement;
-		$titres = array( '', ucfirst(strtolower(__('Id.', 'evarisk'))), ucfirst(strtolower(__('Nom', 'evarisk'))), ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk'))), ucfirst(strtolower(__('Inscription', 'evarisk'))), ucfirst(strtolower(__('Valide accident', 'evarisk'))));
-		unset($lignesDeValeurs);
-
-		//on récupère les utilisateurs déjà affectés à l'élément en cours.
-		$listeUtilisateursLies = array();
-		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
-			foreach($utilisateursLies as $utilisateur){
-				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
-			}
-		}
-		$listeUtilisateurs = evaUser::getCompleteUserList();
-		if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0)){
-			foreach($listeUtilisateurs as $utilisateur){
-				unset($valeurs);
-				$idLigne = $tableElement . $idElement . 'listeUtilisateurs' . $utilisateur['user_id'];
-				$idCbLigne = 'cb_' . $idLigne;
-				$moreLineClass = 'userIsNotLinked';
-				if(isset($listeUtilisateursLies[$utilisateur['user_id']])){
-					$moreLineClass = 'userIsLinked';
-				}
-				$valeurs[] = array('value'=>'<span id="actionButton' . $tableElement . 'UserLink' . $utilisateur['user_id'] . '" class="buttonActionUserLinkList ' . $moreLineClass . '  ui-icon pointer" >&nbsp;</span>');
-				$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_U . $utilisateur['user_id']);
-				$valeurs[] = array('value'=>$utilisateur['user_lastname']);
-				$valeurs[] = array('value'=>$utilisateur['user_firstname']);
-				$valeurs[] = array('value'=>mysql2date('d M Y', $utilisateur['user_registered'], true));
-				$user_meta = get_user_meta($utilisateur['user_id'], 'digirisk_information', false);
-				$user_is_valid_for_accident = __('Non', 'evarisk');
-				if(current_user_can('edit_users')){
-					$user_is_valid_for_accident .= '
-					<a target="digi_user_edit" href="' . admin_url('user-edit.php?user_id=' . $utilisateur['user_id']) . '#digi_user_informations" ><img src="' . str_replace('.png', '_vs.png', PICTO_EDIT) . '" title="' . __('&Eacute;diter l\'utilisateur', 'evarisk') . '" alt="edit user" /></a>';
-				}
-				$user_is_valid_for_accident_class = 'user_is_not_valid_for_accident';
-				if(isset($user_meta[0]) && (isset($user_meta[0]['user_is_valid_for_accident']) && ($user_meta[0]['user_is_valid_for_accident'] == 'yes'))){
-					$user_is_valid_for_accident = __('Oui', 'evarisk');
-					$user_is_valid_for_accident_class = 'user_is_valid_for_accident';
-				}
-				$valeurs[] = array('value'=>$user_is_valid_for_accident, 'class'=>$user_is_valid_for_accident_class);
-				$lignesDeValeurs[] = $valeurs;
-				$idLignes[] = $idLigne;
-			}
-		}
-		else{
-			$valeurs[] = array('value'=>'');
-			$valeurs[] = array('value'=>'');
-			$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
-			$valeurs[] = array('value'=>'');
-			$valeurs[] = array('value'=>'');
-			$valeurs[] = array('value'=>'');
-			$lignesDeValeurs[] = $valeurs;
-			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
-		}
-
-		$classes = array('addUserButtonDTable','userIdentifierColumn','','','','valid_accident_col');
-		switch($tableElement){
-			case DIGI_DBT_ACCIDENT . 'witness':
-			{
-				$user_infos_container = 'accident_witness_" + currentId + "';
-				$user_infos_act = 'loadWitnessInfo';
-				$user_act_add_container = 'jQuery("#search_accident_witness_details").append("<div id=\'accident_witness_" + currentId  + "\' ></div>");';
-			}
-			break;
-			case DIGI_DBT_ACCIDENT . 'third_party':
-			{
-				$user_infos_container = 'accident_third_party_" + currentId + "';
-				$user_infos_act = 'loadThirdPartyInfo';
-				$user_act_add_container = 'jQuery("#search_accident_third_party_details").append("<div id=\'accident_third_party_" + currentId  + "\' ></div>");';
-			}
-			break;
-			default:
-				$user_act_add_container = 'jQuery("#' . $user_infos_container . '").html(jQuery("#loadingImg").html());';
-				$user_infos_container = 'work_accident_user_details';
-				$user_infos_act = 'loadUserInfo';
-			break;
-		}
-		$script = 
-'<script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable({
-			"bAutoWidth": false,
-			"bInfo": false,
-			"bPaginate": false,
-			"bFilter": false,
-			"aaSorting": [[5,"desc"]]
-		});
-		evarisk("#' . $idTable . '").children("tfoot").remove();
-		evarisk("#' . $idTable . '").removeClass("dataTables_wrapper");
-		evarisk("#completeUserList' . $tableElement . ' .odd, #completeUserList' . $tableElement . ' .even").click(function(){
-			if(evarisk(this).children("td:first").children("span").hasClass("userIsNotLinked")){
-				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
-				' . $user_act_add_container . '
-				jQuery("#' . $user_infos_container . '").load(EVA_AJAX_FILE_URL,{
-					"post":"true",
-					"act":"' . $user_infos_act . '",
-					"id_user":currentId
-				});
-				jQuery("#victim_selector").hide();
-				jQuery("#victim_changer").show();
-			}
-		});
-	});
-</script>';
-
-		$utilisateursMetaBox .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
-
-		return $utilisateursMetaBox;
 	}
 
 	/**

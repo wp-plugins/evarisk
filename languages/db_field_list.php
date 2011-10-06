@@ -168,16 +168,26 @@ __('digi_view_unite_trash', 'evarisk');
 __('digi_edit_unite_trash', 'evarisk');
 
 /*	Risks capabilities	*/
+__('permission_risk', 'evarisk');
 __('digi_view_risk_trash', 'evarisk');
 __('digi_edit_risk_trash', 'evarisk');
 
 /*	Correctiv actions capabilities	*/
 __('digi_view_correctiv_action', 'evarisk');
+__('permission_correctiv_action_task', 'evarisk');
+__('permission_correctiv_action_action', 'evarisk');
+__('permission_action', 'evarisk');
 
 __('digi_view_task_trash', 'evarisk');
 __('digi_edit_task_trash', 'evarisk');
 __('digi_view_action_trash', 'evarisk');
 __('digi_edit_action_trash', 'evarisk');
+
+/*	Documentation capabilities	*/
+__('permission_documentation_menu', 'evarisk');
+__('permission_documentation', 'evarisk');
+__('digi_documentation_management_menu', 'evarisk');
+
 }
 
 {/*	User_work accident field	*/

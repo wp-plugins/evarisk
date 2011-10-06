@@ -22,6 +22,133 @@ class digirisk_permission
 	*/
 	const dbTable = DIGI_DBT_PERMISSION_ROLE;
 
+	function permission_list(){
+		{/*	Menu permission	*/
+		$permission['digi_view_dashboard_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'dashboard', 'permission_sub_module' => 'menu');
+		$permission['digi_view_recommandation_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => 'menu');
+		$permission['digi_view_method_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'method', 'permission_sub_module' => 'menu');
+		$permission['digi_view_danger_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => 'menu');
+		$permission['digi_view_evaluation_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'evaluation', 'permission_sub_module' => 'menu');
+		$permission['digi_view_correctiv_action_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'menu');
+		$permission['digi_view_user_groups_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
+		$permission['digi_view_user_import_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
+		$permission['digi_user_right_management_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
+		$permission['digi_view_options_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'option', 'permission_sub_module' => 'menu');
+		$permission['digi_view_regulatory_monitoring_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'referential', 'permission_sub_module' => 'menu');
+		$permission['digi_documentation_management_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'documentation', 'permission_sub_module' => 'menu');
+		}
+
+		{/*	User group permission	*/
+		$permission['digi_view_user_group'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		$permission['digi_add_user_group'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		$permission['digi_edit_user_group'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		$permission['digi_view_detail_user_group'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		$permission['digi_delete_user_group'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		}
+
+		{/*	Evaluator group permission	*/
+		$permission['digi_view_evaluator_group'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		$permission['digi_add_evaluator_group'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		$permission['digi_edit_evaluator_group'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		$permission['digi_view_detail_evaluator_group'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		$permission['digi_delete_evaluator_group'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		}
+
+		{/*	Role permission	*/
+		$permission['digi_add_user_role'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'user', 'permission_sub_module' => 'role');
+		$permission['digi_edit_user_role'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'role');
+		$permission['digi_view_detail_user_role'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'user', 'permission_sub_module' => 'role');
+		$permission['digi_delete_user_role'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'role');
+		$permission['digi_manage_user_right'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'right');
+		}
+
+		{/*	Recommandation permission	*/
+		$permission['digi_add_recommandation_cat'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category');
+		$permission['digi_view_detail_recommandation_cat'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category');
+		$permission['digi_edit_recommandation_cat'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category');
+		$permission['digi_delete_recommandation_cat'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category');
+		$permission['digi_add_recommandation'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'recommandation', 'permission_sub_module' => '');
+		$permission['digi_view_detail_recommandation'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'recommandation', 'permission_sub_module' => '');
+		$permission['digi_edit_recommandation'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'recommandation', 'permission_sub_module' => '');
+		$permission['digi_delete_recommandation'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => '');
+		}
+
+		{/*	Evaluation method permission	*/
+		$permission['digi_add_method'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'method', 'permission_sub_module' => '');
+		$permission['digi_edit_method'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'method', 'permission_sub_module' => '');
+		$permission['digi_view_detail_method'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'method', 'permission_sub_module' => '');
+		$permission['digi_delete_method'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'method', 'permission_sub_module' => '');
+		$permission['digi_add_method_var'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'method', 'permission_sub_module' => 'vars');
+		}
+
+		{/*	Danger permission	*/
+		$permission['digi_add_danger_category'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_edit_danger_category'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_move_danger_category'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'move', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_view_detail_danger_category'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_delete_danger_category'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_add_danger'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		$permission['digi_edit_danger'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		$permission['digi_move_danger'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'move', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		$permission['digi_view_detail_danger'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		$permission['digi_delete_danger'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		}
+
+		/*	Options permission	*/
+		$permission['digi_edit_option'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'option', 'permission_sub_module' => '');
+
+		{/*	Groupement permission	*/
+		$permission['digi_add_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		$permission['digi_edit_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		$permission['digi_move_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'move', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		$permission['digi_view_detail_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		$permission['digi_delete_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		}
+
+		{/*	Work unit permission	*/
+		$permission['digi_add_unite'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		$permission['digi_edit_unite'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		$permission['digi_move_unite'] = array('set_by_default' => 'no', 'permission_type' => '', 'permission_sub_type' => 'move', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		$permission['digi_view_detail_unite'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		$permission['digi_delete_unite'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		}
+
+		{/*	Correctiv action permission	*/
+		$permission['digi_view_correctiv_action'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '');
+		$permission['digi_view_task_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+		$permission['digi_view_action_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+		}
+
+		{/*	Trash permission	*/
+		$permission['digi_view_risk_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'risk', 'permission_sub_module' => '');
+		$permission['digi_view_danger_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		$permission['digi_view_danger_category_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_view_recommandation_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => '');
+		$permission['digi_view_recommandation_category_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category');
+		$permission['digi_view_groupement_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		$permission['digi_view_unite_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		$permission['digi_view_method_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'method', 'permission_sub_module' => '');
+		$permission['digi_view_user_group_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		$permission['digi_view_evaluator_group_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		$permission['digi_view_user_role_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'role');
+		$permission['digi_edit_task_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+		$permission['digi_edit_action_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+		$permission['digi_edit_risk_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'risk', 'permission_sub_module' => '');
+		$permission['digi_edit_danger_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'danger', 'permission_sub_module' => '');
+		$permission['digi_edit_danger_category_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'danger', 'permission_sub_module' => 'category');
+		$permission['digi_edit_recommandation_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'recommandation', 'permission_sub_module' => '');
+		$permission['digi_edit_recommandation_category_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'recommandation', 'permission_sub_module' => 'category');
+		$permission['digi_edit_groupement_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
+		$permission['digi_edit_unite_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'unite');
+		$permission['digi_edit_method_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'method', 'permission_sub_module' => '');
+		$permission['digi_edit_user_group_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'user');
+		$permission['digi_edit_evaluator_group_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'evaluator');
+		$permission['digi_edit_user_role_trash'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'user', 'permission_sub_module' => 'role');
+		}
+
+		return $permission;
+	}
+
 	/**
 	*	Initialise permission for the administrator when installing the plugin
 	*/
@@ -41,36 +168,17 @@ class digirisk_permission
 		}
 
 		/*	Récupération des "nouveaux" droits	*/
-		$droits = digirisk_permission::digirisk_get_permission();
-		foreach($droits as $droit)
+		$droits = self::permission_list();
+		foreach($droits as $droit => $droit_definition)
 		{/*	Lecture des "nouveaux" droits pour affectation à l'administrateur	*/
-			if(($role != null) && !$role->has_cap($droit->permission))
+			if(($role != null) && !$role->has_cap($droit))
 			{
-				$role->add_cap($droit->permission);
+				$role->add_cap($droit);
 			}
 		}
 
 		/*	Vidage de l'objet rôle	*/
 		unset($role);
-	}
-
-	/**
-	*	Allows to get the permission list into database
-	*
-	*	@return object $permissionsList A wordpress database object with the existing permission list
-	*/
-	function digirisk_get_permission()
-	{
-		global $wpdb;
-
-		$query = $wpdb->prepare(
-		"SELECT * FROM 
-		" . DIGI_DBT_PERMISSION . "
-		WHERE status = 'valid' ");
-
-		$permissionsList = $wpdb->get_results($query);
-
-		return $permissionsList;
 	}
 
 	/**
@@ -274,10 +382,10 @@ class digirisk_permission
 				$digi_wp_role->add_role($role, $roleName);
 
 				$moreParamsForRoleCreation = '';
-				$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : '';
-				if($roleToCopy != '')
-				{
+				$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : 'subscriber';
+				if($roleToCopy != ''){
 					$moreParamsForRoleCreation = '&roleToCopy=' . $roleToCopy;
+					$basic_caps = $digi_wp_role->get_role($roleToCopy);
 				}
 
 				wp_redirect(admin_url('users.php?page=' . DIGI_URL_SLUG_USER_RIGHT . "&action=edit&role=" . $role . "&save=ok" . $moreParamsForRoleCreation));
@@ -292,16 +400,16 @@ class digirisk_permission
 		if(($role != '') && ($action != 'delete') && ($action != 'add'))
 		{
 			$roleInEdition = $digi_wp_role->get_role($role);
-			$existingPermission = self::digirisk_get_permission();
-			foreach($existingPermission as $permission)
+			$existingPermission = self::permission_list();
+			foreach($existingPermission as $permission => $permission_definition)
 			{
-				if(!$roleInEdition->has_cap($permission->permission) && is_array($_POST['digi_permission']) && array_key_exists($permission->permission, $_POST['digi_permission']))
+				if(!$roleInEdition->has_cap($permission) && is_array($_POST['digi_permission']) && array_key_exists($permission, $_POST['digi_permission']))
 				{
-					$roleInEdition->add_cap($permission->permission);
+					$roleInEdition->add_cap($permission);
 				}
-				elseif(($roleInEdition->has_cap($permission->permission) && is_array($_POST['digi_permission']) && !array_key_exists($permission->permission, $_POST['digi_permission'])) || (!is_array($_POST['digi_permission'])))
+				elseif(($roleInEdition->has_cap($permission) && is_array($_POST['digi_permission']) && !array_key_exists($permission, $_POST['digi_permission'])) || (!is_array($_POST['digi_permission'])))
 				{
-					$roleInEdition->remove_cap($permission->permission);
+					$roleInEdition->remove_cap($permission);
 				}
 			}
 		}
@@ -331,10 +439,10 @@ class digirisk_permission
 		$classes[] = 'digirisk_user_role_column_action';
 
 		/*	Récupére les droits liés au logiciel digirisk	*/
-		$digiriskPermission = self::digirisk_get_permission();
-		foreach($digiriskPermission as $permission)
+		$digiriskPermission = self::permission_list();
+		foreach($digiriskPermission as $permission => $permission_definition)
 		{
-			$digiRight[$permission->permission_module][] = $permission->permission;
+			$digiRight[$permission_definition['permission_module']][] = $permission;
 		}
 
 		unset($ligneDeValeurs);
@@ -574,8 +682,7 @@ class digirisk_permission
 							</label>
 						</div>
 						<div class="digirisk_form_input digirisk_attr_role_to_copy_from_input alignleft" >
-							<select name="roleToCopy" id="role_to_copy_from" >
-								<option value="norole" >' . __('Cr&eacute;er un r&ocirc;le vierge', 'evarisk') . '</option>';
+							<select name="roleToCopy" id="role_to_copy_from" >';
 			foreach($digi_wp_role->roles as $roleKey => $roleContent)
 			{
 				$the_form_general_content .= '
@@ -674,139 +781,25 @@ class digirisk_permission
 		$userCapsList = $_POST['digi_permission'];
 
 		/*	Récupération des permissions existantes	*/
-		$existingPermission = self::digirisk_get_permission();
-		foreach($existingPermission as $permission)
+		$existingPermission = self::permission_list();
+		foreach($existingPermission as $permission => $permission_definition)
 		{
 			/*	Vérification de la permission actuelle au cas ou elle serait nulle	*/
-			if($permission->permission != '')
+			if($permission != '')
 			{
 				/*	Si l'utilisateur possède une permission mais que celle ci n'est plus cochée => Suppression de la permission	*/
-				if( $user->has_cap($permission->permission) && ((!array_key_exists($permission->permission, $userCapsList)) || (isset($userCapsList[$permission->permission]) && ($userCapsList[$permission->permission] != 'yes'))) )
+				if( $user->has_cap($permission) && ((!array_key_exists($permission, $userCapsList)) || (isset($userCapsList[$permission]) && ($userCapsList[$permission] != 'yes'))) )
 				{
-					$user->remove_cap($permission->permission);
+					$user->remove_cap($permission);
 				}
 				/*	Si l'utilisateur ne possède pas la permission mais que celle ci est cochée  => Ajout de la permission	*/
-				elseif( !$user->has_cap($permission->permission) && ($userCapsList[$permission->permission] == 'yes'))
+				elseif( !$user->has_cap($permission) && ($userCapsList[$permission] == 'yes'))
 				{
-					$user->add_cap($permission->permission);
+					$user->add_cap($permission);
 				}
 			}
 		}
 	}
-
-
-	/**
-	*	Create the permission database table
-	*/
-	function create_permission_db()
-	{
-		global $wpdb;
-		$query = 
-			"CREATE TABLE IF NOT EXISTS " . DIGI_DBT_PERMISSION . " (
-				id int(10) unsigned NOT NULL auto_increment,
-				status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
-				creation_date datetime ,
-				last_update_date datetime ,
-				set_by_default enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no' ,
-				permission_type enum('read', 'write', 'delete') collate utf8_unicode_ci NOT NULL default 'read',
-				permission_sub_type varchar(64) collate utf8_unicode_ci NOT NULL,
-				permission_module varchar(64) collate utf8_unicode_ci NOT NULL ,
-				permission_sub_module varchar(64) collate utf8_unicode_ci NOT NULL ,
-				permission varchar(64) collate utf8_unicode_ci NOT NULL ,
-				PRIMARY KEY (id),
-				KEY status (status),
-				KEY permission_type (permission_type),
-				UNIQUE permission_unique_key (permission_module, permission)
-			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Define the different permissions available'; ";
-		$wpdb->query($query);
-
-		digirisk_permission::insert_permission();
-	}
-
-	/**
-	*	Insert the different permission into the permission table
-	*/
-	function insert_permission()
-	{
-		global $wpdb;
-
-		$query = $wpdb->prepare(
-				"INSERT INTO " . DIGI_DBT_PERMISSION . " (id, status, creation_date, set_by_default, permission_type, permission_sub_type, permission_module, permission_sub_module, permission)
-					VALUES 
-				('', 'valid', NOW(), 'no', 'read', '', 'dashboard', 'menu', 'digi_view_dashboard_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'recommandation', 'menu', 'digi_view_recommandation_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'method', 'menu', 'digi_view_method_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'danger', 'menu', 'digi_view_danger_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'evaluation', 'menu', 'digi_view_evaluation_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'correctiv_action', 'menu', 'digi_view_correctiv_action_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'menu', 'digi_view_user_groups_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'menu', 'digi_view_user_import_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'menu', 'digi_user_right_management_menu'),
-				('', 'valid', NOW(), 'no', 'read', '', 'option', 'menu', 'digi_view_options_menu'),
-				('', 'moderated', NOW(), 'no', 'read', '', 'referential', 'menu', 'digi_view_regulatory_monitoring_menu'),
-
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'user', 'digi_view_user_group'),
-				('', 'valid', NOW(), 'no', 'write', 'add', 'user', 'user', 'digi_add_user_group'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'user', 'user', 'digi_edit_user_group'),
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'user', 'digi_view_detail_user_group'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'user', 'user', 'digi_delete_user_group'),
-
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'evaluator', 'digi_view_evaluator_group'),
-				('', 'valid', NOW(), 'no', 'write', 'add', 'user', 'evaluator', 'digi_add_evaluator_group'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'user', 'evaluator', 'digi_edit_evaluator_group'),
-				('', 'valid', NOW(), 'no', 'read', '', 'user', 'evaluator', 'digi_view_detail_evaluator_group'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'user', 'evaluator', 'digi_delete_evaluator_group'),
-
-				('', 'valid', NOW(), 'no', 'write', 'add', 'user', 'role', 'digi_add_user_role'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'user', 'role', 'digi_edit_user_role'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'user', 'role', 'digi_view_detail_user_role'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'user', 'role', 'digi_delete_user_role'),
-
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'user', 'right', 'digi_manage_user_right'),
-
-				('', 'moderated', NOW(), 'no', 'write', 'add', 'recommandation', 'category', 'digi_add_recommandation_cat'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'recommandation', 'category', 'digi_view_detail_recommandation_cat'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'recommandation', 'category', 'digi_edit_recommandation_cat'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'recommandation', 'category', 'digi_delete_recommandation_cat'),
-				('', 'valid', NOW(), 'no', 'write', 'add', 'recommandation', '', 'digi_add_recommandation'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'recommandation', '', 'digi_view_detail_recommandation'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'recommandation', '', 'digi_edit_recommandation'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'recommandation', '', 'digi_delete_recommandation'),
-
-				('', 'valid', NOW(), 'no', 'write', 'add', 'method', '', 'digi_add_method'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'method', '', 'digi_edit_method'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'method', '', 'digi_view_detail_method'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'method', '', 'digi_delete_method'),
-				('', 'valid', NOW(), 'no', 'write', 'add', 'method', 'vars', 'digi_add_method_var'),
-
-				('', 'valid', NOW(), 'no', 'write', 'add', 'danger', 'category', 'digi_add_danger_category'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'danger', 'category', 'digi_edit_danger_category'),
-				('', 'valid', NOW(), 'no', 'write', 'move', 'danger', 'category', 'digi_move_danger_category'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'danger', 'category', 'digi_view_detail_danger_category'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'danger', 'category', 'digi_delete_danger_category'),
-				('', 'valid', NOW(), 'no', 'write', 'add', 'danger', '', 'digi_add_danger'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'danger', '', 'digi_edit_danger'),
-				('', 'valid', NOW(), 'no', 'write', 'move', 'danger', '', 'digi_move_danger'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'danger', '', 'digi_view_detail_danger'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'danger', '', 'digi_delete_danger'),
-
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'option', '', 'digi_edit_option'),
-
-				('', 'valid', NOW(), 'no', 'write', 'add', 'arborescence', 'groupement', 'digi_add_groupement'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'arborescence', 'groupement', 'digi_edit_groupement'),
-				('', 'valid', NOW(), 'no', 'write', 'move', 'arborescence', 'groupement', 'digi_move_groupement'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'arborescence', 'groupement', 'digi_view_detail_groupement'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'arborescence', 'groupement', 'digi_delete_groupement'),
-
-				('', 'valid', NOW(), 'no', 'write', 'add', 'arborescence', 'unite', 'digi_add_unite'),
-				('', 'valid', NOW(), 'no', 'write', 'edit', 'arborescence', 'unite', 'digi_edit_unite'),
-				('', 'valid', NOW(), 'no', 'wrtie', 'move', 'arborescence', 'unite', 'digi_move_unite'),
-				('', 'valid', NOW(), 'no', 'read', 'detail', 'arborescence', 'unite', 'digi_view_detail_unite'),
-				('', 'valid', NOW(), 'no', 'delete', '', 'arborescence', 'unite', 'digi_delete_unite')");
-
-		$wpdb->query($query);	
-	}
-
 
 	/**
 	*	
@@ -1581,12 +1574,12 @@ class digirisk_permission
 		$permissionCap = array();
 
 		/*	Récupération des permissions créées pour rangement par module	*/
-		$existingPermission = self::digirisk_get_permission();
-		foreach($existingPermission as $permission)
+		$existingPermission = self::permission_list();
+		foreach($existingPermission as $permission => $permission_definition)
 		{
-			$permissionList[$permission->permission_module][$permission->permission_sub_module][] = $permission->permission;
-			$permissionCap[$permission->permission]['type'] = $permission->permission_type;
-			$permissionCap[$permission->permission]['subtype'] = $permission->permission_sub_type;
+			$permissionList[$permission_definition['permission_module']][$permission_definition['permission_sub_module']][] = $permission;
+			$permissionCap[$permission]['type'] = $permission_definition['permission_type'];
+			$permissionCap[$permission]['subtype'] = $permission_definition['permission_sub_type'];
 		}
 
 ?>
@@ -1654,23 +1647,19 @@ class digirisk_permission
 					$checked = $permissionNameClass = '';
 					$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : '';
 					$action = isset($_REQUEST['save']) ? eva_tools::IsValid_Variable($_REQUEST['save']) : '';
-					if(($roleToCopy != '') && ($action == 'ok'))
-					{
+					if(($roleToCopy != '') && ($action == 'ok')){
 						$roleDetails = $digi_wp_role->get_role($roleToCopy);
 						if($roleDetails->has_cap($permission))
 						{
 							$checked = 'checked="checked"';
 						}
 					}
-					elseif(($elementToManage != null) && $elementToManage->has_cap($permission))
-					{
+					elseif(($elementToManage != null) && $elementToManage->has_cap($permission)){
 						$checked = 'checked="checked"';
 						$permissionNameClass = 'permissionGranted';
-						if ( count($elementToManage->caps) > count($elementToManage->roles) && apply_filters('additional_capabilities_display', true, $elementToManage) )
-						{
+						if(isset($elementToManage->roles) && (count($elementToManage->caps) >= count($elementToManage->roles)) && apply_filters('additional_capabilities_display', true, $elementToManage)){
 							$roleDetails = $digi_wp_role->get_role(implode('', $elementToManage->roles));
-							if ( $roleDetails->has_cap($permission) ) 
-							{
+							if($roleDetails->has_cap($permission)){
 								$permissionNameClass = 'permissionGrantedFromParent';
 								$checked .= ' disabled="disabled" ';
 							}

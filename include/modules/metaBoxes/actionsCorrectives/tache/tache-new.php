@@ -29,6 +29,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$ProgressionStatus = $tache->getProgressionStatus();
 		$startDate = $tache->getStartDate();
 		$endDate = $tache->getFinishDate();
+		$firstInsert = $tache->getFirstInsert();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 		$idPere = $tacheMere->id;
@@ -43,6 +44,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$ProgressionStatus = '';
 		$startDate = '';
 		$endDate = '';
+		$firstInsert = '';
 		$idProvenance = 0;
 		$tableProvenance = '';
 		$idPere = $arguments['idPere'];
@@ -70,6 +72,9 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
 	{//Dates
+		if($firstInsert != ''){
+			$tache_new .='<br/>' . __('Ajout&eacute;e le', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $firstInsert, true) . '<br/>';
+		}
 		if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00'))
 		{
 			$tache_new .='<br/>' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $startDate, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $endDate, true) . '&nbsp;<span style="font-size:9px;" >(' . __('Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches', 'evarisk') . ')</span><br/>';
@@ -81,27 +86,66 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$id = "responsable_tache";
 		$nomChamps = "responsable_tache";		
 
-		$tmpListeUtilisateurs = $listeUtilisateurs = $tabValue = $tabDisplay = $selectedUser = array();
-		$tmpListeUtilisateurs = evaUser::getCompleteUserList();
-		$listeUtilisateurs[0] = '';
-		$tabValue[0] = '0';
-		$tabDisplay[0] = __('Choisissez...', 'evarisk');
-		$i=1;
-		foreach($tmpListeUtilisateurs as $idUtilisateur => $informationsUtilisateurs)
-		{
-			$listeUtilisateurs[] = $informationsUtilisateurs;
-			if($idUtilisateur > 0)
-			{
-				$tabValue[$i] = $idUtilisateur;
-				$tabDisplay[$i] = $informationsUtilisateurs['user_lastname'] . ' ' . $informationsUtilisateurs['user_firstname'];
-				if($idUtilisateur == $contenuInputResponsable)
-				{
-					$selectedUser = $informationsUtilisateurs;
-				}
-				$i++;
-			}
+		// $tmpListeUtilisateurs = $listeUtilisateurs = $tabValue = $tabDisplay = $selectedUser = array();
+		// $tmpListeUtilisateurs = evaUser::getCompleteUserList();
+		// $listeUtilisateurs[0] = '';
+		// $tabValue[0] = '0';
+		// $tabDisplay[0] = __('Choisissez...', 'evarisk');
+		// $i=1;
+		// foreach($tmpListeUtilisateurs as $idUtilisateur => $informationsUtilisateurs)
+		// {
+			// $listeUtilisateurs[] = $informationsUtilisateurs;
+			// if($idUtilisateur > 0)
+			// {
+				// $tabValue[$i] = $idUtilisateur;
+				// $tabDisplay[$i] = $informationsUtilisateurs['user_lastname'] . ' ' . $informationsUtilisateurs['user_firstname'];
+				// if($idUtilisateur == $contenuInputResponsable)
+				// {
+					// $selectedUser = $informationsUtilisateurs;
+				// }
+				// $i++;
+			// }
+		// }
+		// $tache_new .= '<br/>' . EvaDisplayInput::afficherComboBox($listeUtilisateurs, $id, $labelInput, $nomChamps, '', $selectedUser, $tabValue, $tabDisplay);
+
+		$tache_new .= '<br/><label for="search_user_responsable_' . $arguments['tableElement'] . '" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false) . '<div id="responsible_name" >';
+		$search_input_state = '';
+		$change_input_state = 'hide';
+		if($contenuInputResponsable > 0){
+			$search_input_state = 'hide';
+			$change_input_state = '';
+			$responsible = evaUser::getUserInformation($contenuInputResponsable);
+			$tache_new .= ELEMENT_IDENTIFIER_U . $contenuInputResponsable . '&nbsp;-&nbsp;' . $responsible[$contenuInputResponsable]['user_lastname'] . ' ' . $responsible[$contenuInputResponsable]['user_firstname'];
 		}
-		$tache_new .= '<br/>' . EvaDisplayInput::afficherComboBox($listeUtilisateurs, $id, $labelInput, $nomChamps, '', $selectedUser, $tabValue, $tabDisplay);
+		else{
+			$tache_new .= '&nbsp;';
+		}
+		$tache_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
+			jQuery(this).val("");
+			jQuery(".completeUserListActionResponsible").show();
+		});
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur(function(){
+			jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+		});
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '");
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").result(function(event, data, formatted){
+			jQuery("#responsable_tache").val(data[1]);
+			jQuery("#responsible_name").html(data[0]);
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+			jQuery(".completeUserListActionResponsible").hide();
+			jQuery(".searchUserToAffect").hide();
+			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+		});
+		jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
+			jQuery(this).hide();
+		});
+	});
+</script><br class="clear" /><br/><br/><br/>';
 	}
 	{//Description
 		$contenuAideDescription = "";

@@ -23,8 +23,6 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .actionForExistingElement{	margin:3px 0px;	}
 .existingElementMainExplanation{	font-size:10px; margin:0px 0px 15px;	}
 
-
-
 #saveNewPosition{	margin:12px 0px; float:right;	}
 
 
@@ -513,6 +511,10 @@ td.details table{	margin:0px 0px 24px !important;	}
 .correctiveActionFollow .dataTables_wrapper{		min-height:50px;	}
 .correctivActionPicture{	text-align:center;	}
 #correctionActionPictureTable{	width:100%;	}
+
+.ac_responsable{	width:100% !important;	}
+#responsible_name{	padding:0px 18px; float:left;	}
+.change_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
 /* -- END Actions correctives -- */
 
 
@@ -528,16 +530,23 @@ td.details table{	margin:0px 0px 24px !important;	}
 /* -- END USER PROFIL -- */
 
 /* -- START USER IMPORT -- */
-.digirisk_import_user_easy_form{	width:99%;	}
+.digirisk_import_user_easy_form_container{	width:99%; border-collapse:collapse; 	}
+.digirisk_import_user_easy_form{	width:99%; border-collapse:collapse; 	}
 .digirisk_import_user_easy_form td input[type=text], .digirisk_import_user_easy_form td select{	width:99%;	}
 .userLinesToCreate{	height:100%;	}
+#domaineMail{	width:65%;	}
 .user_rapid_import_button, .user_import_button{	width:60%; margin:12px auto; text-align:right;	}
 .user_import_container_opener{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: 0px -211px !important; width:16px; height:16px; margin:3px 0px;	}
 .user_import_container_closer{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -16px -211px !important; width:16px; height:16px; margin:3px 0px;	}
 #complementary_fieds .required{	color:#000000 !important; font-weight:normal !important;	}
 #complementary_fieds table{	width:100% !important;	}
-#complementary_fieds table th{	text-align:left !important;	}
+#complementary_fieds table th{	text-align:left !important; width:35%;	}
 #complementary_fieds_switcher{	font-weight:bold;	}
+.digi_import_user_main_info_name{	width:20%;	}
+.digi_import_user_main_info_input{	width:30%;	}
+.aligndigi_user_immatriculation{	float:left; }
+.digi_import_user_additionnal_field{	font-size:9px;	}
+.digi_mandatory_fields_container{	vertical-align:top; width:50%;	}
 /* -- END USER IMPORT -- */
 
 

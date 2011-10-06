@@ -154,7 +154,7 @@ class eva_tools
 				{
 					if(!is_dir(substr($str,1)) && (!is_file(substr($str,1)) ) )
 					{
-						chmod(str_replace('//','/',$str), 0755);
+						@chmod(str_replace('//','/',$str), 0755);
 					}
 				}
 			}

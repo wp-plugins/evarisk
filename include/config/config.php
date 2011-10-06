@@ -1,5 +1,5 @@
 <?php
-	DEFINE('EVA_PLUGIN_VERSION', '5.1.4.1');
+	DEFINE('EVA_PLUGIN_VERSION', '5.1.4.2');
 
 	require_once('configEavModel.php');
 	require_once('databaseTable.php');
@@ -186,7 +186,7 @@
 	/**
 	*	Define the different mandatory field for user to ve valid for work accident
 	*/
-	$userWorkAccidentMandatoryFields = array('user_imatriculation', 'user_imatriculation_key', 'user_birthday', 'user_gender', 'user_nationnality', 'user_adress', 'user_adress_2', 'user_hiring_date', 'user_profession', 'user_professional_qualification');
+	$userWorkAccidentMandatoryFields = array('user_imatriculation', 'user_imatriculation_key', 'user_birthday', 'user_gender', 'user_nationnality', 'user_adress', /* 'user_adress_2', */ 'user_hiring_date', 'user_profession', 'user_professional_qualification');
 
 	/**
 	*	Define the different existing element type

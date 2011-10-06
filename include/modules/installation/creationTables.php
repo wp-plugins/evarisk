@@ -558,10 +558,7 @@ function evarisk_creationTables()
 		}
 
 		/*	Add the permission table	*/
-		if($wpdb->get_var("show tables like '" . DIGI_DBT_PERMISSION . "'") != DIGI_DBT_PERMISSION)
-		{
-			digirisk_permission::create_permission_db();
-		}
+		//DELETE FROM VERSION 60
 	}
 	else
 	{//Version 1 : cas particulier -- formulaire inscription
@@ -1423,10 +1420,7 @@ ADD INDEX ( impressionRecommandation ) ;";
 		}
 		if(digirisk_options::getDbOption('base_evarisk') <= 46)
 		{
-			if($wpdb->get_var("show tables like '" . DIGI_DBT_PERMISSION . "'") != DIGI_DBT_PERMISSION)
-			{
-				digirisk_permission::create_permission_db();
-			}
+			//DELETE FROM VERSION 44
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
@@ -1702,6 +1696,14 @@ ADD INDEX ( impressionRecommandation ) ;";
 
 			/* Mise à jour de la table documentation */
 			$sql = 'ALTER TABLE ' . $wpdb->prefix.digirisk_doc::prefix . '__documentation ADD doc_active ENUM( "active", "deleted" ) default "active"';
+			$wpdb->query($sql);
+	
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 60)
+		{//		Suppression de la table de gestion des droits
+			$sql = "RENAME TABLE " . DIGI_DBT_PERMISSION . " TO " . TRASH_DIGI_DBT_PERMISSION . " ;";
 			$wpdb->query($sql);
 	
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');

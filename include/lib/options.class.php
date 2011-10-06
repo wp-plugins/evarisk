@@ -74,7 +74,7 @@ class digirisk_options
 		}
 
 		{/*	Declare the different options for the products if plugin exists and is active	*/
-			if (is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))
+			if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE))
 			{
 				add_settings_section('digi_product_options', null, array('digirisk_options', 'options_output_products'), 'digirisk_options_product');
 			/*	Add the different field for current section	*/
@@ -115,7 +115,13 @@ class digirisk_options
 			<li><a href="#digirisk_options_worksheet" title="optionsContent" id="tabOptions_WorkSheet" ><?php _e('Fiches de postes', 'evarisk'); ?></a></li>
 			<li><a href="#digirisk_options_correctivaction" title="optionsContent" id="tabOptions_CActions" ><?php _e('Actions correctives', 'evarisk'); ?></a></li>
 			<li><a href="#digirisk_options_recommandation" title="optionsContent" id="tabOptions_Recommandation" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
+<?php
+if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
+?>
 			<li><a href="#digirisk_options_product" title="optionsContent" id="tabOptions_Product" ><?php _e('Produits', 'evarisk'); ?></a></li>
+<?php
+endif;
+?>
 		</ul>
 		<div id="digirisk_options_general" ><?php do_settings_sections('digirisk_options_general'); ?></div>
 		<div id="digirisk_options_user" ><?php do_settings_sections('digirisk_options_user'); ?></div>
@@ -124,7 +130,13 @@ class digirisk_options
 		<div id="digirisk_options_worksheet" ><?php do_settings_sections('digirisk_options_worksheet'); ?></div>
 		<div id="digirisk_options_correctivaction" ><?php do_settings_sections('digirisk_options_correctivaction'); ?></div>
 		<div id="digirisk_options_recommandation" ><?php do_settings_sections('digirisk_options_recommandation'); ?></div>
+<?php
+if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
+?>
 		<div id="digirisk_options_product" ><?php do_settings_sections('digirisk_options_product'); ?></div>
+<?php
+endif;
+?>
 	</div>
 <?php
 		settings_fields('digirisk_options');
