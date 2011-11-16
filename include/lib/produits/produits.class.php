@@ -281,7 +281,7 @@ if(current_user_can('wpshop_edit_product')){
 				$classes = array('');
 				/*	Define the content of the table	*/
 				$valeurs = array();
-				$valeurs[] = array('class' => 'digirisk_no_category_selected', 'value' => sprintf(__('Pour ajouter des produits %s', 'evarisk'), '<a href="' . admin_url('post-new.php?post_type=' . WPSHOP_NEWTYPE_IDENTIFIER_PRODUCT) . '" >' . _('cliquez ici', 'evarisk') . '</a>'));
+				$valeurs[] = array('class' => 'digirisk_no_category_selected', 'value' => sprintf(__('Pour ajouter des produits %s', 'evarisk'), '<a href="' . admin_url('post-new.php?post_type=' . WPSHOP_NEWTYPE_IDENTIFIER_PRODUCT) . '" >' . __('cliquez ici', 'evarisk') . '</a>'));
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $idLigne;
 			}
@@ -292,7 +292,7 @@ if(current_user_can('wpshop_edit_product')){
 			$classes = array('addElementButtonDTable');
 			/*	Define the content of the table	*/
 			$valeurs = array();
-			$valeurs[] = array('class' => 'digirisk_no_category_selected', 'value' => sprintf(__('Pour ajouter des cat&eacute;gories %s', 'evarisk'), '<a href="' . admin_url('options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION) . '" >' . _('cliquez ici', 'evarisk') . '</a>'));
+			$valeurs[] = array('class' => 'digirisk_no_category_selected', 'value' => sprintf(__('Pour ajouter des cat&eacute;gories %s', 'evarisk'), '<a href="' . admin_url('options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION) . '" >' . __('cliquez ici', 'evarisk') . '</a>'));
 			$lignesDeValeurs[] = $valeurs;
 			$idLignes[] = $idLigne;
 		}

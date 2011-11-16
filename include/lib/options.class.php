@@ -35,6 +35,7 @@ class digirisk_options
 		{/* Declare the different options for the correctiv actions	*/
 			add_settings_section('digi_options_ac', null, array('digirisk_options', 'options_output_ac'), 'digirisk_options_correctivaction');
 			/*	Add the different field for current section	*/
+			add_settings_field('digi_ac_advancedCA_field', __('Activer les actions correctives avanc&eacute;es', 'evarisk'), array('digirisk_options', 'digi_ac_advancedCA_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_supervisormandatory_field', __('Responsable des t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_supervisormandatory_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_subsupervisormandatory_field', __('Responsable des sous-t&acirc;ches obligatoire', 'evarisk'), array('digirisk_options', 'digi_ac_subsupervisormandatory_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_changesold_field', __('Possibilit&eacute; de modifier une t&acirc;che sold&eacute;e', 'evarisk'), array('digirisk_options', 'digi_ac_changesold_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
@@ -42,8 +43,6 @@ class digirisk_options
 			add_settings_field('digi_ac_alertsoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che qui n\'a pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertsoldnot100_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_alertundersoldnot100_field', __('Avertir lorsqu\'on tente de solder une t&acirc;che ayant des sous-t&acirc;ches qui n\'ont pas atteint les 100%', 'evarisk'), array('digirisk_options', 'digi_ac_alertundersoldnot100_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_displayonlysoldtaskinrisk_field', __('Affecter uniquement les t&acirc;ches sold&eacute;es aux risques', 'evarisk'), array('digirisk_options', 'digi_ac_displayonlysoldtaskinrisk_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
-			add_settings_field('digi_ac_advancedCA_field', __('Activer les actions correctives avanc&eacute;es', 'evarisk'), array('digirisk_options', 'digi_ac_advancedCA_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
-			add_settings_field('digi_ac_createUtaks4PA_field', __('Cr&eacute;er une sous-t&acirc;che pour les actions prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_createUtaks4PA_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 		}
@@ -105,7 +104,7 @@ class digirisk_options
 		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel Digirisk', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false);
 ?>
 <div id="digirisk_options_container" >
-	<form action="options.php" method="post">
+	<form action="options.php" method="post" id="option_form" >
 	<div id="options_tabs" >
 		<ul>
 			<li><a href="#digirisk_options_general" title="optionsContent" id="tabOptions_General" ><?php _e('G&eacute;n&eacute;ral', 'evarisk'); ?></a></li>
@@ -152,6 +151,9 @@ if(current_user_can('digi_edit_option'))
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
 		jQuery("#options_tabs").tabs();
+		jQuery("#options_tabs ul li a").click(function(){
+			jQuery("#option_form").attr("action", "options.php" + jQuery(this).attr("href"));
+		});
 	});
 </script>
 <?php
@@ -212,7 +214,6 @@ if(current_user_can('digi_edit_option'))
 		$newinput['avertir_Solde_Tache_Ayant_Action_Non_100'] = trim($input['avertir_Solde_Tache_Ayant_Action_Non_100']);
 		$newinput['affecter_uniquement_tache_soldee_a_un_risque'] = trim($input['affecter_uniquement_tache_soldee_a_un_risque']);
 		$newinput['action_correctives_avancees'] = trim($input['action_correctives_avancees']);
-		$newinput['creation_sous_tache_preconisation'] = trim($input['creation_sous_tache_preconisation']);
 		$newinput['export_only_priority_task'] = trim($input['export_only_priority_task']);
 		$newinput['export_tasks'] = trim($input['export_tasks']);
 
@@ -385,22 +386,6 @@ if(current_user_can('digi_edit_option'))
 		else
 		{
 			echo $options['action_correctives_avancees'];
-		}
-	}
-	/**
-	*	Define the output fot the field. Get the option value to put the good value by default
-	*/
-	function digi_ac_createUtaks4PA_field()
-	{
-		global $optionYesNoList;
-		$options = get_option('digirisk_options');
-		if(current_user_can('digi_edit_option'))
-		{
-			echo EvaDisplayInput::createComboBox('digi_ac_createUtaks4PA_field', 'digirisk_options[creation_sous_tache_preconisation]', $optionYesNoList, $options['creation_sous_tache_preconisation']);
-		}
-		else
-		{
-			echo $options['creation_sous_tache_preconisation'];
 		}
 	}
 	/**

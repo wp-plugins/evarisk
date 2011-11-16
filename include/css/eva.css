@@ -2,6 +2,10 @@ img{ cursor:pointer; }
 a{ cursor:pointer; }
 .required{ color:#FF0000;	}
 
+
+.digi_normal_pointer{	cursor:default !important;	}
+
+
 .column-danger-code { width: 4%; }
 tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .plus-column { font-weight : bolder; width: 10px; padding: 5px; }
@@ -11,17 +15,23 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .radioPictoCategorie {float:left; margin-right:2%; margin-bottom:2%;}
 .radioPictoCategorie img {vertical-align:middle; max-width:48px; cursor:pointer; }
 
+
 .white_background th{	background:none #FFFFFF !important;	}
+
 
 .tabcroisillon{	margin:6px 0px;	}
 
+
 .middleAlign{	vertical-align:middle !important; }
+
 
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
 
+
 .actionForExistingElement{	margin:3px 0px;	}
 .existingElementMainExplanation{	font-size:10px; margin:0px 0px 15px;	}
+
 
 #saveNewPosition{	margin:12px 0px; float:right;	}
 
@@ -424,6 +434,9 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .checkboxRisqMassUpdaterSelector_top{	margin-top:5px;	}
 .checkboxRisqMassUpdaterSelector_bottom{	margin-bottom:10px;	}
 
+.risk_line_action img{	margin:0px 2px;	}
+.columnAction {	text-align:center !important;	}
+
 .columnQuotation, .columnRId	{		text-align: center !important;	}
 /*,
 th.columnNomDanger,
@@ -437,6 +450,32 @@ th.columnCommentaireRisque*/
 .riskPictureThumbs{	max-width: 20%;	}
 
 #choixMethodeEvaluation{	clear:both;	}
+.risk_description_container div{	margin:6px 0px;	}
+
+#add_picture_alert .current_risk_summary_task{	width:90%; margin:9px auto;	}
+#add_picture_alert .new_risk_summary_task{	width:90%; margin:9px auto;	}
+.new_risk_summary_task table tr th{	background:none #FFFFFF !important;	}
+.current_risk_summary_task{	margin:9px 3px;	}
+.current_risk_summary_task table tr th{	background:none #FFFFFF !important;	}
+
+.risk_controlled_task_list{	margin:3px auto; width:90%;	}
+.risk_controlled_task_list_check{	width:3%;	}
+.risk_not_controlled_task_list{ width:100%;	}
+.risk_not_controlled_task_list_check{	width:3%;	}
+
+.qr_current_risk{	width:70%; margin:30px auto;	}
+.qr_risk{	 margin: -4px auto; text-align:center; float:right; padding:5px;	}
+
+.eval_method_var{ width:30%; float:left; min-height:250px;	}
+.eval_method_explanation{	width:70%; float:right; text-align:center; padding:13px 0px;	}
+.digi_eval_pic{	width:100%;	}
+
+.evaluation_var_slider_container{	margin-bottom:12px;	}
+
+#voir_risque_box_header{	margin:0px 12px 22px 0px; float:left;	}
+#add_new_risk_button{	margin:0px 0px 12px;	}
+#divPreconisationExistante table{	width:95%;	}
+#divPreconisationExistante{	margin:0px 0px 12px;	}
 /* -- END Risques -- */
 
 
@@ -494,7 +533,7 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .ui-slider-horizontal{	width:95%;	}
 #photosActionsCorrectives li.selected img{	border:1px solid #000000;	}
 .pictureThumbs{	width:80%;	}
-.preconisationExistante{	border:1px solid #DDDDDD; width:95%;	}
+.preconisationExistante{	border:1px solid #DDDDDD; width:95%; padding:3px 6px;	}
 .preconisation{	margin-left:9px; font-size:10px; text-decoration:underline;	}
 #taskExportButton{	margin:0px 12px;	}
 
@@ -505,16 +544,36 @@ td.details{	background-color:#FFFFFF !important; padding:0px !important;	}
 td.details table{	margin:0px 0px 24px !important;	}
 .loadAssociatedTask_elt_name{	padding:0px 15px 0px !important;	}
 #suiviActionsCorrectiveElement th{ background:none #FFFFFF !important; }
-.CorrectivActionFollowStateActionColumn{	width:5%;	}
+.CorrectivActionFollowStateActionColumn{	width:8%;	}
 .correctiveActionSelecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .correctivActionDetailsFieldName{	text-decoration:underline; font-weight:bold; padding:3px;	}
 .correctiveActionFollow .dataTables_wrapper{		min-height:50px;	}
 .correctivActionPicture{	text-align:center;	}
 #correctionActionPictureTable{	width:100%;	}
 
-.ac_responsable{	width:100% !important;	}
+.ac_responsable{	width:99% !important;	}
 #responsible_name{	padding:0px 18px; float:left;	}
 .change_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
+
+
+#risk_priority_task{	width:90% !important; margin:3px 18px;	}
+#risk_priority_task td{	height:1.5em;	}
+
+.digi_correctiv_action_link_container{	margin:18px 0px;	}
+
+.ui-widget-content a.required{	color:red !important;	}
+
+.digi_extra_infos_ac_control{	width:90%; padding:6px; margin:0px auto; background-color:#EEEEEE;	}
+.correctiv_action_efficiency_control{	width:10%; border:0px solid black !important;	}
+.correctiv_action_efficiency_control_slider{	width:90%; clear:both; margin:5px 0px 0px 5px;	}
+.cancel_correctiv_action_link{	margin:6px;	}
+
+.associate_task{	font-weight:bold;	}
+
+#divVariablesFormRisque-simpleFAC-fieldset{	display:table; margin:12px 0px;	}
+
+.asked_action_control{	margin:0px 0px 22px;	}
+.asked_action_control_details{	width:95%; margin:10px auto;	}
 /* -- END Actions correctives -- */
 
 

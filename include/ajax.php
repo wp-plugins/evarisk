@@ -43,13 +43,12 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDeGrou
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
 /*
- * Paramètres passés en POST
- */
+* Paramètres passés en POST
+*/
 if($_REQUEST['post'] == 'true')
 {
 	/*	Refactoring actions	*/
-	if(isset($_REQUEST['act']))
-	{
+	if(isset($_REQUEST['act'])){
 		switch($_REQUEST['act'])
 		{
 			case 'edit':
@@ -142,8 +141,7 @@ if($_REQUEST['post'] == 'true')
 		}
 	}
 
-	if(isset($_REQUEST['table']))
-	{
+	if(isset($_REQUEST['table'])){
 		switch($_REQUEST['table'])
 		{
 			case TABLE_GROUPEMENT:
@@ -1056,116 +1054,6 @@ if($_REQUEST['post'] == 'true')
 						echo  getFormulaireCreationRisque($tableElement, $idElement, '', $currentId);
 					}
 					break;
-					case 'addRiskByPicture-old':
-					{
-						$addRiskByPictureForm = '';
-						$tableElement = isset($_REQUEST['tableElement']) ? (eva_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
-						$idElement = isset($_REQUEST['idElement']) ? (eva_tools::IsValid_Variable($_REQUEST['idElement'])) : '';
-						$currentId = isset($_REQUEST['currentId']) ? (eva_tools::IsValid_Variable($_REQUEST['currentId'])) : '';
-
-						{//Choix de la catégorie de dangers
-							$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation(NULL, $currentId);
-							$script .= $categorieDanger['script'];
-							$selectionCategorie = $categorieDanger['selectionCategorie'];
-							$addRiskByPictureForm .= $categorieDanger['list'];
-						}
-						{//Choix du danger
-							$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, NULL, $currentId);
-							$script .= $ListDanger['script'];
-							$addRiskByPictureForm .= $ListDanger['list'];
-						}
-
-						{//Choix de la méthode
-							$methodes = MethodeEvaluation::getMethods('Status="Valid"');
-							$script .= '
-							evarisk("#' . $currentId . 'methodeFormRisque").change(function(){
-								evarisk("#' . $currentId . 'divVariablesFormRisque").html(evarisk("#loadingImg").html());
-								evarisk("#' . $currentId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
-							});';
-							if($risque[0] != null)
-							{// Si l'on édite un risque, on sélectionne la bonne méthode
-								$idSelection = $risque[0]->id_methode;
-							}
-							else
-							{// Sinon on sélectionne la première méthode
-								$idSelection = $methodes[0]->id;
-							}
-							$selection = MethodeEvaluation::getMethod($idSelection);
-							$nombreMethode = count($methodes);
-							$afficheSelecteurMethode = '';
-							if($nombreMethode <= 1)
-							{
-								$afficheSelecteurMethode = ' display:none; ';
-							}
-							$addRiskByPictureForm .= '
-				<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $currentId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection) . '</div>';
-						}
-
-						{//Evaluation des variables
-							$script .= '
-					evarisk("#' . $currentId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), "idRisque": "0", "formId": "' . $currentId . '"});';
-							$addRiskByPictureForm .= '
-				<div id="' . $currentId . 'divVariablesFormRisque" class="clear" ></div><!-- /' . $currentId . 'divVariablesFormRisque -->';
-						}
-
-						{//Description
-							$contenuInput = '';
-							if($risque[0] != null)
-							{// Si l'on édite un risque, on remplit l'aire de texte avec sa description
-								$contenuInput = $risque[0]->commentaire;
-							}
-							$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
-							$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
-							$addRiskByPictureForm .= '
-				<div id="' . $currentId . 'divDescription" class="clear" >' . EvaDisplayInput::afficherInput('textarea', '' . $currentId . 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '100%', '') . '</div>';
-						}
-
-						{//Bouton enregistrer
-							$allVariables = MethodeEvaluation::getAllVariables();
-							$idBouttonEnregistrer = 'enregistrerFormRisque' . $currentId;
-							$scriptEnregistrement = 
-'<script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idBouttonEnregistrer . '").click(function(){
-			var variables = new Array();';
-			foreach($allVariables as $variable)
-			{
-				$scriptEnregistrement .= '
-			variables["' . $variable->id . '"] = evarisk("#' . $currentId . 'var' . $variable->id . 'FormRisque").val();';
-			}
-			$scriptEnregistrement .= '
-			var historisation = true;
-			var correctivActions = "";
-			evarisk("#' . $currentId . 'content").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
-				"post":"true", 
-				"table":"' . TABLE_RISQUE . '", 
-				"act":"saveAdvanced", 
-				"tableElement":"' . $tableElement . '", 
-				"idElement":"' . $idElement . '", 
-				"idDanger":evarisk("#' . $currentId . 'dangerFormRisque").val(), 
-				"idMethode":evarisk("#' . $currentId . 'methodeFormRisque").val(), 
-				"histo":historisation, 
-				"actionsCorrectives":correctivActions, 
-				"variables":variables, 
-				"description":evarisk("#' . $currentId . 'descriptionFormRisque").val(), 
-				"idRisque":"", 
-				"currentId":"' . $currentId . '"
-			});
-		});
-	});
-</script>';
-							$addRiskByPictureForm .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, 'Enregistrer', null, '', 'save' . $currentId, false, false, '', 'button-primary alignright saveRiskFormButton', '', '', $scriptEnregistrement);
-						}
-
-						echo $addRiskByPictureForm . '
-<script type="text/javascript">
-	evarisk(document).ready(function(){
-		' . $script . '
-	});
-</script>';
-					}
-					break;
 
 					case 'loadRisqMassUpdater':
 					{
@@ -1345,17 +1233,14 @@ echo $output;
 					case 'loadAssociatedTask':
 					{
 						$id_risque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
-						$idTable = 'loadAssociatedTask' . $id_risque;
+						$extra = eva_tools::IsValid_Variable($_REQUEST['extra']);
+						$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
+						$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
+						$idTable = 'loadAssociatedTask_' . $extra . '_' . $id_risque;
 						/*	Get the different corrective actions for the actual risk	*/
 						$actionsCorrectives = '';
-						$taches = new EvaTaskTable();
-						$tacheLike = new EvaTask();
-						$tacheLike->setIdFrom($id_risque);
-						$tacheLike->setTableFrom(TABLE_RISQUE);
-						$taches->getTasksLike($tacheLike);
-						$tachesActionsCorrectives = $taches->getTasks();
-						if(count($tachesActionsCorrectives) > 0)
-						{
+						$tachesActionsCorrectives = actionsCorrectives::get_activity_associated_to_risk('', '', array($id_risque => ''), array('hasPriority' => "yes"));
+						if(count($tachesActionsCorrectives[0]) > 0){
 							$hasActions = true;
 							$spacer = '';
 							$actionsCorrectives .= '
@@ -1369,16 +1254,39 @@ echo $output;
 						</tr>
 					</thead>
 					<tbody>';
-							foreach($tachesActionsCorrectives as $taskDefinition)
-							{
+							foreach($tachesActionsCorrectives[0] as $taskDefinition){
 								$monCorpsTable = '';
 								$racine = Arborescence::getRacine(TABLE_TACHE, " id='" . $taskDefinition->id . "' ");
+
+								$task_associated_element = EvaTask::get_element_link_to_task($taskDefinition->id);
+								if(is_array($task_associated_element) && (count($task_associated_element) > 0)){
+									foreach($task_associated_element as $link_information){
+										$task_already_controled = false;
+										if($link_information->wasLinked == 'after'){
+											$task_already_controled = true;
+										}
+									}
+								}
+
+								if(current_user_can('digi_control_task')){
+									$task_picto = '<img style="width:' . TAILLE_PICTOS . ';" id="risque-' . $taskDefinition->id . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Contr&ocirc;le d\'action corrective', 'evarisk') . '" title="' . __('Contr&ocirc;le d\'action corrective', 'evarisk') . '" class="correctiv_action_control" />';
+								}
+								if($task_already_controled){
+									$task_picto = '<img class="digi_normal_pointer" src="' . EVA_MESSAGE_SUCCESS . '" alt="' . __('taches controllee', 'evarisk') . '" title="' . __('T&acirc;che d&eacute;j&agrave; controll&eacute;e', 'evarisk') . '" />';
+								}
+								elseif((digirisk_options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui') && !in_array($racine->ProgressionStatus, array('Done', 'DoneByChief'))){
+									$task_picto = '&nbsp;';
+								}
 
 								$actionsCorrectives .= '
 						<tr id="node-' . $idTable . '-' . $racine->id . '" class="parent racineArbre">
 							<td id="tdRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '" class="loadAssociatedTask_elt_name" >' . ELEMENT_IDENTIFIER_T . $racine->id . '&nbsp;-&nbsp;' . $racine->nom . '</td>
 							<td id="tdInfoRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '">' . $racine->avancement . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($racine->ProgressionStatus) . ')&nbsp;-&nbsp;&nbsp;' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $racine->dateDebut, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $racine->dateFin, true) . '</td>
-							<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '" class="CorrectivActionFollowStateActionColumn" ><img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . TABLE_TACHE . '_t_elt_' . $racine->id . '" /></td>
+							<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_T . $racine->id . '" class="CorrectivActionFollowStateActionColumn" >';
+							if(current_user_can('digi_view_detail_task')){
+								$actionsCorrectives .= '<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . TABLE_TACHE . '_t_elt_' . $racine->id . '" class="view_correctiv_action" />';
+							}
+							$actionsCorrectives .= $task_picto . '</td>
 						</tr>';
 
 								$elements = Arborescence::getFils(TABLE_TACHE, $racine, "nom ASC");
@@ -1390,59 +1298,130 @@ echo $output;
 				<script type="text/javascript">
 					evarisk(document).ready(function(){
 						/*	Change the simple table in treetable	*/
-						evarisk("#' . $idTable . '").treeTable();
-						evarisk("#' . $idTable . ' tr.parent").each(function(){
-							var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
+						jQuery("#' . $idTable . '").treeTable();
+						jQuery("#' . $idTable . ' tr.parent").each(function(){
+							var childNodes = jQuery("table#' . $idTable . ' tbody tr.child-of-" + jQuery(this).attr("id"));
 							if(childNodes.length > 0){
-								evarisk(this).addClass("aFils");				
-								var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
+								jQuery(this).addClass("aFils");				
+								var premierFils = jQuery("table#' . $idTable . ' tbody tr.child-of-" + jQuery(this).attr("id") + ":first").attr("id");
 								if(premierFils != premierFils.replace(/node/g,"")){
-									evarisk(this).addClass("aFilsNoeud");
+									jQuery(this).addClass("aFilsNoeud");
 								}
 								else{
-									evarisk(this).addClass("aFilsFeuille");
+									jQuery(this).addClass("aFilsFeuille");
 								}
 							}
 							else{
-								evarisk(this).removeClass("aFils");
-								evarisk(this).addClass("sansFils");
+								jQuery(this).removeClass("aFils");
+								jQuery(this).addClass("sansFils");
 							}
 						});
 
 						/*	Add the dialog box in order to see correctiv action details	*/
-						evarisk("#riskAssociatedTask' . $id_risque . '").dialog({
+						jQuery("#riskAssociatedTask' . $id_risque . '").dialog({
 							"autoOpen":false,
-							"height":400,
+							"height":460,
 							"width":800,
 							"modal":true,
 							"buttons":{
-								"' . __('fermer', 'evarisk') . '": function(){
-									evarisk(this).dialog("close");
+								"' . __('fermer', 'jQuery') . '": function(){
+									jQuery(this).dialog("close");
 								}
 							},
 							"close":function(){
-								evarisk("#riskAssociatedTask' . $id_risque . '").html("");
+								jQuery("#riskAssociatedTask' . $id_risque . '").html("");
 							}
 						});
 
 						/*	Add the action when user click on the 	*/
-						evarisk(".CorrectivActionFollowStateActionColumn").click(function(){
-							evarisk("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						jQuery(".view_correctiv_action").click(function(){
+							jQuery("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								"post": "true", 
 								"table": "' . TABLE_TACHE . '",
-								"id": evarisk(this).children("img").attr("id"),
+								"id": jQuery(this).attr("id"),
 								"act": "loadDetails"
 							});
 
-							evarisk("#riskAssociatedTask' . $id_risque . '").dialog("open");
+							jQuery("#riskAssociatedTask' . $id_risque . '").dialog("open");
+						});
+
+						jQuery(".correctiv_action_control").click(function(){
+							jQuery("#formRisque").html(jQuery("#loadingImg").html());
+							hideExtraTab();
+							jQuery("#ongletControlerActionDemandee").show();
+							tabChange("#formRisque", "#ongletControlerActionDemandee");
+							jQuery("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+								"post":"true",
+								"table":"' . TABLE_RISQUE . '",
+								"act":"load",
+								"idRisque": ' . $id_risque . ',
+								"idElement":"' . $idElement . '",
+								"tableElement":"' . $tableElement . '",
+								"task_to_associate":jQuery(this).attr("id").replace("risque-", "").replace("-FAC", ""),
+								"sub_action":"control_asked_action"
+							});
+							jQuery("#divFormRisque").show();
+							jQuery("#risqManagementselector div").each(function(){
+								jQuery(this).hide();
+							});
 						});
 					});
 				</script>';
 						}
-						else
-						{
+						else{
 							$actionsCorrectives .= __('Aucune action n\'est associ&eacute;e &agrave; ce risque', 'evarisk');
 						}
+
 						echo $actionsCorrectives;
+					}
+					break;
+
+					case 'reload_risk_cotation':
+					{
+						$score_risque = eva_tools::IsValid_Variable($_REQUEST['score_risque']);
+						$date = eva_tools::IsValid_Variable($_REQUEST['date']);
+						$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode']);
+						$niveauSeuil = eva_tools::IsValid_Variable($_REQUEST['niveauSeuil']);
+
+						$quotation = Risque::getEquivalenceEtalon($idMethode, $score_risque, $date);
+						$seuil = Risque::getSeuil($quotation);
+						echo $quotation . '<script type="text/javascript" >evarisk(document).ready(function(){	jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '"); jQuery(".qr_risk").addClass("Seuil_' . $seuil . '");	});</script>';
+					}
+					break;
+
+					case 'load_quote_validation':
+					{
+						$risque = Risque::getRisque($_REQUEST['idProvenance']);
+						$vars = array();
+						foreach($_REQUEST['vars'] as $var){
+							$current_var = explode('[', $var['var']);
+							$vars[str_replace(']', '', $current_var[1])] = $var['val'];
+						}
+
+						$output = __('Cotation actuelle', 'evarisk') . '
+<div id="current_risk_summary" class="current_risk_summary_task" >
+	' . Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], 'current_quote_control') . '
+</div><br/>' . __('Nouvelle cotation', 'evarisk') . '
+<div class="new_risk_summary_task" >
+	' . Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], 'new_quote_control', array('date_to_take' => date('Y-m-d H:i:s'), 'value_to_take' => $vars, 'description_to_take' => $_REQUEST['new_description'])) . '
+</div>
+<br/>
+<input type="button" class="button-secondary alignright" id="cancel_new_quote" value="' . __('Annuler', 'evarisk') . '" />
+<input type="button" class="button-primary alignright" id="confirm_new_quote" value="' . __('Confirmer', 'evarisk') . '" />
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#cancel_new_quote").click(function(){
+			jQuery("#add_picture_alert").dialog("close");
+		});
+		jQuery("#confirm_new_quote").click(function(){
+			jQuery("#add_picture_alert").dialog("close");
+			jQuery("#informationGeneralesActivite #act").val("add_control_picture");
+			jQuery("#informationGeneralesActivite").submit();
+		});
+	});
+</script>';
+
+						echo $output;
 					}
 					break;
 				}
@@ -1452,28 +1431,24 @@ echo $output;
 				{
 					case 'reloadVariables':
 					{
-						$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode']);
+						$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode'], '');
 						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
 						$formId = (isset($_REQUEST['formId'])) ? eva_tools::IsValid_Variable($_REQUEST['formId']) : '';
 						unset($valeurInitialVariables);
-						if($idRisque != '')
-						{	
+						if($idRisque != ''){
 							$risque = Risque::getRisque($idRisque);
-							foreach($risque as $ligneRisque)
-							{
+							foreach($risque as $ligneRisque){
+								$idMethode = ($idMethode == '') ? $ligneRisque->id_methode : $idMethode;
 								$valeurInitialVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
 							}
 						}
 						$variables = MethodeEvaluation::getDistinctVariablesMethode($idMethode);
-						$affichage = '';
-						foreach($variables as $variable)
-						{
-							if(isset($valeurInitialVariables))
-							{
+						$affichage = '<div class="evaluation_var_slider_container" >';
+						foreach($variables as $variable){
+							if(isset($valeurInitialVariables)){
 								$valeurInitialVariable = $valeurInitialVariables[$variable->id];
 							}
-							else
-							{
+							else{
 								$valeurInitialVariable = $variable->min;
 							}
 							{//Script de la variable
@@ -1486,6 +1461,9 @@ echo $output;
 											max:	' . $variable->max . ',
 											slide: function(event, ui){
 												evarisk("#' . $formId . 'var' . $variable->id . 'FormRisque").val(ui.value);
+											},
+											stop: function(event, ui){
+												live_risk_calcul();
 											}
 										});
 										evarisk("#' . $formId . 'var' . $variable->id . 'FormRisque").val(evarisk("#' . $formId . 'slider-range-min' . $variable->id . '").slider("value"));
@@ -1495,151 +1473,56 @@ echo $output;
 							{//Affichage de la variable
 								$affichage .= '
 									<label for="' . $formId . 'var' . $variable->id . 'FormRisque">' . $variable->nom . ' :</label>
-									<input type="text" class="sliderValue" disabled="disabled" id="' . $formId . 'var' . $variable->id . 'FormRisque" name="' . $formId . 'variables[]" />
+									<input type="text" class="sliderValue" readonly="readonly" id="' . $formId . 'var' . $variable->id . 'FormRisque" name="' . $formId . 'variables[' . $variable->id . ']" />
 									<div id="' . $formId . 'slider-range-min' . $variable->id . '" class="slider_variable"></div>';
 							}
 						}
+						$affichage .= '</div>';
+						$quotation = 0;
+						if($risque != null){
+							$score = Risque::getScoreRisque($risque);
+							$quotation = Risque::getEquivalenceEtalon($idMethode, $score);
+						}
+						$niveauSeuil = Risque::getSeuil($quotation);
+						$affichage .= '<div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div></div>';
 
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
 						$defaultPicture = evaPhoto::getMainPhoto(TABLE_METHODE, $idMethode);
-						if(($defaultPicture != '') && (is_file(EVA_GENERATED_DOC_DIR . $defaultPicture)))
-						{
-							$methodExplanationPicture = '<img src="' . EVA_GENERATED_DOC_URL . $defaultPicture . '" alt="" style="width:100%;" />';
+						if(($defaultPicture != '') && (is_file(EVA_GENERATED_DOC_DIR . $defaultPicture))){
+							$methodExplanationPicture = '<img src="' . EVA_GENERATED_DOC_URL . $defaultPicture . '" alt="evaluation method explanation picture" class="digi_eval_pic" />';
 						}
 						/*	END - Get the explanation picture if exist - END	*/
 
-						/*	START - Check if there are task to associate */
-						$tachesAssociees = array();
-						if($idRisque > '0')
-						{
-							//On récupère les actions relatives à l'élément de provenance.
-							$tachesSoldees = new EvaTaskTable();
-							$tacheLike = new EvaTask();
-							$tacheLike->setIdFrom($idRisque);
-							$tacheLike->setTableFrom(TABLE_RISQUE);
-							if(digirisk_options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui')
-							{
-								$tacheLike->setProgressionStatus("'Done', 'DoneByChief'");
-							}
-							$tachesSoldees->getTasksLike($tacheLike);
-							$tachesAssociees = $tachesSoldees->getTasks();
-							
-							/*	Check if there are actions that are not done to alert the user when he will change the risk level	*/
-							$tachesNonSoldees = new EvaTaskTable();
-							$tacheNonSoldeeLike = new EvaTask();
-							$tacheNonSoldeeLike->setIdFrom($idRisque);
-							$tacheNonSoldeeLike->setTableFrom(TABLE_RISQUE);
-							$tacheNonSoldeeLike->setProgressionStatus("'inProgress'");
-							$tachesNonSoldees->getTasksLike($tacheNonSoldeeLike);
-							$tachesAssocieesNonSoldees = $tachesNonSoldees->getTasks();
-						}
-						/*	END - Check if there are task to associate */
-
-						$rightContainer = '';
-						if((count($tachesAssociees) < 1) && (count($tachesAssocieesNonSoldees) < 1))
-						{
-							$rightContainer = $methodExplanationPicture;
-						}
-						else
-						{
-							$taskToMatch = '';
-							if(is_array($tachesAssociees))
-							{
-								$taskToMatch .= '<table summary="" cellpadding="0" cellspacing="0" >';
-								foreach($tachesAssociees as $tache)
-								{
-									$taskToMatch .= '<tr><td><input type="checkbox" class="acLinkRisksChecbox" name="associatedTask" id="associatedTask' . $tache->id . '" value="' . $tache->id . '" /></td><td style="padding:6px;" ><label for="associatedTask' . $tache->id . '" >' . $tache->name . '</label></td></tr>';
-								}
-								$taskToMatch .= '</table>';
-							}
-
-							if(is_array($tachesAssocieesNonSoldees) && (digirisk_options::getOptionValue('affecter_uniquement_tache_soldee_a_un_risque') == 'oui'))
-							{
-								$taskToMatch .= '<div style="text-align:justify;color:red;" >' . __('Des actions correctives sont actuellement en cours et ne sont pas sold&eacute;es. Si vous voulez lier la modification de ce risque &agrave; une de ces actions corrective, vous devez d\'abord solder celles-ci.', 'evarisk') . '</div>';
-							}
-
-							$rightContainer = 
-								'<div id="moreRiskAction" >
-									<ul>
-										<li><a href="#correctivActionTab">' . __('Actions correctives', 'evarisk') . '</a></li>
-										<li><a href="#explanationTab">' . __('Explications', 'evarisk') . '</a></li>
-									</ul>
-									<div id="correctivActionTab" >' . __('Si la r&eacute;-&eacute;valuation du risque d&eacute;coule d\'une action corrective. Vous pouvez associer ces &eacute;l&eacute;ments.', 'evarisk') . '<hr/>' . $taskToMatch  . '</div>
-									<div id="explanationTab" >' . $methodExplanationPicture . '</div>
-								</div>
-								<script type="text/javascript" >
-									evarisk(document).ready(function(){
-										evarisk("#moreRiskAction").tabs();
-									})
-								</script>';
+						$method_operator_date = null;
+						if($risque != null){
+							$method_operator_date = $risque[0]->date;
 						}
 
-						echo '<div class="alignleft" style="width:30%;" >' . $affichage . '</div><div class="alignright" style="width:70%;" >' . $rightContainer . '</div>';
-					}
-					break;
-					case 'reloadVariables-FAC':
-					{
-						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
-						unset($valeurInitialVariables);
-						if($idRisque != '')
-						{	
-							$risque = Risque::getRisque($idRisque);
-							foreach($risque as $ligneRisque)
-							{
-								$idMethode = $ligneRisque->id_methode;
-								$valeurInitialVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
-							}
+						$listeOperateur = MethodeEvaluation::getOperateursMethode($idMethode, $method_operator_date);
+						$listeVariables = MethodeEvaluation::getVariablesMethode($idMethode, $method_operator_date);
+						$formule = '';
+						foreach($listeVariables as $index => $variable){
+							$formule .= 'jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val()';
+							$formule .= (isset($listeOperateur[$index]->operateur) && ($listeOperateur[$index]->operateur!= '')) ? ' ' . $listeOperateur[$index]->operateur . ' ' : '';
 						}
-						$variables = MethodeEvaluation::getDistinctVariablesMethode($idMethode);
-
-						$affichage = '';
-						foreach($variables as $variable)
-						{
-							if(isset($valeurInitialVariables))
-							{
-								$valeurInitialVariable = $valeurInitialVariables[$variable->id];
-							}
-							else
-							{
-								$valeurInitialVariable = $variable->min;
-							}
-							{//Script de la variable
-								$affichage .= '<script type="text/javascript">
-									evarisk(document).ready(function(){
-										evarisk("#slider-range-min-FAC' . $variable->id . '").slider({
-											range: "min",
-											value: ' . $valeurInitialVariable . ',
-											min:	' . $variable->min . ',
-											max:	' . $variable->max . ',
-											slide: function(event, ui){
-												evarisk("#var' . $variable->id . 'FormRisque-FAC").val(ui.value);
-											}
-										});
-										evarisk("#var' . $variable->id . 'FormRisque-FAC").val(evarisk("#slider-range-min-FAC' . $variable->id . '").slider("value"));
-									});
-								</script>';
-							}
-							{//Affichage de la variable
-								$affichage .= '
-									<span id="plusVar' . $variable->id . 'FormRisque-FAC" class="plusVariable"><label for="var' . $variable->id . 'FormRisque-FAC">' . $variable->nom . ' :</label></span>
-									<input type="text" class="sliderValue" disabled="disabled" id="var' . $variable->id . 'FormRisque-FAC" name="variables[]" />
-									<div id="slider-range-min-FAC' . $variable->id . '" class="slider_variable"></div>';
-							}
-						}
-
-						/*	START - Get the explanation picture if exist - START	*/
-						$methodExplanationPicture = '';
-						$defaultPicture = evaPhoto::getMainPhoto(TABLE_METHODE, $idMethode);
-						if(($defaultPicture != '') && (is_file(EVA_GENERATED_DOC_DIR . $defaultPicture)))
-						{
-							$methodExplanationPicture = '<img src="' . EVA_GENERATED_DOC_URL . $defaultPicture . '" alt="" style="width:100%;" />';
-						}
-						/*	END - Get the explanation picture if exist - END	*/
-
-						$rightContainer = $methodExplanationPicture;
-
-						echo '<div class="alignleft" style="width:30%;" >' . $affichage . '</div><div class="alignright" style="width:70%;" >' . $rightContainer . '</div>';
+						echo '<div class="eval_method_var" >' . $affichage . '</div><div class="eval_method_explanation" >' . $methodExplanationPicture . '</div>
+<script type="text/javascript" >
+	function live_risk_calcul(){
+		var QR = ' . $formule . ';
+		jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '");
+		jQuery(".qr_risk").html("<img src=\'' . PICTO_LOADING_ROUND . '\' alt=\'' . __('loading', 'evarisk') . '\' />");
+		jQuery(".qr_risk").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			"post": "true", 
+			"table": "' . TABLE_RISQUE . '",
+			"act": "reload_risk_cotation",
+			"score_risque": QR,
+			"date": "' . $method_operator_date . '",
+			"idMethode": "' . $idMethode . '",
+			"niveauSeuil": "' . $niveauSeuil . '"
+		});
+	}
+</script>';
 					}
 					break;
 				}
@@ -1893,6 +1776,7 @@ echo $output;
 							$tache->setProgressionStatus('inProgress');
 						}
 						$tache->setidResponsable($_REQUEST['responsable_tache']);
+						$tache->setEfficacite($_REQUEST['efficacite']);
 						if($_REQUEST['act'] == 'taskDone')
 						{
 							global $current_user;
@@ -2143,6 +2027,7 @@ echo $output;
 					}
 					break;
 					case 'loadDetails':
+					case 'load_details_simple':
 					{
 						$output = '';
 						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
@@ -2174,6 +2059,7 @@ echo $output;
 								$contenuInputResponsable = $tache->getidResponsable();
 								$contenuInputRealisateur = $tache->getidSoldeur();
 								$ProgressionStatus = $tache->getProgressionStatus();
+								$efficacite = $tache->getEfficacite();
 								$startDate = $tache->getStartDate();
 								$endDate = $tache->getFinishDate();
 								if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00')){
@@ -2182,13 +2068,31 @@ echo $output;
 		<td colspan="2" >' . __('D&eacute;but', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $startDate, true) . '&nbsp;-&nbsp;' . __('Fin', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $endDate, true) . '&nbsp;<span style="font-size:9px;" >(' . __('Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches', 'evarisk') . ')</span></td>
 	</tr>';
 								}
-								$moreInfos .= '
+								$link_to_element = '<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=digirisk_correctiv_actions&amp;elt=edit-node' . $tache->id . '" target="seePassedFac" >' . __('Voir l\'action', 'evarisk') . '</a>';
+
+								if($_REQUEST['act'] == 'load_details_simple'){
+									$moreInfos .= '
 	<tr>
 		<td class="correctivActionDetailsFieldName" >' . __('&Eacute;valuation du risque associ&eacute;', 'evarisk') . '</td>
 	</tr>
 	<tr>
-		<td colspan="2">' . Risque::getTableQuotationRisqueAvantApresAC($element_identifier[0], $element_identifier[1], $tache, 'correctivActionFollow') . '</td>
+		<td colspan="2">' . Risque::get_risk_level_summary_by_moment($element_identifier[0], $element_identifier[1], $tache, 'correctivActionFollow', array('demand', 'current')) . '</td>
 	</tr>';
+									$link_to_element = '';
+								}
+								else{
+									$moreInfos .= '
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __('Efficacit&eacute; de l\'action', 'evarisk') . '</td>
+		<td >' . $efficacite . '&nbsp;%</td>
+	</tr>
+	<tr>
+		<td class="correctivActionDetailsFieldName" >' . __('&Eacute;valuation du risque associ&eacute;', 'evarisk') . '</td>
+	</tr>
+	<tr>
+		<td colspan="2">' . Risque::get_risk_level_summary_by_moment($element_identifier[0], $element_identifier[1], $tache, 'correctivActionFollow', array('demand', 'current', 'before', 'after')) . '</td>
+	</tr>';
+								}
 							}
 							break;
 							case TABLE_ACTIVITE:
@@ -2252,11 +2156,17 @@ echo $output;
 			</table>
 		</td>
 	</tr>';
+								$link_to_element = '<a href="' . get_bloginfo('siteurl') . '/wp-admin/admin.php?page=digirisk_correctiv_actions&amp;elt=edit-leaf' . $tache->id . '" target="seePassedFac" >' . __('Voir l\'action', 'evarisk') . '</a>';
+
+								if($_REQUEST['act'] == 'load_details_simple'){
+									$moreInfos = '';
+									$link_to_element = '';
+								}
 							}
 							break;
 						}
 
-								$output .= '
+						$output .= '
 <table summary="task details" cellpadding="0" cellspacing="0" >' . $date . '
 	<tr>
 		<td class="correctivActionDetailsFieldName" >' . __("Nom", 'evarisk') . '</td>
@@ -2272,21 +2182,22 @@ echo $output;
 	</tr>
 	<tr>
 		<td class="correctivActionDetailsFieldName" >' . __('Suivi de l\'action corrective', 'evarisk') . '</td>';
-									$suivi = suivi_activite::tableauSuiviActivite($element_identifier[0], $element_identifier[1]);
-									if(trim($suivi) == ''){
-										$output .= '
+							$suivi = suivi_activite::tableauSuiviActivite($element_identifier[0], $element_identifier[1]);
+							if(trim($suivi) == ''){
+								$output .= '
 		<td >' . __('Aucun suivi pour cette action', 'evarisk');
-									}
-									else{
-										$output .= '
+							}
+							else{
+								$output .= '
 	</tr>
 	<tr>
 		<td colspan="2" class="correctiveActionFollow" >' . $suivi;
-									}
-									$output .= 
+							}
+							$output .= 
 		'</td>
 	</tr>' . $moreInfos . '
-</table>';
+</table>
+<div class="alignright digi_correctiv_action_link_container" >' . $link_to_element . '</div>';
 
 						echo $output;
 					}
@@ -2364,6 +2275,7 @@ echo $output;
 				{
 					case 'save':
 					case 'update':
+					case 'update_from_external':
 					case 'actionDone':
 					{
 						global $wpdb;
@@ -2371,11 +2283,16 @@ echo $output;
 						{
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
-								break;
+							break;
 							case 'update':
 							case 'actionDone':
+							case 'update_from_external':
 								$action = __('mise &agrave; jour', 'evarisk');
-								break;
+							break;
+						}
+						$orignal_requested_act = $_REQUEST['act'];
+						if($_REQUEST['act'] == 'update_from_external'){
+							$_REQUEST['act'] = 'update';
 						}
 						$activite = new EvaActivity($_REQUEST['id']);
 						$activite->load();
@@ -2387,12 +2304,10 @@ echo $output;
 						$activite->setCout($_REQUEST['cout']);
 						$activite->setProgression($_REQUEST['avancement']);
 						$activite->setProgressionStatus('notStarted');
-						if(($_REQUEST['avancement'] > '0') || ($activite->getProgressionStatus() == 'inProgress'))
-						{
+						if(($_REQUEST['avancement'] > '0') || ($activite->getProgressionStatus() == 'inProgress')){
 							$activite->setProgressionStatus('inProgress');
 						}
-						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone'))
-						{
+						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone')){
 							$activite->setProgressionStatus('Done');
 							global $current_user;
 							$activite->setidSoldeur($current_user->ID);
@@ -2406,12 +2321,12 @@ echo $output;
 						$relatedTask->load();
 						$relatedTask->getTimeWindow();
 						$relatedTask->computeProgression();
+						$relatedTask->setEfficacite($_REQUEST['correctiv_action_efficiency_control']);
 						$relatedTask->save();
 
 						/*	Update the task ancestor	*/
 						$wpdbTasks = Arborescence::getAncetre(TABLE_TACHE, $relatedTask->convertToWpdb());
-						foreach($wpdbTasks as $task)
-						{
+						foreach($wpdbTasks as $task){
 							unset($ancestorTask);
 							$ancestorTask = new EvaTask($task->id);
 							$ancestorTask->load();
@@ -2420,137 +2335,89 @@ echo $output;
 							unset($ancestorTask);
 						}
 
-						$messageInfo = '<script type="text/javascript">';
-						if($activite->getStatus() != 'error')
-						{
-							$messageInfo .= '
-								evarisk(document).ready(function(){
-									evarisk("#message").addClass("updated");
-									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
+						$activity_save_message = '';
+						if($activite->getStatus() != 'error'){
+							$activity_save_message= addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action));
 						}
-						else
-						{
-							$messageInfo .= '
-								evarisk(document).ready(function(){
-									evarisk("#message").addClass("updated");
-									evarisk("#message").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
+						else{
+							$activity_save_message = addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action));
 						}
 						$activite->load();
-						$messageInfo .= '
-									evarisk("#message").show();
-									setTimeout(function(){
-										evarisk("#message").removeClass("updated");
-										evarisk("#message").hide();
-									},7500);
 
-									evarisk("#rightEnlarging").show();
-									evarisk("#equilize").click();
-									evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-									if("' . $_REQUEST['affichage'] . '" == "affichageTable")
-									{
-										if(evarisk("#filAriane :last-child").is("label"))
-											evarisk("#filAriane :last-child").remove();
-										evarisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_activite'] . '</label>\');
-										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						$messageInfo = '';
+						$message_container = 'message' . $_REQUEST['tableProvenance'];
+						if($orignal_requested_act != 'update_from_external'){
+							$message_container = 'message';
+							$messageInfo .= '
+									jQuery("#rightEnlarging").show();
+									jQuery("#equilize").click();
+									jQuery("#partieEdition").html(jQuery("#loadingImg").html());
+									if("' . $_REQUEST['affichage'] . '" == "affichageTable"){
+										if(jQuery("#filAriane :last-child").is("label"))
+											jQuery("#filAriane :last-child").remove();
+										jQuery("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_activite'] . '</label>\');
+										jQuery("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+											"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"id": "' . $activite->getId() . '",
-											"page": evarisk("#pagemainPostBoxReference").val(),
-											"idPere": evarisk("#identifiantActuellemainPostBox").val(),
+											"page": jQuery("#pagemainPostBoxReference").val(),
+											"idPere": jQuery("#identifiantActuellemainPostBox").val(),
 											"act": "edit",
 											"partie": "right",
-				"menu": evarisk("#menu").val(),
+											"menu": jQuery("#menu").val(),
 											"affichage": "affichageTable",
 											"partition": "tout"
 										});
 									}
-									else
-									{
+									else{
 										var expanded = new Array();
-										evarisk(".expanded").each(function(){expanded.push(evarisk(this).attr("id"));});
-										evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										jQuery(".expanded").each(function(){expanded.push(jQuery(this).attr("id"));});
+										jQuery("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+											"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "edit",
 											"id": "' . $activite->getId() . '",
 											"partie": "right",
-				"menu": evarisk("#menu").val(),
+											"menu": jQuery("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
-										evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-										{
+										jQuery("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 											"post": "true", 
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "edit",
 											"id": "' . $activite->getId() . '",
 											"partie": "left",
-											"menu": evarisk("#menu").val(),
+											"menu": jQuery("#menu").val(),
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
-									}
-								});
-							</script>';
+									}';
+						}
+						else{
+							if(isset($_REQUEST['variables']) && (count($_REQUEST['variables']) > 0)){
+								Risque::update_risk_rating_link_with_task($_REQUEST['idProvenance'], $actionSave['task_id'], array('before', 'after'));
+							}
+
+							$messageInfo .= '
+									jQuery("#ongletVoirLesRisques").click();';
+						}
+
+						$messageInfo = '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		actionMessageShow("#' . $message_container . '", "' . $activity_save_message . '");
+		setTimeout(\'actionMessageHide("#' . $message_container . '")\', "7500");
+		' . $messageInfo . '
+	});
+</script>';
 						echo $messageInfo;
 					}
 					break;
-					case 'update-FAC':
+					case "addAction" :
 					{
-						$action = __('mise &agrave; jour', 'evarisk');
-
-						$activite = new EvaActivity($_REQUEST['id']);
-						$activite->load();
-						$activite->setName($_REQUEST['nom_activite']);
-						$activite->setDescription($_REQUEST['description']);
-						$activite->setRelatedTaskId($_REQUEST['idPere']);
-						$activite->setStartDate($_REQUEST['date_debut']);
-						$activite->setFinishDate($_REQUEST['date_fin']);
-						$activite->setCout($_REQUEST['cout']);
-						$activite->setProgression($_REQUEST['avancement']);
-						$activite->setProgressionStatus('notStarted');
-						if(($_REQUEST['avancement'] > '0') || ($activite->getProgressionStatus() == 'inProgress'))
-						{
-							$activite->setProgressionStatus('inProgress');
-						}
-						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone'))
-						{
-							$activite->setProgressionStatus('Done');
-							global $current_user;
-							$activite->setidSoldeur($current_user->ID);
-							$activite->setdateSolde(date('Y-m-d H:i:s'));
-						}
-						$activite->setidResponsable($_REQUEST['responsable_activite']);
-						$activite->save();
-
-						/*	Update the action ancestor	*/
-						$relatedTask = new EvaTask($activite->getRelatedTaskId());
-						$relatedTask->load();
-						$relatedTask->getTimeWindow();
-						$relatedTask->computeProgression();
-						$relatedTask->save();
-
-						/*	Update the task ancestor	*/
-						$wpdbTasks = Arborescence::getAncetre(TABLE_TACHE, $relatedTask->convertToWpdb());
-						foreach($wpdbTasks as $task)
-						{
-							unset($ancestorTask);
-							$ancestorTask = new EvaTask($task->id);
-							$ancestorTask->load();
-							$ancestorTask->computeProgression();
-							$ancestorTask->save();
-							unset($ancestorTask);
-						}
-
-						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
-						$risque = Risque::getRisque($idRisque);
-						$_REQUEST['idRisque'] = $idRisque;
-						$_REQUEST['idDanger'] = $risque[0]->id_danger;
-						$_REQUEST['idMethode'] = $risque[0]->id_methode;
-						$_REQUEST['description'] = $risque[0]->commentaire;
-						$_REQUEST['idElement'] = $risque[0]->id_element;
-						$_REQUEST['tableElement'] = $risque[0]->nomTableElement;
-						$_REQUEST['act'] = 'save';
-						$_REQUEST['histo'] = 'true';
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
+						$_POST['parentTaskId'] = evaTask::saveNewTask();
+						$actionSave = evaActivity::saveNewActivity();
 
 						/*	Make the link between a corrective action and a risk evaluation	*/
 						$query = 
@@ -2564,34 +2431,109 @@ echo $output;
 								$_REQUEST['idProvenance']
 							);
 						$evaluation = $wpdb->get_row($query);
-						evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $relatedTask->getId(), 'after');
+						evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionSave['task_id'], 'demand');
 
 						$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){';
-						if($activite->getStatus() != 'error')
-						{
-							$messageInfo .= '
-								evarisk("#message' . TABLE_RISQUE . '").addClass("updated");
-								evarisk("#message' . TABLE_RISQUE . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
+								evarisk(document).ready(function(){
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
+						if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error')){
+							$messageInfo = $messageInfo . '
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 						}
-						else
-						{
+						else{
+							$messageInfo = $messageInfo . '
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+						}
+						$messageInfo = $messageInfo . '
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
+									setTimeout(function(){
+										evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
+									},7500);
+									evarisk("#ongletVoirLesRisques").click();
+								});
+							</script>';
+						echo $messageInfo;
+					}
+					break;
+					case 'add_control':
+					case 'add_control_picture':
+					{
+						$original_request_act = $_REQUEST['act'];
+						$_POST['parentTaskId'] = evaTask::saveNewTask();
+						$actionSave = evaActivity::saveNewActivity();
+
+						if(isset($_REQUEST['variables']) && (count($_REQUEST['variables']) > 0)){
+							Risque::update_risk_rating_link_with_task($_REQUEST['idProvenance'], $actionSave['task_id'], array('before', 'after'));
+						}
+
+						if(isset($_REQUEST['original_act']) && ($_REQUEST['original_act'] == 'demandeAction')){
+							$query = 
+								$wpdb->prepare(
+									"SELECT id_evaluation 
+									FROM " . TABLE_AVOIR_VALEUR . " 
+									WHERE id_risque = '%d' 
+										AND Status = 'Valid' 
+									ORDER BY id DESC 
+									LIMIT 1", 
+									$_REQUEST['idProvenance']
+								);
+							$evaluation = $wpdb->get_row($query);
+							evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionSave['task_id'], 'demand');
+						}
+
+						$messageInfo = '
+						<script type="text/javascript">
+							evarisk(document).ready(function(){
+								jQuery("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
+						if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error')){
 							$messageInfo .= '
-								evarisk("#message' . TABLE_RISQUE . '").addClass("updated");
-								evarisk("#message' . TABLE_RISQUE . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action)) . '");';
+								jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+						}
+						else{
+							$messageInfo .= '
+								jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 						}
 						$messageInfo .= '
-								evarisk("#message' . TABLE_RISQUE . '").show();
+								jQuery("#message' . $_REQUEST['tableProvenance'] . '").show();
 								setTimeout(function(){
-									evarisk("#message' . TABLE_RISQUE . '").removeClass("updated");
-									evarisk("#message' . TABLE_RISQUE . '").hide();
-								},7500);
-								evarisk("#ongletVoirLesRisques").click();
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").hide();
+								},7500);';
+
+						if($original_request_act == 'add_control'){
+							$messageInfo .= '
+								jQuery("#ongletVoirLesRisques").click();';
+						}
+						elseif($original_request_act == 'add_control_picture'){
+							$messageInfo .= '
+								jQuery("#id_activite").val("' . $actionSave['action_id'] . '");
+								jQuery("#idPere_activite").val("' . $actionSave['task_id'] . '");
+								jQuery("#ActionSaveButton").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+									"post":"true",
+									"nom":"reload_new_activity_button_container"
+								});
+								jQuery("#photosActionsCorrectives").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+									"post":"true",
+									"table":"' . TABLE_ACTIVITE . '",
+									"act":"pictureLoad",
+									"tableElement":jQuery("#tableProvenance_activite").val(),
+									"idElement":"' . $actionSave['action_id'] . '"
+								});
+								jQuery(".slider_variable").slider({ disabled: true });
+								jQuery("#descriptionFormRisque").prop("disabled", true);
+								jQuery(".slider_variable, #descriptionFormRisque").click(function(){
+									alert(convertAccentToJS("' . __('Vous ne pouvez plus modifier le risque &agrave; partir de cette interface. Vous devez ajouter une nouvelle action de contr&ocirc;le pour cela.', 'evarisk') . '"));
+								});';
+						}
+
+						$messageInfo .= '
 							});
 						</script>';
 						echo $messageInfo;
 					}
 					break;
+
 					case 'pictureLoad':
 					{
 						$tableElement = $_REQUEST['table'];
@@ -2781,130 +2723,6 @@ echo $output;
 									}
 								});
 							</script>';
-						echo $messageInfo;
-					}
-					break;
-					case 'setAsBeforePicture':
-					{
-						$activite = new EvaActivity($_REQUEST['idElement']);
-						$activite->load();
-						$activite->setidPhotoAvant($_REQUEST['idPhoto']);
-						$activite->save();
-						$messageInfo = '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
-						if($activite->getStatus() != 'error')
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						else
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
-									setTimeout(function(){
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
-									},7500);
-									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
-								});
-						</script>';
-						echo $messageInfo;
-					}
-					break;
-					case 'setAsAfterPicture':
-					{
-						$activite = new EvaActivity($_REQUEST['idElement']);
-						$activite->load();
-						$activite->setidPhotoApres($_REQUEST['idPhoto']);
-						$activite->save();
-						$messageInfo = '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
-						if($activite->getStatus() != 'error')
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						else
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
-									setTimeout(function(){
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
-									},7500);
-									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
-								});
-						</script>';
-						echo $messageInfo;
-					}
-					break;
-					case 'unsetAsBeforePicture':
-					{
-						$activite = new EvaActivity($_REQUEST['idElement']);
-						$activite->load();
-						$activite->setidPhotoAvant("0");
-						$activite->save();
-						$messageInfo = '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
-						if($activite->getStatus() != 'error')
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						else
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
-									setTimeout(function(){
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
-									},7500);
-									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
-								});
-						</script>';
-						echo $messageInfo;
-					}
-					break;
-					case 'unsetAsAfterPicture':
-					{
-						$activite = new EvaActivity($_REQUEST['idElement']);
-						$activite->load();
-						$activite->setidPhotoApres("0");
-						$activite->save();
-						$messageInfo = '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
-						if($activite->getStatus() != 'error')
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						else
-						{
-							$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
-						}
-						$messageInfo .= '
-									evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
-									setTimeout(function(){
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
-										evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
-									},7500);
-									reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
-								});
-						</script>';
 						echo $messageInfo;
 					}
 					break;
@@ -4411,10 +4229,169 @@ echo $output;
 		}
 	}
 
-	if(isset($_REQUEST['nom']))
-	{
+	if(isset($_REQUEST['nom'])){
 		switch($_REQUEST['nom'])
-		{
+		{			
+			case 'setAsBeforePicture':
+			{
+				switch($_REQUEST['table']){
+					case TABLE_TACHE:
+					{
+						$element = new EvaTask($_REQUEST['idElement']);
+					}
+					break;
+					case TABLE_ACTIVITE:
+					{
+						$element = new EvaActivity($_REQUEST['idElement']);
+					}
+					break;
+				}
+				$element->load();
+				$element->setidPhotoAvant($_REQUEST['idPhoto']);
+				$element->save();
+				$messageInfo = '<script type="text/javascript">
+						evarisk(document).ready(function(){
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
+				if($element->getStatus() != 'error'){
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				else{
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
+							setTimeout(function(){
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
+							},7500);
+							reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
+						});
+				</script>';
+				echo $messageInfo;
+			}
+			break;
+			case 'setAsAfterPicture':
+			{
+				switch($_REQUEST['table']){
+					case TABLE_TACHE:
+					{
+						$element = new EvaTask($_REQUEST['idElement']);
+					}
+					break;
+					case TABLE_ACTIVITE:
+					{
+						$element = new EvaActivity($_REQUEST['idElement']);
+					}
+					break;
+				}
+				$element->load();
+				$element->setidPhotoApres($_REQUEST['idPhoto']);
+				$element->save();
+				$messageInfo = '<script type="text/javascript">
+						evarisk(document).ready(function(){
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
+				if($element->getStatus() != 'error'){
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				else{
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
+							setTimeout(function(){
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
+							},7500);
+							reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
+						});
+				</script>';
+				echo $messageInfo;
+			}
+			break;
+			case 'unsetAsBeforePicture':
+			{
+				switch($_REQUEST['table']){
+					case TABLE_TACHE:
+					{
+						$element = new EvaTask($_REQUEST['idElement']);
+					}
+					break;
+					case TABLE_ACTIVITE:
+					{
+						$element = new EvaActivity($_REQUEST['idElement']);
+					}
+					break;
+				}
+				$element->load();
+				$element->setidPhotoAvant("0");
+				$element->save();
+				$messageInfo = '<script type="text/javascript">
+						evarisk(document).ready(function(){
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
+				if($element->getStatus() != 'error'){
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				else{
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
+							setTimeout(function(){
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
+							},7500);
+							reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
+						});
+				</script>';
+				echo $messageInfo;
+			}
+			break;
+			case 'unsetAsAfterPicture':
+			{
+				switch($_REQUEST['table']){
+					case TABLE_TACHE:
+					{
+						$element = new EvaTask($_REQUEST['idElement']);
+					}
+					break;
+					case TABLE_ACTIVITE:
+					{
+						$element = new EvaActivity($_REQUEST['idElement']);
+					}
+					break;
+				}
+				$element->load();
+				$element->setidPhotoApres("0");
+				$element->save();
+				$messageInfo = '<script type="text/javascript">
+						evarisk(document).ready(function(){
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
+				if($element->getStatus() != 'error'){
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				else{
+					$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo est toujours d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
+				}
+				$messageInfo .= '
+							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").show();
+							setTimeout(function(){
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").removeClass("updated");
+								evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").hide();
+							},7500);
+							reloadcontainer(\'' . $_REQUEST['table'] . '\', \'' . $_REQUEST['idElement'] . '\', \'' . PICTO_LOADING_ROUND . '\');
+						});
+				</script>';
+				echo $messageInfo;
+			}
+			break;
 			case "installerEvarisk":
 			{
 					$insertions = $_REQUEST;
@@ -5035,55 +5012,63 @@ switch($tableProvenance)
 			}
 			break;
 
+			case "ficheAction" :
 			case "demandeAction" :
+			case "control_asked_action" :
 			{
-				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']) . '<br />';
-				
-				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/activite-new.php');
-				getActivityGeneralInformationPostBoxBody(array('idElement' => null, 'idPere' => 1, 'affichage' => null, 'idsFilAriane' => null));
-				echo 
-					'<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#idProvenance_activite").val("' . $_REQUEST['idProvenance'] . '");
-							evarisk("#tableProvenance_activite").val("' . $_REQUEST['tableProvenance'] . '");
-							evarisk("#save_activite").unbind("click");
-							evarisk("#save_activite").click(function(){
-								if(evarisk(\'#nom_activite\').is(".form-input-tip")){
-									evarisk(\'#nom_activite\').val("");
-									evarisk(\'#nom_activite\').removeClass(\'form-input-tip\');
-								}
-								valeurActuelle = evarisk("#nom_activite").val();
-								if(valeurActuelle == ""){
-									alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
-								}
-								else{
-									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
-										"nom": "addAction",
-										"nom_activite": evarisk("#nom_activite").val(),
-										"idPere": 1,
-										"description": evarisk("#description_activite").val(),
-										"date_debut": evarisk("#date_debut_activite").val(),
-										"date_fin": evarisk("#date_fin_activite").val(),
-										"cout": evarisk("#cout_activite").val(),
-										"avancement": evarisk("#avancement_activite").val(),
-										"responsable_activite": evarisk("#responsable_activite").val(),
-										"idProvenance": evarisk("#idProvenance_activite").val(),
-										"tableProvenance": evarisk("#tableProvenance_activite").val()
-									});
-								}
-							});
-						})
-					</script>';
-				}
+				$idElement = ($_REQUEST['nom'] == 'control_asked_action') ? $_REQUEST['idElement'] : null;
+				$output = '
+<div id="current_risk_summary" class="current_risk_summary_task" >
+	' . Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], $_REQUEST['nom']) . '
+</div>
+' . EvaActivity::sub_task_creation_form(array('tableElement' => $_REQUEST['tableElement'], 'idElement' => $idElement, 'idPere' => 1, 'affichage' => null, 'idsFilAriane' => null, 'output_mode' => 'return', 'requested_action' => $_REQUEST['nom'], 'tableProvenance' => $_REQUEST['tableProvenance'], 'idProvenance' => $_REQUEST['idProvenance'])) . '
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#idProvenance_activite").val("' . $_REQUEST['idProvenance'] . '");
+		evarisk("#tableProvenance_activite").val("' . $_REQUEST['tableProvenance'] . '");
+		evarisk("#formRisque").html("");
+	})
+</script>';
+
+				echo $output;
+			}
 			break;
+
+			case 'histo-risk':
+			{
+				$completeRiskList = Risque::getRisques('all', 'all', 'Valid', "tableRisque.id = '" . $_REQUEST['idProvenance'] . "'", 'tableRisque.id ASC');
+				if($completeRiskList != null){
+					foreach($completeRiskList as $risque){
+						$risques["'" . $risque->id . "'"][] = $risque; 
+					}
+				}
+				$lowerRisk = $higherRisk = 0;
+				if(isset($risques) && ($risques != null)){
+					foreach($risques as $risque){
+						$idMethode = $risque[0]->id_methode;
+						$score = Risque::getScoreRisque($risque);
+						$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+
+						
+					}
+				}
+
+				echo '
+<div id="chart1" style="height:300px; width:500px;"></div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		var plot1 = jQuery.jqplot("chart1", [[3,7,9,1,4,6,8,2,5]]);
+	});
+</script>';
+			}
+			break;
+
 			case "suiviAction" :
 			{
 				$risques = array();
 				$riskList = Risque::getRisque($_REQUEST['idProvenance']);
-				if($riskList != null)
-				{
-					foreach($riskList as $risque)
-					{
+				if($riskList != null){
+					foreach($riskList as $risque){
 						$risques[$risque->id][] = $risque; 
 					}
 				}
@@ -5095,36 +5080,6 @@ switch($tableProvenance)
 		evarisk("#pic_line' . ELEMENT_IDENTIFIER_R . $_REQUEST['idProvenance'] . '").click();
 	</script>';
 			}
-			break;
-			case "addAction" :
-			{
-					$_POST['parentTaskId'] = evaTask::saveNewTask();
-					$actionSave = evaActivity::saveNewActivity();
-
-					$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
-					if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error'))
-					{
-						$messageInfo = $messageInfo . '
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
-					}
-					else
-					{
-						$messageInfo = $messageInfo . '
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
-					}
-					$messageInfo = $messageInfo . '
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
-								setTimeout(function(){
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
-								},7500);
-								evarisk("#ongletVoirLesRisques").click();
-							});
-						</script>';
-					echo $messageInfo;
-				}
 			break;
 			case "loadPictureAC":
 			{
@@ -5155,467 +5110,36 @@ switch($tableProvenance)
 					}
 				}
 			break;
-			case "ficheAction" :
-			{
-				echo Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance']);
-
-				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/simple-activite-new.php');
-				getSimpleActivityGeneralInformationPostBoxBody(array('idElement' => null, 'idPere' => 1, 'affichage' => null, 'idsFilAriane' => null));				
-				echo 
-					'<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#idProvenance_activite").val("' . $_REQUEST['idProvenance'] . '");
-							evarisk("#tableProvenance_activite").val("' . $_REQUEST['tableProvenance'] . '");
-						})
-					</script>';
-				}
-			break;
 			case "suiviFicheAction" :
 			{
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
 				$risques = array();
 				$riskList = Risque::getRisques($tableElement, $idElement, "Valid");
-				if($riskList != null)
-				{
-					foreach($riskList as $risque)
-					{
+				if($riskList != null){
+					foreach($riskList as $risque){
 						$risques[$risque->id][] = $risque; 
 					}
 				}
 				echo actionsCorrectives::output_correctiv_action_by_risk($risques);
 			}
 			break;
-			case "addActionPhoto" :
+			case "reload_new_activity_button_container":
 			{
-					$_POST['parentTaskId'] = evaTask::saveNewTask();
-					$actionSave = evaActivity::saveNewActivity();
+				//Bouton Enregistrer
+				$idBouttonEnregistrer = 'update_control';
+				$scriptEnregistrementSave = '';
 
-					$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
-					$risque = Risque::getRisque($idRisque);
-					$_REQUEST['idRisque'] = $idRisque;
-					$_REQUEST['idDanger'] = $risque[0]->id_danger;
-					$_REQUEST['idMethode'] = $risque[0]->id_methode;
-					$_REQUEST['description'] = $risque[0]->commentaire;
-					$_REQUEST['idElement'] = $risque[0]->id_element;
-					$_REQUEST['tableElement'] = $risque[0]->nomTableElement;
-					$_REQUEST['act'] = 'save';
-					$_REQUEST['histo'] = 'true';
-					require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
-
-					/*	Make the link between a corrective action and a risk evaluation	*/
-					$query = 
-						$wpdb->prepare(
-							"SELECT id_evaluation 
-							FROM " . TABLE_AVOIR_VALEUR . " 
-							WHERE id_risque = '%d' 
-								AND Status = 'Valid' 
-							ORDER BY id DESC 
-							LIMIT 1", 
-							$_REQUEST['idProvenance']
-						);
-					$evaluation = $wpdb->get_row($query);
-					evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionSave['task_id'], 'after');
-
-					$messageInfo = '<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
-					if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error'))
-					{
-						$messageInfo = $messageInfo . '
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
-					}
-					else
-					{
-						$messageInfo = $messageInfo . '
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
-					}
-					$messageInfo .= '
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
-								setTimeout(function(){
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
-								},7500);
-
-								evarisk("#id_activite").val("' . $actionSave['action_id'] . '");
-								evarisk("#idPere_activite").val("' . $actionSave['task_id'] . '");
-								evarisk("#ActionSaveButton").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-									"post":"true",
-									"nom":"addActionPhotoSaveButtonReload"
-								});
-
-								evarisk("#photosActionsCorrectives").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-									"post":"true",
-									"table":"' . TABLE_ACTIVITE . '",
-									"act":"pictureLoad",
-									"tableElement":evarisk("#tableProvenance_activite").val(),
-									"idElement":"' . $actionSave['action_id'] . '"
-								});
-							});
-						</script>';
-					echo $messageInfo;
-				}
-			break;
-			case "addActionPhotoSaveButtonReload":
-			{
-					//Bouton Enregistrer
-					$idBouttonEnregistrer = 'save_activite';
-					$idTitre = "nom_activite";
-
-					/*	Check if the user in charge of the action are mandatory */
-					$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Action_Obligatoire');
-
-					$scriptEnregistrementSave = '<script type="text/javascript">
-						evarisk(document).ready(function() {
-							evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
-								var variables = new Array();';
-					$allVariables = MethodeEvaluation::getAllVariables();
-					foreach($allVariables as $variable)
-					{
-						$scriptEnregistrementSave .= '
-								variables["' . $variable->id . '"] = evarisk("#var' . $variable->id . 'FormRisque-FAC").val();';
-					}
-					$scriptEnregistrementSave .= '
-								if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
-								{
-									document.getElementById(\'' . $idTitre . '\').value=\'\';
-									evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
-								}
-
-								idResponsable = evarisk("#responsable_activite").val();
-								idResponsableIsMandatory = "false";
-								idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
-
-								valeurActuelle = evarisk("#' . $idTitre . '").val();
-								if(valeurActuelle == "")
-								{
-									alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a l'action", 'evarisk') . '"));
-								}
-								else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
-								{
-									alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de l\'action", 'evarisk') . '"));
-								}
-								else
-								{
-									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
-										"table": "' . TABLE_ACTIVITE . '",
-										"act": "update-FAC",
-										"id": evarisk("#id_activite").val(),
-										"nom_activite": evarisk("#nom_activite").val(),
-										"date_debut": evarisk("#date_debut_activite").val(),
-										"date_fin": evarisk("#date_fin_activite").val(),
-										"idPere": evarisk("#idPere_activite").val(),
-										"description": evarisk("#description_activite").val(),
-										"affichage": evarisk("#affichage_activite").val(),
-										"cout": evarisk("#cout_activite").val(),
-										"avancement": evarisk("#avancement_activite").val(),
-										"responsable_activite": evarisk("#responsable_activite").val(),
-										"idsFilAriane": evarisk("#idsFilAriane_activite").val(),
-										"idProvenance": evarisk("#idProvenance_activite").val(),
-										"tableProvenance": evarisk("#tableProvenance_activite").val(),
-										"variables":variables
-									});
-								}
-							});
-						});
-						</script>';
-					echo EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left');
-				}
-			break;
-			case "addAction-FAC" :
-			{
-					$_POST['parentTaskId'] = evaTask::saveNewTask();
-					$actionSave = evaActivity::saveNewActivity();
-
-					$idRisque = eva_tools::IsValid_Variable($_REQUEST['idProvenance']);
-					$risque = Risque::getRisque($idRisque);
-					$_REQUEST['idRisque'] = $idRisque;
-					$_REQUEST['idDanger'] = $risque[0]->id_danger;
-					$_REQUEST['idMethode'] = $risque[0]->id_methode;
-					$_REQUEST['description'] = $risque[0]->commentaire;
-					$_REQUEST['idElement'] = $risque[0]->id_element;
-					$_REQUEST['tableElement'] = $risque[0]->nomTableElement;
-					$_REQUEST['act'] = 'save';
-					$_REQUEST['histo'] = 'true';
-					require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
-
-					/*	Make the link between a corrective action and a risk evaluation	*/
-					$query = 
-						$wpdb->prepare(
-							"SELECT id_evaluation 
-							FROM " . TABLE_AVOIR_VALEUR . " 
-							WHERE id_risque = '%d' 
-								AND Status = 'Valid' 
-							ORDER BY id DESC 
-							LIMIT 1", 
-							$_REQUEST['idProvenance']
-						);
-					$evaluation = $wpdb->get_row($query);
-					evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $actionSave['task_id'], 'after');
-
-					$messageInfo = 
-					'<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
-					if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error'))
-					{
-						$messageInfo .= '
-							evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
-					}
-					else
-					{
-						$messageInfo .= '
-							evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
-					}
-					$messageInfo .= '
-							evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
-							setTimeout(function(){
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
-								evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
-							},7500);
-							evarisk("#ongletVoirLesRisques").click();
-						});
-					</script>';
-					echo $messageInfo;
-				}
-			break;
-			case "OLDsuiviAction" :
-			{
-				switch($_REQUEST['tableProvenance'])
-				{
-					case TABLE_RISQUE :
-						$risque = Risque::getRisque($_REQUEST['idProvenance']);
-						{//Création de la table
-							unset($tableauVariables);
-							foreach($risque as $ligneRisque)
-							{
-								$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
-							}
-							$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
-							$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
-							foreach($listeVariables as $ordre => $variable)
-							{
-								$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
-							}
-
-							unset($titres,$classes, $idLignes, $lignesDeValeurs);
-							$idLignes = null;
-							$idTable = 'tableDemandeAction' . $_REQUEST['tableProvenance'] . $_REQUEST['idProvenance'];
-							$titres[] = __("Quotation", 'evarisk');
-							$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
-							$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
-							$classes[] = 'columnQuotation';
-							$classes[] = 'columnNomDanger';
-							$classes[] = 'columnCommentaireRisque';
-
-							$idligne = 'risque-' . $risque[0]->id;
-							$idLignes[] = $idligne;
-
-							$idMethode = $risque[0]->id_methode;
-							$score = Risque::getScoreRisque($risque);
-							$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
-							$niveauSeuil = Risque::getSeuil($quotation);
-
-							unset($ligneDeValeurs);
-							$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
-							$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
-							$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
-							foreach($tableauVariables as $variable)
-							{
-								$titres[] = substr($variable['nom'], 0, 3) . '.';
-								$classes[] = 'columnVariableRisque';
-								$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
-							}
-							$lignesDeValeurs[] = $ligneDeValeurs;
-
-							$lignesDeValeurs = (isset($lignesDeValeurs))?$lignesDeValeurs:null;
-							$script = '<script type="text/javascript">
-								evarisk(document).ready(function(){
-									evarisk("#' . $idTable . ' tfoot").remove();
-								});
-							</script>';
-
-							echo EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
-						}
-						break;
-					default :
-						echo 'Pensez &agrave; <b>ajouter</b> le <b>cas ' . $_REQUEST['tableProvenance'] . '</b> dans le <b>switch</b> ligne <b>' . __LINE__ . '</b> du fichier "' . dirname(__FILE__) . '\<b>' . basename(__FILE__) . '</b>"<br />';
-						break;
-				}
-				echo '<br />';
-				//On récupère les actions relatives à l'élément de provenance.
-				$taches = new EvaTaskTable();
-				$tacheLike = new EvaTask();
-				$tacheLike->setIdFrom($_REQUEST['idProvenance']);
-				$tacheLike->setTableFrom($_REQUEST['tableProvenance']);
-				$taches->getTasksLike($tacheLike);
-				//On demande à l'utilisateur de choisir l'action qui l'intéresse.
-				$actionsCorrectives = $taches->getTasks();
-				//on construit les Gantts des différentes actions
-				if($actionsCorrectives != null && count($actionsCorrectives) > 0)
-				{
-					foreach($actionsCorrectives as $actionCorrective)
-					{
-						$tasksGantt = '';
-						$idDiv = $actionCorrective->getTableFrom() . $actionCorrective->getIdFrom() . '-' . TABLE_TACHE . $actionCorrective->getId();
-						echo 
-							'<div id="' . $idDiv . '-choix" class="nomAction" style="cursor:pointer;" ><span >+</span> T' . $actionCorrective->getId() . '&nbsp;-&nbsp;' . $actionCorrective->getName() . '</div>
-							<div id="' . $idDiv . '-affichage" class="affichageAction" style="display:none;"></div>';
-						$tachesDeLAction = $actionCorrective->getDescendants($actionCorrective);
-						$tachesDeLAction = array_merge(array($actionCorrective->getId() => $actionCorrective), $tachesDeLAction->getTasks());
-						unset($niveaux);
-						$indiceTacheNiveaux = 0;
-						
-						if($tachesDeLAction != null && count($tachesDeLAction) > 0)
-						{
-							foreach($tachesDeLAction as $tacheDeLAction)
-							{
-								$niveaux[] = $tacheDeLAction->getLevel();
-								$indiceTacheNiveaux = count($niveaux) - 1;
-								$tacheDeLAction->getTimeWindow();
-								$tacheDeLAction->computeProgression();
-								$tacheDeLAction->save();
-									/*	Updte the task ancestor	*/
-									$wpdbTasks = Arborescence::getAncetre(TABLE_TACHE, $tacheDeLAction->convertToWpdb());
-									foreach($wpdbTasks as $task)
-									{
-										unset($ancestorTask);
-										$ancestorTask = new EvaTask($task->id);
-										$ancestorTask->load();
-										$ancestorTask->computeProgression();
-										$ancestorTask->save();
-										unset($ancestorTask);
-									}
-								$tasksGantt = $tasksGantt . '
-									{"id": "T' . $tacheDeLAction->getId() . '", "task": "' . $tacheDeLAction->getName() . '", "progression": "' . $tacheDeLAction->getProgression() . '", "startDate": "' . $tacheDeLAction->getStartDate() . '", "finishDate": "' . $tacheDeLAction->getFinishDate() . '" },';
-								$activitesDeLaTache = $tacheDeLAction->getActivitiesDependOn()->getActivities();
-								if($activitesDeLaTache != null && count($activitesDeLaTache) > 0)
-								{
-									foreach($activitesDeLaTache as $activiteDeLaTache)
-									{
-										$niveaux[] = $niveaux[$indiceTacheNiveaux] + 1;
-										$tasksGantt = $tasksGantt . '
-											{"id": "A' . $activiteDeLaTache->getId() . '", "task": "' . $activiteDeLaTache->getName() . '", "progression": "' . $activiteDeLaTache->getProgression() . '", "startDate": "' . $activiteDeLaTache->getStartDate() . '", "finishDate": "' . $activiteDeLaTache->getFinishDate() . '" },';
-									}
-								}
-							}
-							
-							$dateDebut = date('Y-m-d', strtotime('-' . DAY_BEFORE_TODAY_GANTT . ' day'));
-							$dateFin = date('Y-m-d', strtotime('+' . DAY_AFTER_TODAY_GANTT . ' day'));
-							
-							echo '<script type="text/javascript">
-								evarisk(document).ready(function(){										
-									evarisk("#' . $idDiv . '-affichage").gantt({
-										"tasks":[' . $tasksGantt . '],
-										"titles":[
-											"ID",
-											"T&acirc;ches",
-											"Avanc.(%)",
-											"Date de d&eacute;but",
-											"Date de fin"
-										],
-										"displayStartDate": "' . $dateDebut . '",
-										"displayFinishDate": "' . $dateFin . '",
-										"language": "fr"
-									});
-								});
-							</script>';
-						}
-						else
-						{
-							echo '<script type="text/javascript">
-								evarisk(document).ready(function(){										
-									evarisk("#' . $idDiv . '-affichage").html("&nbsp;&nbsp;&nbsp;&nbsp;' . __('Action non d&eacute;coup&eacute;e', 'evarisk') . '");
-								});
-							</script>';
-						}
-						echo '<script type="text/javascript">
-							evarisk(document).ready(function(){			
-								evarisk("#' . $idDiv . '-choix").toggle(
-									function()
-									{
-										evarisk("#' . $idDiv . '-affichage").show();
-										evarisk(this).children("span:first").html("-");
-									},
-									function()
-									{
-										evarisk("#' . $idDiv . '-affichage").hide();
-										evarisk(this).children("span:first").html("+");
-									}
-								);
-							});
-						</script>';
-						{//Bouton enregistrer
-							$idBoutonEnregistrer = $idDiv . '-enregistrer';
-							$scriptEnregistrement = '<script type="text/javascript">
-								evarisk(document).ready(function() {	
-									var boutonEnregistrer = evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html();
-									evarisk(\'#' . $idBoutonEnregistrer . '\').parent().html("");
-									evarisk(\'#' . $idDiv . '-affichage\').append(boutonEnregistrer);
-									evarisk(\'#' . $idBoutonEnregistrer . '\').click(function() {
-										var idDiv = "' . $idDiv . '";
-										var activites = new Array();
-										evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3) input").each(function(){
-											if(evarisk(this).attr("id") != "")
-											{
-												activites[evarisk(this).attr("id").substr(idDiv.length + 1)] = evarisk(this).val();
-											}
-										});
-										evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-											"post":"true", 
-											"table":"' . TABLE_ACTIVITE . '", 
-											"act":"actualiserAvancement", 
-											"activites":activites,
-											"tableProvenance":"' . $_REQUEST['tableProvenance'] . '",
-											"idProvenance": "' . $_REQUEST['idProvenance'] . '"
-										});
-										return false;
-									});
-								});
-								</script>';
-							echo EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, 'Enregistrer', null, '', $idDiv . 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
-						}
-						echo '<script type="text/javascript">
-								evarisk(document).ready(function(){		
-									//Transformation du texte des cases avancement en input
-									evarisk("#' . $idDiv . '-affichage .ui-gantt-table td:nth-child(3)").each(function(){
-										evarisk(this).html("<input type=\"text\" value=\"" + evarisk(this).html() + "\" maxlength=3 style=\"width:3em;\"/>%");
-										if(evarisk(this).parent("tr").children("td:first").html().match("^T")=="T")
-										{
-											evarisk(this).children("input").prop("disabled","disabled");
-										}
-										else
-										{
-											evarisk(this).children("input").attr("id","' . $idDiv . '-" + evarisk(this).parent("tr").children("td:first").html().substr(1, 1));
-										}
-									});
-								});
-							</script>';
-						//ajout de l'indentation
-						foreach($niveaux as $key => $niveau)
-						{
-							echo '<script type="text/javascript">
-									evarisk(document).ready(function(){		
-										evarisk("#' . $idDiv . '-affichage .ui-gantt-table tr:nth-child(' . ($key + 1) . ') td:nth-child(2)").css("padding-left", "' . ($niveau * LARGEUR_INDENTATION_GANTT_EN_EM) . 'em");
-									});
-								</script>';
-						}
-					}
-				}
-				else
-				{
-					switch($_REQUEST['tableProvenance'])
-					{
-						case TABLE_RISQUE :
-							$complement	= __('ce risque', 'evarisk');
-							break;
-						default :
-							$complement	= __('cet &eacute;l&eacute;ment', 'evarisk');
-							break;
-					}
-					echo sprintf(__('Il n\'y a pas d\'action pour %s', 'evarisk'), $complement);
-				}
-				}
+				echo EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') . '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#update_control").click(function(){
+			jQuery("#act").val("update_from_external");
+			jQuery("#informationGeneralesActivite").submit();
+		});
+	});
+</script>';
+			}
 			break;
 
 			case 'saveMarkerNewPosition':
@@ -5653,7 +5177,7 @@ switch($tableProvenance)
 	}
 
 	//Chargement des meta-boxes
-	if(isset($_REQUEST['nomMetaBox']))
+	if(isset($_REQUEST['nomMetaBox'])){
 		switch($_REQUEST['nomMetaBox'])
 		{
 			case 'Geolocalisation':
@@ -5672,10 +5196,11 @@ switch($tableProvenance)
 				echo EvaGoogleMaps::getGoogleMap($_REQUEST['idGoogleMapsDiv'], $markers);
 				break;
 		}
+	}
 }
 /*
- * Paramètres passés en GET
- */
+* Paramètres passés en GET
+*/
 else
 {
 	switch($_REQUEST['nom'])

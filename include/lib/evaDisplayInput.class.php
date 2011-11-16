@@ -21,10 +21,10 @@ class EvaDisplayInput {
 	  * @param string $name Name attribute for the form.
 	  * @return string Form openning.
 	  */
-	static function ouvrirForm($method, $id, $name)
+	static function ouvrirForm($method, $id, $name, $action = '')
 	{
 		
-		return '<form method="' . strtolower($method) . '" id="' . $id . '" name="' . $name . '" enctype="multipart/form-data" action="" >';
+		return '<form method="' . strtolower($method) . '" id="' . $id . '" name="' . $name . '" enctype="multipart/form-data" action="' . $action . '" >';
 	}
 	
 	/**
@@ -123,8 +123,8 @@ class EvaDisplayInput {
 				break;
 		}
 		$script .= '
-          evarisk("#' . $id . '").val("' . str_replace(" 
-", "\\n", $contenuInput) . '"); 
+          evarisk("#' . $id . '").val("' . str_replace('"', '\"', str_replace(" 
+", "\\n", $contenuInput)) . '"); 
 				});
 			</script>';
 		return $script;

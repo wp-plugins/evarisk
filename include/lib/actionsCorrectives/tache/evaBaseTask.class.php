@@ -34,6 +34,9 @@ class EvaBaseTask
 	const idSoldeurChef = 'idSoldeurChef';
 	const dateSolde = 'dateSolde';
 	const hasPriority = 'hasPriority';
+	const efficacite = 'efficacite';
+	const idPhotoAvant = 'idPhotoAvant';
+	const idPhotoApres = 'idPhotoApres';
 
 /*
  * Class variable define
@@ -123,6 +126,18 @@ class EvaBaseTask
 	 * @var string The task priority status
 	 */
 	var $hasPriority;
+	/**
+	 * @var string The task efficiency
+	 */
+	var $efficacite;
+	/**
+	 * @var string picture before action
+	 */
+	var $idPhotoAvant;
+	/**
+	 * @var string picture after action
+	 */
+	var $idPhotoApres;
 	
 /*
  *	Constructor, getters and setters
@@ -150,8 +165,9 @@ class EvaBaseTask
 	 * @param string $ProgressionStatus The progression status
 	 * @param string $dateSolde
 	 * @param string $hasPriority
+	 * @param string $efficacite
 	 */
-	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='')
+	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idPhotoAvant = 0, $idPhotoAvant = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='', $efficacite ='')
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -163,6 +179,8 @@ class EvaBaseTask
 		$this->place = $place;
 		$this->progression = $progression;
 		$this->cost = $cost;
+		$this->idPhotoAvant = $idPhotoAvant;
+		$this->idPhotoApres = $idPhotoApres;
 		$this->idFrom = $idFrom;
 		$this->tableFrom = $tableFrom;
 		$this->status = $status;
@@ -174,6 +192,7 @@ class EvaBaseTask
 		$this->ProgressionStatus = $ProgressionStatus;
 		$this->dateSolde = $dateSolde;
 		$this->hasPriority = $hasPriority;
+		$this->efficacite = $efficacite;
 	}
 	
 	/**
@@ -553,7 +572,64 @@ class EvaBaseTask
 	{
 		$this->hasPriority = $hasPriority;
 	}
+
+	/**
+	 * Returns the task's priority status
+	 * @return string The priority status
+	 */
+	function getEfficacite()
+	{
+		return $this->efficacite;
+	}
+
+	/**
+	 * Returns The priority status of the task
+	 * @param string $efficacite The priority status of the task
+	 */
+	function setEfficacite($efficacite)
+	{
+		$this->efficacite = $efficacite;
+	}
+
+
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getidPhotoAvant()
+	{
+		return $this->idPhotoAvant;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setidPhotoAvant($idPhotoAvant)
+	{
+		$this->idPhotoAvant = $idPhotoAvant;
+	}
 	
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getidPhotoApres()
+	{
+		return $this->idPhotoApres;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setidPhotoApres($idPhotoApres)
+	{
+		$this->idPhotoApres = $idPhotoApres;
+	}
+
+
 /*
  * Others methods
  */
@@ -583,6 +659,9 @@ class EvaBaseTask
 		$this->setProgressionStatus($wpdbTask->ProgressionStatus);
 		$this->setdateSolde($wpdbTask->dateSolde);
 		$this->sethasPriority($wpdbTask->hasPriority);
+		$this->setEfficacite($wpdbTask->efficacite);
+		$this->setidPhotoAvant($wpdbTask->idPhotoAvant);
+		$this->setidPhotoApres($wpdbTask->idPhotoApres);
 	}
 
 	/**
@@ -604,6 +683,8 @@ class EvaBaseTask
 					self::place => $this->getPlace(),
 					self::progression => $this->getProgression(),
 					self::cost => $this->getCost(),
+					self::idPhotoApres => $this->getidPhotoApres(),
+					self::idPhotoAvant => $this->getidPhotoAvant(),
 					self::idFrom => $this->getIdFrom(),
 					self::tableFrom => $this->getTableFrom(),
 					self::status => $this->getStatus(),
@@ -613,7 +694,8 @@ class EvaBaseTask
 					self::idSoldeur => $this->getidSoldeur(),
 					self::ProgressionStatus => $this->getProgressionStatus(),
 					self::dateSolde => $this->getdateSolde(),
-					self::hasPriority => $this->gethasPriority()
+					self::hasPriority => $this->gethasPriority(),
+					self::efficacite => $this->getEfficacite()
 				)
 			);
 	}

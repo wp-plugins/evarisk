@@ -346,7 +346,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 							}
 							else
 							{
-								var message = ("' . __('Vous n\'avez pas donner de valeur &agrave; la r&eacute;ponse &agrave; la question','evarisk') . ' ' . _('Q (question)', 'evarisk') . $field_name . '");
+								var message = ("' . __('Vous n\'avez pas donner de valeur &agrave; la r&eacute;ponse &agrave; la question','evarisk') . ' ' . __('Q (question)', 'evarisk') . $field_name . '");
 								alert(convertAccentToJS(message));
 								statusGlobal = "error";
 							}

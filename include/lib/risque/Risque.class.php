@@ -10,27 +10,35 @@ include_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');
 
 class Risque {
 	
-	function getScoreRisque($risque)
-	{
+	function getScoreRisque($risque, $method_option = ''){
+		$date_to_take = $risque[0]->date;
+		/*	Add option allowing to modify method behavior */
+		if(is_array($method_option)){
+			if(isset($method_option['date_to_take']) && ($method_option['date_to_take'] != '')){
+				$date_to_take = $method_option['date_to_take'];
+			}
+		}
+
 		$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
-		$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
+		$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $date_to_take);
 		unset($listeIdVariables);
-		foreach($listeVariables as $ordre => $variable)
-		{
+		foreach($listeVariables as $ordre => $variable){
 			$listeIdVariables['"' . $variable->id . '"'][]=$ordre;
 		}
 		unset($listeValeurs);
-		foreach($risque as $ligneRisque)
-		{
-			foreach($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre)
-			{
-				$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $risque[0]->date);
+		foreach($risque as $ligneRisque){
+			foreach($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre){
+				if(isset($method_option['value_to_take']) && ($method_option['value_to_take'] != '')){
+					$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $method_option['value_to_take'][$ligneRisque->id_variable], $date_to_take);
+				}
+				else{
+					$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
+				}
 			}
 		}
-		$listeOperateursComplexe = MethodeEvaluation::getOperateursMethode($methode->id, $risque[0]->date);
+		$listeOperateursComplexe = MethodeEvaluation::getOperateursMethode($methode->id, $date_to_take);
 		unset($listeOperateurs);
-		foreach($listeOperateursComplexe as $operateurComplexe)
-		{
+		foreach($listeOperateursComplexe as $operateurComplexe){
 			$listeOperateurs[] = $operateurComplexe->operateur;
 		}
 		$listeValeursSimples;
@@ -40,14 +48,11 @@ class Risque {
 		//résolution des opération de forte priorité (i.e. * et /)
 		$scoreRisque = $listeValeurs[0];
 		$numeroValeur = 0;
-		if($listeOperateurs != null)
-		{
+		if($listeOperateurs != null){
 			// invariant de boucle : la valeur $listeValeurs[$numeroValeur] est traité
-			foreach($listeOperateurs as $operateur)
-			{
+			foreach($listeOperateurs as $operateur){
 				$numeroValeur = $numeroValeur + 1;
-				switch($operateur)
-				{
+				switch($operateur){
 					case '*' : 
 						$scoreRisque = $scoreRisque * $listeValeurs[$numeroValeur];
 						break;
@@ -59,6 +64,7 @@ class Risque {
 						$listeValeursSimples[] = $scoreRisque;
 						$listeOperateursSimples[] = $operateur;
 						$scoreRisque = $listeValeurs[$numeroValeur];
+					break;
 				}
 			}
 		}
@@ -68,14 +74,11 @@ class Risque {
 		//résolution du score
 		$scoreRisque = $listeValeursSimples[0];
 		$numeroValeur = 0;
-		if(isset($listeOperateursSimples) && ($listeOperateursSimples != null))
-		{
+		if(isset($listeOperateursSimples) && ($listeOperateursSimples != null)){
 			// invariant de boucle : la valeur $listeValeursSimples[$numeroValeur] est traité
-			foreach($listeOperateursSimples as $operateur)
-			{
+			foreach($listeOperateursSimples as $operateur){
 				$numeroValeur = $numeroValeur + 1;
-				switch($operateur)
-				{
+				switch($operateur){
 					case '+' : 
 						$scoreRisque = $scoreRisque + $listeValeursSimples[$numeroValeur];
 						break;
@@ -86,15 +89,14 @@ class Risque {
 				}
 			}
 		}
+
 		return $scoreRisque;
-	}	
+	}
 	
-	function getEquivalenceEtalon($idMethode, $score, $date=null)
-	{
+	function getEquivalenceEtalon($idMethode, $score, $date=null){
 		global $wpdb;
 		
-		if($date==null)
-		{
+		if($date==null){
 			$date=date('Y-m-d H:i:s');
 		}
 		
@@ -118,8 +120,7 @@ class Risque {
 		return $resultat->equivalenceEtalon;
 	}	
 	
-	function getSeuil($quotation)
-	{
+	function getSeuil($quotation){
 		global $wpdb;
 		
 		$quotation = eva_tools::IsValid_Variable($quotation);
@@ -144,10 +145,8 @@ class Risque {
 		return (int)$resultat->niveauSeuil;
 	}	
 	
-	function getNiveauRisque($niveauSeuil)
-	{
-		switch($niveauSeuil)
-		{
+	function getNiveauRisque($niveauSeuil){
+		switch($niveauSeuil){
 			case 0:
 				$niveauRisque = __(EVA_RISQUE_SEUIL_0_NOM, 'evarisk');
 				break;
@@ -173,8 +172,7 @@ class Risque {
 		return $niveauRisque;
 	}
 	
-	function getRisque($id)
-	{
+	function getRisque($id){
 		global $wpdb;
 		$id = eva_tools::IsValid_Variable($id);
 
@@ -193,31 +191,26 @@ class Risque {
 		return $resultat;
 	}
 	
-	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC')
-	{
+	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC'){
 		global $wpdb;
 		$where = eva_tools::IsValid_Variable($where);
 		$order = eva_tools::IsValid_Variable($order);
-		if($status=='all')
-		{
+		if($status=='all'){
 			$status = '1';
 		}
-		else
-		{
+		else{
 			$status = "tableRisque.Status = '" . $status . "'";
 		}
 
 		$tableElement = $idElement = "1";
-		if($nomTableElement != 'all')
-		{
+		if($nomTableElement != 'all'){
 			$tableElement = "tableRisque.nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' ";
 		}
-		if($idTableElement != 'all')
-		{
+		if($idTableElement != 'all'){
 			$idElement = "tableRisque.id_element = '" . mysql_real_escape_string($idTableElement) . "' ";
 		}
 
-		$query = 
+		$query = $wpdb->prepare(
 			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
 				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, 
 				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie 
@@ -227,18 +220,17 @@ class Risque {
 			WHERE " . $tableElement . "
 				AND " . $idElement . "
 				AND " . $status . " 
-				AND " . mysql_real_escape_string($where) . " 
+				AND " . $where . " 
 				AND tableAvoirValeur.id_risque = tableRisque.id 
 				AND tableAvoirValeur.Status = 'Valid'
 				AND tableRisque.id_danger = tableDanger.id 
-			ORDER BY " . mysql_real_escape_string($order);
+			ORDER BY " . $order);
 		$resultat = $wpdb->get_results( $query );
 
 		return $resultat;
 	}	
 
-	function getriskLinkToTask($idRisque, $id_tache, $beforeAfter)
-	{
+	function getriskLinkToTask($idRisque, $id_tache, $beforeAfter){
 		global $wpdb;
 
 		$query = 
@@ -257,25 +249,21 @@ class Risque {
 		return $listeVariableAvecValeur;
 	}
 
-	function getNombreRisques($nomTableElement, $idElement, $status='all', $where = '1', $order='id ASC')
-	{
+	function getNombreRisques($nomTableElement, $idElement, $status='all', $where = '1', $order='id ASC'){
 		global $wpdb;
 		$where = eva_tools::IsValid_Variable($where);
 		$order = eva_tools::IsValid_Variable($order);
-		if($status=='all')
-		{
+		if($status=='all'){
 			$status = '1';
 		}
-		else
-		{
+		else{
 			$status = "Status = '" . $status . "'";
 		}
 		$resultat = $wpdb->get_row( "SELECT count(id) nombreRisques FROM " . TABLE_RISQUE . " WHERE id_element=" . mysql_real_escape_string($idElement) . " AND nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' AND " . $status . " AND " . mysql_real_escape_string($where) . " ORDER BY " . mysql_real_escape_string($order));
 		return $resultat->nombreRisques;
 	}
 	
-	function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo)
-	{
+	function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo){
 		global $wpdb;
 		global $current_user;
 
@@ -288,12 +276,10 @@ class Risque {
 		$description = str_replace("’","'", $description);
 		$histoStatus = 'Valid';
 
-		if($idRisque == '')
-		{//Ajout d'un risque
+		if($idRisque == ''){//Ajout d'un risque
 			$sql = "INSERT INTO " . TABLE_RISQUE . " (id_danger, id_methode, id_element, nomTableElement, commentaire, date, Status) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', NOW(), 'Valid')";
 			$idRisque = 0;
-			if($wpdb->query($sql))
-			{
+			if($wpdb->query($sql)){
 				$idRisque = $wpdb->insert_id;
 				echo '
 <script type="text/javascript" >
@@ -301,8 +287,7 @@ class Risque {
 	setTimeout(\'actionMessageHide("#message' . TABLE_RISQUE . '")\',7500);
 </script>';
 			}
-			else
-			{
+			else{
 				echo '
 <script type="text/javascript" >
 	actionMessageShow("#message' . TABLE_RISQUE . '", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
@@ -310,8 +295,7 @@ class Risque {
 </script>';
 			}
 		}
-		else
-		{//Mise à jour d'un risque
+		else{//Mise à jour d'un risque
 			$sql = "
 				UPDATE " . TABLE_RISQUE . " 
 				SET id_danger = " . mysql_escape_string($idDanger) . ",
@@ -324,8 +308,7 @@ class Risque {
 				WHERE id = " . mysql_escape_string($idRisque);
 			$wpdb->query($sql);
 
-			if($histo != 'false')
-			{
+			if($histo != 'false'){
 				$sql = "
 					UPDATE " . TABLE_AVOIR_VALEUR . " 
 					SET Status = 'Moderated' 
@@ -333,8 +316,23 @@ class Risque {
 					AND Status = 'Valid'";
 				$wpdb->query($sql);
 			}
-			else
-			{
+			else{
+
+				/*	Check if the current risk evaluation is linked to a correctiv action	*/
+				$task_link= 0;
+				$query = $wpdb->prepare("
+	SELECT LINKTASKELMT.id_tache AS task_id, LINKTASKELMT.id as link_id
+	FROM " . TABLE_AVOIR_VALEUR . " AS AVALEUR
+		LEFT JOIN " . TABLE_LIAISON_TACHE_ELEMENT . " AS LINKTASKELMT ON ((LINKTASKELMT.id_element = AVALEUR.id_evaluation) AND (LINKTASKELMT.table_element = %s) AND (LINKTASKELMT.wasLinked = %s))
+		INNER JOIN " . TABLE_TACHE . " AS TASK ON ((TASK.id = LINKTASKELMT.id_tache) AND (TASK.tableProvenance = %s) AND (TASK.idProvenance = %d))
+	WHERE AVALEUR.id_risque = %d
+		AND AVALEUR.Status = %s", 
+	TABLE_AVOIR_VALEUR, 'after', TABLE_RISQUE, $idRisque, $idRisque, 'Valid');
+				$task_link = $wpdb->get_row($query);
+				if(is_object($task_link)){
+					$wpdb->update(TABLE_LIAISON_TACHE_ELEMENT, array('status' => 'deleted'), array('id' => $task_link->link_id));
+				}
+
 				$sql = "
 					UPDATE " . TABLE_AVOIR_VALEUR . " 
 					SET Status = 'Deleted' 
@@ -347,10 +345,8 @@ class Risque {
 		$sql = "SELECT MAX(id_evaluation) + 1 AS newId FROM " . TABLE_AVOIR_VALEUR;
 		$newId = $wpdb->get_row($sql);
 		if((INT)$newId->newId <= 0)$newId->newId = 1;
-		foreach($variables as $idVariable => $valeurVariable)
-		{
-			if($valeurVariable != 'undefined')
-			{
+		foreach($variables as $idVariable => $valeurVariable){
+			if($valeurVariable != 'undefined'){
 				$idVariable = eva_tools::IsValid_Variable($idVariable);
 				$valeurVariable = eva_tools::IsValid_Variable($valeurVariable);
 				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (id_risque, id_evaluation, id_variable, valeur, idEvaluateur, date, Status) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_real_escape_string($newId->newId) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_real_escape_string($current_user->ID) . "', NOW(), '" . mysql_real_escape_string($histoStatus) . "')";
@@ -358,11 +354,14 @@ class Risque {
 			}
 		}
 
+		if(($histo == 'false') && (is_object($task_link))){/*	Check if the last evaluation is linked to a task. That means that we don't have the choice to show or not risk evaluation into statistics	*/
+			evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $newId->newId, $task_link->task_id, 'after');
+		}
+
 		return $idRisque;
 	}
 
-	function deleteRisk($idRisque, $tableElement, $idElement)
-	{
+	function deleteRisk($idRisque, $tableElement, $idElement){
 		global $wpdb;
 		$status = 'error';
 
@@ -374,8 +373,7 @@ class Risque {
 					AND id_element = '%s'
 					AND nomTableElement = '%s'"
 				, $idRisque, $idElement, $tableElement);
-		if($wpdb->query($query))
-		{
+		if($wpdb->query($query)){
 			$status = 'ok';
 		}
 
@@ -420,28 +418,25 @@ class Risque {
 	/**
 	*
 	*/
-	function getTableQuotationRisque($tableElement, $idElement)
-	{
+	function getTableQuotationRisque($tableElement, $idElement, $unique_id = '', $option = ''){
 		switch($tableElement)
 		{
 			case TABLE_RISQUE :
 				$risque = Risque::getRisque($idElement);
 				{//Création de la table
 					unset($tableauVariables);
-					foreach($risque as $ligneRisque)
-					{
+					foreach($risque as $ligneRisque){
 						$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
 					}
 					$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
 					$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
-					foreach($listeVariables as $ordre => $variable)
-					{
-						$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
+					foreach($listeVariables as $ordre => $variable){
+						$tableauVariables[] = array('id' => $variable->id, 'nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
 					}
 
 					unset($titres,$classes, $idLignes, $lignesDeValeurs);
 					$idLignes = null;
-					$idTable = 'tableDemandeAction' . $tableElement . $idElement;
+					$idTable = 'tableDemandeAction_' . $unique_id . $tableElement . $idElement;
 					$titres[] = __("Id.", 'evarisk');
 					$titres[] = __("Quotation actuelle", 'evarisk');
 					$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
@@ -455,7 +450,7 @@ class Risque {
 					$idLignes[] = $idligne;
 
 					$idMethode = $risque[0]->id_methode;
-					$score = Risque::getScoreRisque($risque);
+					$score = Risque::getScoreRisque($risque, $option);
 					$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 					$niveauSeuil = Risque::getSeuil($quotation);
 
@@ -463,12 +458,21 @@ class Risque {
 					$ligneDeValeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
 					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
-					$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
-					foreach($tableauVariables as $variable)
-					{
+					if(isset($option['description_to_take']) && ($option['description_to_take'] != '')){
+						$ligneDeValeurs[] = array('value' => nl2br($option['description_to_take']), 'class' => '');
+					}
+					else{
+						$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
+					}
+					foreach($tableauVariables as $variable){
 						$titres[] = substr($variable['nom'], 0, 3) . '.';
 						$classes[] = 'columnVariableRisque';
-						$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
+						if(isset($option['value_to_take']) && ($option['value_to_take'] != '')){
+							$ligneDeValeurs[] = array('value' => $option['value_to_take'][$variable['id']], 'class' => '');
+						}
+						else{
+							$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
+						}
 					}
 					$lignesDeValeurs[] = $ligneDeValeurs;
 
@@ -481,18 +485,25 @@ class Risque {
 
 					return EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
 				}
-				break;
-			default :
+			break;
+			default:
 				return 'Pensez &agrave; <b>ajouter</b> le <b>cas ' . $tableElement . '</b> dans le <b>switch</b> ligne <b>' . __LINE__ . '</b> du fichier "' . dirname(__FILE__) . '\<b>' . basename(__FILE__) . '</b>"<br />';
-				break;
+			break;
 		}
 	}
 
 	/**
+	*	Get a table with information about a given risk level
 	*
+	*	@param string $tableElement The element tye we want to get information about
+	*	@param integer $idElement The element identifier we want to get information about
+	*	@param object $actionCorrective The correctiv action we want to output for the given element
+	*	@param mixed $idDiv An unique id allowing to spot the good container for action
+	*	@param array $association_time An array containing the different moment we want to get correctiv action information
+	*
+	*	@return string The html output with information about risk level
 	*/
-	function getTableQuotationRisqueAvantApresAC($tableElement, $idElement, $actionCorrective, $idDiv)
-	{
+	function get_risk_level_summary_by_moment($tableElement, $idElement, $actionCorrective, $idDiv, $association_time = array()){
 		unset($titres, $classes, $idLignes, $lignesDeValeurs);
 		$idLignes = null;
 		$idTable = 'tableSuiviAction' . $tableElement . $idElement;
@@ -503,87 +514,81 @@ class Risque {
 
 		$idLignes[] = 'risque-' . $actionCorrective->getId();
 
-		{/*	Get the risk before the corrective action	*/
-			unset($risqueAvantAC);$risqueAvantAC = array();
-			$risqueAvantAC = Risque::getriskLinkToTask($actionCorrective->getIdFrom(), $actionCorrective->getId(), 'before');
+		if(is_array($association_time) && (count($association_time) > 0)){
+			$i = 0;
+			foreach($association_time as $time){
+					/*	Get the name for the association time	*/
+					switch($time){
+						case 'before':
+						{
+							$moment_name = __('Avant', 'evarisk');
+						}
+						break;
+						case 'after':
+						{
+							$moment_name = __('Apr&eacute;s', 'evarisk');
+						}
+						break;
+						case 'demand':
+						{
+							$moment_name = __('Demande', 'evarisk');
+						}
+						break;
+						default:
+						{
+							$moment_name = __('Actuelle', 'evarisk');
+						}
+						break;
+					}
 
-			unset($tableauVariables);
-			foreach($risqueAvantAC as $ligneRisque)
-			{
-				$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
-			}
-			$methode = MethodeEvaluation::getMethod($risqueAvantAC[0]->id_methode);
-			$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risqueAvantAC[0]->date);
-			foreach($listeVariables as $ordre => $variable)
-			{
-				$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
-			}
+					if(in_array($time, array('before', 'after', 'demand'))){
+						unset($risque);$risque = array();
+						$risque = Risque::getriskLinkToTask($actionCorrective->getIdFrom(), $actionCorrective->getId(), $time);
+					}
+					else{
+						$risque = Risque::getRisque($actionCorrective->getIdFrom());
+					}
 
-			$idMethode = $risqueAvantAC[0]->id_methode;
-			$score = Risque::getScoreRisque($risqueAvantAC);
-			$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risqueAvantAC[0]->date);
-			$niveauSeuil = Risque::getSeuil($quotation);
+					unset($tableauVariables);$tableauVariables = array();
+					foreach($risque as $ligneRisque){
+						$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
+					}
 
-			unset($ligneDeValeurs);
-			$ligneDeValeurs[] = array('value' => __('Avant', 'evarisk'), 'class' => '');
-			if(!is_array($tableauVariables) || (count($tableauVariables) <= 0))
-			{
-				$ligneDeValeurs[] = array('value' => __('Non &eacute;valu&eacute;', 'evarisk'), 'class' => '');
-			}
-			else
-			{
-				$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
-			}
-			if(is_array($tableauVariables) && (count($tableauVariables) > 0))
-			{
-				foreach($tableauVariables as $variable)
-				{
-					$titres[] = substr($variable['nom'], 0, 3) . '.';
-					$classes[] = 'columnVariableRisque';
-					$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
-				}
-			}
-			$lignesDeValeurs[] = $ligneDeValeurs;
-		}
-		{/*	Get the risk after the corrective action	*/
-			unset($risqueApresAC);$risqueApresAC = array();
-			$risqueApresAC = Risque::getriskLinkToTask($actionCorrective->getIdFrom(), $actionCorrective->getId(), 'after');
-			unset($tableauVariables);$tableauVariables = array();
-			foreach($risqueApresAC as $ligneRisque)
-			{
-				$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
-			}
+					$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
+					$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
+					foreach($listeVariables as $ordre => $variable){
+						$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
+					}
 
-			$methode = MethodeEvaluation::getMethod($risqueApresAC[0]->id_methode);
-			$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risqueApresAC[0]->date);
-			foreach($listeVariables as $ordre => $variable)
-			{
-				$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
-			}
+					$idMethode = $risque[0]->id_methode;
+					$score = Risque::getScoreRisque($risque);
+					$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+					$niveauSeuil = Risque::getSeuil($quotation);
 
-			$idMethode = $risqueApresAC[0]->id_methode;
-			$score = Risque::getScoreRisque($risqueApresAC);
-			$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risqueApresAC[0]->date);
-			$niveauSeuil = Risque::getSeuil($quotation);
+					unset($ligneDeValeurs);
+					$ligneDeValeurs[] = array('value' => $moment_name, 'class' => '');
 
-			unset($ligneDeValeurs);
-			$ligneDeValeurs[] = array('value' => __('Apr&eacute;s', 'evarisk'), 'class' => '');
-			if(!is_array($tableauVariables) || (count($tableauVariables) <= 0))
-			{
-				$ligneDeValeurs[] = array('value' => __('Non &eacute;valu&eacute;', 'evarisk'), 'class' => '');
+					if(!is_array($tableauVariables) || (count($tableauVariables) <= 0)){
+						$ligneDeValeurs[] = array('value' => __('Non &eacute;valu&eacute;', 'evarisk'), 'class' => '');
+					}
+					else{
+						$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
+					}
+
+					if(is_array($tableauVariables) && (count($tableauVariables) > 0)){
+						foreach($tableauVariables as $variable){
+							if((count($titres) <= 2) || (count($titres) != (count($tableauVariables) + 2))){
+								$titres[] = substr($variable['nom'], 0, 3) . '.';
+								$classes[] = 'columnVariableRisque';
+							}
+							$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
+						}
+					}
+
+					$lignesDeValeurs[] = $ligneDeValeurs;
+					$i++;
+
 			}
-			else
-			{
-				$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
-			}
-			if(is_array($tableauVariables) && (count($tableauVariables) > 0))
-			{
-				foreach($tableauVariables as $variable)
-				{
-					$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
-				}
-			}
-			$lignesDeValeurs[] = $ligneDeValeurs;
 		}
 
 		$lignesDeValeurs = (isset($lignesDeValeurs)) ? $lignesDeValeurs : null;
@@ -596,8 +601,10 @@ class Risque {
 		return '<div id="' . $idDiv . '-affichage-quotation" class="affichageAction" style="margin:6px 0px;" >' . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script) . '</div>';
 	}
 
-	function getRisqueAssociePhoto($idPicture)
-	{
+	/**
+	*
+	*/
+	function getRisqueAssociePhoto($idPicture){
 		global $wpdb;
 		$output = '';
 
@@ -663,8 +670,10 @@ class Risque {
 		return $output;
 	}
 
-	function getRisqueNonAssociePhoto($tableElement, $idElement)
-	{
+	/**
+	*
+	*/
+	function getRisqueNonAssociePhoto($tableElement, $idElement){
 		global $wpdb;
 		$output = '';
 
@@ -723,8 +732,7 @@ class Risque {
 	}
 
 /*	START OF RISK STAT	*/
-	function getRiskRange($rangeType)
-	{
+	function getRiskRange($rangeType){
 		$completeRiskList = Risque::getRisques('all', 'all', 'Valid', '1', 'tableRisque.id ASC');
 		if($completeRiskList != null)
 		{
@@ -758,8 +766,7 @@ class Risque {
 		return $riskRange;
 	}
 
-	function dashBoardStats()
-	{
+	function dashBoardStats(){
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -775,5 +782,60 @@ class Risque {
 		return $wpdb->get_row($query);
 	}
 /*	END OF RISK STAT	*/
+
+	/**
+	*	Update a risk level and make a link between the risk evaluation and the correctiv action
+	*
+	*	@param integer $idRisque The risk identifier we are changing level for
+	*	@param mixed $task_id Could be a task identifier Or an array containing several task
+	*	@param array $rating Define the moment of the link between a task and a risk evaluation
+	*
+	*	@return void
+	*/
+	function update_risk_rating_link_with_task($idRisque, $task_id, $rating){
+		global $wpdb;
+
+		if(is_array($rating) && in_array('before', $rating)){	/*	Make the link between a corrective action and a risk evaluation	*/
+			$query = 
+				$wpdb->prepare(
+					"SELECT id_evaluation 
+					FROM " . TABLE_AVOIR_VALEUR . " 
+					WHERE id_risque = %d
+						AND Status = %s 
+					ORDER BY id DESC 
+					LIMIT 1", 
+					$idRisque, 'Valid'
+				);
+			$evaluation = $wpdb->get_row($query);
+			evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $task_id, 'before');
+		}
+
+		$risque = Risque::getRisque($idRisque);
+
+		/*	Save risk new level	*/
+		$idDanger = eva_tools::IsValid_Variable($_REQUEST['idDanger'], $risque[0]->id_danger);
+		$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode'], $risque[0]->id_methode);
+		$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement'], $risque[0]->nomTableElement);
+		$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement'], $risque[0]->id_element);
+		$variables = $_REQUEST['variables'];
+		$description = eva_tools::IsValid_Variable($_REQUEST['description_risque'], $risque[0]->commentaire);
+		$histo = 'true';
+		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+
+		if(is_array($rating) && in_array('after', $rating)){	/*	Make the link between a corrective action and a risk evaluation	*/
+			$query = 
+				$wpdb->prepare(
+					"SELECT id_evaluation 
+					FROM " . TABLE_AVOIR_VALEUR . " 
+					WHERE id_risque = '%d' 
+						AND Status = 'Valid' 
+					ORDER BY id DESC 
+					LIMIT 1", 
+					$idRisque
+				);
+			$evaluation = $wpdb->get_row($query);
+			evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $task_id, 'after');
+		}
+	}
 
 }

@@ -138,12 +138,10 @@ class digirisk_init
 
 		/*	Check the wp version in order to include the good jquery librairy. Causes issue because of wp core update	*/
 		global $wp_version;
-		if($wp_version < '3.2')
-		{
+		if($wp_version < '3.2'){
 			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
 		}
-		elseif(!wp_script_is('jquery', 'queue'))
-		{
+		elseif(!wp_script_is('jquery', 'queue')){
 			wp_enqueue_script('jquery');
 		}
 		wp_enqueue_script('jquery-form');
@@ -162,7 +160,17 @@ class digirisk_init
 		wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_timepicker',  EVA_INC_PLUGIN_URL . 'js/jquery-ui-timepicker.js');
-		wp_enqueue_script('eva_wp_postbox_js', WP_CONTENT_URL . '/../wp-admin/js/postbox.js', '', EVA_PLUGIN_VERSION);
+
+		/*	Wordpress postbox	*/
+		wp_enqueue_script('eva_wp_postbox_js', admin_url() . 'js/postbox.js', '', EVA_PLUGIN_VERSION);
+
+		/*	Jquery plot utilities	*/
+		wp_enqueue_script('eva_jqplot', EVA_INC_PLUGIN_URL . 'js/charts/jquery.jqplot.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jqplot_excanvas', EVA_INC_PLUGIN_URL . 'js/charts/excanvas.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jqplot_pointLabel', EVA_INC_PLUGIN_URL . 'js/charts/jqplot.pointLabel.min.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jqplot_cursor', EVA_INC_PLUGIN_URL . 'js/charts/jquery.cursor.min.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jqplot_dateAxisRenderer', EVA_INC_PLUGIN_URL . 'js/charts/jquery.dateAxisRenderer.min.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jqplot_highlighter', EVA_INC_PLUGIN_URL . 'js/charts/jquery.highlighter.min.js', '', EVA_PLUGIN_VERSION);
 	}
 
 	/**
@@ -186,6 +194,8 @@ class digirisk_init
 		wp_enqueue_style('eva_autocomplete_css');
 		wp_register_style('eva_lightbox_css', EVA_INC_PLUGIN_URL . 'css/lightbox.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_lightbox_css');
+		wp_register_style('eva_jqplot_css', EVA_INC_PLUGIN_URL . 'css/charts/jquery.jqplot.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jqplot_css');
 	}
 
 	/**

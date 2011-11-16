@@ -45,6 +45,9 @@ class EvaTaskTable extends EvaBaseTask
 		unset($this->ProgressionStatus);
 		unset($this->dateSolde);
 		unset($this->hasPriority);
+		unset($this->efficacite);
+		unset($this->idPhotoAvant);
+		unset($this->idPhotoApres);
 	}
   
 	/**
@@ -113,9 +116,12 @@ class EvaTaskTable extends EvaBaseTask
 			$idResponsable = eva_tools::IsValid_Variable($task->getidResponsable());
 			$idSoldeur = eva_tools::IsValid_Variable($task->getidSoldeur());
 			$idSoldeurChef = eva_tools::IsValid_Variable($task->getidSoldeurChef());
+			$idPhotoAvant = eva_tools::IsValid_Variable($task->getidPhotoAvant());
+			$idPhotoApres = eva_tools::IsValid_Variable($task->getidPhotoApres());
 			$ProgressionStatus = eva_tools::IsValid_Variable($task->getProgressionStatus());
 			$dateSolde = eva_tools::IsValid_Variable($task->getdateSolde());
 			$hasPriority = eva_tools::IsValid_Variable($task->gethasPriority());
+			$efficacite = eva_tools::IsValid_Variable($task->getEfficacite());
 		}
     {//Query creation
       $sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -182,6 +188,18 @@ class EvaTaskTable extends EvaBaseTask
 			if($hasPriority != '')
       {
         $sql = $sql . " AND " . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "'";
+      }
+			if($efficacite != '')
+      {
+        $sql = $sql . " AND " . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "'";
+      }		
+			if($idPhotoAvant != '')
+      {
+        $sql = $sql . " AND " . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "'";
+      }			
+			if($idPhotoApres != '')
+      {
+        $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
       }
     }
     

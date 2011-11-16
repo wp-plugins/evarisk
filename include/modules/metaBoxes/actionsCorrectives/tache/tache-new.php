@@ -15,8 +15,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 function getTaskGeneralInformationPostBoxBody($arguments)
 {
 	$postId = '';
-	if($arguments['idElement'] != null)
-	{
+	if($arguments['idElement'] != null){
 		$postId = $arguments['idElement'];
     $tache = new EvaTask($postId);
 		$tache->load();
@@ -30,13 +29,13 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$startDate = $tache->getStartDate();
 		$endDate = $tache->getFinishDate();
 		$firstInsert = $tache->getFirstInsert();
+		$efficacite = $tache->getEfficacite();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 		$idPere = $tacheMere->id;
     $saveOrUpdate = 'update';
 	}
-	else
-	{
+	else{
 		$contenuInputTitre = '';
 		$contenuInputDescription = '';
 		$contenuInputResponsable = '';
@@ -47,6 +46,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$firstInsert = '';
 		$idProvenance = 0;
 		$tableProvenance = '';
+		$efficacite = '';
 		$idPere = $arguments['idPere'];
 		$grise = true;
     $saveOrUpdate = 'save';
@@ -84,29 +84,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$contenuAideDescription = "";
 		$labelInput = __("Responsable", 'evarisk') . ' : ';
 		$id = "responsable_tache";
-		$nomChamps = "responsable_tache";		
-
-		// $tmpListeUtilisateurs = $listeUtilisateurs = $tabValue = $tabDisplay = $selectedUser = array();
-		// $tmpListeUtilisateurs = evaUser::getCompleteUserList();
-		// $listeUtilisateurs[0] = '';
-		// $tabValue[0] = '0';
-		// $tabDisplay[0] = __('Choisissez...', 'evarisk');
-		// $i=1;
-		// foreach($tmpListeUtilisateurs as $idUtilisateur => $informationsUtilisateurs)
-		// {
-			// $listeUtilisateurs[] = $informationsUtilisateurs;
-			// if($idUtilisateur > 0)
-			// {
-				// $tabValue[$i] = $idUtilisateur;
-				// $tabDisplay[$i] = $informationsUtilisateurs['user_lastname'] . ' ' . $informationsUtilisateurs['user_firstname'];
-				// if($idUtilisateur == $contenuInputResponsable)
-				// {
-					// $selectedUser = $informationsUtilisateurs;
-				// }
-				// $i++;
-			// }
-		// }
-		// $tache_new .= '<br/>' . EvaDisplayInput::afficherComboBox($listeUtilisateurs, $id, $labelInput, $nomChamps, '', $selectedUser, $tabValue, $tabDisplay);
+		$nomChamps = "responsable_tache";
 
 		$tache_new .= '<br/><label for="search_user_responsable_' . $arguments['tableElement'] . '" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false) . '<div id="responsible_name" >';
 		$search_input_state = '';
@@ -147,13 +125,33 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 	});
 </script><br class="clear" /><br/><br/><br/>';
 	}
+	{//Efficacite
+		$contenuAideDescription = "";
+		$labelInput = __("Efficacit&eacute;", 'evarisk') . ' : ';
+		$id = "efficacite_tache";
+		$nomChamps = "efficacite";
+		$tache_new .= sprintf(__('Efficacit&eacute; de la t&acirc;che %s', 'evarisk'), '<input type="text" name="correctiv_action_efficiency_control" id="correctiv_action_efficiency_control" value="' . $efficacite . '" class="correctiv_action_efficiency_control" readonly="readonly" />%') . '<div id="correctiv_action_efficiency_control_slider" class="correctiv_action_efficiency_control_slider" >&nbsp;</div>
+		<script type="text/javascript" >
+			evarisk(document).ready(function(){
+				jQuery(".correctiv_action_efficiency_control_slider").slider({
+					value:"' . $efficacite . '",
+					min: 0,
+					max: 100,
+					step: 1,
+					slide: function(event, ui){
+						jQuery("#" + jQuery(this).attr("id").replace("correctiv_action_efficiency_control_slider", "correctiv_action_efficiency_control")).val( ui.value );
+					}
+				});
+			});
+		</script>';
+	}
 	{//Description
 		$contenuAideDescription = "";
 		$labelInput = __("Description", 'evarisk') . ' : ';
 		$id = "descriptionTache";
 		$nomChamps = "description";
 		$rows = 5;
-		$tache_new = $tache_new . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, DESCRIPTION_TACHE_OBLIGATOIRE, $rows);
+		$tache_new .= '<br class="clear" />' . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, DESCRIPTION_TACHE_OBLIGATOIRE, $rows);
 	}
 	{//Bouton Enregistrer
 		$idBouttonEnregistrer = 'saveTache';
@@ -193,6 +191,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
               "idPere": evarisk("#idPereTache").val(),
               "responsable_tache": evarisk("#responsable_tache").val(),
               "description": evarisk("#descriptionTache").val(),
+              "efficacite": evarisk("#correctiv_action_efficiency_control").val(),
               "affichage": evarisk("#affichageTache").val(),
               "idsFilAriane": evarisk("#idsFilArianeTache").val(),
               "idProvenance": evarisk("#idProvenanceTache").val(),
@@ -320,8 +319,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 				'</div>';
 		}
 
-		if(digirisk_options::getOptionValue('export_tasks') == 'oui')
-		{
+		if(digirisk_options::getOptionValue('export_tasks') == 'oui'){
 			$tache_new .= 
 				'<br/>
 				<div>
@@ -345,7 +343,9 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 				</script>';
 		}
 	}
+
 	$tache_new .= EvaDisplayInput::fermerForm($idForm);
+
 	echo $tache_new;
 }
 

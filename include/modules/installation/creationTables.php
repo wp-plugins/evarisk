@@ -1350,7 +1350,6 @@ ADD INDEX ( impressionRecommandation ) ;";
 				$digiriskOptions['affecter_uniquement_tache_soldee_a_un_risque'] = 'oui';
 				$digiriskOptions['action_correctives_avancees'] = 'non';
 				$digiriskOptions['risques_avances'] = 'non';
-				$digiriskOptions['creation_sous_tache_preconisation'] = 'non';
 				$digiriskOptions['export_only_priority_task'] = 'oui';
 				$digiriskOptions['export_tasks'] = 'non';
 				$digiriskOptions['taille_photo_poste_fiche_de_poste'] = '8';
@@ -1704,6 +1703,40 @@ ADD INDEX ( impressionRecommandation ) ;";
 		if(digirisk_options::getDbOption('base_evarisk') <= 60)
 		{//		Suppression de la table de gestion des droits
 			$sql = "RENAME TABLE " . DIGI_DBT_PERMISSION . " TO " . TRASH_DIGI_DBT_PERMISSION . " ;";
+			$wpdb->query($sql);
+	
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 61)
+		{//		Suppression de la table de gestion des droits
+			$sql = "ALTER TABLE " . TABLE_LIAISON_TACHE_ELEMENT . " CHANGE wasLinked wasLinked ENUM( 'before', 'after', 'demand' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'before' COMMENT 'Allows to know if the action was link to the element before or after it realisation';";
+			$wpdb->query($sql);
+	
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 62)
+		{//		Suppression de la table de gestion des droits
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD efficacite TINYINT(3) unsigned NOT NULL;";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE " . TABLE_TACHE . " ADD INDEX(efficacite);";
+			$wpdb->query($sql);
+	
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}		
+		if(digirisk_options::getDbOption('base_evarisk') <= 63)
+		{//		Suppression de la table de gestion des droits
+			$sql = "ALTER TABLE  " . TABLE_TACHE . " ADD idPhotoAvant INT( 10 ) UNSIGNED NOT NULL AFTER cout;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_TACHE . " ADD INDEX ( idPhotoAvant );";
+			$wpdb->query($sql);
+
+			$sql = "ALTER TABLE  " . TABLE_TACHE . " ADD idPhotoApres INT( 10 ) UNSIGNED NOT NULL AFTER idPhotoAvant;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_TACHE . " ADD INDEX ( idPhotoApres );";
 			$wpdb->query($sql);
 	
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');

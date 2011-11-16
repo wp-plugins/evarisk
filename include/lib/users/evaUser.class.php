@@ -411,7 +411,7 @@ $user_additionnal_field .= '
 			$lignesDeValeurs[] = $valeurs;
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursVide';
 		}
-echo $tableElement;
+
 		$classes = array('addUserButtonDTable','userIdentifierColumn','','','','valid_accident_col');
 		switch($tableElement){
 			case DIGI_DBT_ACCIDENT . 'witness':
@@ -455,7 +455,7 @@ echo $tableElement;
 				jQuery("#victim_changer").show();';
 			}
 			break;
-			case TABLE_ACTIVITE . 'responsible':
+			case TABLE_TACHE . 'responsible':
 			{
 				$user_infos_container = '';
 				$user_act_add_container = '';
@@ -470,7 +470,9 @@ echo $tableElement;
 				jQuery("#change_responsible_' . $tableElement . '").show();';
 			}
 			break;
-			case TABLE_TACHE . 'responsible':
+			case TABLE_UNITE_TRAVAIL . 'responsible':
+			case TABLE_RISQUE . 'responsible':
+			case TABLE_ACTIVITE . 'responsible':
 			{
 				$user_infos_container = '';
 				$user_act_add_container = '';
@@ -497,18 +499,18 @@ echo $tableElement;
 		$script = 
 '<script type="text/javascript">
 	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable({
+		jQuery("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
 			"bPaginate": false,
 			"bFilter": false,
 			"aaSorting": [[' . $default_sort_column . ',"desc"]]
 		});
-		evarisk("#' . $idTable . '").children("tfoot").remove();
-		evarisk("#' . $idTable . '").removeClass("dataTables_wrapper");
-		evarisk("#completeUserList' . $tableElement . ' .odd, #completeUserList' . $tableElement . ' .even").click(function(){
-			if(evarisk(this).children("td:first").children("span").hasClass("userIsNotLinked")){
-				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
+		jQuery("#' . $idTable . '").children("tfoot").remove();
+		jQuery("#' . $idTable . '").removeClass("dataTables_wrapper");
+		jQuery(".tr_' . $idTable . '.odd, .tr_' . $idTable . '.even").click(function(){
+			if(jQuery(this).children("td:first").children("span").hasClass("userIsNotLinked")){
+				var currentId = jQuery(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
 				' . $user_act_add_container . '' . $user_more_action . '
 			}
 		});

@@ -133,7 +133,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
 		$nomChamps = "typeGroupement";
 		$idChamps = "typeGroupement";
-		$type_input_possible_value = array('' => _('Choisir', 'evarisk'), 'employer' => __('Employeur', 'evarisk'));
+		$type_input_possible_value = array('' => __('Choisir', 'evarisk'), 'employer' => __('Employeur', 'evarisk'));
 		$groupement_new .= '<label for="' . $idChamps . '" >' . __('Type de groupement', 'evarisk') . '</label><br/>' . EvaDisplayInput::createComboBox($idChamps, $nomChamps, $type_input_possible_value, $contenuInputType);
 	}
 	{//Groupement père

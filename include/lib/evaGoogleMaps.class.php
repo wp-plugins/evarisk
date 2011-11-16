@@ -66,69 +66,57 @@ class EvaGoogleMaps {
 	}
 	
 	/**
-	  * Returns the script and div for the google map
-	  * @param string $idGoogleMapsDiv Id attribut of the div for the google map.
-	  * @param array $markers Markers to display. A marker is an array with the keys 'longitude', 'latitude', 'info' and 'image'.
-	  * @return the script and div for the google map.
-	  */
-	static function getGoogleMap($idGoogleMapsDiv, $markers)
-	{
+	* Returns the script and div for the google map
+	*
+	* @param string $idGoogleMapsDiv Id attribut of the div for the google map.
+	* @param array $markers Markers to display. A marker is an array with the keys 'longitude', 'latitude', 'info' and 'image'.
+	*
+	* @return the script and div for the google map.
+	*/
+	static function getGoogleMap($idGoogleMapsDiv, $markers){
 		$google_map_marker_more_content = '';
 		$nbElements = count($markers);
 		$sudMax = 180;
 		$nordMax = -180;
 		$ouestMax = 90;
 		$estMax = -90;
-		for($indice=0; $indice< $nbElements; $indice++)
-		{
-			if($markers[$indice]['latitude'] == null OR $markers[$indice]['latitude'] == '')
-			{
+		for($indice=0; $indice< $nbElements; $indice++){
+			if($markers[$indice]['latitude'] == null OR $markers[$indice]['latitude'] == ''){
 				unset($markers[$indice]);
 			}
 		}
-		for($indice=0; $indice< $nbElements; $indice++)
-		{
-			if(isset($markers[$indice]))
-			{
-				for($indice2=0; $indice2<$nbElements; $indice2++)
-				{
-					if(isset($markers[$indice]) AND isset($markers[$indice2]))
-					{
-						if($indice != $indice2 AND $indice < $indice2 AND $markers[$indice]['latitude'] == $markers[$indice2]['latitude'] AND $markers[$indice]['longitude'] == $markers[$indice2]['longitude'])
-						{
+		for($indice=0; $indice< $nbElements; $indice++){
+			if(isset($markers[$indice])){
+				for($indice2=0; $indice2<$nbElements; $indice2++){
+					if(isset($markers[$indice]) AND isset($markers[$indice2])){
+						if($indice != $indice2 AND $indice < $indice2 AND $markers[$indice]['latitude'] == $markers[$indice2]['latitude'] AND $markers[$indice]['longitude'] == $markers[$indice2]['longitude']){
 							$markers[$indice]['info'] = $markers[$indice]['info'] . '<hr />' . $markers[$indice2]['info'];
 							unset($markers[$indice2]);
 						}
 					}
 				}
-				if($markers[$indice]['latitude'] < $sudMax)
-				{
+				if($markers[$indice]['latitude'] < $sudMax){
 					$sudMax = $markers[$indice]['latitude'];
 				}
-				if($markers[$indice]['latitude'] > $nordMax)
-				{
+				if($markers[$indice]['latitude'] > $nordMax){
 					$nordMax = $markers[$indice]['latitude'];
 				}
-				if($markers[$indice]['longitude'] < $ouestMax)
-				{
+				if($markers[$indice]['longitude'] < $ouestMax){
 					$ouestMax = $markers[$indice]['longitude'];
 				}
-				if($markers[$indice]['longitude'] > $estMax)
-				{
+				if($markers[$indice]['longitude'] > $estMax){
 					$estMax = $markers[$indice]['longitude'];
 				}
 			}
 		}
-		if($nordMax == -180)
-		{
+		if($nordMax == -180){
 			$nordMax = 0;
 			$sudMax = 0;
 			$ouestMax = 0;
 			$estMax = 0;
 		}
 		$scrollWheel = 'false';
-		if(ZOOM_SCROLL_MAP)
-		{
+		if(ZOOM_SCROLL_MAP){
 			$scrollWheel = 'true';
 		}
 		$googleMap = '
@@ -144,8 +132,7 @@ class EvaGoogleMaps {
 					}
 				}
 
-				function initialize() 
-				{
+				function initialize(){
 					sud = ' . $sudMax . ';
 					nord = ' . $nordMax . ';
 					ouest = ' . $ouestMax . ';
@@ -153,32 +140,27 @@ class EvaGoogleMaps {
 					zoom = 5;
 					centerLat = 46.75;
 					centerLng = 2.5;				
-					if (google.loader.ClientLocation)
-					{
+					if (google.loader.ClientLocation){
 						centerLat = google.loader.ClientLocation.latitude;
 						centerLng = google.loader.ClientLocation.longitude;
 						zoom = 13;
 					}
-					var myOptions = 
-					{
+					var myOptions = {
 						zoom: zoom,
 						center: new google.maps.LatLng(centerLat, centerLng),
 						mapTypeId: google.maps.MapTypeId.ROADMAP,
 						scrollwheel: ' . $scrollWheel . '
 					}
 					var map = new google.maps.Map(document.getElementById("' . $idGoogleMapsDiv . '"), myOptions);
-					if(sud == nord)
-					{
+					if(sud == nord){
 						sud = sud - 0.02;
 						nord = nord + 0.02;
 					}
-					if(est == ouest)
-					{
+					if(est == ouest){
 						est = est + 0.02;
 						ouest = ouest - 0.02;
 					}
-					if(!(sud == -0.02 && nord == 0.02 && est == 0.02 && ouest == -0.02))
-					{
+					if(!(sud == -0.02 && nord == 0.02 && est == 0.02 && ouest == -0.02)){
 						var southWest = new google.maps.LatLng(sud,ouest);
 						var northEast = new google.maps.LatLng(nord,est);
 						var bounds = new google.maps.LatLngBounds(southWest,northEast);
@@ -228,10 +210,10 @@ class EvaGoogleMaps {
 						});
 					});
 				});
-				
 			</script>
 			' . $google_map_marker_more_content . '
 			<div id="' . $idGoogleMapsDiv . '" style="width: 100%; height: 300px"></div><input type="button" value="' . __('Enregistrer les nouvelles coordonn&eacute;es', 'evarisk') . '" class="button-primary hide" id="saveNewPosition" name="saveNewPosition" />';
 		return $googleMap;
 	}
+
 }

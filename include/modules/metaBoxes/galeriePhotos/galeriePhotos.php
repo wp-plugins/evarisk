@@ -5,6 +5,7 @@
 	$postBoxCallbackFunction = 'getGaleriePhotosPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
+  add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_TACHE, 'rightSide', 'default');
   add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_ACTIVITE, 'rightSide', 'default');
   add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_CATEGORIES_DANGERS, 'rightSide', 'default');
 
@@ -33,6 +34,12 @@
 				{
 					$userCanUploadPicture = current_user_can('digi_edit_unite_' . $idElement);
 				}
+			break;
+			case TABLE_TACHE:
+				$userCanUploadPicture = current_user_can('digi_edit_task');
+			break;
+			case TABLE_ACTIVITE:
+				$userCanUploadPicture = current_user_can('digi_edit_action');
 			break;
 			default:
 				$userCanUploadPicture = true;

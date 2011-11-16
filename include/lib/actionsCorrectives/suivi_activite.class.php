@@ -5,38 +5,78 @@ class suivi_activite
 
 	function formulaireAjoutSuivi($tableElement, $idElement)
 	{
-		$idBouttonEnregistrer = 'saveActionFollow';
-		$scriptEnregistrement = 
-			'<script type="text/javascript">
-				evarisk(document).ready(function() {				
-					evarisk("#' . $idBouttonEnregistrer . '").click(function() {
-						evarisk("#load' . $idBouttonEnregistrer . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" />\');
-						evarisk("#bttn' . $idBouttonEnregistrer . '").hide();
-						evarisk("#load' . $idBouttonEnregistrer . '").show();
+		$saveButtonOuput = 'no';
 
-						evarisk("#load' . $tableElement . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-							"post": "true", 
-							"table": "' . TABLE_ACTIVITE_SUIVI . '",
-							"act": "save",
-							"idElement": "' . $idElement . '",
-							"tableElement": "' . $tableElement . '",
-							"commentaire": evarisk("#commentaire' . $tableElement . $idElement . '").val()
+		switch($tableElement)
+		{
+			case TABLE_TACHE:
+				$currentTask = new EvaTask($idElement);
+				$currentTask->load();
+				$ProgressionStatus = $currentTask->getProgressionStatus();
+
+				if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') ){
+					$saveButtonOuput = 'yes';
+				}
+			break;
+			case TABLE_ACTIVITE:
+				$current_action = new EvaActivity($idElement);
+				$current_action->load();
+				$ProgressionStatus = $current_action->getProgressionStatus();
+
+				if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee')== 'oui') ){
+					$saveButtonOuput = 'yes';
+				}
+			break;
+		}
+
+		$output = '';
+		if($saveButtonOuput == 'yes'){
+			$idBouttonEnregistrer = 'saveActionFollow';
+			$scriptEnregistrement = 
+				'<script type="text/javascript">
+					evarisk(document).ready(function() {				
+						evarisk("#' . $idBouttonEnregistrer . '").click(function() {
+							if(evarisk("#commentaire' . $tableElement . $idElement . '").val() != ""){
+								evarisk("#load' . $idBouttonEnregistrer . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" />\');
+								evarisk("#bttn' . $idBouttonEnregistrer . '").hide();
+								evarisk("#load' . $idBouttonEnregistrer . '").show();
+
+								evarisk("#load' . $tableElement . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+									"post": "true", 
+									"table": "' . TABLE_ACTIVITE_SUIVI . '",
+									"act": "save",
+									"idElement": "' . $idElement . '",
+									"tableElement": "' . $tableElement . '",
+									"commentaire": evarisk("#commentaire' . $tableElement . $idElement . '").val()
+								});
+							}
+							else{
+								alert(convertAccentToJS("' . __('Vous ne pouvez pas ajouter de commentaire vide', 'evarisk') . '"));
+							}
 						});
 					});
-				});
-			</script>';
+				</script>';
+
+			$output .= '
+<table summary="" cellpadding="0" cellspacing="0" style="width:100%;" >
+	<tr>
+		<td style="width:80%;" >' . __('Commentaire', 'evarisk') . '</td>
+	</tr>
+	<tr>
+		<td >' . EvaDisplayInput::afficherInput('textarea', 'commentaire' . $tableElement . $idElement, '', '', '', 'commentaire', false, true, 3) . '</td>
+		<td rowspan="2" ><div id="bttn' . $idBouttonEnregistrer . '" >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div><div style="float:right;display:none;" id="load' . $idBouttonEnregistrer . '" ></div></td>
+	</tr>
+</table>';
+		}
+		else{
+			$output .= '<div class="alignright button-primary" id="TaskSaveButton" >' . 
+					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de commentaire', 'evarisk') . 
+				'</div>';
+		}
+
+		$output .= '<br class="clear" />' . suivi_activite::tableauSuiviActivite($tableElement, $idElement);
 		
-		
-		return 
-		'<table summary="" cellpadding="0" cellspacing="0" style="width:100%;" >
-			<tr>
-				<td style="width:80%;" >' . __('Commentaire', 'evarisk') . '</td>
-			</tr>
-			<tr>
-				<td >' . EvaDisplayInput::afficherInput('textarea', 'commentaire' . $tableElement . $idElement, '', '', '', 'commentaire', false, true, 3) . '</td>
-				<td rowspan="2" ><div id="bttn' . $idBouttonEnregistrer . '" >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div><div style="float:right;display:none;" id="load' . $idBouttonEnregistrer . '" ></div></td>
-			</tr>
-		</table>' . suivi_activite::tableauSuiviActivite($tableElement, $idElement);
+		return $output;
 	}
 
 	function saveSuiviActivite($tableElement, $idElement, $commentaire)
@@ -121,7 +161,7 @@ class suivi_activite
 							"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
 						}
 					});
-					evarisk("#' . $idTable . '").children("thead").remove();
+					// evarisk("#' . $idTable . '").children("thead").remove();
 					evarisk("#' . $idTable . '").children("tfoot").remove();
 				});
 			</script>';

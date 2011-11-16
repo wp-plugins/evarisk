@@ -448,29 +448,28 @@ class MethodeEvaluation {
 			ORDER BY ordre ASC");
 	}
 	
-	static function getOperateursMethode($id_methode, $date=null)
-	{
+	static function getOperateursMethode($id_methode, $date = null){
 		global $wpdb;
 		
-		if($date==null)
-		{
-			$date=date('Y-m-d H:i:s');
+		if($date==null){
+			$date = "NOW()";
 		}
 		$id_methode = (int) $id_methode;
 		$t = TABLE_AVOIR_OPERATEUR;
-		return $wpdb->get_results( "SELECT * 
+		$query = $wpdb->prepare("SELECT * 
 				FROM " . $t . " t1
-				WHERE t1.id_methode=" . $id_methode . " 
-				AND t1.date < '" . $date . "'
+				WHERE t1.id_methode = %d
+				AND t1.date < %s
 				AND NOT EXISTS
 				(
 					SELECT * 
 					FROM " . $t . " t2
-					WHERE t2.id_methode=" . $id_methode . " 
-					AND t2.date < '" . $date . "'
+					WHERE t2.id_methode = %d 
+					AND t2.date < %s
 					AND t1.date < t2.date
 				)
-				ORDER BY ordre ASC");
+				ORDER BY ordre ASC", $id_methode, $date, $id_methode, $date);
+		return $wpdb->get_results($query);
 	}
 	
 	static function getFormule($id, $date=null)

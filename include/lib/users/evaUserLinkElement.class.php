@@ -227,27 +227,62 @@ class evaUserLinkElement
 </script>';
 
 		if($showButton){
+			$alternate_button = '';
 			switch($tableElement)
 			{
 				case TABLE_GROUPEMENT:
 				case TABLE_GROUPEMENT . '_evaluation':
-					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement))
-					{
+					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement)){
 						$showButton = false;
 					}
 				break;
 				case TABLE_UNITE_TRAVAIL:
 				case TABLE_UNITE_TRAVAIL . '_evaluation':
-					if(!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement))
-					{
+					if(!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement)){
 						$showButton = false;
+					}
+				break;
+
+				case TABLE_TACHE:
+					if(!current_user_can('digi_edit_task')){
+						$showButton = false;
+					}
+					else{
+						$currentTask = new EvaTask($idElement);
+						$currentTask->load();
+						$ProgressionStatus = $currentTask->getProgressionStatus();
+
+						if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') ){
+							$alternate_button = '
+				<br class="clear" />
+				<div class="alignright button-primary" id="TaskSaveButton" >
+					' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas modifier les utilisateurs', 'evarisk') . '
+				</div>';
+						}
+					}
+				break;
+				case TABLE_ACTIVITE:
+					if(!current_user_can('digi_edit_action')){
+						$showButton = false;
+					}
+					else{
+						$current_action = new EvaActivity($idElement);
+						$current_action->load();
+						$ProgressionStatus = $current_action->getProgressionStatus();
+
+						if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ){
+							$alternate_button = '
+				<br class="clear" />
+				<div class="alignright button-primary" id="TaskSaveButton" >
+					' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas modifier les utilisateurs', 'evarisk') . '
+				</div>';
+						}
 					}
 				break;
 			}
 		}
 
-		if($showButton)
-		{//Bouton Enregistrer
+		if($showButton){//Bouton Enregistrer
 			$scriptEnregistrement = '<script type="text/javascript">
 				evarisk(document).ready(function() {
 					checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
@@ -265,7 +300,12 @@ class evaUserLinkElement
 				});
 				</script>';
 
-			$utilisateursMetaBox .= '<div class="clear" ><div id="saveButtonLoading' . $tableElement . '" style="display:none;" class="clear alignright" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading in progress" /></div><div id="saveButtonContainer' . $tableElement . '" >' . EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div></div>';
+			if($alternate_button != ''){
+				$utilisateursMetaBox .= $alternate_button;
+			}
+			else{
+				$utilisateursMetaBox .= '<div class="clear" ><div id="saveButtonLoading' . $tableElement . '" style="display:none;" class="clear alignright" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading in progress" /></div><div id="saveButtonContainer' . $tableElement . '" >' . EvaDisplayInput::afficherInput('button', $idBoutonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div></div>';
+			}
 		}
 
 		return $utilisateursMetaBox;

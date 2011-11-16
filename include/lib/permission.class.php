@@ -117,6 +117,21 @@ class digirisk_permission
 		$permission['digi_view_correctiv_action'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '');
 		$permission['digi_view_task_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
 		$permission['digi_view_action_trash'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+
+		$permission['digi_follow_action'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '');
+		$permission['digi_control_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+
+		$permission['digi_add_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+		$permission['digi_edit_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+		$permission['digi_move_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'move', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+		$permission['digi_view_detail_task'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+		$permission['digi_delete_task'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+
+		$permission['digi_add_action'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+		$permission['digi_edit_action'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+		$permission['digi_move_action'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'move', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+		$permission['digi_view_detail_action'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
+		$permission['digi_delete_action'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'action');
 		}
 
 		{/*	Trash permission	*/

@@ -179,9 +179,16 @@ function tabChange(divId, tabId)
 }
 function hideExtraTab()
 {
+	evarisk("#ongletEditerRisque").css("display","none");
+	evarisk("#ongletControlerActionDemandee").css("display","none");
 	evarisk("#ongletDemandeActionCorrective" + TABLE_RISQUE).css("display","none");
+	evarisk("#divDemandeAction" + TABLE_RISQUE).html("");
 	evarisk("#ongletSuiviActionCorrective" + TABLE_RISQUE).css("display","none");
+	evarisk("#divSuiviAction" + TABLE_RISQUE).html("");
 	evarisk("#ongletFicheActionCorrective" + TABLE_RISQUE).css("display","none");
+	evarisk("#divFicheAction" + TABLE_RISQUE).html("");
+	evarisk("#ongletHistoRisk" + TABLE_RISQUE).css("display","none");
+	evarisk("#divHistoRisk" + TABLE_RISQUE).html("");
 }
 
 function selectRowInTreeTable(tableId)

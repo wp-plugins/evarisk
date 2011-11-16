@@ -79,10 +79,14 @@
 	*	Actions correctives
 	*/
 	DEFINE('PICTO_LTL_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/actionsCorrectives.png');
-	DEFINE('PICTO_LTL_ADD_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/addActionsCorrectives_s.png');
-	DEFINE('PICTO_LTL_SUIVI_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/actionsCorrectives_s.png');
+	DEFINE('PICTO_LTL_ADD_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/ac.png');
+	DEFINE('PICTO_LTL_ASK_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/demande_ac.png');
+	DEFINE('PICTO_LTL_SUIVI_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/suiv_ac.png');
 	DEFINE('PICTO_LTL_ADD_TACHE', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/addTache_s.png');
 	DEFINE('PICTO_LTL_ADD_ACTIVITE', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/addAction_s.png');
+
+
+	DEFINE('DIGI_PICTO_HISTO_RISK', EVA_IMG_ICONES_PLUGIN_URL . 'histo_risk.png');
 
 	/**
 	*	Edition

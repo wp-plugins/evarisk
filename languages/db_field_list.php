@@ -183,6 +183,21 @@ __('digi_edit_task_trash', 'evarisk');
 __('digi_view_action_trash', 'evarisk');
 __('digi_edit_action_trash', 'evarisk');
 
+__('digi_control_task', 'evarisk');
+__('digi_follow_action', 'evarisk');
+
+__('digi_add_task', 'evarisk');
+__('digi_edit_task', 'evarisk');
+__('digi_view_detail_task', 'evarisk');
+__('digi_delete_task', 'evarisk');
+__('digi_move_task', 'evarisk');
+
+__('digi_add_action', 'evarisk');
+__('digi_edit_action', 'evarisk');
+__('digi_view_detail_action', 'evarisk');
+__('digi_delete_action', 'evarisk');
+__('digi_move_action', 'evarisk');
+
 /*	Documentation capabilities	*/
 __('permission_documentation_menu', 'evarisk');
 __('permission_documentation', 'evarisk');

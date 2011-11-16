@@ -550,20 +550,6 @@ function evarisk_insertions($insertions = null)
 		}
 		case 36:
 		{
-			$digiriskOptions = array();
-			$digiriskOptions['responsable_Tache_Obligatoire'] = 'non';
-			$digiriskOptions['responsable_Action_Obligatoire'] = 'non';
-			$digiriskOptions['possibilite_Modifier_Tache_Soldee'] = 'non';
-			$digiriskOptions['possibilite_Modifier_Action_Soldee'] = 'non';
-			$digiriskOptions['avertir_Solde_Action_Non_100'] = 'oui';
-			$digiriskOptions['avertir_Solde_Tache_Ayant_Action_Non_100'] = 'oui';
-			$digiriskOptions['affecter_uniquement_tache_soldee_a_un_risque'] = 'oui';
-			$digiriskOptions['action_correctives_avancees'] = 'non';
-			$digiriskOptions['risques_avances'] = 'non';
-			$digiriskOptions['creation_sous_tache_preconisation'] = 'non';
-			$digiriskOptions['export_only_priority_task'] = 'oui';
-			$digiriskOptions['export_tasks'] = 'non';
-			$digiriskOptions['taille_photo_poste_fiche_de_poste'] = '8';
 			//Add option for the work unit sheet picture size
 			//DELETE FROM VERSION 44
 
@@ -1257,6 +1243,21 @@ ou irritantes');";
 			break;
 		}
 		case 60:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 61:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 62:
+		{
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 63:
 		{
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;

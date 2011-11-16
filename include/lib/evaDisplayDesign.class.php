@@ -34,7 +34,7 @@ class EvaDisplayDesign {
 	{
 		$debutPage = '<div class="wrap">
 			<div class="icon32"><img alt="' . $altIcon . '" src="' . $icone . '"title="' . $titreIcone . '"/></div>
-			<h2 class="alignleft" >' . $titrePage;
+			<h2 class="" >' . $titrePage;
 		if($boutonAjouter)
 		{
 			$debutPage .= ' <a class="button add-new-h2" onclick="javascript:document.getElementById(\'act\').value=\'add\'; document.forms.form.submit();">' . __('Ajouter', 'evarisk') . '</a>';
@@ -688,6 +688,7 @@ class EvaDisplayDesign {
 				$subElements = categorieDangers::getDangersDeLaCategorie($racine->id);
 				$divDeChargement = 'message';
 				$titreInfo = null;
+				$nomRacine = '&nbsp;';
 				$actionSize = 4;
 				$actions = '
 							<td class="noPadding addMain" id="addMain' . $racine->id . '">';
@@ -722,16 +723,24 @@ class EvaDisplayDesign {
 				$subElements = $tacheRacine->getWPDBActivitiesDependOn();
 				$divDeChargement = 'message';
 				$titreInfo = __("Avancement", 'evarisk');
+				$nomRacine = __('T&acirc;ches', 'evarisk');
 				$actionSize = 4;
 				$actions = '
-							<td class="noPadding addMain" id="addMain' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td>
-							<!-- <td class="noPadding addSecondary" id="addSecondary' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td> -->';
+						<td class="noPadding addMain" id="addMain' . $racine->id . '">';
+				if(current_user_can('digi_add_task')){
+					$actions .= 
+							'<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" />';
+				}
+				else{
+					$actions .= '&nbsp;';
+				}
+				$actions .= '
+						</td>';
 				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_TACHE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '\' />';
 				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_ACTIVITE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' />';
 				/*	Add trash	*/
 				$main_option = get_option('digirisk_options');
-				if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash')))
-				{
+				if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash'))){
 					$showTrashUtilities = true;
 					$actions .= '
 							<td colspan="' . ($actionSize - 2) . '" >&nbsp;</td>
@@ -782,9 +791,8 @@ class EvaDisplayDesign {
 		}
 
 		$draggableScript = '';
-		if($draggable)
-		{
-		$draggableScript .= '
+		if($draggable){
+			$draggableScript .= '
 		//	Draggable interface
 		var draggedObject;
 		var draggedObjectFather;
@@ -867,18 +875,6 @@ class EvaDisplayDesign {
 			);
 		}
 
-		// evarisk("#tdRacine' . $idTable . '").droppable({
-			// "over":function(){
-				// evarisk(this).html("' . __('D&eacute;poser ici pour mettre &agrave; la racine de votre arborescence', 'evarisk') . '");
-			// },
-			// "out":function(){
-				// evarisk(this).html("");
-			// },
-			// "drop":function(event, ui){
-				// evarisk(this).html("");
-			// }
-		// });
-
 		overFunction = function(event, ui){
 			// Make the droppable branch expand when a draggable node is moved over it.
 			if(this.id != evarisk(ui.draggable.parents("tr")[0]).id && !evarisk(this).is(".expanded")){
@@ -947,8 +943,7 @@ class EvaDisplayDesign {
 
 		/*	Add trash utilities if user is allowed	*/
 		$trashScript = '';
-		if($showTrashUtilities)
-		{
+		if($showTrashUtilities){
 			$tableArborescente .= '
 				<div id="trashContainer" title="' . __('Liste des &eacute;l&eacute;ments supprim&eacute;s', 'evarisk') . '" >&nbsp;</div>';
 			$trashScript = '
@@ -1351,6 +1346,7 @@ class EvaDisplayDesign {
 			switch($table)
 			{
 				case TABLE_CATEGORIE_DANGER :
+				{
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '">';
@@ -1383,63 +1379,86 @@ class EvaDisplayDesign {
 					{
 						$nomFeuilleClass = 'userForbiddenActionCursor';
 					}
-					break;
+				}
+				break;
 				case TABLE_GROUPEMENT :
+				{
 					$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>';
-					if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $subElement->id))
-					{
+					if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $subElement->id)){
 						$tdSubEdit .= '
 							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					}
-					elseif(current_user_can('digi_view_detail_unite') || current_user_can('digi_view_detail_unite_' . $subElement->id))
-					{
+					elseif(current_user_can('digi_view_detail_unite') || current_user_can('digi_view_detail_unite_' . $subElement->id)){
 						$tdSubEdit .= '
 							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
 					}
-					else
-					{
+					else{
 						$tdSubEdit .= '<td class="noPadding" >&nbsp;</td><td class="noPadding" >&nbsp;</td>';
 					}
 
-					if(current_user_can('digi_delete_unite') || current_user_can('digi_delete_unite_' . $subElement->id))
-					{
+					if(current_user_can('digi_delete_unite') || current_user_can('digi_delete_unite_' . $subElement->id)){
 						$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" />';
 					}
-					else
-					{
+					else{
 						$tdSubDelete = '<td class="noPadding" >&nbsp;';
 					}
 					$tdSubDelete .= '</td>';
 
 					$subAffichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_UT .  $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
-					if(!current_user_can('digi_move_unite'))
-					{
+					if(!current_user_can('digi_move_unite')){
 						$ddFeuilleClass = '';
 					}
 					if(!current_user_can('digi_view_detail_unite') && !current_user_can('digi_view_detail_unite_' . $subElement->id)
-						&& !current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $subElement->id))
-					{
+						&& !current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $subElement->id)){
 						$nomFeuilleClass = 'userForbiddenActionCursor';
 					}
-					break;
+				}
+				break;
 				case TABLE_TACHE :
+				{
 					$tdSubEdit = '
-							<td colspan="2">&nbsp;</td>
+							<td colspan="2">&nbsp;</td>';
+					if(current_user_can('digi_edit_action')){ 
+						$tdSubEdit .= '
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
-					$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+					}
+					elseif(current_user_can('digi_view_detail_action')){
+						$tdSubEdit .= '
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+					}
+					else{
+						$tdSubEdit .= '<td class="noPadding" >&nbsp;</td>';
+					}
+
+					if(current_user_can('digi_delete_action')){
+						$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" />';
+					}
+					else{
+						$tdSubDelete = '<td class="noPadding" >&nbsp;';
+					}
+					$tdSubDelete .= '</td>';
 					$subAffichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_ST .  $subElement->id . ' - </span>' . $subElement->nom;
 					$subActions = $tdSubEdit . $tdSubDelete;
-					break;
+					if(!current_user_can('digi_move_action')){
+						$ddFeuilleClass = '';
+					}
+					if(!current_user_can('digi_view_detail_action') && !current_user_can('digi_edit_action')){
+						$nomFeuilleClass = 'userForbiddenActionCursor';
+					}
+				}
+				break;
 				case TABLE_GROUPE_QUESTION :
+				{
 					$tdSubDelete = '
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding delete-leaf" id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
 					$subAffichage = ELEMENT_IDENTIFIER_Q . $subElement->id . ' : ' . ucfirst($subElement->enonce);
 					$subActions = $tdSubDelete;
-					break;
+				}
+				break;
 			}
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
 			$monCorpsSubElements .= '
@@ -1492,6 +1511,7 @@ class EvaDisplayDesign {
 					switch($table)
 					{
 						case TABLE_CATEGORIE_DANGER :
+						{
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_CD . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
@@ -1563,8 +1583,10 @@ class EvaDisplayDesign {
 								' . $tdAddSecondary . '
 								' . $tdEdit . '
 								' . $tdDelete;
+						}
 						break;
 						case TABLE_GROUPEMENT :
+						{
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GP . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
@@ -1644,8 +1666,10 @@ class EvaDisplayDesign {
 								' . $tdAddSecondary . '
 								' . $tdEdit . '
 								' . $tdDelete;
+						}
 						break;
 						case TABLE_TACHE :
+						{
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_T . $element->id . '</span> - ' . $element->nom;
 							$tdAddMainStyle = 'display:none;';
 							$tdAddSecondaryStyle = 'display:none;';
@@ -1662,22 +1686,62 @@ class EvaDisplayDesign {
 								$tdAddMainStyle = '';
 								$tdAddSecondaryStyle = '';
 							}
-							$tdAddMain = '<td class="noPadding addMain"  id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" /></td><td id="addMain' . $element->id . 'Alt" style="display:none;"></td>';
-							$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" /></td><td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>';
-							$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
-							$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" /></td>';
+
+							if(current_user_can('digi_add_task')){
+								$tdAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" />';//<td id="addMain' . $element->id . 'Alt" style="display:none;"></td>
+							}
+							else{
+								$tdAddMain = '<td class="noPadding" >&nbsp;';
+							}
+							$tdAddMain .= '</td>';
+							if(current_user_can('digi_add_action')){
+								$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" />';//<td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>
+							}
+							else{
+								$tdAddSecondary = '<td class="noPadding" >&nbsp;';
+							}
+							$tdAddSecondary .= '</td>';
+
+							if(current_user_can('digi_edit_task')){
+								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
+							}
+							elseif(current_user_can('digi_view_detail_task')){
+								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" />';
+							}
+							else{
+								$tdEdit = '<td class="noPadding" >&nbsp;';
+							}
+							$tdEdit .= '</td>';
+							if(current_user_can('digi_delete_task')){
+								$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
+							}
+							else{
+								$tdDelete = '<td class="noPadding" >&nbsp;';
+							}
+							$tdDelete .= '</td>';
+
+							if(!current_user_can('digi_move_task')){
+								$ddNoeudClass = '';
+							}
+							if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_edit_task')){
+								$nomNoeudClass = 'userForbiddenActionCursor';
+							}
+
 							$actions = '
 								' . $tdAddMain . '
 								' . $tdAddSecondary . '
 								' . $tdEdit . '
 								' . $tdDelete;
+						}
 						break;
 						case TABLE_GROUPE_QUESTION :
+						{
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GQ . $element->id . '</span> - ' . $element->code . '-' . ucfirst($element->nom);
 							$tdAdd = '<td class="noPadding addMain" id="add-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="'.PICTO_INSERT.'" alt="' . __('Inserer sous le titre', 'evarisk') . '" title="Inserer sous le titre" /></td>';
 							$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
 							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
 							$actions = $tdAdd . $tdEdit . $tdDelete;
+						}
 						break;
 					}
 					$info = '';
@@ -1717,6 +1781,7 @@ class EvaDisplayDesign {
 		$ddFeuilleClass = 'feuilleArbre';
 		$nomFeuilleClass = 'nomFeuilleArbre';
 
+		$user_is_allowed_to_view_details = false;
 		switch($table)
 		{
 			case TABLE_CATEGORIE_DANGER :
@@ -1735,6 +1800,7 @@ class EvaDisplayDesign {
 				$tacheMere->load();
 				$subElements = $tacheMere->getWPDBActivitiesDependOn();
 				$actionSize = 3;
+				$user_is_allowed_to_view_details = current_user_can('digi_view_detail_action');
 				break;
 			case TABLE_GROUPE_QUESTION :
 				$sousTable = TABLE_QUESTION;
@@ -1743,37 +1809,37 @@ class EvaDisplayDesign {
 				break;
 		}
 		$monCorpsSubElements = '';
-		foreach($subElements as $subElement)
-		{
+		foreach($subElements as $subElement){
 			$ddFeuilleClass = '';
 			$nomFeuilleClass = 'nomFeuilleArbre';
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id, $moreInfo);
 			$monCorpsSubElements .= '
 				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddFeuilleClass . '">
 					<td id="leaf-' . $subElement->id . '-name" class="' . $nomFeuilleClass . '" >' . ELEMENT_IDENTIFIER_ST . $subElement->id . '&nbsp;-&nbsp;' . $subElement->nom . '</td>';
-			if($titreInfo != null)
-			{
-				$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
+			if($titreInfo != null){
+				$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '" >' . $info['value'] . '</td>';
 			}
 			$monCorpsSubElements .= '
-					<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_ST . $subElement->id . '" class="CorrectivActionFollowStateActionColumn" ><img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $sousTable . '_t_elt_' . $subElement->id . '" /></td>
+					<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_ST . $subElement->id . '" >';
+			if($user_is_allowed_to_view_details){
+				$monCorpsSubElements .= '
+						<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $sousTable . '_t_elt_' . $subElement->id . '" />';
+			}
+			$monCorpsSubElements .= 
+					'</td>
 				</tr>';
 		}
 
-		if(count($elementsFils) != 0)
-		{
-			foreach ($elementsFils as $element )
-			{
+		if(count($elementsFils) != 0){
+			foreach($elementsFils as $element){
 				$elements_fils = '';
 				$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
 				$elements_pere = Arborescence::getPere($table, $element, " Status = 'Deleted' ");
 				$ddNoeudClass = 'noeudArbre';
 				$nomNoeudClass = 'nomNoeudArbre';
 
-				if(count($elements_pere) <= 0)
-				{
-					switch($table)
-					{
+				if(count($elements_pere) <= 0){
+					switch($table){
 						case TABLE_CATEGORIE_DANGER :
 							$sousTable = TABLE_DANGER;
 							$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
@@ -1795,85 +1861,43 @@ class EvaDisplayDesign {
 					}
 					$trouveElement = count($elements_fils) + count($subElements);
 
-					switch($table)
-					{
+					$user_is_allowed_to_view_details = false;
+					switch($table){
 						case TABLE_CATEGORIE_DANGER :
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_CD . $element->id . '</span> - ' . $element->nom;
-							$tdAddMainStyle = 'display:none;';
-							$tdAddSecondaryStyle = 'display:none;';
-							if(count($elements_fils) > 0)
-							{
-								$tdAddMainStyle = '';
-							}
-							elseif(count($subElements) > 0)
-							{
-								$tdAddSecondaryStyle = '';
-							}
-							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
-							{
-								$tdAddMainStyle = '';
-								$tdAddSecondaryStyle = '';
-							}
-
 						break;
 						case TABLE_GROUPEMENT :
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GP . $element->id . '</span> - ' . $element->nom;
-							$tdAddMainStyle = 'display:none;';
-							$tdAddSecondaryStyle = 'display:none;';
-							if(count($elements_fils) > 0)
-							{
-								$tdAddMainStyle = '';
-							}
-							elseif(count($subElements) > 0)
-							{
-								$tdAddSecondaryStyle = '';
-							}
-							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
-							{
-								$tdAddMainStyle = '';
-								$tdAddSecondaryStyle = '';
-							}
-
 						break;
 						case TABLE_TACHE :
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_T . $element->id . '</span> - ' . $element->nom;
-							$tdAddMainStyle = 'display:none;';
-							$tdAddSecondaryStyle = 'display:none;';
-							if(count($elements_fils) > 0)
-							{
-								$tdAddMainStyle = '';
-							}
-							elseif(count($subElements) > 0)
-							{
-								$tdAddSecondaryStyle = '';
-							}
-							elseif((count($elements_fils) == 0) && (count($subElements) == 0))
-							{
-								$tdAddMainStyle = '';
-								$tdAddSecondaryStyle = '';
-							}
-
+							$user_is_allowed_to_view_details = current_user_can('digi_view_detail_task');
 						break;
 						case TABLE_GROUPE_QUESTION :
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GQ . $element->id . '</span> - ' . $element->code . '-' . ucfirst($element->nom);
-
 						break;
 					}
+
 					$info = '';
-					if($titreInfo != null)
-					{
+					if($titreInfo != null){
 						$info = EvaDisplayDesign::getInfoArborescence($table, $element->id, $moreInfo);
 						$info = '<td id="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
 					}
+
 					$monCorpsTable .= '
 						<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddNoeudClass . ' parent">
 							<td id="node-' . $idTable . '-' . $element->id . '-name" class="' . $nomNoeudClass . '" >' . $affichage . '</td>
 							' . $info . '
-							<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_T . $element->id . '" class="CorrectivActionFollowStateActionColumn" ><img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $table . '_t_elt_' . $element->id . '" /></td>
+							<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_T . $element->id . '" class="CorrectivActionFollowStateActionColumn" >';
+					if($user_is_allowed_to_view_details){
+						$monCorpsTable .= 
+							'<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $table . '_t_elt_' . $element->id . '" />';
+					}
+					$monCorpsTable .= 
+							'</td>
 						</tr>';
 
-					if($trouveElement)
-					{
+					if($trouveElement){
 						$monCorpsTable .= EvaDisplayDesign::build_tree($elements_fils, $element, $table, $titreInfo, $idTable, $moreInfo);
 					}
 				}
@@ -1982,7 +2006,7 @@ class EvaDisplayDesign {
 		for($numeroLigne=0; $numeroLigne<count($lignesDeValeurs); $numeroLigne++)
 		{
 			$ligneDeValeurs = $lignesDeValeurs[$numeroLigne];
-			$corpsTable .= '<tr id="' . $idLignes[$numeroLigne] . '" valign="top" >';
+			$corpsTable .= '<tr id="' . $idLignes[$numeroLigne] . '" valign="top" class="tr_' . $idTable . '" >';
 			for($i=0; $i<count($ligneDeValeurs); $i++)
 			{
 				$corpsTable .= '

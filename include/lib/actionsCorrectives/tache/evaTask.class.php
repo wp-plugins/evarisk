@@ -12,12 +12,9 @@ require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivityTable.
 
 class EvaTask extends EvaBaseTask
 {	
-/*
- * Data base link
- */
 	/**
-	 * Save or update the Task in data base
-	 */
+	* Save or update the Task in data base
+	*/
 	function save()
 	{
 		global $wpdb;
@@ -44,12 +41,15 @@ class EvaTask extends EvaBaseTask
 			$ProgressionStatus = eva_tools::IsValid_Variable($this->getProgressionStatus());
 			$dateSolde = eva_tools::IsValid_Variable($this->getdateSolde());
 			$hasPriority = eva_tools::IsValid_Variable($this->gethasPriority());
+			$efficacite = eva_tools::IsValid_Variable($this->getEfficacite());
+			$idPhotoAvant = eva_tools::IsValid_Variable($this->getidPhotoAvant());
+			$idPhotoApres = eva_tools::IsValid_Variable($this->getidPhotoApres());
 		}
 		
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::firstInsert . ")
+			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ",  " . self::firstInsert . ")
 				VALUES ('" . mysql_real_escape_string($name) . "', 
 								'" . mysql_real_escape_string($leftLimit) . "', 
 								'" . mysql_real_escape_string($rightLimit) . "', 
@@ -69,6 +69,9 @@ class EvaTask extends EvaBaseTask
 								'" . mysql_real_escape_string($ProgressionStatus) . "',
 								'" . mysql_real_escape_string($dateSolde) . "',
 								'" . mysql_real_escape_string($hasPriority) . "',
+								'" . mysql_real_escape_string($efficacite) . "',
+								'" . mysql_real_escape_string($idPhotoAvant) . "', 
+								'" . mysql_real_escape_string($idPhotoApres) . "', 
 								NOW())";
 		}
 		else
@@ -83,6 +86,8 @@ class EvaTask extends EvaBaseTask
 				" . self::place . " = '" . mysql_real_escape_string($place) . "',
 				" . self::progression . " = '" . mysql_real_escape_string($progression) . "',
 				" . self::cost . " = '" . mysql_real_escape_string($cost) . "',
+				" . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "' ,
+				" . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "' ,
 				" . self::idFrom . " = '" . mysql_real_escape_string($idFrom) . "',
 				" . self::tableFrom . " = '" . mysql_real_escape_string($tableFrom) . "',
 				" . self::status . " = '" . mysql_real_escape_string($status) . "',
@@ -91,7 +96,8 @@ class EvaTask extends EvaBaseTask
 				" . self::idSoldeurChef . " = '" . mysql_real_escape_string($idSoldeurChef) . "' ,
 				" . self::ProgressionStatus . " = '" . mysql_real_escape_string($ProgressionStatus) . "' ,
 				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "' ,
-				" . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "' 
+				" . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "' ,
+				" . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "' 
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
 
@@ -114,8 +120,8 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
-	 * Load the Task with identifier key
-	 */
+	* Load the Task with identifier key
+	*/
 	function load()
 	{
 		global $wpdb;
@@ -135,9 +141,9 @@ class EvaTask extends EvaBaseTask
  * Others methods
  */
 	/**
-	 * Get the activities depend on the task
-	 * @return object The activities in the form of wpdb object
-	 */
+	* Get the activities depend on the task
+	* @return object The activities in the form of wpdb object
+	*/
 	function getWPDBActivitiesDependOn()
 	{
 		global $wpdb;
@@ -152,9 +158,9 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
-	 * Get the activities depend on the task
-	 * @return EvaActivity The activities in the form of EvaActivity object
-	 */
+	* Get the activities depend on the task
+	* @return EvaActivity The activities in the form of EvaActivity object
+	*/
 	function getActivitiesDependOn()
 	{
 		$wpdbActivities = $this->getWPDBActivitiesDependOn();
@@ -169,9 +175,9 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
-	 * Transfert a (sub-)task from one task to another.
-	 * @param int $newMotherTaskId New mother task identifier
-	 */
+	* Transfert a (sub-)task from one task to another.
+	* @param int $newMotherTaskId New mother task identifier
+	*/
 	function transfert($newMotherTaskId)
 	{
 		$rootTask = new EvaTask(1);
@@ -185,9 +191,9 @@ class EvaTask extends EvaBaseTask
 	}
 
 	/**
-	 * Get the descendants of the task.
-	 * @return EvaTaskTable The descendants tasks
-	 */
+	* Get the descendants of the task.
+	* @return EvaTaskTable The descendants tasks
+	*/
 	function getDescendants()
 	{
 		$wpdbTask = $this->convertToWpdb();
@@ -205,6 +211,9 @@ class EvaTask extends EvaBaseTask
 		return $descendants;
 	}
 
+	/**
+	*
+	*/
 	function markAllSubElementAsDone($avancement, $date_debut, $date_fin)
 	{
 		global $current_user;
@@ -378,24 +387,12 @@ class EvaTask extends EvaBaseTask
 				{
 					foreach($activities as $activity)
 					{
-						{	/*	Old version lookin at the task duration to calculate the progression	*/
-							// $activityStartDate = $activity->getStartDate();
-							// $startDate = explode('-', $activityStartDate);
-							// $activityFinishDate = $activity->getFinishDate();
-							// $finishDate = explode('-', $activityFinishDate);
-							// $activiteDuration = mktime(0,0,0,$finishDate[1],$finishDate[2],$finishDate[0]) - mktime(0,0,0,$startDate[1], $startDate[2],$startDate[0]);
-							// $taskDuration += $activiteDuration;
-							// $taskCompleteDuration += $activiteDuration * $activity->getProgression() / 100;
-						}
-
+						if(($progressionStatusToSet != 'inProgress') && ($activity->getProgressionStatus() == 'inProgress'))
 						{
-							if(($progressionStatusToSet != 'inProgress') && ($activity->getProgressionStatus() == 'inProgress'))
-							{
-								$progressionStatusToSet = 'inProgress';
-							}
-							$totalProgression += $activity->getProgression();
-							$totalSubTask++;
+							$progressionStatusToSet = 'inProgress';
 						}
+						$totalProgression += $activity->getProgression();
+						$totalSubTask++;
 					}
 				}
 				else
@@ -404,7 +401,7 @@ class EvaTask extends EvaBaseTask
 				}
 			}
 		}
-		// if($taskDuration > 0)
+
 		if($totalProgression > 0)
 		{
 			// $progressionToSet = round($taskCompleteDuration / $taskDuration * 100);
@@ -435,32 +432,47 @@ class EvaTask extends EvaBaseTask
 	* @param mixed $listeTaches A string composed by tasks id to link separeted by a delimiter
 	*	@param mixed $momentLiaison Defines if the link is made before or after, used for the risk evaluation to know risk level before and after an action
 	*/
-	function liaisonTacheElement($table, $id, $listeTaches, $momentLiaison = 'before')
-	{
+	function liaisonTacheElement($table, $id, $listeTaches, $momentLiaison = 'before'){
 		global $wpdb;
 		$actionsList = "  ";
 
 		$actions = explode('_ac_', $listeTaches);
-		foreach($actions as $actionIndex => $actionID)
-		{
-			if($actionID > 0)
-			{
-				$actionsList .= "('', 'valid', '" . $momentLiaison . "', NOW(), '" . $actionID . "', '" . $id . "', '" . $table . "'), ";
+		foreach($actions as $actionIndex => $action){
+			$action_details = explode('_aceff_', $action);
+			if($action_details[0] > 0){
+				$actionsList .= "('', 'valid', '" . $momentLiaison . "', NOW(), '" . $action_details[0] . "', '" . $id . "', '" . $table . "'), ";
 			}
 		}
 
 		$actionsList = trim(substr($actionsList, 0, -2));
-		if($actionsList != '')
-		{
-			$query = $wpdb->prepare
-			(
+		if($actionsList != ''){
+			$query = $wpdb->prepare(
 				"REPLACE INTO " . TABLE_LIAISON_TACHE_ELEMENT . " 
 					(id, status, wasLinked, date, id_tache, id_element, table_element) 
 				VALUES 
-					 " . $actionsList . ";"
-			);
+					 " . $actionsList . ";");
 			$wpdb->query($query);
 		}
+	}
+	/**
+	*	Get associated element for a given task
+	*
+	* @param integer $ask_id The task identifier we want to get the link for
+	*
+	*	@return mixed $links If there are result contains a wordpress database object with the different existing link list
+	*/
+	function get_element_link_to_task($task_id){
+		global $wpdb;
+		$links = '';
+
+		$query = $wpdb->prepare("
+			SELECT * 
+			FROM " . TABLE_LIAISON_TACHE_ELEMENT . "
+			WHERE id_tache = %d
+				AND status = 'valid' ", $task_id);
+		$links = $wpdb->get_results($query);
+
+		return $links;
 	}
 
 	/**
@@ -468,8 +480,7 @@ class EvaTask extends EvaBaseTask
 	*
 	*	@return integer The new task identifier
 	*/
-	function saveNewTask()
-	{
+	function saveNewTask(){
 		$tache = new EvaTask();
 
 		$tache->setName($_POST['nom_activite']);
@@ -479,24 +490,28 @@ class EvaTask extends EvaBaseTask
 		$tache->setTableFrom($_POST['tableProvenance']);
 		$tache->setidResponsable($_POST['responsable_activite']);
 		$tache->setProgressionStatus('notStarted');
-		if($_POST['avancement'] > '0')
-		{
+
+		if(isset($_POST['correctiv_action_efficiency_control'])){
+			$tache->setEfficacite($_POST['correctiv_action_efficiency_control']);
+		}
+
+		if($_POST['avancement'] > '0'){
 			$tache->setProgressionStatus('inProgress');
 		}
-		if(isset($_POST['hasPriority']))
-		{
+
+		if(isset($_POST['hasPriority'])){
 			$tache->sethasPriority($_POST['hasPriority']);
 		}
-		else
-		{
+		else{
 			$tache->sethasPriority('no');
 		}
-		if($_POST['avancement'] == '100')
-		{
+
+		if($_POST['avancement'] == '100'){
 			$tache->setProgressionStatus('Done');
 			global $current_user;
 			$tache->setidSoldeur($current_user->ID);
 		}
+
 		$racine = new EvaTask(1);
 		$racine->load();
 		$tache->setLeftLimit($racine->getRightLimit());
@@ -517,8 +532,7 @@ class EvaTask extends EvaBaseTask
 	*
 	*	@param mixed $acDashboardBox The html content of the box
 	*/
-	function getTaskForDashBoard($dashbordParam)
-	{
+	function getTaskForDashBoard($dashbordParam){
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
 		unset($lignesDeValeurs);
 		global $wpdb;
@@ -542,10 +556,8 @@ class EvaTask extends EvaBaseTask
 
 				$idTable = 'taskListPassedButNotMarkAsDone';
 				$titres = array( __('Id', 'evarisk'),  __('Nom T&acirc;che', 'evarisk'), __('D&eacute;but', 'evarisk'), __('Fin', 'evarisk'), __('Progression (%)', 'evarisk'), __('Fiche', 'evarisk') );
-				if(is_array($taskList) && (count($taskList) > 0))
-				{
-					foreach($taskList as $task)
-					{
+				if(is_array($taskList) && (count($taskList) > 0)){
+					foreach($taskList as $task){
 						unset($valeurs);
 						$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_T . $task->id);
 						$valeurs[] = array('value'=>$task->nom);
@@ -557,8 +569,7 @@ class EvaTask extends EvaBaseTask
 						$idLignes[] = 'taskListPassedButNotMarkedAsDone' . $task->id;
 					}
 				}
-				else
-				{
+				else{
 					unset($valeurs);
 					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
@@ -589,8 +600,7 @@ class EvaTask extends EvaBaseTask
 					ORDER BY TASK.dateFin DESC"
 				);
 				$taskList = $wpdb->get_results($query);
-				foreach($taskList as $taskIndex => $task)
-				{
+				foreach($taskList as $taskIndex => $task){
 					$query = $wpdb->prepare(
 						"SELECT ACTION.id, ACTION.id_tache, ACTION.ProgressionStatus
 						FROM " . TABLE_ACTIVITE . " AS ACTION
@@ -599,10 +609,8 @@ class EvaTask extends EvaBaseTask
 						$task->id
 					);
 					$actionList = $wpdb->get_results($query);
-					foreach($actionList as $action)
-					{
-						if($action->ProgressionStatus == 'inProgress')
-						{
+					foreach($actionList as $action){
+						if($action->ProgressionStatus == 'inProgress'){
 							unset($taskList[$taskIndex]);
 						}
 					}
@@ -610,10 +618,8 @@ class EvaTask extends EvaBaseTask
 
 				$idTable = 'taskListToMarkAsDone';
 				$titres = array( __('Id', 'evarisk'), __('Nom T&acirc;che', 'evarisk'), __('D&eacute;but', 'evarisk'), __('Fin', 'evarisk'), __('Progression (%)', 'evarisk'), __('Fiche', 'evarisk') );
-				if(is_array($taskList) && (count($taskList) > 0))
-				{
-					foreach($taskList as $task)
-					{
+				if(is_array($taskList) && (count($taskList) > 0)){
+					foreach($taskList as $task){
 						unset($valeurs);
 						$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_T . $task->id);
 						$valeurs[] = array('value'=>$task->nom);
@@ -625,8 +631,7 @@ class EvaTask extends EvaBaseTask
 					$idLignes[] = 'taskListToMarkAsDone' . $task->id;
 					}
 				}
-				else
-				{
+				else{
 					unset($valeurs);
 					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
@@ -641,8 +646,7 @@ class EvaTask extends EvaBaseTask
 				}
 
 				$classes = array('cbColumnLarge','','','cbNbUserGroup');
-				$tableOptions = 
-				'';
+				$tableOptions = '';
 			}
 			break;
 			case 'toEvaluate':
@@ -663,10 +667,8 @@ class EvaTask extends EvaBaseTask
 				$riskList = $wpdb->get_results($query);
 
 				$titres = array(__('Id', 'evarisk'), __('Nom danger', 'evarisk'), __('Commentaire sur le risque', 'evarisk'), __('&Eacute;l&eacute;ment', 'evarisk'), __('Fiche', 'evarisk') );
-				if(is_array($riskList) && (count($riskList) > 0))
-				{
-					foreach($riskList as $risk)
-					{
+				if(is_array($riskList) && (count($riskList) > 0)){
+					foreach($riskList as $risk){
 						unset($valeurs);
 						$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_R . $risk->id);
 						$valeurs[] = array('value'=>$risk->nomDanger);
@@ -694,21 +696,17 @@ class EvaTask extends EvaBaseTask
 								$nomElementCourant = $elementToSee = '';
 							break;
 						}
-						if($idGroupement > 0)
-						{
+						if($idGroupement > 0){
 							$groupementPere = EvaGroupement::getGroupement($idGroupement);
 							$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
-							foreach($ancetres as $ancetre)
-							{
-								if($ancetre->nom != "Groupement Racine")
-								{
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Groupement Racine"){
 									$risqueAffecteA .= $ancetre->nom . ' &raquo; ';
 								}
 							}
 						}
 						$completeName = $risqueAffecteA;
-						if($groupementPere->nom != $nomElementCourant)
-						{
+						if($groupementPere->nom != $nomElementCourant){
 							$completeName .= $groupementPere->nom . ' &raquo; ';
 						}
 						$valeurs[] = array('value'=>$completeName . $nomElementCourant);
@@ -717,8 +715,7 @@ class EvaTask extends EvaBaseTask
 						$idLignes[] = 'taskListToReEvaluateRisk' . $risk->id;
 					}
 				}
-				else
-				{
+				else{
 					unset($valeurs);
 					$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
 					$valeurs[] = array('value'=>'');
@@ -740,8 +737,7 @@ class EvaTask extends EvaBaseTask
 			break;
 		}
 
-		if($outputDatas)
-		{
+		if($outputDatas){
 			$script = 
 			'<script type="text/javascript">
 				evarisk(document).ready(function() {
@@ -772,6 +768,7 @@ class EvaTask extends EvaBaseTask
 		return $acDashboardBox;
 	}
 
+
 	/**
 	* Get the priority taks added to a risk
 	*
@@ -780,8 +777,7 @@ class EvaTask extends EvaBaseTask
 	*
 	*	@return object A wordpress database object with the task identifier
 	*/
-	function getPriorityTask($tableElement, $idElement)
-	{
+	function getPriorityTask($tableElement, $idElement){
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -790,38 +786,27 @@ class EvaTask extends EvaBaseTask
 			WHERE tableProvenance = '%s'
 				AND idProvenance = '%d' 
 				AND hasPriority = 'yes'
-				AND Status = 'Valid' 
-			LIMIT 1",
+				AND Status = 'Valid'",
 		$tableElement, $idElement);
 
-		return $wpdb->get_row($query);
-	}
-
-
-	/**
-	*
-	*/
-	function correctivAction($tableElement, $idElement)
-	{
-		$completeTreeUnderElement = arborescence::completeTree($tableElement, $idElement);
-		echo '<pre>';print_r($completeTreeUnderElement);echo '</pre>';
-		foreach($completeTreeUnderElement as $element)
-		{
-		
-		}
+		return $wpdb->get_results($query);
 	}
 
 	
 	/**
 	* Returns all working unit belonging to the group witch is identifier or belonging to his descendants
+	*
+	*	@see trash_utilities
+	*
 	* @param int $elementId The group identifier
 	* @param string $where The SQL where condition
 	* @param string $order The SQL order condition
+	*
 	* @return the working units  belonging to the group witch is identifier
 	*/
-	function getChildren($elementId, $where = "1", $order="nom ASC")
-	{
+	function getChildren($elementId, $where = "1", $order="nom ASC"){
 		global $wpdb;
+
 		$element = new EvaTask();
 		$element->setId($elementId);
 		$element->load();
@@ -830,11 +815,12 @@ class EvaTask extends EvaBaseTask
 		$subElements = Arborescence::getDescendants(TABLE_TACHE, $element);
 		unset($tabId);
 		$tabId[] = $elementId;
-		foreach($subElements as $subElement)
-		{
+		foreach($subElements as $subElement){
 			$tabId[] = $subElement->id;
 		}
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_ACTIVITE . " WHERE id_tache in (" . implode(', ', $tabId) . ") AND " . $where . " ORDER BY ". $order);
+
 		return $resultat;
 	}
+
 }

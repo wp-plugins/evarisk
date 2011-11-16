@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 5.1.4.2
+Stable tag: 5.1.4.3
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,13 +75,38 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.4.3 =
+
+Am&eacute;liorations
+
+* Suppression de l'option permettant de choisir de ne pas cr&eacute;er une sous-t&acirc;che pour les actions prioritaires (La cr&eacute;ation est obligatoire) 
+* Reprise de l'ergonomie d'une partie de la gestion des actions correctives 
+* Lors de l'enregistrement des options, on revient sur l'onglet courant 
+* Option Actions correctives avanc&eacute;es remont&eacute;e en haut de la liste 
+* Gestion des droits sur les actions correctives 
+* Possibilit&eacute; d'avoir des photos sur les t&acirc;ches
+
+
+Corrections
+
+* Lorsqu'on met un double guillemet dans le nom d'une t&acirc;che, il supprime ce qui suit (Correction de la librairie de gestion des input) 
+* Impossibilit&eacute; d'ajouter des photos avant et apr&eacute;s lors d'une demande d'action corrective en mode avanc&eacute; 
+* Affichage parasite dans la box de cr&eacute;ation d'une tache ou d'une sous-t&acirc;che 
+* Prise en compte du responsable pour les t&acirc;ches 
+* Modification du choix du responsable dans les actions correctives non avanc&eacute;es 
+* Appel d'une mauvaise fonction pour la traduction _() au lieu de __() 
+* Suppression de la possibilit&eacute; d'ajouter un commentaire vide sur une t&acirc;che et une sous-t&acirc;che 
+* Suppression de la possibilit&eacute; de modifier certaines informations dans les t&acirc;ches sold&eacute;es avec l'option de modification &acirc; non(utilisateurs / notes / photos)
+
+
+
 = Version 5.1.4.2 =
 
 Am&eacute;liorations
 
 * L'onglet des options pour les produits ne s'affiche plus si le plugin wpshop n'est pas activ&eacute; 
 * Affichage de la date d'ajout d'une t&acirc;ches et d'une sous-t&acirc;ches qui peut &ecirc;tre diff&eacute;rente de la date de d&eacute;but 
-* Modification de la façon de choisir un responsable pour les t&acirc;ches et actions (Reprise du bloc standard de s&eacute;lection d'un utilisateur) 
+* Modification de la fa&ccedil;on de choisir un responsable pour les t&acirc;ches et actions (Reprise du bloc standard de s&eacute;lection d'un utilisateur) 
 
 Corrections
 

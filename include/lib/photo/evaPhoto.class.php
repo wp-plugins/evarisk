@@ -175,66 +175,103 @@ class EvaPhoto {
 					$is_File = false;
 				break;
 			}
-			if($is_File)
-			{
-			$gallery .= '
+			if($is_File){
+				$gallery .= '
 							<li >
 								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" title="' . $photo->description . '">
 									<img src="' . $pathToMediasDir . $photo->photo . '" alt="' . $photo->description . '" />
 								</a>							
 								<div class="caption">';
 
-			switch($tableElement)
-			{
-				case TABLE_ACTIVITE:
-					$activite = new EvaActivity($idElement);
-					$activite->load();
-					if($activite->getidPhotoAvant() == $photo->id)
+				$add_button_action = true;
+				switch($tableElement)
+				{
+					case TABLE_TACHE:
 					{
-					$gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
-										-&nbsp;' . __('N\'est plus la photo avant l\'action', 'evarisk') . '
-									</div>';
+						$current_task = new EvaTask($idElement);
+						$current_task->load();
+						$ProgressionStatus = $current_task->getProgressionStatus();
+						if(($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'oui') ){
+							if($current_task->getidPhotoAvant() == $photo->id){
+								$gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('N\'est plus la photo avant la t&acirc;che', 'evarisk') . '
+											</div>';
+							}
+							else{
+								$gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('D&eacute;finir comme photo avant la t&acirc;che', 'evarisk') . '
+											</div>';
+							}
+							if($current_task->getidPhotoApres() == $photo->id){
+								$gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('N\'est plus la photo apr&egrave;s la t&acirc;che', 'evarisk') . '
+											</div>';
+							}
+							else{
+								$gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('D&eacute;finir comme photo apr&egrave;s la t&acirc;che', 'evarisk') . '
+											</div>';
+							}
+						}
+						elseif((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') ){
+							$add_button_action = false;
+						}
 					}
-					else
+					break;
+					case TABLE_ACTIVITE:
 					{
-					$gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
-										-&nbsp;' . __('D&eacute;finir comme photo avant l\'action', 'evarisk') . '
-									</div>';
+						$activite = new EvaActivity($idElement);
+						$activite->load();
+						$ProgressionStatus = $activite->getProgressionStatus();
+						if(($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui') ){
+							if($activite->getidPhotoAvant() == $photo->id){
+								$gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('N\'est plus la photo avant l\'action', 'evarisk') . '
+											</div>';
+							}
+							else{
+								$gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('D&eacute;finir comme photo avant l\'action', 'evarisk') . '
+											</div>';
+							}
+							if($activite->getidPhotoApres() == $photo->id){
+								$gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('N\'est plus la photo apr&egrave;s l\'action', 'evarisk') . '
+											</div>';
+							}
+							else{
+								$gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('D&eacute;finir comme photo apr&egrave;s l\'action', 'evarisk') . '
+											</div>';
+							}
+						}
+						elseif((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ){
+							$add_button_action = false;
+						}
 					}
-					if($activite->getidPhotoApres() == $photo->id)
-					{
-					$gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
-										-&nbsp;' . __('N\'est plus la photo apr&egrave;s l\'action', 'evarisk') . '
-									</div>';
-					}
-					else
-					{
-					$gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
-										-&nbsp;' . __('D&eacute;finir comme photo apr&egrave;s l\'action', 'evarisk') . '
-									</div>';
-					}
-					// $moreOutputOptions = 'evarisk(".slideshow").remove();';
-				break;
-				default:
-					$moreOutputOptions = '';
-				break;
-			}
+					break;
+					default:
+						$moreOutputOptions = '';
+					break;
+				}
 
-			if($photo->isMainPicture == 'yes')
-			{
-			$gallery .= '<div class="pictureDefaultSelection" onclick="javascript:DeleteDefaultPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
-										-&nbsp;' . __('N\'est plus la photo par d&eacute;faut', 'evarisk') . '
-									</div>';
-			}
-			else
-			{
-			$gallery .= '<div class="pictureDefaultSelection" onclick="javascript:defaultPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
-										-&nbsp;' . __('D&eacute;finir comme photo principale', 'evarisk') . '
-									</div>';
-			}
-			$gallery .= '<div class="pictureDeletion" onclick="javascript:pictureDelete(' . $photo->id . ');" >
+				if($add_button_action){
+					if($photo->isMainPicture == 'yes'){
+						$gallery .= '<div class="pictureDefaultSelection" onclick="javascript:DeleteDefaultPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('N\'est plus la photo par d&eacute;faut', 'evarisk') . '
+											</div>';
+					}
+					else{
+						$gallery .= '<div class="pictureDefaultSelection" onclick="javascript:defaultPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+												-&nbsp;' . __('D&eacute;finir comme photo principale', 'evarisk') . '
+											</div>';
+					}
+
+					$gallery .= '<div class="pictureDeletion" onclick="javascript:pictureDelete(' . $photo->id . ');" >
 										-&nbsp;' . __('Supprimer', 'evarisk') . '
-									</div>
+									</div>';
+				}
+				$gallery .= '
 								</div>
 							</li>';
 			}
@@ -258,52 +295,49 @@ class EvaPhoto {
 		{	/*	Create the gallery with gallerific jquery plugin AND define the function for picture deletion	*/
 			$gallery .= 
 			'<script type="text/javascript">
-				function defaultPicture(tableElement, idElement, idPhoto)
-				{
+				function defaultPicture(tableElement, idElement, idPhoto){
 					evarisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
-						"act": "defaultPictureSelection"
+						"nom": "defaultPictureSelection"
 					});
 				}
 
-				function setAsBeforePicture(tableElement, idElement, idPhoto)
-				{
+				function setAsBeforePicture(tableElement, idElement, idPhoto){
 					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
-						"table": "' . TABLE_ACTIVITE . '",
+						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
-						"act": "setAsBeforePicture"
+						"nom": "setAsBeforePicture"
 					});
 				}
-				function unsetAsBeforePicture(tableElement, idElement, idPhoto)
-				{
+				function unsetAsBeforePicture(tableElement, idElement, idPhoto){
 					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
-						"table": "' . TABLE_ACTIVITE . '",
+						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
-						"act": "unsetAsBeforePicture"
+						"nom": "unsetAsBeforePicture"
 					});
 				}
 				function setAsAfterPicture(tableElement, idElement, idPhoto)
 				{
 					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
-						"table": "' . TABLE_ACTIVITE . '",
+						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
-						"act": "setAsAfterPicture"
+						"nom": "setAsAfterPicture"
 					});
 				}
 				function unsetAsAfterPicture(tableElement, idElement, idPhoto)
 				{
 					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
-						"table": "' . TABLE_ACTIVITE . '",
+						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
 						"act": "unsetAsAfterPicture"
@@ -845,13 +879,47 @@ class EvaPhoto {
 
 		$galleryOutput = 
 '<div id="message' . $tableElement . '_' . $idElement . '" ></div>';
-		if($userCanUploadPhoto)
-		{
-			$galleryOutput .= 
+
+		$upload_button = 
 '<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>';
+
+		if($userCanUploadPhoto){
+			switch($tableElement)
+			{
+				case TABLE_TACHE:
+				{
+					$currentTask = new EvaTask($idElement);
+					$currentTask->load();
+					$ProgressionStatus = $currentTask->getProgressionStatus();
+
+					if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') ){
+						$upload_button = '
+			<br class="clear" />
+			<div class="alignright button-primary" id="TaskSaveButton" >
+				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
+			</div>';
+					}
+				}
+				break;
+				case TABLE_ACTIVITE:
+				{
+					$current_action = new EvaActivity($idElement);
+					$current_action->load();
+					$ProgressionStatus = $current_action->getProgressionStatus();
+
+					if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ){
+						$upload_button = '
+			<br class="clear" />
+			<div class="alignright button-primary" id="TaskSaveButton" >
+				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
+			</div>';
+					}
+				}
+				break;
+			}
 		}
-		$galleryOutput .= 
-'<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement, $userCanUploadPhoto) . '</div>';
+		$galleryOutput .= $upload_button . '
+<div id="pictureGallery' . $tableElement . '_' . $idElement . '" >' . evaPhoto::outputGallery($tableElement, $idElement, $userCanUploadPhoto) . '</div>';
 
 		return $galleryOutput;
 	}

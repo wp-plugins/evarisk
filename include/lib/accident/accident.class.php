@@ -185,7 +185,6 @@ class digirisk_accident
 		$accident_step = 1;
 		if($accident_id > 0){
 			$accident = self::getElement($accident_id);
-			// echo '<pre>';print_r($accident);echo '</pre>';
 			$accident_step = $accident->declaration_step;
 		}
 
