@@ -112,22 +112,18 @@
 	switch(UNITE_TAILLE_PICTOS_MAX)
 	{
 		case '%':
-			if(TAILLE_PICTOS_MAX > '100')
-			{
+			if(TAILLE_PICTOS_MAX > '100'){
 				$taillePictos = '100%';
 			}
-			elseif(TAILLE_PICTOS_MAX < '50')
-			{
+			elseif(TAILLE_PICTOS_MAX < '50'){
 				$taillePictos = '50%';
 			}
 		break;
 		default:
-			if(TAILLE_PICTOS_MAX > '48')
-			{
+			if(TAILLE_PICTOS_MAX > '48'){
 				$taillePictos = '48px';
 			}
-			elseif(TAILLE_PICTOS_MAX < '25')
-			{
+			elseif(TAILLE_PICTOS_MAX < '25'){
 				$taillePictos = '25px';
 			}
 		break;

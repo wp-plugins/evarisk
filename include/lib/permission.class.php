@@ -97,6 +97,12 @@ class digirisk_permission
 		/*	Options permission	*/
 		$permission['digi_edit_option'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'option', 'permission_sub_module' => '');
 
+		{/*	Risk persmission	*/
+		$permission['digi_view_risk_histo'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'risk', 'permission_sub_module' => 'histo');
+		$permission['digi_not_historicize_risk'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'risk', 'permission_sub_module' => 'histo');
+		$permission['digi_view_mistake_risk_history'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'risk', 'permission_sub_module' => 'histo');
+		}
+
 		{/*	Groupement permission	*/
 		$permission['digi_add_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');
 		$permission['digi_edit_groupement'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'arborescence', 'permission_sub_module' => 'groupement');

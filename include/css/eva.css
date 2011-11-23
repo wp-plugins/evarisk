@@ -476,6 +476,9 @@ th.columnCommentaireRisque*/
 #add_new_risk_button{	margin:0px 0px 12px;	}
 #divPreconisationExistante table{	width:95%;	}
 #divPreconisationExistante{	margin:0px 0px 12px;	}
+
+#divHistoRiskwp_eva__risque{	min-height:320px; padding:12px;		}
+.risk_histo_chart{	height:300px; margin:12px 0px;}
 /* -- END Risques -- */
 
 
@@ -554,6 +557,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 .ac_responsable{	width:99% !important;	}
 #responsible_name{	padding:0px 18px; float:left;	}
 .change_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
+.delete_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
 
 
 #risk_priority_task{	width:90% !important; margin:3px 18px;	}

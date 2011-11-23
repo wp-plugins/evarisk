@@ -169,8 +169,12 @@ __('digi_edit_unite_trash', 'evarisk');
 
 /*	Risks capabilities	*/
 __('permission_risk', 'evarisk');
+__('permission_risk_histo', 'evarisk');
 __('digi_view_risk_trash', 'evarisk');
 __('digi_edit_risk_trash', 'evarisk');
+__('digi_view_risk_histo', 'evarisk');
+__('digi_not_historicize_risk', 'evarisk');
+__('digi_view_mistake_risk_history', 'evarisk');
 
 /*	Correctiv actions capabilities	*/
 __('digi_view_correctiv_action', 'evarisk');

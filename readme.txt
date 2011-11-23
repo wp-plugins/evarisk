@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 5.1.4.3
+Stable tag: 5.1.4.4
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,6 +75,19 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.4.4 =
+
+Am&eacute;liorations
+
+* Possibilit&eacute; de visualiser un graphique pour l'&eacute;volution d'un risque 
+* Possibilit&eacute; d'enlever le responsable des t&acirc;ches et sous-t&acirc;ches 
+
+Corrections
+
+* Une exception javascript &eacute;tait lanc&eacute;e lors de la cr&eacute;ation d'une action corrective (Le formulaire avec un enctype d&eacute;fini pour envoyer des fichiers ce qui posait probl&egrave;me à la r&eacute;ception) 
+* Le click sur un utilisateur dans la liste permettant de choisir un responsable pour les t&acirc;ches et sous-t&acirc;ches d'un groupement ne fonctionnait pas 
+
+
 = Version 5.1.4.3 =
 
 Am&eacute;liorations
@@ -86,7 +99,6 @@ Am&eacute;liorations
 * Gestion des droits sur les actions correctives 
 * Possibilit&eacute; d'avoir des photos sur les t&acirc;ches
 
-
 Corrections
 
 * Lorsqu'on met un double guillemet dans le nom d'une t&acirc;che, il supprime ce qui suit (Correction de la librairie de gestion des input) 
@@ -97,7 +109,6 @@ Corrections
 * Appel d'une mauvaise fonction pour la traduction _() au lieu de __() 
 * Suppression de la possibilit&eacute; d'ajouter un commentaire vide sur une t&acirc;che et une sous-t&acirc;che 
 * Suppression de la possibilit&eacute; de modifier certaines informations dans les t&acirc;ches sold&eacute;es avec l'option de modification &acirc; non(utilisateurs / notes / photos)
-
 
 
 = Version 5.1.4.2 =

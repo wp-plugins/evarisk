@@ -185,4 +185,22 @@ class eva_tools
 		}
 	}
 
+	//couleur aléatoire générée
+	function getColor(){
+		$a = DecHex(mt_rand(0,15));
+		$b = DecHex(mt_rand(0,15));
+		$c = DecHex(mt_rand(0,15));
+		$d = DecHex(mt_rand(0,15));
+		$e = DecHex(mt_rand(0,15));
+		$f = DecHex(mt_rand(0,15)); 
+
+		$hexa = $a . $b . $c . $d . $e . $f;
+
+		return $hexa;
+	}
+
+	//couleur du texte en fonction de la couleur générée
+	function getContrastColor($color){
+		return (hexdec($color) > 0xffffff/2) ? '000000' : 'ffffff';
+	}
 }

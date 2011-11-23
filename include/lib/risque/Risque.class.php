@@ -191,7 +191,7 @@ class Risque {
 		return $resultat;
 	}
 	
-	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC'){
+	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC', $evaluation_status = "'Valid'"){
 		global $wpdb;
 		$where = eva_tools::IsValid_Variable($where);
 		$order = eva_tools::IsValid_Variable($order);
@@ -212,7 +212,7 @@ class Risque {
 
 		$query = $wpdb->prepare(
 			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
-				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, 
+				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date, 
 				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie 
 			FROM " . TABLE_RISQUE . " tableRisque, 
 				" . TABLE_AVOIR_VALEUR . " tableAvoirValeur, 
@@ -222,9 +222,9 @@ class Risque {
 				AND " . $status . " 
 				AND " . $where . " 
 				AND tableAvoirValeur.id_risque = tableRisque.id 
-				AND tableAvoirValeur.Status = 'Valid'
+				AND tableAvoirValeur.Status IN (" . $evaluation_status . ")
 				AND tableRisque.id_danger = tableDanger.id 
-			ORDER BY " . $order);
+			ORDER BY " . $order, '%Y-%m-%d %r');
 		$resultat = $wpdb->get_results( $query );
 
 		return $resultat;

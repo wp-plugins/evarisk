@@ -52,6 +52,20 @@
 							evarisk("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
 						});
 
+						//	Show the existing corrective action on the actual element
+						evarisk("#ongletHistoRisque' . TABLE_RISQUE . '").click(function(){
+							evarisk("#divHistoRisk' . TABLE_RISQUE . '").html(evarisk("#loadingImg").html());
+							evarisk("#divHistoRisk' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+								"post":"true",
+								"tableElement":"' . $tableElement . '",
+								"idElement":"' . $idElement . '",
+								"nom":"histo-risk"
+							});
+							tabChange("#divHistoRisk' . TABLE_RISQUE . '", "#ongletHistoRisque' . TABLE_RISQUE . '");
+							hideExtraTab();
+							evarisk("#ongletHistoRisque' . TABLE_RISQUE . '").css("display","inline");
+						});
+
 						//	Output the form to add a new risk
 						evarisk("#ongletAjouterRisque, #addRisqNormalMode").click(function(){
 							evarisk("#risqManagementselector div").each(function(){
@@ -161,8 +175,14 @@
 
 			$taskList = actionsCorrectives::get_activity_associated_to_risk($tableElement, $idElement);
 			$liSuiviActionCorrective = '';
-			if(count($taskList) > 0){
+			if((count($taskList) > 0) && current_user_can('digi_follow_action')){
 				$liSuiviActionCorrective = '<li id="ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:inline" ><label tabindex="4">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>';
+			}
+
+			$temp = Risque::getRisques($tableElement, $idElement, "Valid");
+			$liHistoRisque = '';
+			if((count($temp) > 0) && current_user_can('digi_view_risk_histo')){
+				$liHistoRisque = '<li id="ongletHistoRisque' . TABLE_RISQUE . '" class="tabs" style="display:inline" ><label tabindex="5">' . ucfirst(strtolower(__('Historique des risques', 'evarisk'))) . '</label></li>';
 			}
 
 			$corpsPostBoxRisque = $scriptRisque . '
@@ -170,18 +190,18 @@
 				<div id="message' . TABLE_RISQUE . '" class="updated fade hide" ></div>
 				<ul class="eva_tabs" style="margin-bottom:2px;" >
 					<li id="ongletVoirLesRisques" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower(sprintf(__('voir %s', 'evarisk'), __('les risques', 'evarisk')))) . '</label></li>' . $liAjoutRisque . $liEditionRisque . '
-					' . $liSuiviActionCorrective . $liControlAskAction . '
-					<li id="ongletDemandeActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="5">' . ucfirst(strtolower(__('Demande d\'action corrective', 'evarisk'))) . '</label></li>
-					<li id="ongletSuiviActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="6">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>
-					<li id="ongletFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="7">' . ucfirst(strtolower(__('Contr&ocirc;le des actions corrective', 'evarisk'))) . '</label></li>
-					<li id="ongletHistoRisk' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="8">' . ucfirst(strtolower(__('Historique du risque', 'evarisk'))) . '</label></li>';
+					' . $liSuiviActionCorrective . $liControlAskAction . $liHistoRisque . '
+					<li id="ongletDemandeActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="6">' . ucfirst(strtolower(__('Demande d\'action corrective', 'evarisk'))) . '</label></li>
+					<li id="ongletSuiviActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="7">' . ucfirst(strtolower(__('Suivi des actions correctives', 'evarisk'))) . '</label></li>
+					<li id="ongletFicheActionCorrective' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="8">' . ucfirst(strtolower(__('Contr&ocirc;le des actions corrective', 'evarisk'))) . '</label></li>
+					<li id="ongletHistoRisk' . TABLE_RISQUE . '" class="tabs" style="display:none;"><label tabindex="9">' . ucfirst(strtolower(__('Historique du risque', 'evarisk'))) . '</label></li>';
 			if($tableElement == TABLE_GROUPEMENT){
 				$corpsPostBoxRisque .=
 					'<li id="ongletMassUpdate' . TABLE_RISQUE . '" class="tabs" ><label tabindex="8">' . ucfirst(strtolower(__('Vue d\'ensemble', 'evarisk'))) . '</label></li>';
 			}
 			$corpsPostBoxRisque .=
 				'</ul>
-				<div id="divVoirRisques" class="eva_tabs_panel" >' . getVoirRisque ($tableElement, $idElement) . '</div>' . $divEditionRisque . '
+				<div id="divVoirRisques" class="eva_tabs_panel" >' . getVoirRisque($tableElement, $idElement) . '</div>' . $divEditionRisque . '
 				<div id="divDemandeAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divSuiviAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
 				<div id="divAction' . TABLE_RISQUE . '" class="eva_tabs_panel" style="display:none"></div>
@@ -289,7 +309,9 @@
 						$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Fiche d\'action corrective', 'evarisk') . '" title="' . __('Fiche d\'action corrective', 'evarisk') . '" class="simple-FAC" />';
 					}
 
-					// $more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-histo_risk" src="' . DIGI_PICTO_HISTO_RISK . '" alt="' . _c('&Eacute;volution du risque', 'evarisk') . '" title="' . __('&Eacute;volution du risque', 'evarisk') . '" class="risk-histo" />';
+					if(current_user_can('digi_view_risk_histo')){
+						$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-histo_risk" src="' . DIGI_PICTO_HISTO_RISK . '" alt="' . _c('&Eacute;volution du risque', 'evarisk') . '" title="' . __('&Eacute;volution du risque', 'evarisk') . '" class="risk-histo" />';
+					}
 					
 					switch($tableElement){
 						case TABLE_GROUPEMENT:
@@ -394,7 +416,8 @@
 				"idElement":"' . $idElement . '",
 				"nom":"histo-risk",
 				"tableProvenance":"' . TABLE_RISQUE . '",
-				"idProvenance": evarisk(this).attr("id").replace("risque-", "").replace("-histo_risk", "")
+				"idProvenance": evarisk(this).attr("id").replace("risque-", "").replace("-histo_risk", ""),
+				"output_mistake":""
 			});
 		});
 
@@ -596,7 +619,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			}
 		}
 
-		if((($sub_action != 'control_asked_action') || ($task_to_associate <= 0)) && ($idRisque != '')){//Historisation du risque
+		if(current_user_can('digi_not_historicize_risk') && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0)) && ($idRisque != '')){//Historisation du risque
 			$formRisque .= '<div class="alignright" id="' . $currentId . 'historisationContainer" ><input type="checkbox" value="non" name="' . $currentId . 'historisation" id="' . $currentId . 'historisation" /><label for="historisation" >' . __('Ne pas afficher l\'ancienne cotation dans les historiques de modifications','evarisk') . '</label></div>';
 		}
 

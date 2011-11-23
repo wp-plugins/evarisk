@@ -340,7 +340,7 @@ class EvaActivity extends EvaBaseActivity
 			else{
 				$activite_new .= '&nbsp;';
 			}
-			$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible' . $arguments['requested_action'] . '" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+			$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span>&nbsp;&nbsp;<span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible' . $arguments['requested_action'] . '" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
 	<script type="text/javascript" >
 		evarisk(document).ready(function(){
 			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
@@ -358,11 +358,20 @@ class EvaActivity extends EvaBaseActivity
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
 				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+				jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
 			});
 			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
 				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
 				jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
 				jQuery(this).hide();
+			});
+			jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+				jQuery("#responsable_activite").val("");
+				jQuery("#responsible_name").html("&nbsp;");
+				jQuery(this).hide();
+				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").hide();
+				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").hide();
 			});
 		});
 	</script><br class="clear" /><br/><br/><br/>';
@@ -430,8 +439,13 @@ class EvaActivity extends EvaBaseActivity
 				});
 			</script>';
 		}
+
+		$sub_task_creation_form = 
+'<form method="post" id="informationGeneralesActivite" name="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' . 
+$activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
+
 		if($arguments['output_mode'] == 'return'){/*	Add picture button			*/
-			$activite_new .= '<div id="photosActionsCorrectives" >&nbsp;</div>';
+			$sub_task_creation_form .= '<div id="photosActionsCorrectives" >&nbsp;</div>';
 			$addPictureButton = 
 				'<div id="add_picture_alert" class="hide" title="' . __('Modification de la cotation d\'un risque depuis une action corrective', 'evarisk') . '" >&nbsp;</div><input type="button" name="add_control_picture" id="add_control_picture" class="button-primary alignleft" value="' . __('Enregistrer puis ajouter des photos', 'evarisk') . '" />';
 		}
@@ -441,15 +455,15 @@ class EvaActivity extends EvaBaseActivity
 				$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-secondary', '', '', $scriptEnregistrementInProgress, 'left') . '</span>';
 			}
 			if(($saveOrUpdate == 'add_control') || ($saveOrUpdate == 'addAction') || ($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui')){
-				$activite_new .= 
+				$sub_task_creation_form .= 
 					'<div class="alignright" id="ActionSaveButton" >' . $inProgressButton;
 
 				if(($saveOrUpdate == 'update') && (($ProgressionStatus == '') || ($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress'))){
-					$activite_new .= 
+					$sub_task_creation_form .= 
 						EvaDisplayInput::afficherInput('button', $idBouttonSold, __('Solder l\'action', 'evarisk'), null, '', $idBouttonSold, false, true, '', 'button-secondary', '', '', $scriptEnregistrementDone, 'left');
 				}
 				elseif($saveOrUpdate == 'update'){
-					$activite_new .= 
+					$sub_task_creation_form .= 
 						'<div style="float:left;" id="ActionSaveButton" >
 							<br/>
 							<div class="alignright button-primary" >' . 
@@ -458,23 +472,20 @@ class EvaActivity extends EvaBaseActivity
 						</div>';
 				}
 
-				$activite_new .= 
+				$sub_task_creation_form .= 
 					$addPictureButton . 
 					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left') . 
 					'</div>';
 			}
 			else{
-				$activite_new .= 
+				$sub_task_creation_form .= 
 					'<div class="alignright button-primary" id="ActionSaveButton" >' . 
 						__('Cette action est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . 
 					'</div>';
 			}
 		}
 
-		$sub_task_creation_form = 
-EvaDisplayInput::ouvrirForm('post', 'informationGeneralesActivite', 'informationGeneralesActivite', EVA_INC_PLUGIN_URL . 'ajax.php') . 
-$activite_new . 
-EvaDisplayInput::fermerForm('informationGeneralesActivite') . '
+		$sub_task_creation_form .= '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
 		jQuery("#ActionSaveButton").children("br").remove();
@@ -531,13 +542,9 @@ EvaDisplayInput::fermerForm('informationGeneralesActivite') . '
 			}
 		});
 
-		jQuery("#informationGeneralesActivite").submit(function(){
-			jQuery("#informationGeneralesActivite").ajaxSubmit({
-				target: "#ajax-response",
-				beforeSubmit: validate_activity_form
-			});
-
-			return false;
+		jQuery("#informationGeneralesActivite").ajaxForm({
+			target: "#ajax-response",
+			beforeSubmit: validate_activity_form
 		});
 
 		jQuery(".correctiv_action_efficiency_control_slider").slider({
@@ -567,6 +574,8 @@ EvaDisplayInput::fermerForm('informationGeneralesActivite') . '
 				return false;
 			}
 		}
+
+		return true;
 	}
 
 </script>';

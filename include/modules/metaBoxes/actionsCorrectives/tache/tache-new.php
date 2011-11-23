@@ -53,7 +53,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 	}
   
   $idForm = 'informationGeneralesTache';
-	$tache_new = EvaDisplayInput::ouvrirForm('POST', $idForm, $idForm);
+	$tache_new = '<form method="post" id="' . $idForm . '" name="' . $idForm . '" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >';
 	{//Champs cachés
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'actTache', $saveOrUpdate, '', null, 'act', false, false);
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'affichageTache', $arguments['affichage'], '', null, 'affichage', false, false);
@@ -98,7 +98,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		else{
 			$tache_new .= '&nbsp;';
 		}
-		$tache_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+		$tache_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '&nbsp;/&nbsp;</span><span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
 		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
@@ -116,11 +116,20 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 			jQuery(".completeUserListActionResponsible").hide();
 			jQuery(".searchUserToAffect").hide();
 			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+			jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
 		});
 		jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
 			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
 			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
 			jQuery(this).hide();
+		});
+		jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#responsable_tache").val("");
+			jQuery("#responsible_name").html("&nbsp;");
+			jQuery(this).hide();
+			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").hide();
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").hide();
 		});
 	});
 </script><br class="clear" /><br/><br/><br/>';

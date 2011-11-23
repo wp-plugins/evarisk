@@ -301,7 +301,7 @@ class EvaPhoto {
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
-						"nom": "defaultPictureSelection"
+						"act": "defaultPictureSelection"
 					});
 				}
 

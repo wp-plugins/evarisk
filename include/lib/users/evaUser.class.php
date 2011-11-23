@@ -467,10 +467,12 @@ $user_additionnal_field .= '
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
 				jQuery("#responsible_name").html("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname);
-				jQuery("#change_responsible_' . $tableElement . '").show();';
+				jQuery("#change_responsible_' . $tableElement . '").show();
+				jQuery("#delete_responsible_' . $tableElement . '").show();';
 			}
 			break;
 			case TABLE_UNITE_TRAVAIL . 'responsible':
+			case TABLE_GROUPEMENT . 'responsible':
 			case TABLE_RISQUE . 'responsible':
 			case TABLE_ACTIVITE . 'responsible':
 			{
@@ -484,7 +486,8 @@ $user_additionnal_field .= '
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
 				jQuery("#responsible_name").html("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname);
-				jQuery("#change_responsible_' . $tableElement . '").show();';
+				jQuery("#change_responsible_' . $tableElement . '").show();
+				jQuery("#delete_responsible_' . $tableElement . '").show();';
 			}
 			break;
 			default:

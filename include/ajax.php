@@ -96,6 +96,7 @@ if($_REQUEST['post'] == 'true')
 				echo evaPhoto::setMainPhotoAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPhoto']);
 			break;
 			case 'DeleteDefaultPictureSelection':
+				echo '<pre>';print_r($_REQUEST);echo '</pre>';
 				echo evaPhoto::setMainPhotoAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPhoto'], 'no');
 			break;
 			case 'deletePicture':
@@ -5036,28 +5037,97 @@ switch($tableProvenance)
 
 			case 'histo-risk':
 			{
-				$completeRiskList = Risque::getRisques('all', 'all', 'Valid', "tableRisque.id = '" . $_REQUEST['idProvenance'] . "'", 'tableRisque.id ASC');
+				$output = '';
+				$tableElement = (isset($_REQUEST['tableElement']) && (trim($_REQUEST['tableElement']) != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+				$idElement = (isset($_REQUEST['idElement']) && (trim($_REQUEST['idElement']) != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+				$tableProvenance = (isset($_REQUEST['tableProvenance']) && (trim($_REQUEST['tableProvenance']) != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableProvenance']) : '';
+				$idProvenance = (isset($_REQUEST['idProvenance']) && (trim($_REQUEST['idProvenance']) != '')) ? "tableRisque.id = '" . eva_tools::IsValid_Variable($_REQUEST['idProvenance']) . "'" : '1';
+				$output_mistake = (isset($_REQUEST['output_mistake']) && (trim($_REQUEST['output_mistake']) != '')) ? ", 'Deleted'" : '';
+				$reload = (isset($_REQUEST['reload']) && (trim($_REQUEST['reload']) != '')) ? $_REQUEST['reload'] : '';
+
+				$completeRiskList = Risque::getRisques($tableElement, $idElement, 'Valid', $idProvenance, 'tableRisque.id ASC', "'Valid', 'Moderated'" . $output_mistake);
 				if($completeRiskList != null){
 					foreach($completeRiskList as $risque){
-						$risques["'" . $risque->id . "'"][] = $risque; 
+						$risques[$risque->id][$risque->id_evaluation][] = $risque; 
 					}
 				}
+
 				$lowerRisk = $higherRisk = 0;
 				if(isset($risques) && ($risques != null)){
-					foreach($risques as $risque){
-						$idMethode = $risque[0]->id_methode;
-						$score = Risque::getScoreRisque($risque);
-						$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+					foreach($risques as $id_risque => $evaluation){
+						if($reload == ''){
+							$output .= '
+	<div id="histo_risk_container_' . $id_risque . '" >';
+						}
 
-						
+						$line = '  ';
+						foreach($evaluation as $risque){
+							$idMethode = $risque[0]->id_methode;
+							$score = Risque::getScoreRisque($risque);
+							$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+							$evaluation_status = ($risque[0]->evaluation_status == 'Deleted') ? '"' . $riskLevel . ' - (' . __('Erreur', 'evarisk') . ')"' : $riskLevel;
+							$line .= '["' . $risque[0]->evaluation_date . '",' . $riskLevel . ', ' . $evaluation_status . '], ';
+						}
+
+						$line = trim(substr($line, 0, -2));
+						if($line != ''){
+							$output .= '
+		<div id="risk_chart_' . $id_risque . '" class="risk_histo_chart" ></div>';
+
+							if(current_user_can('digi_view_mistake_risk_history')){
+								$checked = ($output_mistake != '') ? 'checked="checked"' : '';
+								$output .= '
+		<br class="clear" />
+		<input type="checkbox" name="output_mistake" class="output_mistake" value="yes" id="output_mistake' . $id_risque . '" ' . $checked . ' /><label for="output_mistake' . $id_risque . '" >' . __('Afficher les corrections', 'evarisk') . '</label>';
+							}
+
+							$output .= '
+		<script type="text/javascript" >
+			evarisk(document).ready(function(){
+				var line1=[' . $line . '];
+				var plot1 = jQuery.jqplot("risk_chart_' . $id_risque . '", [line1], {
+					title:convertAccentToJS("' . sprintf(__('Historique du risque %s', 'evarisk'), ELEMENT_IDENTIFIER_R . $id_risque) . ' - ' . $risque[0]->nomDanger . '"),
+					axes:{xaxis:{renderer:jQuery.jqplot.DateAxisRenderer, tickOptions:{formatString:"%d/%m/%y %T"}}, yaxis:{min:0, max:100}},
+					seriesDefaults:{pointLabels:{show:true, ypadding:4}},
+					highlighter:{show:true, sizeAdjust:7.5},
+					cursor:{show: false}
+				});
+			});
+		</script>';
+						}
+						else{
+							$output .= __('Il n\'y a aucun historique &agrave; afficher pour ce risque', 'evarisk');
+						}
+
+						if($reload == ''){
+							$output .= '
+	</div>';
+						}
 					}
 				}
 
-				echo '
-<div id="chart1" style="height:300px; width:500px;"></div>
+				echo $output . '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
-		var plot1 = jQuery.jqplot("chart1", [[3,7,9,1,4,6,8,2,5]]);
+		/*	Add support for the mistake output	*/
+		jQuery(".output_mistake").click(function(){
+			var output_mistake = "";
+			if(jQuery(this).is(":checked")){
+				output_mistake = "yes";
+			}
+			var idProvenance = jQuery(this).attr("id").replace("output_mistake", "");
+			evarisk("#histo_risk_container_" + idProvenance).html(evarisk("#loadingImg").html());
+			evarisk("#histo_risk_container_" + idProvenance).load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post":"true",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '",
+				"nom":"histo-risk",
+				"tableProvenance":"' . $tableProvenance . '",
+				"idProvenance":idProvenance,
+				"output_mistake":output_mistake,
+				"reload":"true"
+			});
+		});
 	});
 </script>';
 			}

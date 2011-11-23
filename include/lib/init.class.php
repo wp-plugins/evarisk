@@ -66,8 +66,7 @@ class digirisk_init
 	/**
 	*	Create the main left menu with different parts
 	*/
-	function digirisk_menu() 
-	{
+	function digirisk_menu(){
 		require_once(EVA_MODULES_PLUGIN_DIR . 'installation/verificationsPlugin.php');
 
 		/*	Initialisation des permissions	*/
@@ -133,19 +132,19 @@ class digirisk_init
 	/**
 	*	Define the javascript to include in each page
 	*/
-	function digirisk_admin_js()
-	{
-
+	function digirisk_admin_js(){
 		/*	Check the wp version in order to include the good jquery librairy. Causes issue because of wp core update	*/
 		global $wp_version;
+
 		if($wp_version < '3.2'){
 			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
 		}
 		elseif(!wp_script_is('jquery', 'queue')){
 			wp_enqueue_script('jquery');
 		}
-		wp_enqueue_script('jquery-form');
+
 		wp_enqueue_script('jquery-ui-tabs');
+		wp_enqueue_script('jquery-form');
 
 		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
 
