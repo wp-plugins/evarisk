@@ -1,10 +1,8 @@
 <?php
-	DEFINE('EVA_PLUGIN_VERSION', '5.1.4.2');
-
-	require_once('configEavModel.php');
 	require_once('databaseTable.php');
 	require_once('configPagesHooks.php');
 
+{/*	Define the different path for the plugin	*/
 	DEFINE('EVA_HOME_URL', WP_PLUGIN_URL . '/' . EVA_PLUGIN_DIR . '/');
 	DEFINE('EVA_HOME_DIR', WP_PLUGIN_DIR . '/' . EVA_PLUGIN_DIR . '/');
 
@@ -41,17 +39,9 @@
 	/*	Do not delete even if old sufix has been added!!! Used to check if directory are well created on each plugin loading	*/
 	DEFINE('EVA_UPLOADS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/uploads/');
 	DEFINE('EVA_RESULTATS_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/results/');
+}
 
-	/**
-	* Risk name define variable
-	*/
-	{
-	// DEFINE('EVA_RISQUE_SEUIL_1_NOM', __('Nul', 'evarisk'));
-	// DEFINE('EVA_RISQUE_SEUIL_2_NOM', __('Tr&egrave;s limit&eacute;', 'evarisk'));
-	// DEFINE('EVA_RISQUE_SEUIL_3_NOM', __('Limit&eacute;', 'evarisk'));
-	// DEFINE('EVA_RISQUE_SEUIL_4_NOM', __('Significatif', 'evarisk'));
-	// DEFINE('EVA_RISQUE_SEUIL_5_NOM', __('&Eacute;lev&eacute;', 'evarisk'));
-	// DEFINE('EVA_RISQUE_SEUIL_6_NOM', __('Tr&egrave;s &eacute;lev&eacute;', 'evarisk'));
+{/*	Define the risk level information	*/
 	DEFINE('EVA_RISQUE_SEUIL_1_NOM', __('Risque Faible', 'evarisk'));
 	DEFINE('EVA_RISQUE_SEUIL_2_NOM', __('Risque &agrave; planifier', 'evarisk'));
 	DEFINE('EVA_RISQUE_SEUIL_3_NOM', __('Risque &agrave; traiter', 'evarisk'));
@@ -65,8 +55,7 @@
 	DEFINE('SEUIL_HAUT_APLANIFIER', '50');
 	DEFINE('SEUIL_BAS_FAIBLE', '0');
 	DEFINE('SEUIL_HAUT_FAIBLE', '47');
-		
-		
+
 	DEFINE('COULEUR_RISQUE_INACCEPTABLE', '#000000');
 		DEFINE('COULEUR_TEXTE_RISQUE_INACCEPTABLE', '#FFFFFF');
 	DEFINE('COULEUR_RISQUE_ATRAITER', '#FF0100');
@@ -87,16 +76,13 @@
 		$typeRisquePlanAction['planDactionRisq51'] = SEUIL_BAS_ATRAITER;
 		$typeRisquePlanAction['planDactionRisq48'] = SEUIL_BAS_APLANIFIER;
 		$typeRisquePlanAction['planDactionRisq'] = SEUIL_BAS_FAIBLE;
-	}
+}
 
-	/**
-	*	Define the url slug
-	*/
-	{
-		DEFINE('DIGI_URL_SLUG_USER_GROUP', 'digirisk_users_group');
-		DEFINE('DIGI_URL_SLUG_MAIN_OPTION', 'digirisk_options');
-		DEFINE('DIGI_URL_SLUG_USER_RIGHT', 'digirisk_user_right');
-	}
+{/*	Define url	*/
+	DEFINE('DIGI_URL_SLUG_USER_GROUP', 'digirisk_users_group');
+	DEFINE('DIGI_URL_SLUG_MAIN_OPTION', 'digirisk_options');
+	DEFINE('DIGI_URL_SLUG_USER_RIGHT', 'digirisk_user_right');
+}
 
 	/**
 	* Others variables
@@ -112,8 +98,7 @@
 
 	$linkToDownloadOpenOffice = 'http://download.services.openoffice.org/files/localized/fr/3.2.1/OOo_3.2.1_Win_x86_install-wJRE_fr.exe';
 	$locale = get_locale();
-	if( !empty( $locale ) && ($locale != 'fr_FR'))
-	{
+	if( !empty( $locale ) && ($locale != 'fr_FR')){
 		$linkToDownloadOpenOffice = 'http://download.services.openoffice.org/files/localized/' . $locale . '/3.2.1/OOo_3.2.1_Win_x86_install-wJRE_' . $locale . '.exe';
 	}
 	DEFINE('LINK_TO_DOWNLOAD_OPEN_OFFICE', $linkToDownloadOpenOffice);
@@ -191,7 +176,7 @@
 	/**
 	*	Define the different existing element type
 	*/
-	$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT');
+	$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT', __('Documents', 'evarisk') => 'DOC');
 	$digirisk_tree_options = get_option('digirisk_tree_options');
 	$identifierList = unserialize($digirisk_tree_options['digi_tree_element_identifier']);
 	foreach($treeElementList as $elementName => $elementDefault){

@@ -152,7 +152,9 @@ class dashboard {
 					<li><a href="' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=dashboardStats&amp;tab=risk" title="vracStatsContent" >' . __('Risques', 'evarisk') . '</a></li>
 					<!-- <li><a href="' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=dashboardStats&amp;tab=danger" title="vracStatsContent" >' . __('Dangers', 'evarisk') . '</a></li> -->
 				</ul>
-				<div id="vracStatsContent" ></div>
+				<div id="vracStatsContent" title="' . __('Afficher les noms', 'evarisk') . '" ></div>
+				
+				<div id="namesUpdater" title="' . __('Liste des utilisateurs', 'evarisk') . '" ></div>
 			</div>
 			<script type="text/javascript" >
 				evarisk(document).ready(function(){

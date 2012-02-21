@@ -31,8 +31,7 @@ class eva_gestionDoc
 	*
 	* @return string The upload form with eventually a thumbnail.
 	*/
-	function getFormulaireUpload($table, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $texteBoutton = '')
-	{
+	function getFormulaireUpload($table, $tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $texteBoutton = ''){
 		require_once(EVA_LIB_PLUGIN_DIR . 'upload.php' );
 
 		$texteBoutton = ($texteBoutton == '') ? __("Envoyer un fichier", "evarisk") : $texteBoutton;
@@ -57,21 +56,25 @@ class eva_gestionDoc
 						onComplete: function(file, response){
 							evarisk(".qq-upload-list").hide();';
 
-		switch($table)
-		{
+		switch($table){
+			case TABLE_ACTIVITE:
+			case TABLE_TACHE:
+				$formulaireUpload .= '
+							jQuery(".digi_correctiv_action_document_list").html(jQuery("#loadingImg").html());
+							jQuery(".digi_correctiv_action_document_list").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_associated_document_list", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $tableElement . '"});';
+			break;
 			case TABLE_DUER:
 				$formulaireUpload .= '
-							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});
+							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});
 							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 			case TABLE_FP:
 				$category = 'fiche_de_poste';
-				if($tableElement == TABLE_GROUPEMENT . '_FGP')
-				{
+				if($tableElement == TABLE_GROUPEMENT . '_FGP'){
 					$category = 'fiche_de_groupement';
 				}
 				$formulaireUpload .= '
-							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});
+							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});
 							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 		}
@@ -80,7 +83,7 @@ class eva_gestionDoc
 						'}
 					});
 
-					evarisk(".qq-upload-button").each(function(){
+					evarisk("#' . $idUpload . ' .qq-upload-button").each(function(){
 						evarisk(this).html("' . $texteBoutton . '");
 						uploader' . $idUpload . '._button = new qq.UploadButton({
 							element: uploader' . $idUpload . '._getElement("button"),
@@ -154,8 +157,16 @@ class eva_gestionDoc
 			VALUES
 				('', 'valid', NOW(), %d, %d, %s, %s, %s, %s)",
 			$current_user->ID, $idElement, $tableElement, $categorie, $nomDocument, $cheminDocument);
-		if($wpdb->query($query))
-		{
+		if($wpdb->query($query)){
+
+			switch($tableElement){
+				case TABLE_ACTIVITE:
+				case TABLE_TACHE:
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'doc_add');
+				break;
+			}
+
 			$result = 'ok';
 		}
 
@@ -205,7 +216,7 @@ class eva_gestionDoc
 					$tableElement, $idElement, $wpdb->insert_id);
 				if($wpdb->query($query))
 				{
-					$result = '<script type="text/javascript" >evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});</script>';
+					$result = '<script type="text/javascript" >evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});</script>';
 				}
 			}
 		}
@@ -223,8 +234,7 @@ class eva_gestionDoc
 	*
 	*	@return array|object $documentList Return the document list for the selected element in case that there are document associated
 	*/
-	function getDocumentList($tableElement, $idElement, $category = "", $order = "nom ASC")
-	{
+	function getDocumentList($tableElement, $idElement, $category = "", $order = "nom ASC"){
 		global $wpdb;
 		$documentList = array();
 
@@ -1195,4 +1205,147 @@ class eva_gestionDoc
 		}
 	}
 
+	/**
+	*	Allows to affect documents to corrective actions
+	*/
+	function document_box_caller(){
+		$postBoxTitle = __('Documents', 'evarisk');
+		$postBoxId = 'postBoxDocument';
+		add_meta_box($postBoxId, $postBoxTitle, array('eva_gestionDoc', 'correctiv_action_document_box'), PAGE_HOOK_EVARISK_TACHE, 'rightSide', 'default');
+		add_meta_box($postBoxId, $postBoxTitle, array('eva_gestionDoc', 'correctiv_action_document_box'), PAGE_HOOK_EVARISK_ACTIVITE, 'rightSide', 'default');
+	}
+
+	/**
+	*	Define a box for associating document to corrective action
+	*
+	*	@return string $box_content The html output for the current box
+	*/
+	function correctiv_action_document_box($arguments){
+		$box_content = '';
+
+		/*	Check if allwoed extension are set into option 	*/
+		$digi_ac_allowed_ext = digirisk_options::getOptionValue('digi_ac_allowed_ext', 'digirisk_options');
+		if(is_array($digi_ac_allowed_ext) && (count($digi_ac_allowed_ext) > 0)){
+			$idUpload = 'correctiv_action_document_' . $arguments['tableElement'];
+			$allowedExtensions = "['" . implode("', '", $digi_ac_allowed_ext) . "']";
+			$multiple = true;
+			$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "gestionDocumentaire/uploadFile.php");
+
+			$display_button = true;
+			switch($arguments['tableElement']){
+				case TABLE_TACHE:{
+					$repertoireDestination = '';
+					$table = $arguments['tableElement'];
+
+					$currentTask = new EvaTask($arguments['idElement']);
+					$currentTask->load();
+					$ProgressionStatus = $currentTask->getProgressionStatus();
+
+					if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') ){
+						$display_button = false;
+						$box_content .= '
+			<div class="alignright button-primary clear" id="TaskSaveButton" >
+				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
+			</div>';
+					}
+				}break;
+				case TABLE_ACTIVITE:{
+					$repertoireDestination = '';
+					$table = $arguments['tableElement'];
+
+					$current_action = new EvaActivity($arguments['idElement']);
+					$current_action->load();
+					$ProgressionStatus = $current_action->getProgressionStatus();
+
+					if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ){
+						$display_button = false;
+						$box_content .= '
+			<div class="alignright button-primary clear" id="TaskSaveButton" >
+				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
+			</div>';
+					}
+				}break;
+			}
+
+			if($display_button){
+				$box_content = eva_gestionDoc::getFormulaireUpload($table, $arguments['tableElement'], $arguments['idElement'], $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, __('S&eacute;lectionner un document &agrave; envoyer', 'evarisk')) . sprintf(__('Liste des extensions autoris&eacute;es %s', 'evarisk'), implode(", ", $digi_ac_allowed_ext));
+			}
+		}
+		else{
+			$box_content = sprintf(__('Vous n\'avez pas s&eacute;lectionn&eacute; les extensions &agrave; autoriser. %s', 'evarisk'), '<a href="' . admin_url("options-general.php?page=" . DIGI_URL_SLUG_MAIN_OPTION . "#digirisk_options_correctivaction") . '" >' . __('Ajouter des extensions', 'evarisk') . '</a>');
+		}
+
+		$box_content .= '<hr/>';
+
+		/*	Get document already associated to current element	*/
+		$correctiv_action_associated_doc = eva_gestionDoc::get_associated_document_list($arguments['tableElement'], $arguments['idElement']);
+		$box_content .= '
+<div >
+	<div class="hide digi_' . $arguments['tableElement'] . '_associated_document" >&nbsp;</div>
+	<div class="digi_correctiv_action_document_list" >' . $correctiv_action_associated_doc . '</div>
+</div>';
+
+		echo $box_content;
+	}
+
+	/**
+	*	Function allowing to display the complete list of asscoiated coument for a given element
+	*/
+	function get_associated_document_list($tableElement, $idElement, $document_category = "", $document_order = "dateCreation DESC"){
+		$document_list_output = '';
+
+		$associated_document_list = eva_gestionDoc::getDocumentList($tableElement, $idElement, $document_category, $document_order);
+		if(count($associated_document_list) > 0){
+		$document_list_output .= '
+<table summary="Document list associated to ' . $tableElement . '" cellpadding="0" cellspacing="0" class="associated_document_list" >';
+			foreach($associated_document_list as $doc){
+				$doc_creator = evaUser::getUserInformation($doc->idCreateur);
+				$document_list_output .= '
+	<tr id="associated_document_line_' . $doc->id . '" >
+		<td>
+			&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_DOC . $doc->id . ')&nbsp;&nbsp;' . $doc->nom . '
+		</td>
+		<td class="associated_document_list_download_link" >';
+				if(is_file(EVA_GENERATED_DOC_DIR . $doc->chemin . $doc->nom)){
+					$document_list_output .= '
+			<div class="alignright delete_document_button_container" ><img id="delete_document_' . $doc->id . '" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer ce document', 'evarisk') . '" title="' . __('Supprimer ce document', 'evarisk') . '" class="alignright delete_associated_document" /></div>
+			<span class="ui-icon alignright element_associated_document_info" id="infos_element_associated_document' . $doc->id . '" >&nbsp;</span><a href="' . EVA_GENERATED_DOC_URL . $doc->chemin . $doc->nom . '" target="associated_document_dl_file" >' . __('T&eacute;l&eacute;charger ce fichier', 'evarisk') . '</a>
+			<div class="clear hide associated_document_infos_container alignright" id="element_associated_document' . $doc->id . '" >' . sprintf(__('Ajout&eacute; le %s &agrave; %s par %s', 'evarisk'), mysql2date('d F Y', $doc->dateCreation, true), mysql2date('H:i', $doc->dateCreation, true), $doc_creator[$doc->idCreateur]['user_lastname'] . '&nbsp;' . $doc_creator[$doc->idCreateur]['user_firstname']) . '</div>';
+				}
+				else{
+					$document_list_output .= __('Impossible de trouver le fichier sur le disque', 'evarisk');
+				}
+				$document_list_output .= 
+		'</td>
+	</tr>';
+			}
+			$document_list_output .= '
+</table>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery(".element_associated_document_info").click(function(){
+			jQuery("#" + jQuery(this).attr("id").replace("infos_", "")).toggle();
+		});
+
+		jQuery(".delete_associated_document").click(function(){
+			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document?', 'evarisk') . '"))){
+				jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					"post":"true", 
+					"table":"' . TABLE_GED_DOCUMENTS . '",
+					"tableElement":"' . $tableElement . '",
+					"idElement":"' . $idElement . '",
+					"act":"delete_document",
+					"idDocument":jQuery(this).attr("id").replace("delete_document_", "")
+				});
+			}
+		});
+	});
+</script>';
+		}
+		else{
+			$document_list_output .= __('Aucun document n\'a &eacute;t&eacute; associ&eacute; pour le moment', 'evarisk');
+		}
+
+		return $document_list_output;
+	}
 }

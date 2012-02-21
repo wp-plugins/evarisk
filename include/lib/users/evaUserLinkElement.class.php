@@ -47,8 +47,7 @@ class evaUserLinkElement
 				$idLigne = $tableElement . $idElement . 'listeUtilisateurs' . $utilisateur['user_id'];
 				$idCbLigne = 'cb_' . $idLigne;
 				$moreLineClass = 'userIsNotLinked';
-				if(isset($listeUtilisateursLies[$utilisateur['user_id']]))
-				{
+				if(isset($listeUtilisateursLies[$utilisateur['user_id']])){
 					$moreLineClass = 'userIsLinked';
 				}
 				$valeurs[] = array('value'=>'<span id="actionButton' . $tableElement . 'UserLink' . $utilisateur['user_id'] . '" class="buttonActionUserLinkList ' . $moreLineClass . '  ui-icon pointer" >&nbsp;</span>');
@@ -344,8 +343,7 @@ class evaUserLinkElement
 	*
 	*	@return mixed $messageInfo An html output that contain the result message
 	*/
-	function setLinkUserElement($tableElement, $idElement, $userIdList, $outputMessage = true)
-	{
+	function setLinkUserElement($tableElement, $idElement, $userIdList, $outputMessage = true){
 		global $wpdb;
 		global $current_user;
 		$userToTreat = "  ";
@@ -353,10 +351,8 @@ class evaUserLinkElement
 		//on récupère les utilisateurs déjà affectés à l'élément en cours.
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0))
-		{
-			foreach($utilisateursLies as $utilisateur)
-			{
+		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
+			foreach($utilisateursLies as $utilisateur){
 				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
 			}
 		}
@@ -365,10 +361,8 @@ class evaUserLinkElement
 		$newUserList = explode(", ", $userIdList);
 
 		/*	Read the product list already linked for checking if they are again into the list or if we have to delete them form the list	*/
-		foreach($listeUtilisateursLies as $utilisateurs)
-		{
-			if(is_array($newUserList) && !in_array($utilisateurs->id_user, $newUserList))
-			{
+		foreach($listeUtilisateursLies as $utilisateurs){
+			if(is_array($newUserList) && !in_array($utilisateurs->id_user, $newUserList)){
 				$query = $wpdb->prepare(
 					"UPDATE " . TABLE_LIAISON_USER_ELEMENT . " 
 					SET status = 'deleted', 
@@ -378,14 +372,15 @@ class evaUserLinkElement
 					$current_user->ID, $utilisateurs->id
 				);
 				$wpdb->query($query);
+				if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
+					$wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID), array('id_user' => $utilisateurs->id_user, 'id_element' => $idElement, 'table_element' => $tableElement));
+					echo '<pre>';print_r($wpdb);echo '</pre>';
+				}
 			}
 		}
-		if(is_array($newUserList) && (count($newUserList) > 0))
-		{
-			foreach($newUserList as $userId)
-			{
-				if((trim($userId) != '') && !array_key_exists($userId, $listeUtilisateursLies))
-				{
+		if(is_array($newUserList) && (count($newUserList) > 0)){
+			foreach($newUserList as $userId){
+				if((trim($userId) != '') && !array_key_exists($userId, $listeUtilisateursLies)){
 					$userToTreat .= "('', 'valid', NOW(), '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $userId . "', '" . $idElement . "', '" . $tableElement . "'), ";
 				}
 			}
@@ -393,35 +388,55 @@ class evaUserLinkElement
 
 		$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong>');
 		$endOfQuery = trim(substr($userToTreat, 0, -2));
-		if($endOfQuery != "")
-		{
+		if($endOfQuery != ""){
 			$query = $wpdb->prepare(
 				"REPLACE INTO " . TABLE_LIAISON_USER_ELEMENT . "
 					(id, status ,date_affectation ,id_attributeur ,date_desAffectation ,id_desAttributeur ,id_user ,id_element ,table_element)
 				VALUES 
 					" . $endOfQuery
 			);
-			if($wpdb->query($query))
-			{
+			if($wpdb->query($query)){
 				$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong>');
+				switch($tableElement){
+					case TABLE_ACTIVITE:
+					case TABLE_TACHE:
+						/*	Notify user when an action is done on a task or a sub task	*/
+						digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'user_affectation_update');
+					break;
+				}
 			}
-			else
-			{
+			else{
 				$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong>"');
 			}
 		}
 
-		if($outputMessage)
-		{
+		$script = '';
+		if($outputMessage){
+			$script .= '
+		actionMessageShow("#messageInfo_' . $tableElement . $idElement . '_affectUser", "' . $message . '");
+		setTimeout(\'actionMessageHide("#messageInfo_' . $tableElement . $idElement . '_affectUser")\',7500);
+		jQuery("#saveButtonLoading' . $tableElement . '").hide();
+		jQuery("#saveButtonContainer' . $tableElement . '").show();
+		jQuery("#actuallyAffectedUserIdList' . $tableElement . '").val(jQuery("#affectedUserIdList' . $tableElement . '").val());
+		checkUserListModification("' . $tableElement . '", "save_group' . $tableElement . '");';
+		}
+		if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
+			$script .= '
+		jQuery("#userNotificationContainerBox").html(jQuery("#loadingImg").html());
+		jQuery("#userNotificationContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			post:"true",
+			"table": "' . DIGI_DBT_ELEMENT_NOTIFICATION . '",
+			"act": "reload_user_notification_box",
+			"tableElement": "' . $tableElement . '",
+			"idElement": "' . $idElement . '"
+		});';
+		}
+
+		if($script != ''){
 			echo 
 '<script type="text/javascript">
 	evarisk(document).ready(function(){
-		actionMessageShow("#messageInfo_' . $tableElement . $idElement . '_affectUser", "' . $message . '");
-		setTimeout(\'actionMessageHide("#messageInfo_' . $tableElement . $idElement . '_affectUser")\',7500);
-		evarisk("#saveButtonLoading' . $tableElement . '").hide();
-		evarisk("#saveButtonContainer' . $tableElement . '").show();
-		evarisk("#actuallyAffectedUserIdList' . $tableElement . '").val(evarisk("#affectedUserIdList' . $tableElement . '").val());
-		checkUserListModification("' . $tableElement . '", "save_group' . $tableElement . '");
+		' . $script . '
 	});
 </script>';
 		}

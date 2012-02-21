@@ -68,9 +68,15 @@ class EvaPhoto {
 				VALUES 
 					('', '%s')"
 				, $photo);
-		if($wpdb->query($query))
-		{
+		if($wpdb->query($query)){
 			$status = evaPhoto::associatePicture($tableElement, $idElement, $wpdb->insert_id);
+			switch($tableElement){
+				case TABLE_ACTIVITE:
+				case TABLE_TACHE:
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_add');
+				break;
+			}
 		}
 		return $status;
 	}
@@ -340,7 +346,7 @@ class EvaPhoto {
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
-						"act": "unsetAsAfterPicture"
+						"nom": "unsetAsAfterPicture"
 					});
 				}
 
@@ -733,7 +739,14 @@ class EvaPhoto {
 			evarisk(document).ready(function(){
 				evarisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
 		if($updateAssociationResult != 'error')
-		{
+		{	
+			switch($tableElement){
+				case TABLE_ACTIVITE:
+				case TABLE_TACHE:
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_delete');
+				break;
+			}
 			$messageInfo .= '
 					evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
@@ -778,6 +791,13 @@ class EvaPhoto {
 		{
 			if($updateMainPhotoResult == 'ok')
 			{
+				switch($tableElement){
+					case TABLE_ACTIVITE:
+					case TABLE_TACHE:
+						/*	Notify user when an action is done on a task or a sub task	*/
+						digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_as_main_add');
+					break;
+				}
 				$messageInfo .= '
 						evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
@@ -791,6 +811,13 @@ class EvaPhoto {
 		{
 			if($updateMainPhotoResult == 'ok')
 			{
+				switch($tableElement){
+					case TABLE_ACTIVITE:
+					case TABLE_TACHE:
+						/*	Notify user when an action is done on a task or a sub task	*/
+						digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_as_main_delete');
+					break;
+				}
 				$messageInfo .= '
 						evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'est plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}

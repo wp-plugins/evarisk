@@ -96,7 +96,6 @@ if($_REQUEST['post'] == 'true')
 				echo evaPhoto::setMainPhotoAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPhoto']);
 			break;
 			case 'DeleteDefaultPictureSelection':
-				echo '<pre>';print_r($_REQUEST);echo '</pre>';
 				echo evaPhoto::setMainPhotoAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPhoto'], 'no');
 			break;
 			case 'deletePicture':
@@ -1056,6 +1055,94 @@ if($_REQUEST['post'] == 'true')
 					}
 					break;
 
+					case 'loadNames':{
+						$output = '';
+						$complete_user_list = evaUser::getCompleteUserList();
+						if(count($complete_user_list) > 0){
+							$output .=  sprintf(__('Tous les utilisateurs (%s) :', 'evarisk'), count($complete_user_list)) . '
+<ul class="digi_all_user_list" >';
+							foreach($complete_user_list as $user_id => $user_info){
+								$output .= '
+	<li>' . $user_info['user_lastname'] . ' ' . $user_info['user_firstname'] . '</li>';
+							}
+							$output .= '
+</ul>';
+
+							//Requete n°2 : Tous les participants à l'audit
+							$query = $wpdb->prepare("
+SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
+FROM " . $wpdb->usermeta . " AS META_1
+	INNER JOIN " . $wpdb->usermeta . " AS META_2 ON (META_2.USER_ID = META_1.USER_ID)
+	INNER JOIN " . TABLE_LIAISON_USER_ELEMENT . " AS LINK ON ((LINK.ID_USER = meta_1.USER_ID) AND ((LINK.TABLE_ELEMENT = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.TABLE_ELEMENT = '" . TABLE_GROUPEMENT . "_evaluation')))
+WHERE META_1.META_KEY = 'last_name'
+	AND META_2.META_KEY = 'first_name'
+	AND META_1.USER_ID <> 1
+	AND LINK.status = 'valid'
+GROUP BY META_1.USER_ID , NOM ,  PRENOM");
+							$users = $wpdb->get_results($query);
+							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute pr&eacutesents &agrave l\'audit (%s) :', 'evarisk'), count($users));
+							if(count($users) > 0){
+								$output .= '
+<ul class="digi_all_user_list" >';
+								foreach($users as $user ){
+									$output .=  '
+	<li>' . $user->NOM . ' ' . $user->PRENOM . '</li>';
+								}
+								$output .= '
+</ul>';
+							}
+							else{
+								$output .= '<br/>' . __('Aucun utilisateur inscrit n\'a particip&eacute; &agrave; l\'audit pour le moment', 'evarisk');
+							}
+
+							//Requete n°3 : Tous les absents à l'audit
+							$query = $wpdb->prepare("
+SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
+FROM " . $wpdb->prefix . "usermeta AS META_1
+	INNER JOIN " . $wpdb->prefix . "usermeta AS META_2 ON (META_2.USER_ID = META_1.USER_ID)
+WHERE META_1.META_KEY = 'last_name'
+	AND META_2.META_KEY = 'first_name'
+	AND META_1.USER_ID <> 1
+	AND META_1.USER_ID NOT IN (
+		SELECT LINK.ID_USER
+		FROM " . TABLE_LIAISON_USER_ELEMENT . " AS LINK
+		WHERE ((LINK.TABLE_ELEMENT = '" . PREFIXE_EVARISK . "unite_travail_evaluation') || (LINK.TABLE_ELEMENT = '" . PREFIXE_EVARISK . "groupement_evaluation'))
+		OR LINK.status <> 'valid'
+	)
+GROUP BY META_1.USER_ID , NOM ,  PRENOM");
+							$users = $wpdb->get_results($query);
+							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute absents &agrave l\'audit (%s) :', 'evarisk'), count($users));
+							if(count($users) > 0){
+								$output .= '
+<ul class="digi_all_user_list" >';
+								foreach($users as $user){
+									$output .=  '
+	<li>' . $user->NOM . ' ' . $user->PRENOM . '</li>';
+								}
+								$output .= '
+</ul>';
+							}
+							else{
+								$output .= '<br/>' . __('Tous les utilisateurs ont particip&eacute;s &agrave; l\'audit', 'evarisk');
+							}
+						}
+						else{
+							$output .= __('Il n\'y a aucun utilisateur enregistr&eacute;', 'evarisk');
+						}
+
+						$output .= '<br><br><input id="returnStats" name="returnStats" type="button" value="Retour aux statistiques" />
+						<script type="text/javascript">
+							evarisk(document).ready(function(){
+								evarisk("#returnStats").click(function(){
+									evarisk("#namesUpdater").dialog("close");
+								});
+							});
+						</script> ';
+
+					echo $output;
+				}
+				break;
+
 					case 'loadRisqMassUpdater':
 					{
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
@@ -1336,6 +1423,16 @@ echo $output;
 
 						/*	Add the action when user click on the 	*/
 						jQuery(".view_correctiv_action").click(function(){
+							jQuery("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								"post": "true", 
+								"table": "' . TABLE_TACHE . '",
+								"id": jQuery(this).attr("id"),
+								"act": "loadDetails"
+							});
+
+							jQuery("#riskAssociatedTask' . $id_risque . '").dialog("open");
+						});
+						jQuery(".view_correctiv_action_sub_task").click(function(){
 							jQuery("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 								"post": "true", 
 								"table": "' . TABLE_TACHE . '",
@@ -1665,6 +1762,9 @@ echo $output;
 							$tache = new EvaTask($idFils);
 							$tache->load();
 							$tache->transfert($idPere);
+
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $idFils, 'transfer');
 						}
 						else //Le fils est une activité
 						{
@@ -1672,6 +1772,9 @@ echo $output;
 							$activite = new EvaActivity($idFils);
 							$activite->load();
 							$activite->transfert($idPere);
+
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $idFils, 'transfer');
 
 							/*	Update the action ancestor	*/
 							$relatedTask = new EvaTask($idPere);
@@ -1702,6 +1805,9 @@ echo $output;
 
 						if($tache->getStatus() != 'error')
 						{
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $id, 'affectation_update');
+
 							$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e', 'evarisk') . '</strong></p>') . '");';
 
 							switch($provenanceComponents[0])
@@ -1810,20 +1916,27 @@ echo $output;
 						$tache->save();
 						$tacheMere = new EvaTask();
 						$tacheMere->convertWpdb(Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb()));
-						if($_REQUEST['idPere'] != $tacheMere->getId())
-						{
+						if($_REQUEST['idPere'] != $tacheMere->getId()){
 							$tache->transfert($_REQUEST['idPere']);
 						}
 						$messageInfo = '<script type="text/javascript">
 								evarisk(document).ready(function(){';
-						if($tache->getStatus() != 'error')
-						{
+						if($tache->getStatus() != 'error'){
+							switch($_REQUEST['act']){
+								case 'update':
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'update');
+								break;
+								case 'taskDone':
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'mark_done');
+								break;
+							}
 							$messageInfo = $messageInfo . '
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);';
 						}
-						else
-						{
+						else{
 							$messageInfo = $messageInfo . '
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);';
@@ -1886,8 +1999,10 @@ echo $output;
 						$tache->save();
 
 						$messageInfo = '<script type="text/javascript">';
-						if($tache->getStatus() != 'error')
-						{
+						if($tache->getStatus() != 'error'){
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'delete');
+
 							$messageInfo = $messageInfo . '
 								evarisk(document).ready(function(){
 									evarisk("#message").addClass("updated");
@@ -1898,8 +2013,7 @@ echo $output;
 										evarisk("#message").hide();
 									},7500);';
 						}
-						else
-						{
+						else{
 							$messageInfo = $messageInfo . '
 								evarisk(document).ready(function(){
 									evarisk("#message").addClass("updated");
@@ -1961,16 +2075,16 @@ echo $output;
 						$TasksAndSubTasks = $tache->getDescendants();
 						$TasksAndSubTasks->addTask($tache);
 						$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
-						if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
-						{
+						if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0){
 							foreach($TasksAndSubTasks as $task)
 							{
 								if($task->id != $tache->id)
 								{
-									$existingPreconisation .= '* ' . $task->name;
+									$existingPreconisation .= ELEMENT_IDENTIFIER_T . $task->id . ' - ' . $task->name;
 									if($task->description != '')
 									{
-										$existingPreconisation .= '(' . $task->description . ')';
+										$existingPreconisation .= '(' . str_replace("
+", " / ", $task->description) . ')';
 									}
 									$existingPreconisation .= " 
 ";
@@ -1981,10 +2095,11 @@ echo $output;
 								{
 									foreach($activities as $activity)
 									{
-										$existingPreconisation .= '* ' . $activity->name;
+										$existingPreconisation .= "		" . ELEMENT_IDENTIFIER_ST . $activity->id . ' - ' . $activity->name;
 										if($activity->description != '')
 										{
-											$existingPreconisation .= '(' . $activity->description . ')';
+											$existingPreconisation .= '(' . str_replace("
+", " / ", $activity->description) . ')';
 										}
 										$existingPreconisation .= " 
 ";
@@ -1994,13 +2109,15 @@ echo $output;
 						}
 
 						$dirToSaveExportedFile = EVA_UPLOADS_PLUGIN_DIR . $_REQUEST['table'];
-						if(!is_dir($dirToSaveExportedFile))
-						{
+						if(!is_dir($dirToSaveExportedFile)){
 							eva_tools::make_recursiv_dir($dirToSaveExportedFile);
 							eva_tools::changeAccesAuthorisation($dirToSaveExportedFile);
 						}
 						file_put_contents($dirToSaveExportedFile . '/taskExport.txt' ,$existingPreconisation);
 						if(is_file($dirToSaveExportedFile . '/taskExport.txt')){
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'export');
+
 							echo '<a href="' . str_replace(EVA_UPLOADS_PLUGIN_DIR, EVA_UPLOADS_PLUGIN_URL, $dirToSaveExportedFile) . '/taskExport.txt" title="' . __('Pour le t&eacute;l&eacute;charger, faites un clic droit puis enregistrer sous', 'evarisk') . '" >' . __('T&eacute;l&eacute;charger le fichier g&eacute;n&eacute;r&eacute;', 'evarisk') . '</a>';
 						}
 					}
@@ -2338,6 +2455,22 @@ echo $output;
 
 						$activity_save_message = '';
 						if($activite->getStatus() != 'error'){
+							switch($orignal_requested_act){
+								case 'save':
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask');
+								break;
+								case 'update':
+								case 'update_from_external':
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $_REQUEST['id'], 'update');
+								break;
+								case 'actionDone':
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $_REQUEST['id'], 'mark_done');
+								break;
+							}
+
 							$activity_save_message= addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', $action));
 						}
 						else{
@@ -2658,8 +2791,10 @@ echo $output;
 						$activite->save();
 
 						$messageInfo = '<script type="text/javascript">';
-						if($activite->getStatus() != 'error')
-						{
+						if($activite->getStatus() != 'error'){							
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $_REQUEST['id'], 'delete');
+
 							$messageInfo = $messageInfo . '
 								evarisk(document).ready(function(){
 									evarisk("#message").addClass("updated");
@@ -2670,8 +2805,7 @@ echo $output;
 										evarisk("#message").hide();
 									},7500);';
 						}
-						else
-						{
+						else{
 							$messageInfo = $messageInfo . '
 								evarisk(document).ready(function(){
 									evarisk("#message").addClass("updated");
@@ -2735,6 +2869,8 @@ echo $output;
 						$activite->setProgressionStatus('inProgress');
 						$taskId = $activite->getRelatedTaskId();
 						$activite->save();
+						/*	Notify user when an action is done on a task or a sub task	*/
+						digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $id, 'set_in_progress');
 
 						$updateTaskProgressionInTree = '';
 						if(($taskId != '') && ($taskId > 0))
@@ -2745,6 +2881,8 @@ echo $output;
 							$relatedTask->getTimeWindow();
 							$relatedTask->computeProgression();
 							$relatedTask->save();
+							/*	Notify user when an action is done on a task or a sub task	*/
+							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $taskId, 'set_in_progress');
 							$updateTaskProgressionInTree .= '
 	evarisk(".taskInfoContainer-' . $taskId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
@@ -2765,8 +2903,9 @@ echo $output;
 								$ancestorTask->save();
 								unset($ancestorTask);
 								/*	Don't update the tree information if it is the root task	*/
-								if($task->id != 1)
-								{
+								if($task->id != 1){
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $task->id, 'set_in_progress');
 									$updateTaskProgressionInTree .= '
 	evarisk(".taskInfoContainer-' . $task->id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
@@ -2821,22 +2960,19 @@ echo $output;
 				require_once( EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/suivi_activite.class.php');
 				switch($_REQUEST['act'])
 				{
-					case 'save':
-					{
+					case 'save':{
 						$messageInfo = 
 							'<script type="text/javascript">
 								evarisk(document).ready(function(){
 									evarisk("#messageInfo' . $tableElement . $idElement . '").addClass("updated");';
 
 						$saveFollow = suivi_activite::saveSuiviActivite($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['commentaire']);
-
-						if($saveFollow == 'ok')
-						{
+						if($saveFollow == 'ok'){
+							digirisk_user_notification::notify_affiliated_user($_REQUEST['tableElement'], $_REQUEST['idElement'], 'follow_add');
 							$messageInfo .= '
 									evarisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 						}
-						else
-						{
+						else{
 							$messageInfo .= '
 									evarisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
 						}
@@ -3209,7 +3345,42 @@ echo $output;
 				$idElement = $_REQUEST['idElement'];
 				switch($_REQUEST['act'])
 				{
-					case 'loadDocument':
+					case 'delete_document':
+						global $current_user;
+						$delete_result = $wpdb->update(TABLE_GED_DOCUMENTS, array('status' => 'deleted', 'dateSuppression' => current_time('mysql', 0), 'idSuppresseur' => $current_user->ID), array('id' => $_REQUEST['idDocument']));
+
+						$action_after_deletion = '';
+						if(($delete_result == '1') || ($delete_result == '0')){
+							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'success\' />' . __('Le document a correctement &eacute;t&eacute; supprim&eacute;', 'evarisk');
+							$action_after_deletion = 'jQuery("#associated_document_line_' . $_REQUEST['idDocument'] . '").remove();';
+
+							switch($tableElement){
+								case TABLE_ACTIVITE:
+								case TABLE_TACHE:
+									/*	Notify user when an action is done on a task or a sub task	*/
+									digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'doc_delete');
+								break;
+							}
+						}
+						else{
+							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la suppression du document', 'evarisk');
+						}
+
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		actionMessageShow(".digi_' . $_REQUEST['tableElement'] . '_associated_document", convertAccentToJS("' . $message . '"));
+		setTimeout(\'actionMessageHide(".digi_' . $_REQUEST['tableElement'] . '_associated_document")\',7500);
+		' . $action_after_deletion . '
+	});
+</script>';
+					break;
+					case 'load_associated_document_list':
+						$category = $_REQUEST['category'];
+						$document_list = eva_gestionDoc::get_associated_document_list($_REQUEST['tableElement'], $_REQUEST['idElement'], $category, "dateCreation DESC");
+						echo $document_list;
+					break;
+					case 'load_model_combobox':
 						$category = $_REQUEST['category'];
 						$selection = (isset($_REQUEST['selection']) && ($_REQUEST['selection'] != '') && ($_REQUEST['selection'] != '0')) ? eva_tools::IsValid_Variable($_REQUEST['selection']) : '';
 						$documentList = eva_gestionDoc::getDocumentList($tableElement, $idElement, $category, "dateCreation DESC");
@@ -4226,7 +4397,78 @@ echo $output;
 					}
 					break;
 				}
-				break;
+			break;
+			case DIGI_DBT_ELEMENT_NOTIFICATION:
+				switch($_REQUEST['act']){
+					case 'save_user_notification':{
+						global $current_user;
+						$message = $message_output = '';
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						$notification_to_delete = (isset($_REQUEST['notification_to_delete']) && ($_REQUEST['notification_to_delete'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['notification_to_delete']) : '';
+
+						if(is_array($_REQUEST['user_notification_insert'])){
+							$action_nb = 0;
+							foreach($_REQUEST['user_notification_insert'] as $action => $user_list){
+								$list = '  ';
+								foreach($user_list as $user_id => $action_id){
+									$action_nb++;
+									$done_link += $wpdb->insert(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'valid', 'date_affectation' => current_time('mysql', 0), 'id_attributeur' => $current_user->ID, 'id_user' => $user_id, 'id_notification' => $action_id, 'id_element' => $idElement,	'table_element' => $tableElement));
+								}
+							}
+							if($action_nb == $done_link){
+								$message .= addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" class="messageIcone" />&nbsp;') . __('Les notifications ont bien &eacute;t&eacute; enregistr&eacute;es', 'evarisk');
+							}
+							else{
+								$message .= addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" class="messageIcone" />&nbsp;') . sprintf(__('Une erreur est survenue lors de l\'enregistrement des notifications seules %d des notifications demand&eacute;es ont &eacute;t&eacute; enregistr&eacute;es sur %d', 'evarisk'), $done_link, $action_nb);
+							}
+						}
+						if($notification_to_delete != ''){
+							$message .= '<br/>';
+							$notification_to_delete_list = explode('-', $notification_to_delete);
+							$done_deletion = $deletion_to_do = 0;
+							foreach($notification_to_delete_list as $link){
+								if($link != ''){
+									$deletion_to_do++;
+									$element_of_link = explode('_', $link);
+									$done_deletion += $wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID),array('id_notification' => $element_of_link[0], 'id_user' => $element_of_link[1], 'status' => 'valid'));
+								}
+							}
+							if($deletion_to_do == $done_deletion){
+								$message .= addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" class="messageIcone" />&nbsp;') . __('Les notifications ont bien &eacute;t&eacute; supprim&eacute;es', 'evarisk');
+							}
+							else{
+								$message .= addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" class="messageIcone" />&nbsp;') . sprintf(__('Une erreur est survenue lors de la suppression des notifications seules %d des demandes de suppression ont &eacute;t&eacute; enregistr&eacute;es sur %d', 'evarisk'), $done_deletion, $deletion_to_do);
+							}
+						}
+
+						if($message != ''){
+							$message_output = '
+		actionMessageShow("#digi_link_notification_user_message", "' . $message . '");
+		setTimeout(function(){actionMessageHide("#digi_link_notification_user_message");}, "7000");';
+						}
+
+						echo '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#saveButtonLoading_userNotification' . $tableElement . '").hide();
+		jQuery("#saveButtonContainer_userNotification' . $tableElement . '").show();
+		jQuery("#check_all").prop("checked", false);
+		jQuery(".check_all_action_column").prop("checked", false);
+		jQuery(".check_all_user_line").prop("checked", false);
+		jQuery("#toDelete").val("");' . $message_output . '
+	});
+</script>';
+					}
+					break;
+					case 'reload_user_notification_box':{
+						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+						echo digirisk_user_notification::get_user_notification_table($tableElement, $idElement);
+					}
+					break;
+				}
+			break;
 		}
 	}
 
@@ -4254,6 +4496,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_add');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4294,6 +4538,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_add');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4334,6 +4580,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_delete');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4374,6 +4622,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
+					/*	Notify user when an action is done on a task or a sub task	*/
+					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_delete');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -5429,8 +5679,35 @@ else
 								evarisk("#' . $idTable . '").children("tfoot").remove();
 								evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 							});
+						evarisk("#ongletMassUpdate' . TABLE_RISQUE . '").click(function(){
+							evarisk("#risqMassUpdater").html(evarisk("#loadingImg").html());
+							evarisk("#risqMassUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+								"post":"true", 
+								"table":"' . TABLE_RISQUE . '", 
+								"act":"loadRisqMassUpdater", 
+								"tableElement":"' . $tableElement . '", 
+								"idElement":"' . $idElement . '"
+							});
+							evarisk("#risqMassUpdater").dialog("open");
+						});
+						evarisk(document).ready(function(){
+							evarisk("#vracStatsTabs").tabs();
+							evarisk("#vracStatsTabs input").click(function(){
+								evarisk("#namesUpdater").html(evarisk("#loadingPicContainer").html());
+									evarisk("#namesUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+										"post":"true", 
+										"table":"' . TABLE_RISQUE . '", 
+										"act":"loadNames"
+									});
+								evarisk("#namesUpdater").dialog({
+								height:400,
+								width:400
+							});
+							});
+						});
 						</script>';
 						echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+						echo '<br><input id="showNames" name="showNames" type="button" value=" ' . __('Liste des utilisateurs', 'evarisk') . ' "/>';
 					}
 				}
 				break;

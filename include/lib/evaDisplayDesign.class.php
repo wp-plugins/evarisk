@@ -1823,7 +1823,7 @@ class EvaDisplayDesign {
 					<td id="tdActionRacine' . $idTable . ELEMENT_IDENTIFIER_ST . $subElement->id . '" >';
 			if($user_is_allowed_to_view_details){
 				$monCorpsSubElements .= '
-						<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $sousTable . '_t_elt_' . $subElement->id . '" />';
+						<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="view_details" id="' . $sousTable . '_t_elt_' . $subElement->id . '" class="view_correctiv_action_sub_task" />';
 			}
 			$monCorpsSubElements .= 
 					'</td>
@@ -1991,7 +1991,7 @@ class EvaDisplayDesign {
 	/*
 	* 
 	*/
-	static function getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script = '')
+	static function getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script = '', $display_footer = true)
 	{
 		$barreTitre = '';
 		$corpsTable = '';
@@ -2017,11 +2017,15 @@ class EvaDisplayDesign {
 		$table = $script . '<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed" >
 				<thead>
 						' . $barreTitre . '
-				</thead>
-				<tfoot>
+				</thead>';
+		if($display_footer){
+			$table .=
+				'<tfoot>
 						' . $barreTitre . '
-				</tfoot>
-				<tbody >'
+				</tfoot>';
+		}
+			$table .=
+				'<tbody >'
 				 . $corpsTable . 
 				'
 				</tbody>

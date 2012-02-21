@@ -12,6 +12,8 @@ require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php' );
 
+require_once(EVA_LIB_PLUGIN_DIR . 'mailbox/messages.class.php' );
+
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'doc.class.php' );
@@ -34,6 +36,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php' );
 	add_action('edit_user_profile_update', array('evaUser', 'user_additionnal_field_save'));
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'users/groups.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'users/digi_user_notification.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/veilleReglementaire.class.php' );
 

@@ -18,7 +18,7 @@ class digirisk_permission
 {
 	
 	/**
-	*	Define the database table to ue un the entire script
+	*	Define the database table to use in the entire script
 	*/
 	const dbTable = DIGI_DBT_PERMISSION_ROLE;
 
@@ -96,6 +96,9 @@ class digirisk_permission
 
 		/*	Options permission	*/
 		$permission['digi_edit_option'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'option', 'permission_sub_module' => '');
+
+		/*	User permission	*/
+		$permission['digi_import_user'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'user', 'permission_sub_module' => 'import');
 
 		{/*	Risk persmission	*/
 		$permission['digi_view_risk_histo'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'risk', 'permission_sub_module' => 'histo');

@@ -19,8 +19,7 @@ class digirisk_options
 	/**
 	*	Declare the different options for the plugin	
 	*/
-	function evarisk_add_options() 
-	{
+	function evarisk_add_options(){
 		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
 		register_setting('digirisk_options', 'digirisk_tree_options', array('digirisk_options', 'digirisk_tree_options_validator'));
 		register_setting('digirisk_options', 'digirisk_product_options', array('digirisk_options', 'digirisk_product_options_validator'));
@@ -45,6 +44,7 @@ class digirisk_options
 			add_settings_field('digi_ac_displayonlysoldtaskinrisk_field', __('Affecter uniquement les t&acirc;ches sold&eacute;es aux risques', 'evarisk'), array('digirisk_options', 'digi_ac_displayonlysoldtaskinrisk_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_allowed_ext', __('Liste des extensions autoris&eacute;es pour les documents', 'evarisk'), array('digirisk_options', 'digi_ac_allowed_ext'), 'digirisk_options_correctivaction', 'digi_options_ac');
 		}
 
 		{/*	Declare the different options for the risks	*/
@@ -69,6 +69,7 @@ class digirisk_options
 			add_settings_section('digi_users_options', null, array('digirisk_options', 'options_output_users'), 'digirisk_options_user');
 			/*	Add the different field for current section	*/
 			add_settings_field('digi_users_emaildomain_field', __('Domaine par d&eacute;faut pour les e-mail utilisateurs (sans @)', 'evarisk'), array('digirisk_options', 'digi_users_emaildomain_field'), 'digirisk_options_user', 'digi_users_options');
+			add_settings_field('digi_users_access_field', __('Permettre l\'acc&egrave;s &agrave; tous les utilisateurs : ', 'evarisk'), array('digirisk_options', 'digi_users_access_field'), 'digirisk_options_user', 'digi_users_options');
 			// add_settings_field('digi_users_digirisk_extra_field', __('Champs suppl&eacute;mentaires pour le logiciel Digirisk', 'evarisk'), array('digirisk_options', 'digi_users_digirisk_extra_field'), 'digirisk_options_user', 'digi_users_options');
 		}
 
@@ -154,6 +155,21 @@ if(current_user_can('digi_edit_option'))
 		jQuery("#options_tabs ul li a").click(function(){
 			jQuery("#option_form").attr("action", "options.php" + jQuery(this).attr("href"));
 		});
+
+		/*	Add support for option allowed_extension for AC deletion	*/
+		jQuery(".delete_allowed_extension_for_ac_docs").live('click', function(){
+			jQuery(this).closest("div").remove();
+		});
+		/*	Add support for option allowed_extension for AC addition	*/
+		jQuery(".add_new_extension_to_allow").click(function(){
+			if(jQuery("#new_allowed_extension").val() != ""){
+				jQuery("#allowed_ext_list").append("<div><input type='text' value='" + jQuery("#new_allowed_extension").val() + "' name='digirisk_options[digi_ac_allowed_ext][]' /><img src='<?php echo EVA_IMG_ICONES_PLUGIN_URL; ?>delete_vs.png' alt='<?php _e('Supprimer cette extension de la liste', 'evarisk'); ?>' title='<?php _e('Supprimer cette extension de la liste', 'evarisk'); ?>' class='delete_allowed_extension_for_ac_docs' /></div>");
+				jQuery("#new_allowed_extension").val("");
+			}
+			else{
+				alert(convertAccentToJS("<?php _e('Vous n\'avez pas entr&eacute; d\'extension', 'evarisk'); ?>"));
+			}
+		});
 	});
 </script>
 <?php
@@ -202,8 +218,7 @@ if(current_user_can('digi_edit_option'))
 	*
 	*	@return array $newinput An array with the send values cleaned for more secure usage
 	*/
-	function digirisk_options_validator($input)
-	{
+	function digirisk_options_validator($input){
 		$newinput['digi_activ_trash'] = trim($input['digi_activ_trash']);
 
 		$newinput['responsable_Tache_Obligatoire'] = trim($input['responsable_Tache_Obligatoire']);
@@ -216,6 +231,7 @@ if(current_user_can('digi_edit_option'))
 		$newinput['action_correctives_avancees'] = trim($input['action_correctives_avancees']);
 		$newinput['export_only_priority_task'] = trim($input['export_only_priority_task']);
 		$newinput['export_tasks'] = trim($input['export_tasks']);
+		$newinput['digi_ac_allowed_ext'] = $input['digi_ac_allowed_ext'];
 
 		$newinput['risques_avances'] = trim($input['risques_avances']);
 
@@ -224,6 +240,12 @@ if(current_user_can('digi_edit_option'))
 		$newinput['recommandation_efficiency_activ'] = trim($input['recommandation_efficiency_activ']);
 
 		$newinput['emailDomain'] = trim(str_replace('@', '', $input['emailDomain']));
+		$newinput['digi_users_access_field'] = trim($input['digi_users_access_field']);
+		$newinput['identifiant_htpasswd'] = trim($input['identifiant_htpasswd']);
+		$newinput['password_htpasswd'] = trim($input['password_htpasswd']);
+		
+		digirisk_options::create_files($newinput['digi_users_access_field'],$newinput['identifiant_htpasswd'],$newinput['password_htpasswd']);
+		
 		$newinput['digi_users_digirisk_extra_field'] = serialize($input['digi_users_digirisk_extra_field']);
 
 		return $newinput;
@@ -420,6 +442,37 @@ if(current_user_can('digi_edit_option'))
 			echo $options['export_tasks'];
 		}
 	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_allowed_ext(){
+		$digi_ac_allowed_ext_out = '';
+		$digi_ac_allowed_ext = self::getOptionValue('digi_ac_allowed_ext', 'digirisk_options');
+
+		if(is_array($digi_ac_allowed_ext)){
+			foreach($digi_ac_allowed_ext as $index => $extension){
+				if(current_user_can('digi_edit_option') && ($extension != '')){
+					$digi_ac_allowed_ext_out .= '<div id="digi_allowed_AC_ext_' . $index . '" ><input type="text" value="' . $extension . '" name="digirisk_options[digi_ac_allowed_ext][]" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Ne plus autoriser cette extension', 'eobackup') . '" title="' . __('Ne plus autoriser cette extension', 'eobackup') . '" class="delete_allowed_extension_for_ac_docs" /></div>';
+				}
+				else{
+					$digi_ac_allowed_ext_out .= $extension . '<br/>';
+				}
+			}
+		}
+
+		$add_extension = '';
+		if(current_user_can('digi_edit_option')){
+			$add_extension = '<input type="text" value="" name="new_allowed_extension" id="new_allowed_extension" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . __('Ajouter cette extension dans la liste des extensions autoris&eacute;es', 'eobackup') . '" title="' . __('Ajouter cette extension dans la liste des extensions autoris&eacute;es', 'eobackup') . '" class="add_new_extension_to_allow" />';
+		}
+
+		$digi_ac_allowed_ext_out = $add_extension . '
+<fieldset class="digi_allowed_extension_for_AC_fieldset" >
+	<legend>' . __('Liste des extensions autoris&eacute;es pour les documents associ&eacute;s aux t&acirc;ches et sous-t&acirc;ches', 'evarisk') . '</legend>
+	<div id="allowed_ext_list" >' . $digi_ac_allowed_ext_out . '</div>
+</fieldset>';
+
+		echo $digi_ac_allowed_ext_out;
+	}
 
 	/**
 	*	Function allowing to set a explication area for the settings section
@@ -502,16 +555,30 @@ if(current_user_can('digi_edit_option'))
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
-	function digi_users_emaildomain_field()
+	function digi_users_emaildomain_field(){
+		$options = get_option('digirisk_options');
+		if(current_user_can('digi_edit_option')){
+			echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='{$options['emailDomain']}' />";
+		}
+		else{
+			echo $options['emailDomain'];
+		}
+	}
+	function digi_users_access_field()
 	{
+		global $optionYesNoList;
 		$options = get_option('digirisk_options');
 		if(current_user_can('digi_edit_option'))
 		{
-			echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='{$options['emailDomain']}' />";
+			echo EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, $options['digi_users_access_field']);
+			echo "<br>";
+			echo "<label for='identifiant_htpasswd'>Identifiant : </label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' size='20' type='text' value='{$options['identifiant_htpasswd']}' />";
+			echo "<br>";
+			echo "<label for='password_htpasswd'>Mot de passe : </label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' size='20' type='text' value='{$options['password_htpasswd']}' />";
 		}
 		else
 		{
-			echo $options['emailDomain'];
+			echo $options['digi_users_access_field'];
 		}
 	}	
 	/**
@@ -825,8 +892,7 @@ if(current_user_can('digi_edit_option'))
 	*
 	*	@return mixed The option value
 	*/
-	function getOptionValue($optionName, $option = 'digirisk_options')
-	{
+	function getOptionValue($optionName, $option = 'digirisk_options'){
 		$digirisk_options = get_option($option);
 
 		return $digirisk_options[$optionName];
@@ -918,6 +984,62 @@ if(current_user_can('digi_edit_option'))
 			$optionValue = unserialize($optionValue);
 			$optionSubValue = $optionValue[$subOptionName];
 			update_option('digirisk_db_option', serialize($optionValue));
+		}
+	}
+	
+	function create_files($allow_access, $id, $psw) {
+		$dir_psswd = ABSPATH . 'digi_access/';
+		$urlPasswd = ".htpasswd"; //chemin du fichier password
+		$urlAccess = ABSPATH . ".htaccess"; //chemin du fichier access
+		$urlAccessOri = ABSPATH . ".htaccess_original"; //chemin du fichier access
+
+		if($allow_access == 'oui'){
+			if(is_file($urlAccess) && is_file($urlAccessOri)){
+				unlink($urlAccess);
+				copy($urlAccessOri, $urlAccess);
+				unlink($urlAccessOri);
+			}
+			if(is_file($dir_psswd . $urlPasswd)){
+				unlink($dir_psswd . $urlPasswd);
+			}
+		}
+		elseif(($id != '') && ($psw != '')){
+			$original_file_content = '';
+			if(is_file($urlAccessOri)){
+				unlink($urlAccessOri);
+			}
+			if(is_file($urlAccess)){
+				copy($urlAccess, $urlAccessOri);
+				/*	Read the old file	for adding content to new htaccess file	*/
+				$original_file_content = file($urlAccessOri);
+			}
+			if(!is_dir($dir_psswd)){
+				mkdir($dir_psswd, 0755, true);
+			}
+
+			
+			$new_htaccess_file_content = Fopen($urlAccess, "w");
+			$new_htaccess_file_content_lines = 'AuthName "' . html_entity_decode(__('Acc&egrave;s prot&eacute;g&eacute;', 'evarisk')) . '"
+AuthType Basic
+AuthUserFile "'.$dir_psswd . $urlPasswd.'"
+Require valid-user';
+
+			/*	Add orignal file content to the new file	*/
+			if($original_file_content != ''){
+				$new_htaccess_file_content_lines .= "
+
+";
+				foreach($original_file_content as $line){
+					$new_htaccess_file_content_lines .= $line;
+				}
+			}
+			Fwrite($new_htaccess_file_content, $new_htaccess_file_content_lines);
+			Fclose($new_htaccess_file_content);
+
+			$htpasswd_file_content = Fopen($dir_psswd . $urlPasswd,"w");
+			$htpasswd_file_content_lines = "$id:$psw"; //identifiants a récupérer par formulaire
+			Fwrite($htpasswd_file_content, $htpasswd_file_content_lines);
+			Fclose($htpasswd_file_content);
 		}
 	}
 

@@ -54,6 +54,10 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_PHOTO', PREFIXE_EVARISK . "photo");
 	DEFINE('TABLE_PHOTO_LIAISON', PREFIXE_EVARISK . "liaison_photo_element");
 	DEFINE('TABLE_ADRESSE', PREFIXE_EVARISK . "adresse");
+
+	DEFINE('DIGI_DBT_ELEMENT_NOTIFICATION', PREFIXE_EVARISK . 'element_notification');
+	DEFINE('DIGI_DBT_MESSAGES', PREFIXE_EVARISK . 'message');
+	DEFINE('DIGI_DBT_HISTORIC', PREFIXE_EVARISK . 'message_histo');
 }
 
 {/*	Hierarchie	*/
@@ -94,6 +98,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('DIGI_DBT_LIAISON_USER_GROUP', PREFIXE_EVARISK . "liaison_utilisateur_groupe_element");
 
 	DEFINE('TABLE_LIAISON_USER_ELEMENT', PREFIXE_EVARISK . "liaison_utilisateur_element");
+	DEFINE('DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT', PREFIXE_EVARISK . "liaison_utilisateur_notification");
 }
 
 {/*	Préconisations	*/

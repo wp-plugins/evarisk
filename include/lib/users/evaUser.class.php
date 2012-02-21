@@ -46,29 +46,23 @@ class evaUser
 		$listeComplete = array();
 
 		$listeUtilisateurs = evaUser::getUserList();
-		foreach($listeUtilisateurs as $utilisateurs)
-		{
-			if($utilisateurs->ID != 1)
-			{
+		foreach($listeUtilisateurs as $utilisateurs){
+			if($utilisateurs->ID != 1){
 				$user_info = get_userdata($utilisateurs->ID);
 
 				unset($valeurs);
 				$valeurs['user_id'] = $user_info->ID;
 				$valeurs['user_registered'] = $user_info->user_registered;
-				if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) )
-				{
+				if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) ){
 					$valeurs['user_lastname'] = $user_info->user_lastname;
 				}
-				else
-				{
+				else{
 					$valeurs['user_lastname'] = '';
 				}
-				if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) )
-				{
+				if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) ){
 					$valeurs['user_firstname'] = $user_info->user_firstname;
 				}
-				else
-				{
+				else{
 					$valeurs['user_firstname'] = $user_info->user_nicename;
 				}
 
@@ -543,9 +537,8 @@ $user_additionnal_field .= '
 				(
 					SELECT COUNT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
 					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
-					WHERE USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation'
+					WHERE ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
 						AND status = 'valid'
-					GROUP BY USER_LINK_EVALUATION.table_element
 				) AS EVALUATED_USER
 			LIMIT 1"
 		);
@@ -975,7 +968,13 @@ $user_additionnal_field .= '
 		</tr>
 	</table>
 	<!-- 	Submit form button	-->
+<?php
+	if(current_user_can('digi_import_user')){
+?>
 	<div class="user_rapid_import_button" ><input disabled="disabled" type="submit" class="button-primary" name="importSubmit_rapid" id="importSubmit_rapid" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" /></div>
+<?php
+	}
+?>
 
 
 	<br/>
@@ -1006,7 +1005,13 @@ $user_additionnal_field .= '
 		</div><?php echo __('Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)', 'evarisk'); ?>
 		<input type="file" id="userFileToCreate" name="userFileToCreate" />
 		<!-- 	Submit form button	-->
+<?php
+	if(current_user_can('digi_import_user')){
+?>
 		<div class="user_import_button" ><input type="submit" class="button-primary" name="importSubmit" id="importSubmit" value="<?php echo __('Importer les utilisateurs', 'evarisk'); ?>" /></div>
+<?php
+	}
+?>
 	</div>
 
 </form>

@@ -1,6 +1,7 @@
 img{ cursor:pointer; }
 a{ cursor:pointer; }
 .required{ color:#FF0000;	}
+.digi_textcenter{ text-align:center;	}
 
 
 .digi_normal_pointer{	cursor:default !important;	}
@@ -137,22 +138,9 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .trashPicColumn{	width:10% !important;	}
 /* -- END PERMISSION -- */
 
-
-.digi_user_extra_field{	clear:both;	}
-.user_extra_fields{	clear:both; font-size:13px;	}
-#delete_digi_user_extra_field_container{	display:none;	}
-#digirisk_options_container th{	width:45% !important; padding:2px;	}
-#digirisk_options_container td{	padding:2px;	}
-#taille_photo_poste_fiche_de_poste{	width:46px;	}
-#digirisk_options_container .form-table{		margin:0px 12px !important;	}
-#digirisk_options_container .ui-tabs-panel{	padding:0px !important;	}
-#digirisk_options_container .ui-widget-header{background:none #FFFFFF !important;	}
-.digirisk_options_categories_list{	margin-left: 1.3em;	}
-.evarisk_options_explanation{	font-weight:bold; font-style:italic;	}
-
 .dataTables_length{	width:50% !important;	}
 .dataTables_paginate{	margin:12px 24px;	}
-.dataTables_filter{	float:right; /*width:15% !important;*/	}
+.dataTables_filter{	float:right;	}
 .dataTables_filter .ui-icon{	float:left;	}
 .dataTables_filter input{	float:left;	}
 .searchDataTableIcon{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -160px -112px !important; width:16px; height:16px; margin:3px 0px;}
@@ -578,6 +566,8 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 .asked_action_control{	margin:0px 0px 22px;	}
 .asked_action_control_details{	width:95%; margin:10px auto;	}
+
+.digi_correctiv_action_document_list {	 }
 /* -- END Actions correctives -- */
 
 
@@ -636,6 +626,9 @@ td.details table{	margin:0px 0px 24px !important;	}
 .checkAll, .uncheckAll{ font-size:9px;cursor:pointer;	}
 
 .userIdentifierColumn{	width:8%;	}
+.userNotificationIdentifierColumn{	width:3.5%;	}
+.rightBorder{	border-right:1px solid #C0C0C0 !important;	}
+.bottomBorder{	border-bottom:1px solid #C0C0C0 !important;	}
 
 .ac_results li{	color:#242424 !important;	}
 .ac_over {		background-color:#DDDDDD !important;	}
@@ -644,6 +637,22 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 /* -- Options -- */
 .optionsActionColumn{	width:30px !important;	}
+
+.digi_user_extra_field{	clear:both;	}
+.user_extra_fields{	clear:both; font-size:13px;	}
+#delete_digi_user_extra_field_container{	display:none;	}
+#digirisk_options_container th{	width:45% !important; padding:2px;	}
+#digirisk_options_container td{	padding:2px;	}
+#taille_photo_poste_fiche_de_poste{	width:46px;	}
+#digirisk_options_container .form-table{		margin:0px 12px !important;	}
+#digirisk_options_container .ui-tabs-panel{	min-height:350px;	}
+#digirisk_options_container .ui-widget-header{background:none #FFFFFF !important; border-top:0px; border-left:0px; border-right:0px;	border-bottom:1px solid #C0C0C0;	}
+.digirisk_options_categories_list{	margin-left: 1.3em;	}
+.evarisk_options_explanation{	font-weight:bold; font-style:italic;	}
+#options_tabs{	border:0px;	}
+
+.digi_allowed_extension_for_AC_fieldset{	border:1px solid #C0C0C0;	width:60%; }
+.add_new_extension_to_allow, .delete_allowed_extension_for_ac_docs{	vertical-align:middle; width:20px;	}
 /* -- End options -- */
 
 /* -- Recommandation -- */
@@ -769,3 +778,21 @@ td.details table{	margin:0px 0px 24px !important;	}
 .ui-timepicker-div dl dt{ height: 25px; }
 .ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
 .ui-timepicker-div td { font-size: 90%; }
+
+/*	Tableau de bord	*/
+.digi_all_user_list{	margin:0px 25px;	}
+.digi_all_user_list li{	list-style-type:square !important;	}
+
+/*	Documents	*/
+.associated_document_list{	width:100%; border-collapse:collapse; }
+.associated_document_list_download_link{	text-align:right;	}
+.delete_document_button_container{	width:20px !important;	}
+.delete_document_button_container img{	width:15px !important;	}
+
+.element_associated_document_info{	background: url("../../medias/jquery_pics/ui-icons_2e83ff_256x240.png") !important; background-position: -16px -144px !important; cursor:pointer;	}
+.associated_document_infos_container{	padding:6px 15px;	}
+
+
+/*	user notifications	*/
+#userNotificationContainerBox{		overflow-x:scroll !important;	}
+#userNotificationContainerBox table{		table-layout:auto !important;	}

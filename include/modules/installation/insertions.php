@@ -1262,6 +1262,61 @@ ou irritantes');";
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
+		case 64:
+		{
+			$digirisk_options = get_option('digirisk_options');
+			$digirisk_options['digi_ac_allowed_ext'] = array('txt', 'odt', 'pdf', 'doc', 'docx');
+			update_option('digirisk_options', $digirisk_options);
+
+			$standard_message_subject_to_send = __('Notification de modification sur %s', 'evarisk');
+			$standard_message_to_send = __('Bonjour,
+
+Une modification a &eacute;t&eacute; apport&eacute;e &agrave; %s.
+Action: %s.
+Date: %s.
+Personne ayant r&eacute;alis&eacute; la modification: %s.
+
+Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute;l&eacute;ment concern&eacute; par la modification et que vous &ecirc;tes inscrit &agrave; la liste de notification de cet &eacute;l&eacute;ment', 'evarisk');
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'update', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'mark_done', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'export', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'affectation_update', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'doc_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'doc_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_as_main_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_as_main_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_as_before_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_as_before_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_as_after_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'picture_as_after_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'user_affectation_update', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'follow_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'add_new_subtask', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+
+
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'update', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'mark_done', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'set_in_progress', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'doc_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'doc_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_as_main_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_as_main_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_as_before_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_as_before_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_as_after_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'picture_as_after_delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'user_affectation_update', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'follow_add', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
 	}
 
 }

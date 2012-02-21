@@ -1742,6 +1742,85 @@ ADD INDEX ( impressionRecommandation ) ;";
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 64)
+		{//		Add an options for allowed extension in correctiv action element / Add table allowing to store messages send to user from correctiv action
+			/*	Define the available notification by element */
+			$t = DIGI_DBT_ELEMENT_NOTIFICATION;
+			$query = 
+"CREATE TABLE {$t} (
+	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`status` enum('valid', 'moderated', 'deleted') NOT NULL DEFAULT 'valid',
+	`creation_date` datetime NOT NULL,
+	`last_update_date` datetime NOT NULL,
+	`table_element` char(255) collate utf8_unicode_ci NOT NULL,
+	`action` char(255) collate utf8_unicode_ci NOT NULL,
+	`message_subject` char(255) CHARACTER SET utf8 NOT NULL,
+	`message_to_send` text CHARACTER SET utf8 NOT NULL,
+	PRIMARY KEY (`id`),
+	KEY status (status),
+	KEY table_element (table_element),
+	KEY action (action)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			$wpdb->query($query);
+
+			/*	Ajout de la table de liaison entre un utilisateur et un element du logiciel */
+			$t = DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT;
+			$query = "
+CREATE TABLE {$t} (
+	id int(10) NOT NULL auto_increment,
+	status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+	date_affectation datetime NOT NULL,
+	id_attributeur bigint(20) NOT NULL,
+	date_desAffectation datetime NOT NULL,
+	id_desAttributeur bigint(20) NOT NULL,
+	id_user bigint(20) NOT NULL,
+	id_notification int(10) NOT NULL,
+	id_element int(10) NOT NULL,
+	table_element char(255) collate utf8_unicode_ci NOT NULL,
+	PRIMARY KEY  (id),
+	KEY status (status),
+	KEY id_user (id_user),
+	KEY id_notification (id_notification),
+	KEY id_element (id_element),
+	KEY table_element (table_element)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			$wpdb->query($query);
+
+			/*	Messages send to user */
+			$t = DIGI_DBT_MESSAGES;
+			$query = 
+"CREATE TABLE {$t} (
+	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`status` enum('valid', 'moderated', 'deleted', 'archived') NOT NULL DEFAULT 'valid',
+	`send_status` enum('sent','resent') NOT NULL DEFAULT 'sent',
+	`creation_date` datetime NOT NULL,
+	`last_dispatch_date` datetime NOT NULL,
+	`user_id` bigint(20) unsigned NOT NULL,
+	`id_notification` int(10) NOT NULL,
+	`id_element` int(10) NOT NULL,
+	`table_element` char(255) collate utf8_unicode_ci NOT NULL,
+	`title` char(255) NOT NULL,
+	`user_email` varchar(255) NOT NULL,
+	`message` text CHARACTER SET utf8 NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			$wpdb->query($query);
+
+			/*	Message history of send message */
+			$t = DIGI_DBT_HISTORIC;
+			$query = 
+"CREATE TABLE {$t}	(
+	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`status` enum('valid', 'moderated', 'deleted') NOT NULL DEFAULT 'valid',
+	`creation_date` datetime NOT NULL,
+	`message_id` int(11) unsigned NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			$wpdb->query($query);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

@@ -218,6 +218,8 @@ class EvaActivity extends EvaBaseActivity
 			$contenuInputResponsable = $activite->getidResponsable();
 			$contenuInputRealisateur = $activite->getidSoldeur();
 			$ProgressionStatus = $activite->getProgressionStatus();
+			$firstInsert = $activite->getFirstInsert();
+			$idCreateur = $activite->getidCreateur();
 			$grise = false;
 			$idPere = $activite->getRelatedTaskId();
 			$saveOrUpdate = 'update';
@@ -227,10 +229,11 @@ class EvaActivity extends EvaBaseActivity
 			}
 		}
 		else{
-			$contenuInputTitre = $contenuInputDescription = $contenuInputRealisateur = $contenuInputResponsable = '';
+			$contenuInputTitre = $contenuInputDescription = $contenuInputRealisateur = $contenuInputResponsable = $firstInsert = '';
 			$contenuInputDateDebut = date('Y-m-d');
 			$contenuInputDateFin = date('Y-m-d');
 			$ProgressionStatus = 'Done';
+			$idCreateur = 0;
 			$contenuInputAvancement = 0;
 			$idPere = $arguments['idPere'];
 			$grise = true;
@@ -272,6 +275,22 @@ class EvaActivity extends EvaBaseActivity
 			$nomChamps = "nom_activite";
 			$idTitre = "nom_activite";
 			$activite_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput', '', '99%');
+		}
+		{/*	Sub-Task creation informations		*/		
+			if(($firstInsert != '') || ($idCreateur > 0)){
+				if(($firstInsert != '') && ($idCreateur > 0)){
+					$subtask_creator_infos = evaUser::getUserInformation($idCreateur);
+					$activite_new .= sprintf(__('Ajout&eacute;e le %s par %s', 'evarisk'), mysql2date('d M Y', $firstInsert, true), $subtask_creator_infos[$idCreateur]['user_lastname'] . ' ' . $subtask_creator_infos[$idCreateur]['user_firstname']);
+				}
+				elseif($firstInsert != ''){
+					$activite_new .= sprintf(__('Ajout&eacute;e le %s', 'evarisk'), mysql2date('d M Y', $firstInsert, true));
+				}
+				elseif($idCreateur > 0){
+					$subtask_creator_infos = evaUser::getUserInformation($idCreateur);
+					$activite_new .= sprintf(__('Ajout&eacute;e par %s', 'evarisk'), $subtask_creator_infos[$idCreateur]['user_lastname'] . ' ' . $subtask_creator_infos[$idCreateur]['user_firstname']);
+				}
+				$activite_new .= '<br /><br class="clear" />';
+			}
 		}
 		{/*	Sub-Task start date		*/
 			$contenuAideTitre = "";

@@ -53,6 +53,7 @@ __('permission_user_evaluator', 'evarisk');
 __('permission_user_menu', 'evarisk');
 __('permission_user_role', 'evarisk');
 __('permission_user_right', 'evarisk');
+__('permission_user_import', 'evarisk');
 
 __('permission_option', 'evarisk');
 __('permission_option_menu', 'evarisk');
@@ -62,6 +63,7 @@ __('permission_referential_menu', 'evarisk');
 
 __('permission_unite', 'evarisk');
 __('permission_groupement', 'evarisk');
+
 
 /*	Options capabilities	*/
 __('digi_edit_option', 'evarisk');
@@ -105,6 +107,8 @@ __('digi_view_evaluator_group_trash', 'evarisk');
 __('digi_edit_evaluator_group_trash', 'evarisk');
 __('digi_view_user_role_trash', 'evarisk');
 __('digi_edit_user_role_trash', 'evarisk');
+
+__('digi_import_user', 'evarisk');
 
 /*	Recommandation capabilities	*/
 __('digi_add_recommandation_cat', 'evarisk');
@@ -224,3 +228,27 @@ __('user_professional_qualification', 'evarisk');
 
 __('in_progress', 'evarisk');
 __('done', 'evarisk');
+
+/*	User notification part	*/
+{/*	Corrective action task and sub-task	*/
+	__('update', 'wpshop');
+	__('delete', 'wpshop');
+	__('transfer', 'wpshop');
+	__('mark_done', 'wpshop');
+	__('export', 'wpshop');
+	__('add_new_subtask', 'wpshop');
+	__('set_in_progress', 'wpshop');
+	__('doc_add', 'wpshop');
+	__('doc_delete', 'wpshop');
+	__('picture_add', 'wpshop');
+	__('picture_delete', 'wpshop');
+	__('picture_as_main_add', 'wpshop');
+	__('picture_as_main_delete', 'wpshop');
+	__('picture_as_after_add', 'wpshop');
+	__('picture_as_after_delete', 'wpshop');
+	__('picture_as_before_add', 'wpshop');
+	__('picture_as_before_delete', 'wpshop');
+	__('affectation_update', 'wpshop');
+	__('user_affectation_update', 'wpshop');
+	__('follow_add', 'wpshop');
+}

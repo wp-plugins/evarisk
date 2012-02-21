@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 5.1.4.4
+Stable tag: 5.1.4.5
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,27 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.4.5 =
+
+Am&eacute;liorations
+
+* Affichage du demandeur et de la date de la demande d'une t&acirc;che
+* Envoi des fichiers dans les actions correctives (Gestion des extensions de fichiers autoris&eacute;es depuis la configuration du plugin dans l'onglet "action corrective")
+* Possibilit&eacute; de bloquer l'acc&eacute;s au site gr&acirc;ce &agrave; un fichier htaccess depuis les options du logiciel dans la partie utilisateur
+* Ajout d'un bouton permettant d'acc&eacute;der &agrave; la liste des utilisateurs inscrit/ayant ou n'ayant pas particip&eacute; &agrave; l'audit
+* Possibilit&eacute; de notifier les utilisateurs affect&eacute;s aux t&acirc;ches et sous-t&acirc;ches pour chaque action effectu&eacute;e
+
+Corrections
+
+* Droits d'acc&eacute;s &agrave; l'import des utilisateurs
+* La visualisation des d&eacute;tails d'une sous-t&acirc;ches depuis le suivi des actions correctives &eacute;tait d&eacute;faillant
+* Le d&eacute;marquage de la photo apr&egrave;s l'action &eacute;tait impossible
+
+Divers
+
+* D&eacute;placement des menus de configurations dans la partie r&eacute;glages de wordpress (En pr&eacute;vision de la refonte des menus)
 
 
 = Version 5.1.4.4 =

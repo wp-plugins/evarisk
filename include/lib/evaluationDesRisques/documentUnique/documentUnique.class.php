@@ -526,7 +526,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				{
 					evarisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 					evarisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
-					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadDocument", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
+					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
 					evarisk("#modelListForGeneration").show();
 				}
 				else
@@ -719,7 +719,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			if( count($listeParDate) > 0 )
 			{
 				$outputListeDocumentUnique .= 
-'<table summary="" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;" >
+'<table summary="" cellpadding="0" cellspacing="0" class="associated_document_list" >
 	<thead></thead>
 	<tfoot></tfoot>
 	<tbody>';
@@ -775,14 +775,16 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 		/*	In case that the user click on the duer deletion button	*/
 		jQuery(".deleteDUER").click(function(){
-			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
-				"table":"' . TABLE_DUER . '",
-				"act":"deleteDUER",
-				"tableElement":"' . $tableElement . '",
-				"idElement":"' . $idElement . '",
-				"idDocument":jQuery(this).attr("id").replace("duerToDelete", "")
-			});
+			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document unique?', 'evarisk') . '"))){
+				jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					"post":"true", 
+					"table":"' . TABLE_DUER . '",
+					"act":"deleteDUER",
+					"tableElement":"' . $tableElement . '",
+					"idElement":"' . $idElement . '",
+					"idDocument":jQuery(this).attr("id").replace("duerToDelete", "")
+				});
+			}
 		});
 	})(evarisk)
 </script>';

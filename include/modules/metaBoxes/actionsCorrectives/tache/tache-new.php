@@ -12,8 +12,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' )
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 
-function getTaskGeneralInformationPostBoxBody($arguments)
-{
+function getTaskGeneralInformationPostBoxBody($arguments){
 	$postId = '';
 	if($arguments['idElement'] != null){
 		$postId = $arguments['idElement'];
@@ -29,6 +28,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$startDate = $tache->getStartDate();
 		$endDate = $tache->getFinishDate();
 		$firstInsert = $tache->getFirstInsert();
+		$creatorID = $tache->getidCreateur();
 		$efficacite = $tache->getEfficacite();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
@@ -45,6 +45,7 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$endDate = '';
 		$firstInsert = '';
 		$idProvenance = 0;
+		$creatorID = 0;
 		$tableProvenance = '';
 		$efficacite = '';
 		$idPere = $arguments['idPere'];
@@ -72,8 +73,20 @@ function getTaskGeneralInformationPostBoxBody($arguments)
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
 	{//Dates
-		if($firstInsert != ''){
-			$tache_new .='<br/>' . __('Ajout&eacute;e le', 'evarisk') . '&nbsp;' . mysql2date('d M Y', $firstInsert, true) . '<br/>';
+		if(($firstInsert != '') || ($creatorID > 0)){
+			$tache_new .='<br/>';
+			if(($firstInsert != '') && ($creatorID > 0)){
+				$task_creator_infos = evaUser::getUserInformation($creatorID);
+				$tache_new .= sprintf(__('Ajout&eacute;e le %s par %s', 'evarisk'), mysql2date('d M Y', $firstInsert, true), $task_creator_infos[$creatorID]['user_lastname'] . ' ' . $task_creator_infos[$creatorID]['user_firstname']);
+			}
+			elseif($firstInsert != ''){
+				$tache_new .= sprintf(__('Ajout&eacute;e le %s', 'evarisk'), mysql2date('d M Y', $firstInsert, true));
+			}
+			elseif($creatorID > 0){
+				$task_creator_infos = evaUser::getUserInformation($creatorID);
+				$tache_new .= sprintf(__('Ajout&eacute;e par %s', 'evarisk'), $task_creator_infos[$creatorID]['user_lastname'] . ' ' . $task_creator_infos[$creatorID]['user_firstname']);
+			}
+			$tache_new .='<br/>';
 		}
 		if(($startDate != '') && ($endDate != '') && ($startDate != '0000-00-00') && ($endDate != '0000-00-00'))
 		{
