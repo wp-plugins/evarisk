@@ -195,8 +195,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
 					valeurActuelle = evarisk("#' . $idTitre . '").val();
-          if(valeurActuelle == "")
-          {
+          if(jQuery.trim(valeurActuelle) == ""){
             alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
 					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
@@ -285,7 +284,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
 					valeurActuelle = evarisk("#' . $idTitre . '").val();
-          if(valeurActuelle == ""){
+          if(jQuery.trim(valeurActuelle) == ""){
             alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
 					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui")){

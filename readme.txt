@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 5.1.4.5
+Stable tag: 5.1.4.6
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,6 +75,14 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.4.6 =
+
+Corrections
+
+*	Gestion de l'arbre d&eacute;faillant depuis la version 3.3.1 de wordpress. Impossibilit&eacute; de d&eacute;placer des &eacute;l&eacute;ments
+* V&eacute;rification que le nom d'une nouvelle t&acirc;che soit bien rempli avant sa cr&eacute;ation
+
+
 = Version 5.1.4.5 =
 
 Am&eacute;liorations
@@ -105,7 +113,7 @@ Am&eacute;liorations
 
 Corrections
 
-* Une exception javascript &eacute;tait lanc&eacute;e lors de la cr&eacute;ation d'une action corrective (Le formulaire avec un enctype d&eacute;fini pour envoyer des fichiers ce qui posait probl&egrave;me à la r&eacute;ception) 
+* Une exception javascript &eacute;tait lanc&eacute;e lors de la cr&eacute;ation d'une action corrective (Le formulaire avec un enctype d&eacute;fini pour envoyer des fichiers ce qui posait probl&egrave;me &agrave; la r&eacute;ception) 
 * Le click sur un utilisateur dans la liste permettant de choisir un responsable pour les t&acirc;ches et sous-t&acirc;ches d'un groupement ne fonctionnait pas 
 
 

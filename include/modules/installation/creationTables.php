@@ -1821,6 +1821,11 @@ CREATE TABLE {$t} (
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 65)
+		{//		Mark all task and sub-task with empty name as deleted
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

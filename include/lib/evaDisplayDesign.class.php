@@ -799,12 +799,12 @@ class EvaDisplayDesign {
 	
 		// Configure draggable nodes
 		evarisk("#' . $idTable . ' .noeudArbre, #' . $idTable . ' .feuilleArbre").draggable({
-			start: function(event, ui) {
-				draggedObject = event.target.id;
-				var classNames = event.target.className.split(\' \');
+			start: function(event, ui){
+				draggedObject = jQuery(this).closest("tr").attr("id");//event.target.id;
+				var classNames = jQuery(this).closest("tr").attr("class").split(\' \');//event.target.className.split(\' \');
 				draggedObjectFather = "temp";
-				for(key in classNames) {
-					if(classNames[key].match("child-of-")) {
+				for(key in classNames){
+					if(classNames[key].match("child-of-")){
 						draggedObjectFather = evarisk("#" + classNames[key].substring(9));
 						draggedObjectFather = draggedObjectFather.attr("id");
 					}
@@ -821,7 +821,7 @@ class EvaDisplayDesign {
 		var dropFunction = function(event, ui){
 			// Call jQuery treeTable plugin to move the branch
 			evarisk(evarisk(ui.draggable)).appendBranchTo(this);
-			var dropLocation = event.target.id;
+			var dropLocation = jQuery(this).closest("tr").attr("id");//event.target.id;
 
 			evarisk("#equilize").click();
 			evarisk("#' . $divDeChargement . '").addClass("updated");
@@ -1004,15 +1004,13 @@ class EvaDisplayDesign {
 		evarisk("#' . $idTable . ' .addMain img").click(function(){
 			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
 			var expanded = reInitTreeTable();';
-		if($table == TABLE_GROUPEMENT)
-		{
+		if($table == TABLE_GROUPEMENT){
 		$script .= '
 			evarisk("#menu").val("gestiongrptut");';
 		}
 			$script .= '
 			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
+			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 				"post": "true", 
 				"table": "' . $table . '",
 				"act": "add",
@@ -1029,8 +1027,7 @@ class EvaDisplayDesign {
 		evarisk("#' . $idTable . ' .addSecondary img").click(function(){
 			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
 			var expanded = reInitTreeTable();';
-		if($table == TABLE_GROUPEMENT)
-		{
+		if($table == TABLE_GROUPEMENT){
 		$script .= '
 			evarisk("#menu").val("gestiongrptut");';
 		}

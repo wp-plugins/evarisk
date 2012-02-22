@@ -1317,6 +1317,16 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;
 		}
+		case 65:
+		{
+			$wpdb->update(TABLE_TACHE, array('Status' => 'Deleted'), array('nom' => ''));
+			$wpdb->update(TABLE_ACTIVITE, array('Status' => 'Deleted'), array('nom' => ''));
+			$wpdb->query("ALTER TABLE " . TABLE_TACHE . " DROP INDEX idPhotoAvant_2");
+			$wpdb->query("ALTER TABLE " . TABLE_TACHE . " DROP INDEX idPhotoApres_2");
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
 	}
 
 }
