@@ -573,7 +573,7 @@ if(current_user_can('digi_edit_option'))
 		$digi_users_access_field = '';
 		if(current_user_can('digi_edit_option')){
 			$digi_users_access_field = "
-<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='text' value='{$options['digi_users_access_field']}' />
+<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='hidden' value='{$options['digi_users_access_field']}' />
 	" . EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, $options['digi_users_access_field']) . "
 	<br/><label for='identifiant_htpasswd'>" . __('Idenfiant', 'evarisk') . "&nbsp;:</label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' type='text' value='{$options['identifiant_htpasswd']}' />
 	<br/><label for='password_htpasswd'>" . __('Mot de passe', 'evarisk') . "&nbsp;:</label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' type='text' value='{$options['password_htpasswd']}' />";
@@ -582,7 +582,7 @@ if(current_user_can('digi_edit_option'))
 		else{
 			echo $options['digi_users_access_field'];
 		}
-	}	
+	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
