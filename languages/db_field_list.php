@@ -250,5 +250,7 @@ __('done', 'evarisk');
 	__('picture_as_before_delete', 'wpshop');
 	__('affectation_update', 'wpshop');
 	__('user_affectation_update', 'wpshop');
+	__('delete_user_from_affectation_list', 'wpshop');
+	__('add_user_from_affectation_list', 'wpshop');
 	__('follow_add', 'wpshop');
 }

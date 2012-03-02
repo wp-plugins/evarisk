@@ -46,7 +46,7 @@
 				$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
 				foreach($riskAndSubRisks as $risk)
 				{
-					$scoreRisqueUniteTravail += $risk[1]['value'];
+					$scoreRisqueUniteTravail += $risk[2]['value'];
 				}
 				$nombreRisqueUniteTravail = count($riskAndSubRisks);
 			}
@@ -146,6 +146,7 @@
 							});
 						})
 					</script>';
+			$renduPage .= '<div class="alignleft element_identifier_recap" >' . ELEMENT_IDENTIFIER_UT . $idElement . '&nbsp;-&nbsp;</div>';
 			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
 			{
 				$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreWU, $nomUniteTravail, null, null, $idTitreWU, false, false, 255,'titleInfo', '','', $script, 'left');

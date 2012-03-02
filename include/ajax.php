@@ -157,7 +157,7 @@ if($_REQUEST['post'] == 'true')
 						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)) //Le fils est un groupement
 						{
 							$groupement = EvaGroupement::getGroupement($idFils);
-							$descendants = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
+							$descendants = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement, $element, '1', 'id ASC', "");
 							$sourceIsParentOfDest = false;
 							foreach($descendants as $sourceDescendants)
 							{
@@ -168,7 +168,7 @@ if($_REQUEST['post'] == 'true')
 							}
 							if(!$sourceIsParentOfDest)
 							{
-								$pereActu = Arborescence::getPere($_REQUEST['table'], $groupement);
+								$pereActu = Arborescence::getPere($_REQUEST['table'], $groupement, "1");
 								if($pereActu->id != $idPere)
 								{
 									$_REQUEST['act'] = 'update';
@@ -1522,6 +1522,78 @@ echo $output;
 						echo $output;
 					}
 					break;
+
+					case 'copy_risk':{
+						$new_element = explode('-_-', $_REQUEST['new_element']);
+						/*	Get risk last evaluation	*/
+						$query = $wpdb->prepare(
+"SELECT R.id_danger, R.id_methode, R.id_element, R.nomTableElement, R.commentaire, R.date,
+	R_EVAL.id_variable, R_EVAL.valeur, R_EVAL.idEvaluateur, R_EVAL.date, R_EVAL.Status
+FROM " . TABLE_RISQUE . " AS R
+	INNER JOIN " . TABLE_AVOIR_VALEUR . " AS R_EVAL ON ((R_EVAL.id_risque = R.id) AND (R_EVAL.Status = 'Valid'))
+WHERE R.id = %d", $_REQUEST['id_risque']);
+						$risq_info = $wpdb->get_results($query);
+
+						/*	Read risk informations for new risk save	*/
+						foreach($risq_info as $risk){
+							$variables[$risk->id_variable] = $risk->valeur;
+						}
+						$idDanger = $risq_info[0]->id_danger;
+						$idMethode = $risq_info[0]->id_methode;
+						$tableElement = $new_element[0];
+						$idElement = $new_element[1];
+						$description = $risq_info[0]->commentaire;
+						$histo = false;
+						$new_risk = Risque::saveNewRisk('', $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+
+						$message = '';
+						$more_action = '';
+						if($new_risk > 0){
+							$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;' . __('Le risque a correctement &eacute;t&eacute; copi&eacute;', 'evarisk'));
+							$more_action = '
+	evarisk(document).ready(function(){
+		jQuery("#ongletVoirLesRisques").click();
+	});';
+						}
+						else{
+							$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;' . __('Le risque n\'a pas pu &ecirc;tre copi&eacute;', 'evarisk') . $risk_var_nb .'_'. $real_risk_nb);
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#messagewp_eva__risque", "' . $message . '");
+	setTimeout(\'actionMessageHide("#messagewp_eva__risque")\',7500);
+	jQuery("#loading_picto_risk_mover_container").html("");
+	jQuery("#loading_picto_risk_mover_container").hide();
+	jQuery("#button_risk_mover_container").show();' . $more_action . '
+</script>';
+					}break;
+					case 'move_risk':{
+						$new_element = explode('-_-', $_REQUEST['new_element']);
+						$update_result = $wpdb->update(TABLE_RISQUE, array('last_moved_date' => current_time('mysql', 0), 'id_element' => $new_element[1], 'nomTableElement' => $new_element[0]), array('id' => $_REQUEST['id_risque']));
+
+						$message = '';
+						$more_action = '';
+						if(($update_result == 1) || ($update_result == 0)){
+							$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;' . __('Le risque a correctement &eacute;t&eacute; d&eacute;plac&eacute;', 'evarisk'));
+							$more_action = '
+	evarisk(document).ready(function(){
+		jQuery("#ongletVoirLesRisques").click();
+	});';
+						}
+						else{
+							$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;' . __('Le risque n\'a pas pu &ecirc;tre d&eacute;plac&eacute;', 'evarisk'));
+						}
+
+						echo '
+<script type="text/javascript" >
+	actionMessageShow("#messagewp_eva__risque", "' . $message . '");
+	setTimeout(\'actionMessageHide("#messagewp_eva__risque")\',7500);
+	jQuery("#loading_picto_risk_mover_container").html("");
+	jQuery("#loading_picto_risk_mover_container").hide();
+	jQuery("#button_risk_mover_container").show();' . $more_action . '
+</script>';
+					}break;
 				}
 				break;
 			case TABLE_METHODE:
@@ -1531,6 +1603,8 @@ echo $output;
 					{
 						$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode'], '');
 						$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
+						$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
+						$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
 						$formId = (isset($_REQUEST['formId'])) ? eva_tools::IsValid_Variable($_REQUEST['formId']) : '';
 						unset($valeurInitialVariables);
 						if($idRisque != ''){
@@ -1604,8 +1678,73 @@ echo $output;
 							$formule .= 'jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val()';
 							$formule .= (isset($listeOperateur[$index]->operateur) && ($listeOperateur[$index]->operateur!= '')) ? ' ' . $listeOperateur[$index]->operateur . ' ' : '';
 						}
-						echo '<div class="eval_method_var" >' . $affichage . '</div><div class="eval_method_explanation" >' . $methodExplanationPicture . '</div>
+						if($formule == ''){
+							$formule = '""';
+						}
+						echo '
+<div class="eval_method_var" >' . $affichage . '</div><div class="eval_method_explanation" >' . $methodExplanationPicture . '</div>';
+						if($risque != null){
+							echo '
+<div class="clear risq_mover_container" >
+	<div id="risq_mover_title" class="alignright" >' . __('D&eacute;placer ce risque', 'evarisk') . '</div>
+	<div id="risq_mover" class="clear hide" >
+		<input type="hidden" name="risk_to_move" id="risk_to_move" value="' . $idRisque . '" />
+		<input type="hidden" name="receiver_element" id="receiver_element" value="" />
+		<div class="clear auto-search-container" >
+			<input class="auto-search-input" type="text" id="search_element" value="' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '" />
+			<span class="auto-search-ui-icon ui-icon" >&nbsp;</span>
+		</div>
+		<div class="clear hide alignright" id="loading_picto_risk_mover_container" >&nbsp;</div>
+		<div class="clear" id="button_risk_mover_container" >
+			<input type="buttton" name="move_risk" id="move_risk" value="' . __('D&eacute;placer', 'evarisk') . '" class="button-secondary clear alignright" />
+			<input type="buttton" name="copy_risk" id="copy_risk" value="' . __('Copier', 'evarisk') . '" class="button-secondary alignright" />
+		</div>
+	</div>
+</div>';
+						}
+						echo '
 <script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#risq_mover_title").click(function(){
+			jQuery("#risq_mover").toggle();
+		});
+
+		/*	Tree-element Search autocompletion	*/
+		jQuery("#search_element").live("click", function(){
+			jQuery(this).val("");
+			test = jQuery("#where_to_search_element").val();
+		});
+		jQuery("#search_element").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGp_UT.php?table_element=' . $tableElement . '&id_element=' . $idElement . '");
+		jQuery("#search_element").result(function(event, data, formatted){
+			jQuery("#receiver_element").val(data[1]);
+		});
+
+		jQuery("#move_risk").click(function(){
+			jQuery("#loading_picto_risk_mover_container").html(jQuery("#loading_round_pic").html());
+			jQuery("#loading_picto_risk_mover_container").show();
+			jQuery("#button_risk_mover_container").hide();
+			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post": "true", 
+				"table": "' . TABLE_RISQUE . '",
+				"act": "move_risk",
+				"id_risque": jQuery("#risk_to_move").val(),
+				"new_element": jQuery("#receiver_element").val()
+			});
+		});
+		jQuery("#copy_risk").click(function(){
+			jQuery("#loading_picto_risk_mover_container").html(jQuery("#loading_round_pic").html());
+			jQuery("#loading_picto_risk_mover_container").show();
+			jQuery("#button_risk_mover_container").hide();
+			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post": "true", 
+				"table": "' . TABLE_RISQUE . '",
+				"act": "copy_risk",
+				"id_risque": jQuery("#risk_to_move").val(),
+				"new_element": jQuery("#receiver_element").val()
+			});
+		});
+	});
+
 	function live_risk_calcul(){
 		var QR = ' . $formule . ';
 		jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '");
@@ -1763,8 +1902,8 @@ echo $output;
 							$tache->load();
 							$tache->transfert($idPere);
 
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $idFils, 'transfer');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'transfer', '', '');
 						}
 						else //Le fils est une activité
 						{
@@ -1773,8 +1912,8 @@ echo $output;
 							$activite->load();
 							$activite->transfert($idPere);
 
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $idFils, 'transfer');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $idFils, 'transfer', '', '');
 
 							/*	Update the action ancestor	*/
 							$relatedTask = new EvaTask($idPere);
@@ -1805,8 +1944,8 @@ echo $output;
 
 						if($tache->getStatus() != 'error')
 						{
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $id, 'affectation_update');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'affectation_update', '', '');
 
 							$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e', 'evarisk') . '</strong></p>') . '");';
 
@@ -1924,12 +2063,12 @@ echo $output;
 						if($tache->getStatus() != 'error'){
 							switch($_REQUEST['act']){
 								case 'update':
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'update');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'update', '', '');
 								break;
 								case 'taskDone':
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'mark_done');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'mark_done', '', '');
 								break;
 							}
 							$messageInfo = $messageInfo . '
@@ -2000,8 +2139,8 @@ echo $output;
 
 						$messageInfo = '<script type="text/javascript">';
 						if($tache->getStatus() != 'error'){
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'delete');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'delete', '', '');
 
 							$messageInfo = $messageInfo . '
 								evarisk(document).ready(function(){
@@ -2110,13 +2249,13 @@ echo $output;
 
 						$dirToSaveExportedFile = EVA_UPLOADS_PLUGIN_DIR . $_REQUEST['table'];
 						if(!is_dir($dirToSaveExportedFile)){
-							eva_tools::make_recursiv_dir($dirToSaveExportedFile);
-							eva_tools::changeAccesAuthorisation($dirToSaveExportedFile);
+							mkdir($dirToSaveExportedFile, 0755, true);
+							exec('chmod -R 755 ' . $dirToSaveExportedFile);
 						}
 						file_put_contents($dirToSaveExportedFile . '/taskExport.txt' ,$existingPreconisation);
 						if(is_file($dirToSaveExportedFile . '/taskExport.txt')){
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['id'], 'export');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'export', '', '');
 
 							echo '<a href="' . str_replace(EVA_UPLOADS_PLUGIN_DIR, EVA_UPLOADS_PLUGIN_URL, $dirToSaveExportedFile) . '/taskExport.txt" title="' . __('Pour le t&eacute;l&eacute;charger, faites un clic droit puis enregistrer sous', 'evarisk') . '" >' . __('T&eacute;l&eacute;charger le fichier g&eacute;n&eacute;r&eacute;', 'evarisk') . '</a>';
 						}
@@ -2457,17 +2596,17 @@ echo $output;
 						if($activite->getStatus() != 'error'){
 							switch($orignal_requested_act){
 								case 'save':
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask', '', '');
 								break;
 								case 'update':
 								case 'update_from_external':
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $_REQUEST['id'], 'update');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $_REQUEST['id'], 'update', '', '');
 								break;
 								case 'actionDone':
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $_REQUEST['id'], 'mark_done');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $_REQUEST['id'], 'mark_done', '', '');
 								break;
 							}
 
@@ -2791,9 +2930,9 @@ echo $output;
 						$activite->save();
 
 						$messageInfo = '<script type="text/javascript">';
-						if($activite->getStatus() != 'error'){							
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $_REQUEST['id'], 'delete');
+						if($activite->getStatus() != 'error'){
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $_REQUEST['id'], 'delete', '', '');
 
 							$messageInfo = $messageInfo . '
 								evarisk(document).ready(function(){
@@ -2869,8 +3008,8 @@ echo $output;
 						$activite->setProgressionStatus('inProgress');
 						$taskId = $activite->getRelatedTaskId();
 						$activite->save();
-						/*	Notify user when an action is done on a task or a sub task	*/
-						digirisk_user_notification::notify_affiliated_user(TABLE_ACTIVITE, $id, 'set_in_progress');
+						/*	Log modification on element and notify user if user subscribe	*/
+						digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $id, 'set_in_progress', '', '');
 
 						$updateTaskProgressionInTree = '';
 						if(($taskId != '') && ($taskId > 0))
@@ -2881,8 +3020,8 @@ echo $output;
 							$relatedTask->getTimeWindow();
 							$relatedTask->computeProgression();
 							$relatedTask->save();
-							/*	Notify user when an action is done on a task or a sub task	*/
-							digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $taskId, 'set_in_progress');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification(TABLE_TACHE, $taskId, 'set_in_progress', '', '');
 							$updateTaskProgressionInTree .= '
 	evarisk(".taskInfoContainer-' . $taskId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
@@ -2904,8 +3043,8 @@ echo $output;
 								unset($ancestorTask);
 								/*	Don't update the tree information if it is the root task	*/
 								if($task->id != 1){
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user(TABLE_TACHE, $task->id, 'set_in_progress');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $task->id, 'set_in_progress', '', '');
 									$updateTaskProgressionInTree .= '
 	evarisk(".taskInfoContainer-' . $task->id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
@@ -2968,7 +3107,8 @@ echo $output;
 
 						$saveFollow = suivi_activite::saveSuiviActivite($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['commentaire']);
 						if($saveFollow == 'ok'){
-							digirisk_user_notification::notify_affiliated_user($_REQUEST['tableElement'], $_REQUEST['idElement'], 'follow_add');
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification($_REQUEST['tableElement'], $_REQUEST['idElement'], 'follow_add', '', '');
 							$messageInfo .= '
 									evarisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 						}
@@ -3357,8 +3497,8 @@ echo $output;
 							switch($tableElement){
 								case TABLE_ACTIVITE:
 								case TABLE_TACHE:
-									/*	Notify user when an action is done on a task or a sub task	*/
-									digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'doc_delete');
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_delete', '', '');
 								break;
 							}
 						}
@@ -4496,8 +4636,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_add');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_add', '', '');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4538,8 +4678,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_add');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_add', '', '');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4580,8 +4720,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_delete');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_delete', '', '');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4622,8 +4762,8 @@ echo $output;
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_delete');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_delete', '', '');
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4777,10 +4917,9 @@ echo $output;
 			{
 				$tableProvenance = eva_tools::IsValid_Variable($_REQUEST['tableProvenance']);
 				$elementToRestore = eva_tools::IsValid_Variable($_REQUEST['elementToRestore']);
-				$elementToRestore = explode(',', $elementToRestore);
+				$elementToRestore = explode(', ', $elementToRestore);
 				$queryResult = $i = 0;
-				if(is_array($elementToRestore) && (count($elementToRestore) > 0))
-				{
+				if(is_array($elementToRestore) && (count($elementToRestore) > 0)){
 					foreach($elementToRestore as $elements){
 						if($elements != '')
 						{
@@ -4851,10 +4990,10 @@ switch($tableProvenance)
 					case TABLE_GROUPEMENT:
 						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_groupement_trash'))
 						{
-								$trash_elements[$i]['element'] = $tableProvenance;
-								$trash_elements[$i]['name'] = __('Groupements', 'evarisk');
-								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_GP;
-								$i++;
+							$trash_elements[$i]['element'] = $tableProvenance;
+							$trash_elements[$i]['name'] = __('Groupements', 'evarisk');
+							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_GP;
+							$i++;
 						}
 						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_unite_trash'))
 						{
@@ -4948,9 +5087,8 @@ switch($tableProvenance)
 							$idTable = 'trashedElement' . $element_definition['element'];
 							$titres = array(__('Photo', 'evarisk'), __('Nom', 'evarisk'), __('Description', 'evarisk'));
 							$classes = array('trashPicColumn', 'trashNameColumn', 'trashDescriptionColumn');
-							foreach($trashedElement as $element)
-							{
-								$columnAdded = false;
+							$columnAdded = false;
+							foreach($trashedElement as $element){
 								$nameField = 'nom';
 
 								unset($ligne);
@@ -4960,6 +5098,11 @@ switch($tableProvenance)
 								$ligne[] = array('value' => $elementPicture, 'class' => '');
 								$ligne[] = array('value' => $element_definition['prefix_identifier'] . $element->id . '&nbsp;-&nbsp;' . $element->$nameField, 'class' => '');
 								$ligne[] = array('value' => $element->description, 'class' => '');
+
+								$has_sub_element = false;
+								$able_to_restore_current_element = true;
+								$parent_class = '';
+								$is_disabled = '';
 
 								/*	Add the different column for each element type	*/
 								switch($element_definition['element'])
@@ -4976,22 +5119,39 @@ switch($tableProvenance)
 											$classes[] = 'trashChildrenColumn';
 											$columnAdded = true;
 										}
-										$ancetres = Arborescence::getAncetre($element_definition['element'], $element);
+										$ancetres = Arborescence::getAncetre($element_definition['element'], $element, "limiteGauche ASC", '1', "");
+										$direct_parent = Arborescence::getPere($element_definition['element'], $element, "1");
+										$parent_class .= ' direct_' . TABLE_GROUPEMENT . '_element_to_restore_' . $direct_parent->id;
+										if($direct_parent->Status != 'Valid'){
+											$is_disabled = ' disabled="disabled" ';
+											$parent_class .= ' orignal_disabled';
+										}
 										$miniFilAriane = '         ';
 										foreach($ancetres as $ancetre){
+											$ancester_children = EvaGroupement::getUnitesDuGroupement($ancetre->id);
+											if(is_array($ancester_children) && (count($ancester_children) > 0)){
+												$able_to_restore_current_element = false;
+											}
 											if($ancetre->nom != "Groupement Racine"){
 												$miniFilAriane .= $element_definition['prefix_identifier'] . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+												$parent_class .= ' children_of_' . TABLE_GROUPEMENT . '_element_to_restore_' . $ancetre->id;
 											}
 										}
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 										$miniFilAriane = '         ';
-										$descendants = Arborescence::getDescendants($element_definition['element'], $element);
-										foreach($descendants as $descendant){
-											$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										$descendants = Arborescence::getDescendants($element_definition['element'], $element, '1', 'id ASC', "");
+										if(count($descendants) > 0){
+											foreach($descendants as $descendant){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+											}
+											$has_sub_element = true;
 										}
-										$descendants = EvaGroupement::getUnitesDescendantesDuGroupement($element->id);
-										foreach($descendants as $descendant){
-											$miniFilAriane .= ELEMENT_IDENTIFIER_UT . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										$descendants = EvaGroupement::getUnitesDescendantesDuGroupement($element->id, '1', 'nom ASC', "");
+										if(count($descendants) > 0){
+											foreach($descendants as $descendant){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_UT . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+											}
+											$has_sub_element = true;
 										}
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 									}
@@ -5007,15 +5167,25 @@ switch($tableProvenance)
 											$columnAdded = true;
 										}
 										$directParent = EvaGroupement::getGroupement($element->id_groupement);
-										$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent);
+										$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent, "limiteGauche ASC", '1', "");
 										$miniFilAriane = '         ';
 										foreach($ancetres as $ancetre){
 											if($ancetre->nom != "Groupement Racine"){
 												$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+												$parent_class .= ' children_of_' . TABLE_GROUPEMENT . '_element_to_restore_' . $ancetre->id;
 											}
 										}
 										if($directParent->nom != "Groupement Racine"){
 											$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $directParent->id . '&nbsp;-&nbsp;' . $directParent->nom . ' &raquo; ';
+											$parent_class .= ' children_of_' . TABLE_GROUPEMENT . '_element_to_restore_' . $directParent->id . ' direct_' . TABLE_GROUPEMENT . '_element_to_restore_' . $directParent->id;
+											$parent_direct_children = Arborescence::getDescendants(TABLE_GROUPEMENT, $directParent);
+											if(is_array($parent_direct_children) && (count($parent_direct_children) > 0)){
+												$able_to_restore_current_element = false;
+											}
+											if($directParent->Status != 'Valid'){
+												$is_disabled = ' disabled="disabled" ';
+												$parent_class .= ' orignal_disabled';
+											}
 										}
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 									}
@@ -5175,7 +5345,17 @@ switch($tableProvenance)
 								}
 
 								if($userIsAllowedToUpdateTrash){
-									$ligne[] = array('value' => '<input type="checkbox" class="alignright elementToRestore" value="' . $element_definition['element'] . '_element_to_restore_' . $element->id . '" />', 'class' => '');
+									if($able_to_restore_current_element){
+										$col_value = '<input ' . $is_disabled . ' type="checkbox" class="alignright elementToRestore ' . $parent_class . '" value="' . $element_definition['element'] . '_element_to_restore_' . $element->id . '" id="' . $element_definition['element'] . '_element_to_restore_' . $element->id . '" /><label class="alignright" for="' . $element_definition['element'] . '_element_to_restore_' . $element->id . '" >' . __('Cet &eacute;l&eacute;ment', 'evarisk') . '</label>';
+										if($has_sub_element){
+											$col_value .= '<br class="clear" />
+										<input ' . $is_disabled . ' type="checkbox" class="alignright elementToRestoreRecursif ' . $parent_class . ' recursiv_for_' . $element_definition['element'] . '_element_to_restore_' . $element->id . '" value="' . $element_definition['element'] . '_element_to_restore_recusively_' . $element->id . '" id="' . $element_definition['element'] . '_element_to_restore_recusively_' . $element->id . '" /><label class="alignright" for="' . $element_definition['element'] . '_element_to_restore_recusively_' . $element->id . '" >' . __('Et sous-&eacute;l&eacute;ments', 'evarisk') . '</label>';
+										}
+									}
+									else{
+										$col_value = __('Restauration impossible', 'evarisk');
+									}
+									$ligne[] = array('value' => $col_value, 'class' => '');
 								}
 
 								$lignesDeValeurs[] = $ligne;
@@ -5183,7 +5363,7 @@ switch($tableProvenance)
 							}
 							if($userIsAllowedToUpdateTrash){
 								$titres[] = '';
-								$class[] = 'trashActionColumn';
+								$classes[] = 'trashActionColumn';
 							}
 							$script = '
 <script type="text/javascript" >
@@ -5219,43 +5399,143 @@ switch($tableProvenance)
 					$output ='<div class="trashContentCenter" >' .  __('Aucun &eacute;l&eacute;ment n\'a &eacute;t&eacute; s&eacute;lectionn&eacute;', 'evarisk') . '</div>';
 				}
 
-				if($userIsAllowedToUpdateTrash)
-				{
+				if($userIsAllowedToUpdateTrash){
 					$output .= '
 <input type="hidden" value="" name="elementToRestore" id="elementToRestore" />
 <input type="button" class="button-secondary updateTrash alignright" id="updateTrash" disabled="disabled" value="' . __('Restaurer la s&eacute;lection', 'evarisk') . '" />
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
-		evarisk(".elementToRestore").click(function(){
-			var currentElementToRestore = evarisk("#elementToRestore").val();
-			var elementToAdd = evarisk(this).val() + ", ";
-			currentElementToRestore = currentElementToRestore.replace(elementToAdd, "");
-			if(evarisk(this).is(":checked")){
-				currentElementToRestore = currentElementToRestore.replace(elementToAdd, "") + elementToAdd;
+
+		jQuery(".elementToRestore").live("click", function(){
+			add_element_to_restore(jQuery(this));
+			var classes_element_to_restore = jQuery(this).attr("class").split(" ");
+			var current_attr_id = jQuery(this).attr("id");
+
+			if(!jQuery("#" + current_attr_id).is(":checked")){
+				jQuery(".recursiv_for_" + jQuery(this).attr("id")).prop("checked", false);
 			}
-			evarisk("#elementToRestore").val(currentElementToRestore);
-			if(evarisk("#elementToRestore").val() != ""){
-				evarisk("#updateTrash").prop("disabled", "");
-				evarisk("#updateTrash").removeClass("button-secondary");
-				evarisk("#updateTrash").addClass("button-primary");
+			if(jQuery("#" + current_attr_id).is(":checked")){
+				jQuery(".direct_" + current_attr_id).each(function(){
+					jQuery(this).prop("disabled", false);
+				});
 			}
 			else{
-				evarisk("#updateTrash").prop("disabled", "disabled");
-				evarisk("#updateTrash").removeClass("button-primary");
-				evarisk("#updateTrash").addClass("button-secondary");
+				jQuery(".direct_" + current_attr_id).each(function(){
+					if(jQuery(this).hasClass("orignal_disabled")){
+						jQuery(this).prop("disabled", true);
+						jQuery(this).prop("checked", false);
+					}
+				});
 			}
+			jQuery.each(classes_element_to_restore, function(index, item){
+				if(item.substr(0, ' . strlen('direct_' . PREFIXE_EVARISK) . ') == "direct_' . PREFIXE_EVARISK . '"){
+					jQuery("." + item).each(function(){
+						if(jQuery(this).hasClass("elementToRestore") && (current_attr_id != jQuery(this).attr("id"))){
+							if(jQuery("#" + current_attr_id).is(":checked")){
+								jQuery(this).prop("disabled", true);
+								jQuery(".recursiv_for_" + jQuery(this).attr("id")).each(function(){
+									jQuery(this).prop("disabled", true);
+								});
+								jQuery(".children_of_" + jQuery(this).attr("id")).each(function(){
+									jQuery(this).prop("disabled", true);
+								});
+							}
+							else{
+								jQuery(this).prop("disabled", false);
+								jQuery(".recursiv_for_" + jQuery(this).attr("id")).each(function(){
+									if(!jQuery(this).hasClass("orignal_disabled")){
+										jQuery(this).prop("disabled", false);
+									}
+								});
+								jQuery(".children_of_" + jQuery(this).attr("id")).each(function(){
+									if(!jQuery(this).hasClass("orignal_disabled")){
+										jQuery(this).prop("disabled", false);
+									}
+								});
+							}
+						}
+					});
+				}
+			});
 		});
 
-		evarisk("#updateTrash").click(function(){
-			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
+		jQuery(".elementToRestoreRecursif").click(function(){
+			var current_normal_element = jQuery(this).attr("id").replace("recusively_", "");
+			var classes_element_to_restore = jQuery("#" + current_normal_element).attr("class").split(" ");
+			var selector_id = jQuery(this).attr("id");
+			if(jQuery(this).is(":checked")){
+				jQuery("#" + current_normal_element).prop("checked", true);
+				jQuery.each(classes_element_to_restore, function(index, item){
+					if(item.substr(0, ' . strlen('direct_' . PREFIXE_EVARISK) . ') == "direct_' . PREFIXE_EVARISK . '"){
+						jQuery("." + item).each(function(){
+							if(jQuery(this).attr("id") != selector_id){
+								jQuery(this).prop("disabled", true);
+							}
+						});
+					}
+				});
+				jQuery(".children_of_" + current_normal_element).each(function(){
+					jQuery(this).prop("disabled", false);
+					jQuery(this).prop("checked", true);
+					add_element_to_restore(jQuery(this));
+				});
+				jQuery("#" + current_normal_element).prop("checked", true);
+				jQuery("#" + current_normal_element).prop("disabled", true);
+			}
+			else{
+				jQuery("#" + current_normal_element).prop("checked", false);
+				jQuery("#" + current_normal_element).prop("disabled", false);
+				jQuery.each(classes_element_to_restore, function(index, item){
+					if(item.substr(0, ' . strlen('direct_' . PREFIXE_EVARISK) . ') == "direct_' . PREFIXE_EVARISK . '"){
+						jQuery("." + item).each(function(){
+							jQuery(this).prop("disabled", false);
+						});
+					}
+				});
+				if(confirm(convertAccentToJS("' . __('Souhaitez-vous d&eacute;cocher tous les sous-&eacute;l&eacute;ments &eacute;galement?', 'evarisk') . '"))){
+					jQuery(".children_of_" + current_normal_element).each(function(){
+						if(jQuery(this).hasClass("orignal_disabled")){
+							jQuery(this).prop("disabled", true);
+						}
+						jQuery(this).prop("checked", false);
+						add_element_to_restore(jQuery(this));
+					});
+				}
+			}
+			add_element_to_restore(jQuery("#" + current_normal_element));
+		});
+
+		jQuery("#updateTrash").click(function(){
+			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 				"post": "true", 
 				"tableProvenance": "' . $tableProvenance . '",
 				"nom": "updateTrash",
-				"elementToRestore" : evarisk("#elementToRestore").val()
+				"elementToRestore" : jQuery("#elementToRestore").val()
 			});
 		});
 	});
+
+	function add_element_to_restore(element){
+		var currentElementToRestore = jQuery("#elementToRestore").val();
+		if(!element.hasClass("elementToRestoreRecursif")){
+			var elementToAdd = element.val() + ", ";
+			currentElementToRestore = currentElementToRestore.replace(elementToAdd, "");
+			if(element.is(":checked")){
+				currentElementToRestore = currentElementToRestore.replace(elementToAdd, "") + elementToAdd;
+			}
+			jQuery("#elementToRestore").val(currentElementToRestore);
+			if(jQuery("#elementToRestore").val() != ""){
+				jQuery("#updateTrash").prop("disabled", "");
+				jQuery("#updateTrash").removeClass("button-secondary");
+				jQuery("#updateTrash").addClass("button-primary");
+			}
+			else{
+				jQuery("#updateTrash").prop("disabled", "disabled");
+				jQuery("#updateTrash").removeClass("button-primary");
+				jQuery("#updateTrash").addClass("button-secondary");
+			}
+		}
+	}
 </script>';
 				}
 

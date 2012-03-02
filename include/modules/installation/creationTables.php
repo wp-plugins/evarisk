@@ -1826,6 +1826,42 @@ CREATE TABLE {$t} (
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 66)
+		{//		Add a date field into risk table / Add a log table / Update the tree of deleted element (delete all subelement)
+			$sql = "ALTER TABLE  " . TABLE_RISQUE . " ADD last_moved_date DATETIME NOT NULL AFTER date;";
+			$wpdb->query($sql);
+
+			/*	Define the available notification by element */
+			$t = DIGI_DBT_ELEMENT_MODIFICATION;
+			$query = 
+"CREATE TABLE {$t}(
+	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`status` enum('valid', 'moderated', 'deleted') NOT NULL DEFAULT 'valid',
+	`creation_date` datetime NOT NULL,
+	`last_update_date` datetime NOT NULL,
+	`id_user` bigint(20) unsigned NOT NULL,
+	`id_action` int(10) unsigned NOT NULL,
+	`id_element` int(10) unsigned NOT NULL,
+	`table_element` char(255) collate utf8_unicode_ci NOT NULL,
+	`old_content` longtext,
+	PRIMARY KEY (`id`),
+	KEY status (status),
+	KEY table_element (table_element),
+	KEY id_action (id_action)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			$wpdb->query($query);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 67)
+		{
+			$sql = "ALTER TABLE  " . DIGI_DBT_ELEMENT_NOTIFICATION . " ADD action_title char(255) collate utf8_unicode_ci NOT NULL AFTER action;";
+			$wpdb->query($sql);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

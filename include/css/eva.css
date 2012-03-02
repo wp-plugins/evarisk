@@ -5,7 +5,11 @@ a{ cursor:pointer; }
 
 
 .digi_normal_pointer{	cursor:default !important;	}
+.element_identifier_recap{	margin:8px 0px;	}
 
+.auto-search-container{	float:right; width:80%;	}
+.auto-search-input{	float:right; width:60%;	}
+.auto-search-ui-icon{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
 
 .column-danger-code { width: 4%; }
 tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
@@ -134,9 +138,9 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .elementTrashContainer th{	background: none #FFFFFF !important;	}
 .elementTrashContainer  .dataTables_wrapper{	min-height:150px;	}
 .trashContentCenter{	text-align:center; width:80%; margin:12px auto;	}
-
+.trashActionColumn{	width:20% !important;	}
 .trashPicColumn{	width:10% !important;	}
-/* -- END PERMISSION -- */
+/* -- END TRASH -- */
 
 .dataTables_length{	width:50% !important;	}
 .dataTables_paginate{	margin:12px 24px;	}
@@ -467,6 +471,10 @@ th.columnCommentaireRisque*/
 
 #divHistoRiskwp_eva__risque{	min-height:320px; padding:12px;		}
 .risk_histo_chart{	height:300px; margin:12px 0px;}
+
+.risq_mover_container{	float:right; font-style:italic; font-size:10px; width:60%;	}
+#risq_mover_title{	cursor:pointer;	}
+#move_risk, #copy_risk{	text-align:center !important;	}
 /* -- END Risques -- */
 
 

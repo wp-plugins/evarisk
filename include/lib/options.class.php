@@ -564,20 +564,22 @@ if(current_user_can('digi_edit_option'))
 			echo $options['emailDomain'];
 		}
 	}
-	function digi_users_access_field()
-	{
+	/**
+	*
+	*/
+	function digi_users_access_field(){
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		if(current_user_can('digi_edit_option'))
-		{
-			echo EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, $options['digi_users_access_field']);
-			echo "<br>";
-			echo "<label for='identifiant_htpasswd'>Identifiant : </label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' size='20' type='text' value='{$options['identifiant_htpasswd']}' />";
-			echo "<br>";
-			echo "<label for='password_htpasswd'>Mot de passe : </label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' size='20' type='text' value='{$options['password_htpasswd']}' />";
+		$digi_users_access_field = '';
+		if(current_user_can('digi_edit_option')){
+			$digi_users_access_field = "
+<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='text' value='{$options['digi_users_access_field']}' />
+	" . EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, $options['digi_users_access_field']) . "
+	<br/><label for='identifiant_htpasswd'>" . __('Idenfiant', 'evarisk') . "&nbsp;:</label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' type='text' value='{$options['identifiant_htpasswd']}' />
+	<br/><label for='password_htpasswd'>" . __('Mot de passe', 'evarisk') . "&nbsp;:</label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' type='text' value='{$options['password_htpasswd']}' />";
+			echo $digi_users_access_field;
 		}
-		else
-		{
+		else{
 			echo $options['digi_users_access_field'];
 		}
 	}	
@@ -987,7 +989,7 @@ if(current_user_can('digi_edit_option'))
 		}
 	}
 	
-	function create_files($allow_access, $id, $psw) {
+	function create_files($allow_access, $id, $psw){
 		$dir_psswd = ABSPATH . 'digi_access/';
 		$urlPasswd = ".htpasswd"; //chemin du fichier password
 		$urlAccess = ABSPATH . ".htaccess"; //chemin du fichier access
@@ -1001,6 +1003,7 @@ if(current_user_can('digi_edit_option'))
 			}
 			if(is_file($dir_psswd . $urlPasswd)){
 				unlink($dir_psswd . $urlPasswd);
+				unlink($urlAccess);
 			}
 		}
 		elseif(($id != '') && ($psw != '')){
@@ -1008,22 +1011,22 @@ if(current_user_can('digi_edit_option'))
 			if(is_file($urlAccessOri)){
 				unlink($urlAccessOri);
 			}
-			if(is_file($urlAccess)){
+			if(is_file($urlAccess) && ($_REQUEST['last_value_of_user_access'] != $allow_access)){
 				copy($urlAccess, $urlAccessOri);
 				/*	Read the old file	for adding content to new htaccess file	*/
 				$original_file_content = file($urlAccessOri);
 			}
 			if(!is_dir($dir_psswd)){
 				mkdir($dir_psswd, 0755, true);
+				exec('chmod -R 755 ' . $dir_psswd);
 			}
 
 			
-			$new_htaccess_file_content = Fopen($urlAccess, "w");
+			$new_htaccess_file_content = fopen($urlAccess, "w");
 			$new_htaccess_file_content_lines = 'AuthName "' . html_entity_decode(__('Acc&egrave;s prot&eacute;g&eacute;', 'evarisk')) . '"
 AuthType Basic
 AuthUserFile "'.$dir_psswd . $urlPasswd.'"
 Require valid-user';
-
 			/*	Add orignal file content to the new file	*/
 			if($original_file_content != ''){
 				$new_htaccess_file_content_lines .= "
@@ -1033,11 +1036,15 @@ Require valid-user';
 					$new_htaccess_file_content_lines .= $line;
 				}
 			}
-			Fwrite($new_htaccess_file_content, $new_htaccess_file_content_lines);
+			fwrite($new_htaccess_file_content, $new_htaccess_file_content_lines);
 			Fclose($new_htaccess_file_content);
 
-			$htpasswd_file_content = Fopen($dir_psswd . $urlPasswd,"w");
-			$htpasswd_file_content_lines = "$id:$psw"; //identifiants a récupérer par formulaire
+			$htpasswd_file_content = fopen($dir_psswd . $urlPasswd,"w");
+			$password_to_write = $psw;
+			if(long2ip(ip2long($_SERVER['REMOTE_ADDR'])) != '127.0.0.1'){
+				$password_to_write = crypt($psw);
+			}
+			$htpasswd_file_content_lines = "$id:" . $password_to_write; //identifiants a récupérer par formulaire
 			Fwrite($htpasswd_file_content, $htpasswd_file_content_lines);
 			Fclose($htpasswd_file_content);
 		}

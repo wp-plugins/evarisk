@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
-Tested up to: 3.2.1
-Stable tag: 5.1.4.6
+Tested up to: 3.3.1
+Stable tag: 5.1.4.7
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,24 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.4.7 =
+
+Am&eacute;liorations
+
+* ST249 - Copier/D&eacute;placer les risques d'un &eacute;l&eacute;ment &agrave; un autre 
+* ST298 - Restauration des &eacute;l&eacute;ments de la corbeille (Possibilit&eacute; de restaurer les &eacute;l&eacute;ments r&eacute;cursivement/Impossibilit&eacute; de restaurer des &eacute;l&eacute;ments de type diff&eacute;rents au m&ecirc;me niveau) 
+* ST295 - Ajout de l'identifiant de l'&eacute;l&eacute;ment dans la box de r&eacute;capitulatif des groupement et unit&eacute; de travail 
+* ST299 - Ajout d'un lien vers l'&eacute;l&eacute;ment modifif&eacute; dans les mails envoy&eacute;s lors des modifications des taches et sous taches 
+
+Corrections
+
+* ST43 - Droits d'acc&eacute;s aux fichiers lors de l'installation sur un serveur(Correction en utilisant la commande exec de php) 
+* ST293 - Lors de l'affectation des utilisateurs aux t&acirc;ches et sous-t&acirc;ches il y avait un affichage de donn&eacute;es non souhaitable 
+* ST294 - G&eacute;n&eacute;ration du fichier de protection du site (A chaque fois que les options &eacute;taient enregistr&eacute;es, un fichier de sauvegarde &eacute;tait cr&eacute;&eacute; avec le code de limitation d'acc&egrave;s et lorsqu'on d&eacute;sactivait la limitation le fichier htaccess &eacute;tait conserv&eacute; avec la limitation mais le fichier de mot de passe &eacute;tait supprim&eacute; ce qui provoquait une erreur 403) 
+* ST296 - La somme totale des risques d'un &eacute;l&eacute;ment &eacute;tait affich&eacute;e comme &eacute;tant &agrave; z&eacute;ro lors de la s&eacute;lection de cet &eacute;l&eacute;ment m&ecirc;me si la somme &eacute;tait sup&eacute;rieure 
+* ST297 - Corbeille impossible &agrave; restaurer si plusieurs &eacute;l&eacute;ments du m&ecirc;me type pr&eacute;sent (Les en-t&ecirc;tes des colonnes s'affichaient plusieurs fois et provoquaient une erreur javascript qui bloquait l'acc&egrave;s au bouton de sauvegarde) 
 
 
 = Version 5.1.4.6 =
@@ -679,87 +697,6 @@ L'int&eacute;gration &agrave; Wordpress :
 
 
 Voici les 4 changements fondamentaux qui permettent aujourd'hui &agrave; ce logiciel de ce mettre en place sur des infrastructures de plusieurs milliers de personnes tout en am&eacute;liorant la convivialit&eacute; de d&eacute;part pour les petites entreprises.
-
-
-
-== Am&eacute;liorations Futures ==
-
-= 5.1.3 =
-
-* Int&eacute;gration des fonctionnalit&eacute;s de base de la version 4.3.4
-* Integration de la gestion des articles (produits, dechets...)  (Fait en version 5.1.2.9)
-* Int&eacute;gration de la gestion des FDS
-* V&eacute;rification des pictos pour les EPI (Fait en version 5.1.2.7)
-* Int&eacute;gration des modeles de fiches de postes complet et simple pour l'affichage (Fait en version 5.1.2.5)
-
-= 5.1.3.4 = 
-
-* Int&eacute;gration des accidents
-
-= 5.1.3.5 =
-
-* Int&eacute;gration de la gestion des FDS
-* Modification de l'ergonomie de l'arbre nous allons implementer une nouvelle ergonomie afin de simplifier la repartition des metiers l'arbre va donc contenir les boutons, ajout unite, ajout groupement, suppression, modification, gestion des utilisateurs, ajout risques, actions correctives, gestion des accidents
-
-= 5.2.0 =
-
-* Gestion des utilisateurs (Fait en version 5.1.2.9)
-* Droits d'acces utilisateurs (Fait en version 5.1.3.1)
-* Selection global des utilateurs, implementation de l'ergonomie utilis&eacute; sur gmail (recherche ajax + pop up pour recherches sp&eacute;ciales et multiselection) (Fait en version 5.1.2.9)
-* Possibilit&eacute; d'ordonner les arbres (cat&eacute;gorie etc...)
-* Fil d'ariane en mode liste
-* V&eacute;rification de la coh&eacute;rence des dates dans les historiques
-
-= 5.3.0 =
-
-* Mise en place des audits sur r&eacute;ferentiels
-* Societes intervenantes
-* Mise en place de la gestion des machines et outils
-
-= X.X.X non planifi&eacute;es =
-
-* Evaluation des Risques
-
-Mettre en place l'enregistrement en odt &agrave; la place de tcpdf dans a veille r&eacute;glementaire
-
-Implantation des m&eacute;thode de calcul des risques chimiques de l'INRS
-
-Mise en place des tableaux de bord
-
-Mise en place des plans de pr&eacute;vention
-
-Mise en place et gestion des permis feux
-
-Mise en place de la Check list pour la r&eacute;alisation du DUER (idem au r&eacute;f&eacute;rentiels)
-
-Import automatique de hierarchie, groupe et utilisateurs
-
-Mise en place des modeles d'unit&eacute;s de travail, avec un heritage des risques et des actions correctives sur les unit&eacute;s de travail bas&eacute; sur les modeles, l'heritage devra se faire au niveau des risques afin de pouvoir constituer des groupements ou unit&eacute;s bas&eacute; sur ces risques modeles
-
-
-* Gestion documentaire
-
-Am&eacute;lioration des modeles : int&eacute;gration de champs libres afin qu'ils soient "automatiquement" repris dans le modele .odt
-
-
-* Recensement des dangers :
-
-Machines utilis&eacute;es sur les unit&eacute;s de travail
-
-Mise en place de la gestion de matieres dangeureuses
-
-Mise en place de la creation des BSD
-
-Gestion des BSD
-
-
-* Gestion de l'Homme
-
-Gestion des accidents de travail  (Version 5.1.3.4)
-
-Gestion des enquetes accident  (Version 5.1.3.5)
-
-Gestion des formations
 
 
 == Upgrade Notice ==

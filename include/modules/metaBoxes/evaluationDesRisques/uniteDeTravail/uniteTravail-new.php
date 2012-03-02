@@ -116,7 +116,9 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'id', $id, '', null, 'id', false, false);
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'idsFilAriane', $idsFilAriane, '', null, 'idsFilAriane', false, false);
 	}
-
+	if($id > 0){
+		$uniteDeTravail_new .= ELEMENT_IDENTIFIER_UT . $id . '<br/>';
+	}
 	{//Nom de l'unité
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("de l'unit&eacute; de travail", 'evarisk')))) . " :";
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];

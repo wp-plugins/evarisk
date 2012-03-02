@@ -54,24 +54,24 @@ class Arborescence {
 		return $resultat;
 	}
 	
-	static function getAncetre($table, $element, $order= "limiteGauche ASC", $where='1')
+	static function getAncetre($table, $element, $order= "limiteGauche ASC", $where='1', $status = "AND Status = 'Valid'")
 	{
 		global $wpdb;
-		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . "  AND Status = 'Valid' AND limiteGauche < " . $element->limiteGauche . " AND limiteDroite > " . $element->limiteDroite . "	ORDER BY " . $order );
+		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . "  " . $status . " AND limiteGauche < " . $element->limiteGauche . " AND limiteDroite > " . $element->limiteDroite . "	ORDER BY " . $order );
 		return $resultat;
 	}
 	
-	static function getDescendants($table, $element, $where='1', $order="id ASC")
+	static function getDescendants($table, $element, $where='1', $order="id ASC", $status = "AND Status = 'Valid'")
 	{
 		global $wpdb;
-		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . " AND limiteGauche > " . $element->limiteGauche . " AND limiteDroite < " . $element->limiteDroite . " AND Status = 'Valid' ORDER BY " . $order);
+		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . " AND limiteGauche > " . $element->limiteGauche . " AND limiteDroite < " . $element->limiteDroite . " " . $status . " ORDER BY " . $order);
 		return $resultat;
 	}
 	
 	static function getPere($table, $element, $where="Status='Valid'")
 	{
 		global $wpdb;
-		$resultat = $wpdb->get_row( "
+		$query = $wpdb->prepare( "
 		SELECT *
 		FROM " . $table . " table1
 		WHERE " . $where . "
@@ -86,6 +86,7 @@ class Arborescence {
 			AND table2.limiteDroite > " . $element->limiteDroite . "
 			AND table1.limiteGauche < table2.limiteGauche
 		)");
+		$resultat = $wpdb->get_row($query);
 		return $resultat;
 	}
 	

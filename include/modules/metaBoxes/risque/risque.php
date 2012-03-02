@@ -349,7 +349,7 @@
 			$scoreRisqueUniteTravail = 0;
 			$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
 			foreach($riskAndSubRisks as $risk){
-				$scoreRisqueUniteTravail += $risk[1]['value'];
+				$scoreRisqueUniteTravail += $risk[2]['value'];
 			}
 			$nombreRisqueUniteTravail = count($riskAndSubRisks);
 
@@ -572,7 +572,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			$formRisque .= 
 '<script type="text/javascript">
 	evarisk(document).ready(function(){
-		evarisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":evarisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '", "formId": "' . $formId . '"});
+		evarisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "tableElement":"' . $tableElement . '",  "idElement":"' . $idElement . '", "act":"reloadVariables", "idMethode":evarisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '", "formId": "' . $formId . '"});
 	})
 </script>
 <div id="' . $formId . 'divVariablesFormRisque" class="clear" ></div><!-- /' . $formId . 'divVariablesFormRisque -->';

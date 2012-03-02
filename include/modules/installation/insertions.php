@@ -5,6 +5,19 @@ function evarisk_insertions($insertions = null)
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	global $wpdb;
 	
+	
+	$standard_message_subject_to_send = __('Notification de modification sur %s', 'evarisk');
+	$standard_message_to_send = __('Bonjour,
+
+Une modification a &eacute;t&eacute; apport&eacute;e &agrave; %s.
+Lien vers l\'&eacute;l&eacute;ment modifi&eacute;: %s.
+Action: %s.
+Date: %s.
+Personne ayant r&eacute;alis&eacute; la modification: %s.
+
+%s
+
+Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute;l&eacute;ment concern&eacute; par la modification et que vous &ecirc;tes inscrit &agrave; la liste de notification de cet &eacute;l&eacute;ment', 'evarisk');
 
 	if(digirisk_options::getDbOption('base_evarisk') < 1)
 	{
@@ -1268,15 +1281,6 @@ ou irritantes');";
 			$digirisk_options['digi_ac_allowed_ext'] = array('txt', 'odt', 'pdf', 'doc', 'docx');
 			update_option('digirisk_options', $digirisk_options);
 
-			$standard_message_subject_to_send = __('Notification de modification sur %s', 'evarisk');
-			$standard_message_to_send = __('Bonjour,
-
-Une modification a &eacute;t&eacute; apport&eacute;e &agrave; %s.
-Action: %s.
-Date: %s.
-Personne ayant r&eacute;alis&eacute; la modification: %s.
-
-Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute;l&eacute;ment concern&eacute; par la modification et que vous &ecirc;tes inscrit &agrave; la liste de notification de cet &eacute;l&eacute;ment', 'evarisk');
 			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'update', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
 			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'delete', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
 			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'mark_done', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
@@ -1323,6 +1327,44 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 			$wpdb->update(TABLE_ACTIVITE, array('Status' => 'Deleted'), array('nom' => ''));
 			$wpdb->query("ALTER TABLE " . TABLE_TACHE . " DROP INDEX idPhotoAvant_2");
 			$wpdb->query("ALTER TABLE " . TABLE_TACHE . " DROP INDEX idPhotoApres_2");
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 66:
+		{/*	Get the delete grpt and delete all sub element	*/
+			$deleted_grpt_list = EvaGroupement::getGroupements("Status = 'deleted'");
+
+			if(is_array($deleted_grpt_list)){
+				foreach($deleted_grpt_list as $deleted_grpt){
+					$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($deleted_grpt->id);
+					if(is_array($listeUnitesDeTravail)){
+						foreach($listeUnitesDeTravail as $key => $uniteDefinition){
+							switch($uniteDefinition['table']){
+								case TABLE_GROUPEMENT:{
+									EvaGroupement::deleteGroupement($uniteDefinition['value']->id);
+								}break;
+								case TABLE_UNITE_TRAVAIL:{
+									eva_UniteDeTravail::deleteWorkingUnit($uniteDefinition['value']->id);
+								}break;
+							}
+						}
+					}
+				}
+			}
+
+			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
+			break;
+		}
+		case 67:
+		{
+			$wpdb->insert(DIGI_DBT_ELEMENT_NOTIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'delete_user_from_affectation_list', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send));
+
+			$query = $wpdb->prepare("SELECT action FROM " . DIGI_DBT_ELEMENT_NOTIFICATION);
+			$action_list = $wpdb->get_results($query);
+			foreach($action_list as $action){
+				$wpdb->update(DIGI_DBT_ELEMENT_NOTIFICATION, array('last_update_date' => current_time('mysql', 0), 'action_title' => __($action->action, 'evarisk'), 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send), array('action' => $action->action));
+			}
 
 			digirisk_options::updateDbOption('base_evarisk', (digirisk_options::getDbOption('base_evarisk') + 1));
 			break;

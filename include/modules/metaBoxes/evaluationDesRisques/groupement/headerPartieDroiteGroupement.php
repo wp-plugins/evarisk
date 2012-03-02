@@ -47,7 +47,7 @@
 				$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
 				foreach($riskAndSubRisks as $risk)
 				{
-					$scoreRisqueGroupement += $risk[1]['value'];
+					$scoreRisqueGroupement += $risk[2]['value'];
 				}
 				$nombreRisqueGroupement = count($riskAndSubRisks);
 			}
@@ -147,6 +147,7 @@
 							});
 						})
 					</script>';
+			$renduPage .= '<div class="alignleft element_identifier_recap" >' . ELEMENT_IDENTIFIER_GP . $idElement . '&nbsp;-&nbsp;</div>';
 			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
 			{
 				$renduPage .= EvaDisplayInput::afficherInput('text', $idTitreGp, $nomGroupement, null, null, $idTitreGp, false, false, 255,'titleInfo', 'alignright','', $script, 'left');

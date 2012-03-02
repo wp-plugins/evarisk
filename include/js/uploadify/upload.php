@@ -37,8 +37,7 @@ if (!empty($_FILES)) {
 	// Uncomment the following line if you want to make the directory if it doesn't exist
 	// mkdir(str_replace('//','/',$targetPath), 0755, true);
 	
-	if(move_uploaded_file($tempFile,$targetFile))
-	{
+	if(move_uploaded_file($tempFile,$targetFile)){
 		EvaPhoto::saveNewPhoto("toBeUpdated", 0, $nomFichier . $numero . '.' . $extention, $targetFile);
 	}
 }

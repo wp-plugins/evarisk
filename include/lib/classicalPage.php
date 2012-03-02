@@ -36,6 +36,7 @@
 
 	$renduPage .= 
 		'<div class="hide" id="loadingImg" ><center><img src="' . PICTO_LOADING . '" alt="loading..." /></center></div>
+		<div class="hide" id="loading_round_pic" ><center><img src="' . admin_url('images/loading.gif') . '" alt="loading..." /></center></div>
 		<div style="display:none;" id="hiddenFieldToShow" ><input type="hidden" id="pagemainPostBoxReference" value="1" /><input type="hidden" id="identifiantActuellemainPostBox" value="1" /></div>'
 	 . $script
 	 . EvaDisplayDesign::getFilAriane($affichage, $titreFilAriane, $_POST['table'], 'mainPostBox', null)

@@ -156,11 +156,11 @@ class EvaGroupement {
 	* @param string $order The SQL order condition
 	* @return the working units  belonging to the group witch is identifier
 	*/
-	function getUnitesDescendantesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
+	function getUnitesDescendantesDuGroupement($idGroupement, $where = "1", $order="nom ASC", $sub_status = "AND Status = 'Valid'")
 	{
 		global $wpdb;
 		$groupement = EvaGroupement::getGroupement($idGroupement);
-		$sousEntitesGroupement = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
+		$sousEntitesGroupement = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement, '1', 'id ASC', $sub_status);
 		unset($tabId);
 		$tabId[] = $idGroupement;
 		foreach($sousEntitesGroupement as $sousEntiteGroupement)
@@ -432,41 +432,44 @@ class EvaGroupement {
 	/**
 	* Set the status of the group wich is the identifier to Delete 
 	*/
-	function deleteGroupement($id)
-	{
+	function deleteGroupement($id){
 		global $wpdb;
-		
+
 		$sql = "UPDATE " . TABLE_GROUPEMENT . " set Status = 'Deleted', lastupdate_date = NOW() WHERE id = " . $id;
-		if($wpdb->query($sql))
-		{
-			echo 
-				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupement a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
-						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
-						},7500);
-					});
-				</script>';
+		if($wpdb->query($sql)){
+			$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupement a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>');
+			$class = 'updated';
+			$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($id);
+			if(is_array($listeUnitesDeTravail)){
+				foreach($listeUnitesDeTravail as $key => $uniteDefinition){
+					switch($uniteDefinition['table']){
+						case TABLE_GROUPEMENT:{
+							EvaGroupement::deleteGroupement($uniteDefinition['value']->id);
+						}break;
+						case TABLE_UNITE_TRAVAIL:{
+							eva_UniteDeTravail::deleteWorkingUnit($uniteDefinition['value']->id);
+						}break;
+					}
+				}
+			}
 		}
-		else
-		{
-			echo 
-				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupement n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
-						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
-						},7500);
-					});
-				</script>';
+		else{
+			$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupement n\'a pas pu &ecirc;tre supprim&eacute;', 'evarisk') . '</strong></p>');
+			$class = 'error';
 		}
+
+		echo 
+			'<script type="text/javascript">
+				evarisk(document).ready(function(){
+					evarisk("#message").addClass("' . $class . '");
+					evarisk("#message").html("' . $message . '");
+					evarisk("#message").show();
+					setTimeout(function(){
+						evarisk("#message").removeClass("' . $class . '");
+						evarisk("#message").hide();
+					},7500);
+				});
+			</script>';
 	}
 
 }

@@ -360,24 +360,34 @@ class evaUserLinkElement
 		/*	Transform the new element list to affect into an array	*/
 		$newUserList = explode(", ", $userIdList);
 
+		$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong>');
+
 		/*	Read the product list already linked for checking if they are again into the list or if we have to delete them form the list	*/
+		$done_element = 0;
+		$deleted_user_list = array();
 		foreach($listeUtilisateursLies as $utilisateurs){
 			if(is_array($newUserList) && !in_array($utilisateurs->id_user, $newUserList)){
 				$query = $wpdb->prepare(
-					"UPDATE " . TABLE_LIAISON_USER_ELEMENT . " 
-					SET status = 'deleted', 
-						date_desAffectation = NOW(), 
-						id_desAttributeur = %d 
-					WHERE id = %d", 
-					$current_user->ID, $utilisateurs->id
-				);
-				$wpdb->query($query);
+"UPDATE " . TABLE_LIAISON_USER_ELEMENT . " 
+SET status = 'deleted', 
+	date_desAffectation = NOW(), 
+	id_desAttributeur = %d 
+WHERE id = %d", 
+$current_user->ID, $utilisateurs->id);
+				$done_element += $wpdb->query($query);
 				if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
 					$wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID), array('id_user' => $utilisateurs->id_user, 'id_element' => $idElement, 'table_element' => $tableElement));
-					echo '<pre>';print_r($wpdb);echo '</pre>';
 				}
+				$deleted_user_list[] = $utilisateurs->id;
+
+				/*	Log modification on element and notify user if user subscribe	*/
+				digirisk_user_notification::log_element_modification($tableElement, $idElement, 'delete_user_from_affectation_list', $utilisateursLies, $deleted_user_list);
 			}
 		}
+		if($done_element > 0){
+			$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les utilisateurs ont bien &eacute;t&eacute; supprim&eacute; de la liste des utilisateurs affect&eacute;s', 'evarisk') . '</strong>');
+		}
+
 		if(is_array($newUserList) && (count($newUserList) > 0)){
 			foreach($newUserList as $userId){
 				if((trim($userId) != '') && !array_key_exists($userId, $listeUtilisateursLies)){
@@ -386,7 +396,6 @@ class evaUserLinkElement
 			}
 		}
 
-		$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Il n\'a aucune modification a apporter', 'evarisk') . '</strong>');
 		$endOfQuery = trim(substr($userToTreat, 0, -2));
 		if($endOfQuery != ""){
 			$query = $wpdb->prepare(
@@ -400,8 +409,8 @@ class evaUserLinkElement
 				switch($tableElement){
 					case TABLE_ACTIVITE:
 					case TABLE_TACHE:
-						/*	Notify user when an action is done on a task or a sub task	*/
-						digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'user_affectation_update');
+						/*	Log modification on element and notify user if user subscribe	*/
+						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'user_affectation_update', $utilisateursLies, $newUserList);
 					break;
 				}
 			}

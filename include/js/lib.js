@@ -248,14 +248,12 @@ function initialiseEditedElementInGridMode(idToEdit)
 	});
 }
 
-function actionMessageShow(idToShow, messageToShow)
-{
+function actionMessageShow(idToShow, messageToShow){
 	evarisk(idToShow).show();
 	evarisk(idToShow).addClass("updated");
 	evarisk(idToShow).html(messageToShow);
 }
-function actionMessageHide(idToHide)
-{
+function actionMessageHide(idToHide){
 	evarisk(idToHide).hide();
 	evarisk(idToHide).html("");
 	evarisk(idToHide).removeClass("updated");

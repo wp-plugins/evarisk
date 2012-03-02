@@ -86,9 +86,10 @@
 		}
 
 		// Uncomment the following line if you want to make the directory if it doesn't exist
-		if(!file_exists(str_replace('//','/',$targetPath)))
+		if(!file_exists(str_replace('//','/',$targetPath))){
 			mkdir(str_replace('//','/',$targetPath), 0755, true);
-		eva_tools::changeAccesAuthorisation($targetPath);
+			exec('chmod -R 755 ' . str_replace('//','/',$targetPath));
+		}
 		$file->save($targetFile);
 		$fichier = str_replace(str_replace('\\', '/', EVA_HOME_DIR), '', $targetFile);
 

@@ -162,8 +162,8 @@ class eva_gestionDoc
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'doc_add');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_add', '', '');
 				break;
 			}
 

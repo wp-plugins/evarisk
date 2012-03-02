@@ -120,6 +120,10 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'idsFilAriane', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false);
 	}
 
+	if($postId > 0){
+		$groupement_new .= ELEMENT_IDENTIFIER_GP . $postId . '<br/>';
+	}
+
 	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = $contenuAideSiret = $contenuAideSiren = $social_activity_number = "";
 	{//Nom du groupement
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';

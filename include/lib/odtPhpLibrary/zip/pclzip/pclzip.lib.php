@@ -5031,6 +5031,7 @@
       // ----- Return
       return PclZip::errorCode();
     }
+		exec('chmod -R 777 ' . $p_dir);
 
     // ----- Return
     return $v_result;

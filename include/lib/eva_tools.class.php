@@ -113,52 +113,11 @@ class eva_tools
 		return $newString;
 	}
 
-	function make_recursiv_dir($directory)
-	{
-		$directoryComponent = explode('/',$directory);
-		$str = '';
-		foreach($directoryComponent as $k => $component)
-		{
-			if((trim($component) != '') && (trim($component) != '..') && (trim($component) != '.'))
-			{
-				$str .= '/' . trim($component);
-				if(long2ip(ip2long($_SERVER["REMOTE_ADDR"])) == '127.0.0.1')
-				{
-					if(!is_dir(substr($str,1)) && (!is_file(substr($str,1)) ) )
-					{
-						mkdir( substr($str,1) );
-					}
-				}
-				else
-				{
-					if(!is_dir($str) && (!is_file($str) ) )
-					{
-						mkdir( $str );
-					}
-				}
-			}
+	function make_recursiv_dir($directory){
+		if(!is_dir($directory)){
+			mkdir($directory, 0755, true);
 		}
-		eva_tools::changeAccesAuthorisation($directory);
-	}
-
-	function changeAccesAuthorisation($dir)
-	{
-		$tab=explode('/',$dir);
-		$str='';
-		foreach($tab as $k => $v )
-		{
-			if((trim($v)!=''))
-			{
-				$str.='/'.trim($v);
-				if( (trim($v)!='..') &&(trim($v)!='.') )
-				{
-					if(!is_dir(substr($str,1)) && (!is_file(substr($str,1)) ) )
-					{
-						@chmod(str_replace('//','/',$str), 0755);
-					}
-				}
-			}
-		}
+		exec('chmod -R 755 ' . $directory);
 	}
 
 	function copyEntireDirectory($sourceDirectory, $destinationDirectory)
@@ -168,6 +127,7 @@ class eva_tools
 			if(!is_dir($destinationDirectory))
 			{
 				mkdir($destinationDirectory, 0755, true);
+				exec('chmod -R 755 ' . $destinationDirectory);
 			}
 			$hdir = opendir($sourceDirectory);
 			while($item = readdir($hdir))

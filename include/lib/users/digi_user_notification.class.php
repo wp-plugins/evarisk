@@ -31,6 +31,32 @@ class digirisk_user_notification{
 	}
 
 	/**
+	* Return an action list limited by given parameters
+	*
+	*	@param array $action_infos An array with the different parameters to limited result
+	*/
+	function get_action($action_infos){
+		global $wpdb;
+		$actions = array();
+
+		if(is_array($action_infos) && (count($action_infos) > 0)){
+			foreach($action_infos as $field_name => $field_infos){
+				$conditions .= " 
+	AND " . $field_name . " = " . $field_infos[0];
+				$conditions_value[] = $field_infos[1];
+			}
+		}
+
+		$query = $wpdb->prepare(
+"SELECT * 
+FROM " . self::dbTable . "
+WHERE 1" . $conditions, $conditions_value);
+		$actions = $wpdb->get_results($query);
+
+		return $actions;
+	}
+
+	/**
 	*	Allows to affect documents to corrective actions
 	*/
 	function user_notification_box($arguments){
@@ -183,7 +209,6 @@ WHERE status = 'valid'
 	AND NOTI.action = %s";
 			$query_condition[] = $action;
 		}
-
 
 		$query = $wpdb->prepare("
 SELECT LUN.*, NOTI.action, NOTI.message_to_send, NOTI.message_subject
@@ -365,7 +390,7 @@ WHERE LUN.status = 'valid'
 	*
 	*	@return void
 	*/
-	function notify_affiliated_user($table_element, $id_element, $action){
+	function notify_affiliated_user($table_element, $id_element, $action, $modif_content){
 		global $wpdb, $current_user;
 		$done_user = array();
 		get_currentuserinfo();
@@ -379,26 +404,30 @@ WHERE LUN.status = 'valid'
 				$tache = new EvaTask($id_element);
 				$tache->load();
 				$element_name = ELEMENT_IDENTIFIER_T . $id_element . '&nbsp;-&nbsp;' . utf8_decode($tache->getName());
+				$element_page = 'digirisk_correctiv_actions&elt=edit-node' . $id_element;
 			break;
 			case TABLE_ACTIVITE:
 				$activite = new EvaActivity($id_element);
 				$activite->load();
 				$element_name = ELEMENT_IDENTIFIER_ST . $id_element . '&nbsp;-&nbsp;' . utf8_decode($activite->getName());
+				$element_page = 'digirisk_correctiv_actions&elt=edit-leaf' . $id_element;
 			break;
 		}
 
 		$headers = 'From: ' . get_bloginfo('admin_email') . ' <' . get_bloginfo('admin_email') . '>
 ';
 
+		$content = '';
+		// $content = self::read_modification_details($modif_content, $table_element, $action);
 		foreach($user_notification_list as $notification_infos){
 			/*	Get the recipient email from it identifier	*/
 			$user_info = get_userdata($notification_infos->id_user);
 
 			/*	Make transformation on different mail element	*/
-			$mail_subject = sprintf($notification_infos->message_subject, $element_name);
+			$mail_subject = sprintf($notification_infos->message_subject, utf8_decode(get_bloginfo('name')) . ' -> ' . $element_name);
 			$user_name = (($current_user->user_firstname != '') ? $current_user->user_firstname : $current_user->display_name) . '&nbsp;' . $current_user->user_lastname;
-			$mail_content = sprintf($notification_infos->message_to_send, $element_name, utf8_decode($action_done_by_user), utf8_decode(mysql2date('d F Y', current_time('mysql', 0), true)), ELEMENT_IDENTIFIER_U . $notification_infos->id_user . '&nbsp;-&nbsp;' . utf8_decode($user_name));
 
+			$mail_content = sprintf($notification_infos->message_to_send, $element_name, admin_url('admin.php?page=' . $element_page), utf8_decode($action_done_by_user), utf8_decode(mysql2date('d F Y', current_time('mysql', 0), true)), ELEMENT_IDENTIFIER_U . $notification_infos->id_user . '&nbsp;-&nbsp;' . utf8_decode($user_name), $content);
 			/*	Add the mail into database for history	*/
 			digirisk_messages::add_message($notification_infos->id_user, $user_info->user_email, $mail_subject, $mail_content, $notification_infos->id_notification, $id_element, $table_element);
 
@@ -408,6 +437,76 @@ WHERE LUN.status = 'valid'
 				$done_user[] = $user_info->user_email;
 			}
 		}
+	}
+
+	/**
+	*	Read information about modification made on different element and return an output with the different element
+	*
+	*	@param string|array $modification_datas The data to transform into user readable output
+	*	@param string $action The action corresponding to the data. Allows to define the output shape to create
+	*
+	*	@return string $modification The modification content transformed to be user readable
+	*/
+	function read_modification_details($modification_datas, $table_element, $action){
+		$modification_content = '';
+
+		if(!is_array($modification_datas)){
+			$modification_datas = unserialize($modification_datas);
+		}
+
+		if(is_array($modification_datas)){
+			/*	Get action detailled informations	*/
+			$action_detailled_information = self::get_action(array('action' => array('%s', $action), 'table_element' => array('%s', $table_element)));
+
+			$modification_content .= __('Modification effectu&eacute;e', 'evarisk') . ": 
+";
+
+			switch($action){
+				case 'delete_user_from_affectation_list':{
+					$modification_content .= __('Liste des utilisateurs d&eacute;saffect&eacute;s', 'evarisk') . "
+";
+					foreach($modification_datas as $user_id){
+						if($user_id > 0){
+							$user_info = evaUser::getUserInformation($user_id);
+							$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
+";
+						}
+					}
+				}
+				break;
+				case 'user_affectation_update':{
+					$modification_content .= __('Liste des utilisateurs modifi&eacute;s', 'evarisk') . "
+";
+					foreach($modification_datas as $user_id){
+						if($user_id > 0){
+							$user_info = evaUser::getUserInformation($user_id);
+							$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
+";
+						}
+					}
+				}
+				break;
+			}
+			$modification_content .= "
+";
+		}
+
+		return $modification_content;
+	}
+
+	/**
+	*
+	*/
+	function log_element_modification($table_element, $id_element, $action, $old_content, $new_content){
+		global $wpdb, $current_user;
+
+		/*	Get action detailled informations	*/
+		$action_detailled_information = self::get_action(array('action' => array('%s', $action), 'table_element' => array('%s', $table_element)));
+
+		/*	Insert the modification into database	*/
+		$wpdb->insert(DIGI_DBT_ELEMENT_MODIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_action' => $action_detailled_information[0]->id, 'id_element' => $id_element, 'table_element' => $table_element, 'old_content' => serialize($old_content)));
+
+		digirisk_user_notification::notify_affiliated_user($table_element, $id_element, $action, $new_content);
 	}
 
 }

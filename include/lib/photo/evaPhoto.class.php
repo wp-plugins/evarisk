@@ -73,8 +73,8 @@ class EvaPhoto {
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_add');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', '');
 				break;
 			}
 		}
@@ -743,8 +743,8 @@ class EvaPhoto {
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
-					/*	Notify user when an action is done on a task or a sub task	*/
-					digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_delete');
+					/*	Log modification on element and notify user if user subscribe	*/
+					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_delete', '', '');
 				break;
 			}
 			$messageInfo .= '
@@ -794,8 +794,8 @@ class EvaPhoto {
 				switch($tableElement){
 					case TABLE_ACTIVITE:
 					case TABLE_TACHE:
-						/*	Notify user when an action is done on a task or a sub task	*/
-						digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_as_main_add');
+						/*	Log modification on element and notify user if user subscribe	*/
+						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_as_main_add', '', '');
 					break;
 				}
 				$messageInfo .= '
@@ -814,8 +814,8 @@ class EvaPhoto {
 				switch($tableElement){
 					case TABLE_ACTIVITE:
 					case TABLE_TACHE:
-						/*	Notify user when an action is done on a task or a sub task	*/
-						digirisk_user_notification::notify_affiliated_user($tableElement, $idElement, 'picture_as_main_delete');
+						/*	Log modification on element and notify user if user subscribe	*/
+						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_as_main_delete', '', '');
 					break;
 				}
 				$messageInfo .= '
