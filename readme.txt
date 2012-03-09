@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.3.1
-Stable tag: 5.1.4.8
+Stable tag: 5.1.4.9
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,11 +75,25 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.4.9 =
+
+Am&eacute;liorations 
+
+* ST306 - Interface de liaison entre une t&acirc;che ou sous-t&acirc;ches simplifi&eacute;e 
+* ST308 - Possibilit&eacute; de demander une action corrective depuis la partie frontend du portail
+
+
+Corrections 
+
+* ST301 - Requ&ecirc;tes sur les listes des utilisateurs sur le tableau de bord ne prennent pas en compte les groupes d'utilisateurs (Probl&egrave;me de statut des enregistrements non pris en compte dans les requ&ecirc;tes) 
+* ST302 - Dans les fiches de groupements impression des risques du groupement courant uniquement (Ceux des sous &eacute;l&eacute;ments &eacute;taient &eacute;galement imprim&eacute;s) 
+
 = Version 5.1.4.8 =
 
 Corrections
 
 * Suppression de l'affichage d'un champs dans les options
+
 
 = Version 5.1.4.7 =
 
@@ -703,6 +717,11 @@ L'int&eacute;gration &agrave; Wordpress :
 
 
 Voici les 4 changements fondamentaux qui permettent aujourd'hui &agrave; ce logiciel de ce mettre en place sur des infrastructures de plusieurs milliers de personnes tout en am&eacute;liorant la convivialit&eacute; de d&eacute;part pour les petites entreprises.
+
+
+
+== Am&eacute;liorations Futures ==
+
 
 
 == Upgrade Notice ==

@@ -29,13 +29,11 @@ class digirisk_init
 		/*	Get the current language to translate the different text in plugin	*/
 		$locale = get_locale();
 		$moFile = EVA_HOME_DIR . 'languages/evarisk-' . $locale . '.mo';
-		if( !empty($locale) && (is_file($moFile)) )
-		{
+		if( !empty($locale) && (is_file($moFile)) ){
 			load_textdomain('evarisk', $moFile);
 		}
 
-		if((isset($_GET['page']) && (substr($_GET['page'], 0, 9) == 'digirisk_')) || (basename($_SERVER['PHP_SELF']) == 'user-edit.php'))
-		{
+		if((isset($_GET['page']) && (substr($_GET['page'], 0, 9) == 'digirisk_')) || (basename($_SERVER['PHP_SELF']) == 'user-edit.php')){
 			// Ajout des script de eva_admin
 			add_action('admin_head', array('digirisk_init', 'digirisk_add_admin_js'));
 			/*	Include the different javascript	*/
@@ -45,8 +43,7 @@ class digirisk_init
 		}
 
 		/*	Add the right management for users	*/
-		if(current_user_can('digi_manage_user_right'))
-		{
+		if(current_user_can('digi_manage_user_right')){
 			add_action('edit_user_profile', array('digirisk_permission', 'user_permission_management'));
 		}
 		add_action('admin_init', array('digirisk_permission', 'user_permission_set'));
@@ -60,6 +57,10 @@ class digirisk_init
 		if (isset($_GET['page']) && in_array($_GET['page'], $pages_list)) {
 			add_action('contextual_help', array('digirisk_doc', 'pippin_contextual_help'), 10, 3);
 		}
+
+		/*	Include the different css and js for frontend output	*/
+		add_action('wp_print_styles', array('digirisk_init', 'frontend_css'));
+		add_action('init', array('digirisk_init', 'frontend_js'));
 	}
 
 	/**
@@ -125,6 +126,7 @@ class digirisk_init
 			// On crée le menu de gestion des droits des utilisateurs
 			add_users_page('Digirisk : ' . __('Gestion des droits des utilisateurs', 'evarisk' ), __('Droits Digirisk', 'evarisk'), 'digi_user_right_management_menu', DIGI_URL_SLUG_USER_RIGHT, array('digirisk_permission','elementMainPage'));
 
+			// add_management_page(__('Outils pour le logiciel Digirisk', 'evarisk'), __('Digirisk - Outils', 'evarisk'), 'digi_tools_menu', 'digirisk_tools', array('digirisk_tools', 'main_page'));
 			add_management_page(__('Documentation pour le logiciel Digirisk', 'evarisk'), __('Digirisk - Doc', 'evarisk'), 'digi_documentation_management_menu', 'digirisk_doc', array('digirisk_doc', 'mydoc'));
 
 			// On crée le menu de création de veille réglementaire
@@ -174,6 +176,33 @@ class digirisk_init
 		wp_enqueue_script('eva_jqplot_dateAxisRenderer', EVA_INC_PLUGIN_URL . 'js/charts/jquery.dateAxisRenderer.min.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jqplot_highlighter', EVA_INC_PLUGIN_URL . 'js/charts/jquery.highlighter.min.js', '', EVA_PLUGIN_VERSION);
 	}
+	/**
+	*	Admin javascript "frontend" part definition
+	*/
+	function frontend_js(){
+		/*	Check the wp version in order to include the good jquery librairy. Causes issue because of wp core update	*/
+		global $wp_version;
+
+		if($wp_version < '3.2'){
+			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
+		}
+		elseif(!wp_script_is('jquery', 'queue')){
+			wp_enqueue_script('jquery');
+		}
+
+		wp_enqueue_script('jquery-form');
+
+		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
+
+		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
+	}
 
 	/**
 	*	Define the css to include in each page
@@ -198,6 +227,23 @@ class digirisk_init
 		wp_register_style('eva_jqplot_css', EVA_INC_PLUGIN_URL . 'css/charts/jquery.jqplot.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jqplot_css');
 	}
+	/**
+	*	Admin javascript "file" part definition
+	*/
+	function frontend_css(){
+		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_datatable');
+		wp_register_style('eva_jquery_custom', EVA_INC_PLUGIN_URL . 'css/jquery-ui-1.7.2.custom.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_custom');
+		wp_register_style('eva_jquery_fileuploader', EVA_INC_PLUGIN_URL . 'css/fileUploader/fileuploader.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_fileuploader');
+		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_main_css');
+		wp_register_style('eva_autocomplete_css', EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_autocomplete_css');
+	}
+
+
 
 	/**
 	*

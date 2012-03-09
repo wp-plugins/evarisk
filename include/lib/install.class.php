@@ -171,4 +171,121 @@ class digirisk_install
 
 	}
 
+	
+	/**
+	*	Method called when plugin is loaded for database update. This method allows to update the database structure, insert default content.
+	*/
+	function update_digirisk(){
+		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add;
+
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+		$current_db_version = get_option('digirisk_db_options', 0);
+		$current_db_version = $current_db_version['base_evarisk'];
+
+		$current_def_max_version = max(array_keys($digirisk_update_way));
+		$new_version = $current_def_max_version + 1;
+		$version_nb_delta = $current_def_max_version - $current_db_version;
+
+		$do_changes = false;
+
+		/*	Check if there are modification to do	*/
+		if($current_def_max_version >= $current_db_version){
+			/*	Check the lowest version of db to execute	*/
+			$lowest_version_to_execute = $current_def_max_version - $version_nb_delta;
+
+			for($i = $lowest_version_to_execute; $i <= $current_def_max_version; $i++){
+				/*	Check if there are modification to do	*/
+				if(isset($digirisk_update_way[$i])){
+					/*	Check if there are modification to make on table	*/
+					if(isset($digirisk_db_table_list[$i])){
+						foreach($digirisk_db_table_list[$i] as $table_name){
+							dbDelta($digirisk_db_table[$table_name]);
+						}
+						$do_changes = true;
+					}
+
+
+			/********************/
+			/*		Insert data		*/
+			/********************/
+					/*	Options content	*/
+					if(is_array($digirisk_db_options_add) && is_array($digirisk_db_options_add[$i]) && (count($digirisk_db_options_add[$i]) > 0)){
+						foreach($digirisk_db_options_add[$i] as $option_name => $option_content){
+							add_option($option_name, $option_content, '', 'yes');
+						}
+					}
+					if(is_array($digirisk_db_options_update) && is_array($digirisk_db_options_update[$i]) && (count($digirisk_db_options_update[$i]) > 0)){
+						foreach($digirisk_db_options_update[$i] as $option_name => $option_content){
+							update_option($option_name, $option_content);
+						}
+					}
+
+					/*	Add datas	*/
+					if(is_array($digirisk_db_content_add) && is_array($digirisk_db_content_add[$i]) && (count($digirisk_db_content_add[$i]) > 0)){
+						foreach($digirisk_db_content_add[$i] as $table_name => $def){
+							foreach($def as $information_index => $table_information){
+								$wpdb->insert($table_name, $table_information, '%s');
+								$do_changes = true;
+							}
+						}
+					}
+
+					/*	Update datas	*/
+					if(is_array($digirisk_db_content_update) && is_array($digirisk_db_content_update[$i]) && (count($digirisk_db_content_update[$i]) > 0)){
+						foreach($digirisk_db_content_update[$i] as $table_name => $def){
+							foreach($def as $information_index => $table_information){
+								$wpdb->update($table_name, $table_information['datas'], $table_information['where'], '%s', '%s');
+								$do_changes = true;
+							}
+						}
+					}
+					/*	Update datas	*/
+					if(is_array($digirisk_db_update) && is_array($digirisk_db_update[$i]) && (count($digirisk_db_update[$i]) > 0)){
+						foreach($digirisk_db_update[$i] as $table_name => $def){
+							foreach($def as $information_index => $table_information){
+								$query = $wpdb->prepare($table_information);
+								$wpdb->query($table_information);
+								$do_changes = true;
+							}
+						}
+					}
+
+
+			/******************************************************/
+			/*		Make special operation on database structure		*/
+			/******************************************************/
+					if(is_array($digirisk_table_structure_change) && is_array($digirisk_table_structure_change[$i]) && (count($digirisk_table_structure_change[$i]) > 0)){
+						foreach($digirisk_table_structure_change[$i] as $table_name => $operations_to_make){
+							foreach($operations_to_make as $operation_index => $operation){
+								$query = $wpdb->prepare($operation['MAIN_ACTION'] . " TABLE " . $table_name . " " . $operation['ACTION'] . " " . $operation['ACTION_CONTENT']);
+								$wpdb->query($query);
+							}
+						}
+					}
+				}
+
+				self::make_specific_operation_on_update($i);
+			}
+		}
+
+		/*	Update the db version option value	*/
+		// $do_changes = false;
+		if($do_changes){
+			$digirisk_db_options = array();
+			$digirisk_db_options['base_evarisk'] = $new_version;
+			update_option('digirisk_db_options', $digirisk_db_options);
+		}
+	}
+
+	/**
+	*
+	*/
+	function make_specific_operation_on_update($version){
+		global $wpdb;
+		switch($version){
+			
+		}
+	}
+
 }

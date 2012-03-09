@@ -27,21 +27,23 @@ class eva_documentUnique
 	*
 	*	@return array $lignesDeValeurs A complete array with the entire list of risk stored by element
 	*/
-	function listRisk($tableElement, $idElement, $outputInterfaceType = ''){
+	function listRisk($tableElement, $idElement, $outputInterfaceType = '', $recursiv_mode = true){
 		$lignesDeValeurs = array();
 
-		switch($tableElement){
-			case TABLE_GROUPEMENT:{
-				/*	Recuperation des unites du groupement	*/
-				$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($idElement);
-				if(is_array($listeUnitesDeTravail)){
-					foreach($listeUnitesDeTravail as $key => $uniteDefinition){
-						/*	Recuperation des risques associes a l'unite	*/
-						$lignesDeValeurs = array_merge($lignesDeValeurs, eva_documentUnique::listeRisquePourElement($uniteDefinition['table'], $uniteDefinition['value']->id, $outputInterfaceType));
+		if($recursiv_mode){
+			switch($tableElement){
+				case TABLE_GROUPEMENT:{
+					/*	Recuperation des unites du groupement	*/
+					$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($idElement);
+					if(is_array($listeUnitesDeTravail)){
+						foreach($listeUnitesDeTravail as $key => $uniteDefinition){
+							/*	Recuperation des risques associes a l'unite	*/
+							$lignesDeValeurs = array_merge($lignesDeValeurs, eva_documentUnique::listeRisquePourElement($uniteDefinition['table'], $uniteDefinition['value']->id, $outputInterfaceType));
+						}
 					}
 				}
+				break;
 			}
-			break;
 		}
 
 		/*	Recuperation des risques associes au groupement	*/

@@ -349,7 +349,7 @@ class eva_GroupSheet
 		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
 
 		/*	Récupération des informations concernant les risques	*/
-		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement));
+		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement, '', false));
 
 		/*	Récupération de la photo par défaut pour l'unité de travail	*/
 		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);

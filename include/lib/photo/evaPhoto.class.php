@@ -275,6 +275,9 @@ class EvaPhoto {
 
 					$gallery .= '<div class="pictureDeletion" onclick="javascript:pictureDelete(' . $photo->id . ');" >
 										-&nbsp;' . __('Supprimer', 'evarisk') . '
+									</div>
+									<div class="pictureDownload" >
+										-&nbsp;<a href="' . $pathToMediasDir . $photo->photo . '" target="associated_document_dl_file" >' . __('T&eacute;l&eacute;charger ce fichier', 'evarisk') . '</a>
 									</div>';
 				}
 				$gallery .= '

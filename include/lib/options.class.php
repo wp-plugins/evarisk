@@ -45,6 +45,8 @@ class digirisk_options
 			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_allowed_ext', __('Liste des extensions autoris&eacute;es pour les documents', 'evarisk'), array('digirisk_options', 'digi_ac_allowed_ext'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_allow_front_ask', __('Autoriser la demande d\'actions correctives depuis la partie front du portail', 'evarisk'), array('digirisk_options', 'digi_ac_allow_front_ask'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_front_ask_parent_task_id', '', array('digirisk_options', 'digi_ac_front_ask_parent_task_id'), 'digirisk_options_correctivaction', 'digi_options_ac');
 		}
 
 		{/*	Declare the different options for the risks	*/
@@ -219,6 +221,7 @@ if(current_user_can('digi_edit_option'))
 	*	@return array $newinput An array with the send values cleaned for more secure usage
 	*/
 	function digirisk_options_validator($input){
+		global $wpdb;
 		$newinput['digi_activ_trash'] = trim($input['digi_activ_trash']);
 
 		$newinput['responsable_Tache_Obligatoire'] = trim($input['responsable_Tache_Obligatoire']);
@@ -232,6 +235,8 @@ if(current_user_can('digi_edit_option'))
 		$newinput['export_only_priority_task'] = trim($input['export_only_priority_task']);
 		$newinput['export_tasks'] = trim($input['export_tasks']);
 		$newinput['digi_ac_allowed_ext'] = $input['digi_ac_allowed_ext'];
+		$newinput['digi_ac_allow_front_ask'] = $input['digi_ac_allow_front_ask'];
+		$newinput['digi_ac_front_ask_parent_task_id'] = $input['digi_ac_front_ask_parent_task_id'];
 
 		$newinput['risques_avances'] = trim($input['risques_avances']);
 
@@ -441,6 +446,42 @@ if(current_user_can('digi_edit_option'))
 		{
 			echo $options['export_tasks'];
 		}
+	}	
+
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_front_ask_parent_task_id(){
+	
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_allow_front_ask(){
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		$load_class = ' class="digirisk_hide" ';
+		if($options['digi_ac_allow_front_ask'] == 'oui'){
+			$load_class = ' ';
+		}
+		if(current_user_can('digi_edit_option')){
+			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >&nbsp;&nbsp;&nbsp;' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;:[digirisk_correctiv_action]<br/>' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="text" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#digi_ac_allow_front_ask").change(function(){
+			if(jQuery(this).val() == "oui"){
+				jQuery("#associated_task_container").show();
+			}
+			else{
+				jQuery("#associated_task_container").hide();
+			}
+		});	
+	});
+</script>';
+		}
+		else{
+			echo $options['digi_ac_allow_front_ask'] . '<div id="associated_task_container" ' . $load_class . ' >' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="hidden" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>';
+		}
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -573,7 +614,7 @@ if(current_user_can('digi_edit_option'))
 		$digi_users_access_field = '';
 		if(current_user_can('digi_edit_option')){
 			$digi_users_access_field = "
-<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='hidden' value='{$options['digi_users_access_field']}' />
+<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='text' value='{$options['digi_users_access_field']}' />
 	" . EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, $options['digi_users_access_field']) . "
 	<br/><label for='identifiant_htpasswd'>" . __('Idenfiant', 'evarisk') . "&nbsp;:</label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' type='text' value='{$options['identifiant_htpasswd']}' />
 	<br/><label for='password_htpasswd'>" . __('Mot de passe', 'evarisk') . "&nbsp;:</label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' type='text' value='{$options['password_htpasswd']}' />";
@@ -582,7 +623,7 @@ if(current_user_can('digi_edit_option'))
 		else{
 			echo $options['digi_users_access_field'];
 		}
-	}
+	}	
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/

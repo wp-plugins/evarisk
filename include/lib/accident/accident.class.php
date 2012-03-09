@@ -1161,7 +1161,6 @@ class digirisk_accident
 			WHERE ACC.status IN (" . $element_status . ")
 				" . $more_query . "
 			GROUP BY ACC.id");
-				// LEFT JOIN " . DIGI_DBT_ACCIDENT_LESION . " AS ACC_HURTS ON ((ACC_HURTS.id_accident = ACC.id) && (ACC_HURTS.status = 'valid'))
 				// LEFT JOIN " . DIGI_DBT_ACCIDENT_THIRD_PARTY . " AS ACC_TPARTY ON ((ACC_TPARTY.id_accident = ACC.id) && (ACC_TPARTY.status = 'valid'))
 		/*	Get the query result regarding on the function parameters. If there must be only one result or a collection	*/
 		if($element_id == '')

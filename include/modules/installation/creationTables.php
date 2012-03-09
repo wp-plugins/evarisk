@@ -1862,6 +1862,21 @@ CREATE TABLE {$t} (
 			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
 			evarisk_insertions();
 		}
+		if(digirisk_options::getDbOption('base_evarisk') <= 68)
+		{//	Add the different element for task asking in frontend
+			$sql = "ALTER TABLE  " . TABLE_TACHE . " CHANGE Status Status ENUM('Valid','Moderated','Deleted','Aborded', 'Asked') NOT NULL DEFAULT 'Valid' ;";
+			$wpdb->query($sql);
+			$sql = "ALTER TABLE  " . TABLE_ACTIVITE . " CHANGE Status Status ENUM('Valid','Moderated','Deleted','Aborded', 'Asked') NOT NULL DEFAULT 'Valid' ;";
+			$wpdb->query($sql);
+
+			$main_options = get_option('digirisk_options');
+			$main_options['digi_ac_allow_front_ask'] = 'non';
+			$main_options['digi_ac_front_ask_parent_task'] = '__' . __('Actions correctives demand&eacute;es', 'evarisk');
+			update_option('digirisk_options', $main_options);
+
+			require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
+			evarisk_insertions();
+		}
 	}
 }
 

@@ -19,7 +19,6 @@ require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswerToQuestion.class.php');
@@ -45,8 +44,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDeGrou
 /*
 * Paramètres passés en POST
 */
-if($_REQUEST['post'] == 'true')
-{
+if($_REQUEST['post'] == 'true'){
 	/*	Refactoring actions	*/
 	if(isset($_REQUEST['act'])){
 		switch($_REQUEST['act'])
@@ -1072,13 +1070,16 @@ if($_REQUEST['post'] == 'true')
 							$query = $wpdb->prepare("
 SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
 FROM " . $wpdb->usermeta . " AS META_1
-	INNER JOIN " . $wpdb->usermeta . " AS META_2 ON (META_2.USER_ID = META_1.USER_ID)
-	INNER JOIN " . TABLE_LIAISON_USER_ELEMENT . " AS LINK ON ((LINK.ID_USER = meta_1.USER_ID) AND ((LINK.TABLE_ELEMENT = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.TABLE_ELEMENT = '" . TABLE_GROUPEMENT . "_evaluation')))
-WHERE META_1.META_KEY = 'last_name'
-	AND META_2.META_KEY = 'first_name'
-	AND META_1.USER_ID <> 1
+	INNER JOIN " . $wpdb->usermeta . " AS META_2 ON (META_2.user_id = META_1.user_id)
+	INNER JOIN " . TABLE_LIAISON_USER_ELEMENT . " AS LINK ON ((LINK.id_user = META_1.user_id) AND (((LINK.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
+						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group 
+							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP 
+							WHERE USER_LINK_GROUP.status = 'valid')))))
+WHERE META_1.meta_key = 'last_name'
+	AND META_2.meta_key = 'first_name'
+	AND META_1.user_id <> 1
 	AND LINK.status = 'valid'
-GROUP BY META_1.USER_ID , NOM ,  PRENOM");
+GROUP BY META_1.user_id , NOM ,  PRENOM");
 							$users = $wpdb->get_results($query);
 							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute pr&eacutesents &agrave l\'audit (%s) :', 'evarisk'), count($users));
 							if(count($users) > 0){
@@ -1099,17 +1100,19 @@ GROUP BY META_1.USER_ID , NOM ,  PRENOM");
 							$query = $wpdb->prepare("
 SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
 FROM " . $wpdb->prefix . "usermeta AS META_1
-	INNER JOIN " . $wpdb->prefix . "usermeta AS META_2 ON (META_2.USER_ID = META_1.USER_ID)
-WHERE META_1.META_KEY = 'last_name'
-	AND META_2.META_KEY = 'first_name'
-	AND META_1.USER_ID <> 1
-	AND META_1.USER_ID NOT IN (
-		SELECT LINK.ID_USER
+	INNER JOIN " . $wpdb->prefix . "usermeta AS META_2 ON (META_2.user_id = META_1.user_id)
+WHERE META_1.meta_key = 'last_name'
+	AND META_2.meta_key = 'first_name'
+	AND META_1.user_id <> 1
+	AND META_1.user_id NOT IN (
+		SELECT LINK.id_user
 		FROM " . TABLE_LIAISON_USER_ELEMENT . " AS LINK
-		WHERE ((LINK.TABLE_ELEMENT = '" . PREFIXE_EVARISK . "unite_travail_evaluation') || (LINK.TABLE_ELEMENT = '" . PREFIXE_EVARISK . "groupement_evaluation'))
-		OR LINK.status <> 'valid'
+		WHERE ((LINK.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
+						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group 
+							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP 
+							WHERE USER_LINK_GROUP.status = 'valid'))) AND LINK.status = 'valid'
 	)
-GROUP BY META_1.USER_ID , NOM ,  PRENOM");
+GROUP BY META_1.user_id , NOM ,  PRENOM");
 							$users = $wpdb->get_results($query);
 							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute absents &agrave l\'audit (%s) :', 'evarisk'), count($users));
 							if(count($users) > 0){
@@ -1130,14 +1133,14 @@ GROUP BY META_1.USER_ID , NOM ,  PRENOM");
 							$output .= __('Il n\'y a aucun utilisateur enregistr&eacute;', 'evarisk');
 						}
 
-						$output .= '<br><br><input id="returnStats" name="returnStats" type="button" value="Retour aux statistiques" />
-						<script type="text/javascript">
-							evarisk(document).ready(function(){
-								evarisk("#returnStats").click(function(){
-									evarisk("#namesUpdater").dialog("close");
-								});
-							});
-						</script> ';
+						$output .= '<br><br><input id="returnStats" name="returnStats" type="button" value="' . __('Retour aux statistiques', 'evarisk') . '" />
+<script type="text/javascript">
+	evarisk(document).ready(function(){
+		evarisk("#returnStats").click(function(){
+			evarisk("#namesUpdater").dialog("close");
+		});
+	});
+</script>';
 
 					echo $output;
 				}
@@ -1714,7 +1717,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			jQuery(this).val("");
 			test = jQuery("#where_to_search_element").val();
 		});
-		jQuery("#search_element").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGp_UT.php?table_element=' . $tableElement . '&id_element=' . $idElement . '");
+		jQuery("#search_element").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGp_UT.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&element_type=' . TABLE_UNITE_TRAVAIL . '-t-' . TABLE_GROUPEMENT . '");
 		jQuery("#search_element").result(function(event, data, formatted){
 			jQuery("#receiver_element").val(data[1]);
 		});
@@ -1933,8 +1936,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					case 'updateProvenance':
 					{
 						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
-						$provenance = eva_tools::IsValid_Variable($_REQUEST['provenance']);
-						$provenanceComponents = explode('_-_', $provenance);
+						$provenance = eva_tools::IsValid_Variable($_REQUEST['receiver_element']);
+						$provenanceComponents = explode('-_-', $provenance);
 
 						$tache = new EvaTask($id);
 						$tache->load();
@@ -1981,6 +1984,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									evarisk("#savingLinkTaskElement").html("");
 									evarisk("#savingLinkTaskElement").hide();
 									evarisk("#saveLinkTaskElement").show();
+									jQuery("#current_element").val("' . $provenance . '");
+									jQuery("#saveLinkTaskElement input").addClass("button-secondary");
+									jQuery("#saveLinkTaskElement input").removeClass("button-primary");
 									evarisk("#messageh' . $_REQUEST['table'] . '").addClass("updated");
 									' . $updateMessage . '
 									evarisk("#messageh' . $_REQUEST['table'] . '").show();
@@ -2536,8 +2542,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					case 'actionDone':
 					{
 						global $wpdb;
-						switch($_REQUEST['act'])
-						{
+						switch($_REQUEST['act']){
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
 							break;
@@ -2687,6 +2692,59 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo $messageInfo;
 					}
 					break;
+
+					case "ask_correctiv_action":{
+						global $current_user;
+						$_POST['parentTaskId'] = evaTask::saveNewTask();
+						$asked_task = new EvaTask($_POST['parentTaskId']);
+						$asked_task->load();
+						$main_options = get_option('digirisk_options');
+						$asked_task->transfert($main_options['digi_ac_front_ask_parent_task_id']);
+						$actionSave = evaActivity::saveNewActivity();
+
+						evaUserLinkElement::setLinkUserElement(TABLE_TACHE, $actionSave['task_id'], $current_user->ID);
+						evaUserLinkElement::setLinkUserElement(TABLE_ACTIVITE, $actionSave['action_id'], $current_user->ID);
+						
+						$task_notif_list = digirisk_user_notification::get_notification_list(TABLE_TACHE);
+						foreach($task_notif_list as $notification){
+							$wpdb->insert(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'valid', 'date_affectation' => current_time('mysql', 0), 'id_attributeur' => $current_user->ID, 'id_user' => $current_user->ID, 'id_notification' => $notification->id, 'id_element' => $actionSave['task_id'],	'table_element' => TABLE_TACHE));
+						}
+						$action_notif_list = digirisk_user_notification::get_notification_list(TABLE_ACTIVITE);
+						foreach($action_notif_list as $notification){
+							$wpdb->insert(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'valid', 'date_affectation' => current_time('mysql', 0), 'id_attributeur' => $current_user->ID, 'id_user' => $current_user->ID, 'id_notification' => $notification->id, 'id_element' => $actionSave['action_id'],	'table_element' => TABLE_ACTIVITE));
+						}
+
+						$messageInfo = '<script type="text/javascript">
+								evarisk(document).ready(function(){
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
+						if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error')){
+							if($_REQUEST['tableProvenance'] == 'correctiv_action_ask'){
+								$messageInfo .= '
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Votre demande d\'action corrective a bien &eacute;t&eacute; envoy&eacute;e', 'evarisk') . '</strong></p>') . '");';
+							}
+							else{
+								$messageInfo .= '
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+							}
+						}
+						else{
+								$messageInfo .= '
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+						}
+						$messageInfo = $messageInfo . '
+									jQuery("#save_button_container").show();
+									jQuery("#save_in_progress").hide();
+									evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
+									setTimeout(function(){
+										evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+										evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
+									},7500);
+									evarisk("#ongletVoirLesRisques").click();
+								});
+							</script>';
+						echo $messageInfo;
+					}break;
+
 					case "addAction" :
 					{
 						$_POST['parentTaskId'] = evaTask::saveNewTask();
@@ -4461,24 +4519,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					}
 					break;
 
-					case 'delete_accident_hurt':
-					{
-						$hurt_id = (isset($_REQUEST['hurt_id']) && ($_REQUEST['hurt_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['hurt_id']) : '';
-						$line_id = (isset($_REQUEST['line_id']) && ($_REQUEST['line_id'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['line_id']) : '';
-						$hurt['status'] = 'deleted';
-						$hurt['last_update_date'] = date('Y-m-d H:i:s');
-						$save_hurt_result = eva_database::update($hurt, $hurt_id, DIGI_DBT_ACCIDENT_LESION);
-						if(($save_hurt_result == 'done') || ($save_hurt_result == 'nothingToUpdate')){
-							echo '
-<script type="text/javascript" >
-	evarisk(document).ready(function(){
-		remove_current_line(' . $line_id . ');
-	});
-</script>';
-						}
-					}
-					break;
-
 					case 'reload_accident_place_part':
 					{
 						$tableElement = (isset($_REQUEST['tableElement']) && ($_REQUEST['tableElement'] != '')) ? eva_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
@@ -5770,6 +5810,194 @@ switch($tableProvenance)
 		evarisk("#saveNewPosition").hide();
 	});
 </script>';
+				}
+			}
+			break;
+
+			case 'hierarchy':{
+				switch($_REQUEST['action']){
+					case 'load_complete':{
+						$selected_element = (isset($_REQUEST['selected']) && (trim($_REQUEST['selected']) != '')) ? eva_tools::IsValid_Variable($_REQUEST['selected']) : '';
+						$element_to_select = explode('-_-', $selected_element);
+
+						echo '
+<table id="complete_hierarchy_table" summary="arborescence societe" cellpadding="0" cellspacing="0" class="widefat post fixed">' . 
+	arborescence_special::lectureArborescenceRisque(arborescence_special::arborescenceRisque(TABLE_GROUPEMENT, 1), $element_to_select[0], $element_to_select[1]) . '
+</table>';
+					}break;
+					case 'load_partial':{
+						$selected_element = (isset($_REQUEST['selected_element']) && (trim($_REQUEST['selected_element']) != '')) ? eva_tools::IsValid_Variable($_REQUEST['selected_element']) : '';
+						$element_to_select = explode('-_-', $selected_element);
+
+						echo arborescence_special::display_mini_hierarchy_for_element_affectation($element_to_select[0], $element_to_select[1]);
+					}break;
+				}
+			}break;
+
+			case 'tools':{
+				switch($_REQUEST['action']){
+					case 'db_manager':{
+						/*	Display a list of operation made for the different version	*/
+						$plugin_db_modification_content = '';
+						foreach($digirisk_db_table_operation_list as $plugin_db_version => $plugin_db_modification){
+							$plugin_db_modification_content .= '
+<div class="tools_db_modif_list_version_number" >
+	' . __('Version', 'evarisk') . '&nbsp;' . $plugin_db_version . '
+</div>
+<div class="tools_db_modif_list_version_details" >
+	<ul>';
+							foreach($plugin_db_modification as $modif_name => $modif_list){
+								switch($modif_name){
+									case 'FIELD_ADD':{
+										foreach($modif_list as $table_name => $field_list){
+											$sub_modif = '  ';
+											foreach($field_list as $column_name){
+												$query = $wpdb->prepare("SHOW COLUMNS FROM " .$table_name . " WHERE Field = %s", $column_name);
+												$columns = $wpdb->get_row($query);
+												$sub_modif .= $column_name;
+												if($columns->Field == $column_name){
+													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Field has been created', 'evarisk') . '" title="' . __('Field has been created', 'evarisk') . '" class="db_added_field_check" />';
+												}
+												else{
+													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
+												}
+												$sub_modif .= ' / ';
+											}
+											$plugin_db_modification_content .= '<li class="added_field" >' . sprintf(__('Added field list for %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -2) . '</li>';
+										}
+									}break;
+									case 'FIELD_DROP':{
+										foreach($modif_list as $table_name => $field_list){
+											$sub_modif = '  ';
+											foreach($field_list as $column_name){
+												$query = $wpdb->prepare("SHOW COLUMNS FROM " .$table_name . " WHERE Field = %s", $column_name);
+												$columns = $wpdb->get_row($query);
+												$sub_modif .= $column_name;
+												if($columns->Field != $column_name){
+													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Field has been deleted', 'evarisk') . '" title="' . __('Field has been deleted', 'evarisk') . '" class="db_deleted_field_check" />';
+												}
+												else{
+													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field exists', 'evarisk') . '" title="' . __('Field exists', 'evarisk') . '" class="db_deleted_field_check" />';
+												}
+												$sub_modif .= ' / ';
+											}
+											$plugin_db_modification_content .= '<li class="deleted_field" >' . sprintf(__('Liste des champs supprim&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -2) . '</li>';
+										}
+									}break;
+									case 'FIELD_CHANGE':{
+										foreach($modif_list as $table_name => $field_list){
+											$sub_modif = '  ';
+											foreach($field_list as $field_infos){
+												$query = $wpdb->prepare("SHOW COLUMNS FROM " .$table_name . " WHERE Field = %s", $field_infos['field']);
+												$columns = $wpdb->get_row($query);
+												$what_is_changed = '';
+												if(isset($field_infos['type'])){
+													$what_is_changed = __('field type', 'evarisk');
+													$changed_key = 'type';
+													if($columns->Type == $field_infos['type']){
+														$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Field has been created', 'evarisk') . '" title="' . __('Field has been created', 'evarisk') . '" class="db_added_field_check" />';
+													}
+													else{
+														$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
+													}
+													$sub_modif .= sprintf(__('Change %s for field %s to %s', 'evarisk'), $what_is_changed, $field_infos['field'], $field_infos[$changed_key]);
+												}
+												if(isset($field_infos['original_name'])){
+													$what_is_changed = __('field name', 'evarisk');
+													$changed_key = 'original_name';
+													if($columns->Field == $field_infos['field']){
+														$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Field has been created', 'evarisk') . '" title="' . __('Field has been created', 'evarisk') . '" class="db_added_field_check" />';
+													}
+													else{
+														$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
+													}
+													$sub_modif .= sprintf(__('Change %s for field %s to %s', 'evarisk'), $what_is_changed, $field_infos[$changed_key], $field_infos['field']);
+												}
+												$sub_modif .= ' / ';
+											}
+											$sub_modif = substr($sub_modif, 0, -2);
+											$plugin_db_modification_content .= '<li class="changed_field" >' . sprintf(__('Updated field list for %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' . $sub_modif . '</li>';
+										}
+									}break;
+
+									case 'DROP_INDEX':{
+										foreach($modif_list as $table_name => $field_list){
+											$sub_modif = '   ';
+											foreach($field_list as $column_name){
+												$query = $wpdb->prepare("SHOW INDEX FROM " .$table_name . " WHERE Column_name = %s", $column_name);
+												$columns = $wpdb->get_row($query);
+												$sub_modif .= $column_name;
+												if($columns->Column_name != $column_name){
+													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Index has been deleted', 'evarisk') . '" title="' . __('Index has been deleted', 'evarisk') . '" class="db_deleted_index_check" />';
+												}
+												else{
+													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Index exists', 'evarisk') . '" title="' . __('Index exists', 'evarisk') . '" class="db_deleted_index_check" />';
+												}
+												$sub_modif .= ' / ';
+											}
+										}
+										$plugin_db_modification_content .= '<li class="deleted_index" >' . sprintf(__('Liste des index supprim&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -3) . '</li>';
+									}break;
+									case 'ADD_INDEX':{
+										foreach($modif_list as $table_name => $field_list){
+											$sub_modif = '   ';
+											foreach($field_list as $column_name){
+												$query = $wpdb->prepare("SHOW INDEX FROM " .$table_name . " WHERE Column_name = %s", $column_name);
+												$columns = $wpdb->get_row($query);
+												$sub_modif .= $column_name;
+												if($columns->Column_name == $column_name){
+													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Index has been created', 'evarisk') . '" title="' . __('Index has been created', 'evarisk') . '" class="db_added_index_check" />';
+												}
+												else{
+													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Index does not exist', 'evarisk') . '" title="' . __('Index does not exist', 'evarisk') . '" class="db_added_index_check" />';
+												}
+												$sub_modif .= ' / ';
+											}
+										}
+										$plugin_db_modification_content .= '<li class="added_index" >' . sprintf(__('Liste des index ajout&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -3) . '</li>';
+									}break;
+
+									case 'ADD_TABLE':{
+										$sub_modif = '  ';
+										foreach($modif_list as $table_name){
+											$sub_modif .= $table_name;
+											$query = $wpdb->prepare("SHOW TABLES FROM " . DB_NAME . " LIKE %s", $table_name);
+											$table_exists = $wpdb->query($query);
+											if($table_exists == 1){
+												$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Table has been created', 'evarisk') . '" title="' . __('Table has been created', 'evarisk') . '" class="db_table_check" />';
+											}
+											else{
+												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has been created', 'evarisk') . '" title="' . __('Table has been created', 'evarisk') . '" class="db_table_check" />';
+											}
+											$sub_modif .= ' / ';
+										}
+										$plugin_db_modification_content .= '<li class="added_table" >' . __('Added table list', 'evarisk') . '&nbsp;:&nbsp;' . substr($sub_modif, 0, -2);
+									}break;
+									case 'TABLE_RENAME':{
+										$sub_modif = '  ';
+										foreach($modif_list as $table){
+											$sub_modif .= sprintf(__('Table %s renomm&eacute;e en %s', 'evarisk'), $table['old_name'], $table['name']);
+											$query = $wpdb->prepare("SHOW TABLES FROM " . DB_NAME . " LIKE %s", $table['name']);
+											$table_exists = $wpdb->query($query);
+											if($table_exists == 1){
+												$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Table has been renamed', 'evarisk') . '" title="' . __('Table has been renamed', 'evarisk') . '" class="db_rename_table_check" />';
+											}
+											else{
+												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has been created', 'evarisk') . '" title="' . __('Table has been created', 'evarisk') . '" class="db_rename_table_check" />';
+											}
+											$sub_modif .= ' / ';
+										}
+										$plugin_db_modification_content .= '<li class="renamed_table" >' . __('Renamed table list', 'evarisk') . '&nbsp;:&nbsp;' . substr($sub_modif, 0, -2);
+									}break;
+								}
+							}
+							$plugin_db_modification_content .= '
+	</ul>
+</div>';
+						}
+						echo $plugin_db_modification_content;
+					}
+					break;
 				}
 			}
 			break;

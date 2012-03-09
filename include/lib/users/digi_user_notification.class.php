@@ -123,11 +123,11 @@ WHERE 1" . $conditions, $conditions_value);
 		modal: true,
 		buttons: {
 			"' . __('Enregistrer et fermer', 'evarisk') . '": function(){
-				saveRightForUsers("' . $element_type . '", "' . $element_identifier . '", "' . DIGI_DBT_PERMISSION . '", "message_' . $element_type . '_' . $element_identifier . '_userNotification", "userNotificationContainerBox");
+				jQuery("#user_notification_form").submit();
 				setTimeout(evarisk(this).dialog("close"), \'1000\');
 			},
 			"' . __('Enregistrer', 'evarisk') . '": function(){
-				saveRightForUsers("' . $element_type . '", "' . $element_identifier . '", "' . DIGI_DBT_PERMISSION . '", "userNotificationDialogMessage", "userNotificationManagerForm");
+				jQuery("#user_notification_form").submit();
 			},
 			"' . __('Annuler', 'evarisk') . '": function(){
 				evarisk(this).dialog("close");
@@ -180,7 +180,7 @@ WHERE 1" . $conditions, $conditions_value);
 		$notification_list = '';
 
 		$query = $wpdb->prepare("
-SELECT action, id
+SELECT action, id, action_title
 FROM " . self::dbTable . "
 WHERE status = 'valid'
 	AND table_element = %s", $table_element);
@@ -252,7 +252,7 @@ WHERE LUN.status = 'valid'
 				$classes = array('userNotificationIdentifierColumn middleAlign','middleAlign','middleAlign','middleAlign rightBorder');
 				foreach($notification_list as $action){
 					$classes[] = 'middleAlign';
-					$titres[] = __($action->action, 'evarisk');
+					$titres[] = '<img src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/' . $action->action . '_s.png" alt="' . __($action->action_title, 'evarisk') . '" title="' . __($action->action_title, 'evarisk') . '" />';
 				}
 			}
 			$script = '';

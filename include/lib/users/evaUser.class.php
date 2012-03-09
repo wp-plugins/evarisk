@@ -538,7 +538,10 @@ $user_additionnal_field .= '
 					SELECT COUNT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
 					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
 					WHERE ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						AND status = 'valid'
+						OR ((USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (USER_LINK_EVALUATION.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group 
+							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP 
+							WHERE USER_LINK_GROUP.status = 'valid')))
+						AND USER_LINK_EVALUATION.status = 'valid'
 				) AS EVALUATED_USER
 			LIMIT 1"
 		);

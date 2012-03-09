@@ -66,7 +66,7 @@ class arborescence_special
 							$elementPrefix = 'UT' . $content['id'] . ' - ';
 							break;
 					}
-					$outputContent .= arborescence_special::getTreeLine($elementPrefix . $content['nom'], $content['table'] . '_-_' . $content['id'], $content['table'], $espacement, $selected);
+					$outputContent .= arborescence_special::getTreeLine($elementPrefix . $content['nom'], $content['table'] . '-_-' . $content['id'], $content['table'], $espacement, $selected);
 
 					/*	Risk list for the current element	*/
 					if( is_array($content['risks']) )
@@ -79,7 +79,7 @@ class arborescence_special
 							{
 								$selected = ' checked="checked" ';
 							}
-							$outputContent .= arborescence_special::getTreeLine($elementPrefix . $riskDefinition->nomDanger, TABLE_RISQUE . '_-_' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
+							$outputContent .= arborescence_special::getTreeLine($elementPrefix . $riskDefinition->nomDanger, TABLE_RISQUE . '-_-' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
 						}
 					}
 				}
@@ -103,7 +103,7 @@ class arborescence_special
 								$elementPrefix = 'UT' . $contentInformations['id'] . ' - ';
 								break;
 						}
-						$outputContent .= arborescence_special::getTreeLine($elementPrefix . $contentInformations['nom'], $contentInformations['table'] . '_-_' . $contentInformations['id'], $contentInformations['table'], $espacement, $selected);
+						$outputContent .= arborescence_special::getTreeLine($elementPrefix . $contentInformations['nom'], $contentInformations['table'] . '-_-' . $contentInformations['id'], $contentInformations['table'], $espacement, $selected);
 
 						/*	Risk list for the current element	*/
 						if( is_array($contentInformations['risks']) )
@@ -117,7 +117,7 @@ class arborescence_special
 									$selected = ' checked="checked" ';
 								}
 								$elementPrefix = 'R' . $riskId . ' - ';
-								$outputContent .= arborescence_special::getTreeLine($elementPrefix . $riskDefinition->nomDanger, TABLE_RISQUE . '_-_' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
+								$outputContent .= arborescence_special::getTreeLine($elementPrefix . $riskDefinition->nomDanger, TABLE_RISQUE . '-_-' . $riskId, TABLE_RISQUE, $riskEspacement, $selected);
 							}
 						}
 
@@ -176,7 +176,85 @@ class arborescence_special
 		return $hierarchieLine;
 	}
 
+	function display_mini_hierarchy_for_element_affectation($table_element, $id_element){
+		if(($table_element != '') && ($id_element > 0)){
+		global $wpdb;
+		switch($table_element){
+			case TABLE_RISQUE:
+				/*	Get the associated element	*/
+				$query = $wpdb->prepare(
+"SELECT R.nomTableElement, R.id_element, D.nom
+FROM " . TABLE_RISQUE . " AS R
+INNER JOIN " . TABLE_DANGER . " AS D ON ((D.id = R.id_danger) AND (D.Status = 'Valid'))
+WHERE R.id = %d", $id_element);
+				$risk_element = $wpdb->get_row($query);
+				/*	Get associated element informations */
+				$space_number = 1;
+				switch($risk_element->nomTableElement){
+					case TABLE_UNITE_TRAVAIL:{
+						$query = $wpdb->prepare("SELECT nom, id_groupement FROM " . $risk_element->nomTableElement . " WHERE id = %d", $risk_element->id_element);
+						$direct_parent_element = $wpdb->get_row($query);
+						$direct_parent = '<div class="clear" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . $risk_element->nomTableElement . '-_-' . $work_unit_direct_parent->id . '" class="hierarchy_element_selector" id="' . $risk_element->nomTableElement . '-_-' . $work_unit_direct_parent->id . '" /></span>&nbsp;&nbsp;&nbsp;<label for="' . $risk_element->nomTableElement . '-_-' . $work_unit_direct_parent->id . '" ><img style="height:15px;" alt="' . TABLE_UNITE_TRAVAIL . '_' . ELEMENT_IDENTIFIER_UT . $direct_parent_element->id . '" src="' . ULTRASMALL_WORKING_UNIT_PICTO . '" />' . ELEMENT_IDENTIFIER_UT . $risk_element->id_element . '&nbsp-&nbsp;' . $direct_parent_element->nom . '</label></div>';
+						$space_number++;
+						/*	Get information about work unit direct parent	*/
+						$query = $wpdb->prepare("SELECT id, nom FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $direct_parent_element->id_groupement);
+						$work_unit_direct_parent = $wpdb->get_row($query);
+						$direct_parent = '<div class="clear" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . TABLE_GROUPEMENT . '-_-' . $work_unit_direct_parent->id . '" id="' . TABLE_GROUPEMENT . '-_-' . $work_unit_direct_parent->id . '" class="hierarchy_element_selector" /></span><label for="' . TABLE_GROUPEMENT . '-_-' . $work_unit_direct_parent->id . '" ><img style="height:15px;" alt="' . TABLE_GROUPEMENT . '_' . ELEMENT_IDENTIFIER_GP . $work_unit_direct_parent->id . '" src="' . ULTRASMALL_GROUP_PICTO . '" />' . ELEMENT_IDENTIFIER_GP . $work_unit_direct_parent->id . '&nbsp-&nbsp;' . $work_unit_direct_parent->nom . '</label></div>' . $direct_parent;
+						$space_number++;
+						$gpt_id = $work_unit_direct_parent->id;
+					}break;
+					case TABLE_GROUPEMENT:{
+						$query = $wpdb->prepare("SELECT nom FROM " . $risk_element->nomTableElement . " WHERE id = %d", $risk_element->id_element);
+						$direct_parent = '<div class="clear" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . $risk_element->nomTableElement . '-_-' . $risk_element->id_element . '" id="' . $risk_element->nomTableElement . '-_-' . $risk_element->id_element . '" class="hierarchy_element_selector" /></span><label for="' . $risk_element->nomTableElement . '-_-' . $risk_element->id_element . '" ><img style="height:15px;" alt="' . TABLE_GROUPEMENT . '_' . ELEMENT_IDENTIFIER_GP . $risk_element->id_element . '" src="' . ULTRASMALL_GROUP_PICTO . '" />' . ELEMENT_IDENTIFIER_GP . $risk_element->id_element . '&nbsp-&nbsp;' . $wpdb->get_var($query) . '</label></div>';
+						$space_number++;
+						$gpt_id = $risk_element->id_element ;
+					}break;
+				}
+				$picto = PICTO_LTL_EVAL_RISK;
+				$element_identifier = ELEMENT_IDENTIFIER_R;
+				$element_name = $risk_element->nom;
+			break;
+			case TABLE_UNITE_TRAVAIL:
+				$picto = ULTRASMALL_WORKING_UNIT_PICTO;
+				$element_identifier = ELEMENT_IDENTIFIER_UT;
+				$query = $wpdb->prepare("SELECT nom, id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $id_element);
+				$element = $wpdb->get_row($query);
 
+				/*	Get information about work unit direct parent	*/
+				$query = $wpdb->prepare("SELECT id, nom FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $element->id_groupement);
+				$work_unit_direct_parent = $wpdb->get_row($query);
+				$direct_parent = '<div class="clear" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . TABLE_GROUPEMENT . '-_-' . $work_unit_direct_parent->id . '" id="' . TABLE_GROUPEMENT . '-_-' . $work_unit_direct_parent->id . '" class="hierarchy_element_selector" /></span><label for="' . TABLE_GROUPEMENT . '-_-' . $work_unit_direct_parent->id . '" ><img style="height:15px;" alt="' . TABLE_GROUPEMENT . '_' . ELEMENT_IDENTIFIER_GP . $work_unit_direct_parent->id . '" src="' . ULTRASMALL_GROUP_PICTO . '" />' . ELEMENT_IDENTIFIER_GP . $work_unit_direct_parent->id . '&nbsp-&nbsp;' . $work_unit_direct_parent->nom . '</label></div>' . $direct_parent;
+				$space_number++;
+				$gpt_id = $element->id_groupement;
+
+				$element_name = $element->nom;
+			break;
+			case TABLE_GROUPEMENT:
+				$picto = ULTRASMALL_GROUP_PICTO;
+				$element_identifier = ELEMENT_IDENTIFIER_GP;
+				$query = $wpdb->prepare("SELECT nom FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $id_element);
+				$element_name = $wpdb->get_var($query);
+				$gpt_id = $id_element;
+			break;
+		}
+
+		/*	Get complete tree	*/
+		$query = $wpdb->prepare("SELECT * FROM " . TABLE_GROUPEMENT . " WHERE Status = 'Valid' AND id = %d", $gpt_id);
+		$element_to_get_parent_tree = $wpdb->get_row($query);
+		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $element_to_get_parent_tree);
+		$miniFilAriane = '         ';
+		foreach($ancetres as $ancetre){
+			if($ancetre->nom != "Groupement Racine"){
+				$miniFilAriane .= '<img style="height:15px;" class="middleAlign" alt="' . TABLE_GROUPEMENT . '_' . ELEMENT_IDENTIFIER_GP . $ancetre->id . '" src="' . ULTRASMALL_GROUP_PICTO . '" />' . ELEMENT_IDENTIFIER_GP . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+			}
+		}
+
+		return substr($miniFilAriane,0, -9) . $direct_parent . '<div class="clear hierarchy_selected_element" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . $table_element . '-_-' . $id_element . '" id="' . $table_element . '-_-' . $id_element . '" checked="checked" class="hierarchy_element_selector" /></span>' . str_repeat('&nbsp;&nbsp;&nbsp;', $space_number) . '<label for="' . $table_element . '-_-' . $id_element . '"><img style="height:15px;" alt="' . $table_element . '_' . $element_identifier . $id_element . '" src="' . $picto . '" />' . $element_identifier . $id_element . '&nbsp-&nbsp;' . $element_name . '</label></div>';
+		}
+		else{
+			return __('Cette t&acirc;che n\'est associ&eacute;e &agrave; aucun &eacute;l&eacute;ment de l\'arborescence pour le moment', 'evarisk');
+		}
+	}
 
 	function arborescenceActionCorrectives($tableElement, $idElement)
 	{

@@ -195,6 +195,59 @@ class EvaActivity extends EvaBaseActivity
 	}
 
 	/**
+	*	Function allowing to display the correctiv action form in frontend
+	*/
+	function task_asker($args){
+		$task_asker = '';
+
+		$main_options = get_option('digirisk_options');
+		$taks_asker_available = false;
+		$task_asker_not_available_explanation = '';
+
+		if($main_options['digi_ac_allow_front_ask'] == 'oui'){
+			if($main_options['digi_ac_front_ask_parent_task_id'] > 1){
+				$task_to_check = new EvaTask($main_options['digi_ac_front_ask_parent_task_id']);
+				$task_to_check->load();
+				if($task_to_check->getName() != ''){
+					$taks_asker_available = true;
+				}
+				else{
+					$task_asker_not_available_explanation = __('AImpossible de trouver la t&acirc;che principale permettant d\'effectuer les demandes. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
+				}
+			}
+			else{
+				$task_asker_not_available_explanation = __('BImpossible de trouver la t&acirc;che principale permettant d\'effectuer les demandes. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
+			}
+		}
+		else{
+			$task_asker_not_available_explanation = __('La demande d\'action est d&eacute;sactiv&eacute;e pour le moment. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
+		}
+
+		if($taks_asker_available){
+			$ask_argument['tableProvenance'] = 'correctiv_action_ask';
+			$ask_argument['provenance'] = 'ask_correctiv_action';
+			$ask_argument['output_mode'] = 'return';
+			$ask_argument['requested_action'] = 'ask_correctiv_action';
+			if(current_user_can('digi_add_action')){
+				$task_asker = '
+	<div id="message' . $ask_argument['tableProvenance'] . '" class="digirisk_hide" >&nbsp;</div>
+	<div class="clear" >' . 
+		self::sub_task_creation_form($ask_argument) . '
+	</div>
+	<div class="digirisk_hide" id="ajax-response" >&nbsp;</div>';
+			}
+			else{
+				$task_asker = __('Pour demander la cr&eacute;ation d\'une nouvelle action corrective, vous devez &ecirc;tre connect&eacute; et l\'administrateur du site doit vous donner les droits', 'evarisk');
+			}
+		}
+		else{
+			$task_asker = $task_asker_not_available_explanation;
+		}
+
+		echo $task_asker;
+	}
+
+	/**
 	*	Create the form used for new activity creation. Return different shape following parameters
 	*
 	*	@param array $arguments An array with the different parameters for form outputting (As element table, identifier, original request, ...)
@@ -237,7 +290,7 @@ class EvaActivity extends EvaBaseActivity
 			$contenuInputAvancement = 0;
 			$idPere = $arguments['idPere'];
 			$grise = true;
-			$saveOrUpdate = 'save';
+			$saveOrUpdate = (isset($arguments['requested_action']) && ($arguments['requested_action'] != '') && (!in_array($arguments['requested_action'], array('demandeAction', 'ficheAction')))) ? $arguments['requested_action'] : 'save';
 			if(isset($arguments['requested_action']) && ($arguments['requested_action'] == 'demandeAction')){
 				$saveOrUpdate = 'addAction';
 			}
@@ -292,7 +345,7 @@ class EvaActivity extends EvaBaseActivity
 				$activite_new .= '<br /><br class="clear" />';
 			}
 		}
-		{/*	Sub-Task start date		*/
+		if($arguments['provenance'] != 'ask_correctiv_action'){/*	Sub-Task start date		*/
 			$contenuAideTitre = "";
 			$id = "date_debut_activite";
 			$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de d&eacute;but %s", 'evarisk'), __("de l'action",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionStart" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
@@ -300,7 +353,7 @@ class EvaActivity extends EvaBaseActivity
 			$nomChamps = "date_debut";
 			$activite_new .= $label . EvaDisplayInput::afficherInput('text', $id, $contenuInputDateDebut, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date', '99%') . '';
 		}
-		{/*	Sub-Task end date			*/
+		if($arguments['provenance'] != 'ask_correctiv_action'){/*	Sub-Task end date			*/
 			$contenuAideTitre = "";
 			$id = "date_fin_activite";
 			$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de fin %s", 'evarisk'), __("de l'action",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionEnd" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
@@ -308,14 +361,14 @@ class EvaActivity extends EvaBaseActivity
 			$nomChamps = "date_fin";
 			$activite_new .= $label . EvaDisplayInput::afficherInput('text', $id, $contenuInputDateFin, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date', '99%') . '';
 		}
-		{/*	Sub-Task cost					*/
+		if($arguments['provenance'] != 'ask_correctiv_action'){/*	Sub-Task cost					*/
 			$contenuAideDescription = "";
 			$labelInput = __("Co&ucirc;t", 'evarisk') . ' : ';
 			$id = "cout_activite";
 			$nomChamps = "cout";
 			$activite_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputCout, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, 255, '', '', '99%');
 		}
-		{/*	Sub-Task progression	*/
+		if($arguments['provenance'] != 'ask_correctiv_action'){/*	Sub-Task progression	*/
 			$id = "avancement_activite";
 			$nomChamps = "avancement";
 			$activite_new .= __("Avancement", 'evarisk') . ' : 
@@ -337,7 +390,7 @@ class EvaActivity extends EvaBaseActivity
 	});
 </script>';
 		}
-		{/*	Sub-Task Responsible	*/
+		if($arguments['provenance'] != 'ask_correctiv_action'){/*	Sub-Task Responsible	*/
 			$contenuAideDescription = "";		
 			$labelInput = __("Responsable", 'evarisk');
 			if(digirisk_options::getOptionValue('responsable_Action_Obligatoire') == 'oui'){
@@ -463,7 +516,7 @@ class EvaActivity extends EvaBaseActivity
 '<form method="post" id="informationGeneralesActivite" name="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' . 
 $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
-		if($arguments['output_mode'] == 'return'){/*	Add picture button			*/
+		if(($arguments['output_mode'] == 'return') && ($arguments['provenance'] != 'ask_correctiv_action')){/*	Add picture button			*/
 			$sub_task_creation_form .= '<div id="photosActionsCorrectives" >&nbsp;</div>';
 			$addPictureButton = 
 				'<div id="add_picture_alert" class="hide" title="' . __('Modification de la cotation d\'un risque depuis une action corrective', 'evarisk') . '" >&nbsp;</div><input type="button" name="add_control_picture" id="add_control_picture" class="button-primary alignleft" value="' . __('Enregistrer puis ajouter des photos', 'evarisk') . '" />';
@@ -473,7 +526,7 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 			if(($saveOrUpdate == 'update') && ($ProgressionStatus != '') && ($ProgressionStatus != 'inProgress') && ($contenuInputAvancement != '100')){
 				$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-secondary', '', '', $scriptEnregistrementInProgress, 'left') . '</span>';
 			}
-			if(($saveOrUpdate == 'add_control') || ($saveOrUpdate == 'addAction') || ($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui')){
+			if(($saveOrUpdate == 'add_control') || ($saveOrUpdate == 'ask_correctiv_action') || ($saveOrUpdate == 'addAction') || ($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui')){
 				$sub_task_creation_form .= 
 					'<div class="alignright" id="ActionSaveButton" >' . $inProgressButton;
 
@@ -493,8 +546,8 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
 				$sub_task_creation_form .= 
 					$addPictureButton . 
-					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left') . 
-					'</div>';
+					'<div id="save_button_container"  >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left') . 
+					'</div><div id="save_in_progress" class="alignright digirisk_hide" ><img src="' . admin_url('images/loading.gif') . '" alt="loading in progress" /></div></div>';
 			}
 			else{
 				$sub_task_creation_form .= 
@@ -518,6 +571,8 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 		});
 
 		jQuery("#' . $idBouttonEnregistrer . '").click(function(){
+			jQuery("#save_button_container").hide();
+			jQuery("#save_in_progress").show();
 			jQuery("#informationGeneralesActivite").submit();
 		});
 
@@ -563,7 +618,8 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
 		jQuery("#informationGeneralesActivite").ajaxForm({
 			target: "#ajax-response",
-			beforeSubmit: validate_activity_form
+			beforeSubmit: validate_activity_form,
+			resetForm: true
 		});
 
 		jQuery(".correctiv_action_efficiency_control_slider").slider({

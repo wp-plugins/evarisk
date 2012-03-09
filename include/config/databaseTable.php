@@ -35,10 +35,11 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 {/*	Risque	*/
 	DEFINE('TABLE_RISQUE', PREFIXE_EVARISK . "risque");
 	DEFINE('TABLE_AVOIR_VALEUR', PREFIXE_EVARISK . "risque_evaluation");
+}
 
+{/*	Accident	*/
 	DEFINE('DIGI_DBT_ACCIDENT', PREFIXE_EVARISK . "accident");
 	DEFINE('DIGI_DBT_ACCIDENT_DETAILS', PREFIXE_EVARISK . "accident_details");
-	DEFINE('DIGI_DBT_ACCIDENT_LESION', PREFIXE_EVARISK . "accident_lesion");
 	DEFINE('DIGI_DBT_ACCIDENT_LOCATION', PREFIXE_EVARISK . "accident_location");
 	DEFINE('DIGI_DBT_ACCIDENT_THIRD_PARTY', PREFIXE_EVARISK . "accident_third_party");
 	DEFINE('DIGI_DBT_ACCIDENT_VICTIM', PREFIXE_EVARISK . "accident_victim");
@@ -57,15 +58,14 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 
 	DEFINE('DIGI_DBT_ELEMENT_MODIFICATION', PREFIXE_EVARISK . 'element_modification');
 	DEFINE('DIGI_DBT_ELEMENT_NOTIFICATION', PREFIXE_EVARISK . 'element_notification');
+
 	DEFINE('DIGI_DBT_MESSAGES', PREFIXE_EVARISK . 'message');
 	DEFINE('DIGI_DBT_HISTORIC', PREFIXE_EVARISK . 'message_histo');
 }
 
 {/*	Hierarchie	*/
 	DEFINE('TABLE_GROUPEMENT', PREFIXE_EVARISK . "groupement");
-	DEFINE('TABLE_GROUPEMENT_META', PREFIXE_EVARISK . "groupement_meta");
 	DEFINE('TABLE_UNITE_TRAVAIL', PREFIXE_EVARISK . "unite_travail");
-	DEFINE('TABLE_UNITE_TRAVAIL_META', PREFIXE_EVARISK . "unite_travail_meta");
 }
 
 {/*	Danger	*/

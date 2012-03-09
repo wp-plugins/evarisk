@@ -16,8 +16,7 @@
 	eva_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 
 	/*	Vérifie que le dossier temporaire pour la création des fichiers odt soit bien créé	*/
-	if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp'))
-	{
+	if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp')){
 		eva_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
 	}
 

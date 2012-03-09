@@ -9,15 +9,22 @@
 */
 
 require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'outils/tools.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php' );
 
+require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'arborescence/arborescence_special.class.php' );
+
 require_once(EVA_LIB_PLUGIN_DIR . 'mailbox/messages.class.php' );
 
+require_once(EVA_LIB_PLUGIN_DIR . 'display/display.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'doc.class.php' );
 
+require_once(EVA_LIB_PLUGIN_DIR . 'db/db_data.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'db/db_structure.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'form.class.php');
 
