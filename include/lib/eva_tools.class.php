@@ -117,7 +117,7 @@ class eva_tools
 		if(!is_dir($directory)){
 			mkdir($directory, 0755, true);
 		}
-		exec('chmod -R 755 ' . $directory);
+		exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
 	}
 
 	function copyEntireDirectory($sourceDirectory, $destinationDirectory)
@@ -127,7 +127,7 @@ class eva_tools
 			if(!is_dir($destinationDirectory))
 			{
 				mkdir($destinationDirectory, 0755, true);
-				exec('chmod -R 755 ' . $destinationDirectory);
+				exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
 			}
 			$hdir = opendir($sourceDirectory);
 			while($item = readdir($hdir))

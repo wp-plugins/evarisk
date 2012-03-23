@@ -33,7 +33,7 @@ class EvaDisplayDesign {
 	static function afficherDebutPage($titrePage, $icone, $titreIcone, $altIcon, $table, $boutonAjouter=true, $messageInfo='', $choixAffichage=false, $affichageNotes = true)
 	{
 		$debutPage = '<div class="wrap">
-			<div class="icon32"><img alt="' . $altIcon . '" src="' . $icone . '"title="' . $titreIcone . '"/></div>
+			<div class="icon32"><img alt="' . $altIcon . '" src="' . $icone . '" title="' . $titreIcone . '"/></div>
 			<h2 class="" >' . $titrePage;
 		if($boutonAjouter)
 		{
@@ -287,7 +287,7 @@ class EvaDisplayDesign {
 			</script>';
 						
 						
-		$splitEcran = $script . $splitEcran . '		<div id="partieGauche' . $numero . '" style="width:' . $largeurGauche . '%;" class="postbox-container">';
+		$splitEcran = $script . $splitEcran . '<div id="partieGauche' . $numero . '" style="width:' . $largeurGauche . '%;" class="postbox-container">';
 		$splitEcran = $splitEcran . $partieGauche;
 		$splitEcran = $splitEcran .'		
 					</div>';

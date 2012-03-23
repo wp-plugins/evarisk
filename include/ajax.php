@@ -1,43 +1,15 @@
 <?php
 /*
- *
- * @author Evarisk
- * @version v5.0
- */
+*
+* @author Evarisk
+* @version v5.0
+*/
 define('DOING_AJAX', true);
 define('WP_ADMIN', true);
 require_once('../../../../wp-load.php');
 require_once(ABSPATH . 'wp-admin/includes/admin.php');
 require_once('../evarisk.php');
-require_once(EVA_INC_PLUGIN_DIR . 'includes.php' );
-
-require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswerToQuestion.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTaskTable.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/suivi_activite.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandation.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDeGroupement.class.php');
+require_once(EVA_INC_PLUGIN_DIR . 'includes.php');
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
@@ -1899,24 +1871,24 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
 						$idOrigine = str_replace('node-' . $_REQUEST['location'] . '-','', $_REQUEST['idElementOrigine']);
 						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
-						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)) //Le fils est une tâche
-						{
+						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)){//Le fils est une tâche
 							$tache = new EvaTask($idFils);
 							$tache->load();
+							$old_parent = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 							$tache->transfert($idPere);
 
 							/*	Log modification on element and notify user if user subscribe	*/
-							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'transfer', '', '');
+							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'transfer', ($old_parent->id), ($idPere));
 						}
-						else //Le fils est une activité
-						{
+						else{//Le fils est une activité
 							$idFils = str_replace('leaf-','', $fils);
 							$activite = new EvaActivity($idFils);
 							$activite->load();
+							$old_parent = $activite->getRelatedTaskId();
 							$activite->transfert($idPere);
 
 							/*	Log modification on element and notify user if user subscribe	*/
-							digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $idFils, 'transfer', '', '');
+							digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $idFils, 'transfer', ($old_parent), ($idPere));
 
 							/*	Update the action ancestor	*/
 							$relatedTask = new EvaTask($idPere);
@@ -1937,48 +1909,51 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					{
 						$id = eva_tools::IsValid_Variable($_REQUEST['id']);
 						$provenance = eva_tools::IsValid_Variable($_REQUEST['receiver_element']);
-						$provenanceComponents = explode('-_-', $provenance);
+						if($provenance != ''){
+							$provenanceComponents = explode('-_-', $provenance);
 
-						$tache = new EvaTask($id);
-						$tache->load();
-						$tache->setIdFrom($provenanceComponents[1]);
-						$tache->setTableFrom($provenanceComponents[0]);
-						$tache->save();
+							$tache = new EvaTask($id);
+							$tache->load();
+							$old_task_from[] = $tache->getIdFrom();
+							$old_task_from[] = $tache->getTableFrom();
+							$tache->setIdFrom($provenanceComponents[1]);
+							$tache->setTableFrom($provenanceComponents[0]);
+							$tache->save();
 
-						if($tache->getStatus() != 'error')
-						{
-							/*	Log modification on element and notify user if user subscribe	*/
-							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'affectation_update', '', '');
+							if($tache->getStatus() != 'error'){
+								if($provenance === '0'){
+									$provenanceComponents = 'none';
+								}
+								/*	Log modification on element and notify user if user subscribe	*/
+								digirisk_user_notification::log_element_modification(TABLE_TACHE, $id, 'affectation_update', $old_task_from, $provenanceComponents);
 
-							$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e', 'evarisk') . '</strong></p>') . '");';
+								$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e', 'evarisk') . '</strong></p>') . '");';
 
-							switch($provenanceComponents[0])
-							{
-								case TABLE_RISQUE:
-									/*	Make the link between a corrective action and a risk evaluation	*/
-									$query = 
-										$wpdb->prepare(
-											"SELECT id_evaluation 
-											FROM " . TABLE_AVOIR_VALEUR . " 
-											WHERE id_risque = '%d' 
-												AND Status = 'Valid' 
-											ORDER BY id DESC 
-											LIMIT 1", 
-											$provenanceComponents[1]
-										);
-									$evaluation = $wpdb->get_row($query);
-									$provenanceComponents[0] = TABLE_AVOIR_VALEUR;
-									$provenanceComponents[1] = $evaluation->id_evaluation;
-								break;
+								switch($provenanceComponents[0]){
+									case TABLE_RISQUE:
+										/*	Make the link between a corrective action and a risk evaluation	*/
+										$query = 
+											$wpdb->prepare(
+												"SELECT id_evaluation 
+												FROM " . TABLE_AVOIR_VALEUR . " 
+												WHERE id_risque = '%d' 
+													AND Status = 'Valid' 
+												ORDER BY id DESC 
+												LIMIT 1", 
+												$provenanceComponents[1]
+											);
+										$evaluation = $wpdb->get_row($query);
+										$provenanceComponents[0] = TABLE_AVOIR_VALEUR;
+										$provenanceComponents[1] = $evaluation->id_evaluation;
+									break;
+								}
+								evaTask::liaisonTacheElement($provenanceComponents[0], $provenanceComponents[1], $id, 'before');
 							}
-							evaTask::liaisonTacheElement($provenanceComponents[0], $provenanceComponents[1], $id, 'before');
-						}
-						else
-						{
-							$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che n\'a pas &eacute;t&eacute; effectu&eacute;e.', 'evarisk') . '</strong></p>') . '");';
-						}
-						
-						$messageInfo =
+							else{
+								$updateMessage = 'evarisk("#messageh' . $_REQUEST['table'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'affectation de la t&acirc;che n\'a pas &eacute;t&eacute; effectu&eacute;e.', 'evarisk') . '</strong></p>') . '");';
+							}
+
+							$messageInfo =
 							'<script type="text/javascript">
 								evarisk(document).ready(function(){
 									evarisk("#savingLinkTaskElement").html("");
@@ -1994,9 +1969,26 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										evarisk("#messageh' . $_REQUEST['table'] . '").removeClass("updated");
 										evarisk("#messageh' . $_REQUEST['table'] . '").hide();
 									},7500);
+									jQuery("#current_hierarchy_display").html(jQuery("#loading_round_pic").html());
+									jQuery("#current_hierarchy_display").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+										"post": "true",
+										"nom": "hierarchy",
+										"action": "load_partial",
+										"selected_element": "' . $provenance . '"
+									});
 								});
 							</script>';
-						echo $messageInfo;
+							echo $messageInfo;
+						}
+						else{
+							echo '<script type="text/javascript">
+								evarisk(document).ready(function(){
+									evarisk("#savingLinkTaskElement").html("");
+									evarisk("#savingLinkTaskElement").hide();
+									evarisk("#saveLinkTaskElement").show();
+								});
+							</script>';
+						}
 					}
 					break;
 					case 'save':
@@ -2018,6 +2010,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}	
 						$tache = new EvaTask($_REQUEST['id']);
 						$tache->load();
+						$old_tache = new EvaTask($_REQUEST['id']);
+						$old_tache->load();
 						$tache->setName($_REQUEST['nom_tache']);
 						$tache->setDescription($_REQUEST['description']);
 						$tache->setIdFrom($_REQUEST['idProvenance']);
@@ -2067,10 +2061,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$messageInfo = '<script type="text/javascript">
 								evarisk(document).ready(function(){';
 						if($tache->getStatus() != 'error'){
+							$tache->load();
 							switch($_REQUEST['act']){
+								case 'save':
+									/*	Log modification on element and notify user if user subscribe	*/
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask', '', array(TABLE_TACHE, $tache->getId(), $_REQUEST['nom_tache'], $_REQUEST['description']));
+								break;
 								case 'update':
 									/*	Log modification on element and notify user if user subscribe	*/
-									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'update', '', '');
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'update', $old_tache, $tache);
+									unset($old_tache);
 								break;
 								case 'taskDone':
 									/*	Log modification on element and notify user if user subscribe	*/
@@ -2256,7 +2256,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$dirToSaveExportedFile = EVA_UPLOADS_PLUGIN_DIR . $_REQUEST['table'];
 						if(!is_dir($dirToSaveExportedFile)){
 							mkdir($dirToSaveExportedFile, 0755, true);
-							exec('chmod -R 755 ' . $dirToSaveExportedFile);
+							exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
 						}
 						file_put_contents($dirToSaveExportedFile . '/taskExport.txt' ,$existingPreconisation);
 						if(is_file($dirToSaveExportedFile . '/taskExport.txt')){
@@ -2558,6 +2558,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						$activite = new EvaActivity($_REQUEST['id']);
 						$activite->load();
+						$old_activite = new EvaActivity($_REQUEST['id']);
+						$old_activite->load();
 						$activite->setName($_REQUEST['nom_activite']);
 						$activite->setDescription($_REQUEST['description']);
 						$activite->setRelatedTaskId($_REQUEST['idPere']);
@@ -2599,15 +2601,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						$activity_save_message = '';
 						if($activite->getStatus() != 'error'){
+							$activite->load();
 							switch($orignal_requested_act){
 								case 'save':
 									/*	Log modification on element and notify user if user subscribe	*/
-									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask', '', '');
+									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask', '', array(TABLE_ACTIVITE, $activite->getId(), $_REQUEST['nom_activite'], $_REQUEST['description']));
 								break;
 								case 'update':
 								case 'update_from_external':
 									/*	Log modification on element and notify user if user subscribe	*/
-									digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $_REQUEST['id'], 'update', '', '');
+									digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $_REQUEST['id'], 'update', $old_activite, $activite);
 								break;
 								case 'actionDone':
 									/*	Log modification on element and notify user if user subscribe	*/
@@ -2695,12 +2698,44 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 					case "ask_correctiv_action":{
 						global $current_user;
+						$provenance = eva_tools::IsValid_Variable($_POST['receiver_element']);
+						$token_for_element = eva_tools::IsValid_Variable($_POST['token_for_element']);
+
 						$_POST['parentTaskId'] = evaTask::saveNewTask();
 						$asked_task = new EvaTask($_POST['parentTaskId']);
 						$asked_task->load();
 						$main_options = get_option('digirisk_options');
 						$asked_task->transfert($main_options['digi_ac_front_ask_parent_task_id']);
 						$actionSave = evaActivity::saveNewActivity();
+						$asked_action = new EvaActivity($actionSave['action_id']);
+						$asked_action->load();
+						$asked_task->load();
+						/*	Log modification on element and notify user if user subscribe	*/
+						digirisk_user_notification::log_element_modification(TABLE_TACHE, $main_options['digi_ac_front_ask_parent_task_id'], 'add_new_subtask', '', array(TABLE_TACHE, $_POST['parentTaskId'], $_REQUEST['nom_activite'], $_REQUEST['description']));
+
+						/*	Add the picture before action	*/
+						if($token_for_element != ''){
+							$associated_pictures = EvaPhoto::getPhotos($_REQUEST['tableProvenance'], $token_for_element);
+							if(count($associated_pictures) > 0){
+								EvaPhoto::associatePicture(TABLE_TACHE, $_POST['parentTaskId'], $associated_pictures[0]->id);
+								$asked_task->setidPhotoAvant($associated_pictures[0]->id);
+								EvaPhoto::associatePicture(TABLE_ACTIVITE, $actionSave['action_id'], $associated_pictures[0]->id);
+								$asked_action->setidPhotoAvant($associated_pictures[0]->id);
+								EvaPhoto::unAssociatePicture($_REQUEST['tableProvenance'], $token_for_element, $associated_pictures[0]->id);
+							}
+						}
+
+						/*	Add link to an element if user mark as linked	*/
+						$provenance = eva_tools::IsValid_Variable($_POST['receiver_element']);
+						if($provenance != ''){
+							$provenanceComponents = explode('-_-', $provenance);
+
+							$asked_task->setIdFrom($provenanceComponents[1]);
+							$asked_task->setTableFrom($provenanceComponents[0]);
+						}
+
+						$asked_task->save();
+						$asked_action->save();
 
 						evaUserLinkElement::setLinkUserElement(TABLE_TACHE, $actionSave['task_id'], $current_user->ID);
 						evaUserLinkElement::setLinkUserElement(TABLE_ACTIVITE, $actionSave['action_id'], $current_user->ID);
@@ -2716,33 +2751,54 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						$messageInfo = '<script type="text/javascript">
 								evarisk(document).ready(function(){
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
 						if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error')){
 							if($_REQUEST['tableProvenance'] == 'correctiv_action_ask'){
 								$messageInfo .= '
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Votre demande d\'action corrective a bien &eacute;t&eacute; envoy&eacute;e', 'evarisk') . '</strong></p>') . '");';
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Votre demande d\'action corrective a bien &eacute;t&eacute; envoy&eacute;e', 'evarisk') . '</strong></p>') . '");';
 							}
 							else{
 								$messageInfo .= '
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 							}
 						}
 						else{
 								$messageInfo .= '
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de l\'action corrective', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_activite']) . '"', __('sauvegard&eacute;e', 'evarisk'))) . '");';
 						}
-						$messageInfo = $messageInfo . '
+						$messageInfo .= '
+									jQuery("#ask_correctiv_action_picture_form").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+										"post":"true",
+										"table":"' . TABLE_ACTIVITE . '",
+										"act":"reload_correctiv_asker_picture_form",
+										"tableProvenance":"' . $_REQUEST['tableProvenance'] . '",
+										"token":"' . $token_for_element . '"
+									});
+									jQuery("#ask_correctiv_action_picture img").attr("src", "' . admin_url('images/loading.gif') . '");
+									jQuery("#ask_correctiv_action_picture").hide();
+									jQuery("#receiver_element").val("");
+									jQuery("#receiver_element").val("");
+									jQuery("#current_hierarchy_display").html("");
 									jQuery("#save_button_container").show();
 									jQuery("#save_in_progress").hide();
-									evarisk("#message' . $_REQUEST['tableProvenance'] . '").show();
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").show();
 									setTimeout(function(){
-										evarisk("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
-										evarisk("#message' . $_REQUEST['tableProvenance'] . '").hide();
+										jQuery("#message' . $_REQUEST['tableProvenance'] . '").removeClass("updated");
+										jQuery("#message' . $_REQUEST['tableProvenance'] . '").hide();
 									},7500);
-									evarisk("#ongletVoirLesRisques").click();
+									jQuery("#ongletVoirLesRisques").click();
 								});
 							</script>';
 						echo $messageInfo;
+					}break;
+					case 'reload_correctiv_asker_picture_form':{
+						if(isset($_REQUEST['delete_old']) && ($_REQUEST['delete_old'] == 'yes')){
+							$associated_pictures = EvaPhoto::getPhotos($_REQUEST['tableProvenance'], $_REQUEST['token']);
+							if(count($associated_pictures) > 0){
+								EvaPhoto::unAssociatePicture($_REQUEST['tableProvenance'], $_REQUEST['token'], $associated_pictures[0]->id);
+							}
+						}
+						echo EvaActivity::task_asker_add_picture($_REQUEST['tableProvenance'], $_REQUEST['token']);
 					}break;
 
 					case "addAction" :
@@ -3166,7 +3222,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$saveFollow = suivi_activite::saveSuiviActivite($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['commentaire']);
 						if($saveFollow == 'ok'){
 							/*	Log modification on element and notify user if user subscribe	*/
-							digirisk_user_notification::log_element_modification($_REQUEST['tableElement'], $_REQUEST['idElement'], 'follow_add', '', '');
+							digirisk_user_notification::log_element_modification($_REQUEST['tableElement'], $_REQUEST['idElement'], 'follow_add', '', $_REQUEST['commentaire']);
 							$messageInfo .= '
 									evarisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
 						}
@@ -3556,7 +3612,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								case TABLE_ACTIVITE:
 								case TABLE_TACHE:
 									/*	Log modification on element and notify user if user subscribe	*/
-									digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_delete', '', '');
+									digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_delete', '', $_REQUEST['idDocument']);
 								break;
 							}
 						}
@@ -4653,8 +4709,99 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	}
 
 	if(isset($_REQUEST['nom'])){
-		switch($_REQUEST['nom'])
-		{			
+		switch($_REQUEST['nom']){
+			case "digirisk_install":{
+				$install_date = current_time('mysql', 0);
+				$max_number = 0;
+
+				digirisk_permission::digirisk_init_permission();
+
+				/*	Create the complete database	*/
+				foreach($digirisk_db_table as $table_name => $table_structure){
+					dbDelta($table_structure);
+				}
+				foreach($digirisk_update_way as $number => $operation){
+					digirisk_install::insert_data_for_version($number);
+					if($number > $max_number){
+						$max_number = $number;
+					}
+				}
+
+				/*	Method component management	*/
+				if(isset($_REQUEST['insert_basic_operator']) && ($_REQUEST['insert_basic_operator'] == 'yes')){
+					eva_Operateur::create_basic_operator();
+				}
+				if(isset($_REQUEST['insert_basic_vars']) && ($_REQUEST['insert_basic_vars'] == 'yes')){
+					eva_Variable::create_basic_variable();
+				}
+
+				/*	Danger categories and danger management	*/
+				if(isset($_REQUEST['insert_inrs_danger_cat']) && ($_REQUEST['insert_inrs_danger_cat'] == 'yes')){
+					$left_limit = 1;
+					$right_limit = 2;
+					foreach($inrs_danger_categories as $danger_cat){
+						$wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom' => $danger_cat['nom'], 'limiteGauche' => $left_limit, 'limiteDroite' => $right_limit));
+						$new_danger_cat_id = $wpdb->insert_id;
+
+						/*	If user ask to add danger in categories	*/
+						if(isset($_REQUEST['insert_danger_in_cat']) && ($_REQUEST['insert_danger_in_cat'] == 'yes')){
+							$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+						}
+
+						/*	Insert picture for danger categories	*/
+						$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
+						EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
+						$left_limit = $right_limit + 1;
+						$right_limit = $left_limit + 1;
+					}
+					$wpdb->update(TABLE_CATEGORIE_DANGER, array('limiteDroite' => $left_limit), array('nom' => __('Categorie Racine', 'evarisk')));
+				}
+
+				/*	Evarisk default method management	*/
+				if(isset($_REQUEST['insert_evarisk_main_method']) && ($_REQUEST['insert_evarisk_main_method'] == 'yes')){
+					if(!isset($_REQUEST['insert_basic_operator'])){
+						eva_Operateur::create_basic_operator();
+					}
+					if(!isset($_REQUEST['insert_basic_vars'])){
+						eva_Variable::create_basic_variable();
+					}
+
+					$wpdb->insert(TABLE_METHODE, array('nom' => 'Evarisk'));
+					$new_method_id = $wpdb->insert_id;
+
+					$method_picture_id = EvaPhoto::saveNewPicture(TABLE_METHODE, $new_method_id, 'uploads/wp_eva__methode/1/tabcoeff.gif');
+					EvaPhoto::setMainPhoto(TABLE_METHODE, $new_method_id, $method_picture_id, 'yes');
+
+					/*	Method's var management	*/
+					foreach($evaluation_main_vars as $var_index => $var_definition){
+						$query = $wpdb->prepare("SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", $var_definition['nom']);
+						$var_id = $wpdb->get_var($query);
+
+						/*	Insert link between method and var	*/
+						$wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode' => $new_method_id, 'id_variable' => $var_id, 'ordre' => ($var_index + 1), 'date' => $install_date));
+					}
+					/*	Method's operator management	*/
+					for($i = 1; $i < count($evaluation_main_vars); $i++){
+						$wpdb->insert(TABLE_AVOIR_OPERATEUR, array('id_methode' => $new_method_id, 'operateur' => '*', 'ordre' => $i, 'date' => $install_date));
+					}
+					/*	Method var comparator	*/
+					foreach($evaluation_method_evarisk__etalon as $index => $correspondence){
+						$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode' => $new_method_id, 'id_valeur_etalon' => $correspondence['id_valeur_etalon'], 'date' => $install_date, 'valeurMaxMethode' => $correspondence['valeurMaxMethode'], 'Status' => 'Valid'));
+					}
+				}
+
+				/*	Theme management	*/
+				eva_tools::copyEntireDirectory(EVA_HOME_DIR . 'evariskthemeplugin', WP_CONTENT_DIR . '/themes/Evarisk');
+				if(isset($_REQUEST['activate_evarisk_theme']) && ($_REQUEST['activate_evarisk_theme'] == 'yes')){
+					switch_theme('Evarisk', 'Evarisk');
+				}
+
+				/*	Create option allowing to know information about plugin databse version	*/
+				add_option('digirisk_db_option', array('base_evarisk' => ($max_number+1), 'last_update_date' => substr(current_time('mysql', 0), 0, 10), 'last_db_update_time' => substr(current_time('mysql', 0), 11, 8)));
+
+				echo json_encode(array('status' => true));
+			}break;
+
 			case 'setAsBeforePicture':
 			{
 				switch($_REQUEST['table']){
@@ -4670,6 +4817,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					break;
 				}
 				$element->load();
+				$old_photo_avant = $element->getidPhotoAvant();
 				$element->setidPhotoAvant($_REQUEST['idPhoto']);
 				$element->save();
 				$messageInfo = '<script type="text/javascript">
@@ -4677,7 +4825,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_add', '', '');
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_add', '', $_REQUEST['idPhoto']);
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4712,6 +4860,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					break;
 				}
 				$element->load();
+				$old_photo_apres = $element->getidPhotoApres();
 				$element->setidPhotoApres($_REQUEST['idPhoto']);
 				$element->save();
 				$messageInfo = '<script type="text/javascript">
@@ -4719,7 +4868,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_add', '', '');
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_add', $old_photo_apres, $_REQUEST['idPhoto']);
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4754,6 +4903,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					break;
 				}
 				$element->load();
+				$old_photo_avant = $element->getidPhotoAvant();
 				$element->setidPhotoAvant("0");
 				$element->save();
 				$messageInfo = '<script type="text/javascript">
@@ -4761,7 +4911,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_delete', '', '');
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_before_delete', $old_photo_avant, $old_photo_avant);
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo avant l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4797,13 +4947,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				}
 				$element->load();
 				$element->setidPhotoApres("0");
+				$old_photo_apres = $element->getidPhotoApres();
 				$element->save();
 				$messageInfo = '<script type="text/javascript">
 						evarisk(document).ready(function(){
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").addClass("updated");';
 				if($element->getStatus() != 'error'){
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_delete', '', '');
+					digirisk_user_notification::log_element_modification($_REQUEST['table'], $_REQUEST['idElement'], 'picture_as_after_delete', $old_photo_apres, $old_photo_apres);
 					$messageInfo .= '
 							evarisk("#message' . $_REQUEST['table'] . '_' . $_REQUEST['idElement'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La photo n\'est plus d&eacute;finie comme photo apr&egrave;s l\'action', 'evarisk') . '</strong></p>') . '");';
 				}
@@ -4822,29 +4973,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				</script>';
 				echo $messageInfo;
 			}
-			break;
-			case "installerEvarisk":
-			{
-					$insertions = $_REQUEST;
-					unset($insertions['EPI']);
-					if(isset($_REQUEST["EPI"]) && is_array($_REQUEST["EPI"]))
-					{
-						foreach($_REQUEST["EPI"] as $epi)
-						{
-							$insertions['EPI'][$epi[1]] = $epi[0];
-						}
-					}
-					foreach($_REQUEST["methodes"] as $methode)
-					{
-						$insertions['methodes'][$methode[1]] = $methode[0];
-					}
-					require_once(EVA_MODULES_PLUGIN_DIR . 'installation/creationTables.php');
-					require_once(EVA_MODULES_PLUGIN_DIR . 'installation/insertions.php');
-					evarisk_creationTables();
-					evarisk_insertions($insertions);
-					digirisk_permission::digirisk_init_permission();
-					echo '<script type="text/javascript">window.top.location.href = "' . admin_url("options-general.php?page=digirisk_options") . '"</script>';
-				}
 			break;
 			case "loadFieldsNewVariable":
 			{
@@ -5814,6 +5942,7 @@ switch($tableProvenance)
 			}
 			break;
 
+			/*	Added v5.1.4.8	*/
 			case 'hierarchy':{
 				switch($_REQUEST['action']){
 					case 'load_complete':{
@@ -5834,14 +5963,17 @@ switch($tableProvenance)
 				}
 			}break;
 
+			/*	Added v5.1.5.0	*/
 			case 'tools':{
 				switch($_REQUEST['action']){
 					case 'db_manager':{
 						/*	Display a list of operation made for the different version	*/
 						$plugin_db_modification_content = '';
+						$error_nb = 0; $error_list = array();
+						$warning_nb = 0; $warning_list = array();
 						foreach($digirisk_db_table_operation_list as $plugin_db_version => $plugin_db_modification){
 							$plugin_db_modification_content .= '
-<div class="tools_db_modif_list_version_number" >
+<div class="tools_db_modif_list_version_number" id="digi_plugin_v_' . $plugin_db_version . '" >
 	' . __('Version', 'evarisk') . '&nbsp;' . $plugin_db_version . '
 </div>
 <div class="tools_db_modif_list_version_details" >
@@ -5860,6 +5992,8 @@ switch($tableProvenance)
 												}
 												else{
 													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
+													$error_nb++;
+													$error_list[$plugin_db_version] += 1;
 												}
 												$sub_modif .= ' / ';
 											}
@@ -5878,6 +6012,8 @@ switch($tableProvenance)
 												}
 												else{
 													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field exists', 'evarisk') . '" title="' . __('Field exists', 'evarisk') . '" class="db_deleted_field_check" />';
+													$error_nb++;
+													$error_list[$plugin_db_version] += 1;
 												}
 												$sub_modif .= ' / ';
 											}
@@ -5899,6 +6035,8 @@ switch($tableProvenance)
 													}
 													else{
 														$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
+														$error_nb++;
+														$error_list[$plugin_db_version] += 1;
 													}
 													$sub_modif .= sprintf(__('Change %s for field %s to %s', 'evarisk'), $what_is_changed, $field_infos['field'], $field_infos[$changed_key]);
 												}
@@ -5910,6 +6048,8 @@ switch($tableProvenance)
 													}
 													else{
 														$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
+														$error_nb++;
+														$error_list[$plugin_db_version] += 1;
 													}
 													$sub_modif .= sprintf(__('Change %s for field %s to %s', 'evarisk'), $what_is_changed, $field_infos[$changed_key], $field_infos['field']);
 												}
@@ -5931,30 +6071,34 @@ switch($tableProvenance)
 													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Index has been deleted', 'evarisk') . '" title="' . __('Index has been deleted', 'evarisk') . '" class="db_deleted_index_check" />';
 												}
 												else{
-													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Index exists', 'evarisk') . '" title="' . __('Index exists', 'evarisk') . '" class="db_deleted_index_check" />';
+													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Index does not exists', 'evarisk') . '" title="' . __('Index does not exists', 'evarisk') . '" class="db_deleted_index_check" />';
+													$error_nb++;
+													$error_list[$plugin_db_version] += 1;
 												}
 												$sub_modif .= ' / ';
 											}
+											$plugin_db_modification_content .= '<li class="deleted_index" >' . sprintf(__('Liste des index supprim&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -3) . '</li>';
 										}
-										$plugin_db_modification_content .= '<li class="deleted_index" >' . sprintf(__('Liste des index supprim&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -3) . '</li>';
 									}break;
 									case 'ADD_INDEX':{
 										foreach($modif_list as $table_name => $field_list){
 											$sub_modif = '   ';
 											foreach($field_list as $column_name){
-												$query = $wpdb->prepare("SHOW INDEX FROM " .$table_name . " WHERE Column_name = %s", $column_name);
+												$query = $wpdb->prepare("SHOW INDEX FROM " . $table_name . " WHERE Column_name = %s OR Key_name = %s", $column_name, $column_name);
 												$columns = $wpdb->get_row($query);
 												$sub_modif .= $column_name;
-												if($columns->Column_name == $column_name){
+												if(($columns->Column_name == $column_name) || ($columns->Key_name == $column_name)){
 													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Index has been created', 'evarisk') . '" title="' . __('Index has been created', 'evarisk') . '" class="db_added_index_check" />';
 												}
 												else{
 													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Index does not exist', 'evarisk') . '" title="' . __('Index does not exist', 'evarisk') . '" class="db_added_index_check" />';
+													$error_nb++;
+													$error_list[$plugin_db_version] += 1;
 												}
 												$sub_modif .= ' / ';
 											}
+											$plugin_db_modification_content .= '<li class="added_index" >' . sprintf(__('Liste des index ajout&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -3) . '</li>';
 										}
-										$plugin_db_modification_content .= '<li class="added_index" >' . sprintf(__('Liste des index ajout&eacute;s pour la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' .  substr($sub_modif, 0, -3) . '</li>';
 									}break;
 
 									case 'ADD_TABLE':{
@@ -5967,7 +6111,9 @@ switch($tableProvenance)
 												$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Table has been created', 'evarisk') . '" title="' . __('Table has been created', 'evarisk') . '" class="db_table_check" />';
 											}
 											else{
-												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has been created', 'evarisk') . '" title="' . __('Table has been created', 'evarisk') . '" class="db_table_check" />';
+												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has not been created', 'evarisk') . '" title="' . __('Table has not been created', 'evarisk') . '" class="db_table_check" />';
+												$error_nb++;
+												$error_list[$plugin_db_version] += 1;
 											}
 											$sub_modif .= ' / ';
 										}
@@ -5979,15 +6125,52 @@ switch($tableProvenance)
 											$sub_modif .= sprintf(__('Table %s renomm&eacute;e en %s', 'evarisk'), $table['old_name'], $table['name']);
 											$query = $wpdb->prepare("SHOW TABLES FROM " . DB_NAME . " LIKE %s", $table['name']);
 											$table_exists = $wpdb->query($query);
-											if($table_exists == 1){
+											$query = $wpdb->prepare("SHOW TABLES FROM " . DB_NAME . " LIKE %s", $table['old_name']);
+											$old_table_exists = $wpdb->query($query);
+											if(($table_exists == 1) && ($old_table_exists == 1)){
+												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Les deux tables sont toujours pr&eacute;sentes', 'evarisk') . '" title="' . __('Les deux tables sont toujours pr&eacute;sentes', 'evarisk') . '" class="db_rename_table_check" />';
+												$error_nb++;
+												$error_list[$plugin_db_version] += 1;
+											}
+											elseif($table_exists == 1){
 												$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Table has been renamed', 'evarisk') . '" title="' . __('Table has been renamed', 'evarisk') . '" class="db_rename_table_check" />';
 											}
 											else{
-												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has been created', 'evarisk') . '" title="' . __('Table has been created', 'evarisk') . '" class="db_rename_table_check" />';
+												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has not been renamed', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_rename_table_check" />';
+												$error_nb++;
+												$error_list[$plugin_db_version] += 1;
 											}
 											$sub_modif .= ' / ';
 										}
 										$plugin_db_modification_content .= '<li class="renamed_table" >' . __('Renamed table list', 'evarisk') . '&nbsp;:&nbsp;' . substr($sub_modif, 0, -2);
+									}break;					
+									case 'TABLE_RENAME_FOR_DELETION':{
+										$sub_modif = '  ';
+										foreach($modif_list as $table){
+											$sub_modif .= sprintf(__('Table %s renomm&eacute;e en %s', 'evarisk'), $table['old_name'], $table['name']);
+											$query = $wpdb->prepare("SHOW TABLES FROM " . DB_NAME . " LIKE %s", $table['name']);
+											$table_delete_exists = $wpdb->query($query);
+											$query = $wpdb->prepare("SHOW TABLES FROM " . DB_NAME . " LIKE %s", $table['old_name']);
+											$old_table_exists = $wpdb->query($query);
+											if(($table_delete_exists == 1) || ($old_table_exists == 1)){
+												if($old_table_exists == 1){
+													$deleted_table_result = '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has not been renamed', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_deleted_table_check" />';
+													$error_nb++;
+													$error_list[$plugin_db_version] += 1;
+												}
+												else{
+													$deleted_table_result = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Table has not been deleted', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_deleted_table_check" />';
+													$warning_nb++;
+													$warning_list[$plugin_db_version] += 1;
+												}
+												$sub_modif .= $deleted_table_result;
+											}
+											else{
+												$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Table has been deleted', 'evarisk') . '" title="' . __('Table has been deleted', 'evarisk') . '" class="db_deleted_table_check" />';
+											}
+											$sub_modif .= ' / ';
+										}
+										$plugin_db_modification_content .= '<li class="renamed_table" >' . __('Liste des tables renomm&eacute;es pour suppression', 'evarisk') . '&nbsp;:&nbsp;' . substr($sub_modif, 0, -2);
 									}break;
 								}
 							}
@@ -5995,12 +6178,35 @@ switch($tableProvenance)
 	</ul>
 </div>';
 						}
-						echo $plugin_db_modification_content;
+
+						/*	Start display	*/
+						$plugin_install_error = '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Digirisk install is ok', 'evarisk') . '" title="' . __('Digirisk install is ok', 'evarisk') . '" />&nbsp;' . __('Votre installation du logiciel digirisk ne contient aucune erreur au niveau de la base de donn&eacute;es. Veuillez trouver le d&eacute;tail ci-dessous', 'evarisk') . '<hr/>';
+						if($error_nb > 0){
+							$plugin_install_error = '<img src="' . admin_url('images/no.png') . '" alt="' . __('Error in digirisk install', 'evarisk') . '" title="' . __('Error in digirisk install', 'evarisk') . '" />&nbsp;' . __('Il y a des erreurs dans votre installation du logiciel digirisk. Veuillez trouver le d&eacute;tail ci-dessous', 'evarisk') . '<br/>';
+							foreach($error_list as $version => $element_nb){
+								$plugin_install_error .= '&nbsp;&nbsp;' . sprintf(__('Il y a %d erreur(s) &agrave; la version %s', 'evarisk'), $element_nb, '<a href="#digi_plugin_v_' . $version . '" >' . $version . '</a>') . ' - ';
+							}
+							$plugin_install_error = substr($plugin_install_error, 0, -3) . '<hr/>';
+						}
+						if($warning_nb > 0){
+							$plugin_install_error .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Warning in digirisk install', 'evarisk') . '" title="' . __('Warning in digirisk install', 'evarisk') . '" />&nbsp;' . __('Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n\'affectent pas le con fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s', 'evarisk') . '<br/>';
+							foreach($warning_list as $version => $element_nb){
+								$plugin_install_error .= '&nbsp;&nbsp;' . sprintf(__('Il y a %d avertissement(s) &agrave; la version %s', 'evarisk'), $element_nb, '<a href="#digi_plugin_v_' . $version . '" >' . $version . '</a>') . ' - ';
+							}
+							$plugin_install_error = substr($plugin_install_error, 0, -3) . '<hr/>';
+						}
+
+						$max_number = 0;
+						foreach($digirisk_update_way as $number => $operation){
+							if($number > $max_number){
+								$max_number = $number;
+							}
+						}
+						echo $plugin_install_error . sprintf(__('Version de la base de donn&eacute;es - Th&eacute;orique : %d - R&eacute;elle : %d', 'evarisk'), ($max_number+1), digirisk_options::getDbOption('base_evarisk')) . $plugin_db_modification_content;
 					}
 					break;
 				}
-			}
-			break;
+			}break;
 		}
 	}
 
@@ -6029,10 +6235,8 @@ switch($tableProvenance)
 /*
 * Paramètres passés en GET
 */
-else
-{
-	switch($_REQUEST['nom'])
-	{
+else{
+	switch($_REQUEST['nom']){
 		case TABLE_GROUPEMENT:
 			switch($_REQUEST['act'])
 			{

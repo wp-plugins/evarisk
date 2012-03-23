@@ -14,14 +14,31 @@
  */
 class evaRecommandationCategory
 {
+	/**
+	*
+	*/
+	function get_recommandation_category_id($informations_to_get = array('id'), $conditions = ''){
+		global $wpdb;
+		$informations = '';
+
+		$query = $wpdb->prepare("SELECT " . implode(', ', $informations_to_get) . " FROM " . TABLE_CATEGORIE_PRECONISATION . " WHERE 1" . $conditions);
+
+		if(count($informations_to_get) == 1){
+			$informations = $wpdb->get_var($query);
+		}
+		else{
+			$informations = $wpdb->get_results($query);
+		}
+
+		return $informations;
+	}
 
 /**
 *	Get the existing recommandation category list
 *
 *	@return object $CategoryRecommandationList A wordpresse database object containing the complete result list
 */
-	function getCategoryRecommandationList()
-	{
+	function getCategoryRecommandationList(){
 		global $wpdb;
 
 		$query = $wpdb->prepare(

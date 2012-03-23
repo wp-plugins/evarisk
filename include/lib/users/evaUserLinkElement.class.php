@@ -335,6 +335,36 @@ class evaUserLinkElement
 	}
 
 	/**
+	*	Get the user linked to an element
+	*
+	*	@param mixed $tableElement The element type we want to get the user list for
+	*	@param integer $user_id The user identifier we want to get the element list for
+	*
+	*	@return object A wordpress object with the user list affected to the given element
+	*/
+	function get_user_affected_element($user_id, $tableElement = ''){
+		global $wpdb;
+
+		$condition = array();
+		$condition[] = $user_id;
+		$more_query = "";
+		if($tableElement != ''){
+			$condition[] = $tableElement;
+			$more_query = "AND table_element = '%s'";
+		}
+		$query = $wpdb->prepare(
+			"SELECT *
+			FROM " . TABLE_LIAISON_USER_ELEMENT . "
+			WHERE id_user = '%d'
+				" . $more_query . "
+				AND status = 'valid' "
+			, $condition
+		);
+		
+		return $wpdb->get_results($query);
+	}
+
+	/**
 	*	Create a link betwwen an element and a user
 	*
 	*	@param mixed $tableElement The element type we want to create a link to

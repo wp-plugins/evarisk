@@ -21,6 +21,26 @@ class evaRecommandation
 /******************************					GETTERS																								*****************************************/
 /**************************************************************************************************************************************/
 
+	/**
+	*
+	*/
+	function get_recommandation_id($informations_to_get = array('id'), $conditions = ''){
+		global $wpdb;
+		$informations = '';
+
+		$query = $wpdb->prepare("SELECT " . implode(', ', $informations_to_get) . " FROM " . TABLE_PRECONISATION . " WHERE 1" . $conditions);
+
+		if(count($informations_to_get) == 1){
+			$informations = $wpdb->get_var($query);
+		}
+		else{
+			$informations = $wpdb->get_results($query);
+		}
+
+		return $informations;
+	}
+
+
 /**
 *	Generate the output for the table recommandation management page
 *
@@ -968,7 +988,7 @@ class evaRecommandation
 <?php
 				}
 ?>
-<div class="hide" id="loadingImg" ><center><img class="margin36" src="<?php echo _e(PICTO_LOADING_ROUND); ?>" alt="loading..." /></center></div>
+<div class="hide" id="loadingImg" ><div class="main_loading_pic_container" ><img class="margin36" src="<?php echo _e(PICTO_LOADING_ROUND); ?>" alt="loading..." /></div></div>
 <?php echo evaRecommandation::getRecommandationForm(); ?>
 <?php echo evaRecommandationCategory::getRecommandationCategoryForm(); ?>
 <div id="recommandationTable" >

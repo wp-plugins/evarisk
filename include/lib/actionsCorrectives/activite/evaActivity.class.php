@@ -212,11 +212,11 @@ class EvaActivity extends EvaBaseActivity
 					$taks_asker_available = true;
 				}
 				else{
-					$task_asker_not_available_explanation = __('AImpossible de trouver la t&acirc;che principale permettant d\'effectuer les demandes. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
+					$task_asker_not_available_explanation = __('Impossible de trouver la t&acirc;che principale permettant d\'effectuer les demandes. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
 				}
 			}
 			else{
-				$task_asker_not_available_explanation = __('BImpossible de trouver la t&acirc;che principale permettant d\'effectuer les demandes. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
+				$task_asker_not_available_explanation = __('Impossible de trouver la t&acirc;che principale permettant d\'effectuer les demandes. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
 			}
 		}
 		else{
@@ -228,7 +228,7 @@ class EvaActivity extends EvaBaseActivity
 			$ask_argument['provenance'] = 'ask_correctiv_action';
 			$ask_argument['output_mode'] = 'return';
 			$ask_argument['requested_action'] = 'ask_correctiv_action';
-			if(current_user_can('digi_add_action')){
+			if(current_user_can('digi_ask_action_front')){
 				$task_asker = '
 	<div id="message' . $ask_argument['tableProvenance'] . '" class="digirisk_hide" >&nbsp;</div>
 	<div class="clear" >' . 
@@ -246,7 +246,13 @@ class EvaActivity extends EvaBaseActivity
 
 		echo $task_asker;
 	}
-
+	/**
+	*
+	*/
+	function task_asker_add_picture($table_provenance, $token){
+		return evaPhoto::getUploadForm($table_provenance, $token, 'jQuery("#ask_correctiv_action_picture_form").html("");jQuery("#ask_correctiv_action_picture img").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $table_provenance . "/" . $token . '/" + response); jQuery("#ask_correctiv_action_picture").show();');
+	}
+	
 	/**
 	*	Create the form used for new activity creation. Return different shape following parameters
 	*
@@ -457,6 +463,15 @@ class EvaActivity extends EvaBaseActivity
 			$activite_new .= EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, $rows, '', '', '99%');
 		}
 
+		if($arguments['provenance'] == 'ask_correctiv_action'){/*	Add possibility for user to add a picture and to affect to an existing element for the asked tasks	*/
+			/*	Add a picture	*/
+			$token = rand();
+			$activite_new .= '<div class="digirisk_hide" id="loading_round_pic" ><div class="main_loading_pic_container" ><img src="' . admin_url('images/loading.gif') . '" alt="loading..." /></div></div><input type="hidden" name="token_for_element" id="token_for_element" value="' . $token . '" /><label for="correctiv_action_before_pic" class="clear" >' . __('Photo', 'evarisk') . '</label>&nbsp;:&nbsp;<div id="ask_correctiv_action_picture_form" >' . self::task_asker_add_picture($arguments['tableProvenance'], $token) . '</div><div id="ask_correctiv_action_picture" class="digirisk_hide" ><img src="' . admin_url('images/loading.gif') . '" alt="correctiv_action_ask_picture" /><div class="pointer" id="dac_pic_change" >' . __('Changer l\'image', 'evarisk') . '</div><script type="text/javascript" >evarisk(document).ready(function(){jQuery("#dac_pic_change").click(function(){jQuery("#ask_correctiv_action_picture_form").html(jQuery("#loading_round_pic").html());jQuery("#ask_correctiv_action_picture img").attr("src", "' . admin_url('images/loading.gif') . '");jQuery("#ask_correctiv_action_picture").hide();jQuery("#ask_correctiv_action_picture_form").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{"post":"true", "table":"' . TABLE_ACTIVITE . '", "act":"reload_correctiv_asker_picture_form", "tableProvenance":"' . $arguments['tableProvenance'] . '", "token":"' . $token . '", "delete_old":"yes"});});});</script></div>';
+
+			/*	Affect to existing element	*/
+			$activite_new .= __('Affecter cette t&acirc;che &agrave; un &eacute;l&eacute;ment existant', 'evarisk') . '&nbsp;:&nbsp;<br/>' . arborescence_special::search_form();
+		}
+
 		if(isset($arguments['requested_action']) && (($arguments['requested_action'] == 'ficheAction') || ($arguments['requested_action'] == 'control_asked_action'))){/*	Risk new level cotation	*/
 			{/*	Task efficiency	*/
 				$activite_new .= sprintf(__('Efficacit&eacute; de la t&acirc;che %s', 'evarisk'), '<input type="text" name="correctiv_action_efficiency_control" id="correctiv_action_efficiency_control' . $tache->id . '" value="0" class="correctiv_action_efficiency_control" readonly="readonly" />%') . '<div id="correctiv_action_efficiency_control_slider' . $tache->id . '" class="correctiv_action_efficiency_control_slider" >&nbsp;</div>';
@@ -513,7 +528,7 @@ class EvaActivity extends EvaBaseActivity
 		}
 
 		$sub_task_creation_form = 
-'<form method="post" id="informationGeneralesActivite" name="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' . 
+'<form method="post" id="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' . 
 $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
 		if(($arguments['output_mode'] == 'return') && ($arguments['provenance'] != 'ask_correctiv_action')){/*	Add picture button			*/
@@ -571,8 +586,6 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 		});
 
 		jQuery("#' . $idBouttonEnregistrer . '").click(function(){
-			jQuery("#save_button_container").hide();
-			jQuery("#save_in_progress").show();
 			jQuery("#informationGeneralesActivite").submit();
 		});
 
@@ -649,6 +662,13 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 				return false;
 			}
 		}
+
+		if(jQuery("#ask_correctiv_action_picture_form").length > 0){
+			jQuery("#ask_correctiv_action_picture_form").html("");
+		}
+		
+		jQuery("#save_button_container").hide();
+		jQuery("#save_in_progress").show();
 
 		return true;
 	}

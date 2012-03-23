@@ -6,8 +6,9 @@
 	DEFINE('EVA_HOME_URL', WP_PLUGIN_URL . '/' . EVA_PLUGIN_DIR . '/');
 	DEFINE('EVA_HOME_DIR', WP_PLUGIN_DIR . '/' . EVA_PLUGIN_DIR . '/');
 
-	DEFINE('EVA_GENERATED_DOC_DIR', WP_CONTENT_DIR . '/uploads/' . EVA_PLUGIN_DIR . '/');
-	DEFINE('EVA_GENERATED_DOC_URL', WP_CONTENT_URL . '/uploads/' . EVA_PLUGIN_DIR . '/');
+	$upload_dir = wp_upload_dir();
+	DEFINE('EVA_GENERATED_DOC_DIR', $upload_dir['basedir'] . '/' . EVA_PLUGIN_DIR . '/');
+	DEFINE('EVA_GENERATED_DOC_URL', $upload_dir['baseurl'] . '/' . EVA_PLUGIN_DIR . '/');
 
 	DEFINE('EVA_INC_PLUGIN_DIR', EVA_HOME_DIR . 'include/');
 	DEFINE('EVA_INC_PLUGIN_URL', EVA_HOME_URL . 'include/');
@@ -172,6 +173,86 @@
 	*	Define the different mandatory field for user to ve valid for work accident
 	*/
 	$userWorkAccidentMandatoryFields = array('user_imatriculation', 'user_imatriculation_key', 'user_birthday', 'user_gender', 'user_nationnality', 'user_adress', /* 'user_adress_2', */ 'user_hiring_date', 'user_profession', 'user_professional_qualification');
+
+	/**
+	*	Define the different element available for evaluation method
+	*/
+	$evaluation_main_vars = array();
+	$evaluation_main_vars[] = array('nom' => __('Gravite', 'evarisk'), 'min' => 0, 'max' => 4, 'annotation' => __('0 : Pas de blessure possible\n1 : Blessure l&eacute;g&egrave;re\n2 : ITT<5 jours ou effet r&eacute;versible\n3 : ITT>5jours ou effet irr&eacute;versible\n4 : Menace sur la vie', 'evarisk'));
+	$evaluation_main_vars[] = array('nom' => __('Exposition', 'evarisk'), 'min' => 0, 'max' => 4, 'annotation' => __('0 : Jamais en contact\n1 : Rare, 1 fois par an\n2 : Inhabituelle, 1 fois par mois\n3 : Occasionnelle, 1 fois par semaine\n4 : Fr&eacute;quente, 1 fois par jour', 'evarisk'));
+	$evaluation_main_vars[] = array('nom' => __('Occurence', 'evarisk'), 'min' => 1, 'max' => 4, 'annotation' => __('1 : Jamais arriv&eacute;\n2 : Est d&eacute;j&agrave; arriv&eacute; dans des circonstances exeptionnelles\n3 : D&eacute;j&agrave; produit 2 fois\n4 : Se produit tous les mois', 'evarisk'));
+	$evaluation_main_vars[] = array('nom' => __('Formation', 'evarisk'), 'min' => 1, 'max' => 4, 'annotation' => __('1 : Pr&eacute;vention r&eacute;guli&egrave;re\n2 : Formation individuelle obligatoire\n3 : Formation obligatoire non r&eacute;alis&eacute;e\n4 : Pas de formation ni de pr&eacute;vention', 'evarisk'));
+	$evaluation_main_vars[] = array('nom' => __('Protection', 'evarisk'), 'min' => 1, 'max' => 4, 'annotation' => __('1 : Intrins&egrave;que\n2 : Collective\n3 : Individuelle\n4 : Rien', 'evarisk'));
+
+	$evaluation_method_operator = array();
+	$evaluation_method_operator[] = array('symbole' => '*');
+	$evaluation_method_operator[] = array('symbole' => '/');
+	$evaluation_method_operator[] = array('symbole' => '+');
+	$evaluation_method_operator[] = array('symbole' => '-');
+
+	$evaluation_method_evarisk__etalon = array();
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 0, 'valeurMaxMethode' => 0);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 1, 'valeurMaxMethode' => 1);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 2, 'valeurMaxMethode' => 2);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 3, 'valeurMaxMethode' => 3);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 4, 'valeurMaxMethode' => 4);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 5, 'valeurMaxMethode' => 5);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 6, 'valeurMaxMethode' => 6);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 7, 'valeurMaxMethode' => 8);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 8, 'valeurMaxMethode' => 9);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 10, 'valeurMaxMethode' => 12);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 12, 'valeurMaxMethode' => 16);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 14, 'valeurMaxMethode' => 18);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 17, 'valeurMaxMethode' => 24);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 20, 'valeurMaxMethode' => 27);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 25, 'valeurMaxMethode' => 32);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 27, 'valeurMaxMethode' => 36);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 31, 'valeurMaxMethode' => 48);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 35, 'valeurMaxMethode' => 54);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 40, 'valeurMaxMethode' => 64);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 42, 'valeurMaxMethode' => 72);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 44, 'valeurMaxMethode' => 81);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 46, 'valeurMaxMethode' => 96);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 48, 'valeurMaxMethode' => 108);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 50, 'valeurMaxMethode' => 128);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 55, 'valeurMaxMethode' => 144);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 60, 'valeurMaxMethode' => 162);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 66, 'valeurMaxMethode' => 192);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 70, 'valeurMaxMethode' => 216);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 77, 'valeurMaxMethode' => 243);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 80, 'valeurMaxMethode' => 256);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 84, 'valeurMaxMethode' => 288);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 87, 'valeurMaxMethode' => 324);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 90, 'valeurMaxMethode' => 384);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 92, 'valeurMaxMethode' => 432);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 95, 'valeurMaxMethode' => 512);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 96, 'valeurMaxMethode' => 576);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 98, 'valeurMaxMethode' => 768);
+	$evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 100, 'valeurMaxMethode' => 1024);
+
+	/**
+	*
+	*/
+	$inrs_danger_categories = array();
+	$inrs_danger_categories[] = array('nom' => __('Chute de plain-pied', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chutePP_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Chute de hauteur', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chuteH_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Manutention manuelle', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manutentionMa_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Manutention m&eacute;canique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manutentionMe_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Circulation, d&eacute;placements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/circulation_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Effondrements, chute d\'objet', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/effondrement_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Machines et outils', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/machine_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Nuisances sonores', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/nuisances_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Produits chimiques, d&eacute;chets', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/produitsC_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Incendie, explosion', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/incendies_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Electricit&eacute;', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/electricite_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Eclairage', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/eclairage_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Travail sur &eacute;cran', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/travailEcran_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Ambiances climatiques', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/climat_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Manque d\'hygi&egrave;ne', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manqueHygiene_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/societeExt_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Manque de formation', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manqueFormation_PictoCategorie.png');
+	$inrs_danger_categories[] = array('nom' => __('Autres', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png');
+
 
 	/**
 	*	Define the different existing element type

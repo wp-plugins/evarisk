@@ -34,17 +34,30 @@ class digirisk_display
 	*
 	* @return string HTML code of the header display.
 	*/
-	function start_page($titrePage, $icone, $titreIcone, $altIcon, $element_type, $boutonAjouter=true, $messageInfo='', $choixAffichage=false, $affichageNotes = true){
+	function start_page($titrePage, $icone, $titreIcone, $altIcon, $element_type, $boutonAjouter=true, $messageInfo='', $choixAffichage=false, $affichageNotes = true, $page_icon_id = ''){
 		$debutPage = '';
 
 		ob_start();
 ?>
-<div class="digirisk_hide" id="loadingImg" ><center><img src="<?php echo PICTO_LOADING; ?>" alt="loading..." /></center></div>
+<div class="digirisk_hide" id="loadingImg" ><div class="main_loading_pic_container" ><img src="<?php echo PICTO_LOADING; ?>" alt="loading..." /></div></div>
 <div class="digirisk_hide" id="round_loading_img" ><div class="round_loading_img" ><img src="<?php echo PICTO_LOADING_ROUND; ?>" alt="loading..." /></div></div>
 <div class="digirisk_hide" id="dataTable_search_icon" ><span class='ui-icon searchDataTableIcon' >&nbsp;</span></div>
 <div class="wrap">
-	<div class="icon32"><img alt="<?php echo $altIcon; ?>" src="<?php echo $icone; ?>"title="<?php echo $titreIcone; ?>" /></div>
-	<h2 class="" >
+	<div class="icon32" <?php echo $page_icon_id; ?> >
+<?php
+	if($icone != ''){
+?>
+	<img alt="<?php echo $altIcon; ?>" src="<?php echo $icone; ?>" title="<?php echo $titreIcone; ?>" />
+<?php
+	}
+	else{
+?>
+		&nbsp;
+<?php
+	}
+?>
+</div>
+	<h2 >
 <?php
 		echo $titrePage;
 		if($boutonAjouter){
@@ -115,6 +128,5 @@ class digirisk_display
 
 		return $end_page;
 	}
-
 
 }

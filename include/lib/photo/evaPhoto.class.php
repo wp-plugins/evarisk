@@ -69,12 +69,13 @@ class EvaPhoto {
 					('', '%s')"
 				, $photo);
 		if($wpdb->query($query)){
-			$status = evaPhoto::associatePicture($tableElement, $idElement, $wpdb->insert_id);
+			$new_picture_id = $wpdb->insert_id;
+			$status = evaPhoto::associatePicture($tableElement, $idElement, $new_picture_id);
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', '');
+					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', $new_picture_id);
 				break;
 			}
 		}
@@ -153,7 +154,7 @@ class EvaPhoto {
 			<div id="galeriePhoto' . $tableElement . $idElement .'">
 				<div class="galeryPhoto alignleft">
 					<div id="thumbs' . $tableElement . $idElement .'" class="navigation" >
-						<ul class="thumbs noscript">';
+						<ul class="thumbs noscript clear">';
 
 		$photos = evaPhoto::getPhotos($tableElement, $idElement);
 		foreach($photos as $photo)
@@ -183,15 +184,14 @@ class EvaPhoto {
 			}
 			if($is_File){
 				$gallery .= '
-							<li >
+							<li class="alignleft" >
 								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" title="' . $photo->description . '">
-									<img src="' . $pathToMediasDir . $photo->photo . '" alt="' . $photo->description . '" />
+									<div>' . ELEMENT_IDENTIFIER_PIC . $photo->id . '</div><img src="' . $pathToMediasDir . $photo->photo . '" alt="' . $photo->description . '" />
 								</a>							
 								<div class="caption">';
 
 				$add_button_action = true;
-				switch($tableElement)
-				{
+				switch($tableElement){
 					case TABLE_TACHE:
 					{
 						$current_task = new EvaTask($idElement);
@@ -290,7 +290,7 @@ class EvaPhoto {
 						</ul>
 					</div>
 					<!-- Start Advanced Gallery Html Containers -->
-					<div id="gallery' . $tableElement . $idElement .'" class="content">
+					<div id="gallery' . $tableElement . $idElement .'" class="content clear">
 						<div id="controls" class="controls"></div>
 						<div id="caption' . $tableElement . $idElement .'" class="caption-container"></div>
 						<div class="slideshow-container">
@@ -455,12 +455,15 @@ class EvaPhoto {
 	*
 	*	@return mixed $uploadForm The html code for the upload form
 	*/
-	function getUploadForm($tableElement, $idElement)
+	function getUploadForm($tableElement, $idElement, $on_complete_form = '')
 	{
 		$repertoireDestination = str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/');
 		$idUpload = 'mainPhoto' . $tableElement;
 		$allowedExtensions = "['jpeg','jpg','png','gif']";
 		$multiple = true;
+		if($tableElement == 'correctiv_action_ask'){
+			$multiple = false;
+		}
 		$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "photo/uploadPhoto.php");
 		$photoDefaut = '';
 
@@ -498,7 +501,7 @@ class EvaPhoto {
 			break;
 		}
 
-		$uploadForm = evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut, $texteBoutton);
+		$uploadForm = evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut, $texteBoutton, $on_complete_form);
 
 		return $uploadForm;
 	}
@@ -518,7 +521,7 @@ class EvaPhoto {
 
 		$query = 
 			$wpdb->prepare(
-				"SELECT PICTURE.photo 
+				"SELECT PICTURE.photo
 				FROM " . TABLE_PHOTO . " AS PICTURE
 					INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
 				WHERE PICTURE_LINK.tableElement = '%s'
@@ -711,11 +714,9 @@ class EvaPhoto {
 		/*	Check if the selected picture we want to delete is the main picture or not in order to update the main picture thumb	*/
 		$mainPictureUpdate = '';
 		$isTheMainPicture = evaPhoto::isMainPicture($tableElement, $idElement, $idPicture);
-		if($isTheMainPicture == 'yes')
-		{
+		if($isTheMainPicture == 'yes'){
 			$definedDefaultPicture = '';
-			switch($tableElement)
-			{
+			switch($tableElement){
 				case TABLE_CATEGORIE_DANGER:
 					$definedDefaultPicture = DEFAULT_DANGER_CATEGORIE_PICTO;
 				break;
@@ -741,20 +742,18 @@ class EvaPhoto {
 		$messageInfo = '<script type="text/javascript">
 			evarisk(document).ready(function(){
 				evarisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
-		if($updateAssociationResult != 'error')
-		{	
+		if($updateAssociationResult != 'error'){	
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_delete', '', '');
+					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_delete', $idPicture, $idPicture);
 				break;
 			}
 			$messageInfo .= '
 					evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
-		else
-		{
+		else{
 			$messageInfo .= '
 					evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
@@ -798,7 +797,7 @@ class EvaPhoto {
 					case TABLE_ACTIVITE:
 					case TABLE_TACHE:
 						/*	Log modification on element and notify user if user subscribe	*/
-						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_as_main_add', '', '');
+						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_as_main_add', '', $idPicture);
 					break;
 				}
 				$messageInfo .= '
@@ -818,7 +817,7 @@ class EvaPhoto {
 					case TABLE_ACTIVITE:
 					case TABLE_TACHE:
 						/*	Log modification on element and notify user if user subscribe	*/
-						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_as_main_delete', '', '');
+						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_as_main_delete', '', $idPicture);
 					break;
 				}
 				$messageInfo .= '

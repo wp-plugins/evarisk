@@ -58,4 +58,16 @@ class eva_Operateur {
 		$resultat = $wpdb->get_results( "SELECT * FROM {$t} WHERE " . $where);
 		return $resultat;
 	}
+
+	function create_basic_operator(){
+		global $evaluation_method_operator, $wpdb;
+
+		foreach($evaluation_method_operator as $operator_def){
+			foreach($operator_def as $operator_field_name => $operator_field_value){
+				$operator_def[$operator_field_name] = $operator_field_value;
+			}
+			$wpdb->insert(TABLE_OPERATEUR, $operator_def);
+		}
+	}
+
 }

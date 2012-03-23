@@ -206,7 +206,8 @@ WHERE status = 'valid'
 
 		if($action != ''){
 			$more_query .= "
-	AND NOTI.action = %s";
+	AND NOTI.action = %s
+	LIMIT 1";
 			$query_condition[] = $action;
 		}
 
@@ -390,7 +391,7 @@ WHERE LUN.status = 'valid'
 	*
 	*	@return void
 	*/
-	function notify_affiliated_user($table_element, $id_element, $action, $modif_content){
+	function notify_affiliated_user($table_element, $id_element, $action, $old_content, $modif_content){
 		global $wpdb, $current_user;
 		$done_user = array();
 		get_currentuserinfo();
@@ -418,22 +419,24 @@ WHERE LUN.status = 'valid'
 ';
 
 		$content = '';
-		// $content = self::read_modification_details($modif_content, $table_element, $action);
+		$content = self::read_modification_details($modif_content, $table_element, $action);
+
 		foreach($user_notification_list as $notification_infos){
 			/*	Get the recipient email from it identifier	*/
 			$user_info = get_userdata($notification_infos->id_user);
 
 			/*	Make transformation on different mail element	*/
-			$mail_subject = sprintf($notification_infos->message_subject, utf8_decode(get_bloginfo('name')) . ' -> ' . $element_name);
+			$mail_subject = sprintf($notification_infos->message_subject, get_bloginfo('name') . ' -> ' . $element_name);
 			$user_name = (($current_user->user_firstname != '') ? $current_user->user_firstname : $current_user->display_name) . '&nbsp;' . $current_user->user_lastname;
 
-			$mail_content = sprintf($notification_infos->message_to_send, $element_name, admin_url('admin.php?page=' . $element_page), utf8_decode($action_done_by_user), utf8_decode(mysql2date('d F Y', current_time('mysql', 0), true)), ELEMENT_IDENTIFIER_U . $notification_infos->id_user . '&nbsp;-&nbsp;' . utf8_decode($user_name), $content);
+			$mail_content = sprintf($notification_infos->message_to_send, $element_name, admin_url('admin.php?page=' . $element_page), $action_done_by_user, mysql2date('d F Y', current_time('mysql', 0), true), ELEMENT_IDENTIFIER_U . $notification_infos->id_user . '&nbsp;-&nbsp;' . $user_name, $content);
+
 			/*	Add the mail into database for history	*/
 			digirisk_messages::add_message($notification_infos->id_user, $user_info->user_email, $mail_subject, $mail_content, $notification_infos->id_notification, $id_element, $table_element);
 
 			/*	Check if the user email is a real email	*/
 			if(is_email($user_info->user_email) && !in_array($user_info->user_email, $done_user)){
-				@mail($user_info->user_email, html_entity_decode($mail_subject), html_entity_decode($mail_content), $headers);
+				@mail($user_info->user_email, html_entity_decode(utf8_decode($mail_subject)), html_entity_decode(utf8_decode($mail_content)), $headers);
 				$done_user[] = $user_info->user_email;
 			}
 		}
@@ -448,47 +451,251 @@ WHERE LUN.status = 'valid'
 	*	@return string $modification The modification content transformed to be user readable
 	*/
 	function read_modification_details($modification_datas, $table_element, $action){
+		global $wpdb;
 		$modification_content = '';
 
-		if(!is_array($modification_datas)){
-			$modification_datas = unserialize($modification_datas);
-		}
-
-		if(is_array($modification_datas)){
+		if($modification_datas != ''){
 			/*	Get action detailled informations	*/
 			$action_detailled_information = self::get_action(array('action' => array('%s', $action), 'table_element' => array('%s', $table_element)));
 
-			$modification_content .= __('Modification effectu&eacute;e', 'evarisk') . ": 
-";
-
 			switch($action){
+			/*	Action for correctiv action	*/
 				case 'delete_user_from_affectation_list':{
-					$modification_content .= __('Liste des utilisateurs d&eacute;saffect&eacute;s', 'evarisk') . "
+					$modification_datas = (!is_array($modification_datas)) ? unserialize($modification_datas) : $modification_datas;
+					if(is_array($modification_datas)){
+						$modification_content .= __('Liste des utilisateurs d&eacute;saffect&eacute;s', 'evarisk') . "
 ";
-					foreach($modification_datas as $user_id){
-						if($user_id > 0){
-							$user_info = evaUser::getUserInformation($user_id);
-							$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
+						foreach($modification_datas as $user_id){
+							if($user_id > 0){
+								$user_info = evaUser::getUserInformation($user_id);
+								$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
 ";
+							}
 						}
 					}
-				}
-				break;
+				}break;
 				case 'user_affectation_update':{
-					$modification_content .= __('Liste des utilisateurs modifi&eacute;s', 'evarisk') . "
+					$modification_datas = (!is_array($modification_datas)) ? unserialize($modification_datas) : $modification_datas;
+					if(is_array($modification_datas)){
+						$modification_content .= __('Liste des utilisateurs modifi&eacute;s', 'evarisk') . "
 ";
-					foreach($modification_datas as $user_id){
-						if($user_id > 0){
-							$user_info = evaUser::getUserInformation($user_id);
-							$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
+						foreach($modification_datas as $user_id){
+							if($user_id > 0){
+								$user_info = evaUser::getUserInformation($user_id);
+								$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
 ";
+							}
 						}
 					}
-				}
-				break;
+				}break;
+				case 'transfer':{
+					$task = new EvaTask($modification_datas);
+					$task->load();
+					$new_element_infos = ELEMENT_IDENTIFIER_ST . $modification_datas . '&nbsp;-&nbsp;' . $task->getName() . '  ->  ' . admin_url('admin.php?page=digirisk_correctiv_actions&elt=edit-node' . $modification_datas);
+					$modification_content .= sprintf(__('L\'&eacute;l&eacute;ment a &eacute;t&eacute; transf&eacute;r&eacute; vers %s', 'evarisk'), $new_element_infos);
+				}break;
+				case 'picture_add':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
+					$element_path = EvaPhoto::checkIfPictureIsFile($wpdb->get_var($query), $table_element, false);
+					$modification_content .= sprintf(__('Photo ajout&eacute;e %s, voir la photo %s', 'evarisk'), $element_identifier, $element_path);
+				}break;
+				case 'picture_delete':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
+					$modification_content .= sprintf(__('Photo supprim&eacute;e %s', 'evarisk'), $element_identifier);
+				}break;
+				case 'picture_as_main_add':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
+					$element_path = EvaPhoto::checkIfPictureIsFile($wpdb->get_var($query), $table_element, false);
+					$modification_content .= sprintf(__('Nouvelle photo principale %s, voir la photo %s', 'evarisk'), $element_identifier, $element_path);
+				}break;
+				case 'picture_as_main_delete':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
+					$element_path = EvaPhoto::checkIfPictureIsFile($wpdb->get_var($query), $table_element, false);
+					$modification_content .= sprintf(__('Ancienne photo principale %s, voir la photo %s', 'evarisk'), $element_identifier, $element_path);
+				}break;
+				case 'doc_add':{
+					$element_identifier = ELEMENT_IDENTIFIER_DOC . $modification_datas;
+					$query = $wpdb->prepare("SELECT nom FROM " . TABLE_GED_DOCUMENTS . " WHERE id = %d", $modification_datas);
+					$doc_info = $wpdb->get_row($query);
+					$element_identifier .= ' - ' . $doc_info->nom;
+					$document_path = eva_gestionDoc::getDocumentPath($modification_datas);
+					if(is_file(EVA_GENERATED_DOC_DIR . '/' . $document_path)){
+						$element_path = EVA_GENERATED_DOC_URL . '/' . $document_path;
+					}
+					else{
+						$element_path = __('Ce document est introuvable', 'evarisk') . $upload_dir['basedir'] . '/' . $document_path;
+					}
+					$modification_content .= sprintf(__('Document ajout&eacute; %s, Acc&eacute;der au document %s', 'evarisk'), $element_identifier, $element_path);
+				}break;
+				case 'doc_delete':{
+					$element_identifier = ELEMENT_IDENTIFIER_DOC . $modification_datas;
+					$query = $wpdb->prepare("SELECT nom FROM " . TABLE_GED_DOCUMENTS . " WHERE id = %d", $modification_datas);
+					$doc_info = $wpdb->get_row($query);
+					$element_identifier .= ' - ' . $doc_info->nom;
+					$modification_content .= sprintf(__('Document supprim&eacute; %s', 'evarisk'), $element_identifier);
+				}break;
+
+				/*	Corrective action special part	*/
+				case 'affectation_update':{
+					if($modification_datas != 'none'){
+						switch($modification_datas[0]){
+							case TABLE_UNITE_TRAVAIL:{
+								$element = eva_UniteDeTravail::getWorkingUnit($modification_datas[1]);
+								$element_name = utf8_decode($element->nom);
+								$element_identifier = ELEMENT_IDENTIFIER_UT;
+							}break;
+							case TABLE_GROUPEMENT:{
+								$element = EvaGroupement::getGroupement($modification_datas[1]);
+								$element_name = utf8_decode($element->nom);
+								$element_identifier = ELEMENT_IDENTIFIER_GP;
+							}break;
+							case TABLE_RISQUE:{
+								/*	Get the associated element	*/
+								$query = $wpdb->prepare(
+"SELECT D.nom
+FROM " . TABLE_RISQUE . " AS R
+INNER JOIN " . TABLE_DANGER . " AS D ON ((D.id = R.id_danger) AND (D.Status = 'Valid'))
+WHERE R.id = %d", $modification_datas[1]);
+								$element_name = $wpdb->get_var($query);
+								$element_identifier = ELEMENT_IDENTIFIER_R;
+							}break;
+						}
+						$modification_content .= sprintf(__('Nouvel &eacute;l&eacute;ment associ&eacute; %s - %s', 'evarisk'), $element_identifier . $modification_datas[1], $element_name);
+					}
+					else{
+						$modification_content .= __('La t&acirc;che n\'est plus associ&eacute;e a aucun &eacute;l&eacute;ment', 'evarisk');
+					}
+				}break;
+				case 'follow_add':{
+					$modification_content .= sprintf(__('Nouveau commentaire ajout&eacute; : %s', 'evarisk'), $modification_datas);
+				}break;
+				case 'picture_as_before_add':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
+					$element_path = EvaPhoto::checkIfPictureIsFile($wpdb->get_var($query), $table_element, false);
+					$modification_content .= sprintf(__('Photo avant la t&acirc;che %s, voir la photo %s', 'evarisk'), $element_identifier, $element_path);
+				}break;
+				case 'picture_as_after_add':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
+					$element_path = EvaPhoto::checkIfPictureIsFile($wpdb->get_var($query), $table_element, false);
+					$modification_content .= sprintf(__('Photo apr&egrave;s la t&acirc;che %s, voir la photo %s', 'evarisk'), $element_identifier, $element_path);
+				}break;
+				case 'picture_as_before_delete':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;echo $element_identifier;
+					$modification_content .= sprintf(__('La photo %s n\'est plus marqu&eacute;e comme &eacute;tant avant la t&acirc;che', 'evarisk'), $element_identifier);
+				}break;
+				case 'picture_as_after_delete':{
+					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
+					$modification_content .= sprintf(__('La photo %s n\'est plus marqu&eacute;e comme &eacute;tant apr&egrave;s la t&acirc;che', 'evarisk'), $element_identifier);
+				}break;
+				case 'add_new_subtask':{
+					switch($modification_datas[0]){
+						case TABLE_TACHE:
+							$element_identifier = ELEMENT_IDENTIFIER_T . $modification_datas[1];
+						break;
+						case TABLE_ACTIVITE:
+							$element_identifier = ELEMENT_IDENTIFIER_ST . $modification_datas[1];
+						break;
+					}
+					$modification_content .= sprintf(__('Nouvelle sous-t&acirc;che ajout&eacute;e : 
+Identifiant: %s
+Nom: %s
+Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modification_datas[3]);
+				}break;
+				case 'update':{
+					switch($table_element){
+						case TABLE_TACHE:
+							$key_to_output = array('id', 'name', 'description', 'startDate', 'finishDate', 'ProgressionStatus', 'idResponsable', 'idSoldeur', 'dateSolde', 'efficacite');
+							$element_identifier = ELEMENT_IDENTIFIER_T;
+						break;
+						case TABLE_ACTIVITE:
+							$key_to_output = array('id', 'name', 'description', 'startDate', 'finishDate', 'ProgressionStatus', 'idResponsable', 'idSoldeur', 'dateSolde', 'avancement');
+							$element_identifier = ELEMENT_IDENTIFIER_ST;
+						break;
+					}
+					foreach($modification_datas as $key => $content){
+						if(in_array($key, $key_to_output)){
+							switch($key){
+								case 'id':
+									$content_to_output = __('Identifiant', 'evarisk') . ' : ' . $element_identifier . $content;
+								break;
+								case 'startDate':
+									$content_to_output = __('Date de d&eacute;but', 'evarisk') . ' : ' . mysql2date('d F Y', $content, true);
+								break;
+								case 'finishDate':
+									$content_to_output = __('Date de fin', 'evarisk') . ' : ' . mysql2date('d F Y', $content, true);
+								break;
+								case 'ProgressionStatus':
+									$content_to_output = __('Statut', 'evarisk') . ' : ' . actionsCorrectives::check_progression_status_for_output($content);
+									if(($content == 'Done') || ($content == 'DoneByChief')){
+										$infos_soldeur = '';
+										if($modification_datas['idSoldeurChef'] > 0){
+											$responsable_infos = evaUser::getUserInformation($modification_datas['idSoldeurChef']);
+											$infos_soldeur = ELEMENT_IDENTIFIER_U . $modification_datas['idSoldeurChef'] . ' - ' . $responsable_infos[$modification_datas['idSoldeurChef']]['user_lastname'] . ' ' . $responsable_infos[$modification_datas['idSoldeurChef']]['user_firstname'];
+										}
+										elseif($modification_datas['idSoldeur'] > 0){
+											$responsable_infos = evaUser::getUserInformation($modification_datas['idSoldeur']);
+											$infos_soldeur = ELEMENT_IDENTIFIER_U . $modification_datas['idSoldeurChef'] . ' - ' . $responsable_infos[$modification_datas['idSoldeur']]['user_lastname'] . ' ' . $responsable_infos[$modification_datas['idSoldeur']]['user_firstname'];
+										}
+										$content_to_output .= '  ' . sprintf(__('Sold&eacute;e le %s par %s', 'evarisk'), $modification_datas['dateSolde'], $infos_soldeur);
+									}
+								break;
+								case 'idResponsable':
+									$content_to_output = __('Responsable', 'evarisk') . ' : ';
+									if($content <= 0){
+										$content_to_output .= __('Aucun responsable n\'a &eacute;t&eacute; d&eacute;fini pour le moment', 'evarisk');
+									}
+									else{
+										$responsable_infos = evaUser::getUserInformation($content);
+										echo '<pre>';print_r($responsable_infos);echo '</pre>';
+										$content_to_output .= ELEMENT_IDENTIFIER_U . $content . ' - ' . $responsable_infos[$content]['user_lastname'] . ' ' . $responsable_infos[$content]['user_firstname'];
+									}
+								break;
+								case 'efficacite':
+									$content_to_output = __('Efficacit&eacute;', 'evarisk') . ' : ';
+									if($content <= 0){
+										$content_to_output .= __('L\'efficacit&eacute; de la t&acirc;che n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
+									}
+									else{
+										$content_to_output .= $content . '%';
+									}
+								break;
+								case 'avancement':
+									$content_to_output = __('Avancement de la sous-t&acirc;che', 'evarisk') . ' : ';
+									if($content <= 0){
+										$content_to_output .= __('L\'avancement de la sous-t&acirc;che n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
+									}
+									else{
+										$content_to_output .= $content . '%';
+									}
+								break;
+								case 'idSoldeur':
+								case 'dateSolde':
+									$content_to_output = '';
+								break;
+								default:
+									$content_to_output = __($key, 'evarisk') . ' : ' . __($content, 'evarisk');
+								break;
+							}
+							if($content_to_output != ''){
+								$modification_content .= $content_to_output . '
+';
+							}
+						}
+					}
+				}break;
 			}
-			$modification_content .= "
+
+			if(trim($modification_content) != ''){
+				$modification_content = __('Modification effectu&eacute;e', 'evarisk') . ": 
+" . $modification_content . "
 ";
+			}
 		}
 
 		return $modification_content;
@@ -506,7 +713,7 @@ WHERE LUN.status = 'valid'
 		/*	Insert the modification into database	*/
 		$wpdb->insert(DIGI_DBT_ELEMENT_MODIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_action' => $action_detailled_information[0]->id, 'id_element' => $id_element, 'table_element' => $table_element, 'old_content' => serialize($old_content)));
 
-		digirisk_user_notification::notify_affiliated_user($table_element, $id_element, $action, $new_content);
+		digirisk_user_notification::notify_affiliated_user($table_element, $id_element, $action, $old_content, $new_content);
 	}
 
 }

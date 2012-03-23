@@ -19,7 +19,7 @@ class digirisk_options
 	/**
 	*	Declare the different options for the plugin	
 	*/
-	function evarisk_add_options(){
+	function declare_options(){
 		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
 		register_setting('digirisk_options', 'digirisk_tree_options', array('digirisk_options', 'digirisk_tree_options_validator'));
 		register_setting('digirisk_options', 'digirisk_product_options', array('digirisk_options', 'digirisk_product_options_validator'));
@@ -102,8 +102,7 @@ class digirisk_options
 	*
 	*	@return The html code to output for option page
 	*/
-	function optionMainPage()
-	{
+	function optionMainPage(){
 		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel Digirisk', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false);
 ?>
 <div id="digirisk_options_container" >
@@ -142,8 +141,7 @@ endif;
 	</div>
 <?php
 		settings_fields('digirisk_options');
-if(current_user_can('digi_edit_option'))
-{
+if(current_user_can('digi_edit_option')){
 ?>
 	<input class="button-primary alignright" name="Submit" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" />
 <?php
@@ -977,27 +975,22 @@ if(current_user_can('digi_edit_option'))
 
 		/*	Get the db option 	*/
 		$optionValue = get_option('digirisk_db_option');
-		if($optionValue != '')
-		{
-			if(is_array($optionValue))
-			{
+		if($optionValue != ''){
+			if(is_array($optionValue)){
 				$optionSubValue = $optionValue[$subOptionName];
 			}
-			elseif(is_string($optionValue))
-			{
+			elseif(is_string($optionValue)){
 				$optionValue = unserialize($optionValue);
 				$optionSubValue = $optionValue[$subOptionName];
 			}
 		}
+
 		/*	Keep the old method to get plugin version because of update	*/
-		if($optionSubValue == -1)
-		{
-			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		if($optionSubValue == -1){
 			global $wpdb;
 			$subOptionName = eva_tools::IsValid_Variable($subOptionName);
-			if( $wpdb->get_var("show tables like '" . TABLE_VERSION . "'") == TABLE_VERSION)
-			{
-				$query = $wpdb->prepare("SELECT version version
+			if( $wpdb->get_var("show tables like '" . TABLE_VERSION . "'") == TABLE_VERSION){
+				$query = $wpdb->prepare("SELECT version
 					FROM " . TABLE_VERSION . "
 					WHERE nom = %s", $subOptionName);
 				$resultat = $wpdb->get_row($query);
@@ -1005,7 +998,7 @@ if(current_user_can('digi_edit_option'))
 			}
 		}
 
-		return $optionSubValue;
+		return (int)$optionSubValue;
 	}
 	/**
 	*	Update the database option
@@ -1059,7 +1052,7 @@ if(current_user_can('digi_edit_option'))
 			}
 			if(!is_dir($dir_psswd)){
 				mkdir($dir_psswd, 0755, true);
-				exec('chmod -R 755 ' . $dir_psswd);
+				exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
 			}
 
 			

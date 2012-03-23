@@ -4,7 +4,7 @@
  * @author Evarisk
  * @version v5.0
  */
-include_once(EVA_CONFIG);
+
 class eva_Variable {
 	
 	/**
@@ -184,4 +184,17 @@ class eva_Variable {
 		}
 		return $valeurAlternative;
 	}
+
+	function create_basic_variable(){
+		global $evaluation_main_vars, $wpdb;
+
+		foreach($evaluation_main_vars as $var_index => $var_definition){
+			$var_content = array();
+			foreach($var_definition as $field_name => $field_value){
+				$var_content[$field_name] = $field_value;
+			}
+			$wpdb->insert(TABLE_VARIABLE, $var_content);
+		}
+	}
+
 }

@@ -30,6 +30,7 @@ class digirisk_permission
 		$permission['digi_view_danger_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'danger', 'permission_sub_module' => 'menu');
 		$permission['digi_view_evaluation_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'evaluation', 'permission_sub_module' => 'menu');
 		$permission['digi_view_correctiv_action_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'menu');
+		$permission['digi_view_user_profil_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
 		$permission['digi_view_user_groups_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
 		$permission['digi_view_user_import_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
 		$permission['digi_user_right_management_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'user', 'permission_sub_module' => 'menu');
@@ -130,6 +131,8 @@ class digirisk_permission
 
 		$permission['digi_follow_action'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '');
 		$permission['digi_control_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
+
+		$permission['digi_ask_action_front'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => '');
 
 		$permission['digi_add_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
 		$permission['digi_edit_task'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'correctiv_action', 'permission_sub_module' => 'task');
@@ -1590,8 +1593,7 @@ class digirisk_permission
 	function permission_management($elementToManage)
 	{
 		global $digi_wp_role;
-		if(!is_object($digi_wp_role))
-		{
+		if(!is_object($digi_wp_role)){
 			/*	Instanciation de l'objet role de worpdress	*/
 			$digi_wp_role = new WP_Roles();
 		}
@@ -1608,13 +1610,12 @@ class digirisk_permission
 		}
 
 ?>
-<table summary="User rights for digirisk" cellpadding="0" cellspacing="0" class="form-table" >
+<table class="form-table" >
 <?php
-		if(($_REQUEST['user_id'] != '') && ($_REQUEST['user_id'] > 0))
-		{
+		if(($_REQUEST['user_id'] != '') && ($_REQUEST['user_id'] > 0)){
 ?>
 	<tr>
-		<th><?php _e('L&eacute;gende', 'evarisk'); ?></th>
+		<td><?php _e('L&eacute;gende', 'evarisk'); ?></td>
 		<td>
 			<span class="permissionGrantedFromParent" ><input type="checkbox" name="explanationBoxDisabled" id="explanationBoxDisabled" value="" checked="checked" disabled="disabled" />&nbsp;<?php _e('Le droit provient du r&ocirc;le de l\'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface', 'evarisk'); ?></span><br/>
 			<span class="permissionGranted" ><input type="checkbox" name="explanationBoxEnabled" id="explanationBoxEnabled" value="" checked="checked" />&nbsp;<?php _e('Permission ajout&eacute;e en plus de celle du r&ocirc;le de l\'utilisateur', 'evarisk'); ?></span>
@@ -1624,7 +1625,7 @@ class digirisk_permission
 		}
 ?>
 	<tr>
-		<th><?php _e('Raccourci d\'attribution', 'evarisk'); ?></th>
+		<td><?php _e('Raccourci d\'attribution', 'evarisk'); ?></td>
 		<td>
 			<span class="checkall_right" id="add_checkall" ><?php _e('Tous les droits', 'evarisk'); ?></span>&nbsp;/&nbsp;<span class="uncheckall_right" id="remove_uncheckall" ><?php _e('Aucun droit', 'evarisk'); ?></span><br/>
 			<span class="checkall_link" id="add_menu" ><?php _e('Tous les menus', 'evarisk'); ?></span>&nbsp;/&nbsp;<span class="uncheckall_link" id="remove_menu" ><?php _e('Aucun menu', 'evarisk'); ?></span><br/>
@@ -1634,7 +1635,7 @@ class digirisk_permission
 		</td>
 	</tr>
 	<tr>
-		<th>&nbsp;</th>
+		<td colspan="2" >&nbsp;</td>
 	</tr>
 <?php
 		foreach($permissionList as $module => $subModule)

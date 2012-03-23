@@ -21,7 +21,7 @@ $digirisk_db_version = 0;
 /* Structure de la table `wp_eva__accident`	*/
 $t = DIGI_DBT_ACCIDENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
   `accident_hour` time default NULL,
   `accident_title` char(255) collate utf8_unicode_ci NOT NULL,
   `police_report_writer` char(255) collate utf8_unicode_ci NOT NULL,
+	test int(10),
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
   KEY `declaration_state` (`declaration_state`),
@@ -48,7 +49,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__accident_details`	*/
 $t = DIGI_DBT_ACCIDENT_DETAILS;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__accident_location`	*/
 $t = DIGI_DBT_ACCIDENT_LOCATION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -97,7 +98,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__accident_third_party`	*/
 $t = DIGI_DBT_ACCIDENT_THIRD_PARTY;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -118,7 +119,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__accident_victim`	*/
 $t = DIGI_DBT_ACCIDENT_VICTIM;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -135,7 +136,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__actions_correctives_actions`	*/
 $t = TABLE_ACTIVITE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Activity Identifier',
   `id_tache` int(10) NOT NULL COMMENT 'Task which the activity depends on',
   `idCreateur` bigint(20) NOT NULL COMMENT 'The identifier of the user who create the action',
@@ -151,7 +152,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
   `avancement` int(10) default NULL COMMENT 'Activity progression',
   `cout` float default NULL COMMENT 'Activity realisation cost',
   `lieu` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'Activity place',
-  `Status` enum('Valid','Moderated','Deleted','Aborded') collate utf8_unicode_ci NOT NULL default 'Valid' COMMENT 'Activity status',
+  `Status` enum('Valid','Moderated','Deleted','Aborded','Asked') collate utf8_unicode_ci NOT NULL default 'Valid' COMMENT 'Activity status',
   `firstInsert` datetime default NULL COMMENT 'Activity creation date',
   `ProgressionStatus` enum('notStarted','inProgress','Done','DoneByChief') collate utf8_unicode_ci NOT NULL default 'notStarted' COMMENT 'Activity status',
   `dateSolde` datetime NOT NULL,
@@ -164,7 +165,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__actions_correctives_suivi`	*/
 $t = TABLE_ACTIVITE_SUIVI;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `date` datetime NOT NULL,
@@ -181,7 +182,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__actions_correctives_tache`	*/
 $t = TABLE_TACHE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Task Identifier',
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Task name',
   `limiteGauche` int(10) NOT NULL COMMENT 'Left limit to simulate the tree',
@@ -200,7 +201,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
   `idResponsable` bigint(20) NOT NULL COMMENT 'The identifier of the user who is in charge of the task',
   `idSoldeur` int(10) NOT NULL COMMENT 'The identifier of the user who close the task',
   `idSoldeurChef` int(10) NOT NULL COMMENT 'The identifier of the user who close the task by closing parent task',
-  `Status` enum('Valid','Moderated','Deleted','Aborded') collate utf8_unicode_ci NOT NULL default 'Valid' COMMENT 'Task status',
+  `Status` enum('Valid','Moderated','Deleted','Aborded','Asked') collate utf8_unicode_ci NOT NULL default 'Valid' COMMENT 'Task status',
   `firstInsert` datetime default NULL COMMENT 'Task creation date',
   `ProgressionStatus` enum('notStarted','inProgress','Done','DoneByChief') collate utf8_unicode_ci NOT NULL default 'notStarted' COMMENT 'Task status',
   `dateSolde` datetime NOT NULL,
@@ -217,7 +218,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__adresse`	*/
 $t = TABLE_ADRESSE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `ligne1` varchar(32) collate utf8_unicode_ci NOT NULL,
   `ligne2` varchar(32) collate utf8_unicode_ci NOT NULL,
@@ -232,7 +233,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__avoir_operateur`	*/
 $t = TABLE_AVOIR_OPERATEUR;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_methode` int(10) NOT NULL,
   `operateur` varchar(20) collate utf8_unicode_ci NOT NULL,
   `ordre` int(10) NOT NULL,
@@ -246,7 +247,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__avoir_variable`	*/
 $t = TABLE_AVOIR_VARIABLE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_methode` int(10) NOT NULL,
   `id_variable` int(10) NOT NULL,
   `ordre` int(10) NOT NULL,
@@ -260,7 +261,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__categorie_danger`	*/
 $t = TABLE_CATEGORIE_DANGER;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `description` text collate utf8_unicode_ci,
@@ -274,7 +275,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__danger`	*/
 $t = TABLE_DANGER;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `id_categorie` int(10) NOT NULL,
   `code_danger` int(10) default NULL,
@@ -290,7 +291,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__documentation`	*/
 $t = $wpdb->prefix . digirisk_doc::prefix . '__documentation';
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `doc_id` int(11) unsigned NOT NULL auto_increment,
   `doc_page_name` varchar(255) NOT NULL,
   `doc_url` varchar(255) NOT NULL,
@@ -303,7 +304,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__element_modification`	*/
 $t = DIGI_DBT_ELEMENT_MODIFICATION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') NOT NULL default 'valid',
   `creation_date` datetime NOT NULL,
@@ -322,7 +323,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__element_notification`	*/
 $t = DIGI_DBT_ELEMENT_NOTIFICATION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') NOT NULL default 'valid',
   `creation_date` datetime NOT NULL,
@@ -341,7 +342,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__equivalence_etalon`	*/
 $t = TABLE_EQUIVALENCE_ETALON;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_methode` int(10) NOT NULL,
   `id_valeur_etalon` int(10) NOT NULL,
   `date` datetime NOT NULL,
@@ -355,7 +356,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__etalon`	*/
 $t = TABLE_ETALON;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `min` int(10) NOT NULL,
   `max` int(10) NOT NULL,
   `pas` int(10) NOT NULL,
@@ -366,7 +367,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__ged_documents`	*/
 $t = TABLE_GED_DOCUMENTS;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `parDefaut` enum('oui','non') collate utf8_unicode_ci NOT NULL default 'non' COMMENT 'Define if the document is the deault document for the category',
@@ -389,7 +390,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__ged_documents_document_unique`	*/
 $t = TABLE_DUER;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Single document identifier',
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid' COMMENT 'The document status',
   `element` char(255) collate utf8_unicode_ci NOT NULL COMMENT 'The element type the single document will be affected to',
@@ -407,7 +408,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
   `emetteurDUER` varchar(128) collate utf8_unicode_ci default NULL COMMENT 'Transmitter of the single document',
   `destinataireDUER` varchar(128) collate utf8_unicode_ci default NULL COMMENT 'Recipient of the single document',
   `revisionDUER` int(3) default NULL COMMENT 'Single document version',
-  `planDUER` text collate utf8_unicode_ci COMMENT 'The single document scheme',
+  `planDUER` longtext collate utf8_unicode_ci COMMENT 'The single document scheme',
   `groupesUtilisateurs` longtext collate utf8_unicode_ci COMMENT 'A serialise array with the different users group',
   `groupesUtilisateursAffectes` longtext collate utf8_unicode_ci NOT NULL COMMENT 'A serialise array with the different users group affected to the current element',
   `risquesUnitaires` longtext collate utf8_unicode_ci COMMENT 'A serialise array with the different single risqs',
@@ -425,7 +426,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__ged_documents_fiches`	*/
 $t = TABLE_FP;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `creation_date` datetime default NULL,
   `id_model` int(10) unsigned NOT NULL default '1' COMMENT 'The model used to generate the document',
@@ -453,7 +454,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__groupement`	*/
 $t = TABLE_GROUPEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `typeGroupement` enum('none','employer') collate utf8_unicode_ci NOT NULL default 'none',
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -479,7 +480,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_photo_element`	*/
 $t = TABLE_PHOTO_LIAISON;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `isMainPicture` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
@@ -497,7 +498,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_preconisation_element`	*/
 $t = TABLE_LIAISON_PRECONISATION_ELEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `id_preconisation` int(10) NOT NULL,
@@ -515,7 +516,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_produit_element`	*/
 $t = DIGI_DBT_LIAISON_PRODUIT_ELEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `date_affectation` datetime NOT NULL,
@@ -535,7 +536,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_tache_element`	*/
 $t = TABLE_LIAISON_TACHE_ELEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `wasLinked` enum('before','after','demand') collate utf8_unicode_ci NOT NULL default 'before' COMMENT 'Allows to know if the action was link to the element before or after it realisation',
@@ -554,7 +555,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_utilisateur_element`	*/
 $t = TABLE_LIAISON_USER_ELEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `date_affectation` datetime NOT NULL,
@@ -574,7 +575,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_utilisateur_groupe_element`	*/
 $t = DIGI_DBT_LIAISON_USER_GROUP;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `date_affectation` datetime NOT NULL,
@@ -594,7 +595,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__liaison_utilisateur_notification`	*/
 $t = DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `date_affectation` datetime NOT NULL,
@@ -616,7 +617,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__message`	*/
 $t = DIGI_DBT_MESSAGES;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(11) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted','archived') NOT NULL default 'valid',
   `send_status` enum('sent','resent') NOT NULL default 'sent',
@@ -635,7 +636,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__message_histo`	*/
 $t = DIGI_DBT_HISTORIC;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(11) unsigned NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') NOT NULL default 'valid',
   `creation_date` datetime NOT NULL,
@@ -646,7 +647,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__methode`	*/
 $t = TABLE_METHODE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
@@ -657,7 +658,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__operateur`	*/
 $t = TABLE_OPERATEUR;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `symbole` varchar(20) collate utf8_unicode_ci NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
   PRIMARY KEY  (`symbole`)
@@ -666,7 +667,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__permission_role`	*/
 $t = DIGI_DBT_PERMISSION_ROLE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime NOT NULL,
@@ -683,7 +684,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__photo`	*/
 $t = TABLE_PHOTO;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `photo` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -694,7 +695,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__preconisation`	*/
 $t = TABLE_PRECONISATION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `id_categorie_preconisation` int(10) unsigned NOT NULL,
@@ -709,7 +710,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__preconisation_categorie`	*/
 $t = TABLE_CATEGORIE_PRECONISATION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -727,7 +728,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__produit`	*/
 $t = DIGI_DBT_PRODUIT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -747,7 +748,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__produit_document`	*/
 $t = DIGI_DBT_PRODUIT_ATTACHEMENT;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `creation_date` datetime default NULL,
@@ -768,7 +769,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__risque`	*/
 $t = TABLE_RISQUE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `id_danger` int(10) NOT NULL,
   `id_methode` int(10) NOT NULL,
@@ -787,7 +788,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__risque_evaluation`	*/
 $t = TABLE_AVOIR_VALEUR;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `id_evaluation` int(10) NOT NULL,
   `id_risque` int(10) NOT NULL,
@@ -796,7 +797,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
   `idEvaluateur` bigint(20) NOT NULL COMMENT 'Allow to know who is the person who change the risk',
   `date` datetime NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
-  PRIMARY KEY  (`id_risque`,`id_variable`,`date`),
+  PRIMARY KEY (`id_risque`,`id_variable`,`date`),
   KEY `id_risque` (`id_risque`),
   KEY `id_variable` (`id_variable`),
   KEY `idEvaluateur` (`idEvaluateur`),
@@ -807,7 +808,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__unite_travail`	*/
 $t = TABLE_UNITE_TRAVAIL;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `description` text collate utf8_unicode_ci,
@@ -829,7 +830,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__utilisateurs_groupes`	*/
 $t = DIGI_DBT_USER_GROUP;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) unsigned NOT NULL auto_increment,
   `old_id` int(10) unsigned NOT NULL,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
@@ -850,7 +851,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__valeur_alternative`	*/
 $t = TABLE_VALEUR_ALTERNATIVE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_variable` int(10) NOT NULL,
   `valeur` int(10) NOT NULL,
   `valeurAlternative` float NOT NULL,
@@ -863,7 +864,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__valeur_etalon`	*/
 $t = TABLE_VALEUR_ETALON;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `valeur` int(10) NOT NULL,
   `niveauSeuil` int(10) default NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
@@ -874,7 +875,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__variable`	*/
 $t = TABLE_VARIABLE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `min` float unsigned NOT NULL,
@@ -887,7 +888,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_accepte_reponse`	*/
 $t = TABLE_ACCEPTE_REPONSE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_question` int(10) NOT NULL,
   `id_reponse` int(10) NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
@@ -899,7 +900,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_concerne_par_texte_referenciel`	*/
 $t = TABLE_CONCERNE_PAR_TEXTE_REFERENCIEL;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_texte_referenciel` int(10) NOT NULL,
   `id_element` int(10) NOT NULL,
   `nomTableElement` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -912,7 +913,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_correspond_texte_referenciel`	*/
 $t = TABLE_CORRESPOND_TEXTE_REFERENCIEL;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_texte_referenciel` int(10) NOT NULL,
   `id_groupe_question` int(10) NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
@@ -924,7 +925,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_groupe_question`	*/
 $t = TABLE_GROUPE_QUESTION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `code` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -938,7 +939,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_possede_question`	*/
 $t = TABLE_POSSEDE_QUESTION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_groupe_question` int(10) NOT NULL,
   `id_question` int(10) NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
@@ -950,7 +951,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_question`	*/
 $t = TABLE_QUESTION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `code` varchar(255) collate utf8_unicode_ci NOT NULL,
   `enonce` text collate utf8_unicode_ci NOT NULL,
@@ -961,7 +962,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_reponse`	*/
 $t = TABLE_REPONSE;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `min` int(10) default NULL,
@@ -973,7 +974,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_reponse_question`	*/
 $t = TABLE_REPONSE_QUESTION;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id_question` int(10) NOT NULL,
   `id_element` int(10) NOT NULL,
   `nomTableElement` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -992,7 +993,7 @@ CREATE TABLE IF NOT EXISTS {$t} (
 /* Structure de la table `wp_eva__veille_texte_referenciel`	*/
 $t = TABLE_TEXTE_REFERENCIEL;
 $digirisk_db_table[$t] = "
-CREATE TABLE IF NOT EXISTS {$t} (
+CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `rubrique` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'The text name',
   `datePremiereRatification` date NOT NULL,
@@ -1104,6 +1105,8 @@ CREATE TABLE IF NOT EXISTS {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME'][] = array('old_name' => TABLE_AC_TACHE, 'name' => TABLE_TACHE);
 	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME'][] = array('old_name' => TABLE_AC_ACTIVITE, 'name' => TABLE_ACTIVITE);
 
+	// $digirisk_db_table_list[$digirisk_db_version] = array(TABLE_AC_TACHE, TABLE_AC_ACTIVITE);
+
 	/*	Special changes on table structure	*/
 	$i = 0;
 	$i++;
@@ -1119,10 +1122,12 @@ CREATE TABLE IF NOT EXISTS {$t} (
 	$digirisk_db_version = 19;
 	$digirisk_update_way[$digirisk_db_version] = 'update';
 
-	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('idCreateur', 'idResponsable', 'idRealisateur');
-	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('idCreateur', 'idResponsable', 'idRealisateur');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('idCreateur', 'idResponsable', 'idSoldeur');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('idCreateur', 'idResponsable', 'idSoldeur');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_AVOIR_VALEUR] = array('idEvaluateur');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_AVOIR_VALEUR] = array('idEvaluateur');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_TACHE, TABLE_ACTIVITE, TABLE_AVOIR_VALEUR, TABLE_AVOIR_VALEUR_OLD);
 
 	/*	Special changes on table structure	*/
 	$i = 0;
@@ -1136,10 +1141,491 @@ CREATE TABLE IF NOT EXISTS {$t} (
 	$digirisk_update_way[$digirisk_db_version] = 'creation';
 
 	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_LIAISON_TACHE_ELEMENT);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_LIAISON_TACHE_ELEMENT);
 }
 {/*	Version 21	*/
 	$digirisk_db_version = 21;
 	$digirisk_update_way[$digirisk_db_version] = 'multiple';
 
-	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_LIAISON_TACHE_ELEMENT);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_LIAISON_USER_ELEMENT, TABLE_ACTIVITE_SUIVI);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('idSoldeurChef', 'dateSolde', 'ProgressionStatus');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_TACHE] = array('idSoldeurChef');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('idSoldeurChef', 'dateSolde', 'ProgressionStatus');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_ACTIVITE] = array('idSoldeurChef');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_LIAISON_TACHE_ELEMENT] = array('wasLinked');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_LIAISON_TACHE_ELEMENT] = array('wasLinked', 'uniqueKey');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DROP_INDEX'][TABLE_AVOIR_VALEUR] = array('id_risque_2');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_AVOIR_VALEUR] = array('PRIMARY', 'id', 'id_evaluation');
+	/* Unique key could not be an unique index	*/
+	// $digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_AVOIR_VALEUR] = array('unique_key_evaluation', 'id', 'id_evaluation');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_AVOIR_VALEUR] = array('id', 'id_evaluation');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_LIAISON_USER_ELEMENT, TABLE_ACTIVITE_SUIVI, TABLE_TACHE, TABLE_ACTIVITE, TABLE_LIAISON_TACHE_ELEMENT);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_AVOIR_VALEUR][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_AVOIR_VALEUR][$i]['ACTION_CONTENT'] = 'id_risque_2';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_AVOIR_VALEUR][$i]['ACTION'] = 'DROP INDEX';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_AVOIR_VALEUR][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_AVOIR_VALEUR][$i]['ACTION_CONTENT'] = '(id_risque, id_variable, date)';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_AVOIR_VALEUR][$i]['ACTION'] = 'ADD UNIQUE';
+}
+
+{/*	Version 24	*/
+	$digirisk_db_version = 24;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('idPhotoAvant', 'idPhotoApres');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_ACTIVITE] = array('idPhotoAvant', 'idPhotoApres');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE);
+}
+{/*	Version 25	*/
+	$digirisk_db_version = 25;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+{/*	Version 26	*/
+	$digirisk_db_version = 26;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_DUER] = array('id_model');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_DUER] = array('id_model');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_DUER);
+}
+{/*	Version 27	*/
+	$digirisk_db_version = 27;
+	$digirisk_update_way[$digirisk_db_version] = 'creation';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_GED_DOCUMENTS);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_GED_DOCUMENTS);
+}
+
+{/*	Version 29	*/
+	$digirisk_db_version = 29;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_PHOTO_LIAISON);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_DROP'][TABLE_PHOTO] = array('isMainPicture', 'idDestination', 'tableDestination');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_PHOTO_LIAISON);
+}
+
+{/*	Version 30	*/
+	$digirisk_db_version = 30;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+{/*	Version 31	*/
+	$digirisk_db_version = 31;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('hasPriority');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_TACHE] = array('hasPriority');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_TACHE);
+}
+
+{/*	Version 33	*/
+	$digirisk_db_version = 33;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_TACHE] = array(array('field' => 'ProgressionStatus', 'type' => "enum('notStarted','inProgress','Done','DoneByChief')"));
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_ACTIVITE] = array(array('field' => 'ProgressionStatus', 'type' => "enum('notStarted','inProgress','Done','DoneByChief')"));
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_TACHE, TABLE_ACTIVITE);
+}
+{/*	Version 34	*/
+	$digirisk_db_version = 34;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_FP);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
+}
+{/*	Version 35	*/
+	$digirisk_db_version = 35;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+}
+
+{/*	Version 37	*/
+	$digirisk_db_version = 37;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_GED_DOCUMENTS] = array('parDefaut');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_GED_DOCUMENTS] = array('parDefaut');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('id_model');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_FP] = array('id_model');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME'][] = array('old_name' => TABLE_DUER_OLD, 'name' => TABLE_DUER);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_GED_DOCUMENTS, TABLE_FP);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_DUER_OLD][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_DUER_OLD][$i]['ACTION_CONTENT'] = TABLE_DUER;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_DUER_OLD][$i]['ACTION'] = 'TO';
+}
+{/*	Version 38	*/
+	$digirisk_db_version = 38;
+	$digirisk_update_way[$digirisk_db_version] = 'creation';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_DUER] = array(array('field' => 'planDUER', 'type' => "longtext"), array('field' => 'groupesUtilisateurs', 'type' => "longtext"), array('field' => 'groupesUtilisateursAffectes', 'type' => "longtext"), array('field' => 'risquesUnitaires', 'type' => "longtext"), array('field' => 'risquesParUnite', 'type' => "longtext"), array('field' => 'methodologieDUER', 'type' => "longtext"), array('field' => 'sourcesDUER', 'type' => "longtext"), array('field' => 'alerteDUER', 'type' => "longtext"), array('field' => 'conclusionDUER', 'type' => "longtext"));
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_CATEGORIE_PRECONISATION, TABLE_PRECONISATION, TABLE_LIAISON_PRECONISATION_ELEMENT);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_DUER, TABLE_CATEGORIE_PRECONISATION, TABLE_PRECONISATION, TABLE_LIAISON_PRECONISATION_ELEMENT);
+}
+{/*	Version 39	*/
+	$digirisk_db_version = 39;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_CATEGORIE_PRECONISATION] = array('impressionRecommandationCategorie', 'tailleimpressionRecommandationCategorie', 'impressionRecommandation', 'tailleimpressionRecommandation');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_CATEGORIE_PRECONISATION] = array('impressionRecommandationCategorie', 'impressionRecommandation');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_CATEGORIE_PRECONISATION);
+}
+
+{/*	Version 42	*/
+	$digirisk_db_version = 42;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('recommandation');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
+}
+
+{/*	Version 44	*/
+	$digirisk_db_version = 44;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_USER_GROUP, DIGI_DBT_LIAISON_USER_GROUP);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_UTILISE_EPI, 'name' => TRASH_DIGI_DBT_UTILISE_EPI);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EPI, 'name' => TRASH_DIGI_DBT_EPI);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_LIAISON_USER_EVALUATION, 'name' => TRASH_DIGI_DBT_LIAISON_USER_EVALUATION);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EAV_USER_DATETIME, 'name' => TRASH_DIGI_DBT_EAV_USER_DATETIME);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EAV_USER_DECIMAL, 'name' => TRASH_DIGI_DBT_EAV_USER_DECIMAL);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EAV_USER_INT, 'name' => TABLE_TABLE_EAV_USER_INT);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EAV_USER_TEXT, 'name' => TRASH_DIGI_DBT_EAV_USER_TEXT);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EAV_USER_VARCHAR, 'name' => TRASH_DIGI_DBT_EAV_USER_VARCHAR);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EVA_ROLES, 'name' => TRASH_DIGI_DBT_EVA_ROLES);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_EVA_USER_GROUP_ROLES_DETAILS, 'name' => TRASH_DIGI_DBT_EVA_USER_GROUP_ROLES_DETAILS);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ENTITY, 'name' => TRASH_DIGI_DBT_ENTITY);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ENTITY_ATTRIBUTE_LINK, 'name' => TRASH_DIGI_DBT_ENTITY_ATTRIBUTE_LINK);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ATTRIBUTE_SET, 'name' => TRASH_DIGI_DBT_ATTRIBUTE_SET);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ATTRIBUTE, 'name' => TRASH_DIGI_DBT_ATTRIBUTE);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ATTRIBUTE_GROUP, 'name' => TRASH_DIGI_DBT_ATTRIBUTE_GROUP);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ATTRIBUTE_OPTION, 'name' => TRASH_DIGI_DBT_ATTRIBUTE_OPTION);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_ATTRIBUTE_OPTION_VALUE, 'name' => TRASH_DIGI_DBT_ATTRIBUTE_OPTION_VALUE);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_PERSONNE, 'name' => TRASH_DIGI_DBT_PERSONNE);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_VERSION, 'name' => TRASH_DIGI_DBT_VERSION);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => TABLE_OPTION, 'name' => TRASH_DIGI_DBT_OPTION);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_USER_GROUP, DIGI_DBT_LIAISON_USER_GROUP);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EPI][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EPI][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EPI;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EPI][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_UTILISE_EPI][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_UTILISE_EPI][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_UTILISE_EPI;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_UTILISE_EPI][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_LIAISON_USER_EVALUATION][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_LIAISON_USER_EVALUATION][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_LIAISON_USER_EVALUATION;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_LIAISON_USER_EVALUATION][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_DATETIME][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_DATETIME][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EAV_USER_DATETIME;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_DATETIME][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_DECIMAL][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_DECIMAL][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EAV_USER_DECIMAL;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_DECIMAL][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_INT][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_INT][$i]['ACTION_CONTENT'] = TABLE_TABLE_EAV_USER_INT;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_INT][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_TEXT][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_TEXT][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EAV_USER_TEXT;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_TEXT][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_VARCHAR][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_VARCHAR][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EAV_USER_VARCHAR;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EAV_USER_VARCHAR][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EVA_ROLES][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EVA_ROLES][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EVA_ROLES;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EVA_ROLES][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EVA_USER_GROUP_ROLES_DETAILS][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EVA_USER_GROUP_ROLES_DETAILS][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_EVA_USER_GROUP_ROLES_DETAILS;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_EVA_USER_GROUP_ROLES_DETAILS][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ENTITY][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ENTITY][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ENTITY;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ENTITY][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ENTITY_ATTRIBUTE_LINK][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ENTITY_ATTRIBUTE_LINK][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ENTITY_ATTRIBUTE_LINK;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ENTITY_ATTRIBUTE_LINK][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_SET][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_SET][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ATTRIBUTE_SET;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_SET][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ATTRIBUTE;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_GROUP][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_GROUP][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ATTRIBUTE_GROUP;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_GROUP][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_OPTION][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_OPTION][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ATTRIBUTE_OPTION;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_OPTION][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_OPTION_VALUE][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_OPTION_VALUE][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_ATTRIBUTE_OPTION_VALUE;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_ATTRIBUTE_OPTION_VALUE][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_PERSONNE][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_PERSONNE][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_PERSONNE;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_PERSONNE][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_VERSION][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_VERSION][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_VERSION;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_VERSION][$i]['ACTION'] = 'TO';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_OPTION][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_OPTION][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_OPTION;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_OPTION][$i]['ACTION'] = 'TO';
+}
+{/*	Version 45	*/
+	$digirisk_db_version = 45;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_PRODUIT, DIGI_DBT_LIAISON_PRODUIT_ELEMENT);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_DUER] = array('plan_d_action');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DROP_INDEX'][TABLE_LIAISON_USER_ELEMENT] = array('uniqueKey');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_PRODUIT, DIGI_DBT_LIAISON_PRODUIT_ELEMENT, TABLE_DUER);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_LIAISON_USER_ELEMENT][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_LIAISON_USER_ELEMENT][$i]['ACTION_CONTENT'] = 'uniqueKey';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_LIAISON_USER_ELEMENT][$i]['ACTION'] = 'DROP INDEX';
+}
+
+{/*	Version 47	*/
+	$digirisk_db_version = 47;
+	$digirisk_update_way[$digirisk_db_version] = 'creation';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_PERMISSION_ROLE);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_PERMISSION_ROLE);
+}
+{/*	Version 48	*/
+	$digirisk_db_version = 48;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+{/*	Version 49	*/
+	$digirisk_db_version = 49;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+
+{/*	Version 50	*/
+	$digirisk_db_version = 50;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DROP_INDEX'][TABLE_GROUPEMENT] = array('nom');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DROP_INDEX'][TABLE_UNITE_TRAVAIL] = array('nom');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_GROUPEMENT] = array('creation_date', 'lastupdate_date');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_UNITE_TRAVAIL] = array('creation_date', 'lastupdate_date');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_GROUPEMENT, TABLE_UNITE_TRAVAIL);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_GROUPEMENT][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_GROUPEMENT][$i]['ACTION_CONTENT'] = 'nom';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_GROUPEMENT][$i]['ACTION'] = 'DROP INDEX';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_UNITE_TRAVAIL][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_UNITE_TRAVAIL][$i]['ACTION_CONTENT'] = 'nom';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_UNITE_TRAVAIL][$i]['ACTION'] = 'DROP INDEX';
+}
+{/*	Version 51	*/
+	$digirisk_db_version = 51;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME'][] = array('old_name' => TABLE_FP_OLD, 'name' => TABLE_FP);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION_CONTENT'] = TABLE_FP_OLD;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION'] = 'TO';
+}
+{/*	Version 52	*/
+	$digirisk_db_version = 52;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+{/*	Version 53	*/
+	$digirisk_db_version = 53;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('description', 'adresse', 'telephone');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
+}
+
+{/*	Version 55	*/
+	$digirisk_db_version = 55;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+{/*	Version 56	*/
+	$digirisk_db_version = 56;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_DUER] = array(array('field' => 'telephoneFixe', 'type' => "char(30)"), array('field' => 'telephonePortable', 'type' => "char(30)"), array('field' => 'telephoneFax', 'type' => "char(30)"));
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_DUER);
+}
+{/*	Version 57	*/
+	$digirisk_db_version = 57;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][DIGI_DBT_PRODUIT] = array('product_description', 'product_metadata');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_PRODUIT_ATTACHEMENT);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_PRODUIT, DIGI_DBT_PRODUIT_ATTACHEMENT);
+}
+{/*	Version 58	*/
+	$digirisk_db_version = 58;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_ACCIDENT, DIGI_DBT_ACCIDENT_VICTIM, DIGI_DBT_ACCIDENT_DETAILS, DIGI_DBT_ACCIDENT_THIRD_PARTY, DIGI_DBT_ACCIDENT_LOCATION);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_GROUPEMENT] = array('typeGroupement', 'siren', 'siret', 'social_activity_number');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_ACCIDENT, DIGI_DBT_ACCIDENT_VICTIM, DIGI_DBT_ACCIDENT_DETAILS, DIGI_DBT_ACCIDENT_THIRD_PARTY, DIGI_DBT_ACCIDENT_LOCATION, TABLE_GROUPEMENT);
+}
+{/*	Version 59	*/
+	$digirisk_db_version = 59;
+	$digirisk_update_way[$digirisk_db_version] = 'creation';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array($wpdb->prefix.digirisk_doc::prefix . '__documentation');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array($wpdb->prefix.digirisk_doc::prefix . '__documentation');
+}
+{/*	Version 60	*/
+	$digirisk_db_version = 60;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME_FOR_DELETION'][] = array('old_name' => DIGI_DBT_PERMISSION, 'name' => TRASH_DIGI_DBT_PERMISSION);
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][DIGI_DBT_PERMISSION][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][DIGI_DBT_PERMISSION][$i]['ACTION_CONTENT'] = TRASH_DIGI_DBT_PERMISSION;
+	$digirisk_table_structure_change[$digirisk_db_version][DIGI_DBT_PERMISSION][$i]['ACTION'] = 'TO';
+}
+{/*	Version 61	*/
+	$digirisk_db_version = 61;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_LIAISON_TACHE_ELEMENT] = array(array('field' => 'wasLinked', 'type' => "enum('before','after','demand')"));
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_LIAISON_TACHE_ELEMENT);
+}
+{/*	Version 62	*/
+	$digirisk_db_version = 62;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('efficacite');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_TACHE] = array('efficacite');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_TACHE);
+}
+{/*	Version 63	*/
+	$digirisk_db_version = 63;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('idPhotoAvant', 'idPhotoApres');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_TACHE] = array('idPhotoAvant', 'idPhotoApres');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_TACHE);
+}
+{/*	Version 64	*/
+	$digirisk_db_version = 64;
+	$digirisk_update_way[$digirisk_db_version] = 'creation';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_ELEMENT_NOTIFICATION, DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, DIGI_DBT_MESSAGES, DIGI_DBT_HISTORIC);
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_ELEMENT_NOTIFICATION, DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, DIGI_DBT_MESSAGES, DIGI_DBT_HISTORIC);
+}
+{/*	Version 65	*/
+	$digirisk_db_version = 65;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DROP_INDEX'][TABLE_TACHE] = array('idPhotoAvant_2', 'idPhotoApres_2');
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_TACHE][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_TACHE][$i]['ACTION_CONTENT'] = 'idPhotoAvant_2';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_TACHE][$i]['ACTION'] = 'DROP INDEX';
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_TACHE][$i]['MAIN_ACTION'] = 'ALTER';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_TACHE][$i]['ACTION_CONTENT'] = 'idPhotoApres_2';
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_TACHE][$i]['ACTION'] = 'DROP INDEX';
+}
+{/*	Version 66	*/
+	$digirisk_db_version = 66;
+	$digirisk_update_way[$digirisk_db_version] = 'mutlpile';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(DIGI_DBT_ELEMENT_MODIFICATION);
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_RISQUE] = array('last_moved_date');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_ELEMENT_MODIFICATION, TABLE_RISQUE);
+}
+{/*	Version 67	*/
+	$digirisk_db_version = 67;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][DIGI_DBT_ELEMENT_NOTIFICATION] = array('action_title');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_ELEMENT_MODIFICATION);
+}
+{/*	Version 68	*/
+	$digirisk_db_version = 68;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_TACHE] = array(array('field' => 'Status', 'type' => "enum('Valid','Moderated','Deleted','Aborded','Asked')"));
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_ACTIVITE] = array(array('field' => 'Status', 'type' => "enum('Valid','Moderated','Deleted','Aborded','Asked')"));
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_TACHE, TABLE_ACTIVITE);
+}
+{/*	Version 69	*/
+	$digirisk_db_version = 69;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_DUER] = array(array('field' => 'planDUER', 'type' => "longtext"));
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_DUER);
 }

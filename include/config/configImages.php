@@ -80,6 +80,7 @@
 	*/
 	DEFINE('PICTO_LTL_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/actionsCorrectives.png');
 	DEFINE('PICTO_LTL_ADD_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/ac.png');
+	DEFINE('PICTO_TACHE', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/tache.png');
 	DEFINE('PICTO_LTL_ASK_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/demande_ac.png');
 	DEFINE('PICTO_LTL_SUIVI_ACTION', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/suiv_ac.png');
 	DEFINE('PICTO_LTL_ADD_TACHE', EVA_IMG_PICTOS_PLUGIN_URL . 'actionsCorrectives/addTache_s.png');

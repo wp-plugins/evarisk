@@ -95,6 +95,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 }
 
 {/*	Tables users	*/
+	DEFINE('DIGI_DBT_USER', $wpdb->users);
 	DEFINE('DIGI_DBT_USER_GROUP', PREFIXE_EVARISK . "utilisateurs_groupes");
 	DEFINE('DIGI_DBT_LIAISON_USER_GROUP', PREFIXE_EVARISK . "liaison_utilisateur_groupe_element");
 

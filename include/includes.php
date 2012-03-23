@@ -7,11 +7,17 @@
 * @version 5.1.2.9
 * @package Digirisk
 */
+require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'outils/tools.class.php' );
 
+require_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_operateur.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php' );
+
 require_once(EVA_LIB_PLUGIN_DIR . 'options.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'install.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence/arborescence_special.class.php' );
@@ -23,8 +29,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'doc.class.php' );
 
-require_once(EVA_LIB_PLUGIN_DIR . 'db/db_data.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'db/db_structure.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'database.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'form.class.php');
 
@@ -55,3 +60,26 @@ require_once(EVA_LIB_PLUGIN_DIR . 'produits/categories.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'accident/accident.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'permission.class.php' );
+
+require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswerToQuestion.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTaskTable.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/suivi_activite.class.php');
+
+require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
+
+require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDeGroupement.class.php');
+
+require_once(EVA_LIB_PLUGIN_DIR . 'db/db_data.php');
+require_once(EVA_LIB_PLUGIN_DIR . 'db/db_structure.php');

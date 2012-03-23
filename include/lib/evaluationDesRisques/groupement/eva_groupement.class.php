@@ -167,7 +167,7 @@ class EvaGroupement {
 		{
 			$tabId[] = $sousEntiteGroupement->id;
 		}
-		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id_Groupement in (" . implode(', ', $tabId) . ") AND " . $where . " ORDER BY ". $order);
+		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id_Groupement in (" . implode(', ', $tabId) . ") AND " . $where . " " . $sub_status . " ORDER BY ". $order);
 		return $resultat;
 	}
 	

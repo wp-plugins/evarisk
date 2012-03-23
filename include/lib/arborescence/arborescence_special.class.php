@@ -194,7 +194,7 @@ WHERE R.id = %d", $id_element);
 					case TABLE_UNITE_TRAVAIL:{
 						$query = $wpdb->prepare("SELECT nom, id_groupement FROM " . $risk_element->nomTableElement . " WHERE id = %d", $risk_element->id_element);
 						$direct_parent_element = $wpdb->get_row($query);
-						$direct_parent = '<div class="clear" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . $risk_element->nomTableElement . '-_-' . $work_unit_direct_parent->id . '" class="hierarchy_element_selector" id="' . $risk_element->nomTableElement . '-_-' . $work_unit_direct_parent->id . '" /></span>&nbsp;&nbsp;&nbsp;<label for="' . $risk_element->nomTableElement . '-_-' . $work_unit_direct_parent->id . '" ><img style="height:15px;" alt="' . TABLE_UNITE_TRAVAIL . '_' . ELEMENT_IDENTIFIER_UT . $direct_parent_element->id . '" src="' . ULTRASMALL_WORKING_UNIT_PICTO . '" />' . ELEMENT_IDENTIFIER_UT . $risk_element->id_element . '&nbsp-&nbsp;' . $direct_parent_element->nom . '</label></div>';
+						$direct_parent = '<div class="clear" ><span class="hierarchy_element_selector_container" ><input name="selectAffectation[]" type="radio" value="' . $risk_element->nomTableElement . '-_-' . $risk_element->id_element . '" class="hierarchy_element_selector" id="' . $risk_element->nomTableElement . '-_-' . $risk_element->id_element . '" /></span>&nbsp;&nbsp;&nbsp;<label for="' . $risk_element->nomTableElement . '-_-' . $risk_element->id_element . '" ><img style="height:15px;" alt="' . TABLE_UNITE_TRAVAIL . '_' . ELEMENT_IDENTIFIER_UT . $risk_element->id_element . '" src="' . ULTRASMALL_WORKING_UNIT_PICTO . '" />' . ELEMENT_IDENTIFIER_UT . $risk_element->id_element . '&nbsp-&nbsp;' . $direct_parent_element->nom . '</label></div>';
 						$space_number++;
 						/*	Get information about work unit direct parent	*/
 						$query = $wpdb->prepare("SELECT id, nom FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $direct_parent_element->id_groupement);
@@ -400,6 +400,93 @@ WHERE R.id = %d", $id_element);
 		$idElement, $tableElement);
 
 		return $wpdb->get_results($query);
+	}
+
+	function search_form($currentTaskAffectedTable = '', $currentTaskAffectedTableId = 0, $current_content = '', $tableElement = '', $idElement = '', $idBouttonEnregistrer = ''){
+		return '
+	<div title="' . __('Arborescence compl&egrave;te', 'evarisk') . '" id="complete_tree_popup_container" >&nbsp;</div>
+	<div class="clear" ><span class="hierarchy_element_selector_container" ><input class="hierarchy_element_selector" type="radio" id="r0" name="selectAffectation[]" value="0" /></span><label id="l0" for="r0" >' . __('Pas d\'affectation', 'evarisk') . '</label></div>
+	<div class="auto-search-hierarchic-box clear" >
+		<input type="hidden" name="current_element" id="current_element" value="' . $currentTaskAffectedTable . '-_-' . $currentTaskAffectedTableId . '" />
+		<input type="hidden" name="receiver_element" id="receiver_element" value="0" />
+		<div class="clear auto-search-container" >
+			<span class="hierarchy_element_selector_container ui-icon" >&nbsp;</span>
+			<span class="auto-search-ui-icon ui-icon" >&nbsp;</span>
+			<input class="auto-search-input" type="text" id="search_element" value="' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '" />
+			<img id="complete_tree_popup" title="' . __('Voir l\'arborescence compl&egrave;te', 'evarisk') . '" alt="' . __('Voir l\'arborescence compl&egrave;te', 'evarisk') . '" src="' . DIGI_OPEN_POPUP . '">
+		</div>
+	</div>
+	<div class="clear" id="current_hierarchy_display" >' . $current_content . '</div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery(".hierarchy_element_selector").live("click", function(){
+			jQuery("#receiver_element").val(jQuery(this).val());
+			if("' . $idBouttonEnregistrer . '" != ""){
+				check_if_value_changed("' . $idBouttonEnregistrer . '");
+			}
+		});
+
+		/*	Tree-element Search autocompletion	*/
+		jQuery("#search_element").live("click", function(){
+			jQuery(this).val("");
+		});
+		jQuery("#search_element").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGp_UT.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&element_type=' . TABLE_UNITE_TRAVAIL . '-t-' . TABLE_GROUPEMENT . '-t-' . TABLE_RISQUE . '");
+		jQuery("#search_element").result(function(event, data, formatted){
+			jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '"));
+			jQuery("#receiver_element").val(data[1]);
+			if("' . $idBouttonEnregistrer . '" != ""){
+				check_if_value_changed("' . $idBouttonEnregistrer . '");
+			}
+			jQuery("#current_hierarchy_display").html(jQuery("#loading_round_pic").html());
+			jQuery("#current_hierarchy_display").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post": "true",
+				"nom": "hierarchy",
+				"action": "load_partial",
+				"selected_element": data[1]
+			});
+		});
+		jQuery("#complete_tree_popup_container").dialog({
+			autoOpen: false,
+			height: 600,
+			width: 800,
+			modal: true,
+			buttons:{
+				"' . __('Choisir', 'evarisk') . '": function(){
+					jQuery("#complete_hierarchy_table input:radio").each(function(){
+						if(jQuery(this).is(":checked")){
+							jQuery("#receiver_element").val(jQuery(this).val());
+							jQuery("#current_hierarchy_display").html(jQuery("#loading_round_pic").html());
+							jQuery("#current_hierarchy_display").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+								"post": "true",
+								"nom": "hierarchy",
+								"action": "load_partial",
+								"selected_element": jQuery(this).val()
+							});
+							check_if_value_changed("' . $idBouttonEnregistrer . '");
+						}
+					});
+					jQuery(this).dialog("close");
+				},
+				"' . __('Annuler', 'evarisk') . '": function(){
+					jQuery(this).dialog("close");
+				}
+			}
+		});
+		jQuery("#complete_tree_popup").click(function(){
+			var current_selected_element = jQuery("#receiver_element").val();
+			if(current_selected_element == ""){
+				current_selected_element = jQuery("#current_element").val();
+			}
+			jQuery("#complete_tree_popup_container").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post": "true",
+				"nom": "hierarchy",
+				"action": "load_complete",
+				"selected": current_selected_element
+			});
+			jQuery("#complete_tree_popup_container").dialog("open");
+		});
+	});
+</script>';
 	}
 
 }

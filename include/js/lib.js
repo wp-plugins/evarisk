@@ -67,6 +67,7 @@ function convertAccentToJS(text)
 	text = text.replace(/&yuml;/g, "\377");
 	text = text.replace(/&oelig;/g, "\523");
 	text = text.replace(/&OElig;/g, "\522");
+	text = text.replace(/&nbsp;/g, "\240");
 	return text;
 }
 
@@ -566,3 +567,15 @@ function main_page_shape_selector(){
 		}
 	});
 }
+
+function check_if_value_changed(button){
+	if(jQuery("#receiver_element").val() != jQuery("#current_element").val()){
+		jQuery("#" + button).removeClass("button-secondary");
+		jQuery("#" + button).addClass("button-primary");
+	}
+	else{
+		jQuery("#" + button).addClass("button-secondary");
+		jQuery("#" + button).removeClass("button-primary");
+	}
+}
+

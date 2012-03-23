@@ -1,10 +1,11 @@
-img{ cursor:pointer; }
 a{ cursor:pointer; }
 .required{ color:#FF0000;	}
 .digi_textcenter{ text-align:center;	}
 
 .digi_normal_pointer{	cursor:default !important;	}
 .element_identifier_recap{	margin:8px 0px;	}
+
+.main_loading_pic_container{	margin:0px auto; width:90%; text-align:center;	}
 
 /************************/
 /*	Autocomplete style	*/
@@ -37,14 +38,18 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
 
+.edit-leaf img, .risk-leaf img, .delete-leaf img{	cursor:pointer;	}
+.edit-node img, .risk-node img, .delete-node img, .addMain img, .addSecondary img{	cursor:pointer;	}
 
 .actionForExistingElement{	margin:3px 0px;	}
 .existingElementMainExplanation{	font-size:10px; margin:0px 0px 15px;	}
 
-
 #saveNewPosition{	margin:12px 0px; float:right;	}
 
-
+/*	Plugin installation		*/
+.digirisk_install_button_container{	margin:12px 36px; float:right;	}
+#digi_install_form fieldset{	margin:24px 0px; border-top:1px solid #000000; padding:9px 12px;	}
+.inrs_picto_container_install{	width:10%; text-align:center; height:110px;	}
 
 /* -- START WORK ACCIDENT -- */
 .digi_work_accident_part_separator{	margin:9px 0px 0px; padding:9px 0px 0px; border-top:1px solid grey !important;	}
@@ -344,8 +349,9 @@ div.inside{overflow: hidden; padding: 5px;}
 
 
 /* -- Galery photo -- */
-ul.thumbs li	{		display: inline;	}
-ul.thumbs img	{		max-width: 15%;	}
+ul.thumbs li	{		display: inline-block; width:20%;	}
+ul.thumbs a.thumb	{		color:#000000; text-decoration:none;	}
+ul.thumbs img	{		max-width: 80%;	}
 div.galeryPhoto	{		width: 100%;	}
 div.slideshow a	{		text-decoration: none;	}
 div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
@@ -495,7 +501,6 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .ui-tabs{	padding:0px !important; }
 .ui-tabs .ui-tabs-nav{	padding:0px !important;	}
 #evaDashboard_vracStats .inside{		padding:0px !important;	}
-.ui-tabs .ui-tabs-nav li a{		padding:0.1em 1em !important;	}
 /* -- END Tabs -- */
 
 
@@ -592,6 +597,22 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 /* -- START USER PROFIL -- */
 .user_combo{	width:27em;	}
+#digi_user_list{ width:80% !important; }
+
+.user_affected_element{	background-color:#C0C0C0; padding:3px 6px; cursor:pointer;	}
+.user_affected_element a{	 text-decoration:none;	}
+.affected_element_to_user_final_container{	margin:0px 0px 32px 0px;	}
+.affected_element_line{	margin:4px 0px 10px;	}
+.element_identifier{	 }
+.user_selector{	width:80%; margin:24px auto 71px auto; }
+.user_affecation_picto{	width:30px;	}
+.user_affecation_element_container{	margin:0px 0px 0px 35px;	}
+.user_element_view_container{	float:left; margin:0px 0px 0px 15px;	}
+.user_element_view{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -32px -80px !important; width:16px; height:16px;	}
+.user_element_detail_opener{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: 0px -208px !important; width:16px; height:16px;	}
+.user_element_detail_closer{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -16px -208px !important; width:16px; height:16px;	}
+.line_title{	cursor:pointer;	}
+.detail_line{	margin:0px 0px 0px 16px;	}
 /* -- END USER PROFIL -- */
 
 /* -- START USER IMPORT -- */

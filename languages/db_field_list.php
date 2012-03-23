@@ -54,6 +54,7 @@ __('permission_user_menu', 'evarisk');
 __('permission_user_role', 'evarisk');
 __('permission_user_right', 'evarisk');
 __('permission_user_import', 'evarisk');
+__('digi_view_user_profil_menu', 'evarisk');
 
 __('permission_option', 'evarisk');
 __('permission_option_menu', 'evarisk');
@@ -205,6 +206,8 @@ __('digi_edit_action', 'evarisk');
 __('digi_view_detail_action', 'evarisk');
 __('digi_delete_action', 'evarisk');
 __('digi_move_action', 'evarisk');
+
+__('digi_ask_action_front', 'evarisk');
 
 /*	Documentation capabilities	*/
 __('permission_documentation_menu', 'evarisk');

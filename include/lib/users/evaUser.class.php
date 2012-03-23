@@ -408,8 +408,7 @@ $user_additionnal_field .= '
 
 		$classes = array('addUserButtonDTable','userIdentifierColumn','','','','valid_accident_col');
 		switch($tableElement){
-			case DIGI_DBT_ACCIDENT . 'witness':
-			{
+			case DIGI_DBT_ACCIDENT . 'witness':{
 				$user_infos_container = 'accident_witness_" + currentId + "';
 				$user_infos_act = 'loadWitnessInfo';
 				$user_act_add_container = 'jQuery("#search_accident_witness_details").append("<div id=\'accident_witness_" + currentId  + "\' ></div>");';
@@ -421,8 +420,7 @@ $user_additionnal_field .= '
 				});';
 			}
 			break;
-			case DIGI_DBT_ACCIDENT . 'third_party':
-			{
+			case DIGI_DBT_ACCIDENT . 'third_party':{
 				$user_infos_container = 'accident_third_party_" + currentId + "';
 				$user_infos_act = 'loadThirdPartyInfo';
 				$user_act_add_container = 'jQuery("#search_accident_third_party_details").append("<div id=\'accident_third_party_" + currentId  + "\' ></div>");';
@@ -434,8 +432,7 @@ $user_additionnal_field .= '
 				});';
 			}
 			break;
-			case DIGI_DBT_ACCIDENT:
-			{
+			case DIGI_DBT_ACCIDENT:{
 				$user_infos_container = 'work_accident_user_details';
 				$user_act_add_container = 'jQuery("#' . $user_infos_container . '").html(jQuery("#loadingImg").html());';
 				$user_infos_act = 'loadUserInfo';
@@ -449,8 +446,7 @@ $user_additionnal_field .= '
 				jQuery("#victim_changer").show();';
 			}
 			break;
-			case TABLE_TACHE . 'responsible':
-			{
+			case TABLE_TACHE . 'responsible':{
 				$user_infos_container = '';
 				$user_act_add_container = '';
 				$user_infos_act = '';
@@ -468,8 +464,7 @@ $user_additionnal_field .= '
 			case TABLE_UNITE_TRAVAIL . 'responsible':
 			case TABLE_GROUPEMENT . 'responsible':
 			case TABLE_RISQUE . 'responsible':
-			case TABLE_ACTIVITE . 'responsible':
-			{
+			case TABLE_ACTIVITE . 'responsible':{
 				$user_infos_container = '';
 				$user_act_add_container = '';
 				$user_infos_act = '';
@@ -484,8 +479,19 @@ $user_additionnal_field .= '
 				jQuery("#delete_responsible_' . $tableElement . '").show();';
 			}
 			break;
-			default:
-			{
+			case DIGI_DBT_USER:{
+				$user_infos_container = '';
+				$user_act_add_container = 'jQuery("#user_profil_edition_tabs").html(jQuery("#loadingImg").html());
+			jQuery("#complete_user_list").hide();';
+				$user_infos_act = '';
+				$user_more_action = '
+			window.top.location.href = "' . admin_url('users.php?page=digirisk_users_profil&user_to_edit=') . '" + currentId;
+			var lastname = evarisk(this).children("td:nth-child(3)").html();
+			var firstname = evarisk(this).children("td:nth-child(4)").html();
+			jQuery("#digi_user_list").val(convertAccentToJS("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname));';
+			}
+			break;
+			default:{
 				$user_infos_container = '';
 				$user_act_add_container = '';
 				$user_infos_act = '';
@@ -1021,12 +1027,393 @@ $user_additionnal_field .= '
 <?php
 	}
 
+	/**
+	*
+	*/
+	function digi_user_profil(){
+		global $current_user, $wpdb;
 
+		$user_profil_content = '';
 
+		$user_to_edit = (isset($_REQUEST['user_to_edit']) && ((int)$_REQUEST['user_to_edit'] > 0)) ? eva_tools::IsValid_Variable($_REQUEST['user_to_edit']) : $current_user->ID;
+		$_REQUEST['user_id'] = $user_to_edit;
 
+		$user = new WP_User($user_to_edit);
+		$user_infos = self::getUserInformation($user_to_edit);
+		$user_infos = $user_infos[$user_to_edit];
 
+		{/*	Get user right	*/
+			$user_roles = '  ';
+			foreach($user->roles as $role){
+				$user_roles .= translate_user_role($role) . ', ';
+			}
+			$user_roles = trim(substr($user_roles, 0, -2));
+			if($user_roles != ''){
+				$digiPermissionForm .= sprintf(__('R&ocirc;le de l\'utilisateur %s', 'evarisk'), $user_roles);
+			}
+			ob_start();
+			digirisk_permission::permission_management($user);
+			$digiPermissionForm .= ob_get_contents();
+			ob_end_clean();
+		}
 
+		{/*	Get element associated 	*/
+			$user_tree_affecation = $user_tree_eval_affecation = $user_ac_affecation = '';
+			$gpt_list = $ut_list = $gpt_eval_list = $ut_eval_list = $t_list = $st_list = array();
+			$user_affectation = evaUserLinkElement::get_user_affected_element($user_to_edit);			
+			foreach($user_affectation as $affectation_information){
+				unset($sub_content);$sub_content = '';
 
+				/*	Get information about current element	*/
+				$query = $wpdb->prepare("SELECT * FROM " . $affectation_information->table_element . " WHERE status = 'Valid' AND id = %d", $affectation_information->id_element);
+				$element = $wpdb->get_row($query);
+
+				if($element->Status == 'Valid'){
+					switch($affectation_information->table_element){
+						case TABLE_GROUPEMENT:{
+							/*	Read element ancestor	*/
+							$ancetres = Arborescence::getAncetre($affectation_information->table_element, $element, "limiteGauche ASC", '1', "");
+							$miniFilAriane = '         ';
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Groupement Racine"){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $ancetre->id . '</span>&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+								}
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence parente de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							/*	Read element children	*/
+							$miniFilAriane = '         ';
+							$descendants = Arborescence::getDescendants($affectation_information->table_element, $element, '1', 'id ASC', "");
+							if(count($descendants) > 0){
+								foreach($descendants as $descendant){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $descendant->id . '</span>&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+								}
+							}
+							$descendants = EvaGroupement::getUnitesDescendantesDuGroupement($element->id, '1', 'nom ASC', "");
+							if(count($descendants) > 0){
+								foreach($descendants as $descendant){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_UT . $descendant->id . '</span>&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+								}
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence descendante de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$gpt_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_GP . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-node' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$gpt_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['detail'] = $sub_content;
+						}break;
+						case TABLE_UNITE_TRAVAIL:{
+							$directParent = EvaGroupement::getGroupement($element->id_groupement);
+							$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent, "limiteGauche ASC", '1', "");
+							$miniFilAriane = '         ';
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Groupement Racine"){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $ancetre->id . '</span>&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+								}
+							}
+							if($directParent->nom != "Groupement Racine"){
+								$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $directParent->id . '</span>&nbsp;-&nbsp;' . $directParent->nom . ' &raquo; ';
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence parente de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$ut_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_UT . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-leaf' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$ut_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['detail'] = $sub_content;
+						}break;
+
+						case TABLE_GROUPEMENT . '_evaluation':{
+							$affectation_information->table_element = str_replace('_evaluation', '', $affectation_information->table_element);
+							/*	Get information about current element	*/
+							$query = $wpdb->prepare("SELECT * FROM " . $affectation_information->table_element . " WHERE status = 'Valid' AND id = %d", $affectation_information->id_element);
+							$element = $wpdb->get_row($query);
+							/*	Read element ancestor	*/
+							$ancetres = Arborescence::getAncetre($affectation_information->table_element, $element, "limiteGauche ASC", '1', "");
+							$miniFilAriane = '         ';
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Groupement Racine"){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $ancetre->id . '</span>&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+								}
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence parente de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							/*	Read element children	*/
+							$miniFilAriane = '         ';
+							$descendants = Arborescence::getDescendants($affectation_information->table_element, $element, '1', 'id ASC', "");
+							if(count($descendants) > 0){
+								foreach($descendants as $descendant){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $descendant->id . '</span>&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+								}
+							}
+							$descendants = EvaGroupement::getUnitesDescendantesDuGroupement($element->id, '1', 'nom ASC', "");
+							if(count($descendants) > 0){
+								foreach($descendants as $descendant){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_UT . $descendant->id . '</span>&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+								}
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence descendante de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$gpt_eval_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_GP . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-node' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$gpt_eval_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['detail'] = $sub_content;
+						}break;
+						case TABLE_UNITE_TRAVAIL . '_evaluation':{
+							/*	Read element ancestor	*/
+							$affectation_information->table_element = str_replace('_evaluation', '', $affectation_information->table_element);
+							/*	Get information about current element	*/
+							$query = $wpdb->prepare("SELECT * FROM " . $affectation_information->table_element . " WHERE status = 'Valid' AND id = %d", $affectation_information->id_element);
+							$element = $wpdb->get_row($query);
+							$directParent = EvaGroupement::getGroupement($element->id_groupement);
+							$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent, "limiteGauche ASC", '1', "");
+							$miniFilAriane = '         ';
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Groupement Racine"){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $ancetre->id . '</span>&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+								}
+							}
+							if($directParent->nom != "Groupement Racine"){
+								$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_GP . $directParent->id . '</span>&nbsp;-&nbsp;' . $directParent->nom . ' &raquo; ';
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence parente de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$ut_eval_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_UT . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-leaf' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$ut_eval_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['detail'] = $sub_content;
+						}break;
+
+						case TABLE_TACHE:{
+							$ancetres = Arborescence::getAncetre(TABLE_TACHE, $element);
+							$miniFilAriane = '         ';
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Tache Racine"){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_T . $ancetre->id . '</span>&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+								}
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence parente de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$miniFilAriane = '         ';
+							$descendants = Arborescence::getDescendants($affectation_information->table_element, $element);
+							foreach($descendants as $descendant){
+								$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_T . $descendant->id . '</span>&nbsp;-&nbsp;' . $descendant->nom . '    /    ';
+							}
+							if(count($descendants) <= 0){
+								$descendants = EvaTask::getChildren($element->id);
+								foreach($descendants as $descendant){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_ST . $descendant->id . '</span>&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+								}
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence directe descendante de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$t_list[ELEMENT_IDENTIFIER_T . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_T . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-node' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$t_list[ELEMENT_IDENTIFIER_T . $affectation_information->id_element]['detail'] = $sub_content;
+						}break;
+						case TABLE_ACTIVITE:{
+							$directParent = new EvaTask();
+							$directParent->setId($element->id_tache);
+							$directParent->load();
+							$directParent->limiteGauche = $directParent->leftLimit;
+							$directParent->limiteDroite = $directParent->rightLimit;
+							$ancetres = Arborescence::getAncetre(TABLE_TACHE, $directParent);
+							$miniFilAriane = '         ';
+							foreach($ancetres as $ancetre){
+								if($ancetre->nom != "Tache Racine"){
+									$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_T . $ancetre->id . '</span>&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+								}
+							}
+							if($directParent->nom != "Tache Racine"){
+								$miniFilAriane .= '<span class="element_identifier" >' . ELEMENT_IDENTIFIER_T . $directParent->id . '</span>&nbsp;-&nbsp;' . $directParent->name . ' &raquo; ';
+							}
+							$miniFilAriane = trim(substr($miniFilAriane, 0, -9));
+							if($miniFilAriane != ''){
+								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence parente de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
+							}
+
+							$st_list[ELEMENT_IDENTIFIER_ST . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_ST . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_correctiv_actions&elt=edit-leaf' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$st_list[ELEMENT_IDENTIFIER_ST . $affectation_information->id_element]['detail'] = $sub_content;
+						}break;
+					}
+				}
+			}
+
+			$user_tree_affecation .= '<div class="clear affected_element_to_user_final_container" ><img src="' . DEFAULT_GROUP_PICTO . '" alt="' . __('Groupements', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des groupements auxquels l\'utilisateur est affect&eacute; directement', 'evarisk') . '<div class="user_affecation_element_container" >';
+			if(count($gpt_list) > 0){
+				foreach($gpt_list as $elt_id => $elt_detail){
+					$user_tree_affecation .= '
+						<div class="affected_element_line clear" >
+							<div class="line_title" id="gpt_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
+							<div class="clear detail_line digirisk_hide" id="gpt_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+						</div>';
+				}
+			}
+			else{
+				$user_tree_affecation .= __('Cet utilisateur n\'est affect&eacute; a aucun groupement pour le moment', 'evarisk');
+			}
+			$user_tree_affecation .= '</div></div>
+			<div class="clear affected_element_to_user_final_container" ><img src="' . DEFAULT_WORKING_UNIT_PICTO . '" alt="' . __('Unit&eacute; de travail', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des unit&eacute;s de travail auxquelless l\'utilisateur est affect&eacute; directement', 'evarisk') . '<div class="user_affecation_element_container" >';
+			if(count($ut_list) > 0){
+				foreach($ut_list as $elt_id => $elt_detail){
+					$user_tree_affecation .= '
+						<div class="affected_element_line clear" >
+							<div class="line_title" id="ut_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
+							<div class="clear detail_line digirisk_hide" id="ut_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+						</div>';
+				}
+			}
+			else{
+				$user_tree_affecation .= __('Cet utilisateur n\'est affect&eacute; a aucune unit&eacute; de travail pour le moment', 'evarisk');
+			}
+			$user_tree_affecation .= '</div></div>';
+
+			$user_tree_eval_affecation .= '<div class="clear affected_element_to_user_final_container" ><img src="' . DEFAULT_GROUP_PICTO . '" alt="' . __('Groupements', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des groupements dans lesquels l\'utilisateur a particip&eacute; &agrave; l\'&eacute;valuation', 'evarisk') . '<div class="user_affecation_element_container" >';
+			if(count($gpt_eval_list) > 0){
+				foreach($gpt_eval_list as $elt_id => $elt_detail){
+					$user_tree_eval_affecation .= '
+						<div class="affected_element_line clear" >
+							<div class="line_title" id="gpt_eval_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
+							<div class="clear detail_line digirisk_hide" id="gpt_eval_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+						</div>';
+				}
+			}
+			else{
+				$user_tree_eval_affecation .= __('Cet utilisateur n\'a particip&eacute; a aucune &eacute;valuation sur des groupements pour le moment', 'evarisk');
+			}
+			$user_tree_eval_affecation .= '</div></div>
+			<div class="clear affected_element_to_user_final_container" ><img src="' . DEFAULT_WORKING_UNIT_PICTO . '" alt="' . __('Unit&eacute; de travail', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des unit&eacute;s de travail dans lesquelles l\'utilisateur a particip&eacute; &agrave; l\'&eacute;valuation', 'evarisk') . '<div class="user_affecation_element_container" >';
+			if(count($ut_eval_list) > 0){
+				foreach($ut_eval_list as $elt_id => $elt_detail){
+					$user_tree_eval_affecation .= '
+						<div class="affected_element_line clear" >
+							<div class="line_title" id="ut_eval_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
+							<div class="clear detail_line digirisk_hide" id="ut_eval_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+						</div>';
+				}
+			}
+			else{
+				$user_tree_eval_affecation .= __('Cet utilisateur n\'a particip&eacute; a aucune &eacute;valuation sur des unit&eacute;s de travail pour le moment', 'evarisk');
+			}
+			$user_tree_eval_affecation .= '</div></div>';
+
+			$user_ac_affecation .= '
+			<div class="clear affected_element_to_user_final_container" ><img src="' . PICTO_TACHE . '" alt="' . __('Sous t&acirc;che des actions correctives', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des t&acirc;ches auxquelles l\'utilisateur est affect&eacute;', 'evarisk') . '<div class="user_affecation_element_container" >';
+			if(count($t_list) > 0){
+				foreach($t_list as $elt_id => $elt_detail){
+					$user_ac_affecation .= '
+						<div class="affected_element_line clear" >
+							<div class="line_title" id="t_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
+							<div class="clear detail_line digirisk_hide" id="t_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+						</div>';
+				}
+			}
+			else{
+				$user_ac_affecation .= __('Cet utilisateur n\'est affect&eacute; a aucune t&acirc;che pour le moment', 'evarisk');
+			}
+			$user_ac_affecation .= '</div></div>
+			<div class="clear affected_element_to_user_final_container" ><img src="' . PICTO_LTL_ACTION . '" alt="' . __('Sous t&acirc;che des actions correctives', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des sous-t&acirc;ches auxquelles l\'utilisateur est affect&eacute;', 'evarisk') . '<div class="user_affecation_element_container" >';
+			if(count($st_list) > 0){
+				foreach($st_list as $elt_id => $elt_detail){
+					$user_ac_affecation .= '
+						<div class="affected_element_line clear" >
+							<div class="line_title" id="st_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
+							<div class="clear detail_line digirisk_hide" id="st_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+						</div>';
+				}
+			}
+			else{
+				$user_ac_affecation .= __('Cet utilisateur n\'est affect&eacute; a aucune sous t&acirc;che pour le moment', 'evarisk');
+			}
+			$user_ac_affecation .= '</div></div>';
+		}
+
+	/*	Start output building	*/
+		/*	Add a field allowing user to change user for edition	*/
+		$user_profil_content .= '
+<div class="clear user_selector" >
+	<span class="searchUserInput ui-icon" >&nbsp;</span>
+	<input class="searchUserToAffect" type="text" name="digi_user_list" id="digi_user_list" value="' . __('Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche', 'evarisk') . '" />
+	<div id="complete_user_list" class="digirisk_hide completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_USER, $user_to_edit) . '</div>
+</div>';
+
+		/*	Add the different component of output	*/
+		$user_profil_content .= '
+<div id="user_profil_edition_tabs" class="eva_tabs clear" >
+	<ul >
+		<li><a href="#digirisk_user_tree_affectation" title="digirisk_user_tree_affectation" id="digirisk_user_tree_affectation_tab" >' . __('Affectation', 'evarisk') . '</a></li>
+		<li><a href="#digirisk_user_risk_evaluation_affectation" title="digirisk_user_risk_evaluation_affectation" id="digirisk_user_risk_evaluation_affectation_tab" >' . __('&Eacute;valuation', 'evarisk') . '</a></li>
+		<li><a href="#digirisk_user_ca_affectation" title="digirisk_user_ca_affectation" id="digirisk_user_ca_affectation_tab" >' . __('Actions correctives', 'evarisk') . '</a></li>
+		<li><a href="#digirisk_user_rights" title="digirisk_user_rights" id="digirisk_user_rights_tab" >' . __('Droits', 'evarisk') . '</a></li>
+	</ul>
+	<div id="digirisk_user_tree_affectation" >' . $user_tree_affecation . '</div>
+	<div id="digirisk_user_risk_evaluation_affectation" >' . $user_tree_eval_affecation . '</div>
+	<div id="digirisk_user_ca_affectation" >' . $user_ac_affecation . '</div>
+	<div id="digirisk_user_rights" >' . $digiPermissionForm . '</div>
+</div>
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		/*	Create tabs for different profil element	*/
+		jQuery("#user_profil_edition_tabs").tabs();
+
+		/*	Add possiblity to change user easyly with a simple input	*/
+		jQuery("#digi_user_list").click(function(){
+			jQuery(this).val("");
+			jQuery("#complete_user_list").show();
+		});
+		jQuery("#digi_user_list").blur(function(){
+			if(jQuery(this).val() == ""){
+				jQuery(this).val(convertAccentToJS("' . __('Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche', 'evarisk') . '"));
+			}
+		});
+		jQuery("#digi_user_list").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '", {extraParams: {all_user: "yes"/*function() { return jQuery("#search_in_all_user_' . $tableElement . '").val(); }*/}});
+		jQuery("#digi_user_list").result(function(event, data, formatted){
+			jQuery("#complete_user_list").hide();
+			jQuery("#user_profil_edition_tabs").html(jQuery("#loadingImg").html());
+			window.top.location.href = "' . admin_url('users.php?page=digirisk_users_profil&user_to_edit=') . '" + data[1];
+
+			jQuery("#digi_user_list").val(convertAccentToJS(data[0]));
+		});
+
+		/*	Add support for detail open	*/
+		jQuery(".line_title span.digi_opener").click(function(){
+			var detail_to_open_id = jQuery(this).parent().attr("id").replace("title", "detail");
+			jQuery("#" + detail_to_open_id).toggleClass("digirisk_hide");
+			if(jQuery("#" + detail_to_open_id).is(":visible")){
+				jQuery("#" + detail_to_open_id).parent().children("div").children("span:first").removeClass("user_element_detail_opener");
+				jQuery("#" + detail_to_open_id).parent().children("div").children("span:first").addClass("user_element_detail_closer");
+			}
+			else{
+				jQuery("#" + detail_to_open_id).parent().children("div").children("span:first").addClass("user_element_detail_opener");
+				jQuery("#" + detail_to_open_id).parent().children("div").children("span:first").removeClass("user_element_detail_closer");
+			}
+		});
+	});
+</script>';
+
+		$page_title = sprintf(__('Profil utilisateur : %s', 'evarisk'), ELEMENT_IDENTIFIER_U . $user_to_edit . '&nbsp;-&nbsp;' . $user_infos['user_lastname'] . '&nbsp;' . $user_infos['user_firstname']);
+		if($user_to_edit == $current_user->ID){
+			$page_title = sprintf(__('Votre profil utilisateur : %s', 'evarisk'), ELEMENT_IDENTIFIER_U . $user_to_edit . '&nbsp;-&nbsp;' . $user_infos['user_lastname'] . '&nbsp;' . $user_infos['user_firstname']);
+		}
+
+		$user_profil_page = digirisk_display::start_page($page_title, '', '', '', $element_type, false, '', false, true, 'id="icon-users"') . $user_profil_content .	digirisk_display::end_page();
+
+		echo $user_profil_page;
+	}
 
 
 	/**
@@ -1102,6 +1489,5 @@ $user_additionnal_field .= '
 			endforeach;
 		}
 	}
-
 
 }

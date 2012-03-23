@@ -158,12 +158,12 @@ class eva_gestionDoc
 				('', 'valid', NOW(), %d, %d, %s, %s, %s, %s)",
 			$current_user->ID, $idElement, $tableElement, $categorie, $nomDocument, $cheminDocument);
 		if($wpdb->query($query)){
-
+			$last_insert_document = $wpdb->insert_id;
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
 					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_add', '', '');
+					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_add', '', $last_insert_document);
 				break;
 			}
 
