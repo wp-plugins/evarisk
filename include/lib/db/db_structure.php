@@ -1243,9 +1243,7 @@ CREATE TABLE {$t} (
 	$digirisk_db_version = 34;
 	$digirisk_update_way[$digirisk_db_version] = 'update';
 
-	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array(TABLE_FP);
 
-	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
 }
 {/*	Version 35	*/
 	$digirisk_db_version = 35;
@@ -1258,11 +1256,9 @@ CREATE TABLE {$t} (
 
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_GED_DOCUMENTS] = array('parDefaut');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_GED_DOCUMENTS] = array('parDefaut');
-	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('id_model');
-	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_INDEX'][TABLE_FP] = array('id_model');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME'][] = array('old_name' => TABLE_DUER_OLD, 'name' => TABLE_DUER);
 
-	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_GED_DOCUMENTS, TABLE_FP);
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_GED_DOCUMENTS);
 
 	/*	Special changes on table structure	*/
 	$i = 0;
@@ -1294,9 +1290,6 @@ CREATE TABLE {$t} (
 	$digirisk_db_version = 42;
 	$digirisk_update_way[$digirisk_db_version] = 'update';
 
-	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('recommandation');
-
-	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
 }
 
 {/*	Version 44	*/
@@ -1477,7 +1470,7 @@ CREATE TABLE {$t} (
 	$i = 0;
 	$i++;
 	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['MAIN_ACTION'] = 'RENAME';
-	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION_CONTENT'] = TABLE_FP_OLD;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION_CONTENT'] = TABLE_FP;
 	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION'] = 'TO';
 }
 {/*	Version 52	*/

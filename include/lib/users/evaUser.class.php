@@ -1060,12 +1060,13 @@ $user_additionnal_field .= '
 		{/*	Get element associated 	*/
 			$user_tree_affecation = $user_tree_eval_affecation = $user_ac_affecation = '';
 			$gpt_list = $ut_list = $gpt_eval_list = $ut_eval_list = $t_list = $st_list = array();
-			$user_affectation = evaUserLinkElement::get_user_affected_element($user_to_edit);			
+			$user_affectation = evaUserLinkElement::get_user_affected_element($user_to_edit);		
 			foreach($user_affectation as $affectation_information){
 				unset($sub_content);$sub_content = '';
 
 				/*	Get information about current element	*/
-				$query = $wpdb->prepare("SELECT * FROM " . $affectation_information->table_element . " WHERE status = 'Valid' AND id = %d", $affectation_information->id_element);
+				$affectation_information_table_element = str_replace('_evaluation', '', $affectation_information->table_element);
+				$query = $wpdb->prepare("SELECT * FROM " . $affectation_information_table_element . " WHERE Status = 'Valid' AND id = %d", $affectation_information->id_element);
 				$element = $wpdb->get_row($query);
 
 				if($element->Status == 'Valid'){
@@ -1128,10 +1129,6 @@ $user_additionnal_field .= '
 						}break;
 
 						case TABLE_GROUPEMENT . '_evaluation':{
-							$affectation_information->table_element = str_replace('_evaluation', '', $affectation_information->table_element);
-							/*	Get information about current element	*/
-							$query = $wpdb->prepare("SELECT * FROM " . $affectation_information->table_element . " WHERE status = 'Valid' AND id = %d", $affectation_information->id_element);
-							$element = $wpdb->get_row($query);
 							/*	Read element ancestor	*/
 							$ancetres = Arborescence::getAncetre($affectation_information->table_element, $element, "limiteGauche ASC", '1', "");
 							$miniFilAriane = '         ';
@@ -1169,10 +1166,6 @@ $user_additionnal_field .= '
 						}break;
 						case TABLE_UNITE_TRAVAIL . '_evaluation':{
 							/*	Read element ancestor	*/
-							$affectation_information->table_element = str_replace('_evaluation', '', $affectation_information->table_element);
-							/*	Get information about current element	*/
-							$query = $wpdb->prepare("SELECT * FROM " . $affectation_information->table_element . " WHERE status = 'Valid' AND id = %d", $affectation_information->id_element);
-							$element = $wpdb->get_row($query);
 							$directParent = EvaGroupement::getGroupement($element->id_groupement);
 							$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent, "limiteGauche ASC", '1', "");
 							$miniFilAriane = '         ';

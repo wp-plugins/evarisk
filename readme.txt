@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 2.9.2
 Tested up to: 3.3.1
-Stable tag: 5.1.5.0
+Stable tag: 5.1.5.1
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -75,6 +75,14 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
 
+= Version 5.1.5.1 =
+
+Corrections
+
+* Parenth&egrave;se provoquant une erreur fatale dans le fichier d'envoi de photo
+* Lors de la mise &agrave; jour de la base de donn&eacute;es, la table des fiches n'&eacute;tait pas correctement renomm&eacute;e
+
+
 = Version 5.1.5.0 =
 
 Am&eacute;liorations
@@ -88,7 +96,7 @@ Corrections
 
 * ST173 - Les UT &eacute;taient pr&eacute;sentes dans les DUER et dans la vue d'ensemble m&ecirc;me si celle ci &eacute;taient supprim&eacute;es 
 * ST311 - Erreurs d'affectation des t&acirc;ches si on cliquait sur enregistrer sans cliquer sur un &eacute;l&eacute;ment 
-* ST313 - La mise &agrave; jour automatique de la base de donn&eacute;es ne se faisait pas correctement (Si le nombre de version entre la base de donn&eacute;es existante et  la base de donn&eacute;es de la nouvelle version &eacute;tait trop important alors certaines mise &agrave; jour ne se lançaient pas) 
+* ST313 - La mise &agrave; jour automatique de la base de donn&eacute;es ne se faisait pas correctement (Si le nombre de version entre la base de donn&eacute;es existante et  la base de donn&eacute;es de la nouvelle version &eacute;tait trop important alors certaines mise &agrave; jour ne se lan&ccedil;aient pas) 
 * ST316 - Mise &agrave; jour de la librairies jquery ui en version 1.8.18 (Causait un conflit avec le plugin Advanced custom field) 
 
 
