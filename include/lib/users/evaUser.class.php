@@ -799,11 +799,12 @@ $user_additionnal_field .= '
 			}
 		});
 
-		evarisk('#ajouterUtilisateurListe').click(function(){
+		jQuery('#ajouterUtilisateurListe').click(function(){
 			var error = 0;
 			evarisk('#mailDomainContainer').css('color', '#000000');
 			evarisk('#firstNameContainer').css('color', '#000000');
 			evarisk('#lastNameContainer').css('color', '#000000');
+			jQuery('#emailContainer').css('color', '#000000');
 			evarisk('#fastAddErrorMessage').hide();
 
 			evarisk('#domaineMail').val(evarisk('#domaineMail').val().replace("@", ""));
@@ -820,6 +821,10 @@ $user_additionnal_field .= '
 				evarisk('#lastNameContainer').css('color', '#FF0000');
 				error++;
 			}
+			if(jQuery('#emailUtilisateur').val() == ""){
+				jQuery('#emailContainer').css('color', '#FF0000');
+				error++;
+			}
 
 			if(error > 0){
 				evarisk('#fastAddErrorMessage').show();
@@ -830,7 +835,7 @@ $user_additionnal_field .= '
 				prenom = evarisk('#prenomUtilisateur').val();
 				nom = evarisk('#nomUtilisateur').val();
 				motDePasse = evarisk('#motDePasse').val();
-				emailUtilisateur = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#nomUtilisateur').val() + '@' + evarisk('#domaineMail').val();
+				emailUtilisateur = evarisk('#emailUtilisateur').val()
 				roleUtilisateur = evarisk('#userRoles').val();
 
 				user_imatriculation = evarisk('#user_imatriculation').val();
@@ -857,6 +862,7 @@ $user_additionnal_field .= '
 				evarisk('#userLinesToCreate').val(evarisk('#userLinesToCreate').val() + newline);
 				evarisk('#prenomUtilisateur').val("");
 				evarisk('#nomUtilisateur').val("");
+				evarisk('#emailUtilisateur').val("");
 
 				evarisk('#user_imatriculation').val("");
 				evarisk('#user_imatriculation_key').val("");
@@ -873,6 +879,18 @@ $user_additionnal_field .= '
 				evarisk('#user_insurance_ste').val("");
 
 <?php echo $optionEmailDomain;	?>
+			}
+		});
+
+		jQuery('#prenomUtilisateur').blur(function(){
+			if((jQuery('#prenomUtilisateur').val() != "") && (jQuery('#nomUtilisateur').val() != "")){
+				jQuery('#emailUtilisateur').val(jQuery('#prenomUtilisateur').val() + '.' + jQuery('#nomUtilisateur').val() + '@' + jQuery('#domaineMail').val());
+				if(jQuery('#domaineMail').val() == ""){
+					jQuery('#email_domain_error').show();
+				}
+				else{
+					jQuery('#email_domain_error').hide();
+				}
 			}
 		});
 
@@ -895,14 +913,14 @@ $user_additionnal_field .= '
 
 	<!-- 	Start of fast add part	-->
 	<h3 class="clear" ><?php echo __('Ajout rapide d\'utilisateurs', 'evarisk'); ?></h3>
-	<table summary="Fast user adding section" cellpadding="0" cellspacing="0" class="digirisk_import_user_easy_form_container" id="digirisk_import_user_easy_form_container" >
+	<table class="digirisk_import_user_easy_form_container" id="digirisk_import_user_easy_form_container" >
 		<tr>
 			<td class="bold" ><?php _e('Informations obligatoires', 'evarisk'); ?></td>
 			<td id="complementary_fieds_switcher" class="pointer" ><span id="complementary_fieds_icon" class="alignleft ui-icon user_import_container_opener" >&nbsp;</span><?php _e('Champs suppl&eacute;mentaires', 'evarisk'); ?></td>
 		</tr>
 		<tr>
 			<td class="digi_mandatory_fields_container" >
-				<table summary="Fast user adding section" cellpadding="0" cellspacing="0" class="digirisk_import_user_easy_form" >
+				<table class="digirisk_import_user_easy_form" >
 					<tr>
 						<td class="digi_import_user_main_info_name" id="mailDomainContainer"><?php echo ucfirst(strtolower(__('domaine de l\'adresse email', 'evarisk'))); ?></td>
 						<td class="digi_import_user_main_info_input" ><div class="alignleft" ><?php _e('adresse.email', 'evarisk'); ?>@</div><input type="text" value="<?php echo $checkEmailDomain; ?>" id="domaineMail" name="domaineMail" /></td>
@@ -927,6 +945,10 @@ $user_additionnal_field .= '
 					<tr>
 						<td class="digi_import_user_main_info_name" id="firstNameContainer"><?php echo ucfirst(strtolower(__('prenom', 'evarisk'))); ?></td>
 						<td class="digi_import_user_main_info_input" ><input type="text" value="" id="prenomUtilisateur" name="prenomUtilisateur" /></td>
+					</tr>
+					<tr>
+						<td class="wpsendsms_import_user_main_info_name" id="emailContainer"><?php echo ucfirst(strtolower(__('email', 'sendsms'))); ?></td>
+						<td class="wpsendsms_import_user_main_info_input" ><input type="text" value="" id="emailUtilisateur" name="emailUtilisateur" /><div id="email_domain_error" style="display:none;color:#FF0000;" ><?php echo __('Vous pouvez remplir le champs "Domaine de l\'adresse email" pour que vos emails soient automatique cr&eacute;&eacute;s', 'sendsms'); ?></div></td>
 					</tr>
 					<tr>
 						<td class="digi_import_user_main_info_name">
@@ -966,14 +988,14 @@ $user_additionnal_field .= '
 		</tr>
 
 		<tr>
-			<td >&nbsp;</td>
+			<td colspan="2" >&nbsp;</td>
 		</tr>
 
 		<tr>
-			<td colspan="4" style="text-align:center;" ><input type="button" class="button-primary" value="<?php echo __('Ajouter &agrave; la liste des utilisateurs &agrave; importer', 'evarisk'); ?>" id="ajouterUtilisateurListe" name="ajouterUtilisateurListe" /><div id="fastAddErrorMessage" style="display:none;color:#FF0000;" ><?php echo __('Merci de remplir les champs marqu&eacute;s en rouge', 'evarisk'); ?></div></td>
+			<td colspan="2" style="text-align:center;" ><input type="button" class="button-primary" value="<?php echo __('Ajouter &agrave; la liste des utilisateurs &agrave; importer', 'evarisk'); ?>" id="ajouterUtilisateurListe" name="ajouterUtilisateurListe" /><div id="fastAddErrorMessage" style="display:none;color:#FF0000;" ><?php echo __('Merci de remplir les champs marqu&eacute;s en rouge', 'evarisk'); ?></div></td>
 		</tr>
 		<tr>
-			<td colspan="4" style="text-align:center;" ><textarea name="userLinesToCreate" id="userLinesToCreate" cols="70" rows="5"></textarea></td>
+			<td colspan="2" style="text-align:center;" ><textarea name="userLinesToCreate" id="userLinesToCreate" cols="70" rows="5"></textarea></td>
 		</tr>
 	</table>
 	<!-- 	Submit form button	-->
@@ -985,11 +1007,9 @@ $user_additionnal_field .= '
 	}
 ?>
 
-
 	<br/>
 	<br/>
 	<br/>
-
 
 	<!-- 	Start of file specification part	-->
 	<h3 class="pointer" id="import_user_form_file_container_switcher" ><span id="user_import_container_switcher_icon" class="alignleft ui-icon user_import_container_opener" >&nbsp;</span><?php echo __('Ajout d\'utilisateur depuis un fichier', 'evarisk'); ?></h3>

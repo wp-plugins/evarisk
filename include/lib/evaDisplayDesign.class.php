@@ -954,13 +954,32 @@ class EvaDisplayDesign {
 			height: 600,
 			close: function(){
 				evarisk(this).html("");
+			}';
+			if($table == TABLE_GROUPEMENT){
+			$trashScript .= ',
+			buttons:{
+				"' . __('Reinitialiser l\'arbre des groupements', 'evarisk') . '": function(){
+					if(confirm(convertAccentToJS("' . __('Si vous effectuez cette action, tous les groupements de l\'arbre seront replac&eacute;s &agrave; la racine de votre architecture', 'evarisk') . '"))){
+						jQuery.getJSON(EVA_AJAX_FILE_URL, { post: "true", nom: "initialize_groupement_tree" },
+							function(data){
+								if(data[0]) {
+									changementPage("left", "' . $table . '", 1, 1, "affichageListe", "main");
+									evarisk("#trashContainer").dialog("close");
+								}
+								else {
+									alert(data[1]);
+								}
+							});
+					}
+				}
+			}';
 			}
+			$trashScript .= '
 		});
 		evarisk(".trash img").click(function(){
 			evarisk("#trashContainer").dialog("open");
 			evarisk("#trashContainer").html(evarisk("#loadingImg").html());
-			evarisk("#trashContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
+			evarisk("#trashContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post": "true", 
 				"tableProvenance": "' . $table . '",
 				"nom": "loadTrash"

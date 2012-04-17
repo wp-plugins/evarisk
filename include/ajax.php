@@ -5710,6 +5710,19 @@ switch($tableProvenance)
 				echo $output;
 			}
 			break;
+			case 'initialize_groupement_tree':
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_GROUPEMENT . " WHERE nom != %s ORDER BY id ASC", 'Groupement Racine');
+				$groupements = $wpdb->get_results($query);
+				$limiteGauche = 1;
+				$limiteDroite = 2;
+				foreach($groupements as $groupement){
+					$wpdb->update(TABLE_GROUPEMENT, array('limiteGauche' => $limiteGauche, 'limiteDroite' => $limiteDroite), array('id' => $groupement->id));
+					$limiteGauche=$limiteDroite+1;
+					$limiteDroite=$limiteGauche+1;
+				}
+				$wpdb->update(TABLE_GROUPEMENT, array('limiteDroite' => $limiteDroite), array('nom' => 'Groupement Racine'));
+				echo json_encode(array(true,''));
+			break;
 
 			case "ficheAction" :
 			case "demandeAction" :

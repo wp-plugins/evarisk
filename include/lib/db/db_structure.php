@@ -1470,7 +1470,7 @@ CREATE TABLE {$t} (
 	$i = 0;
 	$i++;
 	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['MAIN_ACTION'] = 'RENAME';
-	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION_CONTENT'] = TABLE_FP;
+	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION_CONTENT'] = TABLE_FP_OLD;
 	$digirisk_table_structure_change[$digirisk_db_version][TABLE_FP_OLD][$i]['ACTION'] = 'TO';
 }
 {/*	Version 52	*/
