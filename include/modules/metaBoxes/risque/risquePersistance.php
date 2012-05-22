@@ -1,15 +1,14 @@
 <?php
 require_once(EVA_CONFIG );
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' );
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 if($_REQUEST['act'] == 'save'){
-	$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
+	$idRisque = digirisk_tools::IsValid_Variable($_REQUEST['idRisque']);
 
 	/*	Check if there are correctiv actions to link with this risk	*/
-	$actionsCorrectives = eva_tools::IsValid_Variable($_REQUEST['actionsCorrectives']);
+	$actionsCorrectives = digirisk_tools::IsValid_Variable($_REQUEST['actionsCorrectives']);
 	if(($actionsCorrectives != '') && ($idRisque > 0)){
 		Risque::update_risk_rating_link_with_task($idRisque, $actionsCorrectives, array('before', 'after'));
 		$task = new EvaTask();
@@ -19,18 +18,18 @@ if($_REQUEST['act'] == 'save'){
 		$task->save();
 	}
 	else{
-		$idDanger = eva_tools::IsValid_Variable($_REQUEST['idDanger']);
-		$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode']);
-		$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
-		$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
+		$idDanger = digirisk_tools::IsValid_Variable($_REQUEST['idDanger']);
+		$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode']);
+		$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
+		$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
 		$variables = $_REQUEST['variables'];
-		$description = eva_tools::IsValid_Variable($_REQUEST['description_risque']);
-		$histo = eva_tools::IsValid_Variable($_REQUEST['histo']);
+		$description = digirisk_tools::IsValid_Variable($_REQUEST['description_risque']);
+		$histo = digirisk_tools::IsValid_Variable($_REQUEST['histo']);
 		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 	}
 
 	/*	Check if there are recommendation to link with this risk	*/
-	$preconisationRisque = eva_tools::IsValid_Variable($_REQUEST['preconisationRisque']);
+	$preconisationRisque = digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisque']);
 	if($preconisationRisque != ''){
 		$infosDanger = EvaDanger::getDanger($idDanger);
 		$_POST['nom_activite'] = substr($preconisationRisque, 0, 50);
@@ -69,34 +68,34 @@ if($_REQUEST['act'] == 'save'){
 
 if($_REQUEST['act'] == 'delete')
 {
-	$table = eva_tools::IsValid_Variable($_REQUEST['table']);
-	$idRisque = eva_tools::IsValid_Variable($_REQUEST['idRisque']);
-	$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement']);
-	$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement']);
+	$table = digirisk_tools::IsValid_Variable($_REQUEST['table']);
+	$idRisque = digirisk_tools::IsValid_Variable($_REQUEST['idRisque']);
+	$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
+	$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
 	$deleteResult = Risque::deleteRisk($idRisque, $tableElement, $idElement);
 
 	$messageInfo = 
 	'<script type="text/javascript">
-		evarisk(document).ready(function(){
-			evarisk("#message' . $table . '").addClass("updated");';
+		digirisk(document).ready(function(){
+			digirisk("#message' . $table . '").addClass("updated");';
 		if($deleteResult != 'error')
 		{
 			$messageInfo .= '
-			evarisk("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a &eacute;t&eacute; supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
+			digirisk("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a &eacute;t&eacute; supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
 		}
 		else
 		{
 			$messageInfo .= '
-			evarisk("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
+			digirisk("#message' . $table . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre supprim&eacute;.', 'evarisk') . '</strong></p>') . '");';
 		}
 		$messageInfo .= '
-			evarisk("#message' . $table . '").show();
+			digirisk("#message' . $table . '").show();
 			setTimeout(function(){
-				evarisk("#message' . $table . '").removeClass("updated");
-				evarisk("#message' . $table . '").hide();
+				digirisk("#message' . $table . '").removeClass("updated");
+				digirisk("#message' . $table . '").hide();
 			},5000);
 
-			evarisk("#ongletVoirLesRisques").click();
+			digirisk("#ongletVoirLesRisques").click();
 		});
 	</script>';
 	echo $messageInfo;

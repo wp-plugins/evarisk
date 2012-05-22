@@ -3,7 +3,6 @@
  * @version v5.0
  */
 require_once(EVA_CONFIG );
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php' );
@@ -12,8 +11,8 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		
 if($_REQUEST['act'] == 'save')
 {
-	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
-	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
+	$idGroupementPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
 	
 	$groupement = EvaGroupement::getGroupement($idGroupementPere);
 	$groupementDescendant = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
@@ -28,12 +27,12 @@ if($_REQUEST['act'] == 'save')
 	{
 echo '
 <script type="text/javascript" >
-	evarisk("#message").html(\'<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="error" />' . __('Vous ne pouvez pas ajouter une unit&eacute; de travail au m&ecirc;me niveau qu\\\'un groupement', 'evarisk') . '\');
-	evarisk("#message").addClass("updated");
-	evarisk("#message").show();
+	digirisk("#message").html(\'<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="error" />' . __('Vous ne pouvez pas ajouter une unit&eacute; de travail au m&ecirc;me niveau qu\\\'un groupement', 'evarisk') . '\');
+	digirisk("#message").addClass("updated");
+	digirisk("#message").show();
 	setTimeout(function(){
-		evarisk("#message").removeClass("updated");
-		evarisk("#message").hide();
+		digirisk("#message").removeClass("updated");
+		digirisk("#message").hide();
 	},7500);
 </script>';
 	}
@@ -41,8 +40,8 @@ echo '
 if($_REQUEST['act'] == 'update')
 {
 	$id_unite_travail = $_REQUEST['id'];
-	$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
-	$idGroupementPere = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
+	$idGroupementPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
 	
 	$uniteTravailUpdate = eva_UniteDeTravail::getWorkingUnitByName($nom);
 	
@@ -56,17 +55,17 @@ if($_REQUEST['act'] == 'update')
 	$address->save();
 	$idAdresse = $address->getId();
 	
-	$effectif = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['effectif']));
+	$effectif = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['effectif']));
 	if($effectif == '')
 	{
 		$effectif = null;
 	}
-	$description = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['description']));
+	$description = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['description']));
 	if($description == '')
 	{
 		$description = null;
 	}
-	$telephone = mysql_real_escape_string(eva_tools::IsValid_Variable($_REQUEST['telephone']));
+	$telephone = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['telephone']));
 	if($telephone == '')
 	{
 		$telephone = null;

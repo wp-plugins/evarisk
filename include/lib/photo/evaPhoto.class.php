@@ -6,7 +6,6 @@
  * @version v5.0
  */
 include_once(EVA_CONFIG );
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php');
 
 class EvaPhoto {
 	
@@ -22,10 +21,10 @@ class EvaPhoto {
 	{
 		global $wpdb;
 		
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
-		$where = eva_tools::IsValid_Variable($where);
-		$order = eva_tools::IsValid_Variable($order);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
+		$where = digirisk_tools::IsValid_Variable($where);
+		$order = digirisk_tools::IsValid_Variable($order);
 
 		$query = $wpdb->prepare(
 			"SELECT PICTURE.*, PICTURE_LINK.isMainPicture
@@ -57,9 +56,9 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 		
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
-		$photo = eva_tools::IsValid_Variable(eva_tools::slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
+		$photo = digirisk_tools::IsValid_Variable(digirisk_tools::slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
 
 		$query = 
 			$wpdb->prepare(
@@ -94,8 +93,8 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 		
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
 		$query = 
 			$wpdb->prepare(
@@ -305,7 +304,7 @@ class EvaPhoto {
 			$gallery .= 
 			'<script type="text/javascript">
 				function defaultPicture(tableElement, idElement, idPhoto){
-					evarisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					digirisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
@@ -315,7 +314,7 @@ class EvaPhoto {
 				}
 
 				function setAsBeforePicture(tableElement, idElement, idPhoto){
-					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
@@ -324,7 +323,7 @@ class EvaPhoto {
 					});
 				}
 				function unsetAsBeforePicture(tableElement, idElement, idPhoto){
-					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
@@ -332,9 +331,8 @@ class EvaPhoto {
 						"nom": "unsetAsBeforePicture"
 					});
 				}
-				function setAsAfterPicture(tableElement, idElement, idPhoto)
-				{
-					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				function setAsAfterPicture(tableElement, idElement, idPhoto){
+					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
@@ -342,9 +340,8 @@ class EvaPhoto {
 						"nom": "setAsAfterPicture"
 					});
 				}
-				function unsetAsAfterPicture(tableElement, idElement, idPhoto)
-				{
-					evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				function unsetAsAfterPicture(tableElement, idElement, idPhoto){
+					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
@@ -353,9 +350,8 @@ class EvaPhoto {
 					});
 				}
 
-				function DeleteDefaultPicture(tableElement, idElement, idPhoto)
-				{
-					evarisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				function DeleteDefaultPicture(tableElement, idElement, idPhoto){
+					digirisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
@@ -364,12 +360,11 @@ class EvaPhoto {
 					});
 				}
 
-				function pictureDelete(idPicture)
-				{
+				function pictureDelete(idPicture){
 					if(confirm("' . __('Etes vous sur de vouloir supprimer cette photo?', 'evarisk') . '")){
-						evarisk("#caption' . $tableElement . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+						digirisk("#caption' . $tableElement . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 						setTimeout(function(){
-							evarisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+							digirisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 								"post": "true",  
 								"table": "' . $tableElement . '",
 								"idElement": "' . $idElement . '",
@@ -380,15 +375,15 @@ class EvaPhoto {
 					}
 				}
 
-				evarisk(document).ready(function() {
+				digirisk(document).ready(function(){
 					// We only want these styles applied when javascript is enabled
-					evarisk(\'div.navigation\').css({\'width\' : \'100%\', \'float\' : \'left\'});
-					evarisk(\'div.content\').css(\'display\', \'block\');
+					digirisk(\'div.navigation\').css({\'width\' : \'100%\', \'float\' : \'left\'});
+					digirisk(\'div.content\').css(\'display\', \'block\');
 
 					// Initially set opacity on thumbs and add
 					// additional styling for hover effect on thumbs
 					var onMouseOutOpacity = 0.67;
-					evarisk(\'#thumbs' . $tableElement . $idElement .' ul.thumbs li\').opacityrollover({
+					digirisk(\'#thumbs' . $tableElement . $idElement .' ul.thumbs li\').opacityrollover({
 						mouseOutOpacity:   onMouseOutOpacity,
 						mouseOverOpacity:  1.0,
 						fadeSpeed:         \'fast\',
@@ -396,7 +391,7 @@ class EvaPhoto {
 					});
 					
 					// Initialize Advanced Galleriffic Gallery
-					var gallery = evarisk(\'#thumbs' . $tableElement . $idElement .'\').galleriffic({
+					var gallery = digirisk(\'#thumbs' . $tableElement . $idElement .'\').galleriffic({
 						delay:                     2500,
 						numThumbs:                 5,
 						preloadAhead:              10,
@@ -421,7 +416,7 @@ class EvaPhoto {
 						syncTransitions:           true,
 						defaultTransitionDuration: 0,
 						onSlideChange:             function(prevIndex, nextIndex) {
-							// \'this\' refers to the gallery, which is an extension of evarisk(\'#thumbs\')
+							// \'this\' refers to the gallery, which is an extension of digirisk(\'#thumbs\')
 							this.find(\'ul.thumbs\').children()
 								.eq(prevIndex).fadeTo(\'fast\', onMouseOutOpacity).end()
 								.eq(nextIndex).fadeTo(\'fast\', 1.0);
@@ -435,9 +430,8 @@ class EvaPhoto {
 					});
 					setTimeout(function(){
 						' . $moreOutputOptions . '
-						if(typeof(removeSlideShowViewer) != "undefined")
-						{
-							evarisk(".slideshow").remove();
+						if(typeof(removeSlideShowViewer) != "undefined"){
+							digirisk(".slideshow").remove();
 						}
 					},500);
 				});
@@ -455,8 +449,7 @@ class EvaPhoto {
 	*
 	*	@return mixed $uploadForm The html code for the upload form
 	*/
-	function getUploadForm($tableElement, $idElement, $on_complete_form = '')
-	{
+	function getUploadForm($tableElement, $idElement, $on_complete_form = ''){
 		$repertoireDestination = str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/');
 		$idUpload = 'mainPhoto' . $tableElement;
 		$allowedExtensions = "['jpeg','jpg','png','gif']";
@@ -625,8 +618,7 @@ class EvaPhoto {
 	 *
 	 * @return string The upload form with eventually a thumbnail.
 	 */
-	function getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut, $texteBoutton = '', $onCompleteAction = '')
-	{
+	function getFormulaireUploadPhoto($tableElement, $idElement, $repertoireDestination, $idUpload, $allowedExtensions, $multiple, $actionUpload, $photoDefaut, $texteBoutton = '', $onCompleteAction = ''){
 		require_once(EVA_LIB_PLUGIN_DIR . 'upload.php' );
 
 		$texteBoutton = ($texteBoutton == '') ? __("T&eacute;l&eacute;charger un fichier", "evarisk") : $texteBoutton;
@@ -638,28 +630,25 @@ class EvaPhoto {
 
 		$formulaireUpload = 
 			'<script type="text/javascript">        
-				evarisk(document).ready(function(){
+				digirisk(document).ready(function(){
 					var uploader' . $idUpload . ' = new qq.FileUploader({
 						element: document.getElementById("' . $idUpload . '"),
 						action: "' . $actionUpload . '",
 						allowedExtensions: ' . $allowedExtensions . ',
 						multiple: ' . $multiple . ',
-						params: {
+						params:{
 							"tableElement": "' . $tableElement . '",
 							"idElement": "' . $idElement . '",
 							"folder": "' . $repertoireDestination . '"
 						},
 						onComplete: function(file, response){
-							//evarisk("#thumb' . $idUpload . '").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $tableElement . "/" . $idElement  . '/" + response);
 							' . $onCompleteAction . '
 						}
 					});
 
-					evarisk("#' . $idUpload . ' .qq-upload-button").html("' . $texteBoutton . '");
-					
-					
-					evarisk(".qq-upload-button").each(function(){
-						// evarisk(this).html("' . $texteBoutton . '");
+					jQuery("#' . $idUpload . ' .qq-upload-button").html("' . $texteBoutton . '");
+
+					jQuery("#' . $idUpload . ' .qq-upload-button").each(function(){
 						uploader' . $idUpload . '._button = new qq.UploadButton({
 							element: uploader' . $idUpload . '._getElement("button"),
 							multiple: ' . $multiple . ',
@@ -668,22 +657,19 @@ class EvaPhoto {
 							}
 						});
 					});
-					evarisk(".qq-upload-drop-area").each(function(){
-						evarisk(this).html("<span>' . __("D&eacute;poser les fichiers ici pour les t&eacute;l&eacute;charger", "evarisk") . '</span>");
+					jQuery(".qq-upload-drop-area").each(function(){
+						jQuery(this).html("<span>' . __("D&eacute;poser les fichiers ici pour les t&eacute;l&eacute;charger", "evarisk") . '</span>");
 					});
-					evarisk("#thumb' . $idUpload . '").parent().show();
+					jQuery("#thumb' . $idUpload . '").parent().show();
 				});
 			</script>
 			<div class="thumbnailUpload alignright" id="defaultPicture' . $tableElement . '_' . $idElement . '" >';
-			if(($photoDefaut!='') && ((is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $photoDefaut))) || (is_file(str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $photoDefaut)))))
-			{
+			if(($photoDefaut!='') && ((is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $photoDefaut))) || (is_file(str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $photoDefaut))))){
 				$formulaireUpload .= '
 					<a href="' . $photoDefaut . '" target="mainPicture" ><img id="thumb' . $idUpload . '" src="' . $photoDefaut . '" class="" /></a>';
 			}
-			else
-			{
-				$formulaireUpload .= '
-					&nbsp;';
+			else{
+				$formulaireUpload .= '&nbsp;';
 			}
 			$formulaireUpload .= 
 			'</div>
@@ -732,16 +718,16 @@ class EvaPhoto {
 			}
 
 			$mainPictureUpdate = 
-				'evarisk("#defaultPicture' . $tableElement . '_' . $idElement . '").html("<img src=\'' . $definedDefaultPicture . '\' alt=\'main picture\' />");
-				evarisk("#photo' . $tableElement . $idElement . '").attr("src", "' . $definedDefaultPicture . '");';
+				'digirisk("#defaultPicture' . $tableElement . '_' . $idElement . '").html("<img src=\'' . $definedDefaultPicture . '\' alt=\'main picture\' />");
+				digirisk("#photo' . $tableElement . $idElement . '").attr("src", "' . $definedDefaultPicture . '");';
 		}
 
 		/*	Desactivation de la photo selectionnee	*/
 		$updateAssociationResult = evaPhoto::unAssociatePicture($tableElement, $idElement, $idPicture);
 
 		$messageInfo = '<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
+			digirisk(document).ready(function(){
+				digirisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
 		if($updateAssociationResult != 'error'){	
 			switch($tableElement){
 				case TABLE_ACTIVITE:
@@ -751,17 +737,17 @@ class EvaPhoto {
 				break;
 			}
 			$messageInfo .= '
-					evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
+					digirisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
 		else{
 			$messageInfo .= '
-					evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
+					digirisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre supprim&eacute;e.', 'evarisk') . '</strong></p>') . '");';
 		}
 		$messageInfo .= '
-					evarisk("#message' . $tableElement . '_' . $idElement . '").show();
+					digirisk("#message' . $tableElement . '_' . $idElement . '").show();
 					setTimeout(function(){
-						evarisk("#message' . $tableElement . '_' . $idElement . '").removeClass("updated");
-						evarisk("#message' . $tableElement . '_' . $idElement . '").hide();
+						digirisk("#message' . $tableElement . '_' . $idElement . '").removeClass("updated");
+						digirisk("#message' . $tableElement . '_' . $idElement . '").hide();
 					},7500);
 				});
 			' . $mainPictureUpdate . '
@@ -786,8 +772,8 @@ class EvaPhoto {
 		$updateMainPhotoResult = evaPhoto::setMainPhoto($tableElement, $idElement, $idPicture, $isMainPicture);
 
 		$messageInfo = '<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
+			digirisk(document).ready(function(){
+				digirisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
 
 		if($isMainPicture == 'yes')
 		{
@@ -801,12 +787,12 @@ class EvaPhoto {
 					break;
 				}
 				$messageInfo .= '
-						evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
+						digirisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 			else
 			{
 				$messageInfo .= '
-						evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
+						digirisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 		}
 		elseif($isMainPicture == 'no')
@@ -821,12 +807,12 @@ class EvaPhoto {
 					break;
 				}
 				$messageInfo .= '
-						evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'est plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
+						digirisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'est plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 			else
 			{
 				$messageInfo .= '
-						evarisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme n\&eacute;tant plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
+						digirisk("#message' . $tableElement . '_' . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'image n\'a pas pu &ecirc;tre d&eacute;finie comme n\&eacute;tant plus la photo principale.', 'evarisk') . '</strong></p>') . '");';
 			}
 		}
 
@@ -855,14 +841,14 @@ class EvaPhoto {
 		$resultDefaultPicture = ($defaultPicture != 'error') ? ($pathToMainPicture . $defaultPicture) : $definedDefaultPicture;
 
 		$messageInfo .= '
-					evarisk("#message' . $tableElement . '_' . $idElement . '").show();
+					digirisk("#message' . $tableElement . '_' . $idElement . '").show();
 					setTimeout(function(){
-						evarisk("#message' . $tableElement . '_' . $idElement . '").removeClass("updated");
-						evarisk("#message' . $tableElement . '_' . $idElement . '").hide();
+						digirisk("#message' . $tableElement . '_' . $idElement . '").removeClass("updated");
+						digirisk("#message' . $tableElement . '_' . $idElement . '").hide();
 					},5000);
 					reloadcontainer(\'' . $tableElement . '\', \'' . $idElement . '\', \'' . PICTO_LOADING_ROUND . '\');
 				});
-				evarisk("#photo' . $tableElement . $idElement . '").attr("src", "' . $resultDefaultPicture . '");
+				digirisk("#photo' . $tableElement . $idElement . '").attr("src", "' . $resultDefaultPicture . '");
 			</script>';
 
 		return $messageInfo . '<img src="' . $resultDefaultPicture . '" alt="" />';
@@ -902,8 +888,7 @@ class EvaPhoto {
 	*
 	*	@return mixed The code wich will be shown in source code
 	*/
-	function galleryContent($tableElement, $idElement, $userCanUploadPhoto = true)
-	{
+	function galleryContent($tableElement, $idElement, $userCanUploadPhoto = true){
 		$galleryOutput = '';
 
 		$galleryOutput = 
@@ -956,52 +941,98 @@ class EvaPhoto {
 	/**
 	*
 	*/
-	function checkIfPictureIsFile($pictureToCheck, $tableElement, $putDefaultPicture = true)
-	{
+	function checkIfPictureIsFile($pictureToCheck, $tableElement, $putDefaultPicture = true){
 
-		switch($tableElement)
-		{
+		switch($tableElement){
 			case TABLE_PRECONISATION:
-			{
 				$defaultPicture = EVA_RECOMMANDATION_ICON;
-			}
 			break;
 			case TABLE_CATEGORIE_PRECONISATION:
-			{
 				$defaultPicture = EVA_RECOMMANDATION_ICON;
-			}
 			break;
 			case TABLE_CATEGORIE_DANGER:
-			{
 				$defaultPicture = DEFAULT_DANGER_CATEGORIE_PICTO;
-			}
 			break;
 			default:
-			{
 				$defaultPicture = false;
-			}
 			break;
 		}
 
 		$pictureExist = false;
-		if($pictureToCheck != '')
-		{
-			if(is_file(EVA_HOME_DIR . $pictureToCheck))
-			{
+		if($pictureToCheck != ''){
+			if(is_file(EVA_HOME_DIR . $pictureToCheck)){
 				$pictureExist = EVA_HOME_URL . $pictureToCheck;
 			}
-			elseif(is_file(EVA_GENERATED_DOC_DIR . $pictureToCheck))
-			{
+			elseif(is_file(EVA_GENERATED_DOC_DIR . $pictureToCheck)){
 				$pictureExist = EVA_GENERATED_DOC_URL . $pictureToCheck;
 			}
 		}
 
-		if(($putDefaultPicture) && (!$pictureExist) && ($defaultPicture != false) && (is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $defaultPicture))))
-		{
+		if(($putDefaultPicture) && (!$pictureExist) && ($defaultPicture != false) && (is_file(str_replace(EVA_HOME_URL, EVA_HOME_DIR, $defaultPicture)))){
 			$pictureExist = $defaultPicture;
 		}
 
 		return $pictureExist;
+	}
+
+	/**
+	*
+	*/
+	function picture_gallery_box($arguments){
+		$idElement = $arguments['idElement'];
+		$tableElement = $arguments['tableElement'];
+
+		switch($tableElement)
+		{
+			case TABLE_CATEGORIE_DANGER:
+				$userCanUploadPicture = current_user_can('digi_edit_danger_category');
+				echo '
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		// jQuery("#mainPhoto' . $tableElement . '").hide();
+		// setTimeout(function(){jQuery("#mainPhoto' . $tableElement . ' .qq-uploader .qq-upload-button").css("position", "");}, 1500);
+		// setTimeout(function(){jQuery("#mainPhoto' . $tableElement . '").show();}, 2000);
+	});
+</script>';
+			break;
+			case TABLE_GROUPEMENT:
+				$userCanUploadPicture = current_user_can('digi_edit_groupement');
+				if(!$userCanUploadPicture){
+					$userCanUploadPicture = current_user_can('digi_edit_groupement_' . $idElement);
+				}
+			break;
+			case TABLE_UNITE_TRAVAIL:
+				$userCanUploadPicture = current_user_can('digi_edit_unite');
+				if(!$userCanUploadPicture){
+					$userCanUploadPicture = current_user_can('digi_edit_unite_' . $idElement);
+				}
+			break;
+			case TABLE_TACHE:
+				$userCanUploadPicture = current_user_can('digi_edit_task');
+			break;
+			case TABLE_ACTIVITE:
+				$userCanUploadPicture = current_user_can('digi_edit_action');
+			break;
+			case TABLE_CATEGORIE_PRECONISATION:
+				$userCanUploadPicture = current_user_can('digi_edit_recommandation_cat');
+			break;
+			case TABLE_PRECONISATION:
+				$userCanUploadPicture = current_user_can('digi_edit_recommandation');
+			break;
+			case TABLE_METHODE:
+				$userCanUploadPicture = current_user_can('digi_edit_method');
+			break;
+			case TABLE_METHODE:
+				$userCanUploadPicture = current_user_can('digi_edit_menu');
+			break;
+			default:
+				$userCanUploadPicture = true;
+			break;
+		}
+
+		$output = evaPhoto::galleryContent($tableElement, $idElement, $userCanUploadPicture);
+
+		echo $output;
 	}
 
 }

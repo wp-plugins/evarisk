@@ -34,24 +34,24 @@ class suivi_activite
 			$idBouttonEnregistrer = 'saveActionFollow';
 			$scriptEnregistrement = 
 				'<script type="text/javascript">
-					evarisk(document).ready(function() {				
-						evarisk("#' . $idBouttonEnregistrer . '").click(function() {
-							if(evarisk("#commentaire' . $tableElement . $idElement . '").val() != ""){
-								evarisk("#load' . $idBouttonEnregistrer . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" />\');
-								evarisk("#bttn' . $idBouttonEnregistrer . '").hide();
-								evarisk("#load' . $idBouttonEnregistrer . '").show();
+					digirisk(document).ready(function() {				
+						digirisk("#' . $idBouttonEnregistrer . '").click(function() {
+							if(digirisk("#commentaire' . $tableElement . $idElement . '").val() != ""){
+								digirisk("#load' . $idBouttonEnregistrer . '").html(\'<img src="' . PICTO_LOADING_ROUND . '" />\');
+								digirisk("#bttn' . $idBouttonEnregistrer . '").hide();
+								digirisk("#load' . $idBouttonEnregistrer . '").show();
 
-								evarisk("#load' . $tableElement . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								digirisk("#load' . $tableElement . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post": "true", 
 									"table": "' . TABLE_ACTIVITE_SUIVI . '",
 									"act": "save",
 									"idElement": "' . $idElement . '",
 									"tableElement": "' . $tableElement . '",
-									"commentaire": evarisk("#commentaire' . $tableElement . $idElement . '").val()
+									"commentaire": digirisk("#commentaire' . $tableElement . $idElement . '").val()
 								});
 							}
 							else{
-								alert(convertAccentToJS("' . __('Vous ne pouvez pas ajouter de commentaire vide', 'evarisk') . '"));
+								alert(digi_html_accent_for_js("' . __('Vous ne pouvez pas ajouter de commentaire vide', 'evarisk') . '"));
 							}
 						});
 					});
@@ -154,15 +154,15 @@ class suivi_activite
 
 			$scriptTableauSuiviModification = 
 			'<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk("#' . $idTable . '").dataTable({
+				digirisk(document).ready(function() {
+					digirisk("#' . $idTable . '").dataTable({
 						"bInfo": false,
 						"oLanguage":{
 							"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
 						}
 					});
-					// evarisk("#' . $idTable . '").children("thead").remove();
-					evarisk("#' . $idTable . '").children("tfoot").remove();
+					// digirisk("#' . $idTable . '").children("thead").remove();
+					digirisk("#' . $idTable . '").children("tfoot").remove();
 				});
 			</script>';
 

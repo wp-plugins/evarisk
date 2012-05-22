@@ -43,7 +43,7 @@ class evaNotes
 
 		if(!is_dir(EVA_NOTES_PLUGIN_DIR))
 		{
-			eva_tools::make_recursiv_dir(EVA_NOTES_PLUGIN_DIR);
+			digirisk_tools::make_recursiv_dir(EVA_NOTES_PLUGIN_DIR);
 		}
 		elseif(is_file(EVA_NOTES_PLUGIN_DIR . 'user-' . $current_user->ID . '_Notes.txt'))
 		{
@@ -66,36 +66,36 @@ class evaNotes
 	function noteDialogScriptMaker()
 	{
 		$noteDialogScript = '
-				evarisk("#digiNotes").html(evarisk("#loadingImg").html());
-				evarisk("#noteTaker").click(function(){
-					evarisk("#digiNotes").dialog("open");
-					evarisk("#digiNotes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#digiNotes").html(digirisk("#loadingImg").html());
+				digirisk("#noteTaker").click(function(){
+					digirisk("#digiNotes").dialog("open");
+					digirisk("#digiNotes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 					{
 						"post":"true",
 						"act":"loadDiginote"
 					});
 				});
 
-				evarisk("#digiNotes").dialog({
+				digirisk("#digiNotes").dialog({
 					autoOpen: false,
 					height: 500,
 					width: 500,
 					modal: true,
 					buttons:{
 						"' . __('Annuler', 'evarisk') . '": function(){
-							evarisk(this).dialog("close");
+							digirisk(this).dialog("close");
 						},
 						"' . __('Enregistrer', 'evarisk') . '": function(){
-							evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 							{
 								"post":"true",
 								"act":"saveDigiNote",
-								"notesContent": evarisk("#digiNotesInput").val()
+								"notesContent": digirisk("#digiNotesInput").val()
 							});
 						}
 					},
 					close: function(){
-						evarisk("#digiNotes").html(evarisk("#loadingImg").html());
+						digirisk("#digiNotes").html(digirisk("#loadingImg").html());
 					}
 				});';
 		return $noteDialogScript;
@@ -113,7 +113,7 @@ class evaNotes
 		/*	Check if the dir exist, if not create it before trying to save file	*/
 		if(!is_dir(EVA_NOTES_PLUGIN_DIR))
 		{
-			eva_tools::make_recursiv_dir(EVA_NOTES_PLUGIN_DIR);
+			digirisk_tools::make_recursiv_dir(EVA_NOTES_PLUGIN_DIR);
 		}
 
 		/*	Write the text file with the user notes	*/
@@ -128,11 +128,11 @@ class evaNotes
 
 echo 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		actionMessageShow("#noteSaverMessage", "' . $messageInfo . '");
 		setTimeout(function(){
 			actionMessageHide("#noteSaverMessage");
-			evarisk("#digiNotes").dialog("close");
+			digirisk("#digiNotes").dialog("close");
 		}
 		,2000);
 	});

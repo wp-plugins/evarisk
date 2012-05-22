@@ -105,6 +105,7 @@ class digirisk_options
 	function optionMainPage(){
 		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel Digirisk', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false);
 ?>
+<div class="digirisk_hide" id="loadingImg" ><div class="main_loading_pic_container" ><img src="<?php echo PICTO_LOADING; ?>" alt="loading..." /></div></div>
 <div id="digirisk_options_container" >
 	<form action="options.php" method="post" id="option_form" >
 	<div id="options_tabs" >
@@ -123,6 +124,10 @@ if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
 <?php
 endif;
 ?>
+			<li class="loading_pic_on_select tabOptions_Recommandation" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=recommandation" title="digirisk_configurations_tab" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
+			<li class="loading_pic_on_select tabOptions_Evaluation_method" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=evaluation_method" title="digirisk_configurations_tab" ><?php _e('M&eacute;thodes d\'&eacute;valuation', 'evarisk'); ?></a></li>
+			<li class="loading_pic_on_select tabOptions_Danger" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=danger" title="digirisk_configurations_tab" ><?php _e('Dangers', 'evarisk'); ?></a></li>
+			<!-- <li class="loading_pic_on_select tabOptions_Menu" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=menu" title="digirisk_configurations_tab" ><?php _e('Menu', 'evarisk'); ?></a></li> -->
 		</ul>
 		<div id="digirisk_options_general" ><?php do_settings_sections('digirisk_options_general'); ?></div>
 		<div id="digirisk_options_user" ><?php do_settings_sections('digirisk_options_user'); ?></div>
@@ -138,22 +143,28 @@ if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
 <?php
 endif;
 ?>
+		<div id="digirisk_configurations_tab" >&nbsp;</div>
 	</div>
 <?php
 		settings_fields('digirisk_options');
 if(current_user_can('digi_edit_option')){
 ?>
-	<input class="button-primary alignright" name="Submit" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" />
+	<input class="button-primary alignright" name="Submit" type="submit" id="digi_option_submit_button" value="<?php esc_attr_e('Save Changes'); ?>" />
 <?php
 }
 ?>
 	</form>
 </div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#options_tabs").tabs();
 		jQuery("#options_tabs ul li a").click(function(){
 			jQuery("#option_form").attr("action", "options.php" + jQuery(this).attr("href"));
+			jQuery("#digi_option_submit_button").show();
+		});
+		jQuery(".loading_pic_on_select a").click(function(){
+			jQuery("#digirisk_configurations_tab").html(jQuery("#loadingImg").html());
+			jQuery("#digi_option_submit_button").hide();
 		});
 
 		/*	Add support for option allowed_extension for AC deletion	*/
@@ -167,7 +178,7 @@ if(current_user_can('digi_edit_option')){
 				jQuery("#new_allowed_extension").val("");
 			}
 			else{
-				alert(convertAccentToJS("<?php _e('Vous n\'avez pas entr&eacute; d\'extension', 'evarisk'); ?>"));
+				alert(digi_html_accent_for_js("<?php _e('Vous n\'avez pas entr&eacute; d\'extension', 'evarisk'); ?>"));
 			}
 		});
 	});
@@ -465,7 +476,7 @@ if(current_user_can('digi_edit_option')){
 		if(current_user_can('digi_edit_option')){
 			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >&nbsp;&nbsp;&nbsp;' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;:[digirisk_correctiv_action]<br/>' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="text" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#digi_ac_allow_front_ask").change(function(){
 			if(jQuery(this).val() == "oui"){
 				jQuery("#associated_task_container").show();
@@ -652,7 +663,7 @@ if(current_user_can('digi_edit_option')){
 				<div id="delete_digi_user_extra_field_container" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimez ce champs', 'evarisk') . '" id="delete_selected_digi_user_extra_field" class="delete_selected_digi_user_extra_field" /></div>
 				<div id="digi_user_extra_field_details" >&nbsp;</div>
 				<script type="text/javascript" >
-					evarisk(document).ready(function(){
+					digirisk(document).ready(function(){
 						jQuery("#add_new_user_field").click(function(){
 							lineNumber = jQuery("#digi_user_extra_field_details div.digi_user_extra_field").length;
 							jQuery("#digi_user_extra_field_details").append(jQuery("#digi_user_extra_field_container").html());
@@ -850,7 +861,7 @@ if(current_user_can('digi_edit_option')){
 				<div id="delete_digi_gpt_extra_field_container" class="hide" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimez ce champs', 'evarisk') . '" id="delete_selected_digi_gpt_extra_field" class="delete_selected_digi_gpt_extra_field" /></div>
 				<div id="digi_gpt_extra_field_details" >&nbsp;</div>
 				<script type="text/javascript" >
-					evarisk(document).ready(function(){
+					digirisk(document).ready(function(){
 						jQuery("#add_gpt_new_field").click(function(){
 							lineNumber = jQuery("#digi_gpt_extra_field_details div.digi_gpt_extra_field").length;
 							jQuery("#digi_gpt_extra_field_details").append(jQuery("#digi_gpt_extra_field_container").html());
@@ -900,7 +911,7 @@ if(current_user_can('digi_edit_option')){
 				<div id="delete_digi_ut_extra_field_container" class="hide" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimez ce champs', 'evarisk') . '" id="delete_selected_digi_ut_extra_field" class="delete_selected_digi_ut_extra_field" /></div>
 				<div id="digi_ut_extra_field_details" >&nbsp;</div>
 				<script type="text/javascript" >
-					evarisk(document).ready(function(){
+					digirisk(document).ready(function(){
 						jQuery("#add_ut_new_field").click(function(){
 							lineNumber = jQuery("#digi_ut_extra_field_details div.digi_ut_extra_field").length;
 							jQuery("#digi_ut_extra_field_details").append(jQuery("#digi_ut_extra_field_container").html());
@@ -988,7 +999,7 @@ if(current_user_can('digi_edit_option')){
 		/*	Keep the old method to get plugin version because of update	*/
 		if($optionSubValue == -1){
 			global $wpdb;
-			$subOptionName = eva_tools::IsValid_Variable($subOptionName);
+			$subOptionName = digirisk_tools::IsValid_Variable($subOptionName);
 			if( $wpdb->get_var("show tables like '" . TABLE_VERSION . "'") == TABLE_VERSION){
 				$query = $wpdb->prepare("SELECT version
 					FROM " . TABLE_VERSION . "

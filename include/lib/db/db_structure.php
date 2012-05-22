@@ -37,7 +37,6 @@ CREATE TABLE {$t} (
   `accident_hour` time default NULL,
   `accident_title` char(255) collate utf8_unicode_ci NOT NULL,
   `police_report_writer` char(255) collate utf8_unicode_ci NOT NULL,
-	test int(10),
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
   KEY `declaration_state` (`declaration_state`),
@@ -138,6 +137,7 @@ $t = TABLE_ACTIVITE;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Activity Identifier',
+	`is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `id_tache` int(10) NOT NULL COMMENT 'Task which the activity depends on',
   `idCreateur` bigint(20) NOT NULL COMMENT 'The identifier of the user who create the action',
   `idResponsable` bigint(20) NOT NULL COMMENT 'The identifier of the user who is in charge of the action',
@@ -184,6 +184,7 @@ $t = TABLE_TACHE;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Task Identifier',
+	`is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Task name',
   `limiteGauche` int(10) NOT NULL COMMENT 'Left limit to simulate the tree',
   `limiteDroite` int(10) NOT NULL COMMENT 'Right limit to simulate the tree',
@@ -1621,4 +1622,14 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_DUER] = array(array('field' => 'planDUER', 'type' => "longtext"));
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_DUER);
+}
+
+{/*	Version 70	*/
+	$digirisk_db_version = 70;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('is_readable_from_external');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('is_readable_from_external');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE, TABLE_TACHE);
 }

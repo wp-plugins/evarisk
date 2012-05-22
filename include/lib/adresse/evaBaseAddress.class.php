@@ -223,14 +223,14 @@ class EvaBaseAddress
 		global $wpdb;
 		
 		{//Variables cleaning
-			$id = (int) eva_tools::IsValid_Variable($this->getId());
-			$firstLine = eva_tools::IsValid_Variable($this->getFirstLine());
-			$secondLine = eva_tools::IsValid_Variable($this->getSecondLine());
-			$codePostal = eva_tools::IsValid_Variable($this->getPostalCode());
-			$city = eva_tools::IsValid_Variable($this->getCity());
-			$latitude = (float) eva_tools::IsValid_Variable($this->getLatitude());
-			$longitude = (float) eva_tools::IsValid_Variable($this->getLongitude());
-			$status = eva_tools::IsValid_Variable($this->getStatus());
+			$id = (int) digirisk_tools::IsValid_Variable($this->getId());
+			$firstLine = digirisk_tools::IsValid_Variable($this->getFirstLine());
+			$secondLine = digirisk_tools::IsValid_Variable($this->getSecondLine());
+			$codePostal = digirisk_tools::IsValid_Variable($this->getPostalCode());
+			$city = digirisk_tools::IsValid_Variable($this->getCity());
+			$latitude = (float) digirisk_tools::IsValid_Variable($this->getLatitude());
+			$longitude = (float) digirisk_tools::IsValid_Variable($this->getLongitude());
+			$status = digirisk_tools::IsValid_Variable($this->getStatus());
 		}
 		
 		//Query creation
@@ -265,7 +265,7 @@ class EvaBaseAddress
 	function load()
 	{
 		global $wpdb;
-		$id = (int) eva_tools::IsValid_Variable($this->getId());
+		$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 		if($id != 0)
 		{
 			$wpdbAddress = $wpdb->get_row( "SELECT * FROM " . TABLE_ADRESSE . " WHERE id = " . $id);

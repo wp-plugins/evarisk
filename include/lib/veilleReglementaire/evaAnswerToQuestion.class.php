@@ -25,9 +25,9 @@ class EvaAnswerToQuestion {
 	{
 		global $wpdb;
 		
-		$idQuestion = mysql_real_escape_string(eva_tools::IsValid_Variable($idQuestion));
-		$tableElement = mysql_real_escape_string(eva_tools::IsValid_Variable($tableElement));
-		$idElement = mysql_real_escape_string(eva_tools::IsValid_Variable($idElement));
+		$idQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idQuestion));
+		$tableElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($tableElement));
+		$idElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idElement));
 		
 		$resultat = $wpdb->get_row
 		(
@@ -62,11 +62,11 @@ class EvaAnswerToQuestion {
 	{
 		global $wpdb;
 		
-		$tableElement = mysql_real_escape_string(eva_tools::IsValid_Variable($tableElement));
-		$idElement = mysql_real_escape_string(eva_tools::IsValid_Variable($idElement));
-		$where = mysql_real_escape_string(eva_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(eva_tools::IsValid_Variable($order));
-		$date = mysql_real_escape_string(eva_tools::IsValid_Variable($date));
+		$tableElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($tableElement));
+		$idElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idElement));
+		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
+		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
+		$date = mysql_real_escape_string(digirisk_tools::IsValid_Variable($date));
 		$sql = "SELECT * 
 			FROM " . TABLE_REPONSE_QUESTION . "
 			WHERE date = '" . $date . "'
@@ -88,8 +88,8 @@ class EvaAnswerToQuestion {
 	{
 		global $wpdb;
 		
-		$where = mysql_real_escape_string(eva_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(eva_tools::IsValid_Variable($order));
+		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
+		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
 		
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_REPONSE_QUESTION . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
@@ -148,14 +148,14 @@ class EvaAnswerToQuestion {
 		$status = 'error';
 		global $wpdb;
 		
-		$idQuestion = eva_tools::IsValid_Variable($idQuestion);
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
-		$date = eva_tools::IsValid_Variable($date);
-		$idReponse = eva_tools::IsValid_Variable($idReponse);
-		$valeur = eva_tools::IsValid_Variable($valeur);
-		$observation =eva_tools::IsValid_Variable($observation);
-		$limiteValidite =eva_tools::IsValid_Variable($limiteValidite);
+		$idQuestion = digirisk_tools::IsValid_Variable($idQuestion);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
+		$date = digirisk_tools::IsValid_Variable($date);
+		$idReponse = digirisk_tools::IsValid_Variable($idReponse);
+		$valeur = digirisk_tools::IsValid_Variable($valeur);
+		$observation =digirisk_tools::IsValid_Variable($observation);
+		$limiteValidite =digirisk_tools::IsValid_Variable($limiteValidite);
 
 		$latestAnswer = EvaAnswerToQuestion::getLatestAnswerByQuestionAndElement($idQuestion, $tableElement, $idElement);
 		if($latestAnswer != NULL)
@@ -224,14 +224,14 @@ class EvaAnswerToQuestion {
 		$status = 'error';
 		global $wpdb;
 		
-		$idQuestion = eva_tools::IsValid_Variable($idQuestion);
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
-		$date = eva_tools::IsValid_Variable($date);
-		$idReponse = eva_tools::IsValid_Variable($idReponse);
-		$valeur = eva_tools::IsValid_Variable($valeur);
-		$observation = eva_tools::IsValid_Variable($observation);
-		$limiteValidite = eva_tools::IsValid_Variable($limiteValidite);
+		$idQuestion = digirisk_tools::IsValid_Variable($idQuestion);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
+		$date = digirisk_tools::IsValid_Variable($date);
+		$idReponse = digirisk_tools::IsValid_Variable($idReponse);
+		$valeur = digirisk_tools::IsValid_Variable($valeur);
+		$observation = digirisk_tools::IsValid_Variable($observation);
+		$limiteValidite = digirisk_tools::IsValid_Variable($limiteValidite);
 
 		if(($valeur == null) || ($valeur == ''))
 		{
@@ -281,10 +281,10 @@ class EvaAnswerToQuestion {
 	static function deleteAnswerToQuestion($idQuestion, $tableElement, $idElement, $date)
 	{
 		global $wpdb;
-		$idQuestion = mysql_real_escape_string(eva_tools::IsValid_Variable($idQuestion));
-		$tableElement = mysql_real_escape_string(eva_tools::IsValid_Variable($tableElement));
-		$idElement = mysql_real_escape_string(eva_tools::IsValid_Variable($idElement));
-		$date = mysql_real_escape_string(eva_tools::IsValid_Variable($date));
+		$idQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idQuestion));
+		$tableElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($tableElement));
+		$idElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idElement));
+		$date = mysql_real_escape_string(digirisk_tools::IsValid_Variable($date));
 		
 		$sql = "UPDATE " . TABLE_REPONSE_QUESTION . " set Status='Delete' 
 		WHERE id_question = '" . $idQuestion . "'

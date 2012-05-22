@@ -1,591 +1,593 @@
 <?php
+/**
+ * Twenty Eleven functions and definitions
+ *
+ * Sets up the theme and provides some helper functions. Some helper functions
+ * are used in the theme as custom template tags. Others are attached to action and
+ * filter hooks in WordPress to change core functionality.
+ *
+ * The first function, twentyeleven_setup(), sets up the theme by registering support
+ * for various features in WordPress, such as post thumbnails, navigation menus, and the like.
+ *
+ * When using a child theme (see http://codex.wordpress.org/Theme_Development and
+ * http://codex.wordpress.org/Child_Themes), you can override certain functions
+ * (those wrapped in a function_exists() call) by defining them first in your child theme's
+ * functions.php file. The child theme's functions.php file is included before the parent
+ * theme's file, so the child theme functions would be used.
+ *
+ * Functions that are not pluggable (not wrapped in function_exists()) are instead attached
+ * to a filter or action hook. The hook can be removed by using remove_action() or
+ * remove_filter() and you can attach your own function to the hook.
+ *
+ * We can remove the parent theme's hook only after it is attached, which means we need to
+ * wait until setting up the child theme:
+ *
+ * <code>
+ * add_action( 'after_setup_theme', 'my_child_theme_setup' );
+ * function my_child_theme_setup() {
+ *     // We are providing our own filter for excerpt_length (or using the unfiltered value)
+ *     remove_filter( 'excerpt_length', 'twentyeleven_excerpt_length' );
+ *     ...
+ * }
+ * </code>
+ *
+ * For more information on hooks, actions, and filters, see http://codex.wordpress.org/Plugin_API.
+ *
+ * @package WordPress
+ * @subpackage Twenty_Eleven
+ * @since Twenty Eleven 1.0
+ */
 
-/** inove options */
-class iNoveOptions {
+/**
+ * Set the content width based on the theme's design and stylesheet.
+ */
+if ( ! isset( $content_width ) )
+	$content_width = 584;
 
-	function getOptions() {
-		$options = get_option('inove_options');
-		if (!is_array($options)) {
-			$options['google_cse'] = false;
-			$options['google_cse_cx'] = '';
-			$options['menu_type'] = 'pages';
-			$options['nosidebar'] = false;
-			$options['notice'] = false;
-			$options['notice_content'] = '';
-			$options['banner_registered'] = false;
-			$options['banner_commentator'] = false;
-			$options['banner_visitor'] = false;
-			$options['banner_content'] = '';
-			$options['showcase_registered'] = false;
-			$options['showcase_commentator'] = false;
-			$options['showcase_visitor'] = false;
-			$options['showcase_caption'] = false;
-			$options['showcase_title'] = '';
-			$options['showcase_content'] = '';
-			$options['author'] = true;
-			$options['categories'] = true;
-			$options['tags'] = true;
-			$options['ctrlentry'] = false;
-			$options['feed_readers'] = true;
-			$options['feed'] = false;
-			$options['feed_url'] = '';
-			$options['feed_email'] = false;
-			$options['feed_url_email'] = '';
-			$options['twitter'] = false;
-			$options['twitter_username'] = '';
-			$options['analytics'] = false;
-			$options['analytics_content'] = '';
-			update_option('inove_options', $options);
+/**
+ * Tell WordPress to run twentyeleven_setup() when the 'after_setup_theme' hook is run.
+ */
+add_action( 'after_setup_theme', 'twentyeleven_setup' );
+
+if ( ! function_exists( 'twentyeleven_setup' ) ):
+/**
+ * Sets up theme defaults and registers support for various WordPress features.
+ *
+ * Note that this function is hooked into the after_setup_theme hook, which runs
+ * before the init hook. The init hook is too late for some features, such as indicating
+ * support post thumbnails.
+ *
+ * To override twentyeleven_setup() in a child theme, add your own twentyeleven_setup to your child theme's
+ * functions.php file.
+ *
+ * @uses load_theme_textdomain() For translation/localization support.
+ * @uses add_editor_style() To style the visual editor.
+ * @uses add_theme_support() To add support for post thumbnails, automatic feed links, and Post Formats.
+ * @uses register_nav_menus() To add support for navigation menus.
+ * @uses add_custom_background() To add support for a custom background.
+ * @uses add_custom_image_header() To add support for a custom header.
+ * @uses register_default_headers() To register the default custom header images provided with the theme.
+ * @uses set_post_thumbnail_size() To set a custom post thumbnail size.
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_setup() {
+
+	/* Make Twenty Eleven available for translation.
+	 * Translations can be added to the /languages/ directory.
+	 * If you're building a theme based on Twenty Eleven, use a find and replace
+	 * to change 'twentyeleven' to the name of your theme in all the template files.
+	 */
+	load_theme_textdomain( 'twentyeleven', TEMPLATEPATH . '/languages' );
+
+	$locale = get_locale();
+	$locale_file = TEMPLATEPATH . "/languages/$locale.php";
+	if ( is_readable( $locale_file ) )
+		require_once( $locale_file );
+
+	// This theme styles the visual editor with editor-style.css to match the theme style.
+	add_editor_style();
+
+	// Load up our theme options page and related code.
+	require( dirname( __FILE__ ) . '/inc/theme-options.php' );
+
+	// Grab Twenty Eleven's Ephemera widget.
+	require( dirname( __FILE__ ) . '/inc/widgets.php' );
+
+	// Add default posts and comments RSS feed links to <head>.
+	add_theme_support( 'automatic-feed-links' );
+
+	// This theme uses wp_nav_menu() in one location.
+	register_nav_menu( 'primary', __( 'Primary Menu', 'twentyeleven' ) );
+
+	// Add support for a variety of post formats
+	add_theme_support( 'post-formats', array( 'aside', 'link', 'gallery', 'status', 'quote', 'image' ) );
+
+	// Add support for custom backgrounds
+	add_custom_background();
+
+	// This theme uses Featured Images (also known as post thumbnails) for per-post/per-page Custom Header images
+	add_theme_support( 'post-thumbnails' );
+
+	// The next four constants set how Twenty Eleven supports custom headers.
+
+	// The default header text color
+	define( 'HEADER_TEXTCOLOR', '000' );
+
+	// By leaving empty, we allow for random image rotation.
+	define( 'HEADER_IMAGE', '' );
+
+	// The height and width of your custom header.
+	// Add a filter to twentyeleven_header_image_width and twentyeleven_header_image_height to change these values.
+	define( 'HEADER_IMAGE_WIDTH', apply_filters( 'twentyeleven_header_image_width', 1000 ) );
+	define( 'HEADER_IMAGE_HEIGHT', apply_filters( 'twentyeleven_header_image_height', 288 ) );
+
+	// We'll be using post thumbnails for custom header images on posts and pages.
+	// We want them to be the size of the header image that we just defined
+	// Larger images will be auto-cropped to fit, smaller ones will be ignored. See header.php.
+	set_post_thumbnail_size( HEADER_IMAGE_WIDTH, HEADER_IMAGE_HEIGHT, true );
+
+	// Add Twenty Eleven's custom image sizes
+	add_image_size( 'large-feature', HEADER_IMAGE_WIDTH, HEADER_IMAGE_HEIGHT, true ); // Used for large feature (header) images
+	add_image_size( 'small-feature', 500, 300 ); // Used for featured posts if a large-feature doesn't exist
+
+	// Turn on random header image rotation by default.
+	add_theme_support( 'custom-header', array( 'random-default' => true ) );
+
+	// Add a way for the custom header to be styled in the admin panel that controls
+	// custom headers. See twentyeleven_admin_header_style(), below.
+	add_custom_image_header( 'twentyeleven_header_style', 'twentyeleven_admin_header_style', 'twentyeleven_admin_header_image' );
+
+	// ... and thus ends the changeable header business.
+
+	// Default custom headers packaged with the theme. %s is a placeholder for the theme template directory URI.
+	register_default_headers( array(
+		'wheel' => array(
+			'url' => '%s/images/headers/wheel.jpg',
+			'thumbnail_url' => '%s/images/headers/wheel-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Wheel', 'twentyeleven' )
+		),
+		'shore' => array(
+			'url' => '%s/images/headers/shore.jpg',
+			'thumbnail_url' => '%s/images/headers/shore-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Shore', 'twentyeleven' )
+		),
+		'trolley' => array(
+			'url' => '%s/images/headers/trolley.jpg',
+			'thumbnail_url' => '%s/images/headers/trolley-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Trolley', 'twentyeleven' )
+		),
+		'pine-cone' => array(
+			'url' => '%s/images/headers/pine-cone.jpg',
+			'thumbnail_url' => '%s/images/headers/pine-cone-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Pine Cone', 'twentyeleven' )
+		),
+		'chessboard' => array(
+			'url' => '%s/images/headers/chessboard.jpg',
+			'thumbnail_url' => '%s/images/headers/chessboard-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Chessboard', 'twentyeleven' )
+		),
+		'lanterns' => array(
+			'url' => '%s/images/headers/lanterns.jpg',
+			'thumbnail_url' => '%s/images/headers/lanterns-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Lanterns', 'twentyeleven' )
+		),
+		'willow' => array(
+			'url' => '%s/images/headers/willow.jpg',
+			'thumbnail_url' => '%s/images/headers/willow-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Willow', 'twentyeleven' )
+		),
+		'hanoi' => array(
+			'url' => '%s/images/headers/hanoi.jpg',
+			'thumbnail_url' => '%s/images/headers/hanoi-thumbnail.jpg',
+			/* translators: header image description */
+			'description' => __( 'Hanoi Plant', 'twentyeleven' )
+		)
+	) );
+}
+endif; // twentyeleven_setup
+
+if ( ! function_exists( 'twentyeleven_header_style' ) ) :
+/**
+ * Styles the header image and text displayed on the blog
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_header_style() {
+
+	// If no custom options for text are set, let's bail
+	// get_header_textcolor() options: HEADER_TEXTCOLOR is default, hide text (returns 'blank') or any hex value
+	if ( HEADER_TEXTCOLOR == get_header_textcolor() )
+		return;
+	// If we get this far, we have custom styles. Let's do this.
+	?>
+	<style type="text/css">
+	<?php
+		// Has the text been hidden?
+		if ( 'blank' == get_header_textcolor() ) :
+	?>
+		#site-title,
+		#site-description {
+			position: absolute !important;
+			clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+			clip: rect(1px, 1px, 1px, 1px);
 		}
-		return $options;
-	}
-
-	function add() {
-		if(isset($_POST['inove_save'])) {
-			$options = iNoveOptions::getOptions();
-
-			// google custom search engine
-			if ($_POST['google_cse']) {
-				$options['google_cse'] = (bool)true;
-			} else {
-				$options['google_cse'] = (bool)false;
-			}
-			$options['google_cse_cx'] = stripslashes($_POST['google_cse_cx']);
-
-			// menu
-			$options['menu_type'] = stripslashes($_POST['menu_type']);
-
-			// sidebar
-			if ($_POST['nosidebar']) {
-				$options['nosidebar'] = (bool)true;
-			} else {
-				$options['nosidebar'] = (bool)false;
-			}
-
-			// notice
-			if ($_POST['notice']) {
-				$options['notice'] = (bool)true;
-			} else {
-				$options['notice'] = (bool)false;
-			}
-			$options['notice_content'] = stripslashes($_POST['notice_content']);
-
-			// banner
-			if (!$_POST['banner_registered']) {
-				$options['banner_registered'] = (bool)false;
-			} else {
-				$options['banner_registered'] = (bool)true;
-			}
-			if (!$_POST['banner_commentator']) {
-				$options['banner_commentator'] = (bool)false;
-			} else {
-				$options['banner_commentator'] = (bool)true;
-			}
-			if (!$_POST['banner_visitor']) {
-				$options['banner_visitor'] = (bool)false;
-			} else {
-				$options['banner_visitor'] = (bool)true;
-			}
-			$options['banner_content'] = stripslashes($_POST['banner_content']);
-
-			// showcase
-			if (!$_POST['showcase_registered']) {
-				$options['showcase_registered'] = (bool)false;
-			} else {
-				$options['showcase_registered'] = (bool)true;
-			}
-			if (!$_POST['showcase_commentator']) {
-				$options['showcase_commentator'] = (bool)false;
-			} else {
-				$options['showcase_commentator'] = (bool)true;
-			}
-			if (!$_POST['showcase_visitor']) {
-				$options['showcase_visitor'] = (bool)false;
-			} else {
-				$options['showcase_visitor'] = (bool)true;
-			}
-			if ($_POST['showcase_caption']) {
-				$options['showcase_caption'] = (bool)true;
-			} else {
-				$options['showcase_caption'] = (bool)false;
-			}
-			$options['showcase_title'] = stripslashes($_POST['showcase_title']);
-			$options['showcase_content'] = stripslashes($_POST['showcase_content']);
-
-			// posts
-			if ($_POST['author']) {
-				$options['author'] = (bool)true;
-			} else {
-				$options['author'] = (bool)false;
-			}
-			if ($_POST['categories']) {
-				$options['categories'] = (bool)true;
-			} else {
-				$options['categories'] = (bool)false;
-			}
-			if (!$_POST['tags']) {
-				$options['tags'] = (bool)false;
-			} else {
-				$options['tags'] = (bool)true;
-			}
-
-			// ctrl + entry
-			if ($_POST['ctrlentry']) {
-				$options['ctrlentry'] = (bool)true;
-			} else {
-				$options['ctrlentry'] = (bool)false;
-			}
-
-			// feed
-			if (!$_POST['feed_readers']) {
-				$options['feed_readers'] = (bool)false;
-			} else {
-				$options['feed_readers'] = (bool)true;
-			}
-			if ($_POST['feed']) {
-				$options['feed'] = (bool)true;
-			} else {
-				$options['feed'] = (bool)false;
-			}
-			$options['feed_url'] = stripslashes($_POST['feed_url']);
-			if ($_POST['feed_email']) {
-				$options['feed_email'] = (bool)true;
-			} else {
-				$options['feed_email'] = (bool)false;
-			}
-			$options['feed_url_email'] = stripslashes($_POST['feed_url_email']);
-
-			// twitter
-			if ($_POST['twitter']) {
-				$options['twitter'] = (bool)true;
-			} else {
-				$options['twitter'] = (bool)false;
-			}
-			$options['twitter_username'] = stripslashes($_POST['twitter_username']);
-
-			// analytics
-			if ($_POST['analytics']) {
-				$options['analytics'] = (bool)true;
-			} else {
-				$options['analytics'] = (bool)false;
-			}
-			$options['analytics_content'] = stripslashes($_POST['analytics_content']);
-
-			update_option('inove_options', $options);
-
-		} else {
-			iNoveOptions::getOptions();
+	<?php
+		// If the user has set a custom color for the text use that
+		else :
+	?>
+		#site-title a,
+		#site-description {
+			color: #<?php echo get_header_textcolor(); ?> !important;
 		}
+	<?php endif; ?>
+	</style>
+	<?php
+}
+endif; // twentyeleven_header_style
 
-		add_theme_page(__('Current Theme Options', 'inove'), __('Current Theme Options', 'inove'), 'edit_themes', basename(__FILE__), array('iNoveOptions', 'display'));
-	}
-
-	function display() {
-		$options = iNoveOptions::getOptions();
+if ( ! function_exists( 'twentyeleven_admin_header_style' ) ) :
+/**
+ * Styles the header image displayed on the Appearance > Header admin panel.
+ *
+ * Referenced via add_custom_image_header() in twentyeleven_setup().
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_admin_header_style() {
 ?>
-
-<form action="#" method="post" enctype="multipart/form-data" name="inove_form" id="inove_form">
-	<div class="wrap">
-		<h2><?php _e('Current Theme Options', 'inove'); ?></h2>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Search', 'inove'); ?></th>
-					<td>
-						<label>
-							<input name="google_cse" type="checkbox" value="checkbox" <?php if($options['google_cse']) echo "checked='checked'"; ?> />
-							 <?php _e('Using google custom search engine.', 'inove'); ?>
-						</label>
-						<br/>
-						<?php _e('CX:', 'inove'); ?>
-						 <input type="text" name="google_cse_cx" id="google_cse_cx" class="code" size="40" value="<?php echo($options['google_cse_cx']); ?>">
-						<br/>
-						<?php printf(__('Find <code>name="cx"</code> in the <strong>Search box code</strong> of <a href="%1$s">Google Custom Search Engine</a>, and type the <code>value</code> here.<br/>For example: <code>014782006753236413342:1ltfrybsbz4</code>', 'inove'), 'http://www.google.com/coop/cse/'); ?>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Menubar', 'inove'); ?></th>
-					<td>
-						<label style="margin-right:20px;">
-							<input name="menu_type" type="radio" value="pages" <?php if($options['menu_type'] != 'categories') echo "checked='checked'"; ?> />
-							 <?php _e('Show pages as menu.', 'inove'); ?>
-						</label>
-						<label>
-							<input name="menu_type" type="radio" value="categories" <?php if($options['menu_type'] == 'categories') echo "checked='checked'"; ?> />
-							 <?php _e('Show categories as menu.', 'inove'); ?>
-						</label>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Sidebar', 'inove'); ?></th>
-					<td>
-						<label>
-							<input name="nosidebar" type="checkbox" value="checkbox" <?php if($options['nosidebar']) echo "checked='checked'"; ?> />
-							 <?php _e('Hide sidebar from all pages.', 'inove'); ?>
-						</label>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row">
-						<?php _e('Notice', 'inove'); ?>
-						<br/>
-						<small style="font-weight:normal;"><?php _e('HTML enabled', 'inove'); ?></small>
-					</th>
-					<td>
-						<!-- notice START -->
-						<label>
-							<input name="notice" type="checkbox" value="checkbox" <?php if($options['notice']) echo "checked='checked'"; ?> />
-							 <?php _e('This notice bar will display at the top of posts on homepage.', 'inove'); ?>
-						</label>
-						<br />
-						<label>
-							<textarea name="notice_content" id="notice_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo($options['notice_content']); ?></textarea>
-						</label>
-						<!-- notice END -->
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row">
-						<?php _e('Banner', 'inove'); ?>
-						<br/>
-						<small style="font-weight:normal;"><?php _e('HTML enabled', 'inove'); ?></small>
-					</th>
-					<td>
-						<!-- banner START -->
-						<?php _e('This banner will display at the right of header. (height: 60 pixels)', 'inove'); ?>
-						<br/>
-						<?php _e('Who can see?', 'inove'); ?>
-						<label style="margin-left:10px;">
-							<input name="banner_registered" type="checkbox" value="checkbox" <?php if($options['banner_registered']) echo "checked='checked'"; ?> />
-							 <?php _e('Registered Users', 'inove'); ?>
-						</label>
-						<label style="margin-left:10px;">
-							<input name="banner_commentator" type="checkbox" value="checkbox" <?php if($options['banner_commentator']) echo "checked='checked'"; ?> />
-							 <?php _e('Commentator', 'inove'); ?>
-						</label>
-						<label style="margin-left:10px;">
-							<input name="banner_visitor" type="checkbox" value="checkbox" <?php if($options['banner_visitor']) echo "checked='checked'"; ?> />
-							 <?php _e('Visitors', 'inove'); ?>
-						</label>
-						<br/>
-						<label>
-							<textarea name="banner_content" id="banner_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo($options['banner_content']); ?></textarea>
-						</label>
-						<!-- banner END -->
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row">
-						<?php _e('Showcase', 'inove'); ?>
-						<br/>
-						<small style="font-weight:normal;"><?php _e('HTML enabled', 'inove'); ?></small>
-					</th>
-					<td>
-						<!-- showcase START -->
-						<?php _e('This showcase will display at the top of sidebar.', 'inove'); ?>
-						<br/>
-						<?php _e('Who can see?', 'inove'); ?>
-						<label style="margin-left:10px;">
-							<input name="showcase_registered" type="checkbox" value="checkbox" <?php if($options['showcase_registered']) echo "checked='checked'"; ?> />
-							 <?php _e('Registered Users', 'inove'); ?>
-						</label>
-						<label style="margin-left:10px;">
-							<input name="showcase_commentator" type="checkbox" value="checkbox" <?php if($options['showcase_commentator']) echo "checked='checked'"; ?> />
-							 <?php _e('Commentator', 'inove'); ?>
-						</label>
-						<label style="margin-left:10px;">
-							<input name="showcase_visitor" type="checkbox" value="checkbox" <?php if($options['showcase_visitor']) echo "checked='checked'"; ?> />
-							 <?php _e('Visitors', 'inove'); ?>
-						</label>
-						<br/>
-						<label>
-							<input name="showcase_caption" type="checkbox" value="checkbox" <?php if($options['showcase_caption']) echo "checked='checked'"; ?> />
-							 <?php _e('Title:', 'inove'); ?>
-						</label>
-						 <input type="text" name="showcase_title" id="showcase_title" class="code" size="40" value="<?php echo($options['showcase_title']); ?>" />
-						<br/>
-						<label>
-							<textarea name="showcase_content" id="showcase_content" cols="50" rows="10" style="width:98%;font-size:12px;" class="code"><?php echo($options['showcase_content']); ?></textarea>
-						</label>
-						<!-- showcase END -->
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Posts', 'inove'); ?></th>
-					<td>
-						<label style="margin-right:20px;">
-							<input name="author" type="checkbox" value="checkbox" <?php if($options['author']) echo "checked='checked'"; ?> />
-							 <?php _e('Show author on posts.', 'inove'); ?>
-						</label>
-						<label style="margin-right:20px;">
-							<input name="categories" type="checkbox" value="checkbox" <?php if($options['categories']) echo "checked='checked'"; ?> />
-							 <?php _e('Show categories on posts.', 'inove'); ?>
-						</label>
-						<label>
-							<input name="tags" type="checkbox" value="checkbox" <?php if($options['tags']) echo "checked='checked'"; ?> />
-							 <?php _e('Show tags on posts.', 'inove'); ?>
-						</label>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Comments', 'inove'); ?></th>
-					<td>
-						<label>
-							<input name="ctrlentry" type="checkbox" value="checkbox" <?php if($options['ctrlentry']) echo "checked='checked'"; ?> />
-							 <?php _e('Submit comments with Ctrl+Enter.', 'inove'); ?>
-						</label>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Feed', 'inove'); ?></th>
-					<td>
-						<label>
-							<input name="feed_readers" type="checkbox" value="checkbox" <?php if($options['feed_readers']) echo "checked='checked'"; ?> />
-							 <?php _e('Show the feed reader list when mouse over on feed button.', 'inove'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="feed" type="checkbox" value="checkbox" <?php if($options['feed']) echo "checked='checked'"; ?> />
-							 <?php _e('Custom feed.', 'inove'); ?>
-						</label>
-						 <?php _e('URL:', 'inove'); ?> <input type="text" name="feed_url" id="feed_url" class="code" size="60" value="<?php echo($options['feed_url']); ?>">
-						<br/>
-						<label>
-							<input name="feed_email" type="checkbox" value="checkbox" <?php if($options['feed_email']) echo "checked='checked'"; ?> />
-							 <?php _e('Email feed.', 'inove'); ?>
-						</label>
-						 <?php _e('URL:', 'inove'); ?> <input type="text" name="feed_url_email" id="feed_url_email" class="code" size="60" value="<?php echo($options['feed_url_email']); ?>">
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row"><?php _e('Twitter', 'inove'); ?></th>
-					<td>
-						<label>
-							<input name="twitter" type="checkbox" value="checkbox" <?php if($options['twitter']) echo "checked='checked'"; ?> />
-							 <?php _e('Add Twitter button.', 'inove'); ?>
-						</label>
-						<br />
-						 <?php _e('Twitter username:', 'inove'); ?>
-						 <input type="text" name="twitter_username" id="twitter_username" class="code" size="40" value="<?php echo($options['twitter_username']); ?>">
-						<br />
-						<a href="http://twitter.com/neoease/" onclick="window.open(this.href);return false;">Follow NeoEase</a>
-						 | <a href="http://twitter.com/mg12/" onclick="window.open(this.href);return false;">Follow MG12</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row">
-						<?php _e('Web Analytics', 'inove'); ?>
-						<br/>
-						<small style="font-weight:normal;"><?php _e('HTML enabled', 'inove'); ?></small>
-					</th>
-					<td>
-						<label>
-							<input name="analytics" type="checkbox" value="checkbox" <?php if($options['analytics']) echo "checked='checked'"; ?> />
-							 <?php _e('Add web analytics code to your site. (e.g. Google Analytics, Yahoo! Web Analytics, ...)', 'inove'); ?>
-						</label>
-						<label>
-							<textarea name="analytics_content" cols="50" rows="10" id="analytics_content" class="code" style="width:98%;font-size:12px;"><?php echo($options['analytics_content']); ?></textarea>
-						</label>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<p class="submit">
-			<input class="button-primary" type="submit" name="inove_save" value="<?php _e('Save Changes', 'inove'); ?>" />
-		</p>
-	</div>
-</form>
-
-<!-- donation -->
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-	<div class="wrap" style="background:#E3E3E3; margin-bottom:1em;">
-
-		<table class="form-table">
-			<tbody>
-				<tr valign="top">
-					<th scope="row">Donation</th>
-					<td>
-						If you find my work useful and you want to encourage the development of more free resources, you can do it by donating...
-						<br />
-						<input type="hidden" name="cmd" value="_s-xclick" />
-						<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----" />
-						<input style="border:none;" type="image" src="https://www.paypal.com/en_GB/i/btn/btn_donate_LG.gif" name="submit" alt="" />
-						<img alt="" src="https://www.paypal.com/zh_XC/i/scr/pixel.gif" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-	</div>
-</form>
-
+	<style type="text/css">
+	.appearance_page_custom-header #headimg {
+		border: none;
+	}
+	#headimg h1,
+	#desc {
+		font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
+	}
+	#headimg h1 {
+		margin: 0;
+	}
+	#headimg h1 a {
+		font-size: 32px;
+		line-height: 36px;
+		text-decoration: none;
+	}
+	#desc {
+		font-size: 14px;
+		line-height: 23px;
+		padding: 0 0 3em;
+	}
+	<?php
+		// If the user has set a custom color for the text use that
+		if ( get_header_textcolor() != HEADER_TEXTCOLOR ) :
+	?>
+		#site-title a,
+		#site-description {
+			color: #<?php echo get_header_textcolor(); ?>;
+		}
+	<?php endif; ?>
+	#headimg img {
+		max-width: 1000px;
+		height: auto;
+		width: 100%;
+	}
+	</style>
 <?php
+}
+endif; // twentyeleven_admin_header_style
+
+if ( ! function_exists( 'twentyeleven_admin_header_image' ) ) :
+/**
+ * Custom header image markup displayed on the Appearance > Header admin panel.
+ *
+ * Referenced via add_custom_image_header() in twentyeleven_setup().
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_admin_header_image() { ?>
+	<div id="headimg">
+		<?php
+		if ( 'blank' == get_theme_mod( 'header_textcolor', HEADER_TEXTCOLOR ) || '' == get_theme_mod( 'header_textcolor', HEADER_TEXTCOLOR ) )
+			$style = ' style="display:none;"';
+		else
+			$style = ' style="color:#' . get_theme_mod( 'header_textcolor', HEADER_TEXTCOLOR ) . ';"';
+		?>
+		<h1><a id="name"<?php echo $style; ?> onclick="return false;" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a></h1>
+		<div id="desc"<?php echo $style; ?>><?php bloginfo( 'description' ); ?></div>
+		<?php $header_image = get_header_image();
+		if ( ! empty( $header_image ) ) : ?>
+			<img src="<?php echo esc_url( $header_image ); ?>" alt="" />
+		<?php endif; ?>
+	</div>
+<?php }
+endif; // twentyeleven_admin_header_image
+
+/**
+ * Sets the post excerpt length to 40 words.
+ *
+ * To override this length in a child theme, remove the filter and add your own
+ * function tied to the excerpt_length filter hook.
+ */
+function twentyeleven_excerpt_length( $length ) {
+	return 40;
+}
+add_filter( 'excerpt_length', 'twentyeleven_excerpt_length' );
+
+/**
+ * Returns a "Continue Reading" link for excerpts
+ */
+function twentyeleven_continue_reading_link() {
+	return ' <a href="'. esc_url( get_permalink() ) . '">' . __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'twentyeleven' ) . '</a>';
+}
+
+/**
+ * Replaces "[...]" (appended to automatically generated excerpts) with an ellipsis and twentyeleven_continue_reading_link().
+ *
+ * To override this in a child theme, remove the filter and add your own
+ * function tied to the excerpt_more filter hook.
+ */
+function twentyeleven_auto_excerpt_more( $more ) {
+	return ' &hellip;' . twentyeleven_continue_reading_link();
+}
+add_filter( 'excerpt_more', 'twentyeleven_auto_excerpt_more' );
+
+/**
+ * Adds a pretty "Continue Reading" link to custom post excerpts.
+ *
+ * To override this link in a child theme, remove the filter and add your own
+ * function tied to the get_the_excerpt filter hook.
+ */
+function twentyeleven_custom_excerpt_more( $output ) {
+	if ( has_excerpt() && ! is_attachment() ) {
+		$output .= twentyeleven_continue_reading_link();
 	}
+	return $output;
+}
+add_filter( 'get_the_excerpt', 'twentyeleven_custom_excerpt_more' );
+
+/**
+ * Get our wp_nav_menu() fallback, wp_page_menu(), to show a home link.
+ */
+function twentyeleven_page_menu_args( $args ) {
+	$args['show_home'] = true;
+	return $args;
+}
+add_filter( 'wp_page_menu_args', 'twentyeleven_page_menu_args' );
+
+/**
+ * Register our sidebars and widgetized areas. Also register the default Epherma widget.
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_widgets_init() {
+
+	register_widget( 'Twenty_Eleven_Ephemera_Widget' );
+
+	register_sidebar( array(
+		'name' => __( 'Main Sidebar', 'twentyeleven' ),
+		'id' => 'sidebar-1',
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget' => "</aside>",
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>',
+	) );
+
+	register_sidebar( array(
+		'name' => __( 'Showcase Sidebar', 'twentyeleven' ),
+		'id' => 'sidebar-2',
+		'description' => __( 'The sidebar for the optional Showcase Template', 'twentyeleven' ),
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget' => "</aside>",
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>',
+	) );
+
+	register_sidebar( array(
+		'name' => __( 'Footer Area One', 'twentyeleven' ),
+		'id' => 'sidebar-3',
+		'description' => __( 'An optional widget area for your site footer', 'twentyeleven' ),
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget' => "</aside>",
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>',
+	) );
+
+	register_sidebar( array(
+		'name' => __( 'Footer Area Two', 'twentyeleven' ),
+		'id' => 'sidebar-4',
+		'description' => __( 'An optional widget area for your site footer', 'twentyeleven' ),
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget' => "</aside>",
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>',
+	) );
+
+	register_sidebar( array(
+		'name' => __( 'Footer Area Three', 'twentyeleven' ),
+		'id' => 'sidebar-5',
+		'description' => __( 'An optional widget area for your site footer', 'twentyeleven' ),
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget' => "</aside>",
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>',
+	) );
+}
+add_action( 'widgets_init', 'twentyeleven_widgets_init' );
+
+/**
+ * Display navigation to next/previous pages when applicable
+ */
+function twentyeleven_content_nav( $nav_id ) {
+	global $wp_query;
+
+	if ( $wp_query->max_num_pages > 1 ) : ?>
+		<nav id="<?php echo $nav_id; ?>">
+			<h3 class="assistive-text"><?php _e( 'Post navigation', 'twentyeleven' ); ?></h3>
+			<div class="nav-previous"><?php next_posts_link( __( '<span class="meta-nav">&larr;</span> Older posts', 'twentyeleven' ) ); ?></div>
+			<div class="nav-next"><?php previous_posts_link( __( 'Newer posts <span class="meta-nav">&rarr;</span>', 'twentyeleven' ) ); ?></div>
+		</nav><!-- #nav-above -->
+	<?php endif;
 }
 
-// register functions
-add_action('admin_menu', array('iNoveOptions', 'add'));
+/**
+ * Return the URL for the first link found in the post content.
+ *
+ * @since Twenty Eleven 1.0
+ * @return string|bool URL or false when no link is present.
+ */
+function twentyeleven_url_grabber() {
+	if ( ! preg_match( '/<a\s[^>]*?href=[\'"](.+?)[\'"]/is', get_the_content(), $matches ) )
+		return false;
 
-
-/** l10n */
-function theme_init(){
-	load_theme_textdomain('inove', get_template_directory() . '/languages');
-}
-add_action ('init', 'theme_init');
-
-/** widgets */
-if( function_exists('register_sidebar') ) {
-	register_sidebar(array(
-		'name' => 'north_sidebar',
-		'before_widget' => '<div id="%1$s" class="widget %2$s">',
-		'after_widget' => '</div>',
-		'before_title' => '<h3>',
-		'after_title' => '</h3>'
-	));
-	register_sidebar(array(
-		'name' => 'south_sidebar',
-		'before_widget' => '<div id="%1$s" class="widget %2$s">',
-		'after_widget' => '</div>',
-		'before_title' => '<h3>',
-		'after_title' => '</h3>'
-	));
-	register_sidebar(array(
-		'name' => 'west_sidebar',
-		'before_widget' => '<div id="%1$s" class="widget %2$s">',
-		'after_widget' => '</div>',
-		'before_title' => '<h3>',
-		'after_title' => '</h3>'
-	));
-	register_sidebar(array(
-		'name' => 'east_sidebar',
-		'before_widget' => '<div id="%1$s" class="widget %2$s">',
-		'after_widget' => '</div>',
-		'before_title' => '<h3>',
-		'after_title' => '</h3>'
-	));
+	return esc_url_raw( $matches[1] );
 }
 
-/** Comments */
-if (function_exists('wp_list_comments')) {
-	// comment count
-	function comment_count( $commentcount ) {
-		global $id;
-		$_comments = get_comments('status=approve&post_id=' . $id);
-		$comments_by_type = &separate_comments($_comments);
-		return count($comments_by_type['comment']);
+/**
+ * Count the number of footer sidebars to enable dynamic classes for the footer
+ */
+function twentyeleven_footer_sidebar_class() {
+	$count = 0;
+
+	if ( is_active_sidebar( 'sidebar-3' ) )
+		$count++;
+
+	if ( is_active_sidebar( 'sidebar-4' ) )
+		$count++;
+
+	if ( is_active_sidebar( 'sidebar-5' ) )
+		$count++;
+
+	$class = '';
+
+	switch ( $count ) {
+		case '1':
+			$class = 'one';
+			break;
+		case '2':
+			$class = 'two';
+			break;
+		case '3':
+			$class = 'three';
+			break;
 	}
+
+	if ( $class )
+		echo 'class="' . $class . '"';
 }
 
-// custom comments
-function custom_comments($comment, $args, $depth) {
+if ( ! function_exists( 'twentyeleven_comment' ) ) :
+/**
+ * Template for comments and pingbacks.
+ *
+ * To override this walker in a child theme without modifying the comments template
+ * simply create your own twentyeleven_comment(), and that function will be used instead.
+ *
+ * Used as a callback by wp_list_comments() for displaying the comments.
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_comment( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
-	global $commentcount;
-	if(!$commentcount) {
-		$commentcount = 0;
-	}
-?>
-	<li class="comment <?php if($comment->comment_author_email == get_the_author_email()) {echo 'admincomment';} else {echo 'regularcomment';} ?>" id="comment-<?php comment_ID() ?>">
-		<div class="author">
-			<div class="pic">
-				<?php if (function_exists('get_avatar') && get_option('show_avatars')) { echo get_avatar($comment, 32); } ?>
-			</div>
-			<div class="name">
-				<?php if (get_comment_author_url()) : ?>
-					<a id="commentauthor-<?php comment_ID() ?>" class="url" href="<?php comment_author_url() ?>" rel="external nofollow">
-				<?php else : ?>
-					<span id="commentauthor-<?php comment_ID() ?>">
+	switch ( $comment->comment_type ) :
+		case 'pingback' :
+		case 'trackback' :
+	?>
+	<li class="post pingback">
+		<p><?php _e( 'Pingback:', 'twentyeleven' ); ?> <?php comment_author_link(); ?><?php edit_comment_link( __( 'Edit', 'twentyeleven' ), '<span class="edit-link">', '</span>' ); ?></p>
+	<?php
+			break;
+		default :
+	?>
+	<li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">
+		<article id="comment-<?php comment_ID(); ?>" class="comment">
+			<footer class="comment-meta">
+				<div class="comment-author vcard">
+					<?php
+						$avatar_size = 68;
+						if ( '0' != $comment->comment_parent )
+							$avatar_size = 39;
+
+						echo get_avatar( $comment, $avatar_size );
+
+						/* translators: 1: comment author, 2: date and time */
+						printf( __( '%1$s on %2$s <span class="says">said:</span>', 'twentyeleven' ),
+							sprintf( '<span class="fn">%s</span>', get_comment_author_link() ),
+							sprintf( '<a href="%1$s"><time pubdate datetime="%2$s">%3$s</time></a>',
+								esc_url( get_comment_link( $comment->comment_ID ) ),
+								get_comment_time( 'c' ),
+								/* translators: 1: date, 2: time */
+								sprintf( __( '%1$s at %2$s', 'twentyeleven' ), get_comment_date(), get_comment_time() )
+							)
+						);
+					?>
+
+					<?php edit_comment_link( __( 'Edit', 'twentyeleven' ), '<span class="edit-link">', '</span>' ); ?>
+				</div><!-- .comment-author .vcard -->
+
+				<?php if ( $comment->comment_approved == '0' ) : ?>
+					<em class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', 'twentyeleven' ); ?></em>
+					<br />
 				<?php endif; ?>
 
-				<?php comment_author(); ?>
+			</footer>
 
-				<?php if(get_comment_author_url()) : ?>
-					</a>
-				<?php else : ?>
-					</span>
-				<?php endif; ?>
-			</div>
-		</div>
+			<div class="comment-content"><?php comment_text(); ?></div>
 
-		<div class="info">
-			<div class="date">
-				<?php printf( __('%1$s at %2$s', 'inove'), get_comment_time(__('F jS, Y', 'inove')), get_comment_time(__('H:i', 'inove')) ); ?>
-					 | <a href="#comment-<?php comment_ID() ?>"><?php printf('#%1$s', ++$commentcount); ?></a>
-			</div>
-			<div class="act">
-				<a href="javascript:void(0);" onclick="MGJS_CMT.reply('commentauthor-<?php comment_ID() ?>', 'comment-<?php comment_ID() ?>', 'comment');"><?php _e('Reply', 'inove'); ?></a> | 
-				<a href="javascript:void(0);" onclick="MGJS_CMT.quote('commentauthor-<?php comment_ID() ?>', 'comment-<?php comment_ID() ?>', 'commentbody-<?php comment_ID() ?>', 'comment');"><?php _e('Quote', 'inove'); ?></a>
-				<?php
-					if (function_exists("qc_comment_edit_link")) {
-						qc_comment_edit_link('', ' | ', '', __('Edit', 'inove'));
-					}
-					edit_comment_link(__('Advanced edit', 'inove'), ' | ', '');
-				?>
-			</div>
-			<div class="fixed"></div>
-			<div class="content">
-				<?php if ($comment->comment_approved == '0') : ?>
-					<p><small><?php _e('Your comment is awaiting moderation.', 'inove'); ?></small></p>
-				<?php endif; ?>
+			<div class="reply">
+				<?php comment_reply_link( array_merge( $args, array( 'reply_text' => __( 'Reply <span>&darr;</span>', 'twentyeleven' ), 'depth' => $depth, 'max_depth' => $args['max_depth'] ) ) ); ?>
+			</div><!-- .reply -->
+		</article><!-- #comment-## -->
 
-				<div id="commentbody-<?php comment_ID() ?>">
-					<?php comment_text(); ?>
-				</div>
-			</div>
-		</div>
-		<div class="fixed"></div>
-
-<?php
+	<?php
+			break;
+	endswitch;
 }
-?>
+endif; // ends check for twentyeleven_comment()
+
+if ( ! function_exists( 'twentyeleven_posted_on' ) ) :
+/**
+ * Prints HTML with meta information for the current post-date/time and author.
+ * Create your own twentyeleven_posted_on to override in a child theme
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_posted_on() {
+	printf( __( '<span class="sep">Posted on </span><a href="%1$s" title="%2$s" rel="bookmark"><time class="entry-date" datetime="%3$s" pubdate>%4$s</time></a><span class="by-author"> <span class="sep"> by </span> <span class="author vcard"><a class="url fn n" href="%5$s" title="%6$s" rel="author">%7$s</a></span></span>', 'twentyeleven' ),
+		esc_url( get_permalink() ),
+		esc_attr( get_the_time() ),
+		esc_attr( get_the_date( 'c' ) ),
+		esc_html( get_the_date() ),
+		esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ),
+		sprintf( esc_attr__( 'View all posts by %s', 'twentyeleven' ), get_the_author() ),
+		esc_html( get_the_author() )
+	);
+}
+endif;
+
+/**
+ * Adds two classes to the array of body classes.
+ * The first is if the site has only had one author with published posts.
+ * The second is if a singular post being displayed
+ *
+ * @since Twenty Eleven 1.0
+ */
+function twentyeleven_body_classes( $classes ) {
+
+	if ( ! is_multi_author() ) {
+		$classes[] = 'single-author';
+	}
+
+	if ( is_singular() && ! is_home() && ! is_page_template( 'showcase.php' ) && ! is_page_template( 'sidebar-page.php' ) )
+		$classes[] = 'singular';
+
+	return $classes;
+}
+add_filter( 'body_class', 'twentyeleven_body_classes' );
+

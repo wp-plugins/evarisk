@@ -12,8 +12,8 @@
 		if(((int)$arguments['idElement']) == 0)
 		{
 			$script = '<script type="text/javascript">
-					evarisk(document).ready(function() {
-						evarisk("#' . $postBoxId . '").hide();
+					digirisk(document).ready(function() {
+						digirisk("#' . $postBoxId . '").hide();
 					});
 				</script>';
 			echo $script;
@@ -34,7 +34,7 @@
 	}
 	else
 	{
-		$userNotAllowed = 'evarisk("#ongletHistoriqueFicheDePoste").click();';
+		$userNotAllowed = 'digirisk("#ongletHistoriqueFicheDePoste").click();';
 	}
 	$corpsPostBoxRisque .= '
 	<li id="ongletHistoriqueFicheDePoste" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Historique des fiches de poste', 'evarisk'))) . '</label></li>
@@ -42,11 +42,11 @@
 <div id="divImpressionFicheDePoste" class="eva_tabs_panel">' . eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '</div>
 <div id="divHistoriqueFicheDePoste" class="eva_tabs_panel" style="display:none"></div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#ongletImpressionFicheDePoste").click(function(){
+	digirisk(document).ready(function(){
+		digirisk("#ongletImpressionFicheDePoste").click(function(){
 			commonTabChange("postBoxFicheDePoste", "#divImpressionFicheDePoste", "#ongletHistoriqueFicheDePoste");
-			evarisk("#divImpressionFicheDePoste").html(evarisk("#loadingImg").html());
-			evarisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#divImpressionFicheDePoste").html(digirisk("#loadingImg").html());
+			digirisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post":"true", 
 				"table":"' . TABLE_FP . '", 
@@ -55,10 +55,10 @@
 				"idElement":' . $idElement . '
 			});
 		});
-		evarisk("#ongletHistoriqueFicheDePoste").click(function(){
+		digirisk("#ongletHistoriqueFicheDePoste").click(function(){
 			commonTabChange("postBoxFicheDePoste", "#divHistoriqueFicheDePoste", "#ongletImpressionFicheDePoste");
-			evarisk("#divHistoriqueFicheDePoste").html(evarisk("#loadingImg").html());
-			evarisk("#divHistoriqueFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#divHistoriqueFicheDePoste").html(digirisk("#loadingImg").html());
+			digirisk("#divHistoriqueFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post":"true", 
 				"table":"' . TABLE_FP . '", 

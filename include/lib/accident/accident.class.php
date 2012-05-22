@@ -43,7 +43,7 @@ class digirisk_accident
 		</ul>
 		<div id="divAccidenContainer" class="eva_tabs_panel" >' . digirisk_accident::get_accident_list($tableElement, $idElement) . '</div>
 		<script type="text/javascript">
-			evarisk(document).ready(function(){
+			digirisk(document).ready(function(){
 				//	Show the risk list for the actual element
 				jQuery("#ongletVoirLesAccidents").click(function(){
 					jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
@@ -55,7 +55,7 @@ class digirisk_accident
 					});
 					commonTabChange("postBoxAccidents", "#divAccidenContainer", "#ongletVoirLesAccidents");
 				});
-				jQuery("#ongletAjouterUnAccident").click(function(){
+				jQuery("#ongletAjouterUnAccident").live("click", function(){
 					jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 						"post":"true", 
 						"table":"' . self::dbTable . '", 
@@ -130,7 +130,7 @@ class digirisk_accident
 
 		$element_list_metabox .= EvaDisplayDesign::getTable($tableId, $tableTitles, $tableRows, $tableClasses, $tableRowsId, '') . '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#' . $tableId . '").dataTable({
 			"oLanguage":{
 				"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
@@ -151,7 +151,7 @@ class digirisk_accident
 		});
 
 		jQuery(".delete-accident").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Eacute;tes vous s&ucirc;r de vouloir supprimer cet accident?', 'evarisk') . '"))){
+			if(confirm(digi_html_accent_for_js("' . __('&Eacute;tes vous s&ucirc;r de vouloir supprimer cet accident?', 'evarisk') . '"))){
 				jQuery("#divAccidenContainer").html(jQuery("#loadingImg").html());
 				jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 					"post":"true",
@@ -269,7 +269,7 @@ class digirisk_accident
 		{/*	Javascript action	*/
 			$accident_form .= '
 		<script type="text/javascript" >
-			evarisk(document).ready(function(){
+			digirisk(document).ready(function(){
 				/**
 				*	Add a dialog box allowing to edit different element composing an accident
 				*/
@@ -322,22 +322,21 @@ class digirisk_accident
 						jQuery("#search_in_all_user_' . $tableElement . '").val("no");
 					}
 				});
-				jQuery("#searchUser_accident_' . $tableElement . '").click(function(){
-					jQuery(this).val("");
-				});
-				jQuery("#searchUser_accident_' . $tableElement . '").blur(function(){
-					jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
-				});
-				jQuery("#searchUser_accident_' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident", {extraParams: {all_user: "yes"/*function() { return jQuery("#search_in_all_user_' . $tableElement . '").val(); }*/}});
-				jQuery("#searchUser_accident_' . $tableElement . '").result(function(event, data, formatted){
-					jQuery("#work_accident_user_details").html(jQuery("#loadingImg").html());
-					jQuery("#work_accident_user_details").load(EVA_AJAX_FILE_URL,{
-						"post":"true",
-						"act":"loadUserInfo",
-						"id_user":data[1]
-					});
 
-					jQuery("#searchUser_accident_' . $tableElement . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+				/*	Autocomplete search	*/
+				jQuery("#searchUser_accident_' . $tableElement . '").autocomplete({
+					source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident&all_user=yes",
+					select: function( event, ui ){
+						jQuery("#work_accident_user_details").html(jQuery("#loadingImg").html());
+						jQuery("#work_accident_user_details").load(EVA_AJAX_FILE_URL,{
+							"post":"true",
+							"act":"loadUserInfo",
+							"id_user":ui.item.value
+						});
+
+						jQuery(this).val("");
+						jQuery(this).blur();
+					}
 				});
 				
 				jQuery("#victim_changer").click(function(){
@@ -347,26 +346,21 @@ class digirisk_accident
 					jQuery("#work_accident_user_details").toggle();
 				});
 
-				/**
-				*
-				*/
-				jQuery("#search_accident_witness_' . $tableElement . '").click(function(){
-					jQuery(this).val("");
-				});
-				jQuery("#search_accident_witness_' . $tableElement . '").blur(function(){
-					jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
-				});
-				jQuery("#search_accident_witness_' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident_witness");
-				jQuery("#search_accident_witness_' . $tableElement . '").result(function(event, data, formatted){
-					jQuery("#search_accident_witness_details").append("<div id=\'accident_witness_" + data[1]  + "\' ></div>");
-					jQuery("#accident_witness_" + data[1]).load(EVA_AJAX_FILE_URL,{
-						"post":"true",
-						"act":"loadWitnessInfo",
-						"id_user":data[1]
-					});
+				/*	Autocomplete search	*/
+				jQuery("#search_accident_witness_' . $tableElement . '").autocomplete({
+					source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident_witness",
+					select: function( event, ui ){
+						jQuery("#search_accident_witness_details").append("<div id=\'accident_witness_" + ui.item.value  + "\' ></div>");
+						jQuery("#accident_witness_" + ui.item.value).load(EVA_AJAX_FILE_URL,{
+							"post":"true",
+							"act":"loadWitnessInfo",
+							"id_user":ui.item.value
+						});
 
-					jQuery("#search_accident_witness_' . $tableElement . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
-				});				
+						jQuery(this).val("");
+						jQuery(this).blur();
+					}
+				});			
 
 				/**
 				*	Add action for accident declaration type combo box
@@ -404,25 +398,21 @@ class digirisk_accident
 						jQuery("#third_party_details").show();
 					}
 				});
-				jQuery("#search_accident_third_party_' . $tableElement . '").click(function(){
-					jQuery(this).val("");
-				});
-				jQuery("#search_accident_third_party_' . $tableElement . '").blur(function(){
-					jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
-				});
-				jQuery("#search_accident_third_party_' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident_third_party");
-				jQuery("#search_accident_third_party_' . $tableElement . '").result(function(event, data, formatted){
-					jQuery("#search_accident_third_party_details").append("<div id=\'accident_third_party_" + data[1]  + "\' ></div>");
-					jQuery("#accident_third_party_" + data[1]).load(EVA_AJAX_FILE_URL,{
-						"post":"true",
-						"act":"loadThirdPartyInfo",
-						"id_user":data[1]
-					});
 
-					jQuery("#search_accident_third_party_' . $tableElement . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+				/*	Autocomplete search	*/
+				jQuery("#search_accident_third_party_' . $tableElement . '").autocomplete({
+					source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident_third_party",
+					select: function( event, ui ){
+						jQuery("#search_accident_third_party_details").append("<div id=\'accident_third_party_" + ui.item.value  + "\' ></div>");
+						jQuery("#accident_third_party_" + ui.item.value).load(EVA_AJAX_FILE_URL,{
+							"post":"true",
+							"act":"loadThirdPartyInfo",
+							"id_user":ui.item.value
+						});
+						jQuery(this).val("");
+						jQuery(this).blur();
+					}
 				});
-
-
 
 				/**
 				*	POLICE REPORT
@@ -439,9 +429,16 @@ class digirisk_accident
 						jQuery("#accident_witnesses_police_report_writer").show();
 					}
 				});
-				jQuery("#accident_police_report_writer").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident_police_report_writer");
-				jQuery("#accident_police_report_writer").result(function(event, data, formatted){
-					jQuery("#accident_police_report_writer").val(data[0].replace("&nbsp;-&nbsp;", "-"));
+
+				/*	Autocomplete search	*/
+				jQuery("#accident_police_report_writer").autocomplete({
+					source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&search_type=work_accident_police_report_writer",
+					select: function( event, ui ){
+						jQuery(this).val(ui.item.label);
+
+						jQuery(this).val("");
+						jQuery(this).blur();
+					}
 				});
 
 				/**
@@ -643,7 +640,7 @@ class digirisk_accident
 				}
 				$accident_form_part .= '
 					<span class="searchUserInput ui-icon" >&nbsp;</span>
-					<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="searchUser_accident_' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><!-- <div class="accident_search_params clear" ><input type="checkbox" name="accident_victim_search_in_all_user" id="accident_victim_search_in_all_user" value="yes" /><input type="hidden" name="search_in_all_user_' . $tableElement . '" id="search_in_all_user_' . $tableElement . '" value="no" />' . __('Chercher dans tous les utilisteurs', 'evarisk') . '</div> -->
+					<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="searchUser_accident_' . $tableElement . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><!-- <div class="accident_search_params clear" ><input type="checkbox" name="accident_victim_search_in_all_user" id="accident_victim_search_in_all_user" value="yes" /><input type="hidden" name="search_in_all_user_' . $tableElement . '" id="search_in_all_user_' . $tableElement . '" value="no" />' . __('Chercher dans tous les utilisteurs', 'evarisk') . '</div> -->
 					<div id="completeUserList' . DIGI_DBT_ACCIDENT . '" class="completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_ACCIDENT, $idElement) . '</div>
 				</div>';
 
@@ -671,6 +668,8 @@ class digirisk_accident
 			<div id="accident_details" ' . $container_state . ' >';
 
 			{/*	Work accident title. Allows to define a human readable element	*/
+				$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
+				$locale = ($locale == 'en') ? '' : $locale;
 				$accident_form_part .= EvaDisplayInput::afficherInput('text', 'titre_accident', (($accident != null) ? $accident->accident_title : ''), '', __('Titre', 'evarisk'), 'accident[accident_title]', false, false, 255, '', '', '95%') . '
 			<div class="clear accident_part" >
 				<div class="accident_date" >
@@ -678,16 +677,14 @@ class digirisk_accident
 				</div>
 			</div>
 			<script type="text/javascript" >
-				evarisk(document).ready(function(){
-					jQuery("#accident_date").datetimepicker({
-						dateFormat: "yy-mm-dd",
-						timeText: "' . __('Date', 'evarisk') . '",
-						hourText: "' . __('Heure', 'evarisk') . '",
-						minuteText: "' . __('Minute', 'evarisk') . '",
-						secondText: "' . __('Seconde', 'evarisk') . '",
-						currentText: "' . __('Maintenant', 'evarisk') . '",
-						closeText: "' . __('Fermer', 'evarisk') . '"
-					});
+				digirisk(document).ready(function(){
+					jQuery("#accident_date").datepicker(jQuery.datepicker.regional["' . $locale . '"]);
+					jQuery("#accident_date").datepicker("option", "dateFormat", "yy-mm-dd");
+					jQuery("#accident_date").datepicker("option", "changeMonth", true);
+					jQuery("#accident_date").datepicker("option", "changeYear", true);
+					jQuery("#accident_date").datepicker("option", "navigationAsDateFormat", true);
+					jQuery("#accident_date").val("' . str_replace('"', '\"', str_replace(" 
+", "\\n", $accident->accident_date)) . '"); 
 				});
 			</script>';
 			}
@@ -773,6 +770,9 @@ class digirisk_accident
 					$accident_declaration_register_nb = $accident_declaration_details['accident_declaration_register_nb'];
 					$accident_declaration_date = $accident_declaration_details['accident_declaration_date'];
 				}
+				
+				$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
+				$locale = ($locale == 'en') ? '' : $locale;
 				$accident_form_part .= '
 			<div class="clear accident_part" >
 				<label >' . __('L\'accident &agrave; &eacute;t&eacute;', 'evarisk') . '</label><br/>
@@ -787,16 +787,14 @@ class digirisk_accident
 							<div class="accident_declaration_by_date_prefix" >' . __('Le', 'evarisk') . '</div>
 							' .	EvaDisplayInput::afficherInput('text', 'accident_declaration_date', $accident_declaration_date, '', null, 'accident[accident_declaration][accident_declaration_date]', false, false, 10, '', '', '90%', '', 'left', true) . '
 							<script type="text/javascript" >
-								evarisk(document).ready(function(){
-									jQuery("#accident_declaration_date").datetimepicker({
-										dateFormat: "yy-mm-dd",
-										timeText: "' . __('Date', 'evarisk') . '",
-										hourText: "' . __('Heure', 'evarisk') . '",
-										minuteText: "' . __('Minute', 'evarisk') . '",
-										secondText: "' . __('Seconde', 'evarisk') . '",
-										currentText: "' . __('Maintenant', 'evarisk') . '",
-										closeText: "' . __('Fermer', 'evarisk') . '"
-									});
+								digirisk(document).ready(function(){
+									jQuery("#accident_declaration_date").datepicker(jQuery.datepicker.regional["' . $locale . '"]);
+									jQuery("#accident_declaration_date").datepicker("option", "dateFormat", "yy-mm-dd");
+									jQuery("#accident_declaration_date").datepicker("option", "changeMonth", true);
+									jQuery("#accident_declaration_date").datepicker("option", "changeYear", true);
+									jQuery("#accident_declaration_date").datepicker("option", "navigationAsDateFormat", true);
+									jQuery("#accident_declaration_date").val("' . str_replace('"', '\"', str_replace(" 
+", "\\n", $accident_declaration_date)) . '"); 
 								});
 							</script>
 						</td>
@@ -840,7 +838,7 @@ class digirisk_accident
 			<legend id="witness" ><span id="opener_victim" class="alignleft ui-icon ' . $container_state_opener . '" >&nbsp;</span>' . __('T&eacute;moins', 'evarisk') . '&nbsp;' . $container_more_content . '</legend>
 			<div id="accident_witness" ' . $container_state . ' >
 				<span class="searchUserInput ui-icon" >&nbsp;</span>
-				<input class="searchUserToAffect" type="text" name="search_accident_witness_' . $tableElement . '" id="search_accident_witness_' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />';
+				<input class="searchUserToAffect" type="text" name="search_accident_witness_' . $tableElement . '" id="search_accident_witness_' . $tableElement . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />';
 				if(current_user_can('add_users')){
 					$accident_form_part .= '
 				<span class="alignright" ><a href="' .  admin_url('users.php?page=digirisk_import_users') . '" >' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
@@ -884,7 +882,7 @@ class digirisk_accident
 				<br/>
 				<div class="hide" colspan="4" id="third_party_details" >
 					<span class="searchUserInput ui-icon" >&nbsp;</span>
-					<input class="searchUserToAffect" type="text" name="search_accident_third_party_' . $tableElement . '" id="search_accident_third_party_' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />';
+					<input class="searchUserToAffect" type="text" name="search_accident_third_party_' . $tableElement . '" id="search_accident_third_party_' . $tableElement . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />';
 					if(current_user_can('add_users'))
 					{
 						$accident_form_part .= '
@@ -1008,7 +1006,7 @@ class digirisk_accident
 	</tr>
 </table>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#save_accident").attr("disabled", false);
 		jQuery("#victim_changer span").removeClass("accident_container_closer");
 		jQuery("#victim_changer span").addClass("accident_container_opener");
@@ -1029,7 +1027,7 @@ class digirisk_accident
 			$user_form .= '
 </div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#save_accident").attr("disabled", "disabled");
 		jQuery("#victim_selector").show();
 		jQuery("#work_accident_user_details").show();

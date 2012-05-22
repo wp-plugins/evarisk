@@ -14,9 +14,9 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 	
 	$result = handleUpload();
-	$tableElement = eva_tools::IsValid_Variable($result['tableElement']);
-	$idElement = eva_tools::IsValid_Variable($result['idElement']);
-	$fichier = eva_tools::IsValid_Variable($result['fichier']);
+	$tableElement = digirisk_tools::IsValid_Variable($result['tableElement']);
+	$idElement = digirisk_tools::IsValid_Variable($result['idElement']);
+	$fichier = digirisk_tools::IsValid_Variable($result['fichier']);
 
 	/*	Ajoute la photo à la table de toutes les photos	(GED Photo) */
 	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);

@@ -9,7 +9,6 @@
 */
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'outils/tools.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');

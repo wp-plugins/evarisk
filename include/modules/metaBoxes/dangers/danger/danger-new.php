@@ -76,11 +76,11 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		if(isset($danger)) 
 		{
 			$saufDanger = $danger->nom;
-			$actionValue = 'evarisk("#act").val("update")';
+			$actionValue = 'digirisk("#act").val("update")';
 		}
 		else
 		{
-			$actionValue = 'evarisk("#act").val("save")';
+			$actionValue = 'digirisk("#act").val("save")';
 		}
 		$dangersName = EvaDanger::getDangersName($saufDanger);
 		if(count($dangersName) != 0)
@@ -100,7 +100,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$scriptEnregistrement = '<script type="text/javascript">
 			function isSomeName()
 			{				
-				valeurActuelle = evarisk("#nom_danger").val();
+				valeurActuelle = digirisk("#nom_danger").val();
 				if(valeurActuelle == "")
 				{
 					alert("' . __("Vous n'avez pas donne de nom au danger", 'evarisk') . '");
@@ -114,25 +114,25 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 					else
 					{
 						'. $actionValue . '
-						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_DANGER . '",
-							"act": evarisk("#act").val(),
-							"id": evarisk("#id").val(),
-							"nom_danger": evarisk("#nom_danger").val(),
-							"categorieMere": evarisk("#categorieMere :selected").val(),
-							"description": evarisk("#description").val(),
-							"affichage": evarisk("#affichage").val(),
-							"idsFilAriane": evarisk("#idsFilAriane").val()
+							"act": digirisk("#act").val(),
+							"id": digirisk("#id").val(),
+							"nom_danger": digirisk("#nom_danger").val(),
+							"categorieMere": digirisk("#categorieMere :selected").val(),
+							"description": digirisk("#description").val(),
+							"affichage": digirisk("#affichage").val(),
+							"idsFilAriane": digirisk("#idsFilAriane").val()
 						});
 					}
 				}
 			}
-			evarisk(document).ready(function() {				
-				evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
-					if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
+			digirisk(document).ready(function() {				
+				digirisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
+					if(digirisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 					{
 						document.getElementById(\'' . $idTitre . '\').value=\'\';
-						evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+						digirisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 					}
 					isSomeName(\'' . $idTitre . '\');
 				});

@@ -15,9 +15,9 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class.php');
 
 	$result = handleUpload();
-	$tableElement = eva_tools::IsValid_Variable($result['tableElement']);
-	$idElement = eva_tools::IsValid_Variable($result['idElement']);
-	$fichier = eva_tools::IsValid_Variable($result['fichier']);
+	$tableElement = digirisk_tools::IsValid_Variable($result['tableElement']);
+	$idElement = digirisk_tools::IsValid_Variable($result['idElement']);
+	$fichier = digirisk_tools::IsValid_Variable($result['fichier']);
 	
 	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
 	if($uploadStatus == 'error')

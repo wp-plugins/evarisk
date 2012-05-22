@@ -4,7 +4,7 @@
  * @author Evarisk
  * @version v5.0
  */
-include_once(EVA_CONFIG );
+
 class EvaDanger {
 	
 	/**
@@ -101,34 +101,33 @@ class EvaDanger {
 		return $tab_dangers;
 	}
 	
-/*
-Persistance
-*/
-
+	/*
+	Persistance
+	*/
 	function saveNewDanger($nom, $idCategorieMere)
 	{
 		global $wpdb;
 		
-		$nom = eva_tools::IsValid_Variable($nom);
-		$idCategorieMere = eva_tools::IsValid_Variable($idCategorieMere);
+		$nom = digirisk_tools::IsValid_Variable($nom);
+		$idCategorieMere = digirisk_tools::IsValid_Variable($idCategorieMere);
 		
 		$sql = "INSERT INTO " . TABLE_DANGER . " (`nom`, `id_categorie`, `Status`) VALUES ('" . mysql_real_escape_string($nom) . "', '" . mysql_real_escape_string($idCategorieMere) . "', 'Valid')";
 		$wpdb->query($sql);
 	}
-	
+
 	function updateDanger($id, $nom, $idCategorieMere, $description)
 	{
 		global $wpdb;
 		
-		$id = eva_tools::IsValid_Variable($id);
-		$nom = eva_tools::IsValid_Variable($nom);
-		$idCategorieMere = eva_tools::IsValid_Variable($idCategorieMere);
-		$description = eva_tools::IsValid_Variable($description);
+		$id = digirisk_tools::IsValid_Variable($id);
+		$nom = digirisk_tools::IsValid_Variable($nom);
+		$idCategorieMere = digirisk_tools::IsValid_Variable($idCategorieMere);
+		$description = digirisk_tools::IsValid_Variable($description);
 		
 		$sql = "UPDATE " . TABLE_DANGER . " set `nom`='" . mysql_real_escape_string($nom) . "', `id_categorie`='" . mysql_real_escape_string($idCategorieMere) . "', description='" . mysql_real_escape_string($description) . "' WHERE `id`=" . mysql_real_escape_string($id);
 		$wpdb->query($sql);
 	}
-	
+
 	/**
 	* Transfer an working unit from a group to an other
 	* @param int $idDanger Working unit to transfer identifier
@@ -141,7 +140,7 @@ Persistance
 		$sql = "UPDATE " . TABLE_DANGER . " set `id_categorie`='" . $idCategorieMere . "' WHERE `id`=" . $idDanger;
 		$wpdb->query($sql);
 	}
-	
+
 	function deleteDanger($id)
 	{
 		global $wpdb;
@@ -151,13 +150,13 @@ Persistance
 		{
 			echo 
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
+					digirisk(document).ready(function(){
+						digirisk("#message").addClass("updated");
+						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>') . '");
+						digirisk("#message").show();
 						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
+							digirisk("#message").removeClass("updated");
+							digirisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -166,13 +165,13 @@ Persistance
 		{
 			echo 
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger n\'a pas pu &ecirc;tre supprim&eacute;', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
+					digirisk(document).ready(function(){
+						digirisk("#message").addClass("updated");
+						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le danger n\'a pas pu &ecirc;tre supprim&eacute;', 'evarisk') . '</strong></p>') . '");
+						digirisk("#message").show();
 						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
+							digirisk("#message").removeClass("updated");
+							digirisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -191,12 +190,12 @@ Persistance
 		if(isset($dangers[0]) && ($dangers[0]->id != null))
 		{
 			$dangerResult['script'] .= '
-	evarisk("#needDangerCategory").show();';
+	digirisk("#needDangerCategory").show();';
 		}
 		else
 		{
 			$dangerResult['script'] .= '
-	evarisk("#needDangerCategory").hide();';
+	digirisk("#needDangerCategory").hide();';
 		}
 		if($risque[0] != null)
 		{// Si l'on édite un risque, on sélectionne le bon danger

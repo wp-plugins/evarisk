@@ -1,7 +1,7 @@
 var evarisk = jQuery.noConflict();
+var digirisk = jQuery.noConflict();
 
-function convertAccentToJS(text)
-{
+function digi_html_accent_for_js(text){
 	text = text.replace(/&Agrave;/g, "\300");
 	text = text.replace(/&Aacute;/g, "\301");
 	text = text.replace(/&Acirc;/g, "\302");
@@ -71,64 +71,15 @@ function convertAccentToJS(text)
 	return text;
 }
 
-function print_r(obj)
-{
-	win_print_r = window.open('about:blank', 'win_print_r');
-	win_print_r.document.write('<html><body>');
-	r_print_r(obj, win_print_r);
-	win_print_r.document.write('</body></html>');
-}
-
-function r_print_r(theObj, win_print_r)
-{
-	if(theObj.constructor == Array ||
-		theObj.constructor == Object){
-		if (win_print_r == null)
-			win_print_r = window.open('about:blank', 'win_print_r');
-		}
-		for(var p in theObj){
-			if(theObj[p].constructor == Array||
-				theObj[p].constructor == Object){
-				win_print_r.document.write("<li>["+p+"] =>"+typeof(theObj)+"</li>");
-				win_print_r.document.write("<ul>")
-				r_print_r(theObj[p], win_print_r);
-				win_print_r.document.write("</ul>")
-			} else {
-				win_print_r.document.write("<li>["+p+"] =>"+theObj[p]+"</li>");
-			}
-		}
-	win_print_r.document.write("</ul>");
-}
-
-function checkdate (month, day, year) {
-    // Returns true(1) if it is a valid date in gregorian calendar  
-    // 
-    // version: 1006.1915
-    // discuss at: http://phpjs.org/functions/checkdate    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Pyerre
-    // +   improved by: Theriault
-    // *     example 1: checkdate(12, 31, 2000);
-    // *     returns 1: true    // *     example 2: checkdate(2, 29, 2001);
-    // *     returns 2: false
-    // *     example 3: checkdate(03, 31, 2008);
-    // *     returns 3: true
-    // *     example 4: checkdate(1, 390, 2000);    // *     returns 4: false
-    return month > 0 && month < 13 && year > 0 && year < 32768 && day > 0 && day <= (new Date(year, month, 0)).getDate();
-}
-
-
-function changementPage(partie, table, page, idPere, affichage, option)
-{
+function changementPage(partie, table, page, idPere, affichage, option){
 	var partContainer = 'partieEdition';
-	if(partie == 'left')
-	{
+	if(partie == 'left'){
 		var partContainer = 'partieGauche';
 	}
 
-	evarisk("#" + partContainer).html(	evarisk("#loadingImg").html()	);
+	digirisk("#" + partContainer).html(digirisk("#loadingImg").html());
 	if(affichage == 'affichageTable'){
-		evarisk("#" + partContainer).load(EVA_AJAX_FILE_URL, 
-		{
+		digirisk("#" + partContainer).load(EVA_AJAX_FILE_URL,{
 			"post": "true", 
 			"table": table,
 			"act": "changementPage",
@@ -137,12 +88,11 @@ function changementPage(partie, table, page, idPere, affichage, option)
 			"partie": partie,
 			"affichage": affichage,
 			"partition": option,
-			"menu": evarisk("#menu").val()
+			"menu": digirisk("#menu").val()
 		});
 	}
 	else{
-		evarisk("#" + partContainer).load(EVA_AJAX_FILE_URL, 
-		{
+		digirisk("#" + partContainer).load(EVA_AJAX_FILE_URL,{
 			"post": "true", 
 			"table": table,
 			"act": "changementPage",
@@ -151,128 +101,117 @@ function changementPage(partie, table, page, idPere, affichage, option)
 			"partie": partie,
 			"affichage": affichage,
 			"expanded": option,
-			"menu": evarisk("#menu").val()
+			"menu": digirisk("#menu").val()
 		});
 	}
 }
 
-function commonTabChange(boxId, divId, tabId)
-{
-	evarisk("#" + boxId + " .tabs").each(function(){
-		evarisk(this).removeClass("selected_tab");
+function commonTabChange(boxId, divId, tabId){
+	digirisk("#" + boxId + " .tabs").each(function(){
+		digirisk(this).removeClass("selected_tab");
 	});
-	evarisk("#" + boxId + " .eva_tabs_panel").each(function(){
-		evarisk(this).hide();
+	digirisk("#" + boxId + " .eva_tabs_panel").each(function(){
+		digirisk(this).hide();
 	});
-	evarisk(divId).show();
-	evarisk(tabId).addClass("selected_tab");
+	digirisk(divId).show();
+	digirisk(tabId).addClass("selected_tab");
 }
-function tabChange(divId, tabId)
-{
-	evarisk("#postBoxRisques .tabs").each(function(){
-		evarisk(this).removeClass("selected_tab");
+function tabChange(divId, tabId){
+	digirisk("#postBoxRisques .tabs").each(function(){
+		digirisk(this).removeClass("selected_tab");
 	});
-	evarisk("#postBoxRisques .eva_tabs_panel").each(function(){
-		evarisk(this).hide();
+	digirisk("#postBoxRisques .eva_tabs_panel").each(function(){
+		digirisk(this).hide();
 	});
-	evarisk(divId).show();
-	evarisk(tabId).addClass("selected_tab");
+	digirisk(divId).show();
+	digirisk(tabId).addClass("selected_tab");
 }
-function hideExtraTab()
-{
-	evarisk("#ongletEditerRisque").css("display","none");
-	evarisk("#ongletControlerActionDemandee").css("display","none");
-	evarisk("#ongletDemandeActionCorrective" + TABLE_RISQUE).css("display","none");
-	evarisk("#divDemandeAction" + TABLE_RISQUE).html("");
-	evarisk("#ongletSuiviActionCorrective" + TABLE_RISQUE).css("display","none");
-	evarisk("#divSuiviAction" + TABLE_RISQUE).html("");
-	evarisk("#ongletFicheActionCorrective" + TABLE_RISQUE).css("display","none");
-	evarisk("#divFicheAction" + TABLE_RISQUE).html("");
-	evarisk("#ongletHistoRisk" + TABLE_RISQUE).css("display","none");
-	evarisk("#divHistoRisk" + TABLE_RISQUE).html("");
+function hideExtraTab(){
+	digirisk("#ongletEditerRisque").css("display","none");
+	digirisk("#ongletControlerActionDemandee").css("display","none");
+	digirisk("#ongletDemandeActionCorrective" + TABLE_RISQUE).css("display","none");
+	digirisk("#divDemandeAction" + TABLE_RISQUE).html("");
+	digirisk("#ongletSuiviActionCorrective" + TABLE_RISQUE).css("display","none");
+	digirisk("#divSuiviAction" + TABLE_RISQUE).html("");
+	digirisk("#ongletFicheActionCorrective" + TABLE_RISQUE).css("display","none");
+	digirisk("#divFicheAction" + TABLE_RISQUE).html("");
+	digirisk("#ongletHistoRisk" + TABLE_RISQUE).css("display","none");
+	digirisk("#divHistoRisk" + TABLE_RISQUE).html("");
 }
 
-function selectRowInTreeTable(tableId)
-{
+function selectRowInTreeTable(tableId){
 	// Make visible that a row is clicked
-	evarisk("table#" + tableId + " tbody tr").click(function() {
-		evarisk("tr.selected").removeClass("selected"); // Deselect currently selected rows
-		evarisk("tr.edited").removeClass("edited"); // Deselect currently selected rows
-		evarisk(this).addClass("selected");
+	digirisk("table#" + tableId + " tbody tr").click(function() {
+		digirisk("tr.selected").removeClass("selected"); // Deselect currently selected rows
+		digirisk("tr.edited").removeClass("edited"); // Deselect currently selected rows
+		digirisk(this).addClass("selected");
 	});
 
 	// Make sure row is selected when span is clicked
-	evarisk("table#" + tableId + " tbody tr span").click(function() {
-		evarisk(evarisk(this).parents("tr")[0]).trigger("click");
+	digirisk("table#" + tableId + " tbody tr span").click(function() {
+		digirisk(digirisk(this).parents("tr")[0]).trigger("click");
 	});
 }
-function reInitTreeTable()
-{
-	evarisk("#rightEnlarging").show();
-	evarisk("#equilize").click();
+function reInitTreeTable(){
+	digirisk("#rightEnlarging").show();
+	digirisk("#equilize").click();
 	var expanded = new Array();
-	evarisk(".expanded").each(function(){
-		expanded.push(evarisk(this).attr("id"));
+	digirisk(".expanded").each(function(){
+		expanded.push(digirisk(this).attr("id"));
 	});
 	return expanded;
 }
 
-function initialiseClassicalPage()
-{
-	if(evarisk("#rightSide-sortables").html() == ""){
-		evarisk("#rightEnlarging").hide();
+function initialiseClassicalPage(){
+	if(digirisk("#rightSide-sortables").html() == ""){
+		digirisk("#rightEnlarging").hide();
 	}
 	else{
-		evarisk("#rightEnlarging").show();
+		digirisk("#rightEnlarging").show();
 	}
-	if(evarisk("#leftSide-sortables").html() == ""){
-		evarisk("#leftEnlarging").hide();
+	if(digirisk("#leftSide-sortables").html() == ""){
+		digirisk("#leftEnlarging").hide();
 	}
 	else{
-		evarisk("#leftEnlarging").show();
+		digirisk("#leftEnlarging").show();
 	}
 }
-function initialiseEditedElementInGridMode(idToEdit)
-{
-	evarisk("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
-		for(var i=1; i<=evarisk(this).children("td").length; i++)
-		{
-			if(evarisk(this).children("td:nth-child(" + i + ")").children("img").attr("id") == idToEdit)
-			{												
-				evarisk(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
+function initialiseEditedElementInGridMode(idToEdit){
+	digirisk("#tablemainPostBox tbody tr:nth-child(3)").each(function(){
+		for(var i=1; i<=digirisk(this).children("td").length; i++){
+			if(digirisk(this).children("td:nth-child(" + i + ")").children("img").attr("id") == idToEdit){												
+				digirisk(this).prevAll("tr:not(tr:first-child)").andSelf().children("td:nth-child(" + i + ")").addClass("edited");
 				// 3 * i car nomInfo + : + info
-				evarisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
-				evarisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
-				evarisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
+				digirisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i) + ")").addClass("edited");
+				digirisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 1) + ")").addClass("edited");
+				digirisk(this).prevAll("tr:first-child").children("td:nth-child(" + (3 * i - 2) + ")").addClass("edited");
 			}
 		}
 	});
 }
 
 function actionMessageShow(idToShow, messageToShow){
-	evarisk(idToShow).show();
-	evarisk(idToShow).addClass("updated");
-	evarisk(idToShow).html(messageToShow);
+	digirisk(idToShow).show();
+	digirisk(idToShow).addClass("updated");
+	digirisk(idToShow).html(messageToShow);
 }
 function actionMessageHide(idToHide){
-	evarisk(idToHide).hide();
-	evarisk(idToHide).html("");
-	evarisk(idToHide).removeClass("updated");
+	digirisk(idToHide).hide();
+	digirisk(idToHide).html("");
+	digirisk(idToHide).removeClass("updated");
 }
 
-function emptyOptionForm()
-{
-	evarisk("#actionOption").val("save");
-	evarisk("#idOption").val("");
-	evarisk("#nomOption").val("");
-	evarisk("#type").val("");
-	evarisk("#optionName").html("");
-	evarisk("#optionEdition").html("");
-	evarisk("#light").hide();
-	evarisk("#fade").hide();
+function emptyOptionForm(){
+	digirisk("#actionOption").val("save");
+	digirisk("#idOption").val("");
+	digirisk("#nomOption").val("");
+	digirisk("#type").val("");
+	digirisk("#optionName").html("");
+	digirisk("#optionEdition").html("");
+	digirisk("#light").hide();
+	digirisk("#fade").hide();
 }
-function goTo(ancre)
-{
+function goTo(ancre){
 	var speed = 1000;
 	jQuery("html,body").animate({scrollTop:jQuery(ancre).offset().top},speed,"swing",function(){
 		if(ancre != "body")
@@ -285,8 +224,7 @@ function goTo(ancre)
 	});
 }
 
-function updateTips( t, container )
-{
+function updateTips( t, container ){
 	container
 		.text( t )
 		.addClass( "ui-state-highlight" );
@@ -297,19 +235,17 @@ function updateTips( t, container )
 		container.text( "" );
 	}, 5000 );
 }
-function checkLength( o, n, min, max, msg, errorContainer )
-{
+function checkLength( o, n, min, max, msg, errorContainer ){
 	if ( o.val().length > max || o.val().length < min ){
 		o.addClass( "ui-state-error" );
-		updateTips( convertAccentToJS(msg.replace("!#!term!#!", n).replace("!#!minlength!#!", min).replace("!#!maxlength!#!", max)), errorContainer );
+		updateTips( digi_html_accent_for_js(msg.replace("!#!term!#!", n).replace("!#!minlength!#!", min).replace("!#!maxlength!#!", max)), errorContainer );
 		return false;
 	}
 	else{
 		return true;
 	}
 }
-function checkRegexp( o, regexp, n, errorContainer  )
-{
+function checkRegexp( o, regexp, n, errorContainer  ){
 	if ( !( regexp.test( o.val() ) ) ){
 		o.addClass( "ui-state-error" );
 		updateTips( n, errorContainer );
@@ -321,20 +257,18 @@ function checkRegexp( o, regexp, n, errorContainer  )
 }
 
 /*	Picture galery functions	*/
-function reloadcontainer(tableElement, idElement, PICTO_LOADING_ROUND)
-{
-	evarisk("#pictureGallery" + tableElement + "_" + idElement).html('<img src="' + PICTO_LOADING_ROUND + '" alt="loading" />');
-	evarisk("#pictureGallery" + tableElement + "_" + idElement).load(EVA_AJAX_FILE_URL, {
+function reloadcontainer(tableElement, idElement, PICTO_LOADING_ROUND){
+	digirisk("#pictureGallery" + tableElement + "_" + idElement).html('<img src="' + PICTO_LOADING_ROUND + '" alt="loading" />');
+	digirisk("#pictureGallery" + tableElement + "_" + idElement).load(EVA_AJAX_FILE_URL, {
 		"post": "true",
 		"table": tableElement,
 		"idElement": idElement,
 		"act": "reloadGallery"
 	});
 }
-function showGallery(tableElement, idElement, PICTO_LOADING_ROUND)
-{
-	evarisk("#pictureGallery" + tableElement + "_" + idElement).html('<img src="' + PICTO_LOADING_ROUND + '" alt="loading" />');
-	evarisk("#pictureGallery" + tableElement + "_" + idElement).load(EVA_AJAX_FILE_URL, {
+function showGallery(tableElement, idElement, PICTO_LOADING_ROUND){
+	digirisk("#pictureGallery" + tableElement + "_" + idElement).html('<img src="' + PICTO_LOADING_ROUND + '" alt="loading" />');
+	digirisk("#pictureGallery" + tableElement + "_" + idElement).load(EVA_AJAX_FILE_URL, {
 		"post": "true",
 		"table": tableElement,
 		"idElement": idElement,
@@ -343,10 +277,9 @@ function showGallery(tableElement, idElement, PICTO_LOADING_ROUND)
 }
 
 /*	Recommandation functions	*/
-function deleteRecommandationCategory(recommandationCategoryId, tableElement, alertMessage)
-{
-	if(confirm(convertAccentToJS(alertMessage))){
-		evarisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
+function deleteRecommandationCategory(recommandationCategoryId, tableElement, alertMessage){
+	if(confirm(digi_html_accent_for_js(alertMessage))){
+		digirisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
 			"post":"true",
 			"table":tableElement,
 			"act":"deleteRecommandationCategory",
@@ -354,14 +287,12 @@ function deleteRecommandationCategory(recommandationCategoryId, tableElement, al
 		});
 	}
 }
-function editRecommandationCategory(recommandationCategoryId, tableElement)
-{
-	evarisk("#recommandationCategoryFormContainer").hide();
-	evarisk("#loadingCategoryRecommandationForm").html(evarisk("#loadingImg").html());
-	evarisk("#loadingCategoryRecommandationForm").show();
-	evarisk("#recommandationCategoryInterfaceContainer").dialog("open");
-	evarisk("#recommandationCategoryFormContainer").load(EVA_AJAX_FILE_URL, 
-	{
+function editRecommandationCategory(recommandationCategoryId, tableElement){
+	digirisk("#recommandationCategoryFormContainer").hide();
+	digirisk("#loadingCategoryRecommandationForm").html(digirisk("#loadingImg").html());
+	digirisk("#loadingCategoryRecommandationForm").show();
+	digirisk("#recommandationCategoryInterfaceContainer").dialog("open");
+	digirisk("#recommandationCategoryFormContainer").load(EVA_AJAX_FILE_URL, {
 		"post":"true",
 		"table":tableElement,
 		"act":"loadRecommandationCategoryManagementForm",
@@ -376,46 +307,46 @@ function userDeletion(userId, tableElement){
 	checkUserListModification(tableElement, "save_group" + tableElement);
 }
 function addUserIdFieldList(name, id, tableElement){
-	evarisk("#noUserSelected" + tableElement).remove();
-	evarisk("#userListOutput" + tableElement).attr("scrollTop",0);
+	digirisk("#noUserSelected" + tableElement).remove();
+	digirisk("#userListOutput" + tableElement).attr("scrollTop",0);
 
-	evarisk(evarisk("#userBlocContainer").html()).prependTo("#userListOutput" + tableElement);
-	evarisk("#userListOutput" + tableElement + " div:first").attr("id", "affectedUser" + tableElement + id);
-	evarisk("#affectedUser" + tableElement + id).html(evarisk("#affectedUser" + tableElement + id).html().replace("#USERNAME#", name));
+	digirisk(digirisk("#userBlocContainer").html()).prependTo("#userListOutput" + tableElement);
+	digirisk("#userListOutput" + tableElement + " div:first").attr("id", "affectedUser" + tableElement + id);
+	digirisk("#affectedUser" + tableElement + id).html(digirisk("#affectedUser" + tableElement + id).html().replace("#USERNAME#", name));
 }
 function checkUserListModification(tableElement, idButton){
-	var actualUserList = evarisk("#actuallyAffectedUserIdList" + tableElement).val();
-	var userList = evarisk("#affectedUserIdList" + tableElement).val();
+	var actualUserList = digirisk("#actuallyAffectedUserIdList" + tableElement).val();
+	var userList = digirisk("#affectedUserIdList" + tableElement).val();
 
 	if(actualUserList == userList){
-		evarisk("#" + idButton).prop("disabled", "disabled");
-		evarisk("#" + idButton).addClass("button-secondary");
-		evarisk("#" + idButton).removeClass("button-primary");
+		digirisk("#" + idButton).prop("disabled", "disabled");
+		digirisk("#" + idButton).addClass("button-secondary");
+		digirisk("#" + idButton).removeClass("button-primary");
 	}
 	else{
-		evarisk("#" + idButton).prop("disabled", "");
-		evarisk("#" + idButton).removeClass("button-secondary");
-		evarisk("#" + idButton).addClass("button-primary");
+		digirisk("#" + idButton).prop("disabled", "");
+		digirisk("#" + idButton).removeClass("button-secondary");
+		digirisk("#" + idButton).addClass("button-primary");
 	}
 }
 function cleanUserIdFiedList(id, tableElement){
-	var actualAffectedUserList = evarisk("#affectedUserIdList" + tableElement).val().replace(" " + id + ", ", "");
-	evarisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList + id + ", ");
+	var actualAffectedUserList = digirisk("#affectedUserIdList" + tableElement).val().replace(" " + id + ", ", "");
+	digirisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList + id + ", ");
 
-	if(evarisk("#affectedUser" + tableElement + id)){
-		evarisk("#affectedUser" + tableElement + id).remove();
+	if(digirisk("#affectedUser" + tableElement + id)){
+		digirisk("#affectedUser" + tableElement + id).remove();
 	}
 
-	evarisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsLinked");
-	evarisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsNotLinked");
+	digirisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsLinked");
+	digirisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsNotLinked");
 }
 function deleteUserIdFiedList(id, tableElement){
-	var actualAffectedUserList = evarisk("#affectedUserIdList" + tableElement).val().replace(id + ", ", "");
-	evarisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList );
-	evarisk("#affectedUser" + tableElement + id).remove();
+	var actualAffectedUserList = digirisk("#affectedUserIdList" + tableElement).val().replace(id + ", ", "");
+	digirisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList );
+	digirisk("#affectedUser" + tableElement + id).remove();
 
-	evarisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsLinked");
-	evarisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsNotLinked");
+	digirisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsLinked");
+	digirisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsNotLinked");
 }
 
 /*	Element link functions	*/
@@ -425,98 +356,158 @@ function elementDeletion(elementId, tableElement, idButton){
 	checkElementListModification(tableElement, idButton);
 }
 function addElementIdFieldList(name, id, tableElement){
-	evarisk("#noElementSelected" + tableElement).remove();
-	evarisk("#affectedListOutput" + tableElement).attr("scrollTop",0);
+	digirisk("#noElementSelected" + tableElement).remove();
+	digirisk("#affectedListOutput" + tableElement).attr("scrollTop",0);
 
-	evarisk(evarisk("#elementBlocContainer" + tableElement).html()).prependTo("#affectedListOutput" + tableElement);
+	digirisk(digirisk("#elementBlocContainer" + tableElement).html()).prependTo("#affectedListOutput" + tableElement);
 
-	evarisk("#affectedListOutput" + tableElement + " div:first").attr("id", "affectedElement" + tableElement + id);
-	evarisk("#affectedElement" + tableElement + id).html(evarisk("#affectedElement" + tableElement + id).html().replace("#ELEMENTNAME#", name));
+	digirisk("#affectedListOutput" + tableElement + " div:first").attr("id", "affectedElement" + tableElement + id);
+	digirisk("#affectedElement" + tableElement + id).html(digirisk("#affectedElement" + tableElement + id).html().replace("#ELEMENTNAME#", name));
 }
 function checkElementListModification(tableElement, idButton){
-	var actuallyAffectedList = evarisk("#actuallyAffectedList" + tableElement).val();
-	var affectedList = evarisk("#affectedList" + tableElement).val();
+	var actuallyAffectedList = digirisk("#actuallyAffectedList" + tableElement).val();
+	var affectedList = digirisk("#affectedList" + tableElement).val();
 
 	if(actuallyAffectedList == affectedList){
-		evarisk("#" + idButton).prop("disabled", "disabled");
-		evarisk("#" + idButton).addClass("button-secondary");
-		evarisk("#" + idButton).removeClass("button-primary");
+		digirisk("#" + idButton).prop("disabled", "disabled");
+		digirisk("#" + idButton).addClass("button-secondary");
+		digirisk("#" + idButton).removeClass("button-primary");
 	}
 	else{
-		evarisk("#" + idButton).prop("disabled", "");
-		evarisk("#" + idButton).removeClass("button-secondary");
-		evarisk("#" + idButton).addClass("button-primary");
+		digirisk("#" + idButton).prop("disabled", "");
+		digirisk("#" + idButton).removeClass("button-secondary");
+		digirisk("#" + idButton).addClass("button-primary");
 	}
 }
 function cleanElementIdFiedList(id, tableElement){
-	var actualAffectedUserList = evarisk("#affectedList" + tableElement).val().replace(" " + id + ", ", "");
-	evarisk("#affectedList" + tableElement).val( actualAffectedUserList + id + ", ");
+	var actualAffectedUserList = digirisk("#affectedList" + tableElement).val().replace(" " + id + ", ", "");
+	digirisk("#affectedList" + tableElement).val( actualAffectedUserList + id + ", ");
 
-	if(evarisk("#affectedElement" + tableElement + id)){
-		evarisk("#affectedElement" + tableElement + id).remove();
+	if(digirisk("#affectedElement" + tableElement + id)){
+		digirisk("#affectedElement" + tableElement + id).remove();
 	}
 
-	evarisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsLinked");
-	evarisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsNotLinked");
+	digirisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsLinked");
+	digirisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsNotLinked");
 }
 function deleteElementIdFiedList(id, tableElement){
-	var actualAffectedUserList = evarisk("#affectedList" + tableElement).val().replace(id + ", ", "");
-	evarisk("#affectedList" + tableElement).val( actualAffectedUserList );
-	evarisk("#affectedElement" + tableElement + id).remove();
+	var actualAffectedUserList = digirisk("#affectedList" + tableElement).val().replace(id + ", ", "");
+	digirisk("#affectedList" + tableElement).val( actualAffectedUserList );
+	digirisk("#affectedElement" + tableElement + id).remove();
 
-	evarisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsLinked");
-	evarisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsNotLinked");
+	digirisk("#actionButton" + tableElement + "ElementLink" + id).removeClass("elementIsLinked");
+	digirisk("#actionButton" + tableElement + "ElementLink" + id).addClass("elementIsNotLinked");
 }
 
 
 function createGroupement(action, table){
-	evarisk("#act").val(action);
-	evarisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
+	digirisk("#act").val(action);
+	digirisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
 		"post": "true", 
 		"table": table,
-		"act": evarisk("#act").val(),
-		"id": evarisk("#id").val(),
-		"typeGroupement": evarisk("#typeGroupement").val(),
-		"nom_groupement": evarisk("#nom_groupement").val(),
-		"groupementPere": evarisk("#groupementPere :selected").val(),
-		"description": evarisk("#description").val(),
-		"adresse_ligne_1": evarisk("#adresse_ligne_1").val(),
-		"adresse_ligne_2": evarisk("#adresse_ligne_2").val(),
-		"code_postal": evarisk("#code_postal").val(),
-		"ville": evarisk("#ville").val(),
-		"telephone": evarisk("#telephone").val(),
-		"effectif": evarisk("#effectif").val(),
-		"affichage": evarisk("#affichage").val(),
-		"latitude": evarisk("#latitude").val(),
-		"longitude": evarisk("#longitude").val(),
-		"siren": evarisk("#siren").val(),
-		"siret": evarisk("#siret").val(),
-		"social_activity_number": evarisk("#social_activity_number").val(),
-		"idsFilAriane": evarisk("#idsFilAriane").val()
+		"act": digirisk("#act").val(),
+		"id": digirisk("#id").val(),
+		"typeGroupement": digirisk("#typeGroupement").val(),
+		"nom_groupement": digirisk("#nom_groupement").val(),
+		"groupementPere": digirisk("#groupementPere :selected").val(),
+		"description": digirisk("#description").val(),
+		"adresse_ligne_1": digirisk("#adresse_ligne_1").val(),
+		"adresse_ligne_2": digirisk("#adresse_ligne_2").val(),
+		"code_postal": digirisk("#code_postal").val(),
+		"ville": digirisk("#ville").val(),
+		"telephone": digirisk("#telephone").val(),
+		"effectif": digirisk("#effectif").val(),
+		"affichage": digirisk("#affichage").val(),
+		"latitude": digirisk("#latitude").val(),
+		"longitude": digirisk("#longitude").val(),
+		"siren": digirisk("#siren").val(),
+		"siret": digirisk("#siret").val(),
+		"social_activity_number": digirisk("#social_activity_number").val(),
+		"idsFilAriane": digirisk("#idsFilAriane").val()
 	});
 }
 function createUniteTravail(action, table){
-	evarisk("#act").val(action);
-	evarisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
+	digirisk("#act").val(action);
+	digirisk("#ajax-response").load(EVA_AJAX_FILE_URL, {
 		"post": "true", 
 		"table": table,
-		"act": evarisk("#act").val(),
-		"id": evarisk("#id").val(),
-		"nom_unite_travail": evarisk("#nom_unite_travail").val(),
-		"groupementPere": evarisk("#groupementPere :selected").val(),
-		"description": evarisk("#description").val(),
-		"adresse_ligne_1": evarisk("#adresse_ligne_1").val(),
-		"adresse_ligne_2": evarisk("#adresse_ligne_2").val(),
-		"code_postal": evarisk("#code_postal").val(),
-		"ville": evarisk("#ville").val(),
-		"telephone": evarisk("#telephone").val(),
-		"effectif": evarisk("#effectif").val(),
-		"effectif": evarisk("#effectif").val(),
-		"affichage": evarisk("#affichage").val(),
-		"latitude": evarisk("#latitude").val(),
-		"longitude": evarisk("#longitude").val(),
-		"idsFilAriane": evarisk("#idsFilAriane").val()
+		"act": digirisk("#act").val(),
+		"id": digirisk("#id").val(),
+		"nom_unite_travail": digirisk("#nom_unite_travail").val(),
+		"groupementPere": digirisk("#groupementPere :selected").val(),
+		"description": digirisk("#description").val(),
+		"adresse_ligne_1": digirisk("#adresse_ligne_1").val(),
+		"adresse_ligne_2": digirisk("#adresse_ligne_2").val(),
+		"code_postal": digirisk("#code_postal").val(),
+		"ville": digirisk("#ville").val(),
+		"telephone": digirisk("#telephone").val(),
+		"effectif": digirisk("#effectif").val(),
+		"effectif": digirisk("#effectif").val(),
+		"affichage": digirisk("#affichage").val(),
+		"latitude": digirisk("#latitude").val(),
+		"longitude": digirisk("#longitude").val(),
+		"idsFilAriane": digirisk("#idsFilAriane").val()
 	});
+}
+
+
+/**
+*	Add utilities for page shape selection. show/hide right/left part, enlarge/shrink right/left part
+*/
+function main_page_shape_selector(){
+	digirisk("#leftEnlarging").click(function() {
+		jQuery("#digirisk_right_container").hide();
+		jQuery("#digirisk_left_container").show();
+		jQuery("#digirisk_left_container").css("width", "99%");
+		adminMenu.fold();
+		jQuery("#enlarging .ui-slider-range").css("width","100%");
+		jQuery("#enlarging .ui-slider-handle").css("left","100%");
+	});
+	digirisk("#rightEnlarging").click(function() {
+		jQuery("#digirisk_left_container").hide();
+		jQuery("#digirisk_right_container").show();
+		jQuery("#digirisk_right_container").css("width", "99%");
+		adminMenu.fold();
+		jQuery("#enlarging .ui-slider-range").css("width","0%");
+		jQuery("#enlarging .ui-slider-handle").css("left","0%");
+	});
+	digirisk("#equilize").click(function() {
+		jQuery("#digirisk_left_container").show();
+		jQuery("#digirisk_right_container").show();
+		jQuery("#digirisk_right_container").css("width", "50%");
+		jQuery("#digirisk_left_container").css("width", "49%");
+		jQuery("#enlarging .ui-slider-range").css("width","50%");
+		jQuery("#enlarging .ui-slider-handle").css("left","50%");
+	});
+	digirisk("#enlarging .ui-slider-horizontal").css("width","100px");
+	digirisk("#enlarging").slider({
+		range: "min",
+		value: 50,
+		min: 25,
+		max:  75,
+		slide: function(event, ui) {
+			var largeurGauche = ui.value - 1;
+			var largeurDroite = 99 - largeurGauche;
+			if(largeurGauche == 24 || largeurDroite == 24){
+				adminMenu.fold();
+			}
+			jQuery("#digirisk_right_container").show();
+			jQuery("#digirisk_left_container").show();
+			jQuery("#digirisk_left_container").css("width", largeurGauche  + "%");
+			jQuery("#digirisk_right_container").css("width", largeurDroite  + "%");
+		}
+	});
+}
+
+function check_if_value_changed(button){
+	if(jQuery("#receiver_element").val() != jQuery("#current_element").val()){
+		jQuery("#" + button).removeClass("button-secondary");
+		jQuery("#" + button).addClass("button-primary");
+	}
+	else{
+		jQuery("#" + button).addClass("button-secondary");
+		jQuery("#" + button).removeClass("button-primary");
+	}
 }
 
 
@@ -549,33 +540,500 @@ function main_page_shape_selector(){
 		jQuery("#enlarging .ui-slider-handle").css("left","50%");
 	});
 	evarisk("#enlarging .ui-slider-horizontal").css("width","100px");
-	evarisk("#enlarging").slider({
-		range: "min",
-		value: 50,
-		min: 25,
-		max:  75,
-		slide: function(event, ui) {
-			var largeurGauche = ui.value - 1;
-			var largeurDroite = 99 - largeurGauche;
-			if(largeurGauche == 24 || largeurDroite == 24){
-				adminMenu.fold();
+	if(evarisk("#enlarging").attr("id")){
+		evarisk("#enlarging").slider({
+			range: "min",
+			value: 50,
+			min: 25,
+			max:  75,
+			slide: function(event, ui) {
+				var largeurGauche = ui.value - 1;
+				var largeurDroite = 99 - largeurGauche;
+				if(largeurGauche == 24 || largeurDroite == 24){
+					adminMenu.fold();
+				}
+				evarisk("#digirisk_right_container").show();
+				evarisk("#digirisk_left_container").show();
+				evarisk("#digirisk_left_container").css("width", largeurGauche  + "%");
+				evarisk("#digirisk_right_container").css("width", largeurDroite  + "%");
 			}
-			evarisk("#digirisk_right_container").show();
-			evarisk("#digirisk_left_container").show();
-			evarisk("#digirisk_left_container").css("width", largeurGauche  + "%");
-			evarisk("#digirisk_right_container").css("width", largeurDroite  + "%");
+		});
+	}
+}
+
+/**
+*	Transform a simple table into a tree table
+*/
+function table_to_treeTable(table_identifier, root_identifier, element_type, sub_element_type, menu){
+	/*	Transform the table in a treeTable	*/
+	jQuery("#" + table_identifier).treeTable();
+
+	/*	On first tree loading open the main root branch	*/
+	jQuery("#" + table_identifier + " #node-" + table_identifier + "-" + root_identifier).toggleBranch();
+	jQuery("#tdRacine" + table_identifier).children("span.expander").remove();
+	jQuery("#" + table_identifier +" tr.parent").each(function(){
+		var childNodes = jQuery("table#" + table_identifier + " tbody tr.child-of-" + jQuery(this).attr("id"));
+		if(childNodes.length > 0){
+			jQuery(this).addClass("aFils");				
+			var premierFils = jQuery("table#" + table_identifier + " tbody tr.child-of-" + jQuery(this).attr("id") + ":first").attr("id");
+			if(premierFils != premierFils.replace(/node/g,"")){
+				jQuery(this).addClass("aFilsNoeud");
+			}
+			else{
+				jQuery(this).addClass("aFilsFeuille");
+			}
+		}
+		else{
+			jQuery(this).removeClass("aFils");
+			jQuery(this).addClass("sansFils");
+		}
+	});
+
+	/*	Add possibility to collapse main tree	by clicking on table header*/
+	jQuery(".digirisk_main_table thead").hover(function(){
+		jQuery(".main_metabox_collapser").addClass("main_metabox_collapser_hover");
+	},function(){
+		jQuery(".main_metabox_collapser").removeClass("main_metabox_collapser_hover");
+	});
+	jQuery(".digirisk_main_table thead").click(function(){
+		jQuery("#" + table_identifier + " tbody").toggle();
+	});
+
+	/*	Add action when clicking on main add button	*/
+	action_on_add_button(table_identifier, element_type, sub_element_type, menu)
+}
+
+/**
+*	Add action when clicking on main add button
+*/
+function action_on_add_button(table_identifier, element_type, sub_element_type, menu){
+	jQuery("#" + table_identifier + " .addMain img").click(function(){
+		var nodeId = jQuery(this).parent("td").parent("tr").attr("id").replace("node-" + table_identifier + "-", "");
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": element_type,
+			"act": "add",
+			"page": jQuery("#pagemainPostBoxReference").val(),
+			"idPere": nodeId,
+			"partie": "right",
+			"menu": menu,
+			"affichage": "affichageListe",
+			"partition": "tout",
+			"expanded": expanded
+		});
+	});
+	/*	Add action when clicking on secondary add button	*/
+	jQuery("#" + table_identifier + " .addSecondary img").click(function(){
+		var nodeId = jQuery(this).parent("td").parent("tr").attr("id").replace("node-" + table_identifier + "-", "");
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "add",
+			"page": jQuery("#pagemainPostBoxReference").val(),
+			"idPere": nodeId,
+			"partie": "right",
+			"menu": menu,
+			"affichage": "affichageListe",
+			"partition": "tout",
+			"expanded": expanded
+		});
+	});
+}
+
+/**
+*	Create a sortable, drag and droppable tree
+*/
+function main_tree_draggable(table_identifier, element_type, loading_container, loading_text){
+	//	Draggable interface
+	var draggedObject;
+	var draggedObjectFather;
+
+	// Configure draggable nodes
+	jQuery("#" + table_identifier + " .noeudArbre, #" + table_identifier + " .feuilleArbre").draggable({
+		start: function(event, ui) {
+			draggedObject = jQuery(this).closest("tr").attr("id");//event.target.id;
+			var classNames = jQuery(this).closest("tr").attr("class").split(' ');//event.target.className.split(' ');
+			draggedObjectFather = "temp";
+			for(key in classNames) {
+				if(classNames[key].match("child-of-")) {
+					draggedObjectFather = jQuery("#" + classNames[key].substring(9));
+					draggedObjectFather = draggedObjectFather.attr("id");
+				}
+			}
+		},
+		helper: "clone",
+		opacity: .75,
+		refreshPositions: true,
+		revert: "invalid",
+		revertDuration: 300,
+		scroll: true
+	});
+	
+	var dropFunction = function(event, ui){
+		// Call jQuery treeTable plugin to move the branch
+		jQuery(jQuery(ui.draggable)).appendBranchTo(this);
+		var dropLocation = jQuery(this).closest("tr").attr("id");//event.target.id;
+
+		jQuery("#equilize").click();
+		jQuery("#" + loading_container).addClass("updated");
+		jQuery("#" + loading_container).html(loading_text);
+		jQuery("#" + loading_container).show();
+		jQuery("#" + loading_container).load(EVA_AJAX_FILE_URL,{
+			"post":"true",
+			"table": element_type,
+			"location": table_identifier,
+			"act":"transfert",
+			"idElementSrc":draggedObject,
+			"idElementOrigine":draggedObjectFather,
+			"idElementDest":dropLocation
+		});
+		setTimeout(
+			function(){
+				jQuery("#" + table_identifier + " tr.parent").each(function(){
+					var childNodes = jQuery("table#" + table_identifier + " tbody tr.child-of-" + jQuery(this).attr("id"));
+					if(childNodes.length > 0){
+						jQuery(this).removeClass("sansFils");
+						jQuery(this).addClass("aFils");
+						var premierFils = jQuery("table#" + table_identifier + " tbody tr.child-of-" + jQuery(this).attr("id") + ":first").attr("id");
+						if(premierFils != premierFils.replace("node-" + table_identifier + "-","")){
+							jQuery(this).addClass("aFilsNoeud");
+							jQuery(this).droppable( "option", "accept", ".noeudArbre" );
+							jQuery("#" + table_identifier + " #addSecondary" + jQuery(this).attr("id").replace("node-" + table_identifier + "-","") + " img").hide();
+							jQuery("#" + table_identifier + " #addMain" + jQuery(this).attr("id").replace("node-" + table_identifier + "-","") + " img").show();
+						}
+						else{
+							jQuery(this).addClass("aFilsFeuille");
+							jQuery(this).droppable( "option", "accept", ".feuilleArbre" );
+							jQuery("#" + table_identifier + " #addMain" + jQuery(this).attr("id").replace("node-" + table_identifier + "-","") + " img").hide();
+							jQuery("#" + table_identifier + " #addSecondary" + jQuery(this).attr("id").replace("node-" + table_identifier + "-","") + " img").show();
+						}
+					}
+					else{
+						jQuery(this).removeClass("aFilsNoeud");
+						jQuery(this).removeClass("aFilsFeuille");
+						jQuery(this).removeClass("aFils");
+						jQuery(this).addClass("sansFils");
+						jQuery(this).droppable("option", "accept", ".noeudArbre, .feuilleArbre");
+						jQuery("#" + table_identifier + " #addSecondary" + jQuery(this).attr("id").replace("node-" + table_identifier + "-","") + " img").show();
+						jQuery("#" + table_identifier + " #addMain" + jQuery(this).attr("id").replace("node-" + table_identifier + "-","") + " img").show();
+					}
+				});
+				jQuery(document).ajaxStop(function(){
+					jQuery("#" + loading_container).removeClass("updated");
+				});
+			}, 
+			10 
+		);
+	}
+
+	overFunction = function(event, ui){
+		// Make the droppable branch expand when a draggable node is moved over it.
+		if(this.id != jQuery(ui.draggable.parents("tr")[0]).id && !jQuery(this).is(".expanded")){
+			var overObject = jQuery(this);
+			setTimeout(function(){
+				if(overObject.is(".accept")){
+					overObject.expand();
+				}
+			},500 );
+		}
+	}
+	jQuery("#" + table_identifier + " .aFilsNoeud, #" + table_identifier + " .racineArbre").droppable({
+		accept: "#" + table_identifier + " .noeudArbre",
+		drop: dropFunction,
+		hoverClass: "accept",
+		over: overFunction			  
+	});
+	jQuery("#" + table_identifier + " .aFilsFeuille").droppable({
+		accept: "#" + table_identifier + " .feuilleArbre",
+		drop: dropFunction,
+		hoverClass: "accept",
+		over: overFunction
+	});
+	jQuery("#" + table_identifier + " .sansFils").droppable({
+		accept: "#" + table_identifier + " .feuilleArbre, #" + table_identifier + " .noeudArbre",
+		drop: dropFunction,
+		hoverClass: "accept",
+		over: overFunction
+	});
+}
+
+/**
+*	Declare utilities for trash usage
+*/
+function main_tree_trash(element_type){
+	/*	Add trash utilities	*/
+	jQuery("#trashContainer").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 800,
+		height: 600,
+		close: function(){
+			evarisk(this).html("");
+		}
+	});
+	jQuery(".trash img").click(function(){
+		jQuery("#trashContainer").dialog("open");
+		jQuery("#trashContainer").html(evarisk("#loadingImg").html());
+		jQuery("#trashContainer").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"tableProvenance": element_type,
+			"nom": "loadTrash"
+		});
+	});
+}
+
+/**
+*	Define action to launch when a click is detected for a node in tree
+*/
+function main_tree_action_node(table_identifier, element_type, delete_message){
+	/*	A click is detected on delete button	*/
+	jQuery("#" + table_identifier + " .delete-node").click(function(){
+		var nodeId = jQuery(this).parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
+		var expanded = reInitTreeTable();
+		if(confirm(digi_html_accent_for_js(delete_message))){
+			jQuery("#digirisk_right_side").html("");
+			jQuery("#digirisk_left_side").html("");
+			jQuery("#ajax-response").load(EVA_AJAX_FILE_URL,{
+				"post": "true", 
+				"table": element_type,
+				"act": "delete",
+				"id": nodeId
+			});
+		}
+	});
+	/*	A click is detected on edit button	*/
+	jQuery("#" + table_identifier + " .edit-node").click(function(){
+		var nodeId = jQuery(this).parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
+		selectRowInTreeTable(table_identifier);
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": element_type,
+			"act": "edit",
+			"id": nodeId,
+			"partie": "right",
+			"menu": "gestiongrptut",
+			"affichage": "affichageListe",
+			"partition": "tout",
+			"expanded": expanded
+		});
+		jQuery("#digirisk_left_side").html("");
+		jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": element_type,
+			"act": "edit",
+			"id": nodeId,
+			"partie": "left",
+			"menu": "gestiongrptut",
+			"affichage": "affichageListe",
+			"partition": "tout",
+			"expanded": expanded
+		});
+	});
+	/*	A click is detected on evaluation button	*/
+	jQuery("#" + table_identifier + " .risq-node").click(function(){
+		var nodeId = jQuery(this).parent("td").parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
+		selectRowInTreeTable(table_identifier);
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": element_type,
+			"act": "edit",
+			"id": nodeId,
+			"partie": "right",
+			"menu": "risq",
+			"affichage": "affichageListe",
+			"partition": "tout",
+			"expanded": expanded
+		});
+		jQuery("#digirisk_left_side").html("");
+		jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": element_type,
+			"act": "edit",
+			"id": nodeId,
+			"partie": "left",
+			"menu": "risq",
+			"affichage": "affichageListe",
+			"partition": "tout",
+			"expanded": expanded
+		});
+	});
+	/*	A click is detected on delete button	*/
+	jQuery("#" + table_identifier + " .nomNoeudArbre, #" + table_identifier + " .treeTableGroupInfoColumn").unbind("click");
+	jQuery("#" + table_identifier + " .nomNoeudArbre, #" + table_identifier + " .treeTableGroupInfoColumn").click(function(e){
+		if(!jQuery(e.target).hasClass("expander")){
+			if(jQuery(e.target).hasClass("nomNoeudArbre") || jQuery(e.target).hasClass("node_name")){
+				var nodeId = jQuery(this).attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
+			}
+			else if(jQuery(e.target).hasClass("treeTableGroupInfoColumn")){
+				var nodeId = jQuery(this).parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
+			}
+			selectRowInTreeTable(table_identifier);
+			var expanded = reInitTreeTable();
+			jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+			jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+				"post": "true", 
+				"table": element_type,
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": "risq",
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
+			jQuery("#digirisk_left_side").html("");
+			jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL,{
+				"post": "true", 
+				"table": element_type,
+				"act": "edit",
+				"id": nodeId,
+				"partie": "left",
+				"menu": "risq",
+				"affichage": "affichageListe",
+				"partition": "tout",
+				"expanded": expanded
+			});
 		}
 	});
 }
 
-function check_if_value_changed(button){
-	if(jQuery("#receiver_element").val() != jQuery("#current_element").val()){
-		jQuery("#" + button).removeClass("button-secondary");
-		jQuery("#" + button).addClass("button-primary");
-	}
-	else{
-		jQuery("#" + button).addClass("button-secondary");
-		jQuery("#" + button).removeClass("button-primary");
-	}
+/**
+*	Define action to launch when a click is detected for a leaf in tree (smaller element)
+*/
+function main_tree_action_leaf(table_identifier, sub_element_type, delete_message){
+	/*	A click is detected on delete button	*/
+	jQuery("#" + table_identifier + " .delete-leaf").click(function(){
+		var leafId = jQuery(this).parent("tr").attr("id").replace("leaf-", "");
+		var expanded = reInitTreeTable();
+		if(confirm(digi_html_accent_for_js(delete_message))){
+			jQuery("#digirisk_right_side").html("");
+			jQuery("#digirisk_left_side").html("");
+			jQuery("#ajax-response").load(EVA_AJAX_FILE_URL,{
+				"post": "true", 
+				"table": sub_element_type,
+				"act": "delete",
+				"id": leafId
+			});
+		}
+	});
+	/*	A click is detected on edit button	*/
+	jQuery("#" + table_identifier + " .edit-leaf").click(function(){
+		var leafId = jQuery(this).parent("tr").attr("id").replace("leaf-", "");
+		selectRowInTreeTable(table_identifier);
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "edit",
+			"id": leafId,
+			"partie": "right",
+			"menu": "gestiongrptut",
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+		jQuery("#digirisk_left_side").html("");
+		jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "edit",
+			"id": leafId,
+			"partie": "left",
+			"menu": "gestiongrptut",
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+	});
+	/*	A click is detected on the line	*/
+	jQuery(".nomFeuilleArbre, .treeTableInfoColumn").click(function(){
+		var leafId = jQuery(this).parent("tr").attr("id").replace("leaf-", "");
+		selectRowInTreeTable(table_identifier);
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL, {
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "edit",
+			"id": leafId,
+			"partie": "right",
+			"menu": "risq",
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+		jQuery("#digirisk_left_side").html("");
+		jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL, {
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "edit",
+			"id": leafId,
+			"partie": "left",
+			"menu": "risq",
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+	});
+	/*	When a click is detected on evaluation button	*/
+	jQuery("#" + table_identifier + " .risk-leaf").click(function(){
+		var leafId = jQuery(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
+		selectRowInTreeTable(table_identifier);
+		var expanded = reInitTreeTable();
+		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+		jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "edit",
+			"id": leafId,
+			"partie": "right",
+			"menu": "risq",
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+		jQuery("#digirisk_left_side").html("");
+		jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL,{
+			"post": "true", 
+			"table": sub_element_type,
+			"act": "edit",
+			"id": leafId,
+			"partie": "left",
+			"menu": "risq",
+			"affichage": "affichageListe",
+			"expanded": expanded
+		});
+	});
 }
 
+/**
+*
+*/
+function side_reloader(sub_element_type, leafId, menu, expanded){
+	jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
+	jQuery("#digirisk_right_side").load(EVA_AJAX_FILE_URL,{
+		"post": "true", 
+		"table": sub_element_type,
+		"act": "edit",
+		"id": leafId,
+		"partie": "right",
+		"menu": menu,
+		"affichage": "affichageListe",
+		"expanded": expanded
+	});
+	jQuery("#digirisk_left_side").html("");
+	jQuery("#digirisk_left_side").load(EVA_AJAX_FILE_URL,{
+		"post": "true", 
+		"table": sub_element_type,
+		"act": "edit",
+		"id": leafId,
+		"partie": "left",
+		"menu": menu,
+		"affichage": "affichageListe",
+		"expanded": expanded
+	});
+}

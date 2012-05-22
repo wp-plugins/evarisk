@@ -14,10 +14,10 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
 
 	$result = handleUpload();
-	$table = eva_tools::IsValid_Variable($_GET['table']);
-	$tableElement = eva_tools::IsValid_Variable($result['tableElement']);
-	$idElement = eva_tools::IsValid_Variable($result['idElement']);
-	$fichier = eva_tools::IsValid_Variable($result['fichier']);
+	$table = digirisk_tools::IsValid_Variable($_GET['table']);
+	$tableElement = digirisk_tools::IsValid_Variable($result['tableElement']);
+	$idElement = digirisk_tools::IsValid_Variable($result['idElement']);
+	$fichier = digirisk_tools::IsValid_Variable($result['fichier']);
 	
 	$uploadStatus = eva_gestionDoc::saveNewDoc($table, $tableElement, $idElement, $fichier);
 	if($uploadStatus == 'error')

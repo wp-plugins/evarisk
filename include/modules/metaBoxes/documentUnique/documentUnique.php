@@ -12,8 +12,8 @@
 		if(((int)$arguments['idElement']) == 0)
 		{
 			$script = '<script type="text/javascript">
-					evarisk(document).ready(function() {
-						evarisk("#postBoxDocumentUnique").hide();
+					digirisk(document).ready(function() {
+						digirisk("#postBoxDocumentUnique").hide();
 					});
 				</script>';
 			echo $script;
@@ -26,8 +26,8 @@
 			$scriptRisque = 
 			'<script type="text/javascript">
 				function loadBilanBoxContent(boxId, action, table){
-					evarisk(boxId).html(evarisk("#loadingImg").html());
-					evarisk(boxId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+					digirisk(boxId).html(digirisk("#loadingImg").html());
+					digirisk(boxId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 					{
 						"post":"true",
 						"table":table,
@@ -37,23 +37,23 @@
 					});
 				}
 
-				evarisk(document).ready(function(){
-					evarisk("#ongletRisquesLignes").click(function(){
+				digirisk(document).ready(function(){
+					digirisk("#ongletRisquesLignes").click(function(){
 						commonTabChange("postBoxDocumentUnique", "#divRisquesLignes", "#ongletRisquesLignes");
 						loadBilanBoxContent("#divRisquesLignes", "voirRisqueLigne", "' . TABLE_RISQUE . '");
 					});
 
-					evarisk("#ongletRisquesUnites").click(function(){
+					digirisk("#ongletRisquesUnites").click(function(){
 						commonTabChange("postBoxDocumentUnique", "#divRisquesUnites", "#ongletRisquesUnites");
 						loadBilanBoxContent("#divRisquesUnites", "voirRisqueUnite", "' . TABLE_RISQUE . '");
 					});
 
-					evarisk("#ongletDocumentUnique").click(function(){
+					digirisk("#ongletDocumentUnique").click(function(){
 						commonTabChange("postBoxDocumentUnique", "#divDocumentUnique", "#ongletDocumentUnique");
 						loadBilanBoxContent("#divDocumentUnique", "generateSummary", "' . TABLE_DUER . '");
 					});
 
-					evarisk("#ongletHistoriqueDocument").click(function(){
+					digirisk("#ongletHistoriqueDocument").click(function(){
 						commonTabChange("postBoxDocumentUnique", "#divHistoriqueDocument", "#ongletHistoriqueDocument");
 						loadBilanBoxContent("#divHistoriqueDocument", "voirHistoriqueDocument", "' . TABLE_DUER . '");
 					});
@@ -71,7 +71,7 @@
 			}
 			else
 			{
-				$userNotAllowed = '<script type="text/javascript" >evarisk("#ongletHistoriqueDocument").click()</script>';
+				$userNotAllowed = '<script type="text/javascript" >digirisk("#ongletHistoriqueDocument").click()</script>';
 			}
 			$corpsPostBoxRisque .= '
 					<li id="ongletRisquesLignes" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Risques unitaires', 'evarisk'))) . '</label></li>

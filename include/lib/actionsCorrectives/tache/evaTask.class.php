@@ -21,29 +21,29 @@ class EvaTask extends EvaBaseTask
 		global $current_user;
 		
 		{//Variables cleaning
-			$id = (int) eva_tools::IsValid_Variable($this->getId());
-			$name = eva_tools::IsValid_Variable($this->getName());
-			$leftLimit = (int) eva_tools::IsValid_Variable($this->getLeftLimit());
-			$rightLimit = (int) eva_tools::IsValid_Variable($this->getRightLimit());
-			$description = eva_tools::IsValid_Variable($this->getDescription());
-			$startDate = eva_tools::IsValid_Variable($this->getStartDate());
-			$finishDate = eva_tools::IsValid_Variable($this->getFinishDate());
-			$place = eva_tools::IsValid_Variable($this->getPlace());
-			$progression = (int) eva_tools::IsValid_Variable($this->getProgression());
-			$cost = (int) eva_tools::IsValid_Variable($this->getCost());
-			$idFrom = (int) eva_tools::IsValid_Variable($this->getIdFrom());
-			$tableFrom = eva_tools::IsValid_Variable($this->getTableFrom());
-			$status = eva_tools::IsValid_Variable($this->getStatus());
-			$idCreateur = eva_tools::IsValid_Variable($current_user->ID);
-			$idResponsable = eva_tools::IsValid_Variable($this->getidResponsable());
-			$idSoldeur = eva_tools::IsValid_Variable($this->getidSoldeur());
-			$idSoldeurChef = eva_tools::IsValid_Variable($this->getidSoldeurChef());
-			$ProgressionStatus = eva_tools::IsValid_Variable($this->getProgressionStatus());
-			$dateSolde = eva_tools::IsValid_Variable($this->getdateSolde());
-			$hasPriority = eva_tools::IsValid_Variable($this->gethasPriority());
-			$efficacite = eva_tools::IsValid_Variable($this->getEfficacite());
-			$idPhotoAvant = eva_tools::IsValid_Variable($this->getidPhotoAvant());
-			$idPhotoApres = eva_tools::IsValid_Variable($this->getidPhotoApres());
+			$id = (int) digirisk_tools::IsValid_Variable($this->getId());
+			$name = digirisk_tools::IsValid_Variable($this->getName());
+			$leftLimit = (int) digirisk_tools::IsValid_Variable($this->getLeftLimit());
+			$rightLimit = (int) digirisk_tools::IsValid_Variable($this->getRightLimit());
+			$description = digirisk_tools::IsValid_Variable($this->getDescription());
+			$startDate = digirisk_tools::IsValid_Variable($this->getStartDate());
+			$finishDate = digirisk_tools::IsValid_Variable($this->getFinishDate());
+			$place = digirisk_tools::IsValid_Variable($this->getPlace());
+			$progression = (int) digirisk_tools::IsValid_Variable($this->getProgression());
+			$cost = (int) digirisk_tools::IsValid_Variable($this->getCost());
+			$idFrom = (int) digirisk_tools::IsValid_Variable($this->getIdFrom());
+			$tableFrom = digirisk_tools::IsValid_Variable($this->getTableFrom());
+			$status = digirisk_tools::IsValid_Variable($this->getStatus());
+			$idCreateur = digirisk_tools::IsValid_Variable($current_user->ID);
+			$idResponsable = digirisk_tools::IsValid_Variable($this->getidResponsable());
+			$idSoldeur = digirisk_tools::IsValid_Variable($this->getidSoldeur());
+			$idSoldeurChef = digirisk_tools::IsValid_Variable($this->getidSoldeurChef());
+			$ProgressionStatus = digirisk_tools::IsValid_Variable($this->getProgressionStatus());
+			$dateSolde = digirisk_tools::IsValid_Variable($this->getdateSolde());
+			$hasPriority = digirisk_tools::IsValid_Variable($this->gethasPriority());
+			$efficacite = digirisk_tools::IsValid_Variable($this->getEfficacite());
+			$idPhotoAvant = digirisk_tools::IsValid_Variable($this->getidPhotoAvant());
+			$idPhotoApres = digirisk_tools::IsValid_Variable($this->getidPhotoApres());
 		}
 		
 		//Query creation
@@ -126,7 +126,7 @@ class EvaTask extends EvaBaseTask
 	{
 		global $wpdb;
 		
-		$id = (int) eva_tools::IsValid_Variable($this->getId());
+		$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 		if($id != 0)
 		{
 			$wpdbTask = $wpdb->get_row( "SELECT * FROM " . TABLE_TACHE . " WHERE " . self::id . " = " . $id);
@@ -579,7 +579,7 @@ class EvaTask extends EvaBaseTask
 					$valeurs[] = array('value'=>'');
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListPassedButNotMarkAsDoneEmpty';
-					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_ac_passed").remove();</script>';
+					$acDashboardBox .= '<script type="text/javascript" >digirisk("#evaDashboard_ac_passed").remove();</script>';
 					$outputDatas = false;
 				}
 
@@ -641,7 +641,7 @@ class EvaTask extends EvaBaseTask
 					$valeurs[] = array('value'=>'');
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListToMarkAsDoneEmpty';
-					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_task_toDone").remove();</script>';
+					$acDashboardBox .= '<script type="text/javascript" >digirisk("#evaDashboard_task_toDone").remove();</script>';
 					$outputDatas = false;
 				}
 
@@ -723,7 +723,7 @@ class EvaTask extends EvaBaseTask
 					$valeurs[] = array('value'=>'');
 					$lignesDeValeurs[] = $valeurs;
 					$idLignes[] = 'taskListToReEvaluateRiskEmpty';
-					$acDashboardBox .= '<script type="text/javascript" >evarisk("#evaDashboard_ac_done").remove();</script>';
+					$acDashboardBox .= '<script type="text/javascript" >digirisk("#evaDashboard_ac_done").remove();</script>';
 					$outputDatas = false;
 				}
 
@@ -740,8 +740,8 @@ class EvaTask extends EvaBaseTask
 		if($outputDatas){
 			$script = 
 			'<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk("#' . $idTable . '").dataTable({
+				digirisk(document).ready(function() {
+					digirisk("#' . $idTable . '").dataTable({
 						"bInfo": false,
 						"oLanguage": {
 							"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
@@ -758,8 +758,8 @@ class EvaTask extends EvaBaseTask
 						}
 						' . $tableOptions . '
 					});
-					evarisk("#' . $idTable . '").children("tfoot").remove();
-					evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+					digirisk("#' . $idTable . '").children("tfoot").remove();
+					digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 				});
 			</script>';
 			$acDashboardBox .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);

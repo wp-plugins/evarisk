@@ -21,7 +21,7 @@ class Risque {
 
 		$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
 		$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $date_to_take);
-		unset($listeIdVariables);
+		unset($listeIdVariables);$listeIdVariables = array();
 		foreach($listeVariables as $ordre => $variable){
 			$listeIdVariables['"' . $variable->id . '"'][]=$ordre;
 		}
@@ -100,8 +100,8 @@ class Risque {
 			$date=date('Y-m-d H:i:s');
 		}
 		
-		$score = eva_tools::IsValid_Variable($score);
-		$idMethode = eva_tools::IsValid_Variable($idMethode);
+		$score = digirisk_tools::IsValid_Variable($score);
+		$idMethode = digirisk_tools::IsValid_Variable($idMethode);
 		$resultat = $wpdb->get_row("SELECT tableEquivalenceEtalon1.id_valeur_etalon equivalenceEtalon
 			FROM " . TABLE_EQUIVALENCE_ETALON . " tableEquivalenceEtalon1
 			WHERE tableEquivalenceEtalon1.valeurMaxMethode >= " . $score . "
@@ -123,7 +123,7 @@ class Risque {
 	function getSeuil($quotation){
 		global $wpdb;
 		
-		$quotation = eva_tools::IsValid_Variable($quotation);
+		$quotation = digirisk_tools::IsValid_Variable($quotation);
 		$resultat = $wpdb->get_row( "
 			SELECT tableValeurEtalon1.niveauSeuil niveauSeuil
 			FROM " . TABLE_VALEUR_ETALON . " tableValeurEtalon1
@@ -174,7 +174,7 @@ class Risque {
 	
 	function getRisque($id){
 		global $wpdb;
-		$id = eva_tools::IsValid_Variable($id);
+		$id = digirisk_tools::IsValid_Variable($id);
 
 		$query = $wpdb->prepare("SELECT tableRisque.*,
 				tableAvoirValeur.date date, tableAvoirValeur.Status status, tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, 
@@ -193,8 +193,8 @@ class Risque {
 	
 	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC', $evaluation_status = "'Valid'"){
 		global $wpdb;
-		$where = eva_tools::IsValid_Variable($where);
-		$order = eva_tools::IsValid_Variable($order);
+		$where = digirisk_tools::IsValid_Variable($where);
+		$order = digirisk_tools::IsValid_Variable($order);
 		if($status=='all'){
 			$status = '1';
 		}
@@ -251,8 +251,8 @@ class Risque {
 
 	function getNombreRisques($nomTableElement, $idElement, $status='all', $where = '1', $order='id ASC'){
 		global $wpdb;
-		$where = eva_tools::IsValid_Variable($where);
-		$order = eva_tools::IsValid_Variable($order);
+		$where = digirisk_tools::IsValid_Variable($where);
+		$order = digirisk_tools::IsValid_Variable($order);
 		if($status=='all'){
 			$status = '1';
 		}
@@ -267,11 +267,11 @@ class Risque {
 		global $wpdb;
 		global $current_user;
 
-		$idDanger = eva_tools::IsValid_Variable($idDanger);
-		$idMethode = eva_tools::IsValid_Variable($idMethode);
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
-		$description = eva_tools::IsValid_Variable($description);
+		$idDanger = digirisk_tools::IsValid_Variable($idDanger);
+		$idMethode = digirisk_tools::IsValid_Variable($idMethode);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
+		$description = digirisk_tools::IsValid_Variable($description);
 		$description = str_replace("[retourALaLigne]","\n", $description);
 		$description = str_replace("’","'", $description);
 		$histoStatus = 'Valid';
@@ -347,8 +347,8 @@ class Risque {
 		if((INT)$newId->newId <= 0)$newId->newId = 1;
 		foreach($variables as $idVariable => $valeurVariable){
 			if($valeurVariable != 'undefined'){
-				$idVariable = eva_tools::IsValid_Variable($idVariable);
-				$valeurVariable = eva_tools::IsValid_Variable($valeurVariable);
+				$idVariable = digirisk_tools::IsValid_Variable($idVariable);
+				$valeurVariable = digirisk_tools::IsValid_Variable($valeurVariable);
 				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (id_risque, id_evaluation, id_variable, valeur, idEvaluateur, date, Status) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_real_escape_string($newId->newId) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_real_escape_string($current_user->ID) . "', NOW(), '" . mysql_real_escape_string($histoStatus) . "')";
 				$wpdb->query($sql);
 			}
@@ -478,8 +478,8 @@ class Risque {
 
 					$lignesDeValeurs = (isset($lignesDeValeurs))?$lignesDeValeurs:null;
 					$script = '<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#' . $idTable . ' tfoot").remove();
+						digirisk(document).ready(function(){
+							digirisk("#' . $idTable . ' tfoot").remove();
 						});
 					</script>';
 
@@ -593,8 +593,8 @@ class Risque {
 
 		$lignesDeValeurs = (isset($lignesDeValeurs)) ? $lignesDeValeurs : null;
 		$script = '<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk("#' . $idTable . ' tfoot").remove();
+			digirisk(document).ready(function(){
+				digirisk("#' . $idTable . ' tfoot").remove();
 			});
 		</script>';
 
@@ -632,30 +632,30 @@ class Risque {
 
 			$script = '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk(".riskAssociatedToPicture").unbind("click");
-		evarisk(".riskAssociatedToPicture").click(function(){
-			evarisk("#formRisque").html(evarisk("#loadingImg").html());
+	digirisk(document).ready(function(){
+		digirisk(".riskAssociatedToPicture").unbind("click");
+		digirisk(".riskAssociatedToPicture").click(function(){
+			digirisk("#formRisque").html(digirisk("#loadingImg").html());
 			tabChange("#formRisque", "#ongletAjouterRisque");
-			evarisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": evarisk(this).attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
+			digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": digirisk(this).attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
 		});
-		evarisk(".deleteLinkBetweenRiskAndPicture").unbind("click");
-		evarisk(".deleteLinkBetweenRiskAndPicture").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous sur de vouloir supprimer cette liaison?', 'evarisk') . '"))){
-				evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk(".deleteLinkBetweenRiskAndPicture").unbind("click");
+		digirisk(".deleteLinkBetweenRiskAndPicture").click(function(){
+			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous sur de vouloir supprimer cette liaison?', 'evarisk') . '"))){
+				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 				{
 					"post":"true",
 					"table":"' . TABLE_RISQUE . '",
 					"tableElement":"' . TABLE_RISQUE . '",
-					"idElement":evarisk(this).attr("id").replace("deleteRiskId", ""),
+					"idElement":digirisk(this).attr("id").replace("deleteRiskId", ""),
 					"act":"unAssociatePicture",
-					"idPicture":evarisk(this).parent().parent().closest("div").attr("id").replace("riskAssociatedToPicturepicture_", "").replace("_", "")
+					"idPicture":digirisk(this).parent().parent().closest("div").attr("id").replace("riskAssociatedToPicturepicture_", "").replace("_", "")
 				});
 			}
 		});
-		evarisk(".riskAssociatedToPicture").draggable({
+		digirisk(".riskAssociatedToPicture").draggable({
 			start: function(event, ui){
-				draggedObjectFather = evarisk(this).parent().closest("div").attr("id").replace("riskAssociatedToPicture", "");
+				draggedObjectFather = digirisk(this).parent().closest("div").attr("id").replace("riskAssociatedToPicture", "");
 			}
 		});
 	});
@@ -706,10 +706,10 @@ class Risque {
 
 			$script = '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#seeRiskToAssociate").click(function(){
-			evarisk(".riskAssociatedToPicture").draggable();
-			evarisk("#riskToAssociate").toggle();
+	digirisk(document).ready(function(){
+		digirisk("#seeRiskToAssociate").click(function(){
+			digirisk(".riskAssociatedToPicture").draggable();
+			digirisk("#riskToAssociate").toggle();
 		});
 	});
 </script>';
@@ -813,12 +813,12 @@ class Risque {
 		$risque = Risque::getRisque($idRisque);
 
 		/*	Save risk new level	*/
-		$idDanger = eva_tools::IsValid_Variable($_REQUEST['idDanger'], $risque[0]->id_danger);
-		$idMethode = eva_tools::IsValid_Variable($_REQUEST['idMethode'], $risque[0]->id_methode);
-		$tableElement = eva_tools::IsValid_Variable($_REQUEST['tableElement'], $risque[0]->nomTableElement);
-		$idElement = eva_tools::IsValid_Variable($_REQUEST['idElement'], $risque[0]->id_element);
+		$idDanger = digirisk_tools::IsValid_Variable($_REQUEST['idDanger'], $risque[0]->id_danger);
+		$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode'], $risque[0]->id_methode);
+		$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement'], $risque[0]->nomTableElement);
+		$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement'], $risque[0]->id_element);
 		$variables = $_REQUEST['variables'];
-		$description = eva_tools::IsValid_Variable($_REQUEST['description_risque'], $risque[0]->commentaire);
+		$description = digirisk_tools::IsValid_Variable($_REQUEST['description_risque'], $risque[0]->commentaire);
 		$histo = 'true';
 		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 

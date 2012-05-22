@@ -17,7 +17,6 @@
 	function getEPIPostBoxBody($arguments)
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
-		require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 		require_once(EVA_LIB_PLUGIN_DIR . 'epi/evaEPITable.class.php');
 		
 		$idElement = $arguments['idElement'];
@@ -58,30 +57,30 @@
 					// Input creation
 					$labelInput = '<img style="max-width:60%;" alt="' . utf8_encode($EPI['EPI']->getName()) . '" src="' . $EPI['EPI']->getPath() . '" title="' . utf8_encode($EPI['EPI']->getName()) . '"/><br />';
 					$nomChamps = "epi[]";
-					$idChamps = eva_tools::slugify('epi_' . $EPI['EPI']->getId());
+					$idChamps = digirisk_tools::slugify('epi_' . $EPI['EPI']->getId());
 					$script = '';
 					if($EPI['utilise'])
 					{// Script of checking box
 						$script = '
 							<script type="text/javascript">
-								evarisk(document).ready(function(){evarisk(\'#' . $idChamps . '\').prop("checked", "checked");});
+								digirisk(document).ready(function(){digirisk(\'#' . $idChamps . '\').prop("checked", "checked");});
 							</script>';
 					}
 					$EPIPostBoxBody = $EPIPostBoxBody . EvaDisplayInput::afficherInput('checkbox', $idChamps, '', '', $labelInput, $nomChamps, false, true, 255, 'eva_epi', '', '', $script, 'left; text-align:center; max-width: 24%', true);
 				}
 				$idBouttonEnregistrer = 'saveEPIS';
 				$scriptEnregistrement = '<script type="text/javascript">
-					evarisk(document).ready(function() {
-						evarisk(\'#' . $idBouttonEnregistrer . '\').click(function(){
+					digirisk(document).ready(function() {
+						digirisk(\'#' . $idBouttonEnregistrer . '\').click(function(){
 							var epis = new Array();
-							evarisk(\'.eva_epi\').each(function(){
-								if(evarisk(this).prop("checked"))
+							digirisk(\'.eva_epi\').each(function(){
+								if(digirisk(this).prop("checked"))
 								{
-									epis.push(evarisk(this).attr("id").replace(/epi_/,""));
+									epis.push(digirisk(this).attr("id").replace(/epi_/,""));
 								}
 							});
 							
-							evarisk(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {
+							digirisk(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {
 								"post": "true",
 								"table": "' . TABLE_UTILISE_EPI . '",
 								"epis": epis,

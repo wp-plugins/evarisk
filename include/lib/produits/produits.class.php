@@ -101,76 +101,71 @@ class digirisk_product
 	<div class="clear addLinkElementElement" >
 		<div class="clear" >
 			<span class="searchElementInput ui-icon" >&nbsp;</span>
-			<input class="searchElementToAffect" type="text" name="affectedElement' . $tableElement . '" id="affectedElement' . $tableElement . '" value="' . __('Rechercher dans la liste des produits', 'evarisk') . '" />
+			<input class="searchElementToAffect" type="text" name="affectedElement' . $tableElement . '" id="affectedElement' . $tableElement . '" placeholder="' . __('Rechercher dans la liste des produits', 'evarisk') . '" />
 		</div>
 		<div id="completeList' . $tableElement . '" class="completeList clear" >' . digirisk_product::elementListForAffectation($tableElement, $idElement, $categoryToDisplay) . '</div>
 	</div>
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
-<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div class="selectedelementOPContainer" ><span onclick="javascript:elementDeletion(evarisk(this).closest(\'div\').attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '">#ELEMENTNAME#</span><span class="ui-icon deleteElementFromList" >&nbsp;</span>&nbsp;<span class="affected_product_action" ><img src="' . PICTO_VIEW . '" alt="' . __('Voir la fiche', 'evarisk') . '" title="' . __('Voir la fiche', 'evarisk') . '" class="view_affected_product_sheet" onclick="javascript:alert(evarisk(this).closest(\'div\').attr(\'id\'));" />';
+<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div class="selectedelementOPContainer" ><span onclick="javascript:elementDeletion(digirisk(this).closest(\'div\').attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '">#ELEMENTNAME#</span><span class="ui-icon deleteElementFromList" >&nbsp;</span>&nbsp;<span class="affected_product_action" ><img src="' . PICTO_VIEW . '" alt="' . __('Voir la fiche', 'evarisk') . '" title="' . __('Voir la fiche', 'evarisk') . '" class="view_affected_product_sheet" onclick="javascript:alert(digirisk(this).closest(\'div\').attr(\'id\'));" />';
 if(current_user_can('wpshop_edit_product')){
-	$output .= '<a href="' . admin_url('post.php?post=#PRODUCTID#&action=edit') . '" ><img src="' . PICTO_EDIT . '" alt="' . __('&Eacute;diter le produit', 'evarisk') . '" title="' . __('&Eacute;diter le produit', 'evarisk') . '" class="edit_affected_product_sheet" onclick="javascript:evarisk(this).parent(\'a\').attr(\'href\', evarisk(this).parent(\'a\').attr(\'href\').replace(\'#PRODUCTID#\', evarisk(this).closest(\'div\').attr(\'id\').replace(\'affectedElement' . $tableElement . '\', \'\')));" /></a>';
+	$output .= '<a href="' . admin_url('post.php?post=#PRODUCTID#&action=edit') . '" ><img src="' . PICTO_EDIT . '" alt="' . __('&Eacute;diter le produit', 'evarisk') . '" title="' . __('&Eacute;diter le produit', 'evarisk') . '" class="edit_affected_product_sheet" onclick="javascript:digirisk(this).parent(\'a\').attr(\'href\', digirisk(this).parent(\'a\').attr(\'href\').replace(\'#PRODUCTID#\', digirisk(this).closest(\'div\').attr(\'id\').replace(\'affectedElement' . $tableElement . '\', \'\')));" /></a>';
 }
 	$output .= '</span></div></div>
 
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		/*	Mass action : check / uncheck all	*/
-		evarisk("#massAction' . $tableElement . ' .checkAll").unbind("click");
-		evarisk("#massAction' . $tableElement . ' .checkAll").click(function(){
-			evarisk("#completeList' . $tableElement . ' .buttonActionElementLinkList' . $tableElement . '").each(function(){
-				if(evarisk(this).hasClass("elementIsNotLinked")){
-					evarisk(this).click();
+		digirisk("#massAction' . $tableElement . ' .checkAll").unbind("click");
+		digirisk("#massAction' . $tableElement . ' .checkAll").click(function(){
+			digirisk("#completeList' . $tableElement . ' .buttonActionElementLinkList' . $tableElement . '").each(function(){
+				if(digirisk(this).hasClass("elementIsNotLinked")){
+					digirisk(this).click();
 				}
 			});
 		});
-		evarisk("#massAction' . $tableElement . ' .uncheckAll").unbind("click");
-		evarisk("#massAction' . $tableElement . ' .uncheckAll").click(function(){
-			evarisk("#completeList' . $tableElement . ' .buttonActionElementLinkList' . $tableElement . '").each(function(){
-				if(evarisk(this).hasClass("elementIsLinked")){
-					evarisk(this).click();
+		digirisk("#massAction' . $tableElement . ' .uncheckAll").unbind("click");
+		digirisk("#massAction' . $tableElement . ' .uncheckAll").click(function(){
+			digirisk("#completeList' . $tableElement . ' .buttonActionElementLinkList' . $tableElement . '").each(function(){
+				if(digirisk(this).hasClass("elementIsLinked")){
+					digirisk(this).click();
 				}
 			});
 		});
 
 		/*	Action when click on delete button	*/
-		evarisk(".selectedelementOP, .deleteElementFromList").unbind("click");
-		evarisk(".selectedelementOP, .deleteElementFromList").click(function(){
-			elementDivId = evarisk(this).closest("div").attr("id").replace("affectedElement' . $tableElement . '", "");
+		digirisk(".selectedelementOP, .deleteElementFromList").unbind("click");
+		digirisk(".selectedelementOP, .deleteElementFromList").click(function(){
+			elementDivId = digirisk(this).closest("div").attr("id").replace("affectedElement' . $tableElement . '", "");
 			deleteElementIdFiedList(elementDivId, "' . $tableElement . '");
 			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
 
-		/*	User Search autocompletion	*/
-		evarisk("#affectedElement' . $tableElement . '").unbind("click");
-		evarisk("#affectedElement' . $tableElement . '").click(function(){
-			evarisk(this).val("");
-		});
-		evarisk("#affectedElement' . $tableElement . '").unbind("blur");
-		evarisk("#affectedElement' . $tableElement . '").blur(function(){
-			evarisk(this).val("' . __('Rechercher dans la liste des produits', 'evarisk') . '");
-		});
-		evarisk("#affectedElement' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchProducts.php");
-		evarisk("#affectedElement' . $tableElement . '").result(function(event, data, formatted){
-			cleanElementIdFiedList(data[1], "' . $tableElement . '");
-			addElementIdFieldList(data[0], data[1], "' . $tableElement . '");
+		/*	Autocomplete search	*/
+		jQuery("#affectedElement' . $tableElement . '").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchProducts.php",
+			select: function( event, ui ){
+				cleanElementIdFiedList(ui.item.value, "' . $tableElement . '");
+				addElementIdFieldList(ui.item.label, ui.item.value, "' . $tableElement . '");
 
-			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+				checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 
-			evarisk("#affectedElement' . $tableElement . '").val("' . __('Rechercher dans la liste des produits', 'evarisk') . '");
+				jQuery(this).val("");
+				jQuery(this).blur();
+			}
 		});
 
 		/*	Add the possibility to select only one category to display	*/
-		evarisk("#digi_wpshop_product_category_selector").unbind("change");
-		evarisk("#digi_wpshop_product_category_selector").change(function(){
-			evarisk("#productList' . $tableElement . '").html(evarisk("#loadingImg").html());
-			evarisk("#productList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+		digirisk("#digi_wpshop_product_category_selector").unbind("change");
+		digirisk("#digi_wpshop_product_category_selector").change(function(){
+			digirisk("#productList' . $tableElement . '").html(digirisk("#loadingImg").html());
+			digirisk("#productList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true", 
 				"table":"' . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . '",
 				"act":"reloadCategoryChoice",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
-				"category":evarisk(this).val()
+				"category":digirisk(this).val()
 			});
 		});
 	});
@@ -194,16 +189,16 @@ if(current_user_can('wpshop_edit_product')){
 		if($showButton){//Bouton Enregistrer
 			$scriptEnregistrement = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-		evarisk("#' . $idBoutonEnregistrer . '").click(function(){
-			evarisk("#saveButtonLoading' . $tableElement . '").show();
-			evarisk("#saveButtonContainer' . $tableElement . '").hide();
-			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+		digirisk("#' . $idBoutonEnregistrer . '").click(function(){
+			digirisk("#saveButtonLoading' . $tableElement . '").show();
+			digirisk("#saveButtonContainer' . $tableElement . '").hide();
+			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post": "true", 
 				"table": "' . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . '",
 				"act": "save",
-				"element": evarisk("#affectedList' . $tableElement . '").val(),
+				"element": digirisk("#affectedList' . $tableElement . '").val(),
 				"tableElement": "' . $tableElement . '",
 				"idElement": "' . $idElement . '"
 			});
@@ -300,29 +295,29 @@ if(current_user_can('wpshop_edit_product')){
 		/*	Add the js option for the table	*/
 		$script = 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable({
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
 			"bPaginate": false,
 			"bFilter": false' .
 			$tableOptions. '
 		});
-		evarisk("#' . $idTable . '").children("tfoot").remove();
-		evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+		digirisk("#' . $idTable . '").children("tfoot").remove();
+		digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 
 		/*	Add the action when clicking on a button in the list	*/
-		evarisk("#completeList' . $tableElement . ' .odd, #completeList' . $tableElement . ' .even").click(function(){
-			if(evarisk(this).children("td:first").children("span").hasClass("elementIsNotLinked")){
-				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", "");
+		digirisk("#completeList' . $tableElement . ' .odd, #completeList' . $tableElement . ' .even").click(function(){
+			if(digirisk(this).children("td:first").children("span").hasClass("elementIsNotLinked")){
+				var currentId = digirisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", "");
 				cleanElementIdFiedList(currentId, "' . $tableElement . '");
 
-				var elementContent = evarisk(this).children("td:nth-child(2)").html() + "&nbsp;-&nbsp;" + evarisk(this).children("td:nth-child(4)").html() + " (' . __('R&eacute;f.', 'evarisk') . '" + evarisk(this).children("td:nth-child(3)").html() + ")";
+				var elementContent = digirisk(this).children("td:nth-child(2)").html() + "&nbsp;-&nbsp;" + digirisk(this).children("td:nth-child(4)").html() + " (' . __('R&eacute;f.', 'evarisk') . '" + digirisk(this).children("td:nth-child(3)").html() + ")";
 
 				addElementIdFieldList(elementContent, currentId, "' . $tableElement . '");
 			}
 			else{
-				deleteElementIdFiedList(evarisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", ""), "' . $tableElement . '");
+				deleteElementIdFiedList(digirisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", ""), "' . $tableElement . '");
 			}
 			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
@@ -416,12 +411,12 @@ if(current_user_can('wpshop_edit_product')){
 		if($outputMessage){
 			echo 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		actionMessageShow("#messageInfo_' . $tableElement . '_' . $idElement . $messageInfoContainerIdExt . '", "' . $message . '");
 		setTimeout(\'actionMessageHide("#messageInfo_' . $tableElement . '_' . $idElement . $messageInfoContainerIdExt . '")\',7500);
-		evarisk("#saveButtonLoading' . $tableElement . '").hide();
-		evarisk("#saveButtonContainer' . $tableElement . '").show();
-		evarisk("#actuallyAffectedList' . $tableElement . '").val(evarisk("#affectedList' . $tableElement . '").val());
+		digirisk("#saveButtonLoading' . $tableElement . '").hide();
+		digirisk("#saveButtonContainer' . $tableElement . '").show();
+		digirisk("#actuallyAffectedList' . $tableElement . '").val(digirisk("#affectedList' . $tableElement . '").val());
 		checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 	});
 </script>';

@@ -16,7 +16,6 @@
 		include_once(EVA_CONFIG);
 		require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
-		require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
@@ -25,8 +24,8 @@
 		if(((int)$idElement) == 0)
 		{
 			$script = '<script type="text/javascript">
-					evarisk(document).ready(function() {
-						evarisk("#postBoxHeaderUniteTravail").hide();
+					digirisk(document).ready(function() {
+						digirisk("#postBoxHeaderUniteTravail").hide();
 					});
 				</script>';
 			echo $script;
@@ -90,7 +89,7 @@
 			$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName();
 			$workingUnitsNames[] = "";
 			
-			$valeurActuelleIn = 'evarisk("#' . $idTitreWU . '").val ()in {';
+			$valeurActuelleIn = 'digirisk("#' . $idTitreWU . '").val ()in {';
 			foreach($workingUnitsNames as $workingUnitName)
 			{
 				$valeurActuelleIn = $valeurActuelleIn . "'" . addslashes($workingUnitName) . "':'', ";
@@ -99,17 +98,17 @@
 			$valeurActuelleIn = $valeurActuelleIn . "}";
 			$idButton = 'validChangeTitre';
 			$script = '<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#' . $idButton . '").hide();
-							evarisk("#' . $idButton . '").click(function(){
-								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+						digirisk(document).ready(function(){
+							digirisk("#' . $idButton . '").hide();
+							digirisk("#' . $idButton . '").click(function(){
+								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 								{
 									"post": "true", 
 									"table": "' . TABLE_UNITE_TRAVAIL . '",
 									"act": "updateByField",
 									"id": ' . $idElement . ',
 									"whatToUpdate": "nom",
-									"whatToSet": evarisk("#' . $idTitreWU . '").val()
+									"whatToSet": digirisk("#' . $idTitreWU . '").val()
 								});
 							});
 						})
@@ -119,29 +118,29 @@
 				$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', 'Valider', null, null, 'validChangeTitre', false, false, 1,'','','',$script,'',true);
 			}
 			$script = '<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#' . $idTitreWU . '").focus(function(){
-								evarisk(this).select();
-								evarisk("#' . $idTitreWU . '").addClass("titleInfoSelected");
+						digirisk(document).ready(function(){
+							digirisk("#' . $idTitreWU . '").focus(function(){
+								digirisk(this).select();
+								digirisk("#' . $idTitreWU . '").addClass("titleInfoSelected");
 							});
-							evarisk("#' . $idTitreWU . '").blur(function(){
-								if(!evarisk("#' . $idButton . '").is(":visible")){
-									evarisk("#' . $idTitreWU . '").removeClass("titleInfoSelected");
+							digirisk("#' . $idTitreWU . '").blur(function(){
+								if(!digirisk("#' . $idButton . '").is(":visible")){
+									digirisk("#' . $idTitreWU . '").removeClass("titleInfoSelected");
 								}
 							});
-							evarisk("#' . $idTitreWU . '").keyup(function(){
-								evarisk("#nom_unite_travail").val(evarisk("#' . $idTitreWU . '").val());
-								if(evarisk("#nom_unite_travail").val() != ""){
-									evarisk("#nom_unite_travail").removeClass("form-input-tip");
+							digirisk("#' . $idTitreWU . '").keyup(function(){
+								digirisk("#nom_unite_travail").val(digirisk("#' . $idTitreWU . '").val());
+								if(digirisk("#nom_unite_travail").val() != ""){
+									digirisk("#nom_unite_travail").removeClass("form-input-tip");
 								}
 								else{
-									evarisk("#nom_unite_travail").addClass("form-input-tip");							
+									digirisk("#nom_unite_travail").addClass("form-input-tip");							
 								}
 								if(' . $valeurActuelleIn . '){
-									evarisk("#' . $idButton . '").hide();
+									digirisk("#' . $idButton . '").hide();
 								}
 								else{
-									evarisk("#' . $idButton . '").show();
+									digirisk("#' . $idButton . '").show();
 								}
 							});
 						})

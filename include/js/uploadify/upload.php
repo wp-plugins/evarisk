@@ -12,11 +12,11 @@ require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
 	$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_GET['folder'] . '/';
-	$targetFile =  str_replace('//','/',$targetPath) . eva_tools::slugify($_FILES['Filedata']['name']);
+	$targetFile =  str_replace('//','/',$targetPath) . digirisk_tools::slugify($_FILES['Filedata']['name']);
 	$numero = "";
 	$extention = "";
 	$nomFichier = "";
-	$temps = explode('.', eva_tools::slugify($_FILES['Filedata']['name']));
+	$temps = explode('.', digirisk_tools::slugify($_FILES['Filedata']['name']));
 	foreach($temps as $temp)
 	{
 		$nomFichier = $nomFichier . $extention;

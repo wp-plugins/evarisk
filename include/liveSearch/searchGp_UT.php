@@ -9,10 +9,10 @@ require_once(EVA_INC_PLUGIN_DIR . 'includes.php' );
 
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
-$table_element = (isset($_GET['table_element']) && (trim($_GET['table_element']) != '')) ? strtolower(eva_tools::IsValid_Variable($_GET['table_element'])) : '';
-$id_element = (isset($_GET['id_element']) && (trim($_GET['id_element']) != '')) ? strtolower(eva_tools::IsValid_Variable($_GET['id_element'])) : '0';
+$table_element = (isset($_GET['table_element']) && (trim($_GET['table_element']) != '')) ? strtolower(digirisk_tools::IsValid_Variable($_GET['table_element'])) : '';
+$id_element = (isset($_GET['id_element']) && (trim($_GET['id_element']) != '')) ? strtolower(digirisk_tools::IsValid_Variable($_GET['id_element'])) : '0';
 $search_in_element = (isset($_GET['element_type']) && (trim($_GET['element_type']) != '')) ? explode('-t-', $_GET['element_type']) : 'all';
-$q = strtolower($_GET["q"]);
+$q = strtolower($_GET["term"]);
 if (!$q) return;
 
 $items = array();
@@ -66,11 +66,21 @@ if(($search_in_element == 'all') || in_array(TABLE_RISQUE, $search_in_element)){
 		$items[$risk->name] = $risk->id;
 	}
 }
+$output_search = '';
+$found_result = false;
+if(!empty($items)){
+	$output_search = '[';
+	foreach ($items as $key=>$value){
+		if (strpos(strtolower($key), $q) !== false){
+			$found_result = true;
 
-foreach ($items as $key => $value){
-	if (strpos(strtolower($key), $q) !== false){
-		echo "$key|$value\n";
+			$output_search .= '{"id": "' . $value . '", "label": "' . $key . '", "value": "' . $value . '"}, ';
+		}
 	}
+	$output_search = substr($output_search, 0, -2) . ']';
 }
+
+echo $output_search;
+
 
 ?>

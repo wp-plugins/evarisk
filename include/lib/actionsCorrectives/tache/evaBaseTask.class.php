@@ -591,6 +591,24 @@ class EvaBaseTask
 		$this->efficacite = $efficacite;
 	}
 
+	/**
+	 * Returns the task's priority status
+	 * @return string The priority status
+	 */
+	function get_external_readable()
+	{
+		return $this->is_readable_from_external;
+	}
+
+	/**
+	 * Returns The priority status of the task
+	 * @param string $efficacite The priority status of the task
+	 */
+	function set_external_readable($is_readable_from_external)
+	{
+		$this->is_readable_from_external = $is_readable_from_external;
+	}
+
 
 
 	/**
@@ -695,7 +713,8 @@ class EvaBaseTask
 					self::ProgressionStatus => $this->getProgressionStatus(),
 					self::dateSolde => $this->getdateSolde(),
 					self::hasPriority => $this->gethasPriority(),
-					self::efficacite => $this->getEfficacite()
+					self::efficacite => $this->getEfficacite(),
+					self::is_readable_from_external => $this->get_external_readable()
 				)
 			);
 	}

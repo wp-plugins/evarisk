@@ -1,88 +1,36 @@
 <?php
-	$options = get_option('inove_options');
+/**
+ * The Sidebar containing the main widget area.
+ *
+ * @package WordPress
+ * @subpackage Twenty_Eleven
+ * @since Twenty Eleven 1.0
+ */
 
-	if($options['feed'] && $options['feed_url']) {
-		if (substr(strtoupper($options['feed_url']), 0, 7) == 'HTTP://') {
-			$feed = $options['feed_url'];
-		} else {
-			$feed = 'http://' . $options['feed_url'];
-		}
-	} else {
-		$feed = get_bloginfo('rss2_url');
-	}
+$options = twentyeleven_get_theme_options();
+$current_layout = $options['theme_layout'];
+
+if ( 'content' != $current_layout ) :
 ?>
+		<div id="secondary" class="widget-area" role="complementary">
+			<?php if ( ! dynamic_sidebar( 'sidebar-1' ) ) : ?>
 
-<!-- sidebar START -->
-<div id="sidebar">
+				<aside id="archives" class="widget">
+					<h3 class="widget-title"><?php _e( 'Archives', 'twentyeleven' ); ?></h3>
+					<ul>
+						<?php wp_get_archives( array( 'type' => 'monthly' ) ); ?>
+					</ul>
+				</aside>
 
-<!-- sidebar north START -->
-<div id="northsidebar" class="sidebar">
+				<aside id="meta" class="widget">
+					<h3 class="widget-title"><?php _e( 'Meta', 'twentyeleven' ); ?></h3>
+					<ul>
+						<?php wp_register(); ?>
+						<li><?php wp_loginout(); ?></li>
+						<?php wp_meta(); ?>
+					</ul>
+				</aside>
 
-
-	<!-- showcase -->
-	<?php if( $options['showcase_content'] && (
-		($options['showcase_registered'] && $user_ID) || 
-		($options['showcase_commentator'] && !$user_ID && isset($_COOKIE['comment_author_'.COOKIEHASH])) || 
-		($options['showcase_visitor'] && !$user_ID && !isset($_COOKIE['comment_author_'.COOKIEHASH]))
-	) ) : ?>
-		<div class="widget">
-			<?php if($options['showcase_caption']) : ?>
-				<h3><?php if($options['showcase_title']){echo($options['showcase_title']);}else{_e('Showcase', 'inove');} ?></h3>
-			<?php endif; ?>
-			<div class="content">
-				<?php echo($options['showcase_content']); ?>
-			</div>
-		</div>
-	<?php endif; ?>
-
-<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('north_sidebar') ) : ?>
-
-	<!-- posts -->
-	<?php
-		if (is_single()) {
-			$posts_widget_title = 'Recent Posts';
-		} else {
-			$posts_widget_title = 'Random Posts';
-		}
-	?>
-
-	<div class="widget">
-		<h3><?php echo $posts_widget_title; ?></h3>
-		<ul>
-			<?php
-				if (is_single()) {
-					$posts = get_posts('numberposts=10&orderby=post_date');
-				} else {
-					$posts = get_posts('numberposts=5&orderby=rand');
-				}
-				foreach($posts as $post) {
-					setup_postdata($post);
-					echo '<li><a href="' . get_permalink() . '">' . get_the_title() . '</a></li>';
-				}
-				$post = $posts[0];
-			?>
-		</ul>
-	</div>
-
-	<!-- recent comments -->
-	<?php if( function_exists('wp_recentcomments') ) : ?>
-		<div class="widget">
-			<h3>Recent Comments</h3>
-			<ul>
-				<?php wp_recentcomments('limit=5&length=16&post=false&smilies=true'); ?>
-			</ul>
-		</div>
-	<?php endif; ?>
-
-	<!-- tag cloud -->
-	<div id="tag_cloud" class="widget">
-		<h3>Tag Cloud</h3>
-		<?php wp_tag_cloud('smallest=8&largest=16'); ?>
-	</div>
-
+			<?php endif; // end sidebar widget area ?>
+		</div><!-- #secondary .widget-area -->
 <?php endif; ?>
-</div>
-<!-- sidebar north END -->
-
-</div>
-<!-- sidebar END -->

@@ -7,26 +7,26 @@
 	$renduPage = EvaDisplayDesign::afficherDebutPage($titrePage, $icone, $titreIcone, $altIcon, $_POST['table'], false, $messageInfo, true);
 	$script = '
 		<script type="text/javascript">
-			evarisk(document).ready(function() {
-				evarisk("#champsCaches").html(evarisk("#hiddenFieldToShow").html());';
+			digirisk(document).ready(function() {
+				digirisk("#champsCaches").html(digirisk("#hiddenFieldToShow").html());';
 	if($affichage == 'affichageListe')
 	{
 		$script .= '
-			evarisk("#affichageListe").addClass("selectedAffichage");
-			evarisk("#filAriane").hide();';
+			digirisk("#affichageListe").addClass("selectedAffichage");
+			digirisk("#filAriane").hide();';
 	}
 	else
 	{
 		$racine = arborescence::getRacine($_POST['table']);
 		$script .= '
-			evarisk("#affichageTable").addClass("selectedAffichage");
+			digirisk("#affichageTable").addClass("selectedAffichage");
 			while(document.getElementById("filAriane").lastChild.id != "element' . $racine->id . '")
 			{
 				document.getElementById("filAriane").removeChild(
 					document.getElementById("filAriane").lastChild
 				);
 			}
-			evarisk("#filAriane").show();';
+			digirisk("#filAriane").show();';
 	}
 	$script .= '
 				// changementPage("right", "' . $_POST['table'] . '", 1, 1, "' . $affichage . '", "main");

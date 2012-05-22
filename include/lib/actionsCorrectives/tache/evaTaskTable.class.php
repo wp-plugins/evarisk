@@ -103,25 +103,25 @@ class EvaTaskTable extends EvaBaseTask
 		$this->removeAllTasks();
     
 		{//Variables cleaning
-			$name = eva_tools::IsValid_Variable($task->getName());
-			$description = eva_tools::IsValid_Variable($task->getDescription());
-			$startDate = eva_tools::IsValid_Variable($task->getStartDate());
-			$finishDate = eva_tools::IsValid_Variable($task->getFinishDate());
-			$place = eva_tools::IsValid_Variable($task->getPlace());
-			$progression = (int) eva_tools::IsValid_Variable($task->getProgression());
-			$idFrom = (int) eva_tools::IsValid_Variable($task->getIdFrom());
-			$tableFrom = eva_tools::IsValid_Variable($task->getTableFrom());
-			$status = eva_tools::IsValid_Variable($task->getStatus());
-			$idCreateur = eva_tools::IsValid_Variable($task->getidCreateur());
-			$idResponsable = eva_tools::IsValid_Variable($task->getidResponsable());
-			$idSoldeur = eva_tools::IsValid_Variable($task->getidSoldeur());
-			$idSoldeurChef = eva_tools::IsValid_Variable($task->getidSoldeurChef());
-			$idPhotoAvant = eva_tools::IsValid_Variable($task->getidPhotoAvant());
-			$idPhotoApres = eva_tools::IsValid_Variable($task->getidPhotoApres());
-			$ProgressionStatus = eva_tools::IsValid_Variable($task->getProgressionStatus());
-			$dateSolde = eva_tools::IsValid_Variable($task->getdateSolde());
-			$hasPriority = eva_tools::IsValid_Variable($task->gethasPriority());
-			$efficacite = eva_tools::IsValid_Variable($task->getEfficacite());
+			$name = digirisk_tools::IsValid_Variable($task->getName());
+			$description = digirisk_tools::IsValid_Variable($task->getDescription());
+			$startDate = digirisk_tools::IsValid_Variable($task->getStartDate());
+			$finishDate = digirisk_tools::IsValid_Variable($task->getFinishDate());
+			$place = digirisk_tools::IsValid_Variable($task->getPlace());
+			$progression = (int) digirisk_tools::IsValid_Variable($task->getProgression());
+			$idFrom = (int) digirisk_tools::IsValid_Variable($task->getIdFrom());
+			$tableFrom = digirisk_tools::IsValid_Variable($task->getTableFrom());
+			$status = digirisk_tools::IsValid_Variable($task->getStatus());
+			$idCreateur = digirisk_tools::IsValid_Variable($task->getidCreateur());
+			$idResponsable = digirisk_tools::IsValid_Variable($task->getidResponsable());
+			$idSoldeur = digirisk_tools::IsValid_Variable($task->getidSoldeur());
+			$idSoldeurChef = digirisk_tools::IsValid_Variable($task->getidSoldeurChef());
+			$idPhotoAvant = digirisk_tools::IsValid_Variable($task->getidPhotoAvant());
+			$idPhotoApres = digirisk_tools::IsValid_Variable($task->getidPhotoApres());
+			$ProgressionStatus = digirisk_tools::IsValid_Variable($task->getProgressionStatus());
+			$dateSolde = digirisk_tools::IsValid_Variable($task->getdateSolde());
+			$hasPriority = digirisk_tools::IsValid_Variable($task->gethasPriority());
+			$efficacite = digirisk_tools::IsValid_Variable($task->getEfficacite());
 		}
     {//Query creation
       $sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";

@@ -23,24 +23,24 @@ class EvaActivity extends EvaBaseActivity
 		global $current_user;
 		
 		{//Variables cleaning
-			$id = (int) eva_tools::IsValid_Variable($this->getId());
-			$relatedTaskId = (int) eva_tools::IsValid_Variable($this->getRelatedTaskId());
-			$name = eva_tools::IsValid_Variable($this->getName());
-			$description = eva_tools::IsValid_Variable($this->getDescription());
-			$startDate = eva_tools::IsValid_Variable($this->getStartDate());
-			$finishDate = eva_tools::IsValid_Variable($this->getFinishDate());
-			$place = eva_tools::IsValid_Variable($this->getPlace());
-			$cout = (float) eva_tools::IsValid_Variable($this->getCout());
-			$progression = (int) eva_tools::IsValid_Variable($this->getProgression());
-			$status = eva_tools::IsValid_Variable($this->getStatus());
-			$idCreateur = eva_tools::IsValid_Variable($current_user->ID);
-			$idResponsable = eva_tools::IsValid_Variable($this->getidResponsable());
-			$idSoldeur = eva_tools::IsValid_Variable($this->getidSoldeur());
-			$idSoldeurChef = eva_tools::IsValid_Variable($this->getidSoldeurChef());
-			$ProgressionStatus = eva_tools::IsValid_Variable($this->getProgressionStatus());
-			$dateSolde = eva_tools::IsValid_Variable($this->getdateSolde());
-			$idPhotoAvant = eva_tools::IsValid_Variable($this->getidPhotoAvant());
-			$idPhotoApres = eva_tools::IsValid_Variable($this->getidPhotoApres());
+			$id = (int) digirisk_tools::IsValid_Variable($this->getId());
+			$relatedTaskId = (int) digirisk_tools::IsValid_Variable($this->getRelatedTaskId());
+			$name = digirisk_tools::IsValid_Variable($this->getName());
+			$description = digirisk_tools::IsValid_Variable($this->getDescription());
+			$startDate = digirisk_tools::IsValid_Variable($this->getStartDate());
+			$finishDate = digirisk_tools::IsValid_Variable($this->getFinishDate());
+			$place = digirisk_tools::IsValid_Variable($this->getPlace());
+			$cout = (float) digirisk_tools::IsValid_Variable($this->getCout());
+			$progression = (int) digirisk_tools::IsValid_Variable($this->getProgression());
+			$status = digirisk_tools::IsValid_Variable($this->getStatus());
+			$idCreateur = digirisk_tools::IsValid_Variable($current_user->ID);
+			$idResponsable = digirisk_tools::IsValid_Variable($this->getidResponsable());
+			$idSoldeur = digirisk_tools::IsValid_Variable($this->getidSoldeur());
+			$idSoldeurChef = digirisk_tools::IsValid_Variable($this->getidSoldeurChef());
+			$ProgressionStatus = digirisk_tools::IsValid_Variable($this->getProgressionStatus());
+			$dateSolde = digirisk_tools::IsValid_Variable($this->getdateSolde());
+			$idPhotoAvant = digirisk_tools::IsValid_Variable($this->getidPhotoAvant());
+			$idPhotoApres = digirisk_tools::IsValid_Variable($this->getidPhotoApres());
 		}
 		
 		//Query creation
@@ -112,7 +112,7 @@ class EvaActivity extends EvaBaseActivity
 	function load()
 	{
 		global $wpdb;
-		$id = (int) eva_tools::IsValid_Variable($this->getId());
+		$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 		if($id != 0)
 		{
 			$wpdbActivity = $wpdb->get_row( "SELECT * FROM " . TABLE_ACTIVITE . " WHERE " . self::id . " = " . $id);
@@ -250,7 +250,8 @@ class EvaActivity extends EvaBaseActivity
 	*
 	*/
 	function task_asker_add_picture($table_provenance, $token){
-		return evaPhoto::getUploadForm($table_provenance, $token, 'jQuery("#ask_correctiv_action_picture_form").html("");jQuery("#ask_correctiv_action_picture img").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $table_provenance . "/" . $token . '/" + response); jQuery("#ask_correctiv_action_picture").show();');
+		return '<input type="file" name="correctiv_action_picture" id="correctiv_action_picture" />';
+		// evaPhoto::getUploadForm($table_provenance, $token, 'jQuery("#ask_correctiv_action_picture_form").html("");jQuery("#ask_correctiv_action_picture img").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $table_provenance . "/" . $token . '/" + response); jQuery("#ask_correctiv_action_picture").show();');
 	}
 	
 	/**
@@ -380,7 +381,7 @@ class EvaActivity extends EvaBaseActivity
 			$activite_new .= __("Avancement", 'evarisk') . ' : 
 <input type="text" name="' . $nomChamps . '" id="' . $id . '" style="width:5%;" value="' . $contenuInputAvancement . '" />' . __('%', 'evarisk') . '<div id="sliderAvancement" >&nbsp;</div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#' . $id . '").prop("readonly", "readonly");
 		jQuery("#sliderAvancement").slider({
 			value:' . $contenuInputAvancement . ',
@@ -418,26 +419,28 @@ class EvaActivity extends EvaBaseActivity
 			else{
 				$activite_new .= '&nbsp;';
 			}
-			$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span>&nbsp;&nbsp;<span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible' . $arguments['requested_action'] . '" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+			$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span>&nbsp;&nbsp;<span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible' . $arguments['requested_action'] . '" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
 	<script type="text/javascript" >
-		evarisk(document).ready(function(){
+		digirisk(document).ready(function(){
 			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
-				jQuery(this).val("");
 				jQuery(".completeUserListActionResponsible").show();
 			});
-			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur(function(){
-				jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
+				source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '",
+				select: function( event, ui ){
+					jQuery("#responsable_activite").val(ui.item.value);
+					jQuery("#responsible_name").html(ui.item.label);
+
+					jQuery(".completeUserListActionResponsible").hide();
+					jQuery(".searchUserToAffect").hide();
+					jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+					jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
+
+					jQuery(this).val("");
+					jQuery(this).blur();
+				}
 			});
-			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '");
-			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").result(function(event, data, formatted){
-				jQuery("#responsable_activite").val(data[1]);
-				jQuery("#responsible_name").html(data[0]);
-				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
-				jQuery(".completeUserListActionResponsible").hide();
-				jQuery(".searchUserToAffect").hide();
-				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
-				jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
-			});
+
 			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
 				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
 				jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
@@ -466,7 +469,7 @@ class EvaActivity extends EvaBaseActivity
 		if($arguments['provenance'] == 'ask_correctiv_action'){/*	Add possibility for user to add a picture and to affect to an existing element for the asked tasks	*/
 			/*	Add a picture	*/
 			$token = rand();
-			$activite_new .= '<div class="digirisk_hide" id="loading_round_pic" ><div class="main_loading_pic_container" ><img src="' . admin_url('images/loading.gif') . '" alt="loading..." /></div></div><input type="hidden" name="token_for_element" id="token_for_element" value="' . $token . '" /><label for="correctiv_action_before_pic" class="clear" >' . __('Photo', 'evarisk') . '</label>&nbsp;:&nbsp;<div id="ask_correctiv_action_picture_form" >' . self::task_asker_add_picture($arguments['tableProvenance'], $token) . '</div><div id="ask_correctiv_action_picture" class="digirisk_hide" ><img src="' . admin_url('images/loading.gif') . '" alt="correctiv_action_ask_picture" /><div class="pointer" id="dac_pic_change" >' . __('Changer l\'image', 'evarisk') . '</div><script type="text/javascript" >evarisk(document).ready(function(){jQuery("#dac_pic_change").click(function(){jQuery("#ask_correctiv_action_picture_form").html(jQuery("#loading_round_pic").html());jQuery("#ask_correctiv_action_picture img").attr("src", "' . admin_url('images/loading.gif') . '");jQuery("#ask_correctiv_action_picture").hide();jQuery("#ask_correctiv_action_picture_form").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{"post":"true", "table":"' . TABLE_ACTIVITE . '", "act":"reload_correctiv_asker_picture_form", "tableProvenance":"' . $arguments['tableProvenance'] . '", "token":"' . $token . '", "delete_old":"yes"});});});</script></div>';
+			$activite_new .= '<div class="digirisk_hide" id="loading_round_pic" ><div class="main_loading_pic_container" ><img src="' . admin_url('images/loading.gif') . '" alt="loading..." /></div></div><input type="hidden" name="token_for_element" id="token_for_element" value="' . $token . '" /><label for="correctiv_action_before_pic" class="clear" >' . __('Photo', 'evarisk') . '</label>&nbsp;:&nbsp;<div id="ask_correctiv_action_picture_form" >' . self::task_asker_add_picture($arguments['tableProvenance'], $token) . '</div><div id="ask_correctiv_action_picture" class="digirisk_hide" ><img src="' . admin_url('images/loading.gif') . '" alt="correctiv_action_ask_picture" /><div class="pointer" id="dac_pic_change" >' . __('Changer l\'image', 'evarisk') . '</div><script type="text/javascript" >digirisk(document).ready(function(){jQuery("#dac_pic_change").click(function(){jQuery("#ask_correctiv_action_picture_form").html(jQuery("#loading_round_pic").html());jQuery("#ask_correctiv_action_picture img").attr("src", "' . admin_url('images/loading.gif') . '");jQuery("#ask_correctiv_action_picture").hide();jQuery("#ask_correctiv_action_picture_form").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{"post":"true", "table":"' . TABLE_ACTIVITE . '", "act":"reload_correctiv_asker_picture_form", "tableProvenance":"' . $arguments['tableProvenance'] . '", "token":"' . $token . '", "delete_old":"yes"});});});</script></div>';
 
 			/*	Affect to existing element	*/
 			$activite_new .= __('Affecter cette t&acirc;che &agrave; un &eacute;l&eacute;ment existant', 'evarisk') . '&nbsp;:&nbsp;<br/>' . arborescence_special::search_form();
@@ -481,16 +484,16 @@ class EvaActivity extends EvaBaseActivity
 				<fieldset id="divVariablesFormRisque-simpleFAC-fieldset" >
 					<legend class="bold" >' . __('Nouvelle &Eacute;valuation', 'evarisk') . ' :</legend>
 					<script type="text/javascript">
-						evarisk(document).ready(function(){
+						digirisk(document).ready(function(){
 							setTimeout(function(){
-								evarisk("#divVariablesFormRisque-simpleFAC").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+								digirisk("#divVariablesFormRisque-simpleFAC").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 									"post":"true", 
 									"table":"' . TABLE_METHODE . '", 
 									"act":"reloadVariables",
 									"idRisque":"' . $arguments['idProvenance'] . '"
 								});
 							}, 700);
-							evarisk("#sliderAvancement").hide();
+							digirisk("#sliderAvancement").hide();
 						})
 					</script>
 					<div id="divVariablesFormRisque-simpleFAC" ></div>
@@ -516,12 +519,12 @@ class EvaActivity extends EvaBaseActivity
 		{/*	Put in progress button	*/
 			$idBouttonSetInProgress = 'setActivityInProgress';
 			$scriptEnregistrementInProgress = '<script type="text/javascript">
-				evarisk("#' . $idBouttonSetInProgress . '").click(function(){
-					evarisk("#inProgressButtonContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				digirisk("#' . $idBouttonSetInProgress . '").click(function(){
+					digirisk("#inProgressButtonContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 						"post": "true", 
 						"table": "' . TABLE_ACTIVITE . '",
 						"act": "setActivityInProgress",
-						"id": evarisk("#id_activite").val()
+						"id": digirisk("#id_activite").val()
 					});
 				});
 			</script>';
@@ -574,7 +577,7 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
 		$sub_task_creation_form .= '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#ActionSaveButton").children("br").remove();
 		jQuery("#ActionSaveButton div").children("br").remove();
 
@@ -622,7 +625,7 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 		});
 
 		jQuery("#' . $idBouttonSold . '").click(function(){
-			if(((jQuery("#avancement_activite").val() == "100") && (jQuery("#avancement_activite").val() == "100")) || ("' . $alertWhenMarkActionAsDone . '" == "non") || (("' . $alertWhenMarkActionAsDone . '" == "oui") && confirm((convertAccentToJS("' . __("Vous &eacute;tes sur le point de solder une action dont l\'avancement est de #avancement#%.#retour#Etes vous sur de vouloir continuer ?", 'evarisk') . '").replace("#avancement#", jQuery("#avancement_activite").val())).replace("#retour#", "\r\n")))){
+			if(((jQuery("#avancement_activite").val() == "100") && (jQuery("#avancement_activite").val() == "100")) || ("' . $alertWhenMarkActionAsDone . '" == "non") || (("' . $alertWhenMarkActionAsDone . '" == "oui") && confirm((digi_html_accent_for_js("' . __("Vous &eacute;tes sur le point de solder une action dont l\'avancement est de #avancement#%.#retour#Etes vous sur de vouloir continuer ?", 'evarisk') . '").replace("#avancement#", jQuery("#avancement_activite").val())).replace("#retour#", "\r\n")))){
 				jQuery("#act").val("actionDone");
 				jQuery("#actionDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 				jQuery("#informationGeneralesActivite").submit();
@@ -647,18 +650,18 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 	});
 
 	function validate_activity_form(formData, jqForm, options){
-		if(evarisk("#' . $idTitre . '").is(".form-input-tip")){
-			evarisk("#' . $idTitre . '").val("");
-			evarisk("#' . $idTitre . '").removeClass("form-input-tip");
+		if(digirisk("#' . $idTitre . '").is(".form-input-tip")){
+			digirisk("#' . $idTitre . '").val("");
+			digirisk("#' . $idTitre . '").removeClass("form-input-tip");
 		}
 
 		for(var i=0; i < formData.length; i++){
 			if((formData[i].name == "' . $idTitre . '") && !formData[i].value){
-				alert(convertAccentToJS("' . __("Vous n\'avez pas donn&eacute; de nom a l'action", 'evarisk') . '"));
+				alert(digi_html_accent_for_js("' . __("Vous n\'avez pas donn&eacute; de nom a l'action", 'evarisk') . '"));
 				return false;
 			}
 			else if((formData[i].name == "responsable_activite") && (!formData[i].value || (formData[i].value <= 0)) && ("' . $idResponsableIsMandatory . '" == "oui")){
-				alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de l\'action", 'evarisk') . '"));
+				alert(digi_html_accent_for_js("' . __("Vous devez choisir une personne en charge de l\'action", 'evarisk') . '"));
 				return false;
 			}
 		}

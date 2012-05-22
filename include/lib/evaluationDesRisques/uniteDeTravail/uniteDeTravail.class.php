@@ -324,13 +324,13 @@ class eva_UniteDeTravail {
 		{
 			echo 
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
+					digirisk(document).ready(function(){
+						digirisk("#message").addClass("updated");
+						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						digirisk("#message").show();
 						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
+							digirisk("#message").removeClass("updated");
+							digirisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -339,13 +339,13 @@ class eva_UniteDeTravail {
 		{
 			echo 
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
+					digirisk(document).ready(function(){
+						digirisk("#message").addClass("updated");
+						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						digirisk("#message").show();
 						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
+							digirisk("#message").removeClass("updated");
+							digirisk("#message").hide();
 						},7500);
 					});
 				</script>';

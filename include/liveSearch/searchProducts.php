@@ -26,17 +26,25 @@ if(is_array($categories) && (count($categories) > 0)){/*	In case that there are 
 if(is_array($elementList) && (count($elementList) > 0)){
 	foreach($elementList as $elementId => $element)
 	{
-		$element['reference'] = (isset($element['reference']) && ($element['reference'] != '')) ? $element['reference'] : '&nbsp;NC';
-		$items[ELEMENT_IDENTIFIER_PDT . $elementId . '&nbsp;-&nbsp' . $element['name'] . ' (' . __('R&eacute;f.', 'evarisk') . $element['reference'] . ')'] = $elementId;
+		$element['reference'] = (isset($element['reference']) && ($element['reference'] != '')) ? $element['reference'] : ' NC';
+		$items[ELEMENT_IDENTIFIER_PDT . $elementId . ' -&nbsp' . $element['name'] . ' (' . __('R&eacute;f.', 'evarisk') . $element['reference'] . ')'] = $elementId;
 	}
 }
 
-foreach ($items as $key => $value)
-{
-	if (strpos(strtolower($key), $q) !== false) 
-	{
-		echo "$key|$value\n";
+$output_search = '';
+$found_result = false;
+if(!empty($items)){
+	$output_search = '[';
+	foreach ($items as $key=>$value){
+		if (strpos(strtolower($key), $q) !== false){
+			$found_result = true;
+
+			$output_search .= '{"id": "' . $value . '", "label": "' . $key . '", "value": "' . $value . '"}, ';
+		}
 	}
+	$output_search = substr($output_search, 0, -2) . ']';
 }
+
+echo $output_search;
 
 ?>

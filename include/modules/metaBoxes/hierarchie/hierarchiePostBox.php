@@ -48,7 +48,7 @@
 	<div class="clear" >' . $save_button . '</div>
 </form>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		/*	Create an ajax form	*/
 		jQuery("#hierarchy_affectation_form").ajaxForm({
 			target: "#ajax-response",

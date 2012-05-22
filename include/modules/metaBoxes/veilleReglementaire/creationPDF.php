@@ -3,7 +3,6 @@
 require_once(EVA_LIB_PLUGIN_DIR . 'tcpdf/config/lang/fra.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'tcpdf/config/configPDF.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'tcpdf/tcpdf.php');
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaReferentialText.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswerToQuestion.class.php' );

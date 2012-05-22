@@ -61,7 +61,7 @@ class eva_WorkUnitSheet
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
 		$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
-		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
+		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $idElement . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
 		$groupementPere = EvaGroupement::getGroupement($workUnitinformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
@@ -76,7 +76,7 @@ class eva_WorkUnitSheet
 		{
 			$arborescence .= $groupementPere->nom . ' - ';
 		}
-		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = eva_tools::slugify_noaccent($arborescence) . eva_tools::slugify_noaccent($workUnitinformations->nom);
+		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = digirisk_tools::slugify_noaccent($arborescence) . digirisk_tools::slugify_noaccent($workUnitinformations->nom);
 
 		$modelChoice = '';
 		$lastWorkUnitSheet = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
@@ -84,40 +84,40 @@ class eva_WorkUnitSheet
 		{
 			$modelChoice = '
 			setTimeout(function(){
-				evarisk("#FPmodelDefaut").click();
+				digirisk("#FPmodelDefaut").click();
 			},100);';
 		}
 
 		$output = EvaDisplayDesign::feedTemplate(eva_WorkUnitSheet::getWorkUnitSheetForm(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#genererFP").click(function(){
-			evarisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+	digirisk(document).ready(function(){
+		digirisk("#genererFP").click(function(){
+			digirisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_FP . '",
 				"act":"saveFichePoste",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
-				"nomDuDocument":evarisk("#nomFicheDePoste").val(),
-				"nomEntreprise":evarisk("#nomEntreprise").val(),
-				"id_model":evarisk("#modelToUse' . $tableElement . '").val()
+				"nomDuDocument":digirisk("#nomFicheDePoste").val(),
+				"nomEntreprise":digirisk("#nomEntreprise").val(),
+				"id_model":digirisk("#modelToUse' . $tableElement . '").val()
 			});
-			evarisk("#divImpressionFicheDePoste").html(evarisk("#loadingImg").html());
+			digirisk("#divImpressionFicheDePoste").html(digirisk("#loadingImg").html());
 		});
-		evarisk("#FPmodelDefaut").click(function(){
+		digirisk("#FPmodelDefaut").click(function(){
 			clearTimeout();
 			setTimeout(function(){
-				if(!evarisk("#FPmodelDefaut").is(":checked")){
-					evarisk("#workUnitSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-					evarisk("#workUnitSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
-					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":"' . $lastWorkUnitSheet->id_model . '"});
-					evarisk("#modelListForGeneration").show();
+				if(!digirisk("#FPmodelDefaut").is(":checked")){
+					digirisk("#workUnitSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					digirisk("#workUnitSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
+					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":"' . $lastWorkUnitSheet->id_model . '"});
+					digirisk("#modelListForGeneration").show();
 				}
 				else{
-					evarisk("#workUnitSheetResultContainer").html("");
-					evarisk("#modelListForGeneration").html("");
-					evarisk("#modelListForGeneration").hide();
+					digirisk("#workUnitSheetResultContainer").html("");
+					digirisk("#modelListForGeneration").html("");
+					digirisk("#modelListForGeneration").hide();
 				}
 			},500
 			);
@@ -192,7 +192,7 @@ class eva_WorkUnitSheet
 						if($document->name == '')
 						{
 
-							$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
+							$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
 
 							$document->name = $documentName;
 						}
@@ -267,8 +267,8 @@ class eva_WorkUnitSheet
 		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
 		global $wpdb;
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
 		/*	Révision du document, en fonction de l'element et de la date de génération	*/
 		$revision = '';
@@ -301,7 +301,7 @@ class eva_WorkUnitSheet
 		{
 			$dateElement = explode(' ', $informations['dateCreation']);
 
-			$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $informations['nomEntreprise']));
+			$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $informations['nomEntreprise']));
 
 			$informations['nomDuDocument'] = $documentName;
 		}
@@ -389,7 +389,7 @@ class eva_WorkUnitSheet
 				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk, recommandation) 
 			VALUES 
 				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
+			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, digirisk_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
 		);
 		if($wpdb->query($query) === false)
 		{
@@ -435,33 +435,33 @@ class eva_WorkUnitSheet
 	</tr>
 </table>
 <script type="text/javascript" >
-	evarisk("#saveWorkUnitSheetForGroupement").click(function(){
-		evarisk("#documentFormContainer").html(evarisk("#loadingImg").html());
-		evarisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#saveWorkUnitSheetForGroupement").click(function(){
+		digirisk("#documentFormContainer").html(digirisk("#loadingImg").html());
+		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
 			"post":"true",
 			"table":"' . TABLE_FP . '",
 			"act":"saveWorkUnitSheetForGroupement",
 			"tableElement":"' . $tableElement . '",
 			"idElement":' . $idElement . ',
-			"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
+			"id_model":digirisk("#modelToUse' . $tableElementForDoc . '").val()
 		});
 	});
 
-	evarisk("#modelDefaut").click(function(){
+	digirisk("#modelDefaut").click(function(){
 		setTimeout(function(){
-			if(!evarisk("#modelDefaut").is(":checked"))
+			if(!digirisk("#modelDefaut").is(":checked"))
 			{
-				evarisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-				evarisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
-				evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":""});
-				evarisk("#modelListForGeneration").show();
+				digirisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+				digirisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
+				digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":""});
+				digirisk("#modelListForGeneration").show();
 			}
 			else
 			{
-				evarisk("#documentModelContainer").html("");
-				evarisk("#modelListForGeneration").html("");
-				evarisk("#modelListForGeneration").hide();
+				digirisk("#documentModelContainer").html("");
+				digirisk("#modelListForGeneration").html("");
+				digirisk("#modelListForGeneration").hide();
 			}
 		},600);
 	});

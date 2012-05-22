@@ -27,10 +27,10 @@ class digirisk_groups
 	function elementMainPage()
 	{
 		$output = $message = '';
-		$action = isset($_REQUEST['action']) ? eva_tools::IsValid_Variable($_REQUEST['action']) : '';
-		$save = isset($_REQUEST['save']) ? eva_tools::IsValid_Variable($_REQUEST['save']) : '';
-		$formAction = isset($_REQUEST[self::dbTable . '_action']) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
-		$id = isset($_REQUEST['id']) ? eva_tools::IsValid_Variable($_REQUEST['id']) : '';
+		$action = isset($_REQUEST['action']) ? digirisk_tools::IsValid_Variable($_REQUEST['action']) : '';
+		$save = isset($_REQUEST['save']) ? digirisk_tools::IsValid_Variable($_REQUEST['save']) : '';
+		$formAction = isset($_REQUEST[self::dbTable . '_action']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
+		$id = isset($_REQUEST['id']) ? digirisk_tools::IsValid_Variable($_REQUEST['id']) : '';
 		$editionInProgress = false;
 
 		$actionResult = digirisk_groups::elementAction();
@@ -128,7 +128,7 @@ class digirisk_groups
 				$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Vous n\'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;', 'evarisk') . '</strong>');
 				$output .= 
 '<script type="text/javascript">
-evarisk(document).ready(function(){
+digirisk(document).ready(function(){
 	actionMessageShow("#message", "' . $message . '");
 	setTimeout(\'actionMessageHide("#message")\',7500);
 });
@@ -182,7 +182,7 @@ evarisk(document).ready(function(){
 		{
 			$output .= '
 <script type="text/javascript" >
-	evarisk("#message").addClass("updated");
+	digirisk("#message").addClass("updated");
 </script>';
 		}
 
@@ -199,8 +199,8 @@ evarisk(document).ready(function(){
 
 		/*	Initialize the different vars usefull for the action	*/
 		$pageMessage = $actionResult = '';
-		$action = isset($_REQUEST[self::dbTable . '_action']) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
-		$id = isset($_REQUEST[self::dbTable]['id']) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable]['id']) : '';
+		$action = isset($_REQUEST[self::dbTable . '_action']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
+		$id = isset($_REQUEST[self::dbTable]['id']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable]['id']) : '';
 
 		/*	Basic action 	*/
 		if(($action != '') && (($action == 'edit') || ($action == 'editandcontinue')))
@@ -348,9 +348,9 @@ evarisk(document).ready(function(){
 		/*	For option adding see jqueyr datatable documentation	*/
 		$script = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . ' tfoot").remove();
-		evarisk("#' . $idTable . '").dataTable({
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . ' tfoot").remove();
+		digirisk("#' . $idTable . '").dataTable({
 			"bInfo": false,
 			"bLengthChange": false,
 			"oLanguage":{
@@ -358,11 +358,11 @@ evarisk(document).ready(function(){
 			}
 		});
 	});
-	evarisk(".deleteGroup").click(function(){
-		if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce groupe?', 'evarisk') . '"))){
-			var clickedId = evarisk(this).parent("td").parent("tr").attr("id").replace("digirisk_users_groups_", "");
-			evarisk("#' . self::dbTable . '_delete_form_id").val(clickedId);
-			evarisk("#' . self::dbTable . '_delete_form").submit();
+	digirisk(".deleteGroup").click(function(){
+		if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce groupe?', 'evarisk') . '"))){
+			var clickedId = digirisk(this).parent("td").parent("tr").attr("id").replace("digirisk_users_groups_", "");
+			digirisk("#' . self::dbTable . '_delete_form_id").val(clickedId);
+			digirisk("#' . self::dbTable . '_delete_form").submit();
 		}
 	});
 </script>';
@@ -415,7 +415,7 @@ evarisk(document).ready(function(){
 	*/
 	function getPageFormButton()
 	{
-		$action = isset($_REQUEST['action']) ? eva_tools::IsValid_Variable($_REQUEST['action']) : 'add';
+		$action = isset($_REQUEST['action']) ? digirisk_tools::IsValid_Variable($_REQUEST['action']) : 'add';
 		$currentPageButton = '';
 
 		if(($action == 'add') || ($action == 'evadd') || ($action == 'emadd'))
@@ -450,7 +450,7 @@ evarisk(document).ready(function(){
 	{
 		$elementEditionOutput = '';
 		$dbFieldToHide = array('old_id', 'creation_user_id', 'deletion_date', 'deletion_user_id');
-		$action = isset($_REQUEST['action']) ? eva_tools::IsValid_Variable($_REQUEST['action']) : 'add';
+		$action = isset($_REQUEST['action']) ? digirisk_tools::IsValid_Variable($_REQUEST['action']) : 'add';
 
 		if($action == 'edit')
 		{
@@ -463,7 +463,7 @@ evarisk(document).ready(function(){
 		{
 			if(!in_array($input_def['name'], $dbFieldToHide))
 			{
-				$requestFormValue = isset($_REQUEST[self::dbTable][$input_def['name']]) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable][$input_def['name']]) : '';
+				$requestFormValue = isset($_REQUEST[self::dbTable][$input_def['name']]) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable][$input_def['name']]) : '';
 				$currentFieldValue = $input_def['value'];
 				if(is_array($elementInformations))
 				{
@@ -542,11 +542,11 @@ evarisk(document).ready(function(){
 	</fieldset>
 </form>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#delete").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce groupe ?', 'evarisk') . '"))){
-				evarisk("#' . self::dbTable . '_action").val("delete");
-				evarisk("#' . self::dbTable . '_form").submit();
+	digirisk(document).ready(function(){
+		digirisk("#delete").click(function(){
+			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce groupe ?', 'evarisk') . '"))){
+				digirisk("#' . self::dbTable . '_action").val("delete");
+				digirisk("#' . self::dbTable . '_form").submit();
 			}
 		});
 	});
@@ -716,16 +716,16 @@ evarisk(document).ready(function(){
 	<div class="clear addLinkElementElement" >
 		<div class="clear" >
 			<span class="searchElementInput ui-icon" >&nbsp;</span>
-			<input class="searchElementToAffect" type="text" name="affectedElement' . $tableElement . '" id="affectedElement' . $tableElement . '" value="' . __('Rechercher dans la liste des groupes', 'evarisk') . '" />
+			<input class="searchElementToAffect" type="text" name="affectedElement' . $tableElement . '" id="affectedElement' . $tableElement . '" placeholder="' . __('Rechercher dans la liste des groupes', 'evarisk') . '" />
 		</div>
 		<div id="completeList' . $tableElement . '" class="completeList clear" >' . digirisk_groups::elementListForAffectation($tableElement, $idElement) . '</div>
 	</div>
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
-<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div onclick="javascript:elementDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementGPU" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#ELEMENTNAME#<span class="ui-icon deleteElementFromList" >&nbsp;</span></div></div>
+<div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div onclick="javascript:elementDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementGPU" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#ELEMENTNAME#<span class="ui-icon deleteElementFromList" >&nbsp;</span></div></div>
 
 <script type="text/javascript" >
-	(function(){
+	digirisk(document).ready(function(){
 		/*	Mass action : check / uncheck all	*/
 		jQuery("#massAction' . $tableElement . ' .checkAll").unbind("click");
 		jQuery("#massAction' . $tableElement . ' .checkAll").click(function(){
@@ -751,23 +751,22 @@ evarisk(document).ready(function(){
 			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
 
-		/*	User Search autocompletion	*/
-		jQuery("#affectedElement' . $tableElement . '").click(function(){
-			jQuery(this).val("");
-		});
-		jQuery("#affectedElement' . $tableElement . '").blur(function(){
-			jQuery(this).val("' . __('Rechercher dans la liste des groupes', 'evarisk') . '");
-		});
-		jQuery("#affectedElement' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGroups.php?group_type=' . $tableType[max(array_keys($tableType))] . '");
-		jQuery("#affectedElement' . $tableElement . '").result(function(event, data, formatted){
-			cleanElementIdFiedList(data[1], "' . $tableElement . '");
-			addElementIdFieldList(data[0], data[1], "' . $tableElement . '");
+		/*	Autocomplete search	*/
+		jQuery("#affectedElement' . $tableElement . '").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGroups.php?group_type=' . $tableType[max(array_keys($tableType))] . '",
+			select: function(event, ui){
+				cleanElementIdFiedList(ui.item.value, "' . $tableElement . '");
+				addElementIdFieldList(ui.item.label, ui.item.value, "' . $tableElement . '");
 
-			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+				checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 
-			jQuery("#affectedElement' . $tableElement . '").val("' . __('Rechercher dans la liste des groupes', 'evarisk') . '");
+				setTimeout(function(){
+					jQuery("#affectedElement' . $tableElement . '").val("");
+					jQuery("#affectedElement' . $tableElement . '").blur();
+				}, 1000);
+			}
 		});
-	})(evarisk);
+	});
 </script>';
 
 		if($showButton)
@@ -795,16 +794,16 @@ evarisk(document).ready(function(){
 		{//Bouton Enregistrer
 			$scriptEnregistrement = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-		evarisk("#' . $idBoutonEnregistrer . '").click(function(){
-			evarisk("#saveButtonLoading' . $tableElement . '").show();
-			evarisk("#saveButtonContainer' . $tableElement . '").hide();
-			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+		digirisk("#' . $idBoutonEnregistrer . '").click(function(){
+			digirisk("#saveButtonLoading' . $tableElement . '").show();
+			digirisk("#saveButtonContainer' . $tableElement . '").hide();
+			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post": "true", 
 				"table": "' . DIGI_DBT_LIAISON_USER_GROUP . '",
 				"act": "save",
-				"element": evarisk("#affectedList' . $tableElement . '").val(),
+				"element": digirisk("#affectedList' . $tableElement . '").val(),
 				"tableElement": "' . $tableElement . '",
 				"idElement": "' . $idElement . '"
 			});
@@ -888,29 +887,29 @@ evarisk(document).ready(function(){
 		/*	Add the js option for the table	*/
 		$script = 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable({
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
 			"bPaginate": false,
 			"bFilter": false,
 			"aaSorting": [[0,"desc"]]
 		});
-		evarisk("#' . $idTable . '").children("tfoot").remove();
-		evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+		digirisk("#' . $idTable . '").children("tfoot").remove();
+		digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
 
 		/*	Add the action when clicking on a button in the list	*/
-		evarisk("#completeList' . $tableElement . ' .odd, #completeList' . $tableElement . ' .even").click(function(){
-			if(evarisk(this).children("td:first").children("span").hasClass("elementIsNotLinked")){
-				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", "");
+		digirisk("#completeList' . $tableElement . ' .odd, #completeList' . $tableElement . ' .even").click(function(){
+			if(digirisk(this).children("td:first").children("span").hasClass("elementIsNotLinked")){
+				var currentId = digirisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", "");
 				cleanElementIdFiedList(currentId, "' . $tableElement . '");
 
-				var elementContent = evarisk(this).children("td:nth-child(2)").html();
+				var elementContent = digirisk(this).children("td:nth-child(2)").html();
 
 				addElementIdFieldList(elementContent, currentId, "' . $tableElement . '");
 			}
 			else{
-				deleteElementIdFiedList(evarisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", ""), "' . $tableElement . '");
+				deleteElementIdFiedList(digirisk(this).attr("id").replace("' . $tableElement . $idElement . '_elementList_", ""), "' . $tableElement . '");
 			}
 			checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
@@ -1006,12 +1005,12 @@ evarisk(document).ready(function(){
 		{
 			echo 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		actionMessageShow("#messageInfo_' . $tableElement . '_' . $idElement . $messageInfoContainerIdExt . '", "' . $message . '");
 		setTimeout(\'actionMessageHide("#messageInfo_' . $tableElement . '_' . $idElement . $messageInfoContainerIdExt . '")\',7500);
-		evarisk("#saveButtonLoading' . $tableElement . '").hide();
-		evarisk("#saveButtonContainer' . $tableElement . '").show();
-		evarisk("#actuallyAffectedList' . $tableElement . '").val(evarisk("#affectedList' . $tableElement . '").val());
+		digirisk("#saveButtonLoading' . $tableElement . '").hide();
+		digirisk("#saveButtonContainer' . $tableElement . '").show();
+		digirisk("#actuallyAffectedList' . $tableElement . '").val(digirisk("#affectedList' . $tableElement . '").val());
 		checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 	});
 </script>';

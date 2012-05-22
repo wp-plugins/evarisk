@@ -63,11 +63,11 @@
 
 		$tempFile = $_GET['qqfile'];
 		$targetPath = $_GET['folder'];
-		$targetFile =  str_replace('//','/',$targetPath) . eva_tools::slugify($_GET['qqfile']);
+		$targetFile =  str_replace('//','/',$targetPath) . digirisk_tools::slugify($_GET['qqfile']);
 		$numero = "";
 		$extention = "";
 		$nomFichier = "";
-		$temps = explode('.', eva_tools::slugify($_GET['qqfile']));
+		$temps = explode('.', digirisk_tools::slugify($_GET['qqfile']));
 		foreach($temps as $temp)
 		{
 			$nomFichier = $nomFichier . $extention;

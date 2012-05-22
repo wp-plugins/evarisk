@@ -1,65 +1,32 @@
-<?php get_header(); ?>
-<?php $options = get_option('inove_options'); ?>
+<?php
+/**
+ * The Template for displaying all single posts.
+ *
+ * @package WordPress
+ * @subpackage Twenty_Eleven
+ * @since Twenty Eleven 1.0
+ */
 
-<?php if (have_posts()) : the_post(); update_post_caches($posts); ?>
+get_header(); ?>
 
+		<div id="primary">
+			<div id="content" role="main">
 
-	<div class="post" id="post-<?php the_ID(); ?>">
-		<h1><?php the_title(); ?></h1>
-		<div class="info">
-			<span class="date"><?php the_time(__('F jS, Y', 'inove')) ?></span>
-			<?php edit_post_link(__('Edit', 'inove'), '<span class="editpost">', '</span>'); ?>
-			<?php if ($comments || comments_open()) : ?>
-				<span class="addcomment"><a href="#respond"><?php _e('Leave a comment', 'inove'); ?></a></span>
-				<span class="comments"><a href="#comments"><?php _e('Go to comments', 'inove'); ?></a></span>
-			<?php endif; ?>
-			<div class="fixed"></div>
-		</div>
-		<div class="content">
-			<?php the_content(); ?>
-			<div class="fixed"></div>
-		</div>
-		<div class="under">
-			<?php if ($options['tags']) : ?><span class="tags"><?php _e('Tags: ', 'inove'); ?></span><span><?php the_tags('', ', ', ''); ?></span><?php endif; ?>
-		</div>
-	</div>
+				<?php while ( have_posts() ) : the_post(); ?>
 
-	<!-- related posts START -->
-	<?php
-		// when related posts with title
-		if(function_exists('wp23_related_posts')) {
-			echo '<div id="related_posts">';
-			wp23_related_posts();
-			echo '</div>';
-			echo '<div class="fixed"></div>';
-		}
-		/*
-		// when related posts without title
-		if(function_exists('wp23_related_posts')) {
-			echo '<div class="boxcaption">';
-			echo '<h3>Related Posts</h3>';
-			echo '</div>';
-			echo '<div id="related_posts" class="box">';
-			wp23_related_posts();
-			echo '</div>';
-			echo '<div class="fixed"></div>';
-		}
-		*/
-	?>
-	<!-- related posts END -->
+					<nav id="nav-single">
+						<h3 class="assistive-text"><?php _e( 'Post navigation', 'twentyeleven' ); ?></h3>
+						<span class="nav-previous"><?php previous_post_link( '%link', __( '<span class="meta-nav">&larr;</span> Previous', 'twentyeleven' ) ); ?></span>
+						<span class="nav-next"><?php next_post_link( '%link', __( 'Next <span class="meta-nav">&rarr;</span>', 'twentyeleven' ) ); ?></span>
+					</nav><!-- #nav-single -->
 
-	<?php include('templates/comments.php'); ?>
+					<?php get_template_part( 'content', 'single' ); ?>
 
-	<div id="postnavi">
-		<span class="prev"><?php next_post_link('%link') ?></span>
-		<span class="next"><?php previous_post_link('%link') ?></span>
-		<div class="fixed"></div>
-	</div>
+					<?php comments_template( '', true ); ?>
 
-<?php else : ?>
-	<div class="errorbox">
-		<?php _e('Sorry, no posts matched your criteria.', 'inove'); ?>
-	</div>
-<?php endif; ?>
+				<?php endwhile; // end of the loop. ?>
+
+			</div><!-- #content -->
+		</div><!-- #primary -->
 
 <?php get_footer(); ?>

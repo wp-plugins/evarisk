@@ -107,6 +107,7 @@
 
 	
 	DEFINE('TAILLE_PICTOS_ARBRE', '100%'); // Between 25 and 48 (if px)
+	DEFINE('TAILLE_PICTOS_ARBRE_CONFIG', '30px'); // Between 25 and 48 (if px)
 	DEFINE('UNITE_TAILLE_PICTOS_MAX', 'px');
 
 	$taillePictos = TAILLE_PICTOS_MAX . UNITE_TAILLE_PICTOS_MAX;

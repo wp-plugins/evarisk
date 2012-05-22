@@ -412,13 +412,13 @@ WHERE R.id = %d", $id_element);
 		<div class="clear auto-search-container" >
 			<span class="hierarchy_element_selector_container ui-icon" >&nbsp;</span>
 			<span class="auto-search-ui-icon ui-icon" >&nbsp;</span>
-			<input class="auto-search-input" type="text" id="search_element" value="' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '" />
+			<input class="auto-search-input" type="text" id="search_element" placeholder="' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '" />
 			<img id="complete_tree_popup" title="' . __('Voir l\'arborescence compl&egrave;te', 'evarisk') . '" alt="' . __('Voir l\'arborescence compl&egrave;te', 'evarisk') . '" src="' . DIGI_OPEN_POPUP . '">
 		</div>
 	</div>
 	<div class="clear" id="current_hierarchy_display" >' . $current_content . '</div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery(".hierarchy_element_selector").live("click", function(){
 			jQuery("#receiver_element").val(jQuery(this).val());
 			if("' . $idBouttonEnregistrer . '" != ""){
@@ -427,24 +427,25 @@ WHERE R.id = %d", $id_element);
 		});
 
 		/*	Tree-element Search autocompletion	*/
-		jQuery("#search_element").live("click", function(){
-			jQuery(this).val("");
-		});
-		jQuery("#search_element").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGp_UT.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&element_type=' . TABLE_UNITE_TRAVAIL . '-t-' . TABLE_GROUPEMENT . '-t-' . TABLE_RISQUE . '");
-		jQuery("#search_element").result(function(event, data, formatted){
-			jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '"));
-			jQuery("#receiver_element").val(data[1]);
-			if("' . $idBouttonEnregistrer . '" != ""){
-				check_if_value_changed("' . $idBouttonEnregistrer . '");
+		jQuery("#search_element").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchGp_UT.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&element_type=' . TABLE_UNITE_TRAVAIL . '-t-' . TABLE_GROUPEMENT . '-t-' . TABLE_RISQUE . '",
+			select: function( event, ui ){
+				jQuery("#receiver_element").val(ui.item.value);
+				if("' . $idBouttonEnregistrer . '" != ""){
+					check_if_value_changed("' . $idBouttonEnregistrer . '");
+				}
+				jQuery("#current_hierarchy_display").html(jQuery("#loading_round_pic").html());
+				jQuery("#current_hierarchy_display").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+					"post": "true",
+					"nom": "hierarchy",
+					"action": "load_partial",
+					"selected_element": ui.item.id
+				});
+				jQuery(this).val("");
+				jQuery(this).blur();
 			}
-			jQuery("#current_hierarchy_display").html(jQuery("#loading_round_pic").html());
-			jQuery("#current_hierarchy_display").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post": "true",
-				"nom": "hierarchy",
-				"action": "load_partial",
-				"selected_element": data[1]
-			});
 		});
+
 		jQuery("#complete_tree_popup_container").dialog({
 			autoOpen: false,
 			height: 600,

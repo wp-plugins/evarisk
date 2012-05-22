@@ -206,8 +206,8 @@ class eva_documentUnique
 
 							$scriptVoirRisque = $scriptRisque . '
 							<script type="text/javascript">
-							evarisk(document).ready(function() {
-								evarisk("#' . $idTable . '").dataTable(
+							digirisk(document).ready(function() {
+								digirisk("#' . $idTable . '").dataTable(
 								{
 								"bPaginate": false, 
 								"bLengthChange": false,
@@ -223,7 +223,7 @@ class eva_documentUnique
 									{ "bSortable": false}
 								],
 									"aaSorting": [[2,"desc"]]});
-								evarisk("#' . $idTable . ' tfoot").remove();
+								digirisk("#' . $idTable . ' tfoot").remove();
 							});
 							</script>';
 
@@ -282,8 +282,8 @@ class eva_documentUnique
 
 					$scriptVoirRisque = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable(
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . '").dataTable(
 		{
 			"bPaginate": false, 
 			"bLengthChange": false,
@@ -292,7 +292,7 @@ class eva_documentUnique
 			"bInfo": false,
 			"aaSorting": [[2,"desc"]]
 		});
-		evarisk("#' . $idTable . ' tfoot").remove();
+		digirisk("#' . $idTable . ' tfoot").remove();
 	});
 </script>';
 
@@ -432,7 +432,7 @@ class eva_documentUnique
 			$formulaireDocumentUniqueParams['#TELFAX#'] = (isset($lastDocumentUnique->telephoneFax) && ($lastDocumentUnique->telephoneFax != '')) ? $lastDocumentUnique->telephoneFax : '';
 			$formulaireDocumentUniqueParams['#EMETTEUR#'] = (isset($lastDocumentUnique->emetteurDUER) && ($lastDocumentUnique->emetteurDUER != '')) ? $lastDocumentUnique->emetteurDUER : '';
 			$formulaireDocumentUniqueParams['#DESTINATAIRE#'] = (isset($lastDocumentUnique->destinataireDUER) && ($lastDocumentUnique->destinataireDUER != '')) ? $lastDocumentUnique->destinataireDUER : '';
-			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_documentUnique_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupementInformations->nom));
+			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_documentUnique_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $groupementInformations->nom));
 			$formulaireDocumentUniqueParams['#METHODOLOGIE#'] = (isset($lastDocumentUnique->methodologieDUER) && ($lastDocumentUnique->methodologieDUER != '')) ? $lastDocumentUnique->methodologieDUER : ($methodologieParDefaut);
 
 			$gpmt = EvaGroupement::getGroupement($idElement);
@@ -473,66 +473,66 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			$output = 
 			EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationDUER(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#dateCreation").datepicker();
-		evarisk("#dateCreation").datepicker("option", {dateFormat: "yy-mm-dd"});
+	digirisk(document).ready(function(){
+		digirisk("#dateCreation").datepicker();
+		digirisk("#dateCreation").datepicker("option", {dateFormat: "yy-mm-dd"});
 
-		evarisk("#dateDebutAudit").datepicker();
-		evarisk("#dateDebutAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
+		digirisk("#dateDebutAudit").datepicker();
+		digirisk("#dateDebutAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
 
-		evarisk("#dateFinAudit").datepicker();
-		evarisk("#dateFinAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
+		digirisk("#dateFinAudit").datepicker();
+		digirisk("#dateFinAudit").datepicker("option", {dateFormat: "yy-mm-dd"});
 
-		evarisk("#genererDUER").click(function(){
-			evarisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+		digirisk("#genererDUER").click(function(){
+			digirisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true", 
 				"table":"' . TABLE_DUER . '", 
 				"act":"saveDocumentUnique", 
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '", 
-				"dateCreation":evarisk("#dateCreation").val(), 
-				"dateDebutAudit":evarisk("#dateDebutAudit").val(), 
-				"dateFinAudit":evarisk("#dateFinAudit").val(), 
-				"nomEntreprise":evarisk("#nomEntreprise").val(),
-				"telephoneFixe":evarisk("#telephoneFixe").val(),
-				"telephonePortable":evarisk("#telephonePortable").val(),
-				"numeroFax":evarisk("#numeroFax").val(),
-				"emetteur":evarisk("#emetteur").val(),
-				"destinataire":evarisk("#destinataire").val(),
-				"nomDuDocument":evarisk("#nomDuDocument").val(),
-				"methodologie":evarisk("#methodologie").val(),
-				"id_model":evarisk("#modelToUse' . $tableElement . '").val(),
-				"sources":evarisk("#sources").val(),
-				"localisation":evarisk("#localisation").val(),
-				"alerte":evarisk("#remarque_important").val()
+				"dateCreation":digirisk("#dateCreation").val(), 
+				"dateDebutAudit":digirisk("#dateDebutAudit").val(), 
+				"dateFinAudit":digirisk("#dateFinAudit").val(), 
+				"nomEntreprise":digirisk("#nomEntreprise").val(),
+				"telephoneFixe":digirisk("#telephoneFixe").val(),
+				"telephonePortable":digirisk("#telephonePortable").val(),
+				"numeroFax":digirisk("#numeroFax").val(),
+				"emetteur":digirisk("#emetteur").val(),
+				"destinataire":digirisk("#destinataire").val(),
+				"nomDuDocument":digirisk("#nomDuDocument").val(),
+				"methodologie":digirisk("#methodologie").val(),
+				"id_model":digirisk("#modelToUse' . $tableElement . '").val(),
+				"sources":digirisk("#sources").val(),
+				"localisation":digirisk("#localisation").val(),
+				"alerte":digirisk("#remarque_important").val()
 			});
-			evarisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
+			digirisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
 		});';
 
 					if(($lastDocumentUnique->id_model != '') && ($lastDocumentUnique->id_model != '0') && ($lastDocumentUnique->id_model != eva_gestionDoc::getDefaultDocument('document_unique')))
 					{
 						$output .= '
 		setTimeout(function(){
-			evarisk("#modelDefaut").click();
+			digirisk("#modelDefaut").click();
 		},200);';
 					}
 
 					$output .= '
-		evarisk("#ui-datepicker-div").hide();
-		evarisk("#modelDefaut").click(function(){
+		digirisk("#ui-datepicker-div").hide();
+		digirisk("#modelDefaut").click(function(){
 			setTimeout(function(){
-				if(!evarisk("#modelDefaut").is(":checked"))
+				if(!digirisk("#modelDefaut").is(":checked"))
 				{
-					evarisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-					evarisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
-					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
-					evarisk("#modelListForGeneration").show();
+					digirisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					digirisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
+					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
+					digirisk("#modelListForGeneration").show();
 				}
 				else
 				{
-					evarisk("#documentUniqueResultContainer").html("");
-					evarisk("#modelListForGeneration").html("");
-					evarisk("#modelListForGeneration").hide();
+					digirisk("#documentUniqueResultContainer").html("");
+					digirisk("#modelListForGeneration").html("");
+					digirisk("#modelListForGeneration").hide();
 				}
 			},600);
 		});
@@ -542,22 +542,22 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		elseif($tableElement == TABLE_UNITE_TRAVAIL)
 		{
 			$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
-			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_ficheDePoste_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
+			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
 			
 			$output = EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationFicheDePoste(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#genererFP").click(function(){
-			evarisk("#divImpressionFicheDePoste").html(evarisk("#loadingImg").html());
-			evarisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+	digirisk(document).ready(function(){
+		digirisk("#genererFP").click(function(){
+			digirisk("#divImpressionFicheDePoste").html(digirisk("#loadingImg").html());
+			digirisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_DUER . '",
 				"act":"saveFichePoste",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
-				"dateCreation":evarisk("#dateCreationFicheDePoste").val(),
-				"nomDuDocument":evarisk("#nomFicheDePoste").val()
+				"dateCreation":digirisk("#dateCreationFicheDePoste").val(),
+				"nomDuDocument":digirisk("#nomFicheDePoste").val()
 			});
 		});
 	});
@@ -581,8 +581,8 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		global $wpdb;
 		$status = array();
 
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
 		{	/*	R&eacute;vision du document unique, en fonction de l'element et de la date de g&eacute;n&eacute;ration	*/
 			$revision = '';
@@ -617,7 +617,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			{
 				$dateElement = explode(' ', $informationDocumentUnique['dateCreation']);
 
-				$documentName = str_replace('-', '', $dateElement[0]) . '_documentUnique_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $informationDocumentUnique['nomEntreprise']));
+				$documentName = str_replace('-', '', $dateElement[0]) . '_documentUnique_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $informationDocumentUnique['nomEntreprise']));
 
 				$informationDocumentUnique['nomDuDocument'] = $documentName;
 			}
@@ -706,7 +706,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				{
 					$dateElement = explode(' ', $documentUnique->dateGenerationDUER);
 
-					$documentName = str_replace('-', '', $dateElement[0]) . '_documentUnique_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $documentUnique->nomSociete)) . '_V' . $documentUnique->revisionDUER;
+					$documentName = str_replace('-', '', $dateElement[0]) . '_documentUnique_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $documentUnique->nomSociete)) . '_V' . $documentUnique->revisionDUER;
 
 					$documentUnique->nomDUER = $documentName;
 				}
@@ -774,7 +774,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 		/*	In case that the user click on the duer deletion button	*/
 		jQuery(".deleteDUER").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document unique?', 'evarisk') . '"))){
+			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document unique?', 'evarisk') . '"))){
 				jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post":"true", 
 					"table":"' . TABLE_DUER . '",
@@ -785,7 +785,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				});
 			}
 		});
-	})(evarisk)
+	})(digirisk)
 </script>';
 			}
 		}
@@ -815,13 +815,13 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 </div>
 <div class="clear" id="bilanBoxContainer" >' . eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '</div>
 <script type="text/javascript" >
-		evarisk("#generateDUER").click(function(){
-			evarisk("#summaryDocumentGeneratorSlector div").each(function(){
-				evarisk(this).removeClass("selected");
+		digirisk("#generateDUER").click(function(){
+			digirisk("#summaryDocumentGeneratorSlector div").each(function(){
+				digirisk(this).removeClass("selected");
 			});
-			evarisk(this).addClass("selected");
-			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
-			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			digirisk(this).addClass("selected");
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true", 
 				"table":"' . TABLE_DUER . '",
 				"act":"documentUniqueGenerationForm",
@@ -829,13 +829,13 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				"idElement":"' . $idElement . '"
 			});
 		});
-		evarisk("#generateFGP").click(function(){
-			evarisk("#summaryDocumentGeneratorSlector div").each(function(){
-				evarisk(this).removeClass("selected");
+		digirisk("#generateFGP").click(function(){
+			digirisk("#summaryDocumentGeneratorSlector div").each(function(){
+				digirisk(this).removeClass("selected");
 			});
-			evarisk(this).addClass("selected");
-			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
-			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			digirisk(this).addClass("selected");
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true", 
 				"table":"' . TABLE_DUER . '",
 				"act":"groupementSheetGeneration",
@@ -843,13 +843,13 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				"idElement":"' . $idElement . '"
 			});
 		});
-		evarisk("#generateFP").click(function(){
-			evarisk("#summaryDocumentGeneratorSlector div").each(function(){
-				evarisk(this).removeClass("selected");
+		digirisk("#generateFP").click(function(){
+			digirisk("#summaryDocumentGeneratorSlector div").each(function(){
+				digirisk(this).removeClass("selected");
 			});
-			evarisk(this).addClass("selected");
-			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
-			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			digirisk(this).addClass("selected");
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true", 
 				"table":"' . TABLE_DUER . '",
 				"act":"workSheetUnitCollectionGenerationForm",

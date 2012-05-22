@@ -2,7 +2,6 @@
 
 function getFormulaireReponse($idElement, $tableElement, $summary = false)
 {
-	require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaAnswerToQuestion.class.php' );
 	
@@ -17,12 +16,12 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 	$numeroRubrique = "Rubrique 2220";
 	$rubrique = evaGroupeQuestions::getGroupeQuestionsByName($numeroRubrique);
 
-	$actualPage = isset($_REQUEST['actualPage']) ? eva_tools::IsValid_Variable($_REQUEST['actualPage']) : 1 ;
+	$actualPage = isset($_REQUEST['actualPage']) ? digirisk_tools::IsValid_Variable($_REQUEST['actualPage']) : 1 ;
 	if($actualPage == 'null')
 	{
 		$actualPage = null;
 	}
-	$actualPageElementNb = isset($_REQUEST['actualPageElementNb']) ? eva_tools::IsValid_Variable($_REQUEST['actualPageElementNb']) : 1 ;
+	$actualPageElementNb = isset($_REQUEST['actualPageElementNb']) ? digirisk_tools::IsValid_Variable($_REQUEST['actualPageElementNb']) : 1 ;
 	if($actualPageElementNb == 'null')
 	{
 		$actualPageElementNb = null;
@@ -33,44 +32,44 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			var totalSubmit = false;
 			function page(nb)
 			{
-				evarisk(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
-				evarisk(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':nb, \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
+				digirisk(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
+				digirisk(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':nb, \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
 			}
 			function summary()
 			{
-				evarisk(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
-				evarisk(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':\'null\', \'actualPageElementNb\':\'null\', \'act\' : \'summary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
-				evarisk(\'#plotLocation\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleSummary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
-				evarisk(\'#plotLocation\').show();
+				digirisk(\'#veilleMainContent\').html(\'<center><img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loader.gif" /></center>\');
+				digirisk(\'#interractionVeille\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleClicPagination\', \'actualPage\':\'null\', \'actualPageElementNb\':\'null\', \'act\' : \'summary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
+				digirisk(\'#plotLocation\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'veilleSummary\', \'tableElement\':\'' . $tableElement . '\',\'idElement\':\'' . $idElement . '\'});
+				digirisk(\'#plotLocation\').show();
 			}
 			
-			evarisk(document).ready(function(){
-				evarisk(\'#veille-PDF-creation\').click(function(){
-					evarisk(\'#plotLocation\').hide();
-					evarisk(\'#veilleMainContent\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'chargerInfosGeneralesVeille\', \'numeroRubrique\':\'' . $numeroRubrique . '\', \'tableElement\':\'' . $tableElement . '\', \'idElement\':\'' . $idElement . '\'});
-				});
-				evarisk(\'#veille-summary\').click(function(){
+			digirisk(document).ready(function(){
+				// digirisk(\'#veille-PDF-creation\').click(function(){
+					// digirisk(\'#plotLocation\').hide();
+					// digirisk(\'#veilleMainContent\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\', \'nom\':\'chargerInfosGeneralesVeille\', \'numeroRubrique\':\'' . $numeroRubrique . '\', \'tableElement\':\'' . $tableElement . '\', \'idElement\':\'' . $idElement . '\'});
+				// });
+				digirisk(\'#veille-summary\').click(function(){
 					summary();
 				});
-				evarisk(\'#veille-liste-groupe-question\').click(function(){
-					evarisk(\'#plotLocation\').hide();
+				digirisk(\'#veille-liste-groupe-question\').click(function(){
+					digirisk(\'#plotLocation\').hide();
 				});
-				evarisk(\'#submit-veille\').click(function(){
+				digirisk(\'#submit-veille\').click(function(){
 					totalSubmit = true;
-					evarisk(\'.soumissionQuetionVeille\').each(function(){
-						evarisk(this).click();
+					digirisk(\'.soumissionQuetionVeille\').each(function(){
+						digirisk(this).click();
 					});
-					evarisk(\'#messageInfoVeille\').html(\'<span id="message" class="updated fade below-h2" style="cursor:pointer;" ><strong>&nbsp;Enregistrement en cours...</strong></span>\');
-					evarisk(this).ajaxStop(function(){
+					digirisk(\'#messageInfoVeille\').html(\'<span id="message" class="updated fade below-h2" style="cursor:pointer;" ><strong>&nbsp;Enregistrement en cours...</strong></span>\');
+					digirisk(this).ajaxStop(function(){
 						setTimeout
 						( 
 							function(){
 								totalSubmit = false;
-									setTimeout(function(){evarisk(\'#messageInfoVeille\').html("");},4999);
+									setTimeout(function(){digirisk(\'#messageInfoVeille\').html("");},4999);
 									setTimeout
 									( 
 										function(){
-											page(parseInt(evarisk(\'#actualPage\').val()) + 1);
+											page(parseInt(digirisk(\'#actualPage\').val()) + 1);
 										}
 										,5000
 									);
@@ -250,10 +249,10 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			}
 			else
 			{
-				$idReponseALaQuestion =  eva_tools::IsValid_Variable($_POST['response'][$id_question]['reponse']);
-				$observationReponseALaQuestion =  eva_tools::IsValid_Variable($_POST['response'][$id_question]['observation']);
-				$valueReponseALaQuestion = eva_tools::IsValid_Variable( $_POST['response'][$id_question]['value'.$idReponseALaQuestion]);
-				$limiteValiditeDeLaQuestion = eva_tools::IsValid_Variable( $_POST['response'][$id_question]['limiteValidite']);
+				$idReponseALaQuestion =  digirisk_tools::IsValid_Variable($_POST['response'][$id_question]['reponse']);
+				$observationReponseALaQuestion =  digirisk_tools::IsValid_Variable($_POST['response'][$id_question]['observation']);
+				$valueReponseALaQuestion = digirisk_tools::IsValid_Variable( $_POST['response'][$id_question]['value'.$idReponseALaQuestion]);
+				$limiteValiditeDeLaQuestion = digirisk_tools::IsValid_Variable( $_POST['response'][$id_question]['limiteValidite']);
 			}
 			
 			foreach($resultat as $response_id => $response)
@@ -263,14 +262,14 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 				if( $response->min != null AND $response->max != null )
 				{
 					$script = '<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk(\'#id' . $field_name . 'Value' . $response->id . '\').keypress(function(event) {
+					digirisk(document).ready(function(){
+						digirisk(\'#id' . $field_name . 'Value' . $response->id . '\').keypress(function(event) {
 							if (event.which && (event.which < 48 || event.which >57) && event.which != 8) {
 								event.preventDefault();
 							}
 						});
 					});</script>';
-					$moreresponse = $script . '<input onclick="javascript:evarisk(\'#' . $field_id . '\').click()" type="text" name="response[' . $field_name . '][value' . $response->id . ']" value="' . $valueReponseALaQuestion . '" class="veille-response-input" id="id' . $field_name . 'Value' . $response->id . '"/>';
+					$moreresponse = $script . '<input onclick="javascript:digirisk(\'#' . $field_id . '\').click()" type="text" name="response[' . $field_name . '][value' . $response->id . ']" value="' . $valueReponseALaQuestion . '" class="veille-response-input" id="id' . $field_name . 'Value' . $response->id . '"/>';
 				}
 				$checked = '';
 				if( $idReponseALaQuestion == $response->id )
@@ -283,33 +282,33 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
 			$locale = ($locale == 'en') ? '' : $locale;
 			$script = '<script type="text/javascript">
-				evarisk(document).ready(function(){
-					evarisk(\'#limiteValidite' . $field_name . '\').datepicker($.datepicker.regional["' . $locale . '"]);
-					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "dateFormat", "yy-mm-dd");
-					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeMonth", true);
-					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeYear", true);
-					evarisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "navigationAsDateFormat", true);
-					evarisk(\'#observation' . $field_name . '\').keyup(function(event) {
-						var chaine = evarisk(\'#observation' . $field_name . '\').val();
+				digirisk(document).ready(function(){
+					digirisk(\'#limiteValidite' . $field_name . '\').datepicker($.datepicker.regional["' . $locale . '"]);
+					digirisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "dateFormat", "yy-mm-dd");
+					digirisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeMonth", true);
+					digirisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "changeYear", true);
+					digirisk(\'#limiteValidite' . $field_name . '\').datepicker("option", "navigationAsDateFormat", true);
+					digirisk(\'#observation' . $field_name . '\').keyup(function(event) {
+						var chaine = digirisk(\'#observation' . $field_name . '\').val();
 						if (chaine.length > ' . EVA_MAX_LONGUEUR_OBSERVATIONS . ') 
 						{
-							evarisk(\'#observation' . $field_name . '\').val(chaine.substring(0, ' . EVA_MAX_LONGUEUR_OBSERVATIONS . '));
-							evarisk(\'#observationTropLongue' . $field_name . '\').html(\'Observation trop longue\');
+							digirisk(\'#observation' . $field_name . '\').val(chaine.substring(0, ' . EVA_MAX_LONGUEUR_OBSERVATIONS . '));
+							digirisk(\'#observationTropLongue' . $field_name . '\').html(\'Observation trop longue\');
 						}
 						else
 						{
-							evarisk(\'#observationTropLongue' . $field_name . '\').html(\'\');
+							digirisk(\'#observationTropLongue' . $field_name . '\').html(\'\');
 						}
 					});
-					evarisk(\'#q' . $field_name . '-submit\').click(function() { 
+					digirisk(\'#q' . $field_name . '-submit\').click(function() { 
 						var reponse = -1;
 						var valeur ="";
 						for(var i=1; i <= parseInt(' . $response->id . '); i++)
 						{
-							if(evarisk(\'#r' . $field_name . '_\'+i).is(\':checked\'))
+							if(digirisk(\'#r' . $field_name . '_\'+i).is(\':checked\'))
 							{
 								reponse = i;
-								valeur = evarisk(\'#id' . $field_name . 'Value\'+i).val();
+								valeur = digirisk(\'#id' . $field_name . 'Value\'+i).val();
 								if(valeur == undefined)
 								{
 									valeur = "";
@@ -327,14 +326,14 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 								}
 							}
 						}
-						var observation =	evarisk(\'#observation' . $field_name . '\').val();
-						var limiteValidite =	evarisk(\'#limiteValidite' . $field_name . '\').val();
+						var observation =	digirisk(\'#observation' . $field_name . '\').val();
+						var limiteValidite =	digirisk(\'#limiteValidite' . $field_name . '\').val();
 						if(reponse == -1)
 						{
 							if(!totalSubmit)
 							{
 								var message = ("' . __('Vous n\'avez pas s&eacute;l&eacute;ctionner de r&eacute;ponse','evarisk') . '");
-								alert(convertAccentToJS(message));
+								alert(digi_html_accent_for_js(message));
 							}
 						}
 						else if(reponse == -2)
@@ -342,16 +341,16 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 							if(!totalSubmit)
 							{
 								var message = ("' . __('Vous n\'avez pas donner de valeur &agrave; la r&eacute;ponse','evarisk') . '");
-								alert(convertAccentToJS(message));
+								alert(digi_html_accent_for_js(message));
 							}
 							else
 							{
 								var message = ("' . __('Vous n\'avez pas donner de valeur &agrave; la r&eacute;ponse &agrave; la question','evarisk') . ' ' . __('Q (question)', 'evarisk') . $field_name . '");
-								alert(convertAccentToJS(message));
+								alert(digi_html_accent_for_js(message));
 								statusGlobal = "error";
 							}
-							evarisk(\'#observationTropLongue' . $field_name . '\').html(\'<div id="message" class="updated fade below-h2"><p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\\\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p></div>\');
-							setTimeout(function(){evarisk(\'#observationTropLongue' . $field_name . '\').html("")},5000);
+							digirisk(\'#observationTropLongue' . $field_name . '\').html(\'<div id="message" class="updated fade below-h2"><p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\\\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p></div>\');
+							setTimeout(function(){digirisk(\'#observationTropLongue' . $field_name . '\').html("")},5000);
 						}
 						else
 						{
@@ -363,7 +362,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 							{
 								soumission = "totale";
 							}
-							evarisk(\'#observationTropLongue' . $field_name . '\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\',\'nom\':\'veilleClicValidation\',\'idQuestion\':idQuestion,\'tableElement\':tableElement,\'idElement\':idElement,\'reponse\':reponse,\'valeur\':valeur,\'observation\':observation,\'soumission\':soumission,\'limiteValidite\':limiteValidite});
+							digirisk(\'#observationTropLongue' . $field_name . '\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {\'post\':\'true\',\'nom\':\'veilleClicValidation\',\'idQuestion\':idQuestion,\'tableElement\':tableElement,\'idElement\':idElement,\'reponse\':reponse,\'valeur\':valeur,\'observation\':observation,\'soumission\':soumission,\'limiteValidite\':limiteValidite});
 						}
 						return false;
 					});
@@ -414,7 +413,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			<ul class="veille-right-menu" >
 				<li class="wp-first-item menu-top menu-top-first menu-top-last" id="veille-liste-groupe-question">' . output_title($rubrique->id,0,$actualPage) . '</li>
 				<li class="wp-first-item menu-top menu-top-first menu-top-last" id="veille-summary" style="cursor:pointer;" >R&eacute;sulat</li>
-				<li class="wp-first-item menu-top menu-top-first menu-top-last" id="veille-PDF-creation" style="cursor:pointer;" >G&eacute;n&eacute;rer le PDF</li>
+				<!-- <li class="wp-first-item menu-top menu-top-first menu-top-last" id="veille-PDF-creation" style="cursor:pointer;" >G&eacute;n&eacute;rer le PDF</li> -->
 			</ul>
 		</div>';
 	return $formVeilleReponse;

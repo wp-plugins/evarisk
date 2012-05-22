@@ -15,7 +15,7 @@
 		$markers = $arguments['markers'];
 		$idGoogleMapsDiv = 'map' . $arguments['tableElement'] . $arguments['idElement'];
 		$script = '<script type="text/javascript">
-				evarisk(document).ready(function() {
+				digirisk(document).ready(function() {
 					var idGoogleMapsDiv = "' . $idGoogleMapsDiv . '";';
 		if($markers[0] != null)
 		{
@@ -40,7 +40,7 @@
 				var keys = "";';
 		}
 		$script = $script . '
-					evarisk("#' . $idGoogleMapsDivWrap . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+					digirisk("#' . $idGoogleMapsDivWrap . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post": "true",  
 						"nomMetaBox": "Geolocalisation",
 						"idGoogleMapsDiv": idGoogleMapsDiv,

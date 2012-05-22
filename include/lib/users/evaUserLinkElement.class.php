@@ -73,43 +73,43 @@ class evaUserLinkElement
 		$classes = array('addUserButtonDTable','userIdentifierColumn','','','');
 		$script = 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable({
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
 			"bPaginate": false,
 			"bFilter": false,
 			"aaSorting": [[4,"desc"]]
 		});
-		evarisk("#' . $idTable . '").children("tfoot").remove();
-		evarisk("#' . $idTable . '").removeClass("dataTables_wrapper");
-		evarisk(".buttonActionUserLinkList").click(function(){
-			if(evarisk(this).hasClass("addUserToLinkList")){
-				var currentId = evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
+		digirisk("#' . $idTable . '").children("tfoot").remove();
+		digirisk("#' . $idTable . '").removeClass("dataTables_wrapper");
+		digirisk(".buttonActionUserLinkList").click(function(){
+			if(digirisk(this).hasClass("addUserToLinkList")){
+				var currentId = digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
 				cleanUserIdFiedList(currentId, "' . $tableElement . '");
 
-				var lastname = evarisk(this).parent("td").next().next().html();
-				var firstname = evarisk(this).parent("td").next().next().next().html();
+				var lastname = digirisk(this).parent("td").next().next().html();
+				var firstname = digirisk(this).parent("td").next().next().next().html();
 
 				addUserIdFieldList(' . ELEMENT_IDENTIFIER_U . 'currentId + " - " + lastname + " " + firstname, currentId, "' . $tableElement . '");
 			}
-			else if(evarisk(this).hasClass("deleteUserToLinkList")){
-				deleteUserIdFiedList(evarisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), "' . $tableElement . '");
+			else if(digirisk(this).hasClass("deleteUserToLinkList")){
+				deleteUserIdFiedList(digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), "' . $tableElement . '");
 			}
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
-		evarisk("#completeUserList' . $tableElement . ' .odd, #completeUserList' . $tableElement . ' .even").click(function(){
-			if(evarisk(this).children("td:first").children("span").hasClass("userIsNotLinked")){
-				var currentId = evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
+		digirisk("#completeUserList' . $tableElement . ' .odd, #completeUserList' . $tableElement . ' .even").click(function(){
+			if(digirisk(this).children("td:first").children("span").hasClass("userIsNotLinked")){
+				var currentId = digirisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
 				cleanUserIdFiedList(currentId, "' . $tableElement . '");
 
-				var lastname = evarisk(this).children("td:nth-child(3)").html();
-				var firstname = evarisk(this).children("td:nth-child(4)").html();
+				var lastname = digirisk(this).children("td:nth-child(3)").html();
+				var firstname = digirisk(this).children("td:nth-child(4)").html();
 
 				addUserIdFieldList("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname, currentId, "' . $tableElement . '");
 			}
 			else{
-				deleteUserIdFiedList(evarisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", ""), "' . $tableElement . '");
+				deleteUserIdFiedList(digirisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", ""), "' . $tableElement . '");
 			}
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
@@ -129,8 +129,7 @@ class evaUserLinkElement
 	*
 	*	@return mixed $utilisateursMetaBox The entire html code to output
 	*/
-	function afficheListeUtilisateur($tableElement, $idElement, $showButton = true)
-	{
+	function afficheListeUtilisateur($tableElement, $idElement, $showButton = true){
 		$utilisateursMetaBox = '';
 		$alreadyLinkedUserId = $alreadyLinkedUser = '';
 		$idBoutonEnregistrer = 'save_group' . $tableElement;
@@ -138,18 +137,15 @@ class evaUserLinkElement
 		//on récupère les utilisateurs déjà affectés à l'élément en cours.
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0))
-		{
-			foreach($utilisateursLies as $utilisateur)
-			{
+		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
+			foreach($utilisateursLies as $utilisateur){
 				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
 				$alreadyLinkedUserId .= $utilisateur->id_user . ', ';
 				$currentUser = evaUser::getUserInformation($utilisateur->id_user);
 				$alreadyLinkedUser .= '<div class="selecteduserOP" id="affectedUser' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_U . $utilisateur->id_user . '&nbsp;-&nbsp;' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . '<div class="ui-icon deleteUserFromList" >&nbsp;</div></div>';
 			}
 		}
-		else
-		{
+		else{
 			$alreadyLinkedUser = '<span id="noUserSelected' . $tableElement . '" style="margin:5px 10px;color:#646464;" >' . __('Aucun utilisateur affect&eacute;', 'evarisk') . '</span>';
 		}
 
@@ -162,8 +158,7 @@ class evaUserLinkElement
 </div>
 
 <div class="alignright" style="width:55%;" >';
-	if(current_user_can('add_users'))
-	{
+	if(current_user_can('add_users')){
 	$utilisateursMetaBox .= '
 	<span class="alignright" ><a href="' . get_option('siteurl') . '/wp-admin/user-new.php">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
 	}
@@ -171,16 +166,16 @@ class evaUserLinkElement
 	<div class="clear addLinkUserElement" >
 		<div class="clear" >
 			<span class="searchUserInput ui-icon" >&nbsp;</span>
-			<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="searchUser' . $tableElement . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />
+			<input class="searchUserToAffect" type="text" name="affectedUser' . $tableElement . '" id="searchUser' . $tableElement . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" />
 		</div>
 		<div id="completeUserList' . $tableElement . '" class="completeUserList clear" >' . evaUserLinkElement::afficheListeUtilisateurTable($tableElement, $idElement) . '</div>
 	</div>
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
-<div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(evarisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span></div></div>
+<div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span></div></div>
 
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		/*	Mass action : check / uncheck all	*/
 		jQuery("#massAction' . $tableElement . ' .checkAll").unbind("click");
 		jQuery("#massAction' . $tableElement . ' .checkAll").click(function(){
@@ -206,29 +201,26 @@ class evaUserLinkElement
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
 
-		/*	User Search autocompletion	*/
-		jQuery("#searchUser' . $tableElement . '").click(function(){
-			jQuery(this).val("");
-		});
-		jQuery("#searchUser' . $tableElement . '").blur(function(){
-			jQuery(this).val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
-		});
-		jQuery("#searchUser' . $tableElement . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php");
-		jQuery("#searchUser' . $tableElement . '").result(function(event, data, formatted){
-			cleanUserIdFiedList(data[1], "' . $tableElement . '");
-			addUserIdFieldList(data[0], data[1], "' . $tableElement . '");
 
-			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+		/*	Autocomplete search	*/
+		jQuery("#searchUser' . $tableElement . '").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php",
+			select: function( event, ui ){
+				cleanUserIdFiedList(ui.item.value, "' . $tableElement . '");
+				addUserIdFieldList(ui.item.label, ui.item.value, "' . $tableElement . '");
 
-			jQuery("#searchUser' . $tableElement . '").val("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '");
+				checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+
+				jQuery(this).val("");
+				jQuery(this).blur();
+			}
 		});
 	});
 </script>';
 
 		if($showButton){
 			$alternate_button = '';
-			switch($tableElement)
-			{
+			switch($tableElement){
 				case TABLE_GROUPEMENT:
 				case TABLE_GROUPEMENT . '_evaluation':
 					if(!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement)){
@@ -283,15 +275,15 @@ class evaUserLinkElement
 
 		if($showButton){//Bouton Enregistrer
 			$scriptEnregistrement = '<script type="text/javascript">
-				evarisk(document).ready(function() {
+				digirisk(document).ready(function() {
 					checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-					evarisk("#' . $idBoutonEnregistrer . '").click(function(){
-						evarisk("#saveButtonLoading' . $tableElement . '").show();
-						evarisk("#saveButtonContainer' . $tableElement . '").hide();
-						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+					digirisk("#' . $idBoutonEnregistrer . '").click(function(){
+						digirisk("#saveButtonLoading' . $tableElement . '").show();
+						digirisk("#saveButtonContainer' . $tableElement . '").hide();
+						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_LIAISON_USER_ELEMENT . '",
 							"act": "save",
-							"utilisateurs": evarisk("#affectedUserIdList' . $tableElement . '").val(),
+							"utilisateurs": digirisk("#affectedUserIdList' . $tableElement . '").val(),
 							"tableElement": "' . $tableElement . '",
 							"idElement": "' . $idElement . '"
 						});
@@ -474,7 +466,7 @@ $current_user->ID, $utilisateurs->id);
 		if($script != ''){
 			echo 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		' . $script . '
 	});
 </script>';

@@ -27,8 +27,8 @@
 		if(((int)$idElement) == 0)
 		{
 			$script = '<script type="text/javascript">
-					evarisk(document).ready(function() {
-						evarisk("#postBoxHeaderGroupement").hide();
+					digirisk(document).ready(function() {
+						digirisk("#postBoxHeaderGroupement").hide();
 					});
 				</script>';
 			echo $script;
@@ -91,7 +91,7 @@
 			$groupsNames = EvaGroupement::getGroupementsName();
 			$groupsNames[] = "";
 			$valeurActuelleIn = 'false';
-			$valeurActuelleIn = 'evarisk("#' . $idTitreGp . '").val() in {';
+			$valeurActuelleIn = 'digirisk("#' . $idTitreGp . '").val() in {';
 			foreach($groupsNames as $groupName)
 			{
 				$valeurActuelleIn .= "'" . addslashes($groupName) . "':'', ";
@@ -100,17 +100,17 @@
 			$valeurActuelleIn = $valeurActuelleIn . "}";
 			$idButton = 'validChangeTitre';
 			$script = '<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#' . $idButton . '").hide();
-							evarisk("#' . $idButton . '").click(function(){
-								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+						digirisk(document).ready(function(){
+							digirisk("#' . $idButton . '").hide();
+							digirisk("#' . $idButton . '").click(function(){
+								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 								{
 									"post": "true", 
 									"table": "' . TABLE_GROUPEMENT . '",
 									"act": "updateByField",
 									"id": ' . $idElement . ',
 									"whatToUpdate": "nom",
-									"whatToSet": evarisk("#' . $idTitreGp . '").val()
+									"whatToSet": digirisk("#' . $idTitreGp . '").val()
 								});
 							});
 						})
@@ -120,29 +120,29 @@
 				$renduPage .= EvaDisplayInput::afficherInput('button', 'validChangeTitre', __('Enregistrer'), null, null, 'validChangeTitre', false, false, 1,'','','',$script,'',true);
 			}
 			$script = '<script type="text/javascript">
-						evarisk(document).ready(function(){
-							evarisk("#' . $idTitreGp . '").focus(function(){
-								evarisk(this).select();
-								evarisk("#' . $idTitreGp . '").addClass("titleInfoSelected");
+						digirisk(document).ready(function(){
+							digirisk("#' . $idTitreGp . '").focus(function(){
+								digirisk(this).select();
+								digirisk("#' . $idTitreGp . '").addClass("titleInfoSelected");
 							});
-							evarisk("#' . $idTitreGp . '").blur(function(){
-								if(!evarisk("#' . $idButton . '").is(":visible")){
-									evarisk("#' . $idTitreGp . '").removeClass("titleInfoSelected");
+							digirisk("#' . $idTitreGp . '").blur(function(){
+								if(!digirisk("#' . $idButton . '").is(":visible")){
+									digirisk("#' . $idTitreGp . '").removeClass("titleInfoSelected");
 								}
 							});
-							evarisk("#' . $idTitreGp . '").keyup(function(){
-								evarisk("#nom_groupement").val(evarisk("#' . $idTitreGp . '").val());
-								if(evarisk("#nom_groupement").val() != ""){
-									evarisk("#nom_groupement").removeClass("form-input-tip");
+							digirisk("#' . $idTitreGp . '").keyup(function(){
+								digirisk("#nom_groupement").val(digirisk("#' . $idTitreGp . '").val());
+								if(digirisk("#nom_groupement").val() != ""){
+									digirisk("#nom_groupement").removeClass("form-input-tip");
 								}
 								else{
-									evarisk("#nom_groupement").addClass("form-input-tip");							
+									digirisk("#nom_groupement").addClass("form-input-tip");							
 								}
 								if(' . $valeurActuelleIn . '){
-									evarisk("#' . $idButton . '").hide();
+									digirisk("#' . $idButton . '").hide();
 								}
 								else{
-									evarisk("#' . $idButton . '").show();
+									digirisk("#' . $idButton . '").show();
 								}
 							});
 						})

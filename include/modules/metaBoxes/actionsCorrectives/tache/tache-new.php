@@ -30,6 +30,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$firstInsert = $tache->getFirstInsert();
 		$creatorID = $tache->getidCreateur();
 		$efficacite = $tache->getEfficacite();
+		$readable_external = $tache->get_external_readable();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 		$idPere = $tacheMere->id;
@@ -50,6 +51,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$efficacite = '';
 		$idPere = $arguments['idPere'];
 		$grise = true;
+		$readable_external = 'no';
     $saveOrUpdate = 'save';
 	}
   
@@ -111,26 +113,29 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		else{
 			$tache_new .= '&nbsp;';
 		}
-		$tache_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '&nbsp;/&nbsp;</span><span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" value="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+		$tache_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '&nbsp;/&nbsp;</span><span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
-			jQuery(this).val("");
 			jQuery(".completeUserListActionResponsible").show();
 		});
-		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur(function(){
-			jQuery(this).val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
+		/*	Autocomplete search	*/
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '",
+			select: function( event, ui ){
+				jQuery("#responsable_tache").val(ui.item.value);
+				jQuery("#responsible_name").html(ui.item.label);
+
+				jQuery(".completeUserListActionResponsible").hide();
+				jQuery(".searchUserToAffect").hide();
+				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+				jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
+
+				jQuery(this).val("");
+				jQuery(this).blur();
+			}
 		});
-		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '");
-		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").result(function(event, data, formatted){
-			jQuery("#responsable_tache").val(data[1]);
-			jQuery("#responsible_name").html(data[0]);
-			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val(convertAccentToJS("' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '"));
-			jQuery(".completeUserListActionResponsible").hide();
-			jQuery(".searchUserToAffect").hide();
-			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
-			jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
-		});
+
 		jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
 			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
 			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
@@ -154,7 +159,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$nomChamps = "efficacite";
 		$tache_new .= sprintf(__('Efficacit&eacute; de la t&acirc;che %s', 'evarisk'), '<input type="text" name="correctiv_action_efficiency_control" id="correctiv_action_efficiency_control" value="' . $efficacite . '" class="correctiv_action_efficiency_control" readonly="readonly" />%') . '<div id="correctiv_action_efficiency_control_slider" class="correctiv_action_efficiency_control_slider" >&nbsp;</div>
 		<script type="text/javascript" >
-			evarisk(document).ready(function(){
+			digirisk(document).ready(function(){
 				jQuery(".correctiv_action_efficiency_control_slider").slider({
 					value:"' . $efficacite . '",
 					min: 0,
@@ -182,41 +187,41 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Tache_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
-			evarisk(document).ready(function() {				
-				evarisk("#' . $idBouttonEnregistrer . '").click(function() {
-					if(evarisk("#' . $idTitre . '").is(".form-input-tip"))
+			digirisk(document).ready(function() {				
+				digirisk("#' . $idBouttonEnregistrer . '").click(function() {
+					if(digirisk("#' . $idTitre . '").is(".form-input-tip"))
 					{
 						document.getElementById("' . $idTitre . '").value="";
-						evarisk("#' . $idTitre . '").removeClass("form-input-tip");
+						digirisk("#' . $idTitre . '").removeClass("form-input-tip");
 					}
 
-					idResponsable = evarisk("#responsable_tache").val();
+					idResponsable = digirisk("#responsable_tache").val();
 					idResponsableIsMandatory = "false";
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
-					valeurActuelle = evarisk("#' . $idTitre . '").val();
+					valeurActuelle = digirisk("#' . $idTitre . '").val();
           if(jQuery.trim(valeurActuelle) == ""){
-            alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
+            alert(digi_html_accent_for_js("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
 					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
 					{
-						alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
+						alert(digi_html_accent_for_js("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
 					}
           else
           {
-            evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+            digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
               "table": "' . TABLE_TACHE . '",
-              "act": evarisk("#actTache").val(),
-              "id": evarisk("#idTache").val(),
-              "nom_tache": evarisk("#' . $idTitre . '").val(),
-              "idPere": evarisk("#idPereTache").val(),
-              "responsable_tache": evarisk("#responsable_tache").val(),
-              "description": evarisk("#descriptionTache").val(),
-              "efficacite": evarisk("#correctiv_action_efficiency_control").val(),
-              "affichage": evarisk("#affichageTache").val(),
-              "idsFilAriane": evarisk("#idsFilArianeTache").val(),
-              "idProvenance": evarisk("#idProvenanceTache").val(),
-              "tableProvenance": evarisk("#tableProvenanceTache").val()
+              "act": digirisk("#actTache").val(),
+              "id": digirisk("#idTache").val(),
+              "nom_tache": digirisk("#' . $idTitre . '").val(),
+              "idPere": digirisk("#idPereTache").val(),
+              "responsable_tache": digirisk("#responsable_tache").val(),
+              "description": digirisk("#descriptionTache").val(),
+              "efficacite": digirisk("#correctiv_action_efficiency_control").val(),
+              "affichage": digirisk("#affichageTache").val(),
+              "idsFilAriane": digirisk("#idsFilArianeTache").val(),
+              "idProvenance": digirisk("#idProvenanceTache").val(),
+              "tableProvenance": digirisk("#tableProvenanceTache").val()
             });
           }
 				});
@@ -227,77 +232,77 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$idBoutton = 'taskDone';
 
 		$scriptEnregistrementDone = '<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk("#updateTaskStatus").dialog({
+			digirisk(document).ready(function(){
+				digirisk("#updateTaskStatus").dialog({
 					autoOpen: false,
 					width: 800,
 					height: 400,
 					modal: true,
 					buttons:{
 						"' . __('Solder', 'evarisk') . '": function(){
-							if((evarisk("#markSubAsDone").is(":checked") && confirm(convertAccentToJS("' . __('En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments \'en-dessous\'. Etes vous sur?', 'evarisk') . '"))) || (!evarisk("#markSubAsDone").is(":checked"))){
-								if(evarisk("#markSubAsDone").is(":checked")){
+							if((digirisk("#markSubAsDone").is(":checked") && confirm(digi_html_accent_for_js("' . __('En soldant cette t&acirc;che, vous solderez tous les &eacute;l&eacute;ments \'en-dessous\'. Etes vous sur?', 'evarisk') . '"))) || (!digirisk("#markSubAsDone").is(":checked"))){
+								if(digirisk("#markSubAsDone").is(":checked")){
 									var markAllSubElementAsDone = true;
 								}
 								else{
 									var markAllSubElementAsDone = false;
 								}
-								evarisk("#taskDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-								evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								digirisk("#taskDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
+								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 									"post": "true", 
 									"table": "' . TABLE_TACHE . '",
 									"act": "taskDone",
-									"id": evarisk("#idTache").val(),
-									"nom_tache": evarisk("#' . $idTitre . '").val(),
-									"idPere": evarisk("#idPereTache").val(),
-									"responsable_tache": evarisk("#responsable_tache").val(),
-									"description": evarisk("#descriptionTache").val(),
-									"affichage": evarisk("#affichageTache").val(),
-									"idsFilAriane": evarisk("#idsFilArianeTache").val(),
-									"idProvenance": evarisk("#idProvenanceTache").val(),
-									"tableProvenance": evarisk("#tableProvenanceTache").val(),
-									"avancement": evarisk("#avancement").val(),
-									"date_fin": evarisk("#date_fin").val(),
-									"date_debut": evarisk("#date_debut").val(),
+									"id": digirisk("#idTache").val(),
+									"nom_tache": digirisk("#' . $idTitre . '").val(),
+									"idPere": digirisk("#idPereTache").val(),
+									"responsable_tache": digirisk("#responsable_tache").val(),
+									"description": digirisk("#descriptionTache").val(),
+									"affichage": digirisk("#affichageTache").val(),
+									"idsFilAriane": digirisk("#idsFilArianeTache").val(),
+									"idProvenance": digirisk("#idProvenanceTache").val(),
+									"tableProvenance": digirisk("#tableProvenanceTache").val(),
+									"avancement": digirisk("#avancement").val(),
+									"date_fin": digirisk("#date_fin").val(),
+									"date_debut": digirisk("#date_debut").val(),
 									"markAllSubElementAsDone": markAllSubElementAsDone
 								})
-								evarisk(this).dialog("close");
+								digirisk(this).dialog("close");
 							}
 						},
 						"' . __('Annuler', 'evarisk') . '":	function(){
-							evarisk(this).dialog("close");
+							digirisk(this).dialog("close");
 						}
 					},
 					close:function(){
-						evarisk(this).html("");
+						digirisk(this).html("");
 					}
 				});
-				evarisk("#' . $idBoutton . '").click(function(){
-					if(evarisk("#' . $idTitre . '").is(".form-input-tip"))
+				digirisk("#' . $idBoutton . '").click(function(){
+					if(digirisk("#' . $idTitre . '").is(".form-input-tip"))
 					{
 						document.getElementById("' . $idTitre . '").value="";
-						evarisk("#' . $idTitre . '").removeClass("form-input-tip");
+						digirisk("#' . $idTitre . '").removeClass("form-input-tip");
 					}
 
-					idResponsable = evarisk("#responsable_tache").val();
+					idResponsable = digirisk("#responsable_tache").val();
 					idResponsableIsMandatory = "false";
 					idResponsableIsMandatory = "' . $idResponsableIsMandatory . '";
 
-					valeurActuelle = evarisk("#' . $idTitre . '").val();
+					valeurActuelle = digirisk("#' . $idTitre . '").val();
           if(jQuery.trim(valeurActuelle) == ""){
-            alert(convertAccentToJS("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
+            alert(digi_html_accent_for_js("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
 					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui")){
-						alert(convertAccentToJS("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
+						alert(digi_html_accent_for_js("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
 					}
           else{
-						evarisk("#updateTaskStatus").dialog("open");
-						evarisk("#updateTaskStatus").html(evarisk("#loadingImg").html());
-						evarisk("#updateTaskStatus").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+						digirisk("#updateTaskStatus").dialog("open");
+						digirisk("#updateTaskStatus").html(digirisk("#loadingImg").html());
+						digirisk("#updateTaskStatus").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 							"post": "true", 
 							"table": "' . TABLE_TACHE . '",
 							"act": "closeTask",
-							"id": evarisk("#idTache").val()
+							"id": digirisk("#idTache").val()
 						});
           }
 				});
@@ -330,7 +335,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 			$tache_new .= 
 					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') . 
 				'</div>
-				<script type="text/javascript" >evarisk("#TaskSaveButton").children("br").remove();</script>';
+				<script type="text/javascript" >digirisk("#TaskSaveButton").children("br").remove();</script>';
 		}
 		else
 		{
@@ -350,14 +355,13 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 					<div id="taskExportResult" >&nbsp;</div>
 				</div>
 				<script type="text/javascript" >
-					evarisk(document).ready(function(){
-						evarisk("#taskExportButton").click(function(){
-							evarisk("#taskExportResult").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-							{
+					digirisk(document).ready(function(){
+						digirisk("#taskExportButton").click(function(){
+							digirisk("#taskExportResult").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 								"post": "true", 
 								"table": "' . TABLE_TACHE . '",
 								"act": "exportTask",
-								"id": evarisk("#idTache").val()
+								"id": digirisk("#idTache").val()
 							});
 						});
 					});

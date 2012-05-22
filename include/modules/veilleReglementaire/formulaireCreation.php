@@ -19,13 +19,13 @@
 ?>
 <script type="text/javascript">
 	
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		updateButton();
 		var formulaire = document.regulatoryWatchForm;
-		evarisk('#texteATraiter').keydown(update).keyup(update).mousedown(update).mouseup(update).mousemove(update);
-		evarisk('#titrePere').keydown(updateButton).keyup(updateButton).mousedown(updateButton).mouseup(updateButton);
+		digirisk('#texteATraiter').keydown(update).keyup(update).mousedown(update).mouseup(update).mousemove(update);
+		digirisk('#titrePere').keydown(updateButton).keyup(updateButton).mousedown(updateButton).mouseup(updateButton);
 		
-		evarisk('#codeTitre').click(function(){
+		digirisk('#codeTitre').click(function(){
 			for (var i=0; i < formulaire.choixTitreOuQuestion.length; i++)
 			{
 				if (formulaire.choixTitreOuQuestion[i].checked)
@@ -37,24 +37,24 @@
 					formulaire.choixTitreOuQuestion[i].checked = true;
 				}
 			}
-			evarisk('#updateVeille').show(); evarisk('#img_edit_racine').hide(); updateButton();
+			digirisk('#updateVeille').show(); digirisk('#img_edit_racine').hide(); updateButton();
 		});
 		
-		evarisk('#refreshCombo').click(function(){
+		digirisk('#refreshCombo').click(function(){
 			var nomPere = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
 			var nomRacine = 'Rubrique 2220';
 			var idSelect = 'titrePere';
 			var labelSelect = 'Se r&eacute;f&egrave;re au titre : ';
 			var nameSelect = 'titrePere';
-			evarisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': nomPere});
-			evarisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
+			digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': nomPere});
+			digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
 			return false;
 		})
 		
-		evarisk('#traiter').click(function(){
+		digirisk('#traiter').click(function(){
 			var x = update();
 			var value_radio;
-			evarisk('#texteATraiter').replaceSelection("");
+			digirisk('#texteATraiter').replaceSelection("");
 			for (var i=0; i < formulaire.choixTitreOuQuestion.length; i++)
 			{
 				if (formulaire.choixTitreOuQuestion[i].checked)
@@ -74,7 +74,7 @@
 					{
 						
 						var idPere = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-						evarisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'save', 'nom': x, 'choix': value_radio, 'idPere': idPere, 'code': code}); 
+						digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'save', 'nom': x, 'choix': value_radio, 'idPere': idPere, 'code': code}); 
 						var idSelect;
 						var labelSelect;
 						var nameSelect;
@@ -86,42 +86,42 @@
 								idSelect = 'titrePere';
 								labelSelect = 'Se r&eacute;f&egrave;re au titre : ';
 								nameSelect = 'titrePere';
-								evarisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere}); 
-								evarisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
+								digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere}); 
+								digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
 							}, 
 							4000
 						);
 						formulaire.codeTitre.value = "";
-						evarisk('#partieTraitementVeille').slideUp('fast');;
+						digirisk('#partieTraitementVeille').slideUp('fast');;
 					}
 					break;
 					
 				case 'extraitTexte' :
 					var idGroupeQuestion = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-					evarisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'choix': value_radio, 'act': 'addExtrait', 'extrait': x, 'idGroupeQuestion': idGroupeQuestion});
+					digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'choix': value_radio, 'act': 'addExtrait', 'extrait': x, 'idGroupeQuestion': idGroupeQuestion});
 					formulaire.codeTitre.value = "";
-					evarisk('#partieTraitementVeille').slideUp('fast');;
+					digirisk('#partieTraitementVeille').slideUp('fast');;
 
 					break;
 					
 				case 'question' :
 					var idGroupeQuestion = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-					evarisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_QUESTION; ?>', 'act': 'save', 'enonce': x, 'idGroupeQuestion': idGroupeQuestion});
+					digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_QUESTION; ?>', 'act': 'save', 'enonce': x, 'idGroupeQuestion': idGroupeQuestion});
 					formulaire.codeTitre.value = "";
-					evarisk('#partieTraitementVeille').slideUp('fast');;
+					digirisk('#partieTraitementVeille').slideUp('fast');;
 
 					break;
 			}
 			return false;
 		});
 		
-		evarisk('#choixQuestion').click(function(){evarisk('#updateVeille').hide(); evarisk('#img_edit_racine').show(); updateButton();});
-		evarisk('#choixExtraitTexte').click(function(){evarisk('#updateVeille').show(); evarisk('#img_edit_racine').show(); updateButton();});
-		evarisk('#choixTitre').click(function(){evarisk('#updateVeille').show(); evarisk('#img_edit_racine').hide(); updateButton();evarisk("#codeTitre").focus();});
-		evarisk('#updateVeille').click(function(){
+		digirisk('#choixQuestion').click(function(){digirisk('#updateVeille').hide(); digirisk('#img_edit_racine').show(); updateButton();});
+		digirisk('#choixExtraitTexte').click(function(){digirisk('#updateVeille').show(); digirisk('#img_edit_racine').show(); updateButton();});
+		digirisk('#choixTitre').click(function(){digirisk('#updateVeille').show(); digirisk('#img_edit_racine').hide(); updateButton();digirisk("#codeTitre").focus();});
+		digirisk('#updateVeille').click(function(){
 			var x = update();
 			var value_radio;
-			evarisk('#texteATraiter').replaceSelection("");
+			digirisk('#texteATraiter').replaceSelection("");
 			for (var i=0; i < formulaire.choixTitreOuQuestion.length; i++)
 			{
 				if (formulaire.choixTitreOuQuestion[i].checked)
@@ -141,7 +141,7 @@
 					{
 						
 						var idPere = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-						evarisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'update', 'id': idPere, 'nom': x, 'choix': value_radio, 'code': code}); 
+						digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'update', 'id': idPere, 'nom': x, 'choix': value_radio, 'code': code}); 
 						var idSelect;
 						var labelSelect;
 						var nameSelect;
@@ -153,21 +153,21 @@
 								idSelect = 'titrePere';
 								labelSelect = 'Se r&eacute;f&egrave;re au titre : ';
 								nameSelect = 'titrePere';
-								evarisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere});
-								evarisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
+								digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere});
+								digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
 							}, 
 							4000
 						);
 						formulaire.codeTitre.value = "";
-						evarisk('#partieTraitementVeille').slideUp('fast');;
+						digirisk('#partieTraitementVeille').slideUp('fast');;
 					}
 					break;
 					
 				case 'extraitTexte' :
 					var idGroupeQuestion = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-					evarisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'choix': value_radio, 'act': 'replaceExtrait', 'extrait': x, 'idGroupeQuestion': idGroupeQuestion});
+					digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'choix': value_radio, 'act': 'replaceExtrait', 'extrait': x, 'idGroupeQuestion': idGroupeQuestion});
 					formulaire.codeTitre.value = "";
-					evarisk('#partieTraitementVeille').slideUp('fast');;
+					digirisk('#partieTraitementVeille').slideUp('fast');;
 
 					break;
 					
@@ -177,34 +177,34 @@
 			return false;
 		});
 		
-		evarisk('#texteATraiter').focus(function() {
-			if(evarisk('#texteATraiter').is(".form-input-tip"))
+		digirisk('#texteATraiter').focus(function() {
+			if(digirisk('#texteATraiter').is(".form-input-tip"))
 			{
 				document.getElementById('texteATraiter').value="";
-				evarisk('#texteATraiter').removeClass('form-input-tip');
+				digirisk('#texteATraiter').removeClass('form-input-tip');
 			}
 		});
 		
-		evarisk('#texteATraiter').blur(function() {
+		digirisk('#texteATraiter').blur(function() {
 			if(document.getElementById('texteATraiter').value == "")
 			{
-				evarisk('#texteATraiter').addClass('form-input-tip');
+				digirisk('#texteATraiter').addClass('form-input-tip');
 				document.getElementById('texteATraiter').value="Copier le texte Règlementaire ici.";
 			}
 		});
 	});
 
 	function update() {
-		var range = evarisk('#texteATraiter').getSelection();
+		var range = digirisk('#texteATraiter').getSelection();
 		var text=(range.text);
 		document.getElementById('texteVeilleSelectione').innerHTML = text.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
 		if(range.text == '')
 		{
-			evarisk('#partieTraitementVeille').slideUp('fast');
+			digirisk('#partieTraitementVeille').slideUp('fast');
 		}
 		else
 		{
-			evarisk('#partieTraitementVeille').slideDown('normal');
+			digirisk('#partieTraitementVeille').slideDown('normal');
 		}
 		return range.text;
 	}
@@ -223,11 +223,11 @@
 		titreReferent = titreReferent.replace(new RegExp("&nbsp;[&nbsp;]+", "g"),"");
 		if(titreReferent == "<?php echo $rubrique;?>")
 		{
-			evarisk('#updateVeille').hide();
+			digirisk('#updateVeille').hide();
 		}
 		else
 		{
-			evarisk('#updateVeille').show();
+			digirisk('#updateVeille').show();
 		}
 		if(value_radio == 'titre')
 		{
@@ -243,10 +243,10 @@
 		{
 			var changer = "";
 			var ajouter = "la question au titre " + titreReferent;
-			evarisk('#updateVeille').hide();
+			digirisk('#updateVeille').hide();
 		}
-		evarisk('#updateVeille').html("Changer " + changer);
-		evarisk('#traiter').html("Ajouter " + ajouter);
+		digirisk('#updateVeille').html("Changer " + changer);
+		digirisk('#traiter').html("Ajouter " + ajouter);
 	}
 </script>
 

@@ -2,32 +2,32 @@
 Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
-Requires at least: 2.9.2
-Tested up to: 3.3.1
-Stable tag: 5.1.5.2
+Requires at least: 3.3.2
+Tested up to: 3.3.2
+Stable tag: 5.1.5.3
 
-Avec le plugin "Evarisk" vous pourrez réaliser, de façon simple et intuitive, le ou les documents uniques de vos entreprises
+Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
 == Description ==
 
-Avec le plugin "Evarisk" vous pourrez réaliser, de façon simple et intuitive, le ou les documents uniques de vos entreprises et gérer toutes les données liées à la sécurité de votre personnel.
-Veillez à sauvegarder le plugin avant de faire la mise à jour
+Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises et g&eacute;rer toutes les donn&eacute;es li&eacute;es &agrave; la s&eacute;curit&eacute; de votre personnel.
+Veillez &agrave; sauvegarder le plugin avant de faire la mise &agrave; jour
 
 
 
 == Installation ==
 
-L'installation du plugin peut se faire de 2 façons :
+L'installation du plugin peut se faire de 2 fa&ccedil;ons :
 
-* Méthode 1
+* M&eacute;thode 1
 
-1. Téléchargez `evarisk_VX.X.X.zip`
-2. Uploader le dossier `evarisk` dans le répertoire `/wp-content/plugins/`
+1. T&eacute;l&eacute;chargez `evarisk_VX.X.X.zip`
+2. Uploader le dossier `evarisk` dans le r&eacute;pertoire `/wp-content/plugins/`
 3. Activer le plugin dans le menu `Extensions` de Wordpress
 
-* Méthode 2
+* M&eacute;thode 2
 
-1. Rechercher le plugin "Evarisk" à partir du menu "Extension" de Wordpress
+1. Rechercher le plugin "Evarisk" &agrave; partir du menu "Extension" de Wordpress
 2. Lancer l'installation du plugin
 
 
@@ -36,15 +36,15 @@ L'installation du plugin peut se faire de 2 façons :
 
 Question 1 : Le logiciel d'evarisk est t'il totalement gratuit ?
 
-Oui le logiciel est totalement gratuit, il est publié sous une licence Publique Générale Affero (GNU). Ce programme est libre et gratuit en (Open Source), vous pouvez le redistribuer et/ou le modifier selon les termes de la Licence Publique Générale Affero GNU publiée par la Free Software Foundation.
+Oui le logiciel est totalement gratuit, il est publi&eacute; sous une licence Publique G&eacute;n&eacute;rale Affero (GNU). Ce programme est libre et gratuit en (Open Source), vous pouvez le redistribuer et/ou le modifier selon les termes de la Licence Publique G&eacute;n&eacute;rale Affero GNU publi&eacute;e par la Free Software Foundation.
 
-Question 2 : La version 4.3.4 du logiciel va t'elle continué d'évoluer ?
+Question 2 : La version 4.3.4 du logiciel va t'elle continu&eacute; d'&eacute;voluer ?
 
-Non, cette version est stable mais nous ne la ferons plus evoluer. Nous étions trop souvent bloqué sur des principes theoriques c'est la raison pour laquelle nous avons lancé la version 5
+Non, cette version est stable mais nous ne la ferons plus evoluer. Nous &eacute;tions trop souvent bloqu&eacute; sur des principes theoriques c'est la raison pour laquelle nous avons lanc&eacute; la version 5
 
 Question 3 : Peut t'on importer les informations a partir du logiciel en version 4.3.4
 
-Nous n'avons pas prévu cet import facilement si vous souhaitez plus de renseignements contactez nous sur ce point.
+Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de renseignements contactez nous sur ce point.
 
 
 == Screenshots ==
@@ -52,76 +52,91 @@ Nous n'avons pas prévu cet import facilement si vous souhaitez plus de renseign
 1. Tableau de bord du logiciel digirisk
 2. Interface de gestion des options du logiciel digirisk
 3. Interface d'import des utilisateurs
-4. Liste des groupes du logiciel digirisk. Groupes d'utilisateurs: personnes affectées à un groupement/unité de travail/etc. Groupes d'évaluateurs: personnes participant à l'évaluation des risques
-5. Interface d'ajout/édition d'un groupe (utilisateur et évaluateur)
-6. Liste des préconisations existantes
-7. Interface d'édition d'une famille de préconisation (avec les options pour l'impression dans les différents documents)
-8. Interface d'édition d'une préconisation
-9. Liste des méthodes d'évaluation
-10. Interface d'édition des méthodes d'évaluation
-11. Interface de gestion des catégories de danger et des dangers
-12. Interface d'évaluation des risques: Gestion des informations concernant la société, ajout de photos, géolocalisation
-13. Interface d'évaluation des risques: évaluation des risques, affectations des utilisateurs/évaluateurs/groupes/préconisations
-14. Interface d'évaluation des risques: Génération des documents (document unique/fiche de pose)
-15. Interface d'évaluation des risques: édition d'un risque
-16. Interface d'évaluation des risques: Vue d'ensemble sur les risques et actions prioritaires affectées à ce risque (Disponible dans les groupements uniquement avec les risques des sous-éléments)
-17. Interface d'évaluation des risques: Ajout d'un risque depuis une photo
+4. Liste des groupes du logiciel digirisk. Groupes d'utilisateurs: personnes affect&eacute;es &agrave; un groupement/unit&eacute; de travail/etc. Groupes d'&eacute;valuateurs: personnes participant &agrave; l'&eacute;valuation des risques
+5. Interface d'ajout/&eacute;dition d'un groupe (utilisateur et &eacute;valuateur)
+6. Liste des pr&eacute;conisations existantes
+7. Interface d'&eacute;dition d'une famille de pr&eacute;conisation (avec les options pour l'impression dans les diff&eacute;rents documents)
+8. Interface d'&eacute;dition d'une pr&eacute;conisation
+9. Liste des m&eacute;thodes d'&eacute;valuation
+10. Interface d'&eacute;dition des m&eacute;thodes d'&eacute;valuation
+11. Interface de gestion des cat&eacute;gories de danger et des dangers
+12. Interface d'&eacute;valuation des risques: Gestion des informations concernant la soci&eacute;t&eacute;, ajout de photos, g&eacute;olocalisation
+13. Interface d'&eacute;valuation des risques: &eacute;valuation des risques, affectations des utilisateurs/&eacute;valuateurs/groupes/pr&eacute;conisations
+14. Interface d'&eacute;valuation des risques: G&eacute;n&eacute;ration des documents (document unique/fiche de pose)
+15. Interface d'&eacute;valuation des risques: &eacute;dition d'un risque
+16. Interface d'&eacute;valuation des risques: Vue d'ensemble sur les risques et actions prioritaires affect&eacute;es &agrave; ce risque (Disponible dans les groupements uniquement avec les risques des sous-&eacute;l&eacute;ments)
+17. Interface d'&eacute;valuation des risques: Ajout d'un risque depuis une photo
 18. Interface de prise de notes (Un fichier par utilisateur accessible depuis toutes les interfaces)
 19. Interface de gestion des actions correctives
 
 
 == Changelog ==
 
-* Veillez à bien sauvegarder vos données avant d'effectuer une mise à jour du plugin
+* Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.5.3 =
+
+Am&eacute;liorations
+
+* ST322 - Simplification des appels aux diff&eacute;rentes librairies pour acc&eacute;l&eacute;rer le chargement du plugin et la compatibilt&eacute; avec wordpress 
+* ST323 - Int&eacute;gration des configurations des m&eacute;thodes/dangers/pr&eacute;conisations dans l'interface des options 
+* ST325 - Possibilit&eacute; de restaurer une base de donn&eacute;es "propre" (Cette op&eacute;ration d&eacute;truit toutes les donn&eacute;es se trouvant dans la base de donn&eacute;es. Les fichiers envoy&eacute;s (photos et documents) sont toujours pr&eacute;sents sur le serveur)
+
+Corrections
+
+* ST320 - Utilisation de la librairie Uploadify (Inclusion des fichiers avec les variables $_REQUEST supprim&eacute;es) 
+* ST321 - Erreur fatale lors de la mise &agrave; jour des sous-t&acirc;ches dans certains cas 
+* ST326 - D&eacute;sactivation des checkbox dans l'interface de gestion des droits dans le menu "Profil Digirisk" (les checkbox &eacute;taient pr&eacute;sentes mais aucune action n'&eacute;tait possible)
 
 
 = Version 5.1.5.2 =
 
-* ST319 - Ré-encodage du fichier readme
+* ST319 - R&eacute;-encodage du fichier readme
 
-Améliorations
+Am&eacute;liorations
 
-* ST317 - Possibilité de chosir un email personnalisé dans l'import des utilisateurs même si on a des paramètres génériques 
-* ST318 - Possibilité de réinitialiser l'arbre des groupements depuis la corbeille(Remet tous les groupements au même niveau dans l'arbre) 
+* ST317 - Possibilit&eacute; de chosir un email personnalis&eacute; dans l'import des utilisateurs m&ecirc;me si on a des param&egrave;tres g&eacute;n&eacute;riques 
+* ST318 - Possibilit&eacute; de r&eacute;initialiser l'arbre des groupements depuis la corbeille(Remet tous les groupements au m&ecirc;me niveau dans l'arbre) 
 
 
 = Version 5.1.5.1 =
 
 Corrections
 
-* Parenthèse provoquant une erreur fatale dans le fichier d'envoi de photo
-* Lors de la mise à jour de la base de données, la table des fiches n'était pas correctement renommée
+* Parenth&egrave;se provoquant une erreur fatale dans le fichier d'envoi de photo
+* Lors de la mise &agrave; jour de la base de donn&eacute;es, la table des fiches n'&eacute;tait pas correctement renomm&eacute;e
 
 
 = Version 5.1.5.0 =
 
-Améliorations
+Am&eacute;liorations
 
-* ST310 - Ajout du contenu de modifications apportées dans les tâches et sous-tâches dans les email envoyés aux utilisateurs associés
-* ST309 - Demande d'actions corrective dans le front (- Affectation a un élément de l'arbre - Ajout d'une photo marquée comme "avant")
-* ST312 - Possibilité de vérifier les opérations apportées sur la base de données lors des mises à jour automatique
-* ST315 - Début de mise en place de la fiche salarié dans la partie administration
+* ST310 - Ajout du contenu de modifications apport&eacute;es dans les tâches et sous-tâches dans les email envoy&eacute;s aux utilisateurs associ&eacute;s
+* ST309 - Demande d'actions corrective dans le front (- Affectation a un &eacute;l&eacute;ment de l'arbre - Ajout d'une photo marqu&eacute;e comme "avant")
+* ST312 - Possibilit&eacute; de v&eacute;rifier les op&eacute;rations apport&eacute;es sur la base de donn&eacute;es lors des mises &agrave; jour automatique
+* ST315 - D&eacute;but de mise en place de la fiche salari&eacute; dans la partie administration
 
 Corrections 
 
-* ST173 - Les UT étaient présentes dans les DUER et dans la vue d'ensemble même si celle ci étaient supprimées 
-* ST311 - Erreurs d'affectation des tâches si on cliquait sur enregistrer sans cliquer sur un élément 
-* ST313 - La mise à jour automatique de la base de données ne se faisait pas correctement (Si le nombre de version entre la base de données existante et  la base de données de la nouvelle version était trop important alors certaines mise à jour ne se lançaient pas) 
-* ST316 - Mise à jour de la librairies jquery ui en version 1.8.18 (Causait un conflit avec le plugin Advanced custom field) 
+* ST173 - Les UT &eacute;taient pr&eacute;sentes dans les DUER et dans la vue d'ensemble m&ecirc;me si celle ci &eacute;taient supprim&eacute;es 
+* ST311 - Erreurs d'affectation des tâches si on cliquait sur enregistrer sans cliquer sur un &eacute;l&eacute;ment 
+* ST313 - La mise &agrave; jour automatique de la base de donn&eacute;es ne se faisait pas correctement (Si le nombre de version entre la base de donn&eacute;es existante et  la base de donn&eacute;es de la nouvelle version &eacute;tait trop important alors certaines mise &agrave; jour ne se lan&ccedil;aient pas) 
+* ST316 - Mise &agrave; jour de la librairies jquery ui en version 1.8.18 (Causait un conflit avec le plugin Advanced custom field) 
 
 
 = Version 5.1.4.9 =
 
-Améliorations 
+Am&eacute;liorations 
 
-* ST306 - Interface de liaison entre une tâche ou sous-tâches simplifiée 
-* ST308 - Possibilité de demander une action corrective depuis la partie frontend du portail
+* ST306 - Interface de liaison entre une tâche ou sous-tâches simplifi&eacute;e 
+* ST308 - Possibilit&eacute; de demander une action corrective depuis la partie frontend du portail
 
 
 Corrections 
 
-* ST301 - Requêtes sur les listes des utilisateurs sur le tableau de bord ne prennent pas en compte les groupes d'utilisateurs (Problème de statut des enregistrements non pris en compte dans les requêtes) 
-* ST302 - Dans les fiches de groupements impression des risques du groupement courant uniquement (Ceux des sous éléments étaient également imprimés) 
+* ST301 - Requ&ecirc;tes sur les listes des utilisateurs sur le tableau de bord ne prennent pas en compte les groupes d'utilisateurs (Probl&egrave;me de statut des enregistrements non pris en compte dans les requ&ecirc;tes) 
+* ST302 - Dans les fiches de groupements impression des risques du groupement courant uniquement (Ceux des sous &eacute;l&eacute;ments &eacute;taient &eacute;galement imprim&eacute;s) 
 
 = Version 5.1.4.8 =
 
@@ -132,165 +147,165 @@ Corrections
 
 = Version 5.1.4.7 =
 
-Améliorations
+Am&eacute;liorations
 
-* ST249 - Copier/Déplacer les risques d'un élément à un autre 
-* ST298 - Restauration des éléments de la corbeille (Possibilité de restaurer les éléments récursivement/Impossibilité de restaurer des éléments de type différents au même niveau) 
-* ST295 - Ajout de l'identifiant de l'élément dans la box de récapitulatif des groupement et unité de travail 
-* ST299 - Ajout d'un lien vers l'élément modififé dans les mails envoyés lors des modifications des taches et sous taches 
+* ST249 - Copier/D&eacute;placer les risques d'un &eacute;l&eacute;ment &agrave; un autre 
+* ST298 - Restauration des &eacute;l&eacute;ments de la corbeille (Possibilit&eacute; de restaurer les &eacute;l&eacute;ments r&eacute;cursivement/Impossibilit&eacute; de restaurer des &eacute;l&eacute;ments de type diff&eacute;rents au m&ecirc;me niveau) 
+* ST295 - Ajout de l'identifiant de l'&eacute;l&eacute;ment dans la box de r&eacute;capitulatif des groupement et unit&eacute; de travail 
+* ST299 - Ajout d'un lien vers l'&eacute;l&eacute;ment modifif&eacute; dans les mails envoy&eacute;s lors des modifications des taches et sous taches 
 
 Corrections
 
-* ST43 - Droits d'accés aux fichiers lors de l'installation sur un serveur(Correction en utilisant la commande exec de php) 
-* ST293 - Lors de l'affectation des utilisateurs aux tâches et sous-tâches il y avait un affichage de données non souhaitable 
-* ST294 - Génération du fichier de protection du site (A chaque fois que les options étaient enregistrées, un fichier de sauvegarde était créé avec le code de limitation d'accès et lorsqu'on désactivait la limitation le fichier htaccess était conservé avec la limitation mais le fichier de mot de passe était supprimé ce qui provoquait une erreur 403) 
-* ST296 - La somme totale des risques d'un élément était affichée comme étant à zéro lors de la sélection de cet élément même si la somme était supérieure 
-* ST297 - Corbeille impossible à restaurer si plusieurs éléments du même type présent (Les en-têtes des colonnes s'affichaient plusieurs fois et provoquaient une erreur javascript qui bloquait l'accès au bouton de sauvegarde) 
+* ST43 - Droits d'acc&eacute;s aux fichiers lors de l'installation sur un serveur(Correction en utilisant la commande exec de php) 
+* ST293 - Lors de l'affectation des utilisateurs aux tâches et sous-tâches il y avait un affichage de donn&eacute;es non souhaitable 
+* ST294 - G&eacute;n&eacute;ration du fichier de protection du site (A chaque fois que les options &eacute;taient enregistr&eacute;es, un fichier de sauvegarde &eacute;tait cr&eacute;&eacute; avec le code de limitation d'acc&egrave;s et lorsqu'on d&eacute;sactivait la limitation le fichier htaccess &eacute;tait conserv&eacute; avec la limitation mais le fichier de mot de passe &eacute;tait supprim&eacute; ce qui provoquait une erreur 403) 
+* ST296 - La somme totale des risques d'un &eacute;l&eacute;ment &eacute;tait affich&eacute;e comme &eacute;tant &agrave; z&eacute;ro lors de la s&eacute;lection de cet &eacute;l&eacute;ment m&ecirc;me si la somme &eacute;tait sup&eacute;rieure 
+* ST297 - Corbeille impossible &agrave; restaurer si plusieurs &eacute;l&eacute;ments du m&ecirc;me type pr&eacute;sent (Les en-t&ecirc;tes des colonnes s'affichaient plusieurs fois et provoquaient une erreur javascript qui bloquait l'acc&egrave;s au bouton de sauvegarde) 
 
 
 = Version 5.1.4.6 =
 
 Corrections
 
-*	Gestion de l'arbre défaillant depuis la version 3.3.1 de wordpress. Impossibilité de déplacer des éléments
-* Vérification que le nom d'une nouvelle tâche soit bien rempli avant sa création
+*	Gestion de l'arbre d&eacute;faillant depuis la version 3.3.1 de wordpress. Impossibilit&eacute; de d&eacute;placer des &eacute;l&eacute;ments
+* V&eacute;rification que le nom d'une nouvelle tâche soit bien rempli avant sa cr&eacute;ation
 
 
 = Version 5.1.4.5 =
 
-Améliorations
+Am&eacute;liorations
 
 * Affichage du demandeur et de la date de la demande d'une tâche
-* Envoi des fichiers dans les actions correctives (Gestion des extensions de fichiers autorisées depuis la configuration du plugin dans l'onglet "action corrective")
-* Possibilité de bloquer l'accés au site grâce à un fichier htaccess depuis les options du logiciel dans la partie utilisateur
-* Ajout d'un bouton permettant d'accéder à la liste des utilisateurs inscrit/ayant ou n'ayant pas participé à l'audit
-* Possibilité de notifier les utilisateurs affectés aux tâches et sous-tâches pour chaque action effectuée
+* Envoi des fichiers dans les actions correctives (Gestion des extensions de fichiers autoris&eacute;es depuis la configuration du plugin dans l'onglet "action corrective")
+* Possibilit&eacute; de bloquer l'acc&eacute;s au site grâce &agrave; un fichier htaccess depuis les options du logiciel dans la partie utilisateur
+* Ajout d'un bouton permettant d'acc&eacute;der &agrave; la liste des utilisateurs inscrit/ayant ou n'ayant pas particip&eacute; &agrave; l'audit
+* Possibilit&eacute; de notifier les utilisateurs affect&eacute;s aux tâches et sous-tâches pour chaque action effectu&eacute;e
 
 Corrections
 
-* Droits d'accés à l'import des utilisateurs
-* La visualisation des détails d'une sous-tâches depuis le suivi des actions correctives était défaillant
-* Le démarquage de la photo après l'action était impossible
+* Droits d'acc&eacute;s &agrave; l'import des utilisateurs
+* La visualisation des d&eacute;tails d'une sous-tâches depuis le suivi des actions correctives &eacute;tait d&eacute;faillant
+* Le d&eacute;marquage de la photo apr&egrave;s l'action &eacute;tait impossible
 
 Divers
 
-* Déplacement des menus de configurations dans la partie réglages de wordpress (En prévision de la refonte des menus)
+* D&eacute;placement des menus de configurations dans la partie r&eacute;glages de wordpress (En pr&eacute;vision de la refonte des menus)
 
 
 = Version 5.1.4.4 =
 
-Améliorations
+Am&eacute;liorations
 
-* Possibilité de visualiser un graphique pour l'évolution d'un risque 
-* Possibilité d'enlever le responsable des tâches et sous-tâches 
+* Possibilit&eacute; de visualiser un graphique pour l'&eacute;volution d'un risque 
+* Possibilit&eacute; d'enlever le responsable des tâches et sous-tâches 
 
 Corrections
 
-* Une exception javascript était lancée lors de la création d'une action corrective (Le formulaire avec un enctype défini pour envoyer des fichiers ce qui posait problème à la réception) 
+* Une exception javascript &eacute;tait lanc&eacute;e lors de la cr&eacute;ation d'une action corrective (Le formulaire avec un enctype d&eacute;fini pour envoyer des fichiers ce qui posait probl&egrave;me &agrave; la r&eacute;ception) 
 * Le click sur un utilisateur dans la liste permettant de choisir un responsable pour les tâches et sous-tâches d'un groupement ne fonctionnait pas 
 
 
 = Version 5.1.4.3 =
 
-Améliorations
+Am&eacute;liorations
 
-* Suppression de l'option permettant de choisir de ne pas créer une sous-tâche pour les actions prioritaires (La création est obligatoire) 
+* Suppression de l'option permettant de choisir de ne pas cr&eacute;er une sous-tâche pour les actions prioritaires (La cr&eacute;ation est obligatoire) 
 * Reprise de l'ergonomie d'une partie de la gestion des actions correctives 
 * Lors de l'enregistrement des options, on revient sur l'onglet courant 
-* Option Actions correctives avancées remontée en haut de la liste 
+* Option Actions correctives avanc&eacute;es remont&eacute;e en haut de la liste 
 * Gestion des droits sur les actions correctives 
-* Possibilité d'avoir des photos sur les tâches
+* Possibilit&eacute; d'avoir des photos sur les tâches
 
 Corrections
 
 * Lorsqu'on met un double guillemet dans le nom d'une tâche, il supprime ce qui suit (Correction de la librairie de gestion des input) 
-* Impossibilité d'ajouter des photos avant et aprés lors d'une demande d'action corrective en mode avancé 
-* Affichage parasite dans la box de création d'une tache ou d'une sous-tâche 
+* Impossibilit&eacute; d'ajouter des photos avant et apr&eacute;s lors d'une demande d'action corrective en mode avanc&eacute; 
+* Affichage parasite dans la box de cr&eacute;ation d'une tache ou d'une sous-tâche 
 * Prise en compte du responsable pour les tâches 
-* Modification du choix du responsable dans les actions correctives non avancées 
+* Modification du choix du responsable dans les actions correctives non avanc&eacute;es 
 * Appel d'une mauvaise fonction pour la traduction _() au lieu de __() 
-* Suppression de la possibilité d'ajouter un commentaire vide sur une tâche et une sous-tâche 
-* Suppression de la possibilité de modifier certaines informations dans les tâches soldées avec l'option de modification â non(utilisateurs / notes / photos)
+* Suppression de la possibilit&eacute; d'ajouter un commentaire vide sur une tâche et une sous-tâche 
+* Suppression de la possibilit&eacute; de modifier certaines informations dans les tâches sold&eacute;es avec l'option de modification â non(utilisateurs / notes / photos)
 
 
 = Version 5.1.4.2 =
 
-Améliorations
+Am&eacute;liorations
 
-* L'onglet des options pour les produits ne s'affiche plus si le plugin wpshop n'est pas activé 
-* Affichage de la date d'ajout d'une tâches et d'une sous-tâches qui peut être différente de la date de début 
-* Modification de la façon de choisir un responsable pour les tâches et actions (Reprise du bloc standard de sélection d'un utilisateur) 
+* L'onglet des options pour les produits ne s'affiche plus si le plugin wpshop n'est pas activ&eacute; 
+* Affichage de la date d'ajout d'une tâches et d'une sous-tâches qui peut &ecirc;tre diff&eacute;rente de la date de d&eacute;but 
+* Modification de la fa&ccedil;on de choisir un responsable pour les tâches et actions (Reprise du bloc standard de s&eacute;lection d'un utilisateur) 
 
 Corrections
 
-* Impossibilité de créer un rôle dans digirisk sans choisir de rôle existant à copier 
-* Interface d'import des utilisateurs (Taille de l'interface pour les petites résolutions d'écran / Modification du comportement du bouton d'import suivant le champs texte / Suppression des accents et majuscules aux e mail et identifiant des utilisateurs importés / Correction du fichier modèle d'import avec les champs pour les accidents du travail) 
-* Changement du comportement de l'interface d'édition d'un utilisateurs si tous les champs nécessaires aux accidents ne sont pas remplis 
-* Affichage des noms des éléments dans l'arborescence principale quand un caractères spécial était présent 
-* Message d'erreur lors de l'envoie d'une photo (Le message "Failed" s'affichait alors que la photo était bien envoyée)
+* Impossibilit&eacute; de cr&eacute;er un rôle dans digirisk sans choisir de rôle existant &agrave; copier 
+* Interface d'import des utilisateurs (Taille de l'interface pour les petites r&eacute;solutions d'&eacute;cran / Modification du comportement du bouton d'import suivant le champs texte / Suppression des accents et majuscules aux e mail et identifiant des utilisateurs import&eacute;s / Correction du fichier mod&egrave;le d'import avec les champs pour les accidents du travail) 
+* Changement du comportement de l'interface d'&eacute;dition d'un utilisateurs si tous les champs n&eacute;cessaires aux accidents ne sont pas remplis 
+* Affichage des noms des &eacute;l&eacute;ments dans l'arborescence principale quand un caract&egrave;res sp&eacute;cial &eacute;tait pr&eacute;sent 
+* Message d'erreur lors de l'envoie d'une photo (Le message "Failed" s'affichait alors que la photo &eacute;tait bien envoy&eacute;e)
 
 
 = Version 5.1.4.1 =
 
-Améliorations
+Am&eacute;liorations
 
 * Gestion des accidents de travail 
-* Modification de l'import des utilisateurs (Ajout de champs complémentaires facultatifs) 
-* Ajout d'informations concernant les groupements (Siret / Siren / Type de groupement / Numéro de risque associé) 
-* Changement de la gestion des options en ongle t(Les options sont rangées par catégories dans des onglets ce qui permet une meilleure lisibilité) 
-* Intégration d'une gestion de documentation 
+* Modification de l'import des utilisateurs (Ajout de champs compl&eacute;mentaires facultatifs) 
+* Ajout d'informations concernant les groupements (Siret / Siren / Type de groupement / Num&eacute;ro de risque associ&eacute;) 
+* Changement de la gestion des options en ongle t(Les options sont rang&eacute;es par cat&eacute;gories dans des onglets ce qui permet une meilleure lisibilit&eacute;) 
+* Int&eacute;gration d'une gestion de documentation 
 
 Corrections
 
-* Problème de remontée d'information dans l'arborescence(La somme des risques n'étaient pas remontées correctement à cause des sous-groupements / La somme de cotation des risques n'étaient plus calculées) 
+* Probl&egrave;me de remont&eacute;e d'information dans l'arborescence(La somme des risques n'&eacute;taient pas remont&eacute;es correctement &agrave; cause des sous-groupements / La somme de cotation des risques n'&eacute;taient plus calcul&eacute;es) 
 
 
 = Version 5.1.4.0 =
 
 Corrections 
 
-* Problème de sécurité lors de l'envoie de documents / photos
+* Probl&egrave;me de s&eacute;curit&eacute; lors de l'envoie de documents / photos
 
 
 = Version 5.1.3.9 =
 
-Améliorations
+Am&eacute;liorations
 
-* Intégration de la nouvelle version de WP Shop
+* Int&eacute;gration de la nouvelle version de WP Shop
 
 
 = Version 5.1.3.8 =
 
 Corrections 
 
-* Format des numéros de téléphones dans le DUER (Si on entrez des numéros avec des espaces, l'information enregistrée ne correspond a rien) 
+* Format des num&eacute;ros de t&eacute;l&eacute;phones dans le DUER (Si on entrez des num&eacute;ros avec des espaces, l'information enregistr&eacute;e ne correspond a rien) 
 
 
 = Version 5.1.3.7 =
 
-Améliorations
+Am&eacute;liorations
 
-* Ajout de la corbeille pour récupérer les éléments précédemment supprimés (Permettrait de récupérer des éléments qui auraient été supprimé par erreur.) 
-* Mise à jour des informations des taches lorsqu'on solde la tache(On demande de changer les informations pour la tache courante et les sous-éléments) 
-* Possibilité de modifier la position du marqueur dans la carte google map sur les différents éléments 
-* La partie méthodologie du chapitre administratif est modifiable directement lors de la génération du DUER 
+* Ajout de la corbeille pour r&eacute;cup&eacute;rer les &eacute;l&eacute;ments pr&eacute;c&eacute;demment supprim&eacute;s (Permettrait de r&eacute;cup&eacute;rer des &eacute;l&eacute;ments qui auraient &eacute;t&eacute; supprim&eacute; par erreur.) 
+* Mise &agrave; jour des informations des taches lorsqu'on solde la tache(On demande de changer les informations pour la tache courante et les sous-&eacute;l&eacute;ments) 
+* Possibilit&eacute; de modifier la position du marqueur dans la carte google map sur les diff&eacute;rents &eacute;l&eacute;ments 
+* La partie m&eacute;thodologie du chapitre administratif est modifiable directement lors de la g&eacute;n&eacute;ration du DUER 
 
 Corrections
 
-* Lors de l'ajout d'une méthode, on ne peut pas définir comme photo par défaut 
-* Attribution de la photo par défaut pour les catégories de danger (Lorsqu'on associe une photo par défaut a une nouvelle catégorie de danger, le chemin d'affichage n'était pas correct) 
-* Préfixe de la table utilisateurs inscrit en dur (Impossibilité de récupérer les utilisateurs lorsqu'on installe avec un préfixe différent) 
-* Mauvais comportement lors de l'enregistrement d'un risque en cochant la case historisation(Le risque était enregistré mais n'apparaissait pas alors qu'il devait apparaitre et faire disparaitre l'ancienne cotation) 
-* Accents dans la description des groupements et/ou fiches de poste mal imprimés 
+* Lors de l'ajout d'une m&eacute;thode, on ne peut pas d&eacute;finir comme photo par d&eacute;faut 
+* Attribution de la photo par d&eacute;faut pour les cat&eacute;gories de danger (Lorsqu'on associe une photo par d&eacute;faut a une nouvelle cat&eacute;gorie de danger, le chemin d'affichage n'&eacute;tait pas correct) 
+* Pr&eacute;fixe de la table utilisateurs inscrit en dur (Impossibilit&eacute; de r&eacute;cup&eacute;rer les utilisateurs lorsqu'on installe avec un pr&eacute;fixe diff&eacute;rent) 
+* Mauvais comportement lors de l'enregistrement d'un risque en cochant la case historisation(Le risque &eacute;tait enregistr&eacute; mais n'apparaissait pas alors qu'il devait apparaitre et faire disparaitre l'ancienne cotation) 
+* Accents dans la description des groupements et/ou fiches de poste mal imprim&eacute;s 
 * Correction de la box d'affectation des droits quand aucun utilisateur 
-* Gestion des dangers et catégories de danger 
+* Gestion des dangers et cat&eacute;gories de danger 
 
 
 = Version 5.1.3.6 =
 
-Améliorations
+Am&eacute;liorations
 
-*	Reprise de la box pour le suivi des actions correctives par risque dans l'évaluation des risques
+*	Reprise de la box pour le suivi des actions correctives par risque dans l'&eacute;valuation des risques
 * Ajout d'un fichier pour construire l'import des utilisateurs
 
 Corrections
@@ -300,218 +315,218 @@ Corrections
 
 = Version 5.1.3.5 =
 
-Améliorations 
+Am&eacute;liorations 
 
-* Reprise de la page d'installation pour homogénéisation avec le reste du plugin 
-* Ajout des identifiants aux éléments manquants (Actions correctives dans le suivi des actions / Risques dans la liste des risques déjà évalués / éléments dans les documents (DUER / FP / FGPT) / Groupes d'utilisateurs / Utilisateurs) 
+* Reprise de la page d'installation pour homog&eacute;n&eacute;isation avec le reste du plugin 
+* Ajout des identifiants aux &eacute;l&eacute;ments manquants (Actions correctives dans le suivi des actions / Risques dans la liste des risques d&eacute;j&agrave; &eacute;valu&eacute;s / &eacute;l&eacute;ments dans les documents (DUER / FP / FGPT) / Groupes d'utilisateurs / Utilisateurs) 
 * Personnalisation des identifiants (Ajout d'une option pour chaque type d'identifiant) 
-* Informations générales intégrées (Description / Adresse / Téléphone) 
-* Génération d'un document on retombe sur le bon onglet dans l'historique
-* Ajout du lien pour télécharger le fichier contenant l'export au format txt des actions correctives
+* Informations g&eacute;n&eacute;rales int&eacute;gr&eacute;es (Description / Adresse / T&eacute;l&eacute;phone) 
+* G&eacute;n&eacute;ration d'un document on retombe sur le bon onglet dans l'historique
+* Ajout du lien pour t&eacute;l&eacute;charger le fichier contenant l'export au format txt des actions correctives
 
 Corrections 
 
-* Retour à la ligne dans le champs commentaire dprovoquait une erreur javascript (Ce qui empêchait l'utilisateur de modifier le contenu de la box) 
+* Retour &agrave; la ligne dans le champs commentaire dprovoquait une erreur javascript (Ce qui emp&ecirc;chait l'utilisateur de modifier le contenu de la box) 
 
 
 = Version 5.1.3.4 =
 
-Améliorations
+Am&eacute;liorations
 
 *	Nettoyage des javascripts inutiles
 * Appel des javascripts et css uniquement lorsqu'on se trouve sur une des pages du plugin digirisk
 
 Corrections
 
-* Caractères indésirables dans le document unique
+* Caract&egrave;res ind&eacute;sirables dans le document unique
 
 
 = Version 5.1.3.3 =
 
-Améliorations
+Am&eacute;liorations
 
-* Mise à jour des pictos pour la gestion des droits (voir - sélectionner tous/aucun - récursif)
-* Mise en place d'une option pour le choix de l'action a effectuer lorsqu'on essaie de créer un élément dont le nom existe déjà
+* Mise &agrave; jour des pictos pour la gestion des droits (voir - s&eacute;lectionner tous/aucun - r&eacute;cursif)
+* Mise en place d'une option pour le choix de l'action a effectuer lorsqu'on essaie de cr&eacute;er un &eacute;l&eacute;ment dont le nom existe d&eacute;j&agrave;
 
 Corrections
 
-* Compatibilité avec la version 3.2.1 de wordpress (jquery)
-* Affectation des groupes d'utilisateurs aux éléments
+* Compatibilit&eacute; avec la version 3.2.1 de wordpress (jquery)
+* Affectation des groupes d'utilisateurs aux &eacute;l&eacute;ments
 * Recherche des utilisateurs dans les box d'affectation
-* Génération des fiches de poste et des fiches de groupement
+* G&eacute;n&eacute;ration des fiches de poste et des fiches de groupement
 
 
 = Version 5.1.3.2 =
 
-Améliorations
+Am&eacute;liorations
 
-* Interface d'affectation des droits des utilisateurs dans chaque élément de l'arbre
-* Ajout de l'affectation récursive des droits des utilisateurs
-* Affichage des droits spécifiques des utilisateurs de façon "human-readable"
-* Ajout de la possibilité de générer les fiches de groupements (calqué sur les fiches de poste sans les préconisations)
+* Interface d'affectation des droits des utilisateurs dans chaque &eacute;l&eacute;ment de l'arbre
+* Ajout de l'affectation r&eacute;cursive des droits des utilisateurs
+* Affichage des droits sp&eacute;cifiques des utilisateurs de fa&ccedil;on "human-readable"
+* Ajout de la possibilit&eacute; de g&eacute;n&eacute;rer les fiches de groupements (calqu&eacute; sur les fiches de poste sans les pr&eacute;conisations)
 
 Corrections
 
-* Correction pour les droits utilisateurs pour la box d'édition d'un groupement ou d'une unité de travail, le bouton enregistrer était présent même si les droits étaient en lecture seule
-* Erreur javascript dans la box d'affectation des droits dans chaque élément de l'arbre si aucun utilisateur n'avait été créé
-* Génération des fiches de poste en masse qui ne fonctionnait plus sur les groupements
+* Correction pour les droits utilisateurs pour la box d'&eacute;dition d'un groupement ou d'une unit&eacute; de travail, le bouton enregistrer &eacute;tait pr&eacute;sent m&ecirc;me si les droits &eacute;taient en lecture seule
+* Erreur javascript dans la box d'affectation des droits dans chaque &eacute;l&eacute;ment de l'arbre si aucun utilisateur n'avait &eacute;t&eacute; cr&eacute;&eacute;
+* G&eacute;n&eacute;ration des fiches de poste en masse qui ne fonctionnait plus sur les groupements
 * Enregistrement du domaine des emails des utilisateurs dans les options suite au changement de gestion des options
-* Renommage de la catégorie de préconisations anciennement nommée "recommandation" en "avertissements" (CP3)
-* Corrections de l'interfaçage de wpshop et de digirisk
+* Renommage de la cat&eacute;gorie de pr&eacute;conisations anciennement nomm&eacute;e "recommandation" en "avertissements" (CP3)
+* Corrections de l'interfa&ccedil;age de wpshop et de digirisk
 
 
 = Version 5.1.3.1 =
 
-Améliorations
+Am&eacute;liorations
 
 * Gestion des droits des utilisateurs
 
 Corrections
 
-* Box des préconisations affectées à un élément du à l'option sur l'efficacité
+* Box des pr&eacute;conisations affect&eacute;es &agrave; un &eacute;l&eacute;ment du &agrave; l'option sur l'efficacit&eacute;
 
 
 = Version 5.1.3.0 =
 
-Améliorations
+Am&eacute;liorations
 
-*	Réduction de la taille des screenshots
+*	R&eacute;duction de la taille des screenshots
 
 Corrections
 
 * Fautes d'orthographe dans les fiches de postes
-* Fautes d'orthographe dans la partie concernant les utilisateurs participant à l'évaluation
-* Prise en compte des commentaires sur les risques lors de la génération du document unique
-* Caractère &rsquo; qui générait une erreur lors de l'ouverture du document open office
+* Fautes d'orthographe dans la partie concernant les utilisateurs participant &agrave; l'&eacute;valuation
+* Prise en compte des commentaires sur les risques lors de la g&eacute;n&eacute;ration du document unique
+* Caract&egrave;re &rsquo; qui g&eacute;n&eacute;rait une erreur lors de l'ouverture du document open office
 
 
 = Version 5.1.2.9 =
 
-Améliorations 
+Am&eacute;liorations 
 
-* Reprendre le modèle du document unique(Intégration du plan d'action en première version: avec les actions correctives prévues) 
+* Reprendre le mod&egrave;le du document unique(Int&eacute;gration du plan d'action en premi&egrave;re version: avec les actions correctives pr&eacute;vues) 
 * Les boutons d'enregistrement dans l'interface vue d'ensemble sont toujours visible 
-* Reprise de la gestion pour reprendre les bonnes pratiques de wordpress (Tout est stocké dans une seule option pour le moment, à voir pour la performance et à splitter en plusieurs options si on voit des problème de performance dans les différentes interface utilisant ces options) 
-* Intégration de la gestion des produits (Ajout d'une option permettant de sélectionner les catégories a afficher:Cette option va prendre la liste des catégories dans le plugin wpshop développé par la société eoxia.La liste sera disponible uniquement si le plugin wpshop est activé dans le wordpress courant)
-* Ajout d'une box dans l'évaluation des risques pour affecter les produits aux éléments
-* Possibilité de filtrer les résultats de la box par catégorie
-* Recherche instantanée de produits
-* Conservation d'informations sur le produit: Nom du produit, identifiant du produit, date de dernière modification du produit, nom de la ou des catégorie(s), identifiant de la ou des catégories. Si le produit n'a jamais été utilisé dans le plugin, il sera inséré sinon on compare les dates de modifications si le produit a été modifié depuis l'insertion dans digirisk alors on fait une nouvelle insertion
-* Modification des interfaces de gestion des groupes(Reprise des interfaces d'affectation d'utilisateurs à un élément) 
-* Transférer les données des anciennes aux nouvelles tables(Options : de la table evarisk à la table wp / Utilisateurs : Liste des groupes (utilisateur et évaluateur) vers la nouvelle table unique de groupes / Utilisateurs : Liste des utilisateurs affectés aux groupes dans la table de liaison entre un élément et un utilisateur / Utilisateurs : Liste des groupes affectés aux éléments vers la nouvelle table / Version de la base de données transférée dans la table des options de wordpress dans une option digirisk_db_option)
+* Reprise de la gestion pour reprendre les bonnes pratiques de wordpress (Tout est stock&eacute; dans une seule option pour le moment, &agrave; voir pour la performance et &agrave; splitter en plusieurs options si on voit des probl&egrave;me de performance dans les diff&eacute;rentes interface utilisant ces options) 
+* Int&eacute;gration de la gestion des produits (Ajout d'une option permettant de s&eacute;lectionner les cat&eacute;gories a afficher:Cette option va prendre la liste des cat&eacute;gories dans le plugin wpshop d&eacute;velopp&eacute; par la soci&eacute;t&eacute; eoxia.La liste sera disponible uniquement si le plugin wpshop est activ&eacute; dans le wordpress courant)
+* Ajout d'une box dans l'&eacute;valuation des risques pour affecter les produits aux &eacute;l&eacute;ments
+* Possibilit&eacute; de filtrer les r&eacute;sultats de la box par cat&eacute;gorie
+* Recherche instantan&eacute;e de produits
+* Conservation d'informations sur le produit: Nom du produit, identifiant du produit, date de derni&egrave;re modification du produit, nom de la ou des cat&eacute;gorie(s), identifiant de la ou des cat&eacute;gories. Si le produit n'a jamais &eacute;t&eacute; utilis&eacute; dans le plugin, il sera ins&eacute;r&eacute; sinon on compare les dates de modifications si le produit a &eacute;t&eacute; modifi&eacute; depuis l'insertion dans digirisk alors on fait une nouvelle insertion
+* Modification des interfaces de gestion des groupes(Reprise des interfaces d'affectation d'utilisateurs &agrave; un &eacute;l&eacute;ment) 
+* Transf&eacute;rer les donn&eacute;es des anciennes aux nouvelles tables(Options : de la table evarisk &agrave; la table wp / Utilisateurs : Liste des groupes (utilisateur et &eacute;valuateur) vers la nouvelle table unique de groupes / Utilisateurs : Liste des utilisateurs affect&eacute;s aux groupes dans la table de liaison entre un &eacute;l&eacute;ment et un utilisateur / Utilisateurs : Liste des groupes affect&eacute;s aux &eacute;l&eacute;ments vers la nouvelle table / Version de la base de donn&eacute;es transf&eacute;r&eacute;e dans la table des options de wordpress dans une option digirisk_db_option)
 * Un clic droit ou gauche dans la vue d'ensemble coche la ligne pour modification 
-* Déplacement des tables non-utilisées vers wp_evatrash__(option/ppe/ppe_use/eav/users/roles/version/user_group/user_evaluator) 
-* Ajout de l'identifiant de l'élément des les listing(vue d'ensemble/document unique) 
-* Intégration des options dans la table des options de wordpress lors d'une nouvelle installation 
-* Ajout du bouton de régénération des documents unique manquants 
+* D&eacute;placement des tables non-utilis&eacute;es vers wp_evatrash__(option/ppe/ppe_use/eav/users/roles/version/user_group/user_evaluator) 
+* Ajout de l'identifiant de l'&eacute;l&eacute;ment des les listing(vue d'ensemble/document unique) 
+* Int&eacute;gration des options dans la table des options de wordpress lors d'une nouvelle installation 
+* Ajout du bouton de r&eacute;g&eacute;n&eacute;ration des documents unique manquants 
 * Ajout du bouton de suppression d'un document unique 
 
 Corrections
 
 * Remplacer les br dans l'interface de vue d'ensemble 
-* L'activation de l'efficacité dans les préconisations désactive tous les clics(Lorsque l'option "efficacité pour les préconisations" était activée alors on ne pouvait plus ajouter de préconisations/La prise en compte de l'efficacité lors de la modification de la préconisation ne se faisait pas) 
-* Erreur fatale lancée à la génération d'un document (DUER ou fiche de poste) due à la suppression d'un segment du fichier (Modification de la librairie odt) 
+* L'activation de l'efficacit&eacute; dans les pr&eacute;conisations d&eacute;sactive tous les clics(Lorsque l'option "efficacit&eacute; pour les pr&eacute;conisations" &eacute;tait activ&eacute;e alors on ne pouvait plus ajouter de pr&eacute;conisations/La prise en compte de l'efficacit&eacute; lors de la modification de la pr&eacute;conisation ne se faisait pas) 
+* Erreur fatale lanc&eacute;e &agrave; la g&eacute;n&eacute;ration d'un document (DUER ou fiche de poste) due &agrave; la suppression d'un segment du fichier (Modification de la librairie odt) 
 * Suppression d'un utilisateur de la liste des utilisateurs(L'hirondelle ne disparaissait pas) 
 
 
 = Version 5.1.2.8 =
 
-Améliorations
+Am&eacute;liorations
 
-* Possibilité de chosir un modèle pour la génération des fiches de poste pour un groupement entier
-* Possibilité de renseigner / modifier les informations suivantes pour la génération du document unique : localisation de l'étude, remarque importante, source
-* Regroupement des historiques des documents générés pour un groupement (document unique et fiche de poste) dans un même onglet
-* Regroupement des formulaires de génération de documents (document unique et fiche de poste) dans un même onglet (Géérer le bilan)
-* Ajout du numéro de la version actuelle dans l'appel des css et des javascripts pour éviter d'avoir à effectuer un ctrl+f5 lors d'une mise à jour du plugin
-* Mise en conformité des appels css et javascript avec les bonnes pratiques de wordpress
-* Ajout d'une interface permettant de modifier les commentaires et les descriptions des actions correctives prioritaires pour tous les risques de tous les éléments situés sous l'élément courant (uniquement disponible sur les groupements)
+* Possibilit&eacute; de chosir un mod&egrave;le pour la g&eacute;n&eacute;ration des fiches de poste pour un groupement entier
+* Possibilit&eacute; de renseigner / modifier les informations suivantes pour la g&eacute;n&eacute;ration du document unique : localisation de l'&eacute;tude, remarque importante, source
+* Regroupement des historiques des documents g&eacute;n&eacute;r&eacute;s pour un groupement (document unique et fiche de poste) dans un m&ecirc;me onglet
+* Regroupement des formulaires de g&eacute;n&eacute;ration de documents (document unique et fiche de poste) dans un m&ecirc;me onglet (G&eacute;&eacute;rer le bilan)
+* Ajout du num&eacute;ro de la version actuelle dans l'appel des css et des javascripts pour &eacute;viter d'avoir &agrave; effectuer un ctrl+f5 lors d'une mise &agrave; jour du plugin
+* Mise en conformit&eacute; des appels css et javascript avec les bonnes pratiques de wordpress
+* Ajout d'une interface permettant de modifier les commentaires et les descriptions des actions correctives prioritaires pour tous les risques de tous les &eacute;l&eacute;ments situ&eacute;s sous l'&eacute;l&eacute;ment courant (uniquement disponible sur les groupements)
 
 Corrections
 
-* Appel de la fonction EvaDisplayDesign::afficherFinPage() manquant dans deux interface provoquant des erreurs au niveau du code html généré
-* Erreur lors de l'affichage du suivi des actions correctives en mode avancé (Problème avec la notion de quotation avant et aprés le risque non géré lors de l'ajout d'une action corrective en même temps que le risque)
-* Modification de certains scripts et de la fonction eva_tools::IsValid_Variable() pour remplacer le caractère &rsquo; par ' qui génére une erreur lors de la génération des documents en odt
-* Problème de nommage du fichier zip contenant la liste des fiches de poste pour un groupement, qui faisait que la liste des fichiers zip n'était pas affichée après génération
-* Problème lors du rechargement de la box "bilan" des groupements le clic sur le boutton de génération du document unique ne fonctionnait plus
+* Appel de la fonction EvaDisplayDesign::afficherFinPage() manquant dans deux interface provoquant des erreurs au niveau du code html g&eacute;n&eacute;r&eacute;
+* Erreur lors de l'affichage du suivi des actions correctives en mode avanc&eacute; (Probl&egrave;me avec la notion de quotation avant et apr&eacute;s le risque non g&eacute;r&eacute; lors de l'ajout d'une action corrective en m&ecirc;me temps que le risque)
+* Modification de certains scripts et de la fonction digirisk_tools::IsValid_Variable() pour remplacer le caract&egrave;re &rsquo; par ' qui g&eacute;n&eacute;re une erreur lors de la g&eacute;n&eacute;ration des documents en odt
+* Probl&egrave;me de nommage du fichier zip contenant la liste des fiches de poste pour un groupement, qui faisait que la liste des fichiers zip n'&eacute;tait pas affich&eacute;e apr&egrave;s g&eacute;n&eacute;ration
+* Probl&egrave;me lors du rechargement de la box "bilan" des groupements le clic sur le boutton de g&eacute;n&eacute;ration du document unique ne fonctionnait plus
 
 
 = Version 5.1.2.7 =
 
-Améliorations
+Am&eacute;liorations
 
-*	Mise en place des préconisations sur les unités de travail
-* Ajout des préconisations dans les fiches de poste
-* Possibilité de définir l'affichage voulu pour les familles de préconisations et les préconisations (texte + image, texte seulement, image seulement + taille de l'image)
+*	Mise en place des pr&eacute;conisations sur les unit&eacute;s de travail
+* Ajout des pr&eacute;conisations dans les fiches de poste
+* Possibilit&eacute; de d&eacute;finir l'affichage voulu pour les familles de pr&eacute;conisations et les pr&eacute;conisations (texte + image, texte seulement, image seulement + taille de l'image)
 * Ajout d'un gestionnaire de notes par utilisateur. Pour le moment au format texte.
 
 Corrections
 
-* Lorsqu'on supprime un pattern dans le modèle odt (exemple: {photoDefaut}) il n'y a plus d'exception lancée par la librairie
-*	Le modèle par défaut est à nouveau sélectionné lorsqu'il n'y a pas d'autre modèle
+* Lorsqu'on supprime un pattern dans le mod&egrave;le odt (exemple: {photoDefaut}) il n'y a plus d'exception lanc&eacute;e par la librairie
+*	Le mod&egrave;le par d&eacute;faut est &agrave; nouveau s&eacute;lectionn&eacute; lorsqu'il n'y a pas d'autre mod&egrave;le
 
 
 = Version 5.1.2.6 =
 
-Améliorations
+Am&eacute;liorations
 
-*	Possibilité d'ajouter un modèle odt pour les fiches de poste
-* Prise en compte de la photo principale d'une unité de travail dans la fiche de poste
-* Possibilité de changer la taille de la photo générée dans les fiches de poste à travers une option
+*	Possibilit&eacute; d'ajouter un mod&egrave;le odt pour les fiches de poste
+* Prise en compte de la photo principale d'une unit&eacute; de travail dans la fiche de poste
+* Possibilit&eacute; de changer la taille de la photo g&eacute;n&eacute;r&eacute;e dans les fiches de poste &agrave; travers une option
 
 Corrections:
 
-* Correction du déplacement d'une untié de travail (erreur fatale lancée)
+* Correction du d&eacute;placement d'une unti&eacute; de travail (erreur fatale lanc&eacute;e)
 
 
 = Version 5.1.2.5 =
 
-* Déplacement des fichiers envoyés et générés du dossier du plugin vers le dossier wp-content de wordpress (pour éviter qu'ils ne soient supprimés lors de la mise à jour)
+* D&eacute;placement des fichiers envoy&eacute;s et g&eacute;n&eacute;r&eacute;s du dossier du plugin vers le dossier wp-content de wordpress (pour &eacute;viter qu'ils ne soient supprim&eacute;s lors de la mise &agrave; jour)
 
-Améliorations:
+Am&eacute;liorations:
 
-* Gestion des statuts des tâches et sous tâches des action correctives (non-commencée / passer en cours)
+* Gestion des statuts des tâches et sous tâches des action correctives (non-commenc&eacute;e / passer en cours)
 * Prise en compte des deux types d'affichage (pageHook) pour les box des groupements (groupement gestion / groupement risques)
 * Ajout de statistiques sur le tableau de bord (personnel/risque)
-* Génération de fiches de postes simple (par poste et par groupement)
-* Génération du plan d'action au format texte dans le document unique 
+* G&eacute;n&eacute;ration de fiches de postes simple (par poste et par groupement)
+* G&eacute;n&eacute;ration du plan d'action au format texte dans le document unique 
 
 Corrections:
 
-* Mise à jour des tâches parentes lors de la mise à jour des enfants
-* Email des utilisateurs mal construit à l'import avec le formulaire d'insertion rapide (prenom.prenom au lieu de prenom.nom)
-* Le champs affichés dans la box "récapitulatif" des unités et groupements n'affichait pas le nom en entier si il était trop long
+* Mise &agrave; jour des tâches parentes lors de la mise &agrave; jour des enfants
+* Email des utilisateurs mal construit &agrave; l'import avec le formulaire d'insertion rapide (prenom.prenom au lieu de prenom.nom)
+* Le champs affich&eacute;s dans la box "r&eacute;capitulatif" des unit&eacute;s et groupements n'affichait pas le nom en entier si il &eacute;tait trop long
 
 Ergonomie:
 
-* Le clic n'importe où sur la ligne édite l'élément plus forcément sur le nom de l'élément
-* Ajout d'un identifiant sur la ligne des éléments dans les arbres
+* Le clic n'importe o&ugrave; sur la ligne &eacute;dite l'&eacute;l&eacute;ment plus forc&eacute;ment sur le nom de l'&eacute;l&eacute;ment
+* Ajout d'un identifiant sur la ligne des &eacute;l&eacute;ments dans les arbres
 
 
 = Version 5.1.2.4 =
 
-Améliorations:
+Am&eacute;liorations:
 
-* Homogénéisation du formulaire d'ajout de risque (simple/par photo)
+* Homog&eacute;n&eacute;isation du formulaire d'ajout de risque (simple/par photo)
 
 Corrections:
 
-* Problème lors de la création de l'arborescence de stockage des fichiers odt générés pour les documents uniques
+* Probl&egrave;me lors de la cr&eacute;ation de l'arborescence de stockage des fichiers odt g&eacute;n&eacute;r&eacute;s pour les documents uniques
 
 
 = Version 5.1.2.3 =
 
-Améliorations:
+Am&eacute;liorations:
 
-* Ajout d'un bouton cocher/décocher tout dans la box des utilisateurs
+* Ajout d'un bouton cocher/d&eacute;cocher tout dans la box des utilisateurs
 * L'affichage du bouton "enregistrer" de la box des utilisateurs s'affichent en fonction des actions dans la box
-* Suppression du footer (doublon) dans les tableaux listant les risques unitaires et par unités
-* Ajout des préconisations pour les risques
-* Rechargement de l'arbre après un ajout ou une modification d'action corrective
-* Affichage des dates dans les tâches "mères"
+* Suppression du footer (doublon) dans les tableaux listant les risques unitaires et par unit&eacute;s
+* Ajout des pr&eacute;conisations pour les risques
+* Rechargement de l'arbre apr&egrave;s un ajout ou une modification d'action corrective
+* Affichage des dates dans les tâches "m&egrave;res"
 
 Corrections:
 
-* Icone jquery ui verte ne s'affiche pas à cause du nommage dans le fichier css
+* Icone jquery ui verte ne s'affiche pas &agrave; cause du nommage dans le fichier css
 * Erreur dans le fichier evaDisplayDesign.class.php ligne 2370 appel de _() au lieu de __()
 
 Ergonomie:
@@ -521,60 +536,60 @@ Ergonomie:
 
 = Version 5.1.2.2 =
 
-Améliorations :
+Am&eacute;liorations :
 
-* Ajout de la box permettant d'affecter des utilisateurs à un élément (groupement, unité de travail, évaluation, ...)
-* Changement de l'ergonomie de la box d'affectation des utilisateurs à un élément
-* Ajout d'une interface pour ajouter des utilisateurs rapidement à partir d'un nom et d'un prénom
-* Supprimer l'affichage de la box bilan sur unité de travail
-* Remonter au niveau de la box des risques après sauvegarde
+* Ajout de la box permettant d'affecter des utilisateurs &agrave; un &eacute;l&eacute;ment (groupement, unit&eacute; de travail, &eacute;valuation, ...)
+* Changement de l'ergonomie de la box d'affectation des utilisateurs &agrave; un &eacute;l&eacute;ment
+* Ajout d'une interface pour ajouter des utilisateurs rapidement &agrave; partir d'un nom et d'un pr&eacute;nom
+* Supprimer l'affichage de la box bilan sur unit&eacute; de travail
+* Remonter au niveau de la box des risques apr&egrave;s sauvegarde
 * Traduction des Datatables
 
 Corrections:
 
-* Correction de bugs de la box d'affectation des utilisateurs à un élément
-* Vérification du rechargement après ajout/edition/suppression d'un élément
-* Vérifier le comportement de l'interface après un drag and drop
-* Vérifier le comportement lors de la suppression d'un groupement
+* Correction de bugs de la box d'affectation des utilisateurs &agrave; un &eacute;l&eacute;ment
+* V&eacute;rification du rechargement apr&egrave;s ajout/edition/suppression d'un &eacute;l&eacute;ment
+* V&eacute;rifier le comportement de l'interface apr&egrave;s un drag and drop
+* V&eacute;rifier le comportement lors de la suppression d'un groupement
 * Enregistrement du drag and drop d'un groupement
 
 Ergonomie:
 
-* Amélioration ergonomie de la box de liaison entre un utilisateur et un élément
-* Améliorer l'ergonomie de l'édition du nom de l'élément dans la box récapitulatif
+* Am&eacute;lioration ergonomie de la box de liaison entre un utilisateur et un &eacute;l&eacute;ment
+* Am&eacute;liorer l'ergonomie de l'&eacute;dition du nom de l'&eacute;l&eacute;ment dans la box r&eacute;capitulatif
 * Changer la taille des pictos dans les arbres
 
 = Version 5.1.2.1 =
 
 Corrections:
 
-* Intégration de la librairie de gestion documentaire manquante lors de la dernière mise à jour
-* Correction de la box d'affectation des utilisateurs à une unité de travail ou à un groupement
-* Passage sur l'onglet historique des documents uniques après génération du document unique
+* Int&eacute;gration de la librairie de gestion documentaire manquante lors de la derni&egrave;re mise &agrave; jour
+* Correction de la box d'affectation des utilisateurs &agrave; une unit&eacute; de travail ou &agrave; un groupement
+* Passage sur l'onglet historique des documents uniques apr&egrave;s g&eacute;n&eacute;ration du document unique
 
 = Version 5.1.2 =
 
-Améliorations :
+Am&eacute;liorations :
 
-* Changement du nom des documents uniques dans l'historique : rajout du numéro de version pour différencier des documents générés le même jour et ayant le même nom
-* Vérification du nombre de sous éléments et du type de ces éléments dans les arbres pour ne pas afficher les bouton d'ajout dès le départ et non en javascript une fois la page chargée
-* Sécurisation de l'insertion des différents élément (UT et Groupement) pour ne pas pouvoir insérer une UT au même niveau qu'un groupement
-* Possibilité d'ajouter des risques associés à des photos
-* Gestion des modèles de document unique par groupement
-* Duplication d'un modèle de document unique .odt d'un groupement à un autre
+* Changement du nom des documents uniques dans l'historique : rajout du num&eacute;ro de version pour diff&eacute;rencier des documents g&eacute;n&eacute;r&eacute;s le m&ecirc;me jour et ayant le m&ecirc;me nom
+* V&eacute;rification du nombre de sous &eacute;l&eacute;ments et du type de ces &eacute;l&eacute;ments dans les arbres pour ne pas afficher les bouton d'ajout d&egrave;s le d&eacute;part et non en javascript une fois la page charg&eacute;e
+* S&eacute;curisation de l'insertion des diff&eacute;rents &eacute;l&eacute;ment (UT et Groupement) pour ne pas pouvoir ins&eacute;rer une UT au m&ecirc;me niveau qu'un groupement
+* Possibilit&eacute; d'ajouter des risques associ&eacute;s &agrave; des photos
+* Gestion des mod&egrave;les de document unique par groupement
+* Duplication d'un mod&egrave;le de document unique .odt d'un groupement &agrave; un autre
 * Ajout du pourcentage d'avancement dans l'arbre des actions correctives
 
 Corrections :
 
-* Changement de la variable $() en evarisk() pour tous les javascript utilisant jQuery pour éviter tout conflit avec d'autres extensions
-* Image "supprimer" de l'interface de gestion des groupes d'utilisateurs et d'évaluateurs plus grosse que les autres
-* Suppression de la possibilité de déplacer un élément "parent" dans un de ses "enfants"
-* Envoi de photos sur un serveur (impossibilité à cause des droits d'accès au dossier)
+* Changement de la variable $() en digirisk() pour tous les javascript utilisant jQuery pour &eacute;viter tout conflit avec d'autres extensions
+* Image "supprimer" de l'interface de gestion des groupes d'utilisateurs et d'&eacute;valuateurs plus grosse que les autres
+* Suppression de la possibilit&eacute; de d&eacute;placer un &eacute;l&eacute;ment "parent" dans un de ses "enfants"
+* Envoi de photos sur un serveur (impossibilit&eacute; &agrave; cause des droits d'acc&egrave;s au dossier)
 
 Ergonomie:
 
-* Masquage de la liste des catégories de danger lors d'une modification de risque
-* Changement de l'emplacement du bouton supprimer des box "groupes d'évaluateur" et "groupes d'utilisateurs" (de la première colonne à la dernière)
+* Masquage de la liste des cat&eacute;gories de danger lors d'une modification de risque
+* Changement de l'emplacement du bouton supprimer des box "groupes d'&eacute;valuateur" et "groupes d'utilisateurs" (de la premi&egrave;re colonne &agrave; la derni&egrave;re)
 
 = Version 5.1.1 =
 
@@ -585,136 +600,136 @@ Ergonomie:
 
 Corrections:
 
-* Bug dans la galerie photo pour la photo par défaut
+* Bug dans la galerie photo pour la photo par d&eacute;faut
 
 
 = Version 5.1.0.1 =
 
 Corrections:
 
-* Problème avec la box des utilisateurs participant à l'évaluation lorsqu'il n'y avait aucun utilisateur
+* Probl&egrave;me avec la box des utilisateurs participant &agrave; l'&eacute;valuation lorsqu'il n'y avait aucun utilisateur
 
 
 = Version 5.1.0 =
 
-Améliorations :
+Am&eacute;liorations :
 
-* Possibilité de ne pas faire apparaitre une modification de la quotation des risques dans les historiques
-* Possibilité de connaitre le créteur d'une tâche et d'une action
-* Possibilité de connaitre le soldeur (personne qui dit que la tâche ou action est terminée) d'une tâche et d'une action
-* Possibilité de connaitre la date ou une tâche et/ou une action ont été soldées
-* Possibilité d'affecter un utilisateur comme responsable d'une tâche et d'une action
-* Possibilité d'affecter un ou plusieurs utilisateurs comme acteurs d'une tâche et d'une action
+* Possibilit&eacute; de ne pas faire apparaitre une modification de la quotation des risques dans les historiques
+* Possibilit&eacute; de connaitre le cr&eacute;teur d'une tâche et d'une action
+* Possibilit&eacute; de connaitre le soldeur (personne qui dit que la tâche ou action est termin&eacute;e) d'une tâche et d'une action
+* Possibilit&eacute; de connaitre la date ou une tâche et/ou une action ont &eacute;t&eacute; sold&eacute;es
+* Possibilit&eacute; d'affecter un utilisateur comme responsable d'une tâche et d'une action
+* Possibilit&eacute; d'affecter un ou plusieurs utilisateurs comme acteurs d'une tâche et d'une action
 * Mise en place de l'option responsable de tâche et d'action obligatoire
 * Ajout d'une interface de gestion pour les options du logiciel
 * Mise en place d'un slider pour l'avancement d'une action
-* Mise en place de la box qui permet de savoir à quel élément est affecté une tâche dans l'interface des actions correctives
-* Possibilité d'affecter une tâche à un groupement, une unité de travail ou à un risque
-* Mise en place de l'interface contenant les différentes actions correctives liées à un risque lors de la modification de ce dernier
-* Ajout du statut "Done" (soldé) et "DoneByChief" (soldé par le supérieur) dans les tâches et actions
-* Lors du passage à 100 pour la progression d'une action on met à jour le statut de l'action à "Done"
-* Ajout d'options pour laisser la possiblité de modifier une tache ou une action même si celle ci et déjà soldée
-* Possibilité de solder une tâche sans que tous ses sous-éléments soient soldé (On solde tous ses sous-éléments en cascade)
-* Possibilité d'affecter des utilisateurs à la réalisation d'une tâche et d'une action
-* Liaison d'une tâche à un risque lors de sa modification (Option ne pouvoir affecter uniquement les taches soldées)
-* Mise à jour de la progression d'une tâche lors de la modification d'une action
+* Mise en place de la box qui permet de savoir &agrave; quel &eacute;l&eacute;ment est affect&eacute; une tâche dans l'interface des actions correctives
+* Possibilit&eacute; d'affecter une tâche &agrave; un groupement, une unit&eacute; de travail ou &agrave; un risque
+* Mise en place de l'interface contenant les diff&eacute;rentes actions correctives li&eacute;es &agrave; un risque lors de la modification de ce dernier
+* Ajout du statut "Done" (sold&eacute;) et "DoneByChief" (sold&eacute; par le sup&eacute;rieur) dans les tâches et actions
+* Lors du passage &agrave; 100 pour la progression d'une action on met &agrave; jour le statut de l'action &agrave; "Done"
+* Ajout d'options pour laisser la possiblit&eacute; de modifier une tache ou une action m&ecirc;me si celle ci et d&eacute;j&agrave; sold&eacute;e
+* Possibilit&eacute; de solder une tâche sans que tous ses sous-&eacute;l&eacute;ments soient sold&eacute; (On solde tous ses sous-&eacute;l&eacute;ments en cascade)
+* Possibilit&eacute; d'affecter des utilisateurs &agrave; la r&eacute;alisation d'une tâche et d'une action
+* Liaison d'une tâche &agrave; un risque lors de sa modification (Option ne pouvoir affecter uniquement les taches sold&eacute;es)
+* Mise &agrave; jour de la progression d'une tâche lors de la modification d'une action
 * Mise en place d'un suivi sur les tâches et actions.
-* Reprise du suivi des actions correctives avec la quotation avant la création de l'action correctives et la quotation après.
-* Avertissement qu'il existe des actions correctives non soldées lors de la modification d'un risque
-* écran taches à solder parce que toutes les sous-actions sont soldées
-* écran taches/actions dont la date est dépassée mais qui ne sont toujours pas soldées
-* écran taches/actions soldées avec les risques a ré-évaluer
-* Reprise de l'échelle de quotation pour rendre la quotation plus objective et pour correspondre à la norme du fichier odt
-* Ajout d'une option d'auto-installation dans le cas où la version utilisée est la version executable
-* Possibilité de supprimer une tache ou une action
-* Affichage de la box risque dans l'évaluation des risques
-* Changement du séparateur par défaut du fichier pour l'import des utilisateurs
-* Changement du role par défaut pour les utilisateurs importés
-* Affichage des extensions autorisées pour les fichiers d'import d'utilisateurs
-* Possibilité d'ajouter des photos aux actions correctives et de définir les photos avant et apré l'action
-* Option actions correctives avancée pour actions correctives simplifiée par défaut
-* Déplacement du menu principal du plugin pour le remonter juste en dessous du Tabelau de bord de Wordpress
+* Reprise du suivi des actions correctives avec la quotation avant la cr&eacute;ation de l'action correctives et la quotation apr&egrave;s.
+* Avertissement qu'il existe des actions correctives non sold&eacute;es lors de la modification d'un risque
+* &eacute;cran taches &agrave; solder parce que toutes les sous-actions sont sold&eacute;es
+* &eacute;cran taches/actions dont la date est d&eacute;pass&eacute;e mais qui ne sont toujours pas sold&eacute;es
+* &eacute;cran taches/actions sold&eacute;es avec les risques a r&eacute;-&eacute;valuer
+* Reprise de l'&eacute;chelle de quotation pour rendre la quotation plus objective et pour correspondre &agrave; la norme du fichier odt
+* Ajout d'une option d'auto-installation dans le cas o&ugrave; la version utilis&eacute;e est la version executable
+* Possibilit&eacute; de supprimer une tache ou une action
+* Affichage de la box risque dans l'&eacute;valuation des risques
+* Changement du s&eacute;parateur par d&eacute;faut du fichier pour l'import des utilisateurs
+* Changement du role par d&eacute;faut pour les utilisateurs import&eacute;s
+* Affichage des extensions autoris&eacute;es pour les fichiers d'import d'utilisateurs
+* Possibilit&eacute; d'ajouter des photos aux actions correctives et de d&eacute;finir les photos avant et apr&eacute; l'action
+* Option actions correctives avanc&eacute;e pour actions correctives simplifi&eacute;e par d&eacute;faut
+* D&eacute;placement du menu principal du plugin pour le remonter juste en dessous du Tabelau de bord de Wordpress
 * Ajout d'informations sur les champs obligatoire du formulaire des actions correctives
 * Ajout d'un lien pour remplir les champs de date des actions correctives avec la date d'aujourd'hui
 * Changement de la gestion de la galerie photo
-* Onglet de suivi simplifié
-* Gestion simplifiée des photos avant et aprè les actions correctives dans le mode simple
+* Onglet de suivi simplifi&eacute;
+* Gestion simplifi&eacute;e des photos avant et apr&egrave; les actions correctives dans le mode simple
 
 Corrections :
 
-* Problème d'affichage lors de l'édition d'un élément sous internet explorer
-* Erreur lors de la création de la table de liaison entre les risques et les tâches des actions correctives
-* Nom de la table methode marqué "en dur" dans le script d'insertion de données
-* Suppression de la possibilité de créer une unité de travail avant tout groupement
-* Problème lors de la mise à jour du coût pour les actions
-* Division par zéro dans le suivi des actions corectives lorsqu'aucune date n'a été rentrée
-* Erreurs php affichées lors de la création du document unique
-* Caractères spéciaux à la génération du document unique au format odt
-* Changement de la façon de créer la référence du document unique
-* Suppression de l'espace superflu lorsqu'on demande la génération du document unique (espace du aux champs datepicker)
-* Accent de "Décembre"
-* Pictos des fléches qui ne s'affichaient plus à cause de leur déplacement
-* Bouton "enregistrer" de la box de liaison entre utilisateur et action qui ne s'affichait pas correctement à cause d'un mauvais flag à la création
-* Champs manquants pour les photos avant et après les actions correctives
-* Lors d'une erreur de mise à jour sur les photos avant et après les actions correctives le picto n'était pas bon
+* Probl&egrave;me d'affichage lors de l'&eacute;dition d'un &eacute;l&eacute;ment sous internet explorer
+* Erreur lors de la cr&eacute;ation de la table de liaison entre les risques et les tâches des actions correctives
+* Nom de la table methode marqu&eacute; "en dur" dans le script d'insertion de donn&eacute;es
+* Suppression de la possibilit&eacute; de cr&eacute;er une unit&eacute; de travail avant tout groupement
+* Probl&egrave;me lors de la mise &agrave; jour du co&ucirc;t pour les actions
+* Division par z&eacute;ro dans le suivi des actions corectives lorsqu'aucune date n'a &eacute;t&eacute; rentr&eacute;e
+* Erreurs php affich&eacute;es lors de la cr&eacute;ation du document unique
+* Caract&egrave;res sp&eacute;ciaux &agrave; la g&eacute;n&eacute;ration du document unique au format odt
+* Changement de la fa&ccedil;on de cr&eacute;er la r&eacute;f&eacute;rence du document unique
+* Suppression de l'espace superflu lorsqu'on demande la g&eacute;n&eacute;ration du document unique (espace du aux champs datepicker)
+* Accent de "D&eacute;cembre"
+* Pictos des fl&eacute;ches qui ne s'affichaient plus &agrave; cause de leur d&eacute;placement
+* Bouton "enregistrer" de la box de liaison entre utilisateur et action qui ne s'affichait pas correctement &agrave; cause d'un mauvais flag &agrave; la cr&eacute;ation
+* Champs manquants pour les photos avant et apr&egrave;s les actions correctives
+* Lors d'une erreur de mise &agrave; jour sur les photos avant et apr&egrave;s les actions correctives le picto n'&eacute;tait pas bon
 * Raccourcissement de la barre de progression d'une action corrective
 
 = Version 5.0.3 =
 
-Améliorations :
+Am&eacute;liorations :
 
 * Import d'utilisateurs en masse
-* Affichage des dangers, méthodes et explications de la méthode plus claire dans la box d'évaluation des risques
+* Affichage des dangers, m&eacute;thodes et explications de la m&eacute;thode plus claire dans la box d'&eacute;valuation des risques
 
 Corrections :
 
-* Corrections de liens cassés sous internent explorer pour l'évaluation des risques
+* Corrections de liens cass&eacute;s sous internent explorer pour l'&eacute;valuation des risques
 
 Modifications:
 
-* Masquage de la box "bilan" dans les unités de travail
+* Masquage de la box "bilan" dans les unit&eacute;s de travail
 
 
 = Version 5.0.2 =
 
-Améliorations :
+Am&eacute;liorations :
 
-* Génération du document unique au format Open Office .odt
-* Possibilités d'ajouter une image explicative pour les méthodes d'évaluation. Qui s'affichera au niveau des slider d'évaluation
-* Historique des documents unique générés, avec possibilité de les afficher dans le navigateur
-* Indicateur de chargement lors du changement d'onglet dans la box bilan de l'évalutation des risques
-* Liens de téléchargement des fichiers odt générés à droite du formulaire
+* G&eacute;n&eacute;ration du document unique au format Open Office .odt
+* Possibilit&eacute;s d'ajouter une image explicative pour les m&eacute;thodes d'&eacute;valuation. Qui s'affichera au niveau des slider d'&eacute;valuation
+* Historique des documents unique g&eacute;n&eacute;r&eacute;s, avec possibilit&eacute; de les afficher dans le navigateur
+* Indicateur de chargement lors du changement d'onglet dans la box bilan de l'&eacute;valutation des risques
+* Liens de t&eacute;l&eacute;chargement des fichiers odt g&eacute;n&eacute;r&eacute;s &agrave; droite du formulaire
 * Affichage de l'historique des documents unique
-* Façon de générer le nom du document unique dans le formulaire
-* Récupération du nom du groupement actuel pour remplir le champs nomSociete du document unique
+* Fa&ccedil;on de g&eacute;n&eacute;rer le nom du document unique dans le formulaire
+* R&eacute;cup&eacute;ration du nom du groupement actuel pour remplir le champs nomSociete du document unique
 
 Ergonomie :
 
-* Chargement de la partie évaluation des risques lors du clic sur une ligne
-* Suppression (par masquage) du bouton de lancement d'évaluation des risques
-* Bouton "supprimer" déplacé en fin de ligne dans l'arbre des éléments
-* Suppression du rechargement de la partie gauche lors de l'édition d'un élément
+* Chargement de la partie &eacute;valuation des risques lors du clic sur une ligne
+* Suppression (par masquage) du bouton de lancement d'&eacute;valuation des risques
+* Bouton "supprimer" d&eacute;plac&eacute; en fin de ligne dans l'arbre des &eacute;l&eacute;ments
+* Suppression du rechargement de la partie gauche lors de l'&eacute;dition d'un &eacute;l&eacute;ment
 
 Corrections :
 
 * Changement des descriptions pour la livraison sur le svn de wordpress
 * Harmonisation de la taille sur le picto categorie de danger
-* Mise à jour du curseur sur les liens
-* Mise à jour du lien vers la page du plugin et de la description courte
-* Homogénéisation des pictos
-* Mise à des informations affichées pour le theme
-* Suppression d'une parenthèse en trop dans le readme.txt
-* Si aucun nom est donné pour la génération du document unique alors création automatique sur la base de YYYYMMDD_documentUnique_NomSociete
-* Création picto voiture et mise en place picto risques manutention manuelle
+* Mise &agrave; jour du curseur sur les liens
+* Mise &agrave; jour du lien vers la page du plugin et de la description courte
+* Homog&eacute;n&eacute;isation des pictos
+* Mise &agrave; des informations affich&eacute;es pour le theme
+* Suppression d'une parenth&egrave;se en trop dans le readme.txt
+* Si aucun nom est donn&eacute; pour la g&eacute;n&eacute;ration du document unique alors cr&eacute;ation automatique sur la base de YYYYMMDD_documentUnique_NomSociete
+* Cr&eacute;ation picto voiture et mise en place picto risques manutention manuelle
 
 Modification structurelle :
 
-* Changement du format de stockage des champs groupes utilisateurs/risques unitaires/risques par unité.
+* Changement du format de stockage des champs groupes utilisateurs/risques unitaires/risques par unit&eacute;.
 * Ajout d'un champs de statut sur les documents uniques
 
-Améliorations code :
+Am&eacute;liorations code :
 
-* Factorisation de certaines méthodes (Arborescence des groupements et unités de travail / affichage de la galerie)
+* Factorisation de certaines m&eacute;thodes (Arborescence des groupements et unit&eacute;s de travail / affichage de la galerie)
 * Reprise de la variable globale pour afficher le picto de suppression dans certains scripts
 * Ajout de commentaires dans le code
 
@@ -722,40 +737,40 @@ Améliorations code :
 
 = Version 4.3.4 vers la Version 5.0.1 =
 
-* Premiere version en béta
+* Premiere version en b&eacute;ta
 
-Dans cette premiere version nous avons intégré de nombreuses fonctionnalités par rapport à la version 4.3.4. Tous les fondamentaux ont été revus :
+Dans cette premiere version nous avons int&eacute;gr&eacute; de nombreuses fonctionnalit&eacute;s par rapport &agrave; la version 4.3.4. Tous les fondamentaux ont &eacute;t&eacute; revus :
 
-Méthode d'évaluation :
+M&eacute;thode d'&eacute;valuation :
 
-* Le logiciel est capable d'ingérer toutes les méthodes d'évaluation des risques et de transcrire le résultat sur une échelle de 0 à 100 avec un pas de 1
-* La possibilité d'intégrer vos méthodes d'évaluations (pour les personnes avertis)
-* La méthode d'évaluation des risques implantée par défaut est basée sur la méthode de kinney agrémentée de 2 facteurs supplémentaires
+* Le logiciel est capable d'ing&eacute;rer toutes les m&eacute;thodes d'&eacute;valuation des risques et de transcrire le r&eacute;sultat sur une &eacute;chelle de 0 &agrave; 100 avec un pas de 1
+* La possibilit&eacute; d'int&eacute;grer vos m&eacute;thodes d'&eacute;valuations (pour les personnes avertis)
+* La m&eacute;thode d'&eacute;valuation des risques implant&eacute;e par d&eacute;faut est bas&eacute;e sur la m&eacute;thode de kinney agr&eacute;ment&eacute;e de 2 facteurs suppl&eacute;mentaires
 
 
 La mise en place des dangers :
 
-* Cette nouvelle version vous permettra de gérer tous vos dangers et leur catégories
+* Cette nouvelle version vous permettra de g&eacute;rer tous vos dangers et leur cat&eacute;gories
 * Vous retrouverez, la segmentation de l'INRS dans l'ED840
 
-La gestion multi-société ou multi-services :
+La gestion multi-soci&eacute;t&eacute; ou multi-services :
 
-* Vous pouvez maintenant gérer des structures importantes dans le logiciel et imprimer votre document unique à chaque niveau de votre structure.
-Ceci vous permet, par exemple, de gérer une holding avec 5 sociétés et 25 Services et de gérer vos unités de travail a l'unité ou sous le groupement souhaité en fonction des rattachments de responsabilités.
-Pour les administrations cela vous permettra de calquer vos évaluations des risques sur l'organigramme et de réaliser vos documents d'évaluations par services.
+* Vous pouvez maintenant g&eacute;rer des structures importantes dans le logiciel et imprimer votre document unique &agrave; chaque niveau de votre structure.
+Ceci vous permet, par exemple, de g&eacute;rer une holding avec 5 soci&eacute;t&eacute;s et 25 Services et de g&eacute;rer vos unit&eacute;s de travail a l'unit&eacute; ou sous le groupement souhait&eacute; en fonction des rattachments de responsabilit&eacute;s.
+Pour les administrations cela vous permettra de calquer vos &eacute;valuations des risques sur l'organigramme et de r&eacute;aliser vos documents d'&eacute;valuations par services.
 
-L'intégration à Wordpress :
+L'int&eacute;gration &agrave; Wordpress :
 
-* L'intégration à wordpress fait suite de nombreuses demandes de communication des services des gestions des risques. Worpress est aujourd'hui un des logiciels permettant de gérer le plus simplement et avec la meilleure fiabilité un site internet.
+* L'int&eacute;gration &agrave; wordpress fait suite de nombreuses demandes de communication des services des gestions des risques. Worpress est aujourd'hui un des logiciels permettant de g&eacute;rer le plus simplement et avec la meilleure fiabilit&eacute; un site internet.
 
-* Ce site pourra etre déployé en interne (intranet) et/ou en externe en version hébergé  ce qui permettra de suivre toutes les actions du service prévention. La communication des responsables sécurité sera de fait extremement simplifiée.
-
-
-Voici les 4 changements fondamentaux qui permettent aujourd'hui à ce logiciel de ce mettre en place sur des infrastructures de plusieurs milliers de personnes tout en améliorant la convivialité de départ pour les petites entreprises.
+* Ce site pourra etre d&eacute;ploy&eacute; en interne (intranet) et/ou en externe en version h&eacute;berg&eacute;  ce qui permettra de suivre toutes les actions du service pr&eacute;vention. La communication des responsables s&eacute;curit&eacute; sera de fait extremement simplifi&eacute;e.
 
 
+Voici les 4 changements fondamentaux qui permettent aujourd'hui &agrave; ce logiciel de ce mettre en place sur des infrastructures de plusieurs milliers de personnes tout en am&eacute;liorant la convivialit&eacute; de d&eacute;part pour les petites entreprises.
 
-== Améliorations Futures ==
+
+
+== Am&eacute;liorations Futures ==
 
 
 
@@ -763,7 +778,7 @@ Voici les 4 changements fondamentaux qui permettent aujourd'hui à ce logiciel d
 
 * Version 4.3.4 vers la version 5.0.1
 
-Nous n'avons pas prévu de reprise des données de la plateforme 4.3.4 pour le moment si vous souhaitez plus d'information n'hesitez pas a nous contacter
+Nous n'avons pas pr&eacute;vu de reprise des donn&eacute;es de la plateforme 4.3.4 pour le moment si vous souhaitez plus d'information n'hesitez pas a nous contacter
 
 
 == Contactez l'auteur ==

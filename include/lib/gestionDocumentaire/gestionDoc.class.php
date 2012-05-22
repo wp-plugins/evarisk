@@ -41,7 +41,7 @@ class eva_gestionDoc
 
 		$formulaireUpload = 
 			'<script type="text/javascript">        
-				evarisk(document).ready(function(){
+				digirisk(document).ready(function(){
 					var uploader' . $idUpload . ' = new qq.FileUploader({
 						element: document.getElementById("' . $idUpload . '"),
 						action: "' . $actionUpload . '",
@@ -54,7 +54,7 @@ class eva_gestionDoc
 							"folder": "' . $repertoireDestination . '"
 						},
 						onComplete: function(file, response){
-							evarisk(".qq-upload-list").hide();';
+							digirisk(".qq-upload-list").hide();';
 
 		switch($table){
 			case TABLE_ACTIVITE:
@@ -65,8 +65,8 @@ class eva_gestionDoc
 			break;
 			case TABLE_DUER:
 				$formulaireUpload .= '
-							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});
-							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
+							digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});
+							digirisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 			case TABLE_FP:
 				$category = 'fiche_de_poste';
@@ -74,8 +74,8 @@ class eva_gestionDoc
 					$category = 'fiche_de_groupement';
 				}
 				$formulaireUpload .= '
-							evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});
-							evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
+							digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});
+							digirisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
 			break;
 		}
 
@@ -83,8 +83,8 @@ class eva_gestionDoc
 						'}
 					});
 
-					evarisk("#' . $idUpload . ' .qq-upload-button").each(function(){
-						evarisk(this).html("' . $texteBoutton . '");
+					digirisk("#' . $idUpload . ' .qq-upload-button").each(function(){
+						digirisk(this).html("' . $texteBoutton . '");
 						uploader' . $idUpload . '._button = new qq.UploadButton({
 							element: uploader' . $idUpload . '._getElement("button"),
 							multiple: ' . $multiple . ',
@@ -93,11 +93,11 @@ class eva_gestionDoc
 							}
 						});
 					});
-					evarisk(".qq-upload-drop-area").each(function(){
-						evarisk(this).html("<span>' . __("D&eacute;poser les fichiers ici pour les t&eacute;l&eacute;charger", "evarisk") . '</span>");
+					digirisk(".qq-upload-drop-area").each(function(){
+						digirisk(this).html("<span>' . __("D&eacute;poser les fichiers ici pour les t&eacute;l&eacute;charger", "evarisk") . '</span>");
 					});
 					setTimeout(function(){
-						evarisk(".qq-upload-button").width("100%");
+						digirisk(".qq-upload-button").width("100%");
 					}
 					, "300");
 				});
@@ -216,7 +216,7 @@ class eva_gestionDoc
 					$tableElement, $idElement, $wpdb->insert_id);
 				if($wpdb->query($query))
 				{
-					$result = '<script type="text/javascript" >evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});evarisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});</script>';
+					$result = '<script type="text/javascript" >digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"document_unique"});digirisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});</script>';
 				}
 			}
 		}
@@ -743,27 +743,27 @@ class eva_gestionDoc
 				case TABLE_GROUPEMENT:
 				{
 					$documentUniqueParam['#NOMENTREPRISE#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#NOMENTREPRISE#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#NOMENTREPRISE#']));
 					$odf->setVars('nomEntreprise', $documentUniqueParam['#NOMENTREPRISE#']);
 
 					$documentUniqueParam['#NOMPRENOMEMETTEUR#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMEMETTEUR#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMEMETTEUR#']));
 					$odf->setVars('emetteurDUER', $documentUniqueParam['#NOMPRENOMEMETTEUR#']);
 
 					$documentUniqueParam['#NOMPRENOMDESTINATAIRE#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMDESTINATAIRE#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMDESTINATAIRE#']));
 					$odf->setVars('destinataireDUER', $documentUniqueParam['#NOMPRENOMDESTINATAIRE#']);
 
 					$documentUniqueParam['#TELFIXE#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#TELFIXE#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#TELFIXE#']));
 					$odf->setVars('telephone', $documentUniqueParam['#TELFIXE#']);
 
 					$documentUniqueParam['#TELMOBILE#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#TELMOBILE#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#TELMOBILE#']));
 					$odf->setVars('portable', $documentUniqueParam['#TELMOBILE#']);
 
 					$documentUniqueParam['#TELFAX#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#TELFAX#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#TELFAX#']));
 					$odf->setVars('fax', $documentUniqueParam['#TELFAX#']);
 
 					$odf->setVars('dateGeneration', $documentUniqueParam['#DATE#']);
@@ -771,22 +771,22 @@ class eva_gestionDoc
 					$odf->setVars('dateAudit', $documentUniqueParam['#DEBUTAUDIT#'] . $finAudit);
 
 					$documentUniqueParam['#DISPODESPLANS#'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#']));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#']));
 					if(trim($documentUniqueParam['#DISPODESPLANS#']) == '')
 					{
 						$documentUniqueParam['#DISPODESPLANS#'] = __('La localisation n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
 					}
 
 					$odf->setVars('methodologie', str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#METHODOLOGIE#'])));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#METHODOLOGIE#'])));
 					$odf->setVars('dispoDesPlans', str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#'])));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#'])));
 
 					$odf->setVars('remarqueImportante', str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#ALERTE#'])));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#ALERTE#'])));
 
 					$odf->setVars('sources', str_replace('<br />', "
-", eva_tools::slugify_noaccent($documentUniqueParam['#SOURCES#'])));
+", digirisk_tools::slugify_noaccent($documentUniqueParam['#SOURCES#'])));
 
 					{/*	Remplissage du template pour les groupes d'utilisateurs	*/
 						$listeUserGroupe = array();
@@ -799,13 +799,13 @@ class eva_gestionDoc
 							foreach($listeUserGroupe AS $element)
 							{
 								$element['userGroupName'] = str_replace('<br />', "
-	", eva_tools::slugify_noaccent($element['userGroupName']));
+	", digirisk_tools::slugify_noaccent($element['userGroupName']));
 								$element['userGroupName'] = str_replace('&nbsp;', ' ', $element['userGroupName']);
 								$element['userGroupDescription'] = str_replace('<br />', "
-	", eva_tools::slugify_noaccent($element['userGroupDescription']));
+	", digirisk_tools::slugify_noaccent($element['userGroupDescription']));
 								$element['userGroupDescription'] = str_replace('&nbsp;', ' ', $element['userGroupDescription']);
-								$userGroup->nomGroupe(eva_tools::slugify_noaccent($element['userGroupName']));
-								$userGroup->descriptionGroupe(eva_tools::slugify_noaccent($element['userGroupDescription']));
+								$userGroup->nomGroupe(digirisk_tools::slugify_noaccent($element['userGroupName']));
+								$userGroup->descriptionGroupe(digirisk_tools::slugify_noaccent($element['userGroupDescription']));
 								$userGroup->nombreUtilisateursGroupe($element['userGroupTotalUserNumber']);
 								$userGroup->listeUtilisateur($element['userGroupUsers']);
 								$userGroup->merge();
@@ -825,10 +825,10 @@ class eva_gestionDoc
 							foreach($listeUserGroupe AS $element)
 							{
 								$element['nomElement'] = str_replace('<br />', "
-	", eva_tools::slugify_noaccent($element['nomElement']));
+	", digirisk_tools::slugify_noaccent($element['nomElement']));
 
 								$userGroupAffected->nomElement($element['nomElement']);
-								$userGroupAffected->listeGroupes(eva_tools::slugify_noaccent($element['listeGroupes']));
+								$userGroupAffected->listeGroupes(digirisk_tools::slugify_noaccent($element['listeGroupes']));
 								$userGroupAffected->merge();
 							}
 							$odf->mergeSegment($userGroupAffected);
@@ -852,15 +852,15 @@ class eva_gestionDoc
 										foreach($elements AS $element)
 										{
 											$element['nomElement'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
 											$element['identifiantRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
 											$element['quotationRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
 											$element['nomDanger'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
 											$element['commentaireRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
 
 											$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
 											$risque->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
@@ -888,7 +888,7 @@ class eva_gestionDoc
 							foreach($listeGroupement AS $element)
 							{
 								$element['nomElement'] = str_replace('<br />', "
-				", eva_tools::slugify_noaccent($element['nomElement']));
+				", digirisk_tools::slugify_noaccent($element['nomElement']));
 
 								$risqueParFiche->nomElement($element['nomElement']);
 								$risqueParFiche->quotationTotale($element['quotationTotale']);
@@ -916,15 +916,15 @@ class eva_gestionDoc
 										foreach($elements AS $element)
 										{
 											$element['nomElement'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+		", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
 											$element['identifiantRisque'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
+		", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
 											$element['quotationRisque'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+		", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
 											$element['nomDanger'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+		", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
 											$element['actionPrevention'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
+		", digirisk_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
 
 											$planDactionR->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
 											$planDactionR->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
@@ -953,7 +953,7 @@ class eva_gestionDoc
 						$workUnitinformations = EvaGroupement::getGroupement($idElement);
 
 						$odf->setVars('reference', ELEMENT_IDENTIFIER_GP . $idElement);
-						$odf->setVars('nom', eva_tools::slugify_noaccent($workUnitinformations->nom));
+						$odf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeGroupement/' . TABLE_GROUPEMENT . '/' . $idElement . '/';
 					}
 					else
@@ -961,15 +961,15 @@ class eva_gestionDoc
 						$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
 
 						$odf->setVars('referenceUnite', ELEMENT_IDENTIFIER_UT . $idElement);
-						$odf->setVars('nomUnite', eva_tools::slugify_noaccent($workUnitinformations->nom));
+						$odf->setVars('nomUnite', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
 					}
 					$odf->setVars('description', str_replace('<br />', "
-", eva_tools::slugify_noaccent($lastDocument->description)));
+", digirisk_tools::slugify_noaccent($lastDocument->description)));
 					$odf->setVars('telephone', str_replace('<br />', "
-", eva_tools::slugify_noaccent($lastDocument->telephone)));
+", digirisk_tools::slugify_noaccent($lastDocument->telephone)));
 					$odf->setVars('adresse', str_replace('<br />', "
-", eva_tools::slugify_noaccent($lastDocument->adresse)));
+", digirisk_tools::slugify_noaccent($lastDocument->adresse)));
 
 					{/*	Remplissage du template pour les utilisateurs affectes	*/
 						$listeUser = array();
@@ -984,10 +984,10 @@ class eva_gestionDoc
 								{
 									$affectedUsers->setVars('idUtilisateur', ELEMENT_IDENTIFIER_U . $elementInfos['user_id'], true, 'UTF-8');
 									$elementInfos['nomUtilisateur'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
+		", digirisk_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
 									$affectedUsers->setVars('nomUtilisateur', $elementInfos['user_lastname'], true, 'UTF-8');
 									$elementInfos['prenomUtilisateur'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
+		", digirisk_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
 									$affectedUsers->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
 
 									$affectedUsers->merge();
@@ -1010,10 +1010,10 @@ class eva_gestionDoc
 								{
 									$affectedEvaluators->setVars('idUtilisateur', ELEMENT_IDENTIFIER_U . $elementInfos['user_id'], true, 'UTF-8');
 									$elementInfos['nomUtilisateur'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
+		", digirisk_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
 									$affectedEvaluators->setVars('nomUtilisateur', $elementInfos['user_lastname'], true, 'UTF-8');
 									$elementInfos['prenomUtilisateur'] = str_replace('<br />', "
-		", eva_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
+		", digirisk_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
 									$affectedEvaluators->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
 
 									$affectedEvaluators->merge();
@@ -1033,14 +1033,14 @@ class eva_gestionDoc
 							foreach($listeDesGroupesAffectes AS $element)
 							{
 								$element['name'] = str_replace('<br />', "
-	", eva_tools::slugify_noaccent($element['name']));
+	", digirisk_tools::slugify_noaccent($element['name']));
 								$element['name'] = str_replace('&nbsp;', ' ', $element['name']);
 								$element['description'] = str_replace('<br />', "
-	", eva_tools::slugify_noaccent($element['description']));
+	", digirisk_tools::slugify_noaccent($element['description']));
 								$element['description'] = str_replace('&nbsp;', ' ', $element['description']);
-								$userGroupAffected->idGroupe(eva_tools::slugify_noaccent(ELEMENT_IDENTIFIER_GPU . $element['id']));
-								$userGroupAffected->nomGroupe(eva_tools::slugify_noaccent($element['name']));
-								$userGroupAffected->descriptionGroupe(eva_tools::slugify_noaccent($element['description']));
+								$userGroupAffected->idGroupe(digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_GPU . $element['id']));
+								$userGroupAffected->nomGroupe(digirisk_tools::slugify_noaccent($element['name']));
+								$userGroupAffected->descriptionGroupe(digirisk_tools::slugify_noaccent($element['description']));
 								$userList = '';
 								if($element['userList'] == '')
 								{
@@ -1088,15 +1088,15 @@ class eva_gestionDoc
 										foreach($elements AS $element)
 										{
 											$element['nomElement'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
 											$element['identifiantRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
 											$element['quotationRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
 											$element['nomDanger'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
 											$element['commentaireRisque'] = str_replace('<br />', "
-", eva_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
 
 											$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
 											$risque->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
@@ -1125,7 +1125,7 @@ class eva_gestionDoc
 								if(($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textandpicture') || ($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textonly'))
 								{
 									$recommandationCategoryName = str_replace('<br />', "
-	", eva_tools::slugify_noaccent($recommandationCategory[0]['recommandation_category_name']));
+	", digirisk_tools::slugify_noaccent($recommandationCategory[0]['recommandation_category_name']));
 								}
 								else
 								{
@@ -1158,11 +1158,11 @@ class eva_gestionDoc
 										$recommandation['commentaire'] = " : " . $recommandation['commentaire'] . "
 	";
 									}
-									$afffectedRecommandation->recommandations->setVars('identifiantRecommandation', eva_tools::slugify_noaccent(ELEMENT_IDENTIFIER_P . $recommandation['id_preconisation']));
+									$afffectedRecommandation->recommandations->setVars('identifiantRecommandation', digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_P . $recommandation['id_preconisation']));
 									$afffectedRecommandation->recommandations->setVars('recommandationName', str_replace('<br />', "
-	", eva_tools::slugify_noaccent($recommandation['recommandation_name'])));
+	", digirisk_tools::slugify_noaccent($recommandation['recommandation_name'])));
 									$afffectedRecommandation->recommandations->setVars('recommandationComment', str_replace('<br />', "
-	", eva_tools::slugify_noaccent($recommandation['commentaire'])));
+	", digirisk_tools::slugify_noaccent($recommandation['commentaire'])));
 
 									if(($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly') || ($recommandationCategory[0]['impressionRecommandation'] == 'textandpicture'))
 									{
@@ -1189,7 +1189,7 @@ class eva_gestionDoc
 						$odf->setImage('photoDefault', EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
 					}
 					else{
-						$odf->setVars('photoDefault', eva_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
+						$odf->setVars('photoDefault', digirisk_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
 					}
 
 					$fileName = str_replace(' ', '',$lastDocument->name) . '_V' . $lastDocument->revision;
@@ -1197,9 +1197,8 @@ class eva_gestionDoc
 				break;
 			}
 
-			if(!is_dir($finalDir))
-			{
-				eva_tools::make_recursiv_dir($finalDir);
+			if(!is_dir($finalDir)){
+				digirisk_tools::make_recursiv_dir($finalDir);
 			}
 			$odf->saveToDisk($finalDir . $fileName . '.odt');
 		}
@@ -1322,13 +1321,13 @@ class eva_gestionDoc
 			$document_list_output .= '
 </table>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery(".element_associated_document_info").click(function(){
 			jQuery("#" + jQuery(this).attr("id").replace("infos_", "")).toggle();
 		});
 
 		jQuery(".delete_associated_document").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document?', 'evarisk') . '"))){
+			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document?', 'evarisk') . '"))){
 				jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post":"true", 
 					"table":"' . TABLE_GED_DOCUMENTS . '",

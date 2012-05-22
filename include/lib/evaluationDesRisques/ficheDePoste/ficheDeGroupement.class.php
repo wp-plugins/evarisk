@@ -73,7 +73,7 @@ class eva_GroupSheet
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
 		$groupInformations = EvaGroupement::getGroupement($idElement);
-		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $groupInformations->nom));
+		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $groupInformations->nom));
 		$groupementPere = EvaGroupement::getGroupement($groupInformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
@@ -88,7 +88,7 @@ class eva_GroupSheet
 		{
 			$arborescence .= $groupementPere->nom . ' - ';
 		}
-		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = eva_tools::slugify_noaccent($arborescence) . eva_tools::slugify_noaccent($groupInformations->nom);
+		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = digirisk_tools::slugify_noaccent($arborescence) . digirisk_tools::slugify_noaccent($groupInformations->nom);
 
 		$modelChoice = '';
 		$lastGroupSheet = eva_GroupSheet::getGeneratedDocument($tableElement, $idElement, 'last');
@@ -96,54 +96,54 @@ class eva_GroupSheet
 		{
 			$modelChoice = '
 			setTimeout(function(){
-				evarisk("#FGPmodelDefaut").click();
+				digirisk("#FGPmodelDefaut").click();
 			},100);';
 		}
 
 		$output = EvaDisplayDesign::feedTemplate(eva_GroupSheet::getGroupSheetForm(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#genereFGP").click(function(){
-			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+	digirisk(document).ready(function(){
+		digirisk("#genereFGP").click(function(){
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_FP . '",
 				"act":"saveFicheGroupement",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
-				"nomDuDocument":evarisk("#nomFicheDeGroupement").val(),
-				"nomEntreprise":evarisk("#nomEntreprise").val(),
-				"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
+				"nomDuDocument":digirisk("#nomFicheDeGroupement").val(),
+				"nomEntreprise":digirisk("#nomEntreprise").val(),
+				"id_model":digirisk("#modelToUse' . $tableElementForDoc . '").val()
 			});
-			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
 		});
-		evarisk("#genereFSGP").click(function(){
-			evarisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+		digirisk("#genereFSGP").click(function(){
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_FP . '",
 				"act":"saveGroupSheetForGroupement",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '",
-				"nomDuDocument":evarisk("#nomFicheDeGroupement").val(),
-				"nomEntreprise":evarisk("#nomEntreprise").val(),
-				"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
+				"nomDuDocument":digirisk("#nomFicheDeGroupement").val(),
+				"nomEntreprise":digirisk("#nomEntreprise").val(),
+				"id_model":digirisk("#modelToUse' . $tableElementForDoc . '").val()
 			});
-			evarisk("#bilanBoxContainer").html(evarisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
 		});
-		evarisk("#FGPmodelDefaut").click(function(){
+		digirisk("#FGPmodelDefaut").click(function(){
 			clearTimeout();
 			setTimeout(function(){
-				if(!evarisk("#FGPmodelDefaut").is(":checked")){
-					evarisk("#GroupSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-					evarisk("#GroupSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
-					evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":"' . $lastGroupSheet->id_model . '"});
-					evarisk("#modelListForGeneration").show();
+				if(!digirisk("#FGPmodelDefaut").is(":checked")){
+					digirisk("#GroupSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					digirisk("#GroupSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
+					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":"' . $lastGroupSheet->id_model . '"});
+					digirisk("#modelListForGeneration").show();
 				}
 				else{
-					evarisk("#GroupSheetResultContainer").html("");
-					evarisk("#modelListForGeneration").html("");
-					evarisk("#modelListForGeneration").hide();
+					digirisk("#GroupSheetResultContainer").html("");
+					digirisk("#modelListForGeneration").html("");
+					digirisk("#modelListForGeneration").hide();
 				}
 			},500
 			);
@@ -217,7 +217,7 @@ class eva_GroupSheet
 						if($document->name == '')
 						{
 
-							$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
+							$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
 
 							$document->name = $documentName;
 						}
@@ -289,8 +289,8 @@ class eva_GroupSheet
 
 		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
-		$tableElement = eva_tools::IsValid_Variable($tableElement);
-		$idElement = eva_tools::IsValid_Variable($idElement);
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
 		/*	Révision du document, en fonction de l'element et de la date de génération	*/
 		$revision = '';
@@ -323,7 +323,7 @@ class eva_GroupSheet
 		{
 			$dateElement = explode(' ', $informations['dateCreation']);
 
-			$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . eva_tools::slugify_noaccent(str_replace(' ', '_', $informations['nomEntreprise']));
+			$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $informations['nomEntreprise']));
 
 			$informations['nomDuDocument'] = $documentName;
 		}
@@ -375,7 +375,7 @@ class eva_GroupSheet
 				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
 			VALUES 
 				('', NOW(), %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, eva_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk));
+			, array($revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, digirisk_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk));
 		if($wpdb->query($query) === false)
 		{
 			$status['result'] = 'error'; 
@@ -420,33 +420,33 @@ class eva_GroupSheet
 	</tr>
 </table>
 <script type="text/javascript" >
-	evarisk("#saveGroupSheetForGroupement").click(function(){
-		evarisk("#documentFormContainer").html(evarisk("#loadingImg").html());
-		evarisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#saveGroupSheetForGroupement").click(function(){
+		digirisk("#documentFormContainer").html(digirisk("#loadingImg").html());
+		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
 			"post":"true",
 			"table":"' . TABLE_FP . '",
 			"act":"saveGroupSheetForGroupement",
 			"tableElement":"' . $tableElement . '",
 			"idElement":' . $idElement . ',
-			"id_model":evarisk("#modelToUse' . $tableElementForDoc . '").val()
+			"id_model":digirisk("#modelToUse' . $tableElementForDoc . '").val()
 		});
 	});
 
-	evarisk("#modelDefaut").click(function(){
+	digirisk("#modelDefaut").click(function(){
 		setTimeout(function(){
-			if(!evarisk("#modelDefaut").is(":checked"))
+			if(!digirisk("#modelDefaut").is(":checked"))
 			{
-				evarisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
-				evarisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
-				evarisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":""});
-				evarisk("#modelListForGeneration").show();
+				digirisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+				digirisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
+				digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":""});
+				digirisk("#modelListForGeneration").show();
 			}
 			else
 			{
-				evarisk("#documentModelContainer").html("");
-				evarisk("#modelListForGeneration").html("");
-				evarisk("#modelListForGeneration").hide();
+				digirisk("#documentModelContainer").html("");
+				digirisk("#modelListForGeneration").html("");
+				digirisk("#modelListForGeneration").hide();
 			}
 		},600);
 	});

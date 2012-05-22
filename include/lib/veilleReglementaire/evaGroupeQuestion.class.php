@@ -6,7 +6,7 @@
  */
 require_once(EVA_CONFIG );
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php' );
+
 class EvaGroupeQuestions {
 	
 /*
@@ -21,7 +21,7 @@ class EvaGroupeQuestions {
 	static function getGroupeQuestions($id)
 	{
 		global $wpdb;
-		$id = mysql_real_escape_string(eva_tools::IsValid_Variable($id));
+		$id = mysql_real_escape_string(digirisk_tools::IsValid_Variable($id));
 		$id = (int) $id;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_GROUPE_QUESTION . " WHERE id = " . $id);
 		return $resultat;
@@ -35,7 +35,7 @@ class EvaGroupeQuestions {
 	static function getGroupeQuestionsByName($nom)
 	{
 		global $wpdb;
-		$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($nom));
+		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($nom));
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_GROUPE_QUESTION . " WHERE nom='" . $nom . "'");
 		return $resultat;
 	}
@@ -48,8 +48,8 @@ class EvaGroupeQuestions {
 	  */
 	static function getGroupesQuestions($where = "Status='Valid'", $order = "code ASC") {
 		global $wpdb;
-		$where = mysql_real_escape_string(eva_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(eva_tools::IsValid_Variable($order));
+		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
+		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_GROUPE_QUESTION . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
 	}
@@ -64,8 +64,8 @@ class EvaGroupeQuestions {
 	static function getQuestionsDuGroupeQuestions($idGroupeQuestion, $order="code ASC", $status="Valid")
 	{
 		global $wpdb;
-		$idGroupeQuestion = mysql_real_escape_string(eva_tools::IsValid_Variable($idGroupeQuestion));
-		$order = mysql_real_escape_string(eva_tools::IsValid_Variable($order));
+		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idGroupeQuestion));
+		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_QUESTION . " WHERE id IN (SELECT id_question FROM " . TABLE_POSSEDE_QUESTION . " WHERE id_groupe_question =" . $idGroupeQuestion . " AND Status='" . $status . "') AND Status='" . $status . "' ORDER BY ". $order );
 		return $resultat;
 	}
@@ -80,8 +80,8 @@ class EvaGroupeQuestions {
 	static function getIdsToutesQuestionsDuGroupeQuestions($idGroupeQuestion, $order="id ASC", $status="Valid")
 	{
 		global $wpdb;
-		$idGroupeQuestion = mysql_real_escape_string(eva_tools::IsValid_Variable($idGroupeQuestion));
-		$order = mysql_real_escape_string(eva_tools::IsValid_Variable($order));
+		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idGroupeQuestion));
+		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
 		$groupeQuestion = EvaGroupeQuestions::getGroupeQuestions($idGroupeQuestion);
 		
 		$resultats = $wpdb->get_results( "
@@ -126,7 +126,7 @@ class EvaGroupeQuestions {
 	static function saveNewGroupeQuestions($nom)
 	{
 		global $wpdb;
-		$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($nom));		
+		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($nom));		
 		
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_GROUPE_QUESTION);
 		$sql = "INSERT INTO " . TABLE_GROUPE_QUESTION . " (`nom`, `Status`, `limiteGauche`, `limiteDroite`) VALUES ('" . $nom . "', 'Valid', '" . ($lim) . "', '" . ($lim+1) . "')";
@@ -146,11 +146,11 @@ class EvaGroupeQuestions {
 	static function updateGroupeQuestions($idGroupeQuestion, $nom, $code, $idGroupeQuestionPere, $extraitTexte = null)
 	{
 		global $wpdb;
-		$idGroupeQuestion = mysql_real_escape_string(eva_tools::IsValid_Variable($idGroupeQuestion));
-		$nom = mysql_real_escape_string(eva_tools::IsValid_Variable($nom));
-		$code = mysql_real_escape_string(eva_tools::IsValid_Variable($code));
-		$idGroupeQuestionPere = mysql_real_escape_string(eva_tools::IsValid_Variable($idGroupeQuestionPere));
-		$extraitTexte = mysql_real_escape_string(eva_tools::IsValid_Variable($extraitTexte));
+		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idGroupeQuestion));
+		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($nom));
+		$code = mysql_real_escape_string(digirisk_tools::IsValid_Variable($code));
+		$idGroupeQuestionPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idGroupeQuestionPere));
+		$extraitTexte = mysql_real_escape_string(digirisk_tools::IsValid_Variable($extraitTexte));
 		$nom = str_replace("[retourALaLigne]","\n", $nom);
 		
 		$sql = "UPDATE `" . TABLE_GROUPE_QUESTION . "` SET `nom`='" . $nom . "', `code`='" . $code . "' WHERE `id`='" . $idGroupeQuestion . "'";
@@ -180,8 +180,8 @@ class EvaGroupeQuestions {
 	{
 		global $wpdb;
 		
-		$idGroupeQuestion = eva_tools::IsValid_Variable($idGroupeQuestion);
-		$extraitTexte = eva_tools::IsValid_Variable($extraitTexte);
+		$idGroupeQuestion = digirisk_tools::IsValid_Variable($idGroupeQuestion);
+		$extraitTexte = digirisk_tools::IsValid_Variable($extraitTexte);
 		$extraitTexte = str_replace("[retourALaLigne]","\n", $extraitTexte);
 		
 		$sql = "UPDATE `" . TABLE_GROUPE_QUESTION . "` SET `extraitTexte`='" . mysql_real_escape_string($extraitTexte) . "' WHERE `id`='" . mysql_real_escape_string($idGroupeQuestion) . "'";
@@ -195,7 +195,7 @@ class EvaGroupeQuestions {
 	static function deleteGroupeQuestions($id)
 	{
 		global $wpdb;
-		$id = mysql_real_escape_string(eva_tools::IsValid_Variable($id));
+		$id = mysql_real_escape_string(digirisk_tools::IsValid_Variable($id));
 		$groupeQuestions = EvaGroupeQuestions::getGroupeQuestions($id);
 		
 		$sql = "UPDATE " . TABLE_GROUPE_QUESTION . " set `Status`='Deleted' WHERE `limiteGauche`>=" . $groupeQuestions->limiteGauche . " AND `limiteDroite`<=" . $groupeQuestions->limiteDroite;

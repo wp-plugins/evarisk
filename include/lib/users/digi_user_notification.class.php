@@ -116,7 +116,7 @@ WHERE 1" . $conditions, $conditions_value);
 </div>
 
 <script type="text/javascript" >
-	evarisk("#userNotificationManager").dialog({
+	digirisk("#userNotificationManager").dialog({
 		autoOpen: false,
 		height: 600,
 		width: 800,
@@ -124,42 +124,42 @@ WHERE 1" . $conditions, $conditions_value);
 		buttons: {
 			"' . __('Enregistrer et fermer', 'evarisk') . '": function(){
 				jQuery("#user_notification_form").submit();
-				setTimeout(evarisk(this).dialog("close"), \'1000\');
+				setTimeout(digirisk(this).dialog("close"), \'1000\');
 			},
 			"' . __('Enregistrer', 'evarisk') . '": function(){
 				jQuery("#user_notification_form").submit();
 			},
 			"' . __('Annuler', 'evarisk') . '": function(){
-				evarisk(this).dialog("close");
+				digirisk(this).dialog("close");
 			}
 		},
 		close: function(){
-			evarisk("#userNotificationManagerForm").html("");
-			evarisk("#userNotificationContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			digirisk("#userNotificationManagerForm").html("");
+			digirisk("#userNotificationContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 				"post": "true", 
 				"table": "' . self::dbTable . '",
 				"act": "reload_user_notification_box",
 				"tableElement": "' . $element_type . '",
 				"idElement": "' . $element_identifier . '"
 			});
-			evarisk("#saveButtonBoxContainer").show();
+			digirisk("#saveButtonBoxContainer").show();
 		}
 	});
 
-	evarisk("#openNotificationManagerDialog").click(function(){
-		evarisk("#userNotificationContainerBox").html("");
-		evarisk("#saveButtonBoxContainer").hide();
-		evarisk("#userNotificationManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+	digirisk("#openNotificationManagerDialog").click(function(){
+		digirisk("#userNotificationContainerBox").html("");
+		digirisk("#saveButtonBoxContainer").hide();
+		digirisk("#userNotificationManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 			"post":"true",
 			"table":"' . self::dbTable . '",
 			"act":"reload_user_notification_box",
 			"tableElement":"' . $element_type . '",
 			"idElement":"' . $element_identifier . '"
 		});
-		evarisk("#userNotificationManager").dialog("open");
+		digirisk("#userNotificationManager").dialog("open");
 	});
 
-	evarisk("#save_user_notification_' . $element_type . '").click(function(){
+	digirisk("#save_user_notification_' . $element_type . '").click(function(){
 		jQuery("#saveButtonLoading_userNotification' . $element_type . '").show();
 		jQuery("#saveButtonContainer_userNotification' . $element_type . '").hide();
 
@@ -308,7 +308,7 @@ WHERE LUN.status = 'valid'
 	' . evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script, false) . '
 </form>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#user_notification_form").ajaxForm({
 			target: "#ajax-response"
 		});
@@ -652,7 +652,6 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 									}
 									else{
 										$responsable_infos = evaUser::getUserInformation($content);
-										echo '<pre>';print_r($responsable_infos);echo '</pre>';
 										$content_to_output .= ELEMENT_IDENTIFIER_U . $content . ' - ' . $responsable_infos[$content]['user_lastname'] . ' ' . $responsable_infos[$content]['user_firstname'];
 									}
 								break;

@@ -36,8 +36,8 @@ class EvaDisplayInput {
 	{
 		$script = '
 			<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk("#' . $id . ' :input").filter(".input_required").prev("br").prev("label").addClass("for_required_input");
+				digirisk(document).ready(function() {
+					digirisk("#' . $id . ' :input").filter(".input_required").prev("br").prev("label").addClass("for_required_input");
 				});
 			</script>';
 		return $script . '</form>';
@@ -61,50 +61,50 @@ class EvaDisplayInput {
 			$class = $class . ' form-input-tip';
 		}
 		$script = '<script type="text/javascript">
-			evarisk(document).ready(function() {
+			digirisk(document).ready(function() {
 				document.getElementById("' . $id . '").className = "' . $class . '"; ';
 		if(ucfirst(strtolower($limitation)) != 'Date')
 		{
-			$script = $script . 'evarisk(\'#' . $id . '\').focus(function() {
-						if(evarisk(\'#' . $id . '\').is(".form-input-tip"))
+			$script = $script . 'digirisk(\'#' . $id . '\').focus(function() {
+						if(digirisk(\'#' . $id . '\').is(".form-input-tip"))
 						{
-							evarisk(\'#' . $id . '\').val("");
-							evarisk(\'#' . $id . '\').removeClass(\'form-input-tip\');
+							digirisk(\'#' . $id . '\').val("");
+							digirisk(\'#' . $id . '\').removeClass(\'form-input-tip\');
 						}
 					});
 					
-					evarisk(\'#' . $id . '\').blur(function() {
-						if(evarisk(\'#' . $id . '\').val() == "")
+					digirisk(\'#' . $id . '\').blur(function() {
+						if(digirisk(\'#' . $id . '\').val() == "")
 						{
-							evarisk(\'#' . $id . '\').addClass(\'form-input-tip\');
-							evarisk(\'#' . $id . '\').val("' . $contenuAide . '");
+							digirisk(\'#' . $id . '\').addClass(\'form-input-tip\');
+							digirisk(\'#' . $id . '\').val("' . $contenuAide . '");
 						}
 					});
 					
-					if(evarisk(\'#' . $id . '\').val() == "")
+					if(digirisk(\'#' . $id . '\').val() == "")
 					{
-						evarisk(\'#' . $id . '\').addClass(\'form-input-tip\');
-						evarisk(\'#' . $id . '\').val("' . $contenuAide . '");
+						digirisk(\'#' . $id . '\').addClass(\'form-input-tip\');
+						digirisk(\'#' . $id . '\').val("' . $contenuAide . '");
 					}';
 		}
 		switch(ucfirst(strtolower($limitation)))
 		{
 			case 'Number' :
-				$script = $script . 'evarisk(\'#' . $id . '\').keypress(function(event) {
+				$script = $script . 'digirisk(\'#' . $id . '\').keypress(function(event) {
 					if (event.which && (event.which < 48 || event.which >57) && event.which != 8) {
 						event.preventDefault();
 					}
 				});';
 				break;
 			case 'Float' :
-				$script = $script . 'evarisk(\'#' . $id . '\').keypress(function(event) {
+				$script = $script . 'digirisk(\'#' . $id . '\').keypress(function(event) {
 						if (event.which && (event.which < 48 || event.which >57) && event.which != 8 && event.which != 46) {
 							event.preventDefault();
 						}
 						if (event.which == 46)
 						{
 							var reg = /\./;
-							if(reg.exec(evarisk(\'#' . $id . '\').val()) != null)
+							if(reg.exec(digirisk(\'#' . $id . '\').val()) != null)
 							{
 								event.preventDefault();
 							}
@@ -114,16 +114,16 @@ class EvaDisplayInput {
 			case 'Date' :
 				$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
 				$locale = ($locale == 'en') ? '' : $locale;
-				$script .= 'evarisk(\'#' . $id . '\').datepicker(evarisk.datepicker.regional["' . $locale . '"]);
-				evarisk(\'#' . $id . '\').datepicker("option", "dateFormat", "yy-mm-dd");
-				evarisk(\'#' . $id . '\').datepicker("option", "changeMonth", true);
-				evarisk(\'#' . $id . '\').datepicker("option", "changeYear", true);
-				evarisk(\'#' . $id . '\').datepicker("option", "navigationAsDateFormat", true);
-				evarisk(\'#ui-datepicker-div\').hide();';
+				$script .= 'digirisk(\'#' . $id . '\').datepicker(jQuery.datepicker.regional["' . $locale . '"]);
+				digirisk(\'#' . $id . '\').datepicker("option", "dateFormat", "yy-mm-dd");
+				digirisk(\'#' . $id . '\').datepicker("option", "changeMonth", true);
+				digirisk(\'#' . $id . '\').datepicker("option", "changeYear", true);
+				digirisk(\'#' . $id . '\').datepicker("option", "navigationAsDateFormat", true);
+				digirisk(\'#ui-datepicker-div\').hide();';
 				break;
 		}
 		$script .= '
-          evarisk("#' . $id . '").val("' . str_replace('"', '\"', str_replace(" 
+          digirisk("#' . $id . '").val("' . str_replace('"', '\"', str_replace(" 
 ", "\\n", $contenuInput)) . '"); 
 				});
 			</script>';

@@ -10,7 +10,6 @@ require_once('../../../../../../wp-load.php');
 require_once(ABSPATH . 'wp-admin/includes/admin.php');
 require_once('../../../evarisk.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
-require_once(EVA_LIB_PLUGIN_DIR . 'eva_tools.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php' );
@@ -43,9 +42,9 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentU
 	<body >
 <?php
 
-	$idElement = eva_tools::IsValid_Variable($_GET['idElement']);
-	$idDuer = eva_tools::IsValid_Variable($_GET['id']);
-	$outPut = eva_tools::IsValid_Variable($_GET['out']);
+	$idElement = digirisk_tools::IsValid_Variable($_GET['idElement']);
+	$idDuer = digirisk_tools::IsValid_Variable($_GET['id']);
+	$outPut = digirisk_tools::IsValid_Variable($_GET['out']);
 
 	if($outPut == 'odt')
 	{

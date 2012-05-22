@@ -80,7 +80,13 @@ class digirisk_permission
 		$permission['digi_edit_method'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'method', 'permission_sub_module' => '');
 		$permission['digi_view_detail_method'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'method', 'permission_sub_module' => '');
 		$permission['digi_delete_method'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'method', 'permission_sub_module' => '');
+		}
+
+		{/*	Evaluation method Vars permission	*/
 		$permission['digi_add_method_var'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'method', 'permission_sub_module' => 'vars');
+		$permission['digi_edit_method_var'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'method', 'permission_sub_module' => 'vars');
+		$permission['digi_view_detail_method_var'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => 'detail', 'permission_module' => 'method', 'permission_sub_module' => 'vars');
+		$permission['digi_delete_method_var'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'method', 'permission_sub_module' => 'vars');
 		}
 
 		{/*	Danger permission	*/
@@ -98,6 +104,9 @@ class digirisk_permission
 
 		/*	Options permission	*/
 		$permission['digi_edit_option'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'option', 'permission_sub_module' => '');
+
+		/*	Tools permission	*/
+		$permission['digi_delete_database'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'tools', 'permission_sub_module' => 'db_tools');
 
 		/*	User permission	*/
 		$permission['digi_import_user'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'user', 'permission_sub_module' => 'import');
@@ -186,7 +195,7 @@ class digirisk_permission
 		$role = get_role('administrator');
 
 		/*	Récupération des "anciens" droits	*/
-		$droits = digirisk_permission::getDroitEvarisk();
+		$droits = digirisk_permission::getDroitdigirisk();
 		foreach($droits as $droit => $appellation)
 		{/*	Lecture des "anciens" droits pour les retirer à l'administrateur	*/
 			if(($role != null) && $role->has_cap($droit))
@@ -243,10 +252,10 @@ class digirisk_permission
 		global $digi_role;
 
 		$output = $message = '';
-		$action = isset($_REQUEST['action']) ? eva_tools::IsValid_Variable($_REQUEST['action']) : '';
-		$save = isset($_REQUEST['save']) ? eva_tools::IsValid_Variable($_REQUEST['save']) : '';
-		$formAction = isset($_REQUEST[self::dbTable . '_action']) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
-		$role = isset($_REQUEST['role']) ? eva_tools::IsValid_Variable($_REQUEST['role']) : '';
+		$action = isset($_REQUEST['action']) ? digirisk_tools::IsValid_Variable($_REQUEST['action']) : '';
+		$save = isset($_REQUEST['save']) ? digirisk_tools::IsValid_Variable($_REQUEST['save']) : '';
+		$formAction = isset($_REQUEST[self::dbTable . '_action']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
+		$role = isset($_REQUEST['role']) ? digirisk_tools::IsValid_Variable($_REQUEST['role']) : '';
 		$editionInProgress = false;
 
 		/*	Instanciation de l'objet role de worpdress	*/
@@ -299,7 +308,7 @@ class digirisk_permission
 					$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Vous n\'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;', 'evarisk') . '</strong>');
 					$output .= 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		actionMessageShow("#message", "' . $message . '");
 		setTimeout(\'actionMessageHide("#message")\',7500);
 	});
@@ -319,7 +328,7 @@ class digirisk_permission
 					$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Vous n\'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;', 'evarisk') . '</strong>');
 					$output .= 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		actionMessageShow("#message", "' . $message . '");
 		setTimeout(\'actionMessageHide("#message")\',7500);
 	});
@@ -358,7 +367,7 @@ class digirisk_permission
 		{
 			$output .= '
 <script type="text/javascript" >
-	evarisk("#message").addClass("updated");
+	digirisk("#message").addClass("updated");
 </script>';
 		}
 
@@ -377,8 +386,8 @@ class digirisk_permission
 
 		/*	Initialize the different vars usefull for the action	*/
 		$pageMessage = $actionResult = '';
-		$action = isset($_REQUEST[self::dbTable . '_action']) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
-		$role = isset($_REQUEST[self::dbTable]['id']) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable]['id']) : '';
+		$action = isset($_REQUEST[self::dbTable . '_action']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
+		$role = isset($_REQUEST[self::dbTable]['id']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable]['id']) : '';
 
 		if(($role == '') || array_key_exists($role, $digi_role))
 		{
@@ -410,7 +419,7 @@ class digirisk_permission
 				$digi_wp_role->add_role($role, $roleName);
 
 				$moreParamsForRoleCreation = '';
-				$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : 'subscriber';
+				$roleToCopy = isset($_REQUEST['roleToCopy']) ? digirisk_tools::IsValid_Variable($_REQUEST['roleToCopy']) : 'subscriber';
 				if($roleToCopy != ''){
 					$moreParamsForRoleCreation = '&roleToCopy=' . $roleToCopy;
 					$basic_caps = $digi_wp_role->get_role($roleToCopy);
@@ -543,20 +552,20 @@ class digirisk_permission
 		/*	For option adding see jqueyr datatable documentation	*/
 		$script = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . ' tfoot").remove();
-		evarisk("#' . $idTable . '").dataTable({
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . ' tfoot").remove();
+		digirisk("#' . $idTable . '").dataTable({
 			"bInfo": false,
 			"bLengthChange": false,
 			"oLanguage":{
 				"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
 			}
 		});
-		evarisk(".deleteRole").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le?', 'evarisk') . '"))){
-				var clickedId = evarisk(this).parent("td").parent("tr").attr("id").replace("digirisk_users_roles_", "");
-				evarisk("#' . self::dbTable . '_delete_form_id").val(clickedId);
-				evarisk("#' . self::dbTable . '_delete_form").submit();
+		digirisk(".deleteRole").click(function(){
+			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le?', 'evarisk') . '"))){
+				var clickedId = digirisk(this).parent("td").parent("tr").attr("id").replace("digirisk_users_roles_", "");
+				digirisk("#' . self::dbTable . '_delete_form_id").val(clickedId);
+				digirisk("#' . self::dbTable . '_delete_form").submit();
 			}
 		});
 	});
@@ -601,8 +610,8 @@ class digirisk_permission
 	{
 		global $digi_role;
 
-		$action = isset($_REQUEST['action']) ? eva_tools::IsValid_Variable($_REQUEST['action']) : 'add';
-		$role = isset($_REQUEST['role']) ? eva_tools::IsValid_Variable($_REQUEST['role']) : '';
+		$action = isset($_REQUEST['action']) ? digirisk_tools::IsValid_Variable($_REQUEST['action']) : 'add';
+		$role = isset($_REQUEST['role']) ? digirisk_tools::IsValid_Variable($_REQUEST['role']) : '';
 		$currentPageButton = '';
 
 		if(($action == 'add') && current_user_can('digi_add_user_role'))
@@ -637,7 +646,7 @@ class digirisk_permission
 
 		$elementEditionOutput = '';
 		$dbFieldToHide = array('creation_user_id', 'deletion_user_id', 'deletion_date', 'creation_date', 'last_update_date', 'role_internal_name', 'status');
-		$action = isset($_REQUEST['action']) ? eva_tools::IsValid_Variable($_REQUEST['action']) : 'add';
+		$action = isset($_REQUEST['action']) ? digirisk_tools::IsValid_Variable($_REQUEST['action']) : 'add';
 
 		$the_form_content_hidden = $the_form_general_content = '';
 		if($action == 'add')
@@ -649,7 +658,7 @@ class digirisk_permission
 				{
 					if(($currentElementId == '') || array_key_exists($currentElementId, $digi_role))
 					{
-						$requestFormValue = isset($_REQUEST[self::dbTable][$input_def['name']]) ? eva_tools::IsValid_Variable($_REQUEST[self::dbTable][$input_def['name']]) : '';
+						$requestFormValue = isset($_REQUEST[self::dbTable][$input_def['name']]) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable][$input_def['name']]) : '';
 						$currentFieldValue = $input_def['value'];
 						if(is_array($elementInformations))
 						{
@@ -752,11 +761,11 @@ class digirisk_permission
 	' . $digiPermissionForm . '
 </form>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#delete").click(function(){
-			if(confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le ?', 'evarisk') . '"))){
-				evarisk("#' . self::dbTable . '_action").val("delete");
-				evarisk("#' . self::dbTable . '_form").submit();
+	digirisk(document).ready(function(){
+		digirisk("#delete").click(function(){
+			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le ?', 'evarisk') . '"))){
+				digirisk("#' . self::dbTable . '_action").val("delete");
+				digirisk("#' . self::dbTable . '_form").submit();
 			}
 		});
 	});
@@ -840,9 +849,9 @@ class digirisk_permission
 		/*	Script associé au boutton de sauvegarde	*/
 		$scriptEnregistrement = '
 <script type="text/javascript">
-	evarisk("#save_right_' . $tableElement . '").click(function(){
-		evarisk("#saveButtonLoading_userRight' . $tableElement . '").show();
-		evarisk("#saveButtonContainer_userRight' . $tableElement . '").hide();
+	digirisk("#save_right_' . $tableElement . '").click(function(){
+		digirisk("#saveButtonLoading_userRight' . $tableElement . '").show();
+		digirisk("#saveButtonContainer_userRight' . $tableElement . '").hide();
 
 		saveRightForUsers("' . $tableElement . '", "' . $idElement . '", "' . DIGI_DBT_PERMISSION . '", "message_' . $tableElement . '_' . $idElement . '_userRight", "userRightContainerBox");
 	});
@@ -871,7 +880,7 @@ class digirisk_permission
 </div>
 
 <script type="text/javascript" >
-	evarisk("#userPermissionManager").dialog({
+	digirisk("#userPermissionManager").dialog({
 		autoOpen: false,
 		height: 600,
 		width: 800,
@@ -879,31 +888,31 @@ class digirisk_permission
 		buttons: {
 			"' . __('Enregistrer et fermer', 'evarisk') . '": function(){
 				saveRightForUsers("' . $tableElement . '", "' . $idElement . '", "' . DIGI_DBT_PERMISSION . '", "message_' . $tableElement . '_' . $idElement . '_userRight", "userRightContainerBox");
-				setTimeout(evarisk(this).dialog("close"), \'1000\');
+				setTimeout(digirisk(this).dialog("close"), \'1000\');
 			},
 			"' . __('Enregistrer', 'evarisk') . '": function(){
 				saveRightForUsers("' . $tableElement . '", "' . $idElement . '", "' . DIGI_DBT_PERMISSION . '", "rightDialogMessage", "userPermissionManagerForm");
 			},
 			"' . __('Annuler', 'evarisk') . '": function(){
-				evarisk(this).dialog("close");
+				digirisk(this).dialog("close");
 			}
 		},
 		close: function(){
-			evarisk("#userPermissionManagerForm").html("");
-			evarisk("#userRightContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			digirisk("#userPermissionManagerForm").html("");
+			digirisk("#userRightContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post": "true", 
 				"table": "' . DIGI_DBT_PERMISSION . '",
 				"act": "reload_user_right_box",
 				"tableElement": "' . $tableElement . '",
 				"idElement": "' . $idElement . '"
 			});
-			evarisk("#saveButtonBoxContainer").show();
+			digirisk("#saveButtonBoxContainer").show();
 		}
 	});
-	evarisk("#openRightManagerDialog").click(function(){
-		evarisk("#userRightContainerBox").html("");
-		evarisk("#saveButtonBoxContainer").hide();
-		evarisk("#userPermissionManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#openRightManagerDialog").click(function(){
+		digirisk("#userRightContainerBox").html("");
+		digirisk("#saveButtonBoxContainer").hide();
+		digirisk("#userPermissionManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
 			"post":"true",
 			"table":"' . DIGI_DBT_PERMISSION . '",
@@ -911,7 +920,7 @@ class digirisk_permission
 			"tableElement":"' . $tableElement . '",
 			"idElement":"' . $idElement . '"
 		});
-		evarisk("#userPermissionManager").dialog("open");
+		digirisk("#userPermissionManager").dialog("open");
 	});
 </script>';
 
@@ -1041,40 +1050,40 @@ class digirisk_permission
 			$classes = array('','','rightColumn','rightColumn','rightColumn');
 			$script = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk(".checkAll_user_").click(function(){
-			var rightToManage = evarisk(this).attr("id");
-			evarisk("." + rightToManage).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", true);
+	digirisk(document).ready(function(){
+		digirisk(".checkAll_user_").click(function(){
+			var rightToManage = digirisk(this).attr("id");
+			digirisk("." + rightToManage).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", true);
 				}
 			});
 		});
-		evarisk(".uncheckAll_user_").click(function(){
-			var rightToManage = evarisk(this).attr("id").replace("not_", "");
-			evarisk("." + rightToManage).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", false);
+		digirisk(".uncheckAll_user_").click(function(){
+			var rightToManage = digirisk(this).attr("id").replace("not_", "");
+			digirisk("." + rightToManage).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", false);
 				}
 			});
 		});
-		evarisk(".checkAll_user_affected_").click(function(){
-			var rightToManage = evarisk(this).attr("id").replace("a_", "");
-			evarisk(".userAffecte ." + rightToManage).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", true);
+		digirisk(".checkAll_user_affected_").click(function(){
+			var rightToManage = digirisk(this).attr("id").replace("a_", "");
+			digirisk(".userAffecte ." + rightToManage).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", true);
 				}
 			});
 		});
-		evarisk(".uncheckAll_user_affected_").click(function(){
-			var rightToManage = evarisk(this).attr("id").replace("not_a_", "");
-			evarisk(".userAffecte ." + rightToManage).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", false);
+		digirisk(".uncheckAll_user_affected_").click(function(){
+			var rightToManage = digirisk(this).attr("id").replace("not_a_", "");
+			digirisk(".userAffecte ." + rightToManage).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", false);
 				}
 			});
 		});
-		evarisk("#' . $idTable . '").dataTable({
+		digirisk("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
 			"aaSorting": [[0, "asc"]],
@@ -1107,9 +1116,9 @@ class digirisk_permission
 				"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>"
 			}
 		});
-		evarisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
-		evarisk("#' . $idTable . ' tfoot").remove();
-		evarisk("#' . $idTable . ' thead").remove();
+		digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+		digirisk("#' . $idTable . ' tfoot").remove();
+		digirisk("#' . $idTable . ' thead").remove();
 	});
 </script>';
 			$checkAllTable = evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
@@ -1283,8 +1292,8 @@ class digirisk_permission
 		$classes = array('','userIdentifierColumn','middleAlign','middleAlign','rightColumn','rightColumn','rightColumn');
 		$script = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
-		evarisk("#' . $idTable . '").dataTable({
+	digirisk(document).ready(function(){
+		digirisk("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
 			"aaSorting": [[0, "desc"]],
@@ -1362,7 +1371,7 @@ class digirisk_permission
 	*
 	*	@return array The different right previously added by the plugin (before version 5.1.3.1)
 	*/
-	function getDroitEvarisk()
+	function getDroitdigirisk()
 	{
 		return array(
 			'Evarisk_:_utiliser_le_plugin' => __('utiliser le plugin','evarisk'),
@@ -1590,8 +1599,7 @@ class digirisk_permission
 	/**
 	*	Output the html table with the permission list stored by module and sub-module
 	*/
-	function permission_management($elementToManage)
-	{
+	function permission_management($elementToManage, $interface_provenance = ''){
 		global $digi_wp_role;
 		if(!is_object($digi_wp_role)){
 			/*	Instanciation de l'objet role de worpdress	*/
@@ -1602,8 +1610,7 @@ class digirisk_permission
 
 		/*	Récupération des permissions créées pour rangement par module	*/
 		$existingPermission = self::permission_list();
-		foreach($existingPermission as $permission => $permission_definition)
-		{
+		foreach($existingPermission as $permission => $permission_definition){
 			$permissionList[$permission_definition['permission_module']][$permission_definition['permission_sub_module']][] = $permission;
 			$permissionCap[$permission]['type'] = $permission_definition['permission_type'];
 			$permissionCap[$permission]['subtype'] = $permission_definition['permission_sub_type'];
@@ -1623,6 +1630,8 @@ class digirisk_permission
 	</tr>
 <?php
 		}
+
+		if($interface_provenance != 'digi_user_profile'){
 ?>
 	<tr>
 		<td><?php _e('Raccourci d\'attribution', 'evarisk'); ?></td>
@@ -1638,8 +1647,8 @@ class digirisk_permission
 		<td colspan="2" >&nbsp;</td>
 	</tr>
 <?php
-		foreach($permissionList as $module => $subModule)
-		{
+		}
+		foreach($permissionList as $module => $subModule){
 ?>
 	<tr>
 		<th>
@@ -1648,18 +1657,15 @@ class digirisk_permission
 		</th>
 		<td>
 <?php
-			foreach($subModule as $subModuleName => $moduleContent)
-			{
+			foreach($subModule as $subModuleName => $moduleContent){
 ?>
 			<div class="sub_module <?php echo ($subModuleName != '') ? 'permission_module_' . $subModuleName : ''; ?>" >
 				<div class="sub_module_name" >
 <?php
-				if($subModuleName)
-				{
+				if($subModuleName){
 					_e('permission_' . $module . '_' . $subModuleName, 'evarisk');
 				}
-				else
-				{
+				else{
 					_e('permission_' . $module, 'evarisk');
 				}
 ?>
@@ -1668,20 +1674,21 @@ class digirisk_permission
 					<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module . '_' . $subModuleName; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module . '_' . $subModuleName; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
 <?php
 				/*	Liste des permissions pour le module et le sous-module	*/
-				foreach($moduleContent as $permission)
-				{
+				foreach($moduleContent as $permission){
 					$checked = $permissionNameClass = '';
-					$roleToCopy = isset($_REQUEST['roleToCopy']) ? eva_tools::IsValid_Variable($_REQUEST['roleToCopy']) : '';
-					$action = isset($_REQUEST['save']) ? eva_tools::IsValid_Variable($_REQUEST['save']) : '';
+					$checked_picto = admin_url('images/no.png');
+					$roleToCopy = isset($_REQUEST['roleToCopy']) ? digirisk_tools::IsValid_Variable($_REQUEST['roleToCopy']) : '';
+					$action = isset($_REQUEST['save']) ? digirisk_tools::IsValid_Variable($_REQUEST['save']) : '';
 					if(($roleToCopy != '') && ($action == 'ok')){
 						$roleDetails = $digi_wp_role->get_role($roleToCopy);
-						if($roleDetails->has_cap($permission))
-						{
+						if($roleDetails->has_cap($permission)){
 							$checked = 'checked="checked"';
+							$checked_picto = admin_url('images/yes.png');
 						}
 					}
 					elseif(($elementToManage != null) && $elementToManage->has_cap($permission)){
 						$checked = 'checked="checked"';
+						$checked_picto = admin_url('images/yes.png');
 						$permissionNameClass = 'permissionGranted';
 						if(isset($elementToManage->roles) && (count($elementToManage->caps) >= count($elementToManage->roles)) && apply_filters('additional_capabilities_display', true, $elementToManage)){
 							$roleDetails = $digi_wp_role->get_role(implode('', $elementToManage->roles));
@@ -1691,7 +1698,12 @@ class digirisk_permission
 							}
 						}
 					}
-					echo '<input type="checkbox" class="' . $module . ' ' . $subModuleName . ' ' . $module . '_' . $subModuleName . ' ' . $permissionCap[$permission]['type'] . ' ' . $permissionCap[$permission]['subtype'] . ' ' . $permissionCap[$permission]['type'] . '_' . $permissionCap[$permission]['subtype'] . '" name="digi_permission[' . $permission . ']" id="digi_permission_' . $permission . '" value="yes" ' . $checked . ' />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
+					if($interface_provenance == 'digi_user_profile'){
+						echo '<img src="' . $checked_picto . '" alt="user right affectation" class="middleAlign" />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
+					}
+					else{
+						echo '<input type="checkbox" class="' . $module . ' ' . $subModuleName . ' ' . $module . '_' . $subModuleName . ' ' . $permissionCap[$permission]['type'] . ' ' . $permissionCap[$permission]['subtype'] . ' ' . $permissionCap[$permission]['type'] . '_' . $permissionCap[$permission]['subtype'] . '" name="digi_permission[' . $permission . ']" id="digi_permission_' . $permission . '" value="yes" ' . $checked . ' />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
+					}
 				}
 ?>
 				</div>
@@ -1706,43 +1718,23 @@ class digirisk_permission
 ?>
 </table>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		/**
 		*	Define action when clicking on checkall/uncheckall for a module or a sub module
 		*/
-		evarisk('.checkall').click(function(){
-			var module = evarisk(this).attr("id").replace("check_selector_", "");
-			evarisk("." + module).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", true);
+		digirisk('.checkall').click(function(){
+			var module = digirisk(this).attr("id").replace("check_selector_", "");
+			digirisk("." + module).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", true);
 				}
 			});
 		});
-		evarisk('.uncheckall').click(function(){
-			var module = evarisk(this).attr("id").replace("uncheck_selector_", "");
-			evarisk("." + module).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", false);
-				}
-			});
-		});
-
-		/**
-		*	Define action chen clicking on checkall/uncheckall into the link
-		*/
-		evarisk('.checkall_link').click(function(){
-			var module = evarisk(this).attr("id").replace("add_", "");
-			evarisk("." + module).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", true);
-				}
-			});
-		});
-		evarisk('.uncheckall_link').click(function(){
-			var module = evarisk(this).attr("id").replace("remove_", "");
-			evarisk("." + module).each(function(){
-				if(!evarisk(this).prop("disabled")){
-					evarisk(this).prop("checked", false);
+		digirisk('.uncheckall').click(function(){
+			var module = digirisk(this).attr("id").replace("uncheck_selector_", "");
+			digirisk("." + module).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", false);
 				}
 			});
 		});
@@ -1750,16 +1742,36 @@ class digirisk_permission
 		/**
 		*	Define action chen clicking on checkall/uncheckall into the link
 		*/
-		evarisk('.checkall_right').click(function(){
-			var module = evarisk(this).attr("id").replace("add_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).click();
+		digirisk('.checkall_link').click(function(){
+			var module = digirisk(this).attr("id").replace("add_", "");
+			digirisk("." + module).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", true);
+				}
 			});
 		});
-		evarisk('.uncheckall_right').click(function(){
-			var module = evarisk(this).attr("id").replace("remove_", "");
-			evarisk("." + module).each(function(){
-				evarisk(this).click();
+		digirisk('.uncheckall_link').click(function(){
+			var module = digirisk(this).attr("id").replace("remove_", "");
+			digirisk("." + module).each(function(){
+				if(!digirisk(this).prop("disabled")){
+					digirisk(this).prop("checked", false);
+				}
+			});
+		});
+
+		/**
+		*	Define action chen clicking on checkall/uncheckall into the link
+		*/
+		digirisk('.checkall_right').click(function(){
+			var module = digirisk(this).attr("id").replace("add_", "");
+			digirisk("." + module).each(function(){
+				digirisk(this).click();
+			});
+		});
+		digirisk('.uncheckall_right').click(function(){
+			var module = digirisk(this).attr("id").replace("remove_", "");
+			digirisk("." + module).each(function(){
+				digirisk(this).click();
 			});
 		});
 	});

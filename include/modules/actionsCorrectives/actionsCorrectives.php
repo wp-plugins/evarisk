@@ -15,8 +15,8 @@ include_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );
 // On enlève le choix de l'affichage
 ?>
 <script type="text/javascript">
-  evarisk(document).ready(function(){
-    evarisk('#choixAffichage').hide();
+  digirisk(document).ready(function(){
+    digirisk('#choixAffichage').hide();
   });
 </script>
 <?php
@@ -24,9 +24,9 @@ include_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );
 	{
 		echo
 			'<script type="text/javascript">
-				evarisk(document).ready(function(){
+				digirisk(document).ready(function(){
 					setTimeout(function(){
-						evarisk("#' . $_GET['elt'] . '").click();
+						digirisk("#' . $_GET['elt'] . '").click();
 					},3000);
 				})
 			</script>';

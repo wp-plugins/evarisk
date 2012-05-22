@@ -84,22 +84,22 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		$checkReactivate = (digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') == 'reactiv') ? ' checked="checked" ' : '';
 		$uniteDeTravail_new .= '<div id="existingElementDialog" class="hide" title="' . __('&Eacute;l&eacute;ment existant', 'evarisk') . '" ><div class="existingElementMainExplanation" >' . __('Un &eacute;l&eacute;ment portant le nom que vous venez de choisir existe d&eacute;j&agrave;. Vous pouvez d&eacute;cider de l\'action &agrave; effectuer dans la liste ci-dessous.', 'evarisk') . '</div><input type="hidden" name="nameOfElementToActiv" id="nameOfElementToActiv" value="" /><div class="actionForExistingElement" ><input type="radio" id="recreate_gpt" name="actionforexisting_gpt" value="recreate" class="existingElementChoice" ' . $checkRecreate . ' /><label for="recreate_gpt" >' . __('Ignorer l\'existant en recr&eacute;ant une nouvelle unit&eacute;de travail', 'evarisk') . '</label></div><div class="actionForExistingElement" ><input type="radio" id="reactiv_gpt" name="actionforexisting_gpt" value="reactiv" class="existingElementChoice" ' . $checkReactivate . ' /><label for="reactiv_gpt" >' . __('Restaurer l\'anciene unit&eacute;de travail', 'evarisk') . '</label></div><div class="actionForExistingElement" >' . __('Pour changer le nom du nouvel &eacute;l&eacute;ment &agrave; cr&eacute;er, cliquez sur "Annuler"', 'evarisk') . '</div></div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
-		evarisk("#existingElementDialog").dialog({
+	digirisk(document).ready(function(){
+		digirisk("#existingElementDialog").dialog({
 			autoOpen: false, height: 275, width: 500, modal: true,
 			buttons:{
-				"' . __('Annuler', 'evarisk') . '": function(){ evarisk(this).dialog("close"); },
+				"' . __('Annuler', 'evarisk') . '": function(){ digirisk(this).dialog("close"); },
 				"' . __('Valider', 'evarisk') . '": function(){
 					var choice = "";
-					evarisk(".existingElementChoice").each(function(){ if(evarisk(this).is(":checked")){ choice = evarisk(this).val(); } });
+					digirisk(".existingElementChoice").each(function(){ if(digirisk(this).is(":checked")){ choice = digirisk(this).val(); } });
 					if(choice != ""){
-						if(choice == "recreate"){ createUniteTravail("' . $saveOrUpdate . '", "' . TABLE_UNITE_TRAVAIL . '"); evarisk(this).dialog("close"); }
-						else if(choice == "reactiv"){ evarisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_UNITE_TRAVAIL . '", "act": "reactiv_deleted", "nom_unite": evarisk("#nameOfElementToActiv").val() }); }
+						if(choice == "recreate"){ createUniteTravail("' . $saveOrUpdate . '", "' . TABLE_UNITE_TRAVAIL . '"); digirisk(this).dialog("close"); }
+						else if(choice == "reactiv"){ digirisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_UNITE_TRAVAIL . '", "act": "reactiv_deleted", "nom_unite": digirisk("#nameOfElementToActiv").val() }); }
 					}
-					else{ alert(convertAccentToJS("' . __('Merci de choisir l\'action &agrave; effectuer', 'evarisk') . '")); }
+					else{ alert(digi_html_accent_for_js("' . __('Merci de choisir l\'action &agrave; effectuer', 'evarisk') . '")); }
 				}
 			},
-			close:function(){ evarisk("#nom_unite_travail").focus(); }
+			close:function(){ digirisk("#nom_unite_travail").focus(); }
 		});
 	});
 </script>';
@@ -241,26 +241,26 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		{//Script relatif à l'enregistrement
 			$scriptEnregistrement = '
 			<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
-						if(evarisk(\'#' . $idTitre . '\').is(".form-input-tip"))
+				digirisk(document).ready(function() {
+					digirisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
+						if(digirisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 						{
 							document.getElementById(\'' . $idTitre . '\').value=\'\';
-							evarisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
+							digirisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 						}
 						
 						if(' . $geolocObligatoire . ' && !geolocPossible)
 						{
 							var message = "' . ucfirst(sprintf(__('Vous devez obligatoirement remplir les champs de l\'adresse suivant : %s, %s et %s', 'evarisk'), substr($labelInputL1, 0, strlen($labelInputL1)-2),  substr($labelInputCP, 0, strlen($labelInputCP)-2),  substr($labelInputV, 0, strlen($labelInputV)-2))) . '.";
-							alert(convertAccentToJS(message));
+							alert(digi_html_accent_for_js(message));
 						}
 						else
 						{
-							valeurActuelle = evarisk(\'#' . $idTitre . '\').val();
+							valeurActuelle = digirisk(\'#' . $idTitre . '\').val();
 							if(valeurActuelle == "")
 							{
 								var message = "' . ucfirst(sprintf(__('Vous n\'avez pas donn&eacute; de nom %s', 'evarisk'), __('&agrave; l\'unit&eacute; de travail', 'evarisk'))) . '";
-								alert(convertAccentToJS(message));
+								alert(digi_html_accent_for_js(message));
 							}
 							else
 							{
@@ -268,8 +268,8 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 								{
 									if("' . digirisk_options::getOptionValue('digi_tree_recreation_dialog', 'digirisk_tree_options') . '" == "oui")
 									{
-										evarisk("#nameOfElementToActiv").val(valeurActuelle);
-										evarisk("#existingElementDialog").dialog("open");
+										digirisk("#nameOfElementToActiv").val(valeurActuelle);
+										digirisk("#existingElementDialog").dialog("open");
 									}
 									else if("' . digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') . '" == "recreate")
 									{
@@ -277,13 +277,13 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 									}
 									else if("' . digirisk_options::getOptionValue('digi_tree_recreation_default', 'digirisk_tree_options') . '" == "reactiv")
 									{
-										evarisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_UNITE_TRAVAIL . '", "act": "reactiv_deleted", "nom_groupement": valeurActuelle });
+										digirisk("#ajax-response").load(EVA_AJAX_FILE_URL,{ "post": "true",  "table": "' . TABLE_UNITE_TRAVAIL . '", "act": "reactiv_deleted", "nom_groupement": valeurActuelle });
 									}
 								}
 								else if(' . $existingValidWU . ')
 								{
 									var message = "' . ucfirst(sprintf(__('%s porte d&eacute;j&agrave; ce nom', 'evarisk'), __('une unit&eacute; de travail', 'evarisk'))) . '";
-									alert(convertAccentToJS(message));
+									alert(digi_html_accent_for_js(message));
 								}
 								else
 								{

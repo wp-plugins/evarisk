@@ -4,9 +4,9 @@
 	{
 		return '
 			<script type="text/javascript">
-				evarisk(document).ready(function(){
-					evarisk(".if-js-closed").removeClass("if-js-closed").addClass("closed");
-					evarisk(".postbox h3, .postbox .handlediv").each(function(){evarisk(this).unbind("click");});
+				digirisk(document).ready(function(){
+					digirisk(".if-js-closed").removeClass("if-js-closed").addClass("closed");
+					digirisk(".postbox h3, .postbox .handlediv").each(function(){digirisk(this).unbind("click");});
 					postboxes.add_postbox_toggles("' . $pageHook . '");
 					postboxes.init("' . $pageHook . '");
 					postboxes.save_state("' . $pageHook . '");

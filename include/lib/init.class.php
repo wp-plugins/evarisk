@@ -62,21 +62,27 @@ class digirisk_init
 		}
 
 		/*	Include the different css and js for frontend output	*/
-		add_action('wp_print_styles', array('digirisk_init', 'frontend_css'));
-		add_action('wp_head', array('digirisk_init', 'frontend_js_output'));
-		add_action('init', array('digirisk_init', 'frontend_js'));
+		$main_options = get_option('digirisk_options');
+		if($main_options['digi_ac_allow_front_ask'] == 'oui'){
+			add_action('wp_print_styles', array('digirisk_init', 'frontend_css'));
+			add_action('wp_head', array('digirisk_init', 'frontend_js_output'));
+			add_action('init', array('digirisk_init', 'frontend_js'));
+		}
 	}
 
 	/**
 	*	Create the main left menu with different parts
 	*/
 	function digirisk_menu(){
+
+		/*	Add the options menu in the options section	*/
+		add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'digi_view_options_menu', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
+
 		if(digirisk_options::getDbOption('base_evarisk') < 1){
 			// On crée le menu principal
 			add_menu_page('Digirisk : ' . __('Installation', 'evarisk'), __( 'Digirisk', 'evarisk' ), 'activate_plugins', 'digirisk_installation', array('digirisk_install', 'installation_form'), EVA_FAVICON, 3);
 			// On propose le formulaire de création
 			add_submenu_page('digirisk_installation', 'Evarisk : ' . __('Installation', 'evarisk'), __('Installation', 'evarisk'),  'activate_plugins', 'digirisk_installation', array('digirisk_install', 'installation_form'));
-			add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'activate_plugins', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
 		}
 		else{
 			digirisk_install::update_digirisk();
@@ -92,15 +98,6 @@ class digirisk_init
 
 			// On crée le menu des actions correctives
 			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Actions correctives', 'evarisk' ), __( 'Actions correctives', 'evarisk' ), 'digi_view_correctiv_action_menu', 'digirisk_correctiv_actions', array('actionsCorrectives','actionsCorrectivesMainPage'));
-
-			/*	Add the options menu in the options section	*/
-			add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk - Options', 'evarisk'), 'digi_view_options_menu', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
-			//	On créé le menu des préconisation
-			add_options_page('Digirisk : ' . __('Pr&eacute;conisations', 'evarisk' ), __('Digirisk - Pr&eacute;conisations', 'evarisk'), 'digi_view_recommandation_menu', 'digirisk_recommandation', array('evaRecommandation', 'evaRecommandationMainPage'));
-			// On crée le menu des méthodes
-			add_options_page('Digirisk : ' . __('M&eacute;thodes d\'&eacute;valuation', 'evarisk' ), __('Digirisk - M&eacute;thodes d\'&eacute;valuation', 'evarisk'), 'digi_view_method_menu', 'digirisk_evaluation_method', array('methodeEvaluation', 'methodeEvaluationMainPage'));
-			// On crée le menu des Dangers
-			add_options_page('Digirisk : ' . __('Dangers', 'evarisk' ), __('Digirisk - Dangers', 'evarisk'), 'digi_view_danger_menu', 'digirisk_danger', array('danger', 'dangerMainPage'));
 
 			// On crée le menu d'édition des profils utilisateurs
 			add_users_page('Digirisk : ' . __('Profil utilisateur', 'evarisk' ), __('Profil Digirisk', 'evarisk'), 'digi_view_user_profil_menu', 'digirisk_users_profil', array('evaUser','digi_user_profil'));
@@ -126,124 +123,107 @@ class digirisk_init
 	*	Define the javascript to include in each page
 	*/
 	function digirisk_admin_js(){
-		/*	Check the wp version in order to include the good jquery librairy. Causes issue because of wp core update	*/
-		global $wp_version;
+		wp_enqueue_script('jquery');
 
-		if($wp_version < '3.2'){
-			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
-		}
-		elseif(!wp_script_is('jquery', 'queue')){
-			wp_enqueue_script('jquery');
-		}
-
+		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-tabs');
 		wp_enqueue_script('jquery-form');
-
-		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('jquery-ui-dialog');
+		wp_enqueue_script('jquery-ui-slider');
+		wp_enqueue_script('jquery-ui-sortable');
+		wp_enqueue_script('jquery-ui-droppable');
+		wp_enqueue_script('jquery-ui-datepicker');
 
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_google_jsapi', 'http://www.google.com/jsapi', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_timepicker',  EVA_INC_PLUGIN_URL . 'js/jquery-ui-timepicker.js');
 
+		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
+
+		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
+
+		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/jquery-libs/fileuploader.js', '', EVA_PLUGIN_VERSION);
+
+		wp_enqueue_script('eva_google_jsapi', 'http://www.google.com/jsapi', '', EVA_PLUGIN_VERSION);
 		/*	Wordpress postbox	*/
 		wp_enqueue_script('eva_wp_postbox_js', admin_url() . 'js/postbox.js', '', EVA_PLUGIN_VERSION);
 
 		/*	Jquery plot utilities	*/
-		wp_enqueue_script('eva_jqplot', EVA_INC_PLUGIN_URL . 'js/charts/jquery.jqplot.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jqplot_excanvas', EVA_INC_PLUGIN_URL . 'js/charts/excanvas.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jqplot_pointLabel', EVA_INC_PLUGIN_URL . 'js/charts/jqplot.pointLabel.min.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jqplot_cursor', EVA_INC_PLUGIN_URL . 'js/charts/jquery.cursor.min.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jqplot_dateAxisRenderer', EVA_INC_PLUGIN_URL . 'js/charts/jquery.dateAxisRenderer.min.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jqplot_highlighter', EVA_INC_PLUGIN_URL . 'js/charts/jquery.highlighter.min.js', '', EVA_PLUGIN_VERSION);
-	}
-	/**
-	*	Admin javascript "frontend" part definition
-	*/
-	function frontend_js(){
-		/*	Check the wp version in order to include the good jquery librairy. Causes issue because of wp core update	*/
-		global $wp_version;
-
-		if($wp_version < '3.2'){
-			wp_enqueue_script('eva_jq', EVA_INC_PLUGIN_URL . 'js/jquery1.6.1.js', '', EVA_PLUGIN_VERSION);
+		if(!empty($_GET['page']) && ($_GET['page'] == 'digirisk_risk_evaluation')){
+			wp_enqueue_script('eva_jqplot', EVA_INC_PLUGIN_URL . 'js/charts/jquery.jqplot.js', '', EVA_PLUGIN_VERSION);
+			wp_enqueue_script('eva_jqplot_excanvas', EVA_INC_PLUGIN_URL . 'js/charts/excanvas.js', '', EVA_PLUGIN_VERSION);
+			wp_enqueue_script('eva_jqplot_pointLabel', EVA_INC_PLUGIN_URL . 'js/charts/jqplot.pointLabel.min.js', '', EVA_PLUGIN_VERSION);
+			wp_enqueue_script('eva_jqplot_cursor', EVA_INC_PLUGIN_URL . 'js/charts/jquery.cursor.min.js', '', EVA_PLUGIN_VERSION);
+			wp_enqueue_script('eva_jqplot_dateAxisRenderer', EVA_INC_PLUGIN_URL . 'js/charts/jquery.dateAxisRenderer.min.js', '', EVA_PLUGIN_VERSION);
+			wp_enqueue_script('eva_jqplot_highlighter', EVA_INC_PLUGIN_URL . 'js/charts/jquery.highlighter.min.js', '', EVA_PLUGIN_VERSION);
 		}
-		elseif(!wp_script_is('jquery', 'queue')){
-			wp_enqueue_script('jquery');
-		}
-
-		wp_enqueue_script('jquery-form');
-
-		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-ui-min.js', '', EVA_PLUGIN_VERSION);
-
-		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/treeTable/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/galleriffic/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/fieldSelection/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/fileUploader/fileuploader.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_autocomplete', EVA_INC_PLUGIN_URL . 'js/jquery.autocomplete.js', '', EVA_PLUGIN_VERSION);
 	}
-
-	/**
-	*	Define the css to include in each page
-	*/
-	function digirisk_admin_css(){
-		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_datatable');
-		wp_register_style('eva_jquery_custom', EVA_INC_PLUGIN_URL . 'css/jquery-ui-1.7.2.custom.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_custom');
-		wp_register_style('eva_jquery_treetable', EVA_INC_PLUGIN_URL . 'css/treeTable/treeTable.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_treetable');
-		wp_register_style('eva_jquery_fileuploader', EVA_INC_PLUGIN_URL . 'css/fileUploader/fileuploader.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_fileuploader');
-		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_main_css');
-		wp_register_style('eva_duer_css', EVA_INC_PLUGIN_URL . 'css/documentUnique.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_duer_css');
-		wp_register_style('eva_autocomplete_css', EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_autocomplete_css');
-		wp_register_style('eva_lightbox_css', EVA_INC_PLUGIN_URL . 'css/lightbox.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_lightbox_css');
-		wp_register_style('eva_jqplot_css', EVA_INC_PLUGIN_URL . 'css/charts/jquery.jqplot.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jqplot_css');
-	}
-	/**
-	*	Admin javascript "file" part definition
-	*/
-	function frontend_css(){
-		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/dataTable/demo_table_jui.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_datatable');
-		wp_register_style('eva_jquery_custom', EVA_INC_PLUGIN_URL . 'css/jquery-ui-1.7.2.custom.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_custom');
-		wp_register_style('eva_jquery_fileuploader', EVA_INC_PLUGIN_URL . 'css/fileUploader/fileuploader.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_jquery_fileuploader');
-		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_main_css');
-		wp_register_style('eva_autocomplete_css', EVA_INC_PLUGIN_URL . 'css/jquery.autocomplete.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('eva_autocomplete_css');
-	}
-	/**
-	*	Admin javascript "frontend" part definition
-	*/
-	function frontend_js_output(){
-		echo '<script type="text/javascript">var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";</script>';
-	}
-
 	/**
 	*
 	*/
 	function digirisk_add_admin_js(){
 		echo '<script type="text/javascript" >
 			var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";
+			jQuery.fn.highlight=function(b){function a(e,j){var l=0;if(e.nodeType==3){var k=e.data.toUpperCase().indexOf(j);if(k>=0){var h=document.createElement("span");h.className="highlight";var f=e.splitText(k);var c=f.splitText(j.length);var d=f.cloneNode(true);h.appendChild(d);f.parentNode.replaceChild(h,f);l=1}}else{if(e.nodeType==1&&e.childNodes&&!/(script|style)/i.test(e.tagName)){for(var g=0;g<e.childNodes.length;++g){g+=a(e.childNodes[g],j)}}}return l}return this.each(function(){a(this,b.toUpperCase())})};jQuery.fn.removeHighlight=function(){return this.find("span.highlight").each(function(){this.parentNode.firstChild.nodeName;with(this.parentNode){replaceChild(this.firstChild,this);normalize()}}).end()};
 		</script>';
+	}
+	/**
+	*	Admin javascript "frontend" part definition
+	*/
+	function frontend_js(){
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('jquery-form');
+		wp_enqueue_script('jquery-ui-dialog');
+		wp_enqueue_script('jquery-ui-slider');
+
+		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
+	}
+
+	/**
+	*	Define the css to include in each page
+	*/
+	function digirisk_admin_css(){
+		wp_register_style('eva_jquery_ui', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery-ui.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_ui');
+
+		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/jquery-libs/datatable.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_datatable');
+		
+		wp_register_style('eva_jquery_treetable', EVA_INC_PLUGIN_URL . 'css/jquery-libs/treeTable.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_treetable');
+		wp_register_style('eva_jquery_fileuploader', EVA_INC_PLUGIN_URL . 'css/jquery-libs/fileuploader.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_fileuploader');
+		wp_register_style('eva_lightbox_css', EVA_INC_PLUGIN_URL . 'css/lightbox.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_lightbox_css');
+
+		if(!empty($_GET['page']) && ($_GET['page'] == 'digirisk_risk_evaluation')){
+			wp_register_style('eva_jqplot_css', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery.jqplot.css', '', EVA_PLUGIN_VERSION);
+			wp_enqueue_style('eva_jqplot_css');
+		}
+
+		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_main_css');
+	}
+	/**
+	*	Admin javascript "file" part definition
+	*/
+	function frontend_css(){
+		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_main_css');
+		wp_register_style('eva_jquery_ui', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery-ui.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_ui');
+	}
+
+	/**
+	*	Admin javascript "frontend" part definition
+	*/
+	function frontend_js_output(){
+		echo '<script type="text/javascript">var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";</script>';
 	}
 
 }

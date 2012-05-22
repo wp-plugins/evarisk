@@ -17,9 +17,9 @@ class dashboard {
 	</div>
 	<div class="metabox-holder clear">
 		<script type="text/javascript">
-			evarisk(document).ready( function() {
-				evarisk('.if-js-closed').removeClass('if-js-closed').addClass('closed');
-				evarisk('.postbox h3, .postbox .handlediv').each(function(){evarisk(this).unbind("click");});
+			digirisk(document).ready( function() {
+				digirisk('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+				digirisk('.postbox h3, .postbox .handlediv').each(function(){digirisk(this).unbind("click");});
 				postboxes.add_postbox_toggles("evaDashboard");
 				postboxes.init("evaDashboard");
 				postboxes.save_state("evaDashboard");
@@ -157,10 +157,10 @@ class dashboard {
 				<div id="namesUpdater" title="' . __('Liste des utilisateurs', 'evarisk') . '" ></div>
 			</div>
 			<script type="text/javascript" >
-				evarisk(document).ready(function(){
-					evarisk("#vracStatsTabs").tabs();
-					evarisk("#vracStatsTabs ul li a").click(function(){
-						evarisk("#vracStatsContent").html(evarisk("#loadingPicContainer").html());
+				digirisk(document).ready(function(){
+					digirisk("#vracStatsTabs").tabs();
+					digirisk("#vracStatsTabs ul li a").click(function(){
+						digirisk("#vracStatsContent").html(digirisk("#loadingPicContainer").html());
 					});
 				});
 			</script>';

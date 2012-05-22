@@ -29,12 +29,19 @@ class digirisk_tools
 	<div id="tools_tabs" >
 		<ul>
 			<li><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=tools&amp;action=db_manager" title="digirisk_tools_tab_container" ><?php _e('V&eacute;rification de la base de donn&eacute;es', 'evarisk'); ?></a></li>
+<?php
+	if(current_user_can('digi_delete_database')){
+?>
+			<li><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=tools&amp;action=db_reinit" title="digirisk_tools_tab_container" ><?php _e('R&eacute;initialisation de la base de donn&eacute;es', 'evarisk'); ?></a></li>
+<?php
+	}
+?>
 		</ul>
 		<div id="digirisk_tools_tab_container" >&nbsp;</div>
 	</div>
 </div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#digirisk_tools_tab_container").html(jQuery("#round_loading_img").html());
 		jQuery("#tools_tabs").tabs({
       select: function(event, ui){
@@ -52,6 +59,195 @@ class digirisk_tools
 </script>
 <?php
 		echo digirisk_display::end_page();
+	}
+
+		/*	CLEAN UP A VAR BEFORE SENDING IT TO OUTPUT OR DATABASE	*/
+	function IsValid_Variable($MyVar2Test,$DefaultValue='')
+	{
+		$MyVar = (trim(strip_tags(stripslashes($MyVar2Test)))!='') ? trim(strip_tags(stripslashes(($MyVar2Test)))) : $DefaultValue ;
+		$MyVar = html_entity_decode(str_replace("&rsquo;", "'", htmlentities($MyVar, ENT_COMPAT, 'UTF-8')), ENT_COMPAT, 'UTF-8');
+
+		return $MyVar;
+	}
+
+	function slugify_nospace($text)
+	{
+	  if (empty($text))
+	  {
+		return '';
+	  }else{
+	  
+	   $text = preg_replace('/\s/', '+', $text);
+	   $text = trim($text);
+	  
+	  }
+	 
+	  return $text;
+	}
+	
+	function slugify($text)
+	{
+		$pattern = Array("é", "è", "ê", "ç", "à", "â", "î", "ï", "ù", "ô", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ö", "Ù", "Û", "Ü");
+		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
+		if(!(empty($text)))
+		{
+			$text = str_replace($pattern, $rep_pat, utf8_decode($text));
+			$text = preg_replace('/\s/', '_', $text);
+			$text = trim($text);
+		}
+		return $text;
+	}
+
+	function slugify_accent($text){
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/", "/&#146;/","/&#34;/");
+		$rep_pat = Array("é", "è", "ê", "ç", "à", "â", "î", "ï", "ù", "ô", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ö", "Ù", "Û", "Ü", "'",'"');
+		if ($text == '')
+		{
+			return '';
+		}
+		else
+		{
+			$text = preg_replace($pattern, $rep_pat, utf8_decode($text));
+	  }
+	  
+	  return $text;
+	}
+
+	function slugify_noaccent($text){
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/");
+		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
+		if ($text == '')
+		{
+			return '';
+		}
+		else
+		{
+			$text = preg_replace($pattern, $rep_pat, utf8_decode($text));
+	  }
+	  
+	  return $text;
+	}
+
+	function slugify_noaccent_no_utf8decode($text){
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/");
+		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
+		if ($text == '')
+		{
+			return '';
+		}
+		else
+		{
+			$text = preg_replace($pattern, $rep_pat, $text);
+	  }
+	  
+	  return $text;
+	}
+
+	function stripAccents($string)
+	{
+		$newString = str_replace(array('à', 'á', 'â', 'ã', 'ä'), 'a', $string);
+		$newString = str_replace(array('À', 'Á', 'Â', 'Ã', 'Ä'), 'A', $newString);
+		$newString = str_replace(array('é', 'è', 'ê', 'ë'), 'e', $newString);
+		$newString = str_replace(array('É', 'È', 'Ê', 'Ë'), 'E', $newString);
+		$newString = str_replace(array('ì', 'í', 'î', 'ï'), 'i', $newString);
+		$newString = str_replace(array('Ì', 'Í', 'Î', 'Ï'), 'I', $newString);
+		$newString = str_replace(array('ò', 'ó', 'ô', 'ö', 'õ'), 'o', $newString);
+		$newString = str_replace(array('Ò', 'Ó', 'Ô', 'Ö', 'Õ'), 'O', $newString);
+		$newString = str_replace(array('ù', 'ú', 'û', 'ü'), 'u', $newString);
+		$newString = str_replace(array('Ù', 'Ú', 'Û', 'Ü'), 'U', $newString);
+		$newString = str_replace(array('ý', 'ÿ'), 'y', $newString);
+		$newString = str_replace(array('Ý', 'Ÿ'), 'Y', $newString);
+		$newString = str_replace('ç', 'c', $newString);
+		$newString = str_replace('Ç', 'C', $newString);
+		$newString = str_replace('ñ', 'n', $newString);
+		$newString = str_replace('Ñ', 'N', $newString);
+		$newString = str_replace('n°', '', $newString);
+		$newString = str_replace('°', '_', $newString);
+		return $newString;
+	}
+
+	function make_recursiv_dir($directory){
+		if(!is_dir($directory)){
+			mkdir($directory, 0755, true);
+		}
+		exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
+	}
+
+	function copyEntireDirectory($sourceDirectory, $destinationDirectory)
+	{
+		if(is_dir($sourceDirectory))
+		{
+			if(!is_dir($destinationDirectory))
+			{
+				mkdir($destinationDirectory, 0755, true);
+				exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
+			}
+			$hdir = opendir($sourceDirectory);
+			while($item = readdir($hdir))
+			{
+				if(is_dir($sourceDirectory . '/' . $item) && ($item != '.') && ($item != '..')  && ($item != '.svn') )
+				{
+					digirisk_tools::copyEntireDirectory($sourceDirectory . '/' . $item, $destinationDirectory . '/' . $item);
+				}
+				elseif(is_file($sourceDirectory . '/' . $item))
+				{
+					copy($sourceDirectory . '/' . $item, $destinationDirectory . '/' . $item);
+				} 
+			}
+			closedir( $hdir );
+		}
+	}
+
+	//couleur aléatoire générée
+	function getColor(){
+		$a = DecHex(mt_rand(0,15));
+		$b = DecHex(mt_rand(0,15));
+		$c = DecHex(mt_rand(0,15));
+		$d = DecHex(mt_rand(0,15));
+		$e = DecHex(mt_rand(0,15));
+		$f = DecHex(mt_rand(0,15)); 
+
+		$hexa = $a . $b . $c . $d . $e . $f;
+
+		return $hexa;
+	}
+
+	//couleur du texte en fonction de la couleur générée
+	function getContrastColor($color){
+		return (hexdec($color) > 0xffffff/2) ? '000000' : 'ffffff';
+	}
+
+	function db_deletion(){
+		$output = '';
+
+?>
+<br class="clear" />
+<span class="tools_alert db_reinit" ><?php _e('Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es (Suppression de toutes les donn&eacute;s pr&eacute;sentes dans la base). Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite', 'evarisk'); ?>.<br/><?php _e('Faites une sauvegarde de votre base de donn&eacute;es avant toute op&eacute;ration', 'evarisk'); ?>.</span>
+<br/>
+<br/><input type="checkbox" name="auto_redirect_to_digi_install" id="auto_redirect_to_digi_install" value="yes" checked="checked" />&nbsp;<label for="auto_redirect_to_digi_install" ><?php _e('Redirection automatique vers la page d\'installation apr&egrave;s r&eacute;initialisation de la base de donn&eacute;es', 'evarisk'); ?></label><br/><button type="button" id="digi_reinit_db" class="button-secondary" ><?php _e('R&eacute;initialiser la base', 'evarisk'); ?></button>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery("#digi_reinit_db").click(function(){
+			if(confirm(digi_html_accent_for_js("<?php _e('&Ecirc;tes vous s&ucirc;r de vouloir r&eacute;initialiser la base de donn&eacute;es? Cette op&eacute;ration supprimera le contenu du logiciel digirisk', 'evarisk'); ?>"))){
+				var digi_redirect_to_install = 'yes';
+				if(!jQuery("#auto_redirect_to_digi_install").is(":checked")){
+					digi_redirect_to_install = 'no';
+				}
+				jQuery("#digi_reinit_db").after(jQuery("#round_loading_img div").html());
+				jQuery("#digi_reinit_db").remove();
+				jQuery("#digirisk_tools_tab_container").load("<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php",{
+					"post":"true", 
+					"nom":"tools", 
+					"action":"db_reinit_launch",
+					"redirect":digi_redirect_to_install
+				});
+			}
+		});
+	});
+</script>
+<?php
+
+		return $output;
 	}
 
 }

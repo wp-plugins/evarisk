@@ -451,8 +451,8 @@ $user_additionnal_field .= '
 				$user_act_add_container = '';
 				$user_infos_act = '';
 				$user_more_action = '
-				var lastname = evarisk(this).children("td:nth-child(3)").html();
-				var firstname = evarisk(this).children("td:nth-child(4)").html();
+				var lastname = digirisk(this).children("td:nth-child(3)").html();
+				var firstname = digirisk(this).children("td:nth-child(4)").html();
 				jQuery("#responsable_tache").val(currentId);
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
@@ -469,8 +469,8 @@ $user_additionnal_field .= '
 				$user_act_add_container = '';
 				$user_infos_act = '';
 				$user_more_action = '
-				var lastname = evarisk(this).children("td:nth-child(3)").html();
-				var firstname = evarisk(this).children("td:nth-child(4)").html();
+				var lastname = digirisk(this).children("td:nth-child(3)").html();
+				var firstname = digirisk(this).children("td:nth-child(4)").html();
 				jQuery("#responsable_activite").val(currentId);
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
@@ -486,9 +486,9 @@ $user_additionnal_field .= '
 				$user_infos_act = '';
 				$user_more_action = '
 			window.top.location.href = "' . admin_url('users.php?page=digirisk_users_profil&user_to_edit=') . '" + currentId;
-			var lastname = evarisk(this).children("td:nth-child(3)").html();
-			var firstname = evarisk(this).children("td:nth-child(4)").html();
-			jQuery("#digi_user_list").val(convertAccentToJS("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname));';
+			var lastname = digirisk(this).children("td:nth-child(3)").html();
+			var firstname = digirisk(this).children("td:nth-child(4)").html();
+			jQuery("#digi_user_list").val(digi_html_accent_for_js("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname));';
 			}
 			break;
 			default:{
@@ -501,7 +501,7 @@ $user_additionnal_field .= '
 		}
 		$script = 
 '<script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		jQuery("#' . $idTable . '").dataTable({
 			"bAutoWidth": false,
 			"bInfo": false,
@@ -563,10 +563,10 @@ $user_additionnal_field .= '
 		global $wpdb;
 		$separatorExample = '<span class="fieldSeparator" >[fieldSeparator]</span>';
 
-		$importAction = isset($_POST['act']) ? eva_tools::IsValid_Variable($_POST['act']) : '';
-		$userRoles = isset($_POST['userRoles']) ? eva_tools::IsValid_Variable($_POST['userRoles']) : '';
-		$fieldSeparator = isset($_POST['fieldSeparator']) ? eva_tools::IsValid_Variable($_POST['fieldSeparator']) : '';
-		$sendUserMail = isset($_POST['sendUserMail']) ? eva_tools::IsValid_Variable($_POST['sendUserMail']) : '';
+		$importAction = isset($_POST['act']) ? digirisk_tools::IsValid_Variable($_POST['act']) : '';
+		$userRoles = isset($_POST['userRoles']) ? digirisk_tools::IsValid_Variable($_POST['userRoles']) : '';
+		$fieldSeparator = isset($_POST['fieldSeparator']) ? digirisk_tools::IsValid_Variable($_POST['fieldSeparator']) : '';
+		$sendUserMail = isset($_POST['sendUserMail']) ? digirisk_tools::IsValid_Variable($_POST['sendUserMail']) : '';
 
 		$optionEmailDomain = '';
 		$checkEmailDomain = digirisk_options::getOptionValue('emailDomain');
@@ -582,7 +582,7 @@ $user_additionnal_field .= '
 			$importResult = '';
 
 			/*	Check if there are lines to create without sending a file	*/
-			$userLinesToCreate = isset($_POST['userLinesToCreate']) ? (string) eva_tools::IsValid_Variable($_POST['userLinesToCreate']) : '';
+			$userLinesToCreate = isset($_POST['userLinesToCreate']) ? (string) digirisk_tools::IsValid_Variable($_POST['userLinesToCreate']) : '';
 			if($userLinesToCreate != '')
 			{
 				$userToCreate = array_merge($userToCreate, explode("\n", trim($userLinesToCreate)));
@@ -636,11 +636,11 @@ $user_additionnal_field .= '
 					if (trim($userInfos) != '') 
 					{
 						$userInfosComponent = explode($fieldSeparator, $userInfos);
-						$userInfosComponent[0] = trim(strtolower(eva_tools::slugify_noaccent($userInfosComponent[0])));
+						$userInfosComponent[0] = trim(strtolower(digirisk_tools::slugify_noaccent($userInfosComponent[0])));
 						$userInfosComponent[1] = trim($userInfosComponent[1]);
 						$userInfosComponent[2] = trim($userInfosComponent[2]);
 						$userInfosComponent[3] = trim($userInfosComponent[3]);
-						$userInfosComponent[4] = trim(strtolower(eva_tools::slugify_noaccent($userInfosComponent[4])));
+						$userInfosComponent[4] = trim(strtolower(digirisk_tools::slugify_noaccent($userInfosComponent[4])));
 						$userInfosComponent[5] = trim($userInfosComponent[5]);
 						$checkErrors = 0;
 
@@ -777,12 +777,12 @@ $user_additionnal_field .= '
 <div id="ajax-response" style="display:none;" >&nbsp;</div>
 <script type="text/javascript" >
 	function changeSeparator(){
-		evarisk('.fieldSeparator').html(evarisk('#fieldSeparator').val());
+		digirisk('.fieldSeparator').html(digirisk('#fieldSeparator').val());
 	}
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		changeSeparator();
-		evarisk('#fieldSeparator').blur(function(){changeSeparator()});
-		evarisk('#userLinesToCreate').blur(function(){
+		digirisk('#fieldSeparator').blur(function(){changeSeparator()});
+		digirisk('#userLinesToCreate').blur(function(){
 			if(jQuery(this).val() != ''){
 				jQuery("#importSubmit_rapid").attr("disabled", false);
 			}
@@ -790,7 +790,7 @@ $user_additionnal_field .= '
 				jQuery("#importSubmit_rapid").attr("disabled", true);
 			}
 		});
-		evarisk('#userLinesToCreate').keypress(function(){
+		digirisk('#userLinesToCreate').keypress(function(){
 			if(jQuery(this).val() != ''){
 				jQuery("#importSubmit_rapid").attr("disabled", false);
 			}
@@ -801,24 +801,24 @@ $user_additionnal_field .= '
 
 		jQuery('#ajouterUtilisateurListe').click(function(){
 			var error = 0;
-			evarisk('#mailDomainContainer').css('color', '#000000');
-			evarisk('#firstNameContainer').css('color', '#000000');
-			evarisk('#lastNameContainer').css('color', '#000000');
+			digirisk('#mailDomainContainer').css('color', '#000000');
+			digirisk('#firstNameContainer').css('color', '#000000');
+			digirisk('#lastNameContainer').css('color', '#000000');
 			jQuery('#emailContainer').css('color', '#000000');
-			evarisk('#fastAddErrorMessage').hide();
+			digirisk('#fastAddErrorMessage').hide();
 
-			evarisk('#domaineMail').val(evarisk('#domaineMail').val().replace("@", ""));
+			digirisk('#domaineMail').val(digirisk('#domaineMail').val().replace("@", ""));
 
-			if(evarisk('#domaineMail').val() == ""){
-				evarisk('#mailDomainContainer').css('color', '#FF0000');
+			if(digirisk('#domaineMail').val() == ""){
+				digirisk('#mailDomainContainer').css('color', '#FF0000');
 				error++;
 			}
-			if(evarisk('#prenomUtilisateur').val() == ""){
-				evarisk('#firstNameContainer').css('color', '#FF0000');
+			if(digirisk('#prenomUtilisateur').val() == ""){
+				digirisk('#firstNameContainer').css('color', '#FF0000');
 				error++;
 			}
-			if(evarisk('#nomUtilisateur').val() == ""){
-				evarisk('#lastNameContainer').css('color', '#FF0000');
+			if(digirisk('#nomUtilisateur').val() == ""){
+				digirisk('#lastNameContainer').css('color', '#FF0000');
 				error++;
 			}
 			if(jQuery('#emailUtilisateur').val() == ""){
@@ -827,56 +827,57 @@ $user_additionnal_field .= '
 			}
 
 			if(error > 0){
-				evarisk('#fastAddErrorMessage').show();
+				digirisk('#fastAddErrorMessage').show();
 			}
 			else{
 				jQuery("#importSubmit_rapid").attr("disabled", false);
-				identifiant = evarisk('#prenomUtilisateur').val() + '.' + evarisk('#nomUtilisateur').val();
-				prenom = evarisk('#prenomUtilisateur').val();
-				nom = evarisk('#nomUtilisateur').val();
-				motDePasse = evarisk('#motDePasse').val();
-				emailUtilisateur = evarisk('#emailUtilisateur').val()
-				roleUtilisateur = evarisk('#userRoles').val();
+				identifiant = digirisk('#prenomUtilisateur').val() + '.' + digirisk('#nomUtilisateur').val();
+				prenom = digirisk('#prenomUtilisateur').val();
+				nom = digirisk('#nomUtilisateur').val();
+				motDePasse = digirisk('#motDePasse').val();
+				emailUtilisateur = digirisk('#emailUtilisateur').val()
+				roleUtilisateur = digirisk('#userRoles').val();
 
-				user_imatriculation = evarisk('#user_imatriculation').val();
-				user_imatriculation_key = evarisk('#user_imatriculation_key').val();
-				user_birthday = evarisk('#user_birthday').val();
-				user_gender = evarisk('#user_gender').val();
-				user_nationnality = evarisk('#user_nationnality').val();
-				user_adress_1 = evarisk('#user_adress').val();
-				user_adress_2 = evarisk('#user_adress_2').val();
-				user_adress_postal_code = evarisk('#user_adress_postal_code').val();
-				user_adress_city = evarisk('#user_adress_city').val();
-				user_hiring_date = evarisk('#user_hiring_date').val();
-				user_profession = evarisk('#user_profession').val();
-				user_professional_qualification = evarisk('#user_professional_qualification').val();
-				user_insurance_ste = evarisk('#user_insurance_ste').val();
+				user_imatriculation = digirisk('#user_imatriculation').val();
+				user_imatriculation_key = digirisk('#user_imatriculation_key').val();
+				user_birthday = digirisk('#user_birthday').val();
+				user_gender = digirisk('#user_gender').val();
+				user_nationnality = digirisk('#user_nationnality').val();
+				user_adress_1 = digirisk('#user_adress').val();
+				user_adress_2 = digirisk('#user_adress_2').val();
+				user_adress_postal_code = digirisk('#user_adress_postal_code').val();
+				user_adress_city = digirisk('#user_adress_city').val();
+				user_hiring_date = digirisk('#user_hiring_date').val();
+				user_profession = digirisk('#user_profession').val();
+				user_professional_qualification = digirisk('#user_professional_qualification').val();
+				user_insurance_ste = digirisk('#user_insurance_ste').val();
 
-				newline = identifiant + evarisk('#fieldSeparator').val() + prenom + evarisk('#fieldSeparator').val() + nom + evarisk('#fieldSeparator').val() + motDePasse + evarisk('#fieldSeparator').val() + emailUtilisateur + evarisk('#fieldSeparator').val() + roleUtilisateur;
+				newline = identifiant + digirisk('#fieldSeparator').val() + prenom + digirisk('#fieldSeparator').val() + nom + digirisk('#fieldSeparator').val() + motDePasse + digirisk('#fieldSeparator').val() + emailUtilisateur + digirisk('#fieldSeparator').val() + roleUtilisateur;
 
-				newline += evarisk('#fieldSeparator').val() + user_imatriculation + evarisk('#fieldSeparator').val() + user_imatriculation_key + evarisk('#fieldSeparator').val() + user_birthday + evarisk('#fieldSeparator').val() + user_gender + evarisk('#fieldSeparator').val() + user_nationnality + evarisk('#fieldSeparator').val() + user_adress_1 + evarisk('#fieldSeparator').val() + user_adress_2 + evarisk('#fieldSeparator').val() + user_adress_postal_code + evarisk('#fieldSeparator').val() + user_adress_city + evarisk('#fieldSeparator').val() + user_hiring_date + evarisk('#fieldSeparator').val() + user_profession + evarisk('#fieldSeparator').val() + user_professional_qualification + evarisk('#fieldSeparator').val() + user_insurance_ste;
+				newline += digirisk('#fieldSeparator').val() + user_imatriculation + digirisk('#fieldSeparator').val() + user_imatriculation_key + digirisk('#fieldSeparator').val() + user_birthday + digirisk('#fieldSeparator').val() + user_gender + digirisk('#fieldSeparator').val() + user_nationnality + digirisk('#fieldSeparator').val() + user_adress_1 + digirisk('#fieldSeparator').val() + user_adress_2 + digirisk('#fieldSeparator').val() + user_adress_postal_code + digirisk('#fieldSeparator').val() + user_adress_city + digirisk('#fieldSeparator').val() + user_hiring_date + digirisk('#fieldSeparator').val() + user_profession + digirisk('#fieldSeparator').val() + user_professional_qualification + digirisk('#fieldSeparator').val() + user_insurance_ste;
 
-				if(evarisk('#userLinesToCreate').val() != ''){
+				if(digirisk('#userLinesToCreate').val() != ''){
 					newline = '\r\n' + newline;
 				}
-				evarisk('#userLinesToCreate').val(evarisk('#userLinesToCreate').val() + newline);
-				evarisk('#prenomUtilisateur').val("");
-				evarisk('#nomUtilisateur').val("");
+				digirisk('#userLinesToCreate').val(digirisk('#userLinesToCreate').val() + newline);
+				digirisk('#prenomUtilisateur').val("");
+				digirisk('#nomUtilisateur').val("");
+				digirisk('#emailUtilisateur').val("");
 				evarisk('#emailUtilisateur').val("");
 
-				evarisk('#user_imatriculation').val("");
-				evarisk('#user_imatriculation_key').val("");
-				evarisk('#user_birthday').val("");
-				evarisk('#user_gender').val("");
-				evarisk('#user_nationnality').val("");
-				evarisk('#user_adress').val("");
-				evarisk('#user_adress_2').val("");
-				evarisk('#user_adress_postal_code').val("");
-				evarisk('#user_adress_city').val("");
-				evarisk('#user_hiring_date').val("");
-				evarisk('#user_profession').val("");
-				evarisk('#user_professional_qualification').val("");
-				evarisk('#user_insurance_ste').val("");
+				digirisk('#user_imatriculation').val("");
+				digirisk('#user_imatriculation_key').val("");
+				digirisk('#user_birthday').val("");
+				digirisk('#user_gender').val("");
+				digirisk('#user_nationnality').val("");
+				digirisk('#user_adress').val("");
+				digirisk('#user_adress_2').val("");
+				digirisk('#user_adress_postal_code').val("");
+				digirisk('#user_adress_city').val("");
+				digirisk('#user_hiring_date').val("");
+				digirisk('#user_profession').val("");
+				digirisk('#user_professional_qualification').val("");
+				digirisk('#user_insurance_ste').val("");
 
 <?php echo $optionEmailDomain;	?>
 			}
@@ -1055,7 +1056,7 @@ $user_additionnal_field .= '
 
 		$user_profil_content = '';
 
-		$user_to_edit = (isset($_REQUEST['user_to_edit']) && ((int)$_REQUEST['user_to_edit'] > 0)) ? eva_tools::IsValid_Variable($_REQUEST['user_to_edit']) : $current_user->ID;
+		$user_to_edit = (isset($_REQUEST['user_to_edit']) && ((int)$_REQUEST['user_to_edit'] > 0)) ? digirisk_tools::IsValid_Variable($_REQUEST['user_to_edit']) : $current_user->ID;
 		$_REQUEST['user_id'] = $user_to_edit;
 
 		$user = new WP_User($user_to_edit);
@@ -1072,7 +1073,7 @@ $user_additionnal_field .= '
 				$digiPermissionForm .= sprintf(__('R&ocirc;le de l\'utilisateur %s', 'evarisk'), $user_roles);
 			}
 			ob_start();
-			digirisk_permission::permission_management($user);
+			digirisk_permission::permission_management($user, 'digi_user_profile');
 			$digiPermissionForm .= ob_get_contents();
 			ob_end_clean();
 		}
@@ -1360,7 +1361,7 @@ $user_additionnal_field .= '
 		$user_profil_content .= '
 <div class="clear user_selector" >
 	<span class="searchUserInput ui-icon" >&nbsp;</span>
-	<input class="searchUserToAffect" type="text" name="digi_user_list" id="digi_user_list" value="' . __('Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche', 'evarisk') . '" />
+	<input class="searchUserToAffect" type="text" name="digi_user_list" id="digi_user_list" placeholder="' . __('Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche', 'evarisk') . '" />
 	<div id="complete_user_list" class="digirisk_hide completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_USER, $user_to_edit) . '</div>
 </div>';
 
@@ -1379,27 +1380,32 @@ $user_additionnal_field .= '
 	<div id="digirisk_user_rights" >' . $digiPermissionForm . '</div>
 </div>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		/*	Create tabs for different profil element	*/
 		jQuery("#user_profil_edition_tabs").tabs();
 
 		/*	Add possiblity to change user easyly with a simple input	*/
 		jQuery("#digi_user_list").click(function(){
-			jQuery(this).val("");
 			jQuery("#complete_user_list").show();
+		});
+
+		/*	Autocomplete search	*/
+		jQuery("#digi_user_list").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&all_user=yes",
+			select: function( event, ui ){
+				jQuery("#complete_user_list").hide();
+				jQuery("#user_profil_edition_tabs").html(jQuery("#loadingImg").html());
+				window.top.location.href = "' . admin_url('users.php?page=digirisk_users_profil&user_to_edit=') . '" + ui.item.value;
+
+				jQuery(this).val(digi_html_accent_for_js(ui.item.label));
+
+				jQuery(this).blur();
+			}
 		});
 		jQuery("#digi_user_list").blur(function(){
 			if(jQuery(this).val() == ""){
-				jQuery(this).val(convertAccentToJS("' . __('Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche', 'evarisk') . '"));
+				jQuery(this).val(digi_html_accent_for_js("' . __('Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche', 'evarisk') . '"));
 			}
-		});
-		jQuery("#digi_user_list").autocomplete("' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '", {extraParams: {all_user: "yes"/*function() { return jQuery("#search_in_all_user_' . $tableElement . '").val(); }*/}});
-		jQuery("#digi_user_list").result(function(event, data, formatted){
-			jQuery("#complete_user_list").hide();
-			jQuery("#user_profil_edition_tabs").html(jQuery("#loadingImg").html());
-			window.top.location.href = "' . admin_url('users.php?page=digirisk_users_profil&user_to_edit=') . '" + data[1];
-
-			jQuery("#digi_user_list").val(convertAccentToJS(data[0]));
 		});
 
 		/*	Add support for detail open	*/

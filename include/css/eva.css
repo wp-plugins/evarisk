@@ -7,12 +7,29 @@ a{ cursor:pointer; }
 
 .main_loading_pic_container{	margin:0px auto; width:90%; text-align:center;	}
 
+/*	Start standard page	*/
+.digirisk_main_table thead{ cursor:pointer; }
+.main_metabox_collapser{ float:right; width:30px; height:30px; }
+.main_metabox_collapser:hover{ background: url("../../../../../wp-admin/images/arrows.png") no-repeat scroll 6px 7px transparent !important; }
+.main_metabox_collapser_hover{ background: url("../../../../../wp-admin/images/arrows.png") no-repeat scroll 6px 7px transparent !important; }
+.digirisk_left_container{	float:left; width:49%;	}
+.digirisk_right_container{	float:right; width:50%;	}
+.digirisk_meta_box_holder{	padding:0px !important;	}
+.actionButtonList{	padding:0px !important;	}
+.actionButtonList .action_column_name{	font-size:14px; line-height:1.3em; padding:7px 7px 8px; text-align:right; float:left; width:60%;	}
+.main_page_options_container{	margin:12px 0px 0px;	}
+
+.digirisk_config_treetable span.expander{ margin:0px !important;	}
+.digirisk_config_treetable .nomFeuilleArbre{ padding-left:42px !important;	}
+/*	End standard page	*/
+
 /************************/
 /*	Autocomplete style	*/
 /************************/
 .auto-search-container{	float:right; width:80%;	}
 .auto-search-input{	float:right; width:60%;	}
 .auto-search-ui-icon{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png"); background-position: -160px -112px; width:16px; height:16px; margin:3px 0px;}
+.ui-autocomplete-loading { background: white url('../../medias/jquery_pics/ui-anim_basic.gif') right center no-repeat; }
 
 /*	Hyerarchy box	*/
 .auto-search-hierarchic-box .auto-search-container{	float:left; width:80%;	}
@@ -101,6 +118,8 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 #victim_changer{	cursor:pointer;	}
 .accident_done_state_cell{ color:green;	}
 .accident_in_progress_state_cell{ color:orange;	}
+
+.accident_action_cell img{	cursor:pointer;	}
 /* -- END WORK ACCIDENT -- */
 
 
@@ -439,6 +458,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .risk_line_action img{	margin:0px 2px;	}
 .columnAction {	text-align:center !important;	}
 
+.risk_line_action img{	cursor:pointer;	}
 .columnQuotation, .columnRId	{		text-align: center !important;	}
 /*,
 th.columnNomDanger,
@@ -553,6 +573,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 .loadAssociatedTask_elt_name{	padding:0px 15px 0px !important;	}
 #suiviActionsCorrectiveElement th{ background:none #FFFFFF !important; }
 .CorrectivActionFollowStateActionColumn{	width:8%;	}
+.CorrectivActionFollowStateActionColumn img{	cursor:pointer;	}
 .correctiveActionSelecteduserOP{	padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .correctivActionDetailsFieldName{	text-decoration:underline; font-weight:bold; padding:3px;	}
 .correctiveActionFollow .dataTables_wrapper{		min-height:50px;	}
@@ -561,9 +582,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 .ac_responsable{	width:99% !important;	}
 #responsible_name{	padding:0px 18px; float:left;	}
-.change_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
-.delete_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
-
+.change_ac_responsible, .delete_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
 
 #risk_priority_task{	width:90% !important; margin:3px 18px;	}
 #risk_priority_task td{	height:1.5em;	}
@@ -585,6 +604,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 .asked_action_control_details{	width:95%; margin:10px auto;	}
 
 .digi_correctiv_action_document_list {	 }
+
 /* -- END Actions correctives -- */
 
 
@@ -674,7 +694,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 .digi_user_extra_field{	clear:both;	}
 .user_extra_fields{	clear:both; font-size:13px;	}
 #delete_digi_user_extra_field_container{	display:none;	}
-#digirisk_options_container th{	width:45% !important; padding:2px;	}
+#digirisk_options_container #digirisk_options_general th, #digirisk_options_container #digirisk_options_user th, #digirisk_options_container #digirisk_options_arbo th, #digirisk_options_container #digirisk_options_risk th, #digirisk_options_container #digirisk_options_worksheet th, #digirisk_options_container #digirisk_options_correctivaction th, #digirisk_options_container #digirisk_options_recommandation th{	width:45% !important; padding:2px;	}
 #digirisk_options_container td{	padding:2px;	}
 #taille_photo_poste_fiche_de_poste{	width:46px;	}
 #digirisk_options_container .form-table{		margin:0px 12px !important;	}
@@ -686,6 +706,9 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 .digi_allowed_extension_for_AC_fieldset{	border:1px solid #C0C0C0;	width:60%; }
 .add_new_extension_to_allow, .delete_allowed_extension_for_ac_docs{	vertical-align:middle; width:20px;	}
+
+.tabOptions_Evaluation_method, .tabOptions_Danger, .tabOptions_Recommandation, .tabOptions_Menu{	float:right !important;	}
+#digirisk_configurations_tab{	padding:1em 0 0 0  !important;	}
 /* -- End options -- */
 
 /* -- Recommandation -- */
@@ -751,7 +774,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 /* -- Notes -- */
 #noteTaker{	float:right; margin:15px; }
 #digiNotes{	text-align:center; }
-.noteTakerPic{	max-width:18px;	}
+.noteTakerPic{	max-width:18px; cursor:pointer;	}
 .noteInput {	width:99%; height:93%; padding: .4em; }
 #noteSaverMessage{	text-align:center;	width:70%;	margin:0px auto;	padding:3px 0px;	}
 /* -- End Notes -- */
@@ -837,6 +860,121 @@ td.details table{	margin:0px 0px 24px !important;	}
 .tools_db_modif_list_version_details ul li.added_table{	list-style-type:square !important;}
 .db_table_check, .db_added_field_check, .db_changed_field_check{ vertical-align:middle; margin:0px 3px; }
 
+.tools_alert.db_reinit{		color:red; font-weight:bold; font-size:2em; line-height:1.5em; margin-bottom:40px;	}
+.digirisk_table_deleted{	color:green; clear:right; margin:0.8em; }
+.digirisk_table_not_deleted{	color:red; clear:both; margin:0.8em;	}
+
 /*	user notifications	*/
 #userNotificationContainerBox{		overflow-x:scroll !important;	}
 #userNotificationContainerBox table{		table-layout:auto !important;	}
+
+/*	Start configuration page	*/
+#digirisk_configurations_tab .postbox .hndle{	cursor:auto !important;	}
+
+#add_new_var{	margin:0px 12px;	}
+.variableAction{	width:10%;	}
+
+#main_table_wp_eva__menu td{	vertical-align:middle;	}
+.element_menu{	margin:12px 0px;	}
+.menu_element_type_container{	border:1px solid #C0C0C0; padding:9px;	}
+.menu_element_type_name{	border:1px solid #C0C0C0; background-color:#C0C0C0; padding:6px;	}
+
+.existing_box_sortable li { margin:0 3px 3px 3px; padding:0.4em; padding-left:1.5em; font-size:1.4em; height:18px; cursor:move !important; }
+.existing_box_sortable li span { position:absolute; margin-left:-1.3em; }
+
+.element_hook{ margin:9px;}
+.element_hook_name{ background-color:#D0D0D0; padding:6px;	}
+.element_hook ul{ border:1px solid #D0D0D0; padding:9px;	}
+.menu_element_sortable li { margin:0 3px 3px 3px; padding:0.4em; padding-left:1.5em; font-size:1.4em; height:18px; }
+.menu_element_sortable li span { position:absolute; margin-left:-1.3em; }
+/*	End configuration page	*/
+
+/*	Start Evaluation method	*/
+#main_table_wp_eva__methode .infoList{	width:40%; }
+#main_table_wp_eva__methode td{	vertical-align:middle; }
+.evaluation_method_input { margin-bottom:12px; width:95% !important; padding: .4em; }
+.evaluation_method_form_error_message {	margin:3px !important;	}
+
+.eval_method_var{ width:30%; float:left; min-height:250px;	}
+.eval_method_explanation{	width:70%; float:right; text-align:center; padding:13px 0px;	}
+.digi_eval_pic{	width:100%;	}
+
+.evaluation_var_slider_container{	margin-bottom:12px;	}
+
+.evaluation_method_var_container{	margin:12px; display:table; width:95%;	}
+.single_var_container{ margin:0px 0px 2px 25px; width:50%; }
+.single_var_delete_container{	display:table; width:25%;	}
+
+.open_var_manager_container{	float:right; cursor:pointer; font-style:italic;	}
+.open_var_manager{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -32px -80px !important;}
+/*	End Evaluation method	*/
+
+
+/*	General	*/
+.bold{font-weight:bold;}
+/*	Fin general	*/
+
+/*	Premiere de couv	*/
+.pagePremiereDeCouvDU{background:url("../../medias/images/documentUnique/fond.jpg") repeat-x scroll 0 0 transparent; height:1024px; margin:0; padding:0; width:650px; z-index:0;}
+
+.infosPrincipalesPremiereDeCouvDU{height:190px;padding:188px 25px 0;text-align:center;width:500px;}
+
+.titrePrincipalPremiereDeCouvDU{font-size:27px;font-style:italic;font-weight:bold;}
+.sousTitrePremiereDeCouvDU{font-size:17px;}
+.separationElementsTitrePrincipalCouvDU{margin:0px 0px 20px;border-collapse:collapse;}
+
+.infosBasPremiereDeCouvDU{padding:330px 0px 0px 0px;}
+.tableauInformationsBasPremiereDeCouvDU{margin:0px auto;width:80%;}
+.tableauInformationsBasPremiereDeCouvDU td{border:1px solid #000000;vertical-align:top;padding:0.2cm;}
+
+.footerPremiereDeCouvDU{height:63px;width:650px;font-size:11px;text-align:center;vertical-align:bottom;}
+/*	Fin premiere de couv	*/
+
+
+/*	Page DU		*/
+.pageDU{height:1024px;margin:0px;padding:0px;width:650px;}
+
+.headerDU{height:91px;vertical-align:top;}
+.headerDU img{width:650px;}
+
+.contentPageDU{vertical-align:top;}
+
+.footerDU{height:75px;width:650px;border:1px solid #000000;}
+
+.footer{width:100%;height:100%;}
+.footer .titreFooterDU{font-weight:bold;}
+
+.titrePrincipalPageDU{font-size:16px;font-weight:bold;padding:20px 5px;}
+.sousTitrePrincipalPageDU{font-size:14px;font-weight:bold;padding:10px 5px 10px 35px;}
+
+.petitTitreGrasPageDu{font-size:12px;font-weight:bold;padding:5px 0px 5px 70px;}
+
+.paragraphe1{font-size:11px;text-align:justify;padding:10px 5px 10px 45px;}
+.paragraphe2{font-size:11px;text-align:justify;padding:10px 5px 10px 75px;}
+
+.puces{font-size:11px;padding:0 0 0 80px;text-align:justify;}
+.imageIllustration img{margin:0px auto;width:650px;}
+/*	Fin page DU	*/
+
+/*	Contenu	DU*/
+.tableauExplicationNotationRisque{margin:10px auto;text-align:center;width:300px;border-collapse:collapse;}
+.tableauExplicationNotationRisque td{border:1px solid #000000;}
+.enTeteTableauExplicationNotationRisque{background-color:#9A9A9A;font-size:17px;font-weight:bold;}
+.notationRisqueInacceptable{background-color:#000000;color:#FFFFFF;font-size:14px;font-weight:bold;}
+.notationRisqueATraiter{background-color:#FF0000;font-size:14px;font-weight:bold;}
+.notationRisqueAPlanifier{background-color:#FFCD00;font-size:14px;font-weight:bold;}
+.notationRisqueFaible{font-size:14px;font-weight:bold;}
+.soustitrenoextrapadding {font-size:12px;font-weight:bold;padding:5px 0 5px 70px;}
+/*	Fin contenu	DU*/
+
+/*	Sommaire	*/
+.titrePrincipalPageSommaire{font-size:27px;font-weight:bold;font-style:italic;padding:20px 0 20px 35px;text-align:center;width:100%;}
+
+.grandTtitreSommaireDU{font-size:16px;font-weight:bold;padding:20px 0 20px 35px;width:600px;}
+.sousTitreSommaireDU{font-size:14px;font-weight:bold;padding:10px 0 10px 65px;width:600px;}
+.titreParagrapheSommaireDU{font-size:12px;font-weight:bold;padding:0px 0 0px 100px;width:600px;}
+
+.numeroPageGrandTitreSommaireDU{font-size:16px;font-weight:bold;text-align:right;width:30px;}
+.numeroPageSousTitreSommaireDU{font-size:14px;font-weight:bold;text-align:right;width:30px;}
+.numeroPageTitreParagrapheSommaireDU{font-size:12px;font-weight:bold;text-align:right;width:30px;}
+/*	Fin du sommaire	*/

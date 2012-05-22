@@ -4,8 +4,7 @@
  * @author Evarisk
  * @version v5.0
  */
-include_once(EVA_CONFIG );
-require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
+
 class categorieDangers {
 	
 	/**
@@ -67,7 +66,7 @@ class categorieDangers {
 /*
  * Autres methodes
  */
-	static function getCategorieDanger($id, $status = " Status = 'Valid' ")
+	function getCategorieDanger($id, $status = " Status = 'Valid' ")
 	{
 		global $wpdb;
 		$id = (int) $id;
@@ -75,7 +74,7 @@ class categorieDangers {
 		return $resultat;
 	}
 	
-	static function getCategorieDangerByName($nom)
+	function getCategorieDangerByName($nom)
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE Status = 'Valid' AND nom='" . $nom . "'");
@@ -83,7 +82,7 @@ class categorieDangers {
 	}
 	
 
-	static function getCategoriesDanger($where = "1", $order = "id ASC") {
+	function getCategoriesDanger($where = "1", $order = "id ASC") {
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE Status = 'Valid' AND " . $where . " ORDER BY " . $order);
 		return $resultat;
@@ -102,14 +101,14 @@ class categorieDangers {
 		return $tab_categories;
 	}
 	
-	static function getDangersDeLaCategorie($idCategorie, $where = "1", $order="nom ASC")
+	function getDangersDeLaCategorie($idCategorie, $where = "1", $order="nom ASC")
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_DANGER . " WHERE  Status = 'Valid' AND id_categorie =" . $idCategorie . " AND " . $where . " ORDER BY ". $order);
 		return $resultat;
 	}
 
-	static function saveNewCategorie($nom)
+	function saveNewCategorie($nom)
 	{
 		global $wpdb;
 		
@@ -120,7 +119,7 @@ class categorieDangers {
 		$wpdb->query($sql);
 	}
 	
-	static function updateCategorie($id_categorie, $nom, $description, $idCategorieMere)
+	function updateCategorie($id_categorie, $nom, $description, $idCategorieMere)
 	{
 		global $wpdb;
 		
@@ -141,7 +140,7 @@ class categorieDangers {
 	/**
 	  * Set the status of the group wich is the identifier to Delete 
 	 */
-	static function deleteCategorie($id)
+	function deleteCategorie($id)
 	{
 		global $wpdb;
 		
@@ -150,13 +149,13 @@ class categorieDangers {
 		{
 			echo 
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
+					digirisk(document).ready(function(){
+						digirisk("#message").addClass("updated");
+						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						digirisk("#message").show();
 						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
+							digirisk("#message").removeClass("updated");
+							digirisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -165,13 +164,13 @@ class categorieDangers {
 		{
 			echo 
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
-						evarisk("#message").addClass("updated");
-						evarisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						evarisk("#message").show();
+					digirisk(document).ready(function(){
+						digirisk("#message").addClass("updated");
+						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La cat&eacute;gorie n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
+						digirisk("#message").show();
 						setTimeout(function(){
-							evarisk("#message").removeClass("updated");
-							evarisk("#message").hide();
+							digirisk("#message").removeClass("updated");
+							digirisk("#message").hide();
 						},7500);
 					});
 				</script>';
@@ -215,20 +214,20 @@ class categorieDangers {
 			{
 				$formIdSelector = ($formId != '') ? '#' . $formId . ' ' : '';
 				$categoryResult['script'] .= '
-		evarisk("#' . $formId . 'divCategorieDangerFormRisque").hide();
-		evarisk("#' . $formId . 'cat' . $selectionCategorie . '").click();
+		digirisk("#' . $formId . 'divCategorieDangerFormRisque").hide();
+		digirisk("#' . $formId . 'cat' . $selectionCategorie . '").click();
 		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";
-		evarisk("' . $formIdSelector . '.categoriesDangers").click(function(){
-			var ' . $formId . 'newCatId = (evarisk(this).attr("id")).replace("' . $formId . 'cat","");
+		digirisk("' . $formIdSelector . '.categoriesDangers").click(function(){
+			var ' . $formId . 'newCatId = (digirisk(this).attr("id")).replace("' . $formId . 'cat","");
 			if(' . $formId . 'oldCatId != ' . $formId . 'newCatId)
 			{
-				evarisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
-				evarisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
+				digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 				{
 					"post":"true", 
 					"table":"' . TABLE_CATEGORIE_DANGER . '", 
 					"act":"reloadComboDangers", 
-					"idElement":evarisk("#' . $formId . 'categorieDangerFormRisque").val(),
+					"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
 					"formId":"' . $formId . '"
 				});
 				' . $formId . 'oldCatId = ' . $formId . 'newCatId;
@@ -239,13 +238,13 @@ class categorieDangers {
 		$categoryResult['list'] .= '
 		<div id="' . $formId . 'divCategorieDangerFormRisque" >' . EvaDisplayInput::afficherComboBoxArborescente($categorieRacine, TABLE_CATEGORIE_DANGER, $formId . 'categorieDangerFormRisque', __('Cat&eacute;gorie de dangers', 'evarisk') . ' : ', 'categorieDangers', ucfirst(strtolower(sprintf(__("choisissez %s", 'evarisk'), __("une cat&eacute;gorie de dangers", 'evarisk')))), $selectionCategorie) . '</div>';
 		$categoryResult['script'] .= '
-	evarisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
-		evarisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
+		digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 		{
 			"post":"true", 
 			"table":"' . TABLE_CATEGORIE_DANGER . '", 
 			"act":"reloadComboDangers", 
-			"idElement":evarisk("#' . $formId . 'categorieDangerFormRisque").val(),
+			"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
 			"formId":"' . $formId . '"
 		});
 	});';

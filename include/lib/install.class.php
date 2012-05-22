@@ -71,7 +71,7 @@ class digirisk_install
 	</div>
 </form>
 <script type="text/javascript" >
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		var autoInstall = false;';
 		if(STANDALONEVERSION){
 			$installation_form .= 
@@ -97,7 +97,7 @@ class digirisk_install
 			dataType:  "json",
 			success: function(responseText, statusText, xhr, $form){
 				if(responseText["status"]){
-					jQuery("#load_picture_container").html(convertAccentToJS("' . sprintf(__('Installation termin&eacute;e. Vous allez &ecirc;tre redirig&eacute; dans quelque secondes. Si ce n\'est pas le cas %s', 'evarisk'), '<a href=\'' . admin_url("options-general.php?page=digirisk_options") . '\'>' . __('Cliquez ici', 'evarisk') . '</a>') . '"));
+					jQuery("#load_picture_container").html(digi_html_accent_for_js("' . sprintf(__('Installation termin&eacute;e. Vous allez &ecirc;tre redirig&eacute; dans quelque secondes. Si ce n\'est pas le cas %s', 'evarisk'), '<a href=\'' . admin_url("options-general.php?page=digirisk_options") . '\'>' . __('Cliquez ici', 'evarisk') . '</a>') . '"));
 					setTimeout(function(){window.top.location.href = "' . admin_url("options-general.php?page=digirisk_options") . '";}, 5000);
 				}
 			},
@@ -106,12 +106,12 @@ class digirisk_install
 				if(!jQuery("#activate_evarisk_theme").is(":checked") || autoInstall){
 					check_if_install_could_be_launch = true;
 				}
-				else if(jQuery("#activate_evarisk_theme").is(":checked") && confirm(convertAccentToJS("' . __('&Ecirc;tes vous s&ucirc;r de vouloir activer le th&egrave;me Evarisk pour votre Blog?\nNB: Si vous avez un th&egrave;me personnalis&eacute; celui sera remplac&eacute; par le th&egrave;me Evarisk. Il restera disponible dans la liste des th&egrave;mes.', 'evarisk') . '"))){
+				else if(jQuery("#activate_evarisk_theme").is(":checked") && confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir activer le th&egrave;me Evarisk pour votre Blog?\nNB: Si vous avez un th&egrave;me personnalis&eacute; celui sera remplac&eacute; par le th&egrave;me Evarisk. Il restera disponible dans la liste des th&egrave;mes.', 'evarisk') . '"))){
 					check_if_install_could_be_launch = true;
 				}
 
 				if(check_if_install_could_be_launch){
-					jQuery("#load_picture_container").html(jQuery("#round_loading_img div.round_loading_img").html() + "   " + convertAccentToJS("' . __('Installation en cours. Merci de patienter.', 'evarisk') . '"));
+					jQuery("#load_picture_container").html(jQuery("#round_loading_img div.round_loading_img").html() + "   " + digi_html_accent_for_js("' . __('Installation en cours. Merci de patienter.', 'evarisk') . '"));
 					jQuery("#button_container").hide();
 				}
 				else{
@@ -144,14 +144,14 @@ class digirisk_install
 			digirisk_permission::digirisk_init_permission();
 
 			/*	Vérifie que le dossier upload soit bien créé	*/
-			eva_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
+			digirisk_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
 
 			/*	Vérifie que le dossier result soit bien créé	*/
-			eva_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
+			digirisk_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 
 			/*	Vérifie que le dossier temporaire pour la création des fichiers odt soit bien créé	*/
 			if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp')){
-				eva_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
+				digirisk_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
 			}
 		}
 
@@ -387,14 +387,14 @@ class digirisk_install
 				$wpdb->query($sql);
 			}break;
 			case 35:{
-				eva_tools::make_recursiv_dir(EVA_GENERATED_DOC_DIR);
+				digirisk_tools::make_recursiv_dir(EVA_GENERATED_DOC_DIR);
 				/*	Move the directory containing the different models	*/
 				if(is_dir(EVA_UPLOADS_PLUGIN_OLD_DIR) && !is_dir(EVA_UPLOADS_PLUGIN_DIR)){
-					eva_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
+					digirisk_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
 				}
 				/*	Move the directory containing the different models	*/
 				if(is_dir(EVA_RESULTATS_PLUGIN_OLD_DIR) && !is_dir(EVA_RESULTATS_PLUGIN_DIR)){
-					eva_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
+					digirisk_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 				}
 			}break;
 			case 41:{

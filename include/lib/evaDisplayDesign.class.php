@@ -47,9 +47,9 @@ class EvaDisplayDesign {
 			$debutPage .= evaNotes::noteDialogMaker() . '
 		<div id="champsCaches" class="clear" ></div>
 		<script type="text/javascript">
-			evarisk(document).ready(function(){
+			digirisk(document).ready(function(){
 				setTimeout(function(){
-						evarisk("#message").hide();
+						digirisk("#message").hide();
 				}, 10000);
 
 ' . evaNotes::noteDialogScriptMaker() . '
@@ -61,29 +61,29 @@ class EvaDisplayDesign {
 			$racine = Arborescence::getRacine($table);
 			$idPere = $racine->id;
 			$debutPage = $debutPage . '<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk(\'#affichageTable\').click(function() {
-						evarisk(\'#affichageListe\').removeClass(\'selectedAffichage\');
-						evarisk(\'#affichageTable\').addClass(\'selectedAffichage\');
-						evarisk(\'#identifiantActuellemainPostBox\').val(1);
-						evarisk("#pagemainPostBoxReference").val(1);
+				digirisk(document).ready(function() {
+					digirisk(\'#affichageTable\').click(function() {
+						digirisk(\'#affichageListe\').removeClass(\'selectedAffichage\');
+						digirisk(\'#affichageTable\').addClass(\'selectedAffichage\');
+						digirisk(\'#identifiantActuellemainPostBox\').val(1);
+						digirisk("#pagemainPostBoxReference").val(1);
 						
-						while(evarisk(\'#filAriane :last-child\').attr("id") != "element1")
+						while(digirisk(\'#filAriane :last-child\').attr("id") != "element1")
 						{
-							evarisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').remove();
 						}
 
-						changementPage("right", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageTable", "main");
-						changementPage("left", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageTable", "main");
+						changementPage("right", "' . $table . '", digirisk("#pagemainPostBoxReference").val(), digirisk("#identifiantActuellemainPostBox").val(), "affichageTable", "main");
+						changementPage("left", "' . $table . '", digirisk("#pagemainPostBoxReference").val(), digirisk("#identifiantActuellemainPostBox").val(), "affichageTable", "main");
 					});
-					evarisk(\'#affichageListe\').click(function() {
-						evarisk(\'#affichageTable\').removeClass(\'selectedAffichage\');
-						evarisk(\'#affichageListe\').addClass(\'selectedAffichage\');
-						evarisk(\'#identifiantActuellemainPostBox\').val(1);
-						evarisk("#pagemainPostBoxReference").val(1);
+					digirisk(\'#affichageListe\').click(function() {
+						digirisk(\'#affichageTable\').removeClass(\'selectedAffichage\');
+						digirisk(\'#affichageListe\').addClass(\'selectedAffichage\');
+						digirisk(\'#identifiantActuellemainPostBox\').val(1);
+						digirisk("#pagemainPostBoxReference").val(1);
 
-						changementPage("right", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageListe", "main");
-						changementPage("left", "' . $table . '", evarisk("#pagemainPostBoxReference").val(), evarisk("#identifiantActuellemainPostBox").val(), "affichageListe", "main");
+						changementPage("right", "' . $table . '", digirisk("#pagemainPostBoxReference").val(), digirisk("#identifiantActuellemainPostBox").val(), "affichageListe", "main");
+						changementPage("left", "' . $table . '", digirisk("#pagemainPostBoxReference").val(), digirisk("#identifiantActuellemainPostBox").val(), "affichageListe", "main");
 					});
 				});
 			</script>';
@@ -134,17 +134,17 @@ class EvaDisplayDesign {
 		}
 		$filAriane = '<div ' . $display . ' id="filAriane"><a href="#" id="element1">' . $titreFilAriane . '</a></div>';
 		$script = '<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk(\'#element1\').click(function() {
-						evarisk("#equilize").click();
-												evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(1);
-						evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-						while(evarisk(\'#filAriane :last-child\').attr("id") != "element1")
+				digirisk(document).ready(function() {
+					digirisk(\'#element1\').click(function() {
+						digirisk("#equilize").click();
+												digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(1);
+						digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+						while(digirisk(\'#filAriane :last-child\').attr("id") != "element1")
 						{
-							evarisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').remove();
 						}
-						changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
-						changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+						changementPage("right", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+						changementPage("left", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 						return false;
 					});
 				});
@@ -166,21 +166,21 @@ class EvaDisplayDesign {
 								break;
 						}
 						$script = $script .'<script type="text/javascript">
-		evarisk(document).ready(function() {
-			evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(' . $element->id . ');
-			evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-			evarisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
+		digirisk(document).ready(function() {
+			digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(' . $element->id . ');
+			digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+			digirisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
 			
-			evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . addslashes($element->nom) . '</label>\');
-			evarisk(\'#element' . $element->id . '\').click(function() {
-				evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-				evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-				while(evarisk(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
+			digirisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . addslashes($element->nom) . '</label>\');
+			digirisk(\'#element' . $element->id . '\').click(function() {
+				digirisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+				digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+				while(digirisk(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
 				{
-					evarisk(\'#filAriane :last-child\').remove();
+					digirisk(\'#filAriane :last-child\').remove();
 				}					
-				changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
-				changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+				changementPage("right", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+				changementPage("left", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 				return false;
 			});
 		});
@@ -189,8 +189,8 @@ class EvaDisplayDesign {
 				}
 				$script = $script . '
 <script type="text/javascript">
-	evarisk(document).ready(function() {
-		evarisk(\'#element' . $element->id . '\').click();
+	digirisk(document).ready(function() {
+		digirisk(\'#element' . $element->id . '\').click();
 	});
 </script>';
 			}
@@ -233,39 +233,39 @@ class EvaDisplayDesign {
 	{
 		$splitEcran = '
 			<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk(\'#leftEnlarging' . $numero . '\').click(function() {
-						evarisk(\'#partieEdition' . $numero . '\').hide();
-						evarisk(\'#partieGauche' . $numero . '\').show();
-						evarisk(\'#partieGauche' . $numero . '\').css(\'width\', \'98%\');
+				digirisk(document).ready(function() {
+					digirisk(\'#leftEnlarging' . $numero . '\').click(function() {
+						digirisk(\'#partieEdition' . $numero . '\').hide();
+						digirisk(\'#partieGauche' . $numero . '\').show();
+						digirisk(\'#partieGauche' . $numero . '\').css(\'width\', \'98%\');
 						adminMenu.fold();
-						evarisk("#enlarging' . $numero . ' .ui-slider-range").css("width","100%");
-						evarisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","100%");
+						digirisk("#enlarging' . $numero . ' .ui-slider-range").css("width","100%");
+						digirisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","100%");
 					});
-					evarisk(\'#rightEnlarging' . $numero . '\').click(function() {
-						evarisk(\'#partieGauche' . $numero . '\').hide();
-						evarisk(\'#partieEdition' . $numero . '\').show();
-						evarisk(\'#partieEdition' . $numero . '\').css(\'width\', \'98%\');
+					digirisk(\'#rightEnlarging' . $numero . '\').click(function() {
+						digirisk(\'#partieGauche' . $numero . '\').hide();
+						digirisk(\'#partieEdition' . $numero . '\').show();
+						digirisk(\'#partieEdition' . $numero . '\').css(\'width\', \'98%\');
 						adminMenu.fold();
-						evarisk("#enlarging' . $numero . ' .ui-slider-range").css("width","0%");
-						evarisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","0%");
+						digirisk("#enlarging' . $numero . ' .ui-slider-range").css("width","0%");
+						digirisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","0%");
 					});
-					evarisk(\'#equilize' . $numero . '\').click(function() {
-						evarisk(\'#partieGauche' . $numero . '\').show();
-						evarisk(\'#partieEdition' . $numero . '\').show();
-						evarisk(\'#partieEdition' . $numero . '\').css(\'width\', \'49%\');
-						evarisk(\'#partieGauche' . $numero . '\').css(\'width\', \'49%\');
-						evarisk("#enlarging' . $numero . ' .ui-slider-range").css("width","50%");
-						evarisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","50%");
+					digirisk(\'#equilize' . $numero . '\').click(function() {
+						digirisk(\'#partieGauche' . $numero . '\').show();
+						digirisk(\'#partieEdition' . $numero . '\').show();
+						digirisk(\'#partieEdition' . $numero . '\').css(\'width\', \'49%\');
+						digirisk(\'#partieGauche' . $numero . '\').css(\'width\', \'49%\');
+						digirisk("#enlarging' . $numero . ' .ui-slider-range").css("width","50%");
+						digirisk("#enlarging' . $numero . ' .ui-slider-handle").css("left","50%");
 					});
 				});
 			</script>';
 						
 						
 		$script = '<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk("#enlarging' . $numero . ' .ui-slider-horizontal").css("width","100px");
-					evarisk("#enlarging' . $numero . '").slider({
+				digirisk(document).ready(function() {
+					digirisk("#enlarging' . $numero . ' .ui-slider-horizontal").css("width","100px");
+					digirisk("#enlarging' . $numero . '").slider({
 						range: "min",
 						value: 50,
 						min: 25,
@@ -277,10 +277,10 @@ class EvaDisplayDesign {
 							{
 								adminMenu.fold();
 							}
-							evarisk(\'#partieEdition' . $numero . '\').show();
-							evarisk(\'#partieGauche' . $numero . '\').show();
-							evarisk("#partieGauche' . $numero . '").css("width", largeurGauche  + "%");
-							evarisk("#partieEdition' . $numero . '").css("width", largeurDroite  + "%");
+							digirisk(\'#partieEdition' . $numero . '\').show();
+							digirisk(\'#partieGauche' . $numero . '\').show();
+							digirisk("#partieGauche' . $numero . '").css("width", largeurGauche  + "%");
+							digirisk("#partieEdition' . $numero . '").css("width", largeurDroite  + "%");
 						}
 					});
 				});
@@ -320,7 +320,7 @@ class EvaDisplayDesign {
 		{
 			$display = $display . '
 			<script type="text/javascript">
-				evarisk(document).ready(function() {
+				digirisk(document).ready(function() {
 				});
 			</script';
 		}
@@ -355,55 +355,55 @@ class EvaDisplayDesign {
 				break;
 		}
 		$scriptPostBox = '<script type="text/javascript">
-	evarisk(document).ready(function() {
-		evarisk(\'#' . $idPostBox . 'Fleche\').click(function() {
-			evarisk(\'#' . $idPostBox . '\').toggleClass(\'closed\');
+	digirisk(document).ready(function() {
+		digirisk(\'#' . $idPostBox . 'Fleche\').click(function() {
+			digirisk(\'#' . $idPostBox . '\').toggleClass(\'closed\');
 		});
 		if(document.getElementById(\'filAriane\').lastChild == document.getElementById(\'filAriane\').firstChild)
 		{
-			evarisk(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
+			digirisk(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
 		}
 		else
 		{
-			evarisk(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
+			digirisk(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
 		}
-		evarisk(\'#' . $idPostBox . 'Pere\').click(function() {
-			if(evarisk(\'#filAriane :last-child\') != evarisk(\'#filAriane :first-child\'))
+		digirisk(\'#' . $idPostBox . 'Pere\').click(function() {
+			if(digirisk(\'#filAriane :last-child\') != digirisk(\'#filAriane :first-child\'))
 			{
-				evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-				if(evarisk(\'#filAriane :last-child\').is("label"))
+				digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+				if(digirisk(\'#filAriane :last-child\').is("label"))
 				{
-					evarisk(\'#filAriane :last-child\').remove();
+					digirisk(\'#filAriane :last-child\').remove();
 				}
-				evarisk(\'#filAriane :last-child\').remove();
-				evarisk(\'#filAriane :last-child\').remove();
-				evarisk(\'#' . $idPostBox . ' h3 span\').html(evarisk(\'#filAriane :last-child\').html());
-				var id = evarisk(\'#filAriane :last-child\').attr("id");
+				digirisk(\'#filAriane :last-child\').remove();
+				digirisk(\'#filAriane :last-child\').remove();
+				digirisk(\'#' . $idPostBox . ' h3 span\').html(digirisk(\'#filAriane :last-child\').html());
+				var id = digirisk(\'#filAriane :last-child\').attr("id");
 				var reg = new  RegExp("(element)", "g");
 				var id = id.replace(reg, "");
-				evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(id);
+				digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(id);
 
-				changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
-				changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+				changementPage("right", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+				changementPage("left", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 				return false;
 			}
 		});
 		if(document.getElementById(\'favorite-inside-' . $idPostBox . '\') != null)
 		{
-			document.getElementById(\'favorite-inside-' . $idPostBox . '\').style.width = evarisk(\'#favorite-actions-' . $idPostBox . '\').innerWidth() -4 + "px";
+			document.getElementById(\'favorite-inside-' . $idPostBox . '\').style.width = digirisk(\'#favorite-actions-' . $idPostBox . '\').innerWidth() -4 + "px";
 		}
-		evarisk(\'#favorite-toggle-' . $idPostBox . '\').hover(function() {
-			evarisk(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
-			evarisk(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
-			evarisk(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
+		digirisk(\'#favorite-toggle-' . $idPostBox . '\').hover(function() {
+			digirisk(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
+			digirisk(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
+			digirisk(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
 		});
-		evarisk(\'#favorite-first-' . $idPostBox . '\').click(function() {
-			evarisk(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
-			evarisk(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
-			evarisk(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
+		digirisk(\'#favorite-first-' . $idPostBox . '\').click(function() {
+			digirisk(\'#favorite-first-' . $idPostBox . '\').addClass("slide-down");
+			digirisk(\'#favorite-inside-' . $idPostBox . '\').addClass("slideDown");
+			digirisk(\'#favorite-inside-' . $idPostBox . '\').slideDown(100);
 		});
 		var timeoutFavoriteActions;
-		evarisk(\'#favorite-actions-' . $idPostBox . '\').hover(function() {
+		digirisk(\'#favorite-actions-' . $idPostBox . '\').hover(function() {
 			clearTimeout(timeoutFavoriteActions);
 		},function() {
 			timeoutFavoriteActions = setTimeout 
@@ -411,13 +411,13 @@ class EvaDisplayDesign {
 				function() 
 				{ 
 					//document.getElementById(\'favorite-inside-' . $idPostBox . '\').style.display = "none";
-					evarisk(\'#favorite-inside-' . $idPostBox . '\').slideUp(100);
+					digirisk(\'#favorite-inside-' . $idPostBox . '\').slideUp(100);
 					setTimeout 
 					( 
 						function() 
 						{ 
-							evarisk(\'#favorite-first-' . $idPostBox . '\').removeClass("slide-down");
-							evarisk(\'#favorite-inside-' . $idPostBox . '\').removeClass("slideDown");
+							digirisk(\'#favorite-first-' . $idPostBox . '\').removeClass("slide-down");
+							digirisk(\'#favorite-inside-' . $idPostBox . '\').removeClass("slideDown");
 						}, 
 						100
 					);
@@ -426,63 +426,63 @@ class EvaDisplayDesign {
 			);
 		});
 		
-		evarisk(\'#favorite-first-link-' . $idPostBox . '\').click(function() {
-			evarisk("#rightEnlarging").show();
-			evarisk("#equilize").click();
+		digirisk(\'#favorite-first-link-' . $idPostBox . '\').click(function() {
+			digirisk("#rightEnlarging").show();
+			digirisk("#equilize").click();
 			
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table . '",
 				"act": "add",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table . '",
 				"act": "add",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "left",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
 			
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 			return false;
 		});
 		
-		evarisk(\'#favorite-second-link-' . $idPostBox . '\').click(function() {
-			evarisk("#rightEnlarging").show();
-			evarisk("#equilize").click();
+		digirisk(\'#favorite-second-link-' . $idPostBox . '\').click(function() {
+			digirisk("#rightEnlarging").show();
+			digirisk("#equilize").click();
 			
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table2 . '",
 				"act": "add",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $table2 . '",
 				"act": "add",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"partie": "left",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
 			
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 			return false;
 		});
 	});
@@ -533,88 +533,88 @@ class EvaDisplayDesign {
 	{	
 		$pagination = '
 <script type="text/javascript">
-	evarisk(document).ready(function() {
-		evarisk(\'#element1\').unbind("click");
-		evarisk(\'#element1\').click(function() {
-			evarisk(\'#identifiantActuelle' . $id . '\').val(1);
-			evarisk(\'#page' . $id . 'Reference\').val(1);
-			while(evarisk(\'#filAriane :last-child\').attr("id") != "element1")
+	digirisk(document).ready(function() {
+		digirisk(\'#element1\').unbind("click");
+		digirisk(\'#element1\').click(function() {
+			digirisk(\'#identifiantActuelle' . $id . '\').val(1);
+			digirisk(\'#page' . $id . 'Reference\').val(1);
+			while(digirisk(\'#filAriane :last-child\').attr("id") != "element1")
 			{
-				evarisk(\'#filAriane :last-child\').remove();
+				digirisk(\'#filAriane :last-child\').remove();
 			}
 
-			changementPage("right", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
-			changementPage("left", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
-			evarisk(\'#' . $id . ' h3 span\').html(evarisk(\'#filAriane :first-child\').html());
+			changementPage("right", "' . $table . '", digirisk("#page' . $id . 'Reference").val(), digirisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+			changementPage("left", "' . $table . '", digirisk("#page' . $id . 'Reference").val(), digirisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+			digirisk(\'#' . $id . ' h3 span\').html(digirisk(\'#filAriane :first-child\').html());
 			return false;
 		});
 	});
-	evarisk(document).ready(function() {	
-		evarisk(\'#page' . $id . '\').keypress(function(event) {
+	digirisk(document).ready(function() {	
+		digirisk(\'#page' . $id . '\').keypress(function(event) {
 			if (event.which && (event.which < 48 || event.which >57) && event.which != 8 && event.which != 13) {
 				event.preventDefault();
 			}
 		});
-		evarisk(\'#page' . $id . '\').keyup(function() {
-			evarisk(\'#page' . $id . 'Reference\').val(evarisk(\'#page' . $id . '\').val())
+		digirisk(\'#page' . $id . '\').keyup(function() {
+			digirisk(\'#page' . $id . 'Reference\').val(digirisk(\'#page' . $id . '\').val())
 		});
 		
-		var page = evarisk(\'#page' . $id . 'Reference\').val();
-		evarisk(\'#page' . $id . '\').val(page);
-		evarisk(\'#formPagination' . $id . '\').click(function(event) {
-			if(evarisk(event.target).is(\'.button\'))
+		var page = digirisk(\'#page' . $id . 'Reference\').val();
+		digirisk(\'#page' . $id . '\').val(page);
+		digirisk(\'#formPagination' . $id . '\').click(function(event) {
+			if(digirisk(event.target).is(\'.button\'))
 			{
-				if(evarisk("#filAriane :last-child").is("label"))
-					evarisk("#filAriane :last-child").remove();
+				if(digirisk("#filAriane :last-child").is("label"))
+					digirisk("#filAriane :last-child").remove();
 				switch((event.target).id)
 				{
 					case "first' . $id . '":
 						page = 1;
 						break;
 					case "previous' . $id . '":
-						page = parseInt(evarisk(\'#page' . $id . 'Reference\').val()) - 1;
+						page = parseInt(digirisk(\'#page' . $id . 'Reference\').val()) - 1;
 						if(page < 1)
 						{
 							page = 1;	
 						}
 						break;
 					case "next' . $id . '":
-						page = parseInt(evarisk(\'#page' . $id . 'Reference\').val()) + 1;
-						if(page > evarisk(\'#pageMax' . $id . '\').value)
+						page = parseInt(digirisk(\'#page' . $id . 'Reference\').val()) + 1;
+						if(page > digirisk(\'#pageMax' . $id . '\').value)
 						{
-							page = evarisk(\'#pageMax' . $id . '\').val();	
+							page = digirisk(\'#pageMax' . $id . '\').val();	
 						}
 						break;
 					case "last' . $id . '":
-						page = parseInt(evarisk(\'#pageMax' . $id . '\').val());
+						page = parseInt(digirisk(\'#pageMax' . $id . '\').val());
 						break;
 					case "text' . $id . '":
-						if(parseInt(evarisk(\'#page' . $id . 'Reference\').val()) > parseInt(evarisk(\'#pageMax' . $id . '\').val()))
+						if(parseInt(digirisk(\'#page' . $id . 'Reference\').val()) > parseInt(digirisk(\'#pageMax' . $id . '\').val()))
 						{
-							page = parseInt(evarisk(\'#pageMax' . $id . '\').val());
+							page = parseInt(digirisk(\'#pageMax' . $id . '\').val());
 						}
 						else
 						{
-							if(parseInt(evarisk(\'#page' . $id . 'Reference\').val()) < 1)
+							if(parseInt(digirisk(\'#page' . $id . 'Reference\').val()) < 1)
 							{
 								page = 1;	
 							}
 							else
 							{
-								if(evarisk(\'#page' . $id . 'Reference\').val() != "")
+								if(digirisk(\'#page' . $id . 'Reference\').val() != "")
 								{
-									page = parseInt(evarisk(\'#page' . $id . 'Reference\').val());
+									page = parseInt(digirisk(\'#page' . $id . 'Reference\').val());
 								}
 							}
 						}
 						break;
 				}
-				evarisk(\'#page' . $id . 'Reference\').val(page);
+				digirisk(\'#page' . $id . 'Reference\').val(page);
 
-				changementPage("right", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
-				changementPage("left", "' . $table . '", evarisk("#page' . $id . 'Reference").val(), evarisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+				changementPage("right", "' . $table . '", digirisk("#page' . $id . 'Reference").val(), digirisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
+				changementPage("left", "' . $table . '", digirisk("#page' . $id . 'Reference").val(), digirisk("#identifiantActuelle' . $id . '").val(), "affichageTable", "main");
 
-				evarisk(\'#page' . $id . '\').val(page);
+				digirisk(\'#page' . $id . '\').val(page);
 				return false;
 			}
 		});
@@ -798,14 +798,14 @@ class EvaDisplayDesign {
 		var draggedObjectFather;
 	
 		// Configure draggable nodes
-		evarisk("#' . $idTable . ' .noeudArbre, #' . $idTable . ' .feuilleArbre").draggable({
+		digirisk("#' . $idTable . ' .noeudArbre, #' . $idTable . ' .feuilleArbre").draggable({
 			start: function(event, ui){
 				draggedObject = jQuery(this).closest("tr").attr("id");//event.target.id;
 				var classNames = jQuery(this).closest("tr").attr("class").split(\' \');//event.target.className.split(\' \');
 				draggedObjectFather = "temp";
 				for(key in classNames){
 					if(classNames[key].match("child-of-")){
-						draggedObjectFather = evarisk("#" + classNames[key].substring(9));
+						draggedObjectFather = digirisk("#" + classNames[key].substring(9));
 						draggedObjectFather = draggedObjectFather.attr("id");
 					}
 				}
@@ -820,14 +820,14 @@ class EvaDisplayDesign {
 		
 		var dropFunction = function(event, ui){
 			// Call jQuery treeTable plugin to move the branch
-			evarisk(evarisk(ui.draggable)).appendBranchTo(this);
+			digirisk(digirisk(ui.draggable)).appendBranchTo(this);
 			var dropLocation = jQuery(this).closest("tr").attr("id");//event.target.id;
 
-			evarisk("#equilize").click();
-			evarisk("#' . $divDeChargement . '").addClass("updated");
-			evarisk("#' . $divDeChargement . '").html("' . __('Transfert en cours...', 'evarisk') . '");
-			evarisk("#' . $divDeChargement . '").show();
-			evarisk("#' . $divDeChargement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			digirisk("#equilize").click();
+			digirisk("#' . $divDeChargement . '").addClass("updated");
+			digirisk("#' . $divDeChargement . '").html("' . __('Transfert en cours...', 'evarisk') . '");
+			digirisk("#' . $divDeChargement . '").show();
+			digirisk("#' . $divDeChargement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 				"post":"true",
 				"table":"' . $table . '",
 				"location":"' . $idTable . '",
@@ -838,37 +838,37 @@ class EvaDisplayDesign {
 			});
 			setTimeout(
 				function(){
-					evarisk("#' . $idTable . ' tr.parent").each(function(){
-						var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
+					digirisk("#' . $idTable . ' tr.parent").each(function(){
+						var childNodes = digirisk("table#' . $idTable . ' tbody tr.child-of-" + digirisk(this).attr("id"));
 						if(childNodes.length > 0){
-							evarisk(this).removeClass("sansFils");
-							evarisk(this).addClass("aFils");
-							var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
+							digirisk(this).removeClass("sansFils");
+							digirisk(this).addClass("aFils");
+							var premierFils = digirisk("table#' . $idTable . ' tbody tr.child-of-" + digirisk(this).attr("id") + ":first").attr("id");
 							if(premierFils != premierFils.replace(/node-' . $idTable . '-/g,"")){
-								evarisk(this).addClass("aFilsNoeud");
-								evarisk(this).droppable( "option", "accept", ".noeudArbre" );
-								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").hide();
-								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
+								digirisk(this).addClass("aFilsNoeud");
+								digirisk(this).droppable( "option", "accept", ".noeudArbre" );
+								digirisk("#' . $idTable . ' #addSecondary" + digirisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").hide();
+								digirisk("#' . $idTable . ' #addMain" + digirisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
 							}
 							else{
-								evarisk(this).addClass("aFilsFeuille");
-								evarisk(this).droppable( "option", "accept", ".feuilleArbre" );
-								evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").hide();
-								evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
+								digirisk(this).addClass("aFilsFeuille");
+								digirisk(this).droppable( "option", "accept", ".feuilleArbre" );
+								digirisk("#' . $idTable . ' #addMain" + digirisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").hide();
+								digirisk("#' . $idTable . ' #addSecondary" + digirisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
 							}
 						}
 						else{
-							evarisk(this).removeClass("aFilsNoeud");
-							evarisk(this).removeClass("aFilsFeuille");
-							evarisk(this).removeClass("aFils");
-							evarisk(this).addClass("sansFils");
-							evarisk(this).droppable("option", "accept", ".noeudArbre, .feuilleArbre");
-							evarisk("#' . $idTable . ' #addSecondary" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
-							evarisk("#' . $idTable . ' #addMain" + evarisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
+							digirisk(this).removeClass("aFilsNoeud");
+							digirisk(this).removeClass("aFilsFeuille");
+							digirisk(this).removeClass("aFils");
+							digirisk(this).addClass("sansFils");
+							digirisk(this).droppable("option", "accept", ".noeudArbre, .feuilleArbre");
+							digirisk("#' . $idTable . ' #addSecondary" + digirisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
+							digirisk("#' . $idTable . ' #addMain" + digirisk(this).attr("id").replace(/node-' . $idTable . '-/g,"") + " img").show();
 						}
 					});
-					evarisk(document).ajaxStop(function(){
-						evarisk("#' . $divDeChargement . '").removeClass("updated");
+					digirisk(document).ajaxStop(function(){
+						digirisk("#' . $divDeChargement . '").removeClass("updated");
 					});
 				}, 
 				10 
@@ -877,8 +877,8 @@ class EvaDisplayDesign {
 
 		overFunction = function(event, ui){
 			// Make the droppable branch expand when a draggable node is moved over it.
-			if(this.id != evarisk(ui.draggable.parents("tr")[0]).id && !evarisk(this).is(".expanded")){
-				var overObject = evarisk(this);
+			if(this.id != digirisk(ui.draggable.parents("tr")[0]).id && !digirisk(this).is(".expanded")){
+				var overObject = digirisk(this);
 				setTimeout(function(){
 					if(overObject.is(".accept")){
 						overObject.expand();
@@ -888,19 +888,19 @@ class EvaDisplayDesign {
 				);
 		  }
 		}
-		evarisk("#' . $idTable . ' .aFilsNoeud, #' . $idTable . ' .racineArbre").droppable({
+		digirisk("#' . $idTable . ' .aFilsNoeud, #' . $idTable . ' .racineArbre").droppable({
 			accept: "#' . $idTable . ' .noeudArbre",
 			drop: dropFunction,
 			hoverClass: "accept",
 			over: overFunction			  
 		});
-		evarisk("#' . $idTable . ' .aFilsFeuille").droppable({
+		digirisk("#' . $idTable . ' .aFilsFeuille").droppable({
 			accept: "#' . $idTable . ' .feuilleArbre",
 			drop: dropFunction,
 			hoverClass: "accept",
 			over: overFunction
 		});
-		evarisk("#' . $idTable . ' .sansFils").droppable({
+		digirisk("#' . $idTable . ' .sansFils").droppable({
 			accept: "#' . $idTable . ' .feuilleArbre, #' . $idTable . ' .noeudArbre",
 			drop: dropFunction,
 			hoverClass: "accept",
@@ -947,24 +947,24 @@ class EvaDisplayDesign {
 			$tableArborescente .= '
 				<div id="trashContainer" title="' . __('Liste des &eacute;l&eacute;ments supprim&eacute;s', 'evarisk') . '" >&nbsp;</div>';
 			$trashScript = '
-		evarisk("#trashContainer").dialog({
+		digirisk("#trashContainer").dialog({
 			autoOpen: false,
 			modal: true,
 			width: 800,
 			height: 600,
 			close: function(){
-				evarisk(this).html("");
+				digirisk(this).html("");
 			}';
 			if($table == TABLE_GROUPEMENT){
 			$trashScript .= ',
 			buttons:{
 				"' . __('Reinitialiser l\'arbre des groupements', 'evarisk') . '": function(){
-					if(confirm(convertAccentToJS("' . __('Si vous effectuez cette action, tous les groupements de l\'arbre seront replac&eacute;s &agrave; la racine de votre architecture', 'evarisk') . '"))){
+					if(confirm(digi_html_accent_for_js("' . __('Si vous effectuez cette action, tous les groupements de l\'arbre seront replac&eacute;s &agrave; la racine de votre architecture', 'evarisk') . '"))){
 						jQuery.getJSON(EVA_AJAX_FILE_URL, { post: "true", nom: "initialize_groupement_tree" },
 							function(data){
 								if(data[0]) {
 									changementPage("left", "' . $table . '", 1, 1, "affichageListe", "main");
-									evarisk("#trashContainer").dialog("close");
+									digirisk("#trashContainer").dialog("close");
 								}
 								else {
 									alert(data[1]);
@@ -976,10 +976,10 @@ class EvaDisplayDesign {
 			}
 			$trashScript .= '
 		});
-		evarisk(".trash img").click(function(){
-			evarisk("#trashContainer").dialog("open");
-			evarisk("#trashContainer").html(evarisk("#loadingImg").html());
-			evarisk("#trashContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+		digirisk(".trash img").click(function(){
+			digirisk("#trashContainer").dialog("open");
+			digirisk("#trashContainer").html(digirisk("#loadingImg").html());
+			digirisk("#trashContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post": "true", 
 				"tableProvenance": "' . $table . '",
 				"nom": "loadTrash"
@@ -989,30 +989,30 @@ class EvaDisplayDesign {
 
 		$script = '
 <script type="text/javascript">
-	evarisk(document).ready(function(){
+	digirisk(document).ready(function(){
 		//	Change the simple table in treetable
-		evarisk("#' . $idTable . '").treeTable();	
+		digirisk("#' . $idTable . '").treeTable();	
 		selectRowInTreeTable("' . $idTable . '");
 
 		var span = document.getElementById("tdRacine' . $idTable . '").firstChild;
-		evarisk("#' . $idTable . ' #node-' . $idTable . '-' . $racine->id . '").toggleBranch();
+		digirisk("#' . $idTable . ' #node-' . $idTable . '-' . $racine->id . '").toggleBranch();
 		document.getElementById("tdRacine' . $idTable . '").removeChild(span);
 
-		evarisk("#' . $idTable . ' tr.parent").each(function(){
-			var childNodes = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id"));
+		digirisk("#' . $idTable . ' tr.parent").each(function(){
+			var childNodes = digirisk("table#' . $idTable . ' tbody tr.child-of-" + digirisk(this).attr("id"));
 			if(childNodes.length > 0){
-				evarisk(this).addClass("aFils");				
-				var premierFils = evarisk("table#' . $idTable . ' tbody tr.child-of-" + evarisk(this).attr("id") + ":first").attr("id");
+				digirisk(this).addClass("aFils");				
+				var premierFils = digirisk("table#' . $idTable . ' tbody tr.child-of-" + digirisk(this).attr("id") + ":first").attr("id");
 				if(premierFils != premierFils.replace(/node/g,"")){
-					evarisk(this).addClass("aFilsNoeud");
+					digirisk(this).addClass("aFilsNoeud");
 				}
 				else{
-					evarisk(this).addClass("aFilsFeuille");
+					digirisk(this).addClass("aFilsFeuille");
 				}
 			}
 			else{
-				evarisk(this).removeClass("aFils");
-				evarisk(this).addClass("sansFils");
+				digirisk(this).removeClass("aFils");
+				digirisk(this).addClass("sansFils");
 			}
 		});
 
@@ -1020,47 +1020,47 @@ class EvaDisplayDesign {
 
 		' . $draggableScript . '
 
-		evarisk("#' . $idTable . ' .addMain img").click(function(){
-			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+		digirisk("#' . $idTable . ' .addMain img").click(function(){
+			var nodeId = digirisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
 			var expanded = reInitTreeTable();';
 		if($table == TABLE_GROUPEMENT){
 		$script .= '
-			evarisk("#menu").val("gestiongrptut");';
+			digirisk("#menu").val("gestiongrptut");';
 		}
 			$script .= '
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 				"post": "true", 
 				"table": "' . $table . '",
 				"act": "add",
-				"page": evarisk("#pagemainPostBoxReference").val(),
+				"page": digirisk("#pagemainPostBoxReference").val(),
 				"idPere": nodeId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"partition": "tout",
 				"expanded": expanded
 			});
 		});
 
-		evarisk("#' . $idTable . ' .addSecondary img").click(function(){
-			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
+		digirisk("#' . $idTable . ' .addSecondary img").click(function(){
+			var nodeId = digirisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "");
 			var expanded = reInitTreeTable();';
 		if($table == TABLE_GROUPEMENT){
 		$script .= '
-			evarisk("#menu").val("gestiongrptut");';
+			digirisk("#menu").val("gestiongrptut");';
 		}
 			$script .= '
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post": "true", 
 				"table": "' . $sousTable . '",
 				"act": "add",
-				"page": evarisk("#pagemainPostBoxReference").val(),
+				"page": digirisk("#pagemainPostBoxReference").val(),
 				"idPere": nodeId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"partition": "tout",
 				"expanded": expanded
@@ -1071,13 +1071,13 @@ class EvaDisplayDesign {
 		{
 			$script .= '
 
-		evarisk("#' . $idTable . ' #add-node-' . $racine->id . '").click(function(){
+		digirisk("#' . $idTable . ' #add-node-' . $racine->id . '").click(function(){
 			for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
 			{
 				if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $racine->id . ')
 					document.regulatoryWatchForm.titrePere.options[i].selected = true;
 			}
-			evarisk("#traiter").click();
+			digirisk("#traiter").click();
 		});';
 		}
 
@@ -1089,21 +1089,21 @@ class EvaDisplayDesign {
 			{	/*	Tree leaf	*/
 				$script .= '
 		//	The user click on the delete button of a leaf
-		evarisk("#' . $idTable . ' .delete-leaf").click(function(){
-			var leafId = evarisk(this).parent("tr").attr("id").replace("leaf-", "");
-			evarisk("#menu").val("gestiongrptut");
+		digirisk("#' . $idTable . ' .delete-leaf").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
+			digirisk("#menu").val("gestiongrptut");
 			var expanded = reInitTreeTable();
 			if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?', 'evarisk') . '")){
-				evarisk("#partieEdition").html("");
-				evarisk("#partieGauche").html(evarisk("#loadingImg").html());
-				evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#partieEdition").html("");
+				digirisk("#partieGauche").html(digirisk("#loadingImg").html());
+				digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 				{
 					"post": "true", 
 					"table": "' . $sousTable . '",
 					"act": "delete",
 					"id": leafId,
 					"partie": "left",
-					"menu": evarisk("#menu").val(),
+					"menu": digirisk("#menu").val(),
 					"affichage": "affichageListe",
 					"partition": "tout",
 					"expanded": expanded
@@ -1112,55 +1112,55 @@ class EvaDisplayDesign {
 		});
 
 		//	The user click on the edit button of a leaf
-		evarisk("#' . $idTable . ' .edit-leaf").click(function(){
-			var leafId = evarisk(this).parent("tr").attr("id").replace("leaf-", "");
+		digirisk("#' . $idTable . ' .edit-leaf").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
 			selectRowInTreeTable("' . $idTable . '");
-			evarisk("#menu").val("gestiongrptut");
+			digirisk("#menu").val("gestiongrptut");
 			var expanded = reInitTreeTable();
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post": "true", 
 				"table": "' . $sousTable . '",
 				"act": "edit",
 				"id": leafId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"expanded": expanded
 			});
 		});
 
 		//	The user click on the name of the leaf
-		evarisk(".nomFeuilleArbre, .treeTableInfoColumn").click(function(){
-			var leafId = evarisk(this).parent("tr").attr("id").replace("leaf-", "");
+		digirisk(".nomFeuilleArbre, .treeTableInfoColumn").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
 			selectRowInTreeTable("' . $idTable . '");
-			evarisk("#menu").val("risq");
+			digirisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $sousTable . '",
 				"act": "edit",
 				"id": leafId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"expanded": expanded
 			});
 		});
 
 		//	The user click on the edit button of a leaf
-		evarisk("#' . $idTable . ' .risk-leaf").click(function(){
-			var leafId = evarisk(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
+		digirisk("#' . $idTable . ' .risk-leaf").click(function(){
+			var leafId = digirisk(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
 			selectRowInTreeTable("' . $idTable . '");
-			evarisk("#menu").val("risq");
+			digirisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $sousTable . '",
 				"act": "edit",
 				"id": leafId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"expanded": expanded
 			});
@@ -1169,20 +1169,20 @@ class EvaDisplayDesign {
 			{	/*	Tree node	*/
 				$script .= '
 		//	The user click on the delete button of a node
-		evarisk("#' . $idTable . ' .delete-node").click(function(){
-			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
-			evarisk("#menu").val("gestiongrptut");
+		digirisk("#' . $idTable . ' .delete-node").click(function(){
+			var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+			digirisk("#menu").val("gestiongrptut");
 			var expanded = reInitTreeTable();
 			if(confirm("' . __('Etes vous sur de vouloir supprimer cet element?\r\nATTENTION: si cet element possede des sous elements, ils seront inaccessibles', 'evarisk') . '")){
-				evarisk("#partieGauche").html(evarisk("#loadingImg").html());
-				evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#partieGauche").html(digirisk("#loadingImg").html());
+				digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 				{
 					"post": "true", 
 					"table": "' . $table . '",
 					"act": "delete",
 					"id": nodeId,
 					"partie": "left",
-					"menu": evarisk("#menu").val(),
+					"menu": digirisk("#menu").val(),
 					"affichage": "affichageListe",
 					"partition": "tout",
 					"expanded": expanded
@@ -1190,66 +1190,66 @@ class EvaDisplayDesign {
 			}
 		});
 		//	The user click on the delete button of a node
-		evarisk("#' . $idTable . ' .edit-node").click(function(){
-			var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+		digirisk("#' . $idTable . ' .edit-node").click(function(){
+			var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 			selectRowInTreeTable("' . $idTable . '");
-			evarisk("#menu").val("gestiongrptut");
+			digirisk("#menu").val("gestiongrptut");
 			var expanded = reInitTreeTable();
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post": "true", 
 				"table": "' . $table . '",
 				"act": "edit",
 				"id": nodeId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"partition": "tout",
 				"expanded": expanded
 			});
 		});
 		//	The user click on the delete button of a node
-		evarisk("#' . $idTable . ' .risq-node").click(function(){
-			var nodeId = evarisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+		digirisk("#' . $idTable . ' .risq-node").click(function(){
+			var nodeId = digirisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 			selectRowInTreeTable("' . $idTable . '");
-			evarisk("#menu").val("risq");
+			digirisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post": "true", 
 				"table": "' . $table . '",
 				"act": "edit",
 				"id": nodeId,
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
 				"partition": "tout",
 				"expanded": expanded
 			});
 		});
 		//	The user click on the delete button of a node
-		evarisk("#' . $idTable . ' .nomNoeudArbre, #' . $idTable . ' .treeTableGroupInfoColumn").click(function(e){
-			if(!evarisk(e.target).hasClass("expander")){
-				if(evarisk(e.target).hasClass("nomNoeudArbre")){
-					var nodeId = evarisk(this).attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+		digirisk("#' . $idTable . ' .nomNoeudArbre, #' . $idTable . ' .treeTableGroupInfoColumn").click(function(e){
+			if(!digirisk(e.target).hasClass("expander")){
+				if(digirisk(e.target).hasClass("nomNoeudArbre")){
+					var nodeId = digirisk(this).attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 				}
-				else if(evarisk(e.target).hasClass("treeTableGroupInfoColumn")){
-					var nodeId = evarisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+				else if(digirisk(e.target).hasClass("treeTableGroupInfoColumn")){
+					var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 				}
 				selectRowInTreeTable("' . $idTable . '");
-				evarisk("#menu").val("risq");
+				digirisk("#menu").val("risq");
 				var expanded = reInitTreeTable();
-				evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-				evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+				digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 				{
 					"post": "true", 
 					"table": "' . $table . '",
 					"act": "edit",
 					"id": nodeId,
 					"partie": "right",
-					"menu": evarisk("#menu").val(),
+					"menu": digirisk("#menu").val(),
 					"affichage": "affichageListe",
 					"partition": "tout",
 					"expanded": expanded
@@ -1262,12 +1262,12 @@ class EvaDisplayDesign {
 			if(false){	/*	Tree leaf	*/
 				$script = '
 				<script type="text/javascript">
-					evarisk(document).ready(function()  
+					digirisk(document).ready(function()  
 					{
-						evarisk("#' . $idTable . ' #delete-leaf-' . $subElement->id . '").click(function(){
+						digirisk("#' . $idTable . ' #delete-leaf-' . $subElement->id . '").click(function(){
 							var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $sousTable . '&id=' . $subElement->id . '&idPere=' . $elementPere->id . '&act=delete";
-							evarisk("#ajax-response").html(evarisk("#loadingImg").html());
-							evarisk("#ajax-response").load(adresse);
+							digirisk("#ajax-response").html(digirisk("#loadingImg").html());
+							digirisk("#ajax-response").load(adresse);
 						});
 					});
 				</script>';
@@ -1275,32 +1275,32 @@ class EvaDisplayDesign {
 			if(false){	/*	Tree node	*/
 				$script = '
 					<script type="text/javascript">
-						evarisk(document).ready(function()  
+						digirisk(document).ready(function()  
 						{
-							evarisk("#' . $idTable . ' #delete-node-' . $element->id . '").click(function(){
+							digirisk("#' . $idTable . ' #delete-node-' . $element->id . '").click(function(){
 								var adresse = "' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=' . $table . '&id=' . $element->id . '&act=delete";
-								evarisk("#ajax-response").html(evarisk("#loadingImg").html());
-								evarisk("#ajax-response").load(adresse);
+								digirisk("#ajax-response").html(digirisk("#loadingImg").html());
+								digirisk("#ajax-response").load(adresse);
 							});
-							evarisk("#' . $idTable . ' #add-node-' . $element->id . '").click(function(){
+							digirisk("#' . $idTable . ' #add-node-' . $element->id . '").click(function(){
 								for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
 								{
 									if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $element->id . ')
 										document.regulatoryWatchForm.titrePere.options[i].selected = true;
 								}
-								evarisk("#traiter").click();
+								digirisk("#traiter").click();
 							});
-							evarisk("#' . $idTable . ' #edit-node-' . $element->id . '").click(function(){
+							digirisk("#' . $idTable . ' #edit-node-' . $element->id . '").click(function(){
 								for (var i=0;i<document.regulatoryWatchForm.titrePere.options.length;i++) 
 								{
 									if (document.regulatoryWatchForm.titrePere.options[i].value == ' . $element->id . ')
 										document.regulatoryWatchForm.titrePere.options[i].selected = true;
 								}
-								if(evarisk("#codeTitre").val() == "")
+								if(digirisk("#codeTitre").val() == "")
 								{
-									evarisk("#codeTitre").val(' . $element->code . ')
+									digirisk("#codeTitre").val(' . $element->code . ')
 								}
-								evarisk("#updateVeille").click();
+								digirisk("#updateVeille").click();
 							});
 						});
 					</script>';
@@ -2126,41 +2126,41 @@ class EvaDisplayDesign {
 		$pageMax = isset($listeElements)?ceil(count($listeElements)/$nombreElements):1;
 		$liste  = '
 <script type="text/javascript">
-	evarisk(document).ready(function() {
-		evarisk(\'#page' . $idPostBox . 'Reference\').val(' . $page . ');
-		evarisk(\'#page' . $idPostBox . '\').val(' . $page . ');
+	digirisk(document).ready(function() {
+		digirisk(\'#page' . $idPostBox . 'Reference\').val(' . $page . ');
+		digirisk(\'#page' . $idPostBox . '\').val(' . $page . ');
 		if(document.getElementById(\'filAriane\').lastChild == document.getElementById(\'filAriane\').firstChild)
 		{
-			evarisk(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
+			digirisk(\'#' . $idPostBox . 'Pere\').addClass(\'hidden\');
 		}
 		else
 		{
-			evarisk(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
+			digirisk(\'#' . $idPostBox . 'Pere\').removeClass(\'hidden\');
 		}
-		evarisk(\'#pageMax' . $idPostBox . '\').val(' . $pageMax . ');
-		if(evarisk(\'#pageMax' . $idPostBox . '\').val() == 0)
+		digirisk(\'#pageMax' . $idPostBox . '\').val(' . $pageMax . ');
+		if(digirisk(\'#pageMax' . $idPostBox . '\').val() == 0)
 		{
-			evarisk(\'#pageMax' . $idPostBox . '\').val(1);
+			digirisk(\'#pageMax' . $idPostBox . '\').val(1);
 		}
 		if(' . $page . ' <= 1)
 		{
-			evarisk(\'#first' . $idPostBox . '\').prop("disabled", "disabled");
-			evarisk(\'#previous' . $idPostBox . '\').prop("disabled", "disabled");
+			digirisk(\'#first' . $idPostBox . '\').prop("disabled", "disabled");
+			digirisk(\'#previous' . $idPostBox . '\').prop("disabled", "disabled");
 		}
 		else
 		{
-			evarisk(\'#first' . $idPostBox . '\').prop("disabled", "");
-			evarisk(\'#previous' . $idPostBox . '\').prop("disabled", "");
+			digirisk(\'#first' . $idPostBox . '\').prop("disabled", "");
+			digirisk(\'#previous' . $idPostBox . '\').prop("disabled", "");
 		}
-		if(parseInt(evarisk(\'#pageMax' . $idPostBox . '\').val()) == ' . $page . ')
+		if(parseInt(digirisk(\'#pageMax' . $idPostBox . '\').val()) == ' . $page . ')
 		{
-			evarisk(\'#last' . $idPostBox . '\').prop("disabled", "disabled");
-			evarisk(\'#next' . $idPostBox . '\').prop("disabled", "disabled");
+			digirisk(\'#last' . $idPostBox . '\').prop("disabled", "disabled");
+			digirisk(\'#next' . $idPostBox . '\').prop("disabled", "disabled");
 		}
 		else
 		{
-			evarisk(\'#last' . $idPostBox . '\').prop("disabled", "");
-			evarisk(\'#next' . $idPostBox . '\').prop("disabled", "");
+			digirisk(\'#last' . $idPostBox . '\').prop("disabled", "");
+			digirisk(\'#next' . $idPostBox . '\').prop("disabled", "");
 		}
 	});
 </script>';
@@ -2172,19 +2172,19 @@ class EvaDisplayDesign {
 		{
 			$liste  = $liste . '
 	<script type="text/javascript">
-		evarisk(document).ready(function() {
-			evarisk("#favorite-actions-mainPostBox").hide();
-			evarisk("#favorite-second-link-' . $idPostBox . '").show();
-			evarisk("#favorite-first-link-' . $idPostBox . '").show();
-			evarisk(\'#infoLi\').html("' . $messageAbsence . '\"" + evarisk(\'#filAriane\').children(\'a:last\').html() + "\".<br />" +
+		digirisk(document).ready(function() {
+			digirisk("#favorite-actions-mainPostBox").hide();
+			digirisk("#favorite-second-link-' . $idPostBox . '").show();
+			digirisk("#favorite-first-link-' . $idPostBox . '").show();
+			digirisk(\'#infoLi\').html("' . $messageAbsence . '\"" + digirisk(\'#filAriane\').children(\'a:last\').html() + "\".<br />" +
 		"<a href=\"#\" id=\"addMain\"><img src=\"' . $mainSrc . '\" alt=\"mainAdd\" title=\"' . $mainAdd . '\" />' . $mainAdd . '</a><br />" +
 		"<a href=\"#\" id=\"addSecondary\"><img src=\"' . $secondarySrc . '\" alt=\"secondaryAdd\" title=\"' . $secondaryAdd . '\" />' . $secondaryAdd . '</a>");
-			evarisk("#addMain").click(function(){
-				evarisk(\'#favorite-first-link-' . $idPostBox . '\').click();
+			digirisk("#addMain").click(function(){
+				digirisk(\'#favorite-first-link-' . $idPostBox . '\').click();
 				return false;
 			});
-			evarisk("#addSecondary").click(function(){
-				evarisk(\'#favorite-second-link-' . $idPostBox . '\').click();
+			digirisk("#addSecondary").click(function(){
+				digirisk(\'#favorite-second-link-' . $idPostBox . '\').click();
 				return false;
 			});
 		});
@@ -2206,64 +2206,64 @@ class EvaDisplayDesign {
 		$nombreElements = 0;
 		$script = '';
 		$chargement = '
-			evarisk("#rightEnlarging").show();
-			evarisk("#equilize").click();
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#rightEnlarging").show();
+			digirisk("#equilize").click();
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $_POST['table'] . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $_POST['table'] . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "left",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 			return false;';
 		foreach($elements as $elementObject)
 		{
 			$table = $elementObject['table'];
 			$idElement = $elementObject['id'];
 			$chargement = '
-				evarisk("#rightEnlarging").show();
-				evarisk("#equilize").click();
-				evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+				digirisk("#rightEnlarging").show();
+				digirisk("#equilize").click();
+				digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 					"table": "' . $table . '",
 					"id": "' . $idElement . '",
-					"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+					"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+					"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 					"act": "edit",
 					"partie": "right",
-					"menu": evarisk("#menu").val(),
+					"menu": digirisk("#menu").val(),
 					"affichage": "affichageTable",
 					"partition": "tout"
 				});
-				evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+				digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 					"table": "' . $_POST['table'] . '",
 					"id": "' . $_POST['idPere'] . '",
-					"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-					"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+					"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+					"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 					"act": "edit",
 					"partie": "left",
-					"menu": evarisk("#menu").val(),
+					"menu": digirisk("#menu").val(),
 					"affichage": "affichageTable",
 					"partition": "tout"
 				});
-				evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-				evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+				digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+				digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 				return false;';
 			$ligneEditer[] = array('value' => '<a id="edit' . $table . $idElement . '" class="button boutonInfos"><img alt="" title="' . __('&Eacute;diter', 'evarisk') . '" src="' . PICTO_EDIT . '"/>' . __('&Eacute;diter', 'evarisk') . '</a>', 'class' => 'boutonsInfoElement');
 			switch($table)
@@ -2354,23 +2354,23 @@ class EvaDisplayDesign {
 					break;
 			}
 			$scriptFilAriane = '
-				if(evarisk(\'#filAriane :last-child\').is("label"))
-					evarisk(\'#filAriane :last-child\').remove();
-				evarisk(\'#filAriane\').append(\'<label>&nbsp;&raquo;&nbsp;</label><a href="#" id="element' . $element->id . '" class="elementFilAriane">' . addslashes($element->nom) . '</a>\');
-				evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-				evarisk(document).ready(function() {
-					evarisk(\'#element' . $element->id . '\').click(function() {
-						evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-						evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-						while(evarisk(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
+				if(digirisk(\'#filAriane :last-child\').is("label"))
+					digirisk(\'#filAriane :last-child\').remove();
+				digirisk(\'#filAriane\').append(\'<label>&nbsp;&raquo;&nbsp;</label><a href="#" id="element' . $element->id . '" class="elementFilAriane">' . addslashes($element->nom) . '</a>\');
+				digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+				digirisk(document).ready(function() {
+					digirisk(\'#element' . $element->id . '\').click(function() {
+						digirisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+						digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+						while(digirisk(\'#filAriane :last-child\').attr("id") != "element' . $element->id . '")
 						{
-							evarisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').remove();
 						}
 
-						changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
-						changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+						changementPage("right", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+						changementPage("left", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 
-						evarisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
+						digirisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
 						return false;
 					});
 				});';
@@ -2408,36 +2408,36 @@ class EvaDisplayDesign {
 			
 			$script = $script .'
 				<script type="text/javascript">
-					evarisk(document).ready(function() {
+					digirisk(document).ready(function() {
 						if(' . $aFilsNoeud . ')
 						{
-							evarisk("#favorite-second-link-' . $idPostBox . '").hide();
-							evarisk("#favorite-first-link-' . $idPostBox . '").show();
+							digirisk("#favorite-second-link-' . $idPostBox . '").hide();
+							digirisk("#favorite-first-link-' . $idPostBox . '").show();
 						}
 						if(' . $aFilsFeuille . ')
 						{
-							evarisk("#favorite-first-link-' . $idPostBox . '").hide();
-							evarisk("#favorite-second-link-' . $idPostBox . '").show();
+							digirisk("#favorite-first-link-' . $idPostBox . '").hide();
+							digirisk("#favorite-second-link-' . $idPostBox . '").show();
 						}
 						var timeoutDbl' . $table . $idElement . '_0;
 						var timeoutDbl' . $table . $idElement . '_1;
 						var nbClic = 0;
-						evarisk(\'#photo' . $table . $idElement . '\').dblclick(function() {
+						digirisk(\'#photo' . $table . $idElement . '\').dblclick(function() {
 							clearTimeout(timeoutDbl' . $table . $idElement . '_0);
 							clearTimeout(timeoutDbl' . $table . $idElement . '_1);
-							if((evarisk("#select' . $table . $idElement . '").attr("id")) != undefined)
-								evarisk("#select' . $table . $idElement . '").click();
+							if((digirisk("#select' . $table . $idElement . '").attr("id")) != undefined)
+								digirisk("#select' . $table . $idElement . '").click();
 							else
-								evarisk("#edit' . $table . $idElement . '").click();
+								digirisk("#edit' . $table . $idElement . '").click();
 						});
-						evarisk(\'#photo' . $table . $idElement . '\').parent().click(function(event){
+						digirisk(\'#photo' . $table . $idElement . '\').parent().click(function(event){
 							if(nbClic == 0)
 							{
 								timeoutDbl' . $table . $idElement . '_0 = setTimeout 
 								( 
 									function() 
 									{ 
-										evarisk("#edit' . $table . $idElement . '").click();
+										digirisk("#edit' . $table . $idElement . '").click();
 									}, 
 									300 
 								);
@@ -2448,7 +2448,7 @@ class EvaDisplayDesign {
 								( 
 									function() 
 									{ 
-										evarisk("#edit' . $table . $idElement . '").click();
+										digirisk("#edit' . $table . $idElement . '").click();
 									}, 
 									300 
 								);
@@ -2456,100 +2456,100 @@ class EvaDisplayDesign {
 							nbClic = (nbClic + 1)%2;
 							return("false");
 						});
-						evarisk(\'#edit' . $table . $idElement . '\').click(function() {
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $element->nom . '</label>\');
+						digirisk(\'#edit' . $table . $idElement . '\').click(function() {
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $element->nom . '</label>\');
 							' . $chargement . '
 						});
-						evarisk(\'#risq' . $table . $idElement . '\').click(function() {
-							evarisk("#menu").val(\'risq\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $element->nom . '</label>\');
+						digirisk(\'#risq' . $table . $idElement . '\').click(function() {
+							digirisk("#menu").val(\'risq\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $element->nom . '</label>\');
 							' . $chargement . '
 						});
-						evarisk(\'#addMain' . $table . $idElement . '\').click(function() {
-							evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-							evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-							evarisk("#rightEnlarging").show();
-							evarisk("#equilize").click();
-							evarisk("#menu").val(\'gestiongrptut\');
+						digirisk(\'#addMain' . $table . $idElement . '\').click(function() {
+							digirisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+							digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+							digirisk("#rightEnlarging").show();
+							digirisk("#equilize").click();
+							digirisk("#menu").val(\'gestiongrptut\');
 							' . $scriptFilAriane . '
-							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $element->nom . '</label>");
+							digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $element->nom . '</label>");
 							
-							evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+							digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $table . '",
 								"act": "add",
-								"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+								"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
 								"idPere": ' . $element->id . ',
 								"partie": "right",
-								"menu": evarisk("#menu").val(),
+								"menu": digirisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
-							evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+							digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $table . '",
 								"act": "add",
-								"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
+								"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
 								"idPere": ' . $element->id . ',
 								"partie": "left",
-								"menu": evarisk("#menu").val(),
+								"menu": digirisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
 							
-							evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-							evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+							digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+							digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 							return false;
 						});
-						evarisk(\'#addSecondary' . $table . $idElement . '\').click(function() {
-							evarisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
-							evarisk(\'#page' . $idPostBox . 'Reference\').val(1);
-							evarisk("#rightEnlarging").show();
-							evarisk("#equilize").click();
-							evarisk("#menu").val(\'gestiongrptut\');
+						digirisk(\'#addSecondary' . $table . $idElement . '\').click(function() {
+							digirisk(\'#identifiantActuelle' . $idPostBox . '\').val("' . $element->id . '");
+							digirisk(\'#page' . $idPostBox . 'Reference\').val(1);
+							digirisk("#rightEnlarging").show();
+							digirisk("#equilize").click();
+							digirisk("#menu").val(\'gestiongrptut\');
 							' . $scriptFilAriane . '
-							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $element->nom . '</label>");
+							digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $element->nom . '</label>");
 							
-							evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+							digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $sousTable . '",
 								"act": "add",
 								"page": 1,
 								"idPere": ' . $element->id . ',
 								"partie": "right",
-								"menu": evarisk("#menu").val(),
+								"menu": digirisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
-							evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+							digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 								"table": "' . $sousTable . '",
 								"act": "add",
-								"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-								"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+								"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+								"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 								"partie": "left",
-								"menu": evarisk("#menu").val(),
+								"menu": digirisk("#menu").val(),
 								"affichage": "affichageTable",
 								"partition": "tout"
 							});
 							
-							evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-							evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+							digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+							digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 							return false;
 						});
-						evarisk(\'#select' . $table . $idElement . '\').click(function() {
-							if(!(evarisk(this).prop("disabled")))
+						digirisk(\'#select' . $table . $idElement . '\').click(function() {
+							if(!(digirisk(this).prop("disabled")))
 							{
-								if(evarisk(\'#filAriane :last-child\').is("label"))
-									evarisk(\'#filAriane :last-child\').remove();
-								evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(' . $idElement . ');
+								if(digirisk(\'#filAriane :last-child\').is("label"))
+									digirisk(\'#filAriane :last-child\').remove();
+								digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(' . $idElement . ');
 								' . $scriptFilAriane . '
 
-								changementPage("right", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
-								changementPage("left", "' . $table . '", evarisk("#page' . $idPostBox . 'Reference").val(), evarisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+								changementPage("right", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
+								changementPage("left", "' . $table . '", digirisk("#page' . $idPostBox . 'Reference").val(), digirisk("#identifiantActuelle' . $idPostBox . '").val(), "affichageTable", "main");
 
-								evarisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
+								digirisk(\'#' . $idPostBox . ' h3 span\').html("' . addslashes($element->nom) . '");
 								return false;
 							}
 						});
@@ -2581,32 +2581,32 @@ class EvaDisplayDesign {
 		$listeBoutons = '';
 		
 		$chargement = '
-			evarisk("#rightEnlarging").show();
-			evarisk("#equilize").click();
-			evarisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#rightEnlarging").show();
+			digirisk("#equilize").click();
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $mainTable . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "right",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			evarisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+			digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 				"table": "' . $mainTable . '",
 				"id": "' . $_POST['idPere'] . '",
-				"page": evarisk(\'#page' . $idPostBox . 'Reference\').val(),
-				"idPere": evarisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
+				"page": digirisk(\'#page' . $idPostBox . 'Reference\').val(),
+				"idPere": digirisk(\'#identifiantActuelle' . $idPostBox . '\').val(),
 				"act": "edit",
 				"partie": "left",
-				"menu": evarisk("#menu").val(),
+				"menu": digirisk("#menu").val(),
 				"affichage": "affichageTable",
 				"partition": "tout"
 			});
-			evarisk("#partieEdition").html(evarisk("#loadingImg").html());
-			evarisk("#partieGauche").html(evarisk("#loadingImg").html());
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieGauche").html(digirisk("#loadingImg").html());
 			return false;';
 		//ajout des éléments de la barre lattérale/side-bar
 		switch($_POST['table'])
@@ -2649,39 +2649,39 @@ class EvaDisplayDesign {
 					';
 				}
 				$scriptColDroite = '<script type="text/javascript">
-					evarisk("#favorite-actions-mainPostBox").hide();
-					evarisk(document).ready(function() {
-						evarisk(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
+					digirisk("#favorite-actions-mainPostBox").hide();
+					digirisk(document).ready(function() {
+						digirisk(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
 							' . $chargement . '
 						});
-						evarisk(\'#risq' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#menu").val(\'risq\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $elementPere->nom . '</label>\');
+						digirisk(\'#risq' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#menu").val(\'risq\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;valuation des risques de ' . $elementPere->nom . '</label>\');
 							' . $chargement . '
 						});
-						evarisk(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#rightEnlarging").show();
-							evarisk("#equilize").click();
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $elementPere->nom . '</label>");
-							evarisk("#favorite-first-link-mainPostBox").click();
+						digirisk(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#rightEnlarging").show();
+							digirisk("#equilize").click();
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau groupement &agrave; ' . $elementPere->nom . '</label>");
+							digirisk("#favorite-first-link-mainPostBox").click();
 						});
-						evarisk(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#rightEnlarging").show();
-							evarisk("#equilize").click();
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $elementPere->nom . '</label>");
-							evarisk("#favorite-second-link-mainPostBox").click();
+						digirisk(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#rightEnlarging").show();
+							digirisk("#equilize").click();
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle unit&eacute; de travail &agrave; ' . $elementPere->nom . '</label>");
+							digirisk("#favorite-second-link-mainPostBox").click();
 						});
 					});
 				</script>';
@@ -2724,32 +2724,32 @@ class EvaDisplayDesign {
 					';
 				}
 				$scriptColDroite = '<script type="text/javascript">
-					evarisk("#favorite-actions-mainPostBox").hide();
-					evarisk(document).ready(function() {
-						evarisk(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
+					digirisk("#favorite-actions-mainPostBox").hide();
+					digirisk(document).ready(function() {
+						digirisk(\'#edit' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk(\'#filAriane :last-child\').after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $elementPere->nom . '</label>\');
 							' . $chargement . '
 						});
-						evarisk(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#rightEnlarging").show();
-							evarisk("#equilize").click();
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle cat&eacute;gorie de dangers &agrave; ' . $elementPere->nom . '</label>");
-							evarisk("#favorite-first-link-mainPostBox").click();
+						digirisk(\'#addMain' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#rightEnlarging").show();
+							digirisk("#equilize").click();
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'une nouvelle cat&eacute;gorie de dangers &agrave; ' . $elementPere->nom . '</label>");
+							digirisk("#favorite-first-link-mainPostBox").click();
 						});
-						evarisk(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
-							evarisk("#rightEnlarging").show();
-							evarisk("#equilize").click();
-							evarisk("#menu").val(\'gestiongrptut\');
-							if(evarisk(\'#filAriane :last-child\').is("label"))
-								evarisk(\'#filAriane :last-child\').remove();
-							evarisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau danger &agrave; ' . $elementPere->nom . '</label>");
-							evarisk("#favorite-second-link-mainPostBox").click();
+						digirisk(\'#addSecondary' . $_POST['table'] . $_POST['idPere'] . '\').click(function() {
+							digirisk("#rightEnlarging").show();
+							digirisk("#equilize").click();
+							digirisk("#menu").val(\'gestiongrptut\');
+							if(digirisk(\'#filAriane :last-child\').is("label"))
+								digirisk(\'#filAriane :last-child\').remove();
+							digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;Ajout d\'un nouveau danger &agrave; ' . $elementPere->nom . '</label>");
+							digirisk("#favorite-second-link-mainPostBox").click();
 						});
 					});
 				</script>';
@@ -2762,29 +2762,29 @@ class EvaDisplayDesign {
 			}
 		}
 		$scriptTable = '<script type="text/javascript">
-				evarisk(document).ready(function() {
-					evarisk("#' . $idTable . ' tr:first").append(
+				digirisk(document).ready(function() {
+					digirisk("#' . $idTable . ' tr:first").append(
 						"<td rowspan=' . (count($lignesDeValeurs) - 1) . ' style=\"width:' . $largeurDerniereColonne . '%;\">" + ' . $listeBoutons . '
 						"</td>"
 					);
-					evarisk("#' . $idTable . ' tr:first").append();
-					evarisk("#' . $idTable . ' .nomElement, #' . $idTable . ' .photoElement, #' . $idTable . ' .boutonsInfoElement").each(function(){
-						evarisk(this).attr("colspan", "3");
+					digirisk("#' . $idTable . ' tr:first").append();
+					digirisk("#' . $idTable . ' .nomElement, #' . $idTable . ' .photoElement, #' . $idTable . ' .boutonsInfoElement").each(function(){
+						digirisk(this).attr("colspan", "3");
 					});
-					evarisk("#' . $idTable . ' .nomInfoElement").each(function(){
-						evarisk(this).css("width","' . $largeurNomInfo . '%");
+					digirisk("#' . $idTable . ' .nomInfoElement").each(function(){
+						digirisk(this).css("width","' . $largeurNomInfo . '%");
 					});
-					evarisk("#' . $idTable . ' .deuxPoints").each(function(){
-						evarisk(this).css("width","' . $largeurDeuxPoints . '%");
+					digirisk("#' . $idTable . ' .deuxPoints").each(function(){
+						digirisk(this).css("width","' . $largeurDeuxPoints . '%");
 					});
-					evarisk("#' . $idTable . ' .valeurInfoElement").each(function(){
-						evarisk(this).css("width","' . $largeurValeurInfo . '%");
+					digirisk("#' . $idTable . ' .valeurInfoElement").each(function(){
+						digirisk(this).css("width","' . $largeurValeurInfo . '%");
 					});
-					evarisk("#' . $idTable . ' .pagination").each(function(){
-						evarisk(this).attr("colspan", "' . ($nombreElements * 3 + 1) . '");
+					digirisk("#' . $idTable . ' .pagination").each(function(){
+						digirisk(this).attr("colspan", "' . ($nombreElements * 3 + 1) . '");
 					});
-					evarisk("#' . $idPostBox . ' .inside").each(function(){
-						evarisk(this).css("padding", "0");
+					digirisk("#' . $idPostBox . ' .inside").each(function(){
+						digirisk(this).css("padding", "0");
 					});
 				});
 			</script>';
@@ -3039,14 +3039,14 @@ class EvaDisplayDesign {
 							' . evaDisplayInput::afficherComboBox($documentList, 'modelToDuplicate', '', 'modelToDuplicate', '', '') . '
 							<input type="button" value="' . __('Affecter', 'evarisk') . '" class="button-primary" id="duplicateModel" name="duplicateModel" />
 							<script type="text/javascript" >
-								evarisk("#duplicateModel").click(function(){
-									evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								digirisk("#duplicateModel").click(function(){
+									digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 										"post": "true", 
 										"table": "' . TABLE_GED_DOCUMENTS . '",
 										"act": "duplicateDocument",
 										"tableElement": "' . $tableElement . '",
 										"idElement": "' . $idElement . '",
-										"idDocument": evarisk("#modelToDuplicate").val()
+										"idDocument": digirisk("#modelToDuplicate").val()
 									});
 								});
 							</script>

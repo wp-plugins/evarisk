@@ -134,17 +134,17 @@ var sOut = "<div id=\'" + aData[1] + "\' >&nbsp;</div>";
 return sOut;
 }
 
-evarisk(document).ready(function(){
-oTable = evarisk("#' . $idTable . '").dataTable({
+digirisk(document).ready(function(){
+oTable = digirisk("#' . $idTable . '").dataTable({
 	"aaSorting": [[2, "desc"]],
 	"bInfo": false,' . $dataTableOptions . '
 	"oLanguage":{
 		"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
 	}
 });
-evarisk("#' . $idTable . ' tfoot").remove();
+digirisk("#' . $idTable . ' tfoot").remove();
 
-evarisk(".open_close_row").click(function(){
+digirisk(".open_close_row").click(function(){
 	var nTr = this.parentNode.parentNode;
 	if ( this.src.match("details_close") ){
 		/* This row is already open - close it */
@@ -155,9 +155,9 @@ evarisk(".open_close_row").click(function(){
 		/* Open this row */
 		this.src = "' . EVA_IMG_ICONES_PLUGIN_URL . 'details_close.png";
 		oTable.fnOpen( nTr, fnFormatDetails(nTr), "details" );
-		var containerId = evarisk(this).attr("id").replace("pic_line", "");
-		evarisk("#" + containerId).html(evarisk("#loadingImg").html());
-		evarisk("#" + containerId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+		var containerId = digirisk(this).attr("id").replace("pic_line", "");
+		digirisk("#" + containerId).html(digirisk("#loadingImg").html());
+		digirisk("#" + containerId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 			"post":"true", 
 			"table":"' . TABLE_RISQUE . '", 
 			"act":"loadAssociatedTask",
@@ -196,17 +196,17 @@ evarisk(".open_close_row").click(function(){
 		// On enlève le choix de l'affichage
 ?>
 		<script type="text/javascript">
-			evarisk(document).ready(function(){
-				evarisk('#choixAffichage').hide();
+			digirisk(document).ready(function(){
+				digirisk('#choixAffichage').hide();
 			});
 		</script>
 <?php
 		if(isset($_GET['elt']) && ($_GET['elt'] != '')){
 			echo
 				'<script type="text/javascript">
-					evarisk(document).ready(function(){
+					digirisk(document).ready(function(){
 						setTimeout(function(){
-							evarisk("#' . $_GET['elt'] . '").click();
+							digirisk("#' . $_GET['elt'] . '").click();
 						},3000);
 					})
 				</script>';

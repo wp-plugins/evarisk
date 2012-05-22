@@ -65,9 +65,17 @@ __('permission_referential_menu', 'evarisk');
 __('permission_unite', 'evarisk');
 __('permission_groupement', 'evarisk');
 
+__('permission_tools', 'evarisk');
+__('permission_config', 'evarisk');
+
 
 /*	Options capabilities	*/
 __('digi_edit_option', 'evarisk');
+
+/*	Toosl capabilities	*/
+__('permission_tools_db_tools', 'evarisk');
+__('digi_tools_menu', 'evarisk');
+__('digi_delete_database', 'evarisk');
 
 /*	Menu capabilities	*/
 __('digi_view_dashboard_menu', 'evarisk');
@@ -81,6 +89,7 @@ __('digi_view_user_groups_menu', 'evarisk');
 __('digi_view_options_menu', 'evarisk');
 __('digi_view_regulatory_monitoring_menu', 'evarisk');
 __('digi_user_right_management_menu', 'evarisk');
+__('permission_tools_menu', 'evarisk');
 
 /*	User capabilities	*/
 __('digi_view_user_group', 'evarisk');

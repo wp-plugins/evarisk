@@ -25,17 +25,17 @@ class EvaGoogleMaps {
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
 		return '
 			<script type="text/javascript">
-				evarisk(document).ready(function() {	
+				digirisk(document).ready(function() {	
 					geolocPossible = true;
-					evarisk(\'#' . $idElementHover . '\').hover(function() {
+					digirisk(\'#' . $idElementHover . '\').hover(function() {
 						geolocPossible = true;
-						evarisk(\'#latitude\').removeClass(\'form-input-tip\');
-						evarisk(\'#longitude\').removeClass(\'form-input-tip\');
-							evarisk(\'#adresseUnite' . $postId . ' input\').each(function(){
-								evarisk(this).blur();
+						digirisk(\'#latitude\').removeClass(\'form-input-tip\');
+						digirisk(\'#longitude\').removeClass(\'form-input-tip\');
+							digirisk(\'#adresseUnite' . $postId . ' input\').each(function(){
+								digirisk(this).blur();
 							});
-							evarisk(\'#adresseUnite' . $postId . ' .form-input-tip\').each(function(){
-								if(!(evarisk(this).attr("id") == "' . $idLigne2 . '"))
+							digirisk(\'#adresseUnite' . $postId . ' .form-input-tip\').each(function(){
+								if(!(digirisk(this).attr("id") == "' . $idLigne2 . '"))
 								{
 									geolocPossible = false;
 								}
@@ -45,16 +45,16 @@ class EvaGoogleMaps {
 							if(geolocPossible)
 							{
 								geocoder = new google.maps.Geocoder();
-								geocoder.geocode({"address": evarisk(\'#' . $idLigne1 . '\').val() + " " + evarisk(\'#' . $idLigne2 . '\').val() + ", " + evarisk(\'#' . $idCodePostal . '\').val() + ", " + evarisk(\'#' . $idVille . '\').val()}, function(results, status) {
-									evarisk(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
-									evarisk(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
-									if(evarisk(\'#' . $idLatitude . '\').val() == 0 && evarisk(\'#' . $idLongitude . '\').val() == 0)
+								geocoder.geocode({"address": digirisk(\'#' . $idLigne1 . '\').val() + " " + digirisk(\'#' . $idLigne2 . '\').val() + ", " + digirisk(\'#' . $idCodePostal . '\').val() + ", " + digirisk(\'#' . $idVille . '\').val()}, function(results, status) {
+									digirisk(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
+									digirisk(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
+									if(digirisk(\'#' . $idLatitude . '\').val() == 0 && digirisk(\'#' . $idLongitude . '\').val() == 0)
 									{
-										var ligne1 = evarisk(\'#' . $idLigne1 . '\').val();
+										var ligne1 = digirisk(\'#' . $idLigne1 . '\').val();
 										ligne1 = ligne1.replace(/[\d]+[\s]?[,]?/, "");
-										geocoder.geocode({"address": ligne1 + " " + evarisk(\'#' . $idLigne2 . '\').val() + ", " + evarisk(\'#' . $idCodePostal . '\').val() + ", " + evarisk(\'#' . $idVille . '\').val()}, function(results, status) {
-											evarisk(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
-											evarisk(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
+										geocoder.geocode({"address": ligne1 + " " + digirisk(\'#' . $idLigne2 . '\').val() + ", " + digirisk(\'#' . $idCodePostal . '\').val() + ", " + digirisk(\'#' . $idVille . '\').val()}, function(results, status) {
+											digirisk(\'#' . $idLatitude . '\').val(results[0].geometry.location.lat());
+											digirisk(\'#' . $idLongitude . '\').val(results[0].geometry.location.lng());
 										});
 									}
 								});
@@ -185,8 +185,8 @@ class EvaGoogleMaps {
 							});
 							google.maps.event.addListener(marker' . $idGoogleMapsDiv . '_' . $i . ', "dragend", function() {
 								var markerCenter = marker' . $idGoogleMapsDiv . '_' . $i . '.getPosition();
-								evarisk("#adressIdentifier' . $marker['adress'] . '").val(markerCenter);
-								evarisk("#saveNewPosition").show();
+								digirisk("#adressIdentifier' . $marker['adress'] . '").val(markerCenter);
+								digirisk("#saveNewPosition").show();
 							});
 							marker' . $idGoogleMapsDiv . '_' . $i . '.setMap(map);';
 							$i ++;
@@ -195,14 +195,14 @@ class EvaGoogleMaps {
 					}
 					$googleMap .= '
 				}
-				evarisk(document).ready(function(){
+				digirisk(document).ready(function(){
 					google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});
-					evarisk("#saveNewPosition").click(function(){
+					digirisk("#saveNewPosition").click(function(){
 						var new_position = "_pos_separator_";
-						evarisk(".markerNewPosition").each(function(){
-							new_position += evarisk(this).attr("id") + "-val-" + evarisk(this).val() + "_pos_separator_";
+						digirisk(".markerNewPosition").each(function(){
+							new_position += digirisk(this).attr("id") + "-val-" + digirisk(this).val() + "_pos_separator_";
 						});
-						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 							"post": "true", 
 							"tableProvenance": "' . TABLE_ADRESSE . '",
 							"nom": "saveMarkerNewPosition",

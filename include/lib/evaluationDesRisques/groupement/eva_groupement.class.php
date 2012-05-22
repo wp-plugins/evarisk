@@ -460,13 +460,13 @@ class EvaGroupement {
 
 		echo 
 			'<script type="text/javascript">
-				evarisk(document).ready(function(){
-					evarisk("#message").addClass("' . $class . '");
-					evarisk("#message").html("' . $message . '");
-					evarisk("#message").show();
+				digirisk(document).ready(function(){
+					digirisk("#message").addClass("' . $class . '");
+					digirisk("#message").html("' . $message . '");
+					digirisk("#message").show();
 					setTimeout(function(){
-						evarisk("#message").removeClass("' . $class . '");
-						evarisk("#message").hide();
+						digirisk("#message").removeClass("' . $class . '");
+						digirisk("#message").hide();
 					},7500);
 				});
 			</script>';
