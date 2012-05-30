@@ -155,8 +155,8 @@ class eva_gestionDoc
 			"INSERT INTO " . TABLE_GED_DOCUMENTS . "
 				(id, status, dateCreation, idCreateur, id_element, table_element, categorie, nom, chemin)
 			VALUES
-				('', 'valid', NOW(), %d, %d, %s, %s, %s, %s)",
-			$current_user->ID, $idElement, $tableElement, $categorie, $nomDocument, $cheminDocument);
+				('', 'valid', %s, %d, %d, %s, %s, %s, %s)",
+			current_time('mysql', 0), $current_user->ID, $idElement, $tableElement, $categorie, $nomDocument, $cheminDocument);
 		if($wpdb->query($query)){
 			$last_insert_document = $wpdb->insert_id;
 			switch($tableElement){

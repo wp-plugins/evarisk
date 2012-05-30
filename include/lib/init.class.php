@@ -20,6 +20,10 @@ class digirisk_init
 	*	Load the different element need to create the plugin environnement
 	*/
 	function digirisk_plugin_load(){
+		add_action( 'admin_notices', array('digirisk_admin_notification', 'admin_notice_message_define') );
+		wp_register_style('digirisk_admin_notif_css', EVA_INC_PLUGIN_URL . 'css/eva_admin_notification.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('digirisk_admin_notif_css');
+
 		/*	Call function to create the main left menu	*/
 		add_action('admin_menu', array('digirisk_init', 'digirisk_menu') );
 

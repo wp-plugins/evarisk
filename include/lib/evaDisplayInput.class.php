@@ -68,7 +68,7 @@ class EvaDisplayInput {
 			$script = $script . 'digirisk(\'#' . $id . '\').focus(function() {
 						if(digirisk(\'#' . $id . '\').is(".form-input-tip"))
 						{
-							digirisk(\'#' . $id . '\').val("");
+							// digirisk(\'#' . $id . '\').val("");
 							digirisk(\'#' . $id . '\').removeClass(\'form-input-tip\');
 						}
 					});

@@ -37,6 +37,7 @@ class EvaBaseTask
 	const efficacite = 'efficacite';
 	const idPhotoAvant = 'idPhotoAvant';
 	const idPhotoApres = 'idPhotoApres';
+	const is_readable_from_external = 'is_readable_from_external';
 
 /*
  * Class variable define

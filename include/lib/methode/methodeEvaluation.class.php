@@ -84,9 +84,13 @@ class MethodeEvaluation {
 		unset($variable); unset($variableIndexId);
 		$variable = $variableIndexId = array();
 		$vars = MethodeEvaluation::getAllVariables();
+		$i=0;
+		$vars_array_value = $vars_array_output = array();
 		foreach($vars as $var){
 			$variableIndexId[$var->id] = $var;
 			$variable[] = $var->id;
+			$vars_array_output[] = ELEMENT_IDENTIFIER_V . $var->id . ' - ' . $var->nom;
+			$i++;
 		}
 		foreach($variableIndexId as $premiereVariable){
 			$valeurVariable1 = (isset($varMethodeIds)) ? $variableIndexId[$varMethodeIds[0]] : $premiereVariable;
@@ -101,7 +105,7 @@ class MethodeEvaluation {
 		<div class="single_var_container clear" id="evaluation_method_#LINENUMBER#" >
 			<div class="alignleft" >
 				' . EvaDisplayInput::afficherComboBox($ops, 'op_#LINENUMBER#', null, 'op[]', '', '', $operateur, $operateur) . 
-				EvaDisplayInput::afficherComboBox($vars, 'var_#LINENUMBER+1#', null, 'var[]', '', '', $variable) . '
+				EvaDisplayInput::afficherComboBox($vars, 'var_#LINENUMBER+1#', null, 'var[]', '', '', $variable, $vars_array_output) . '
 			</div>
 			<div class="single_var_delete_container aligleft" ><img src="' . PICTO_DELETE_VSMALL . '" alt="' . __('Enlever cette variable', 'evarisk') . '" title="' . __('Enlever cette variable', 'evarisk') . '" class="alignright" /></div>
 		</div>
@@ -144,7 +148,7 @@ class MethodeEvaluation {
 
 		$methode_vars_form .= '<div class="clear" >
 			<div class="first_var" >
-		' . EvaDisplayInput::afficherComboBox($vars, 'var_1', null, 'var[]', '', $valeurVariable1, $variable) . '
+		' . EvaDisplayInput::afficherComboBox($vars, 'var_1', null, 'var[]', '', $valeurVariable1, $variable, $vars_array_output) . '
 			</div>';
 		if(isset($variablesMethode) && count($variablesMethode)>0){
 			for($i=1; $i<count($variablesMethode); $i++){
@@ -152,7 +156,7 @@ class MethodeEvaluation {
 			<div class="single_var_container clear" id="evaluation_method_' . $i . '" >
 				<div class="alignleft" >
 					' . EvaDisplayInput::afficherComboBox($ops, 'op_' . $i, null, 'op[]', '', $operateurIndexSymbole[$opsMethode[($i-1)]], $operateur, $operateur) . 
-					EvaDisplayInput::afficherComboBox($vars, 'var_' . ($i + 1), null, 'var[]', '', $variableIndexId[$varMethodeIds[$i]], $variable) . '
+					EvaDisplayInput::afficherComboBox($vars, 'var_' . ($i + 1), null, 'var[]', '', $variableIndexId[$varMethodeIds[$i]], $variable, $vars_array_output) . '
 				</div>
 				<div class="single_var_delete_container aligleft" ><img src="' . PICTO_DELETE_VSMALL . '" alt="' . __('Enlever cette variable', 'evarisk') . '" title="' . __('Enlever cette variable', 'evarisk') . '" class="alignright" /></div>
 			</div>';
@@ -326,7 +330,7 @@ class MethodeEvaluation {
 		
 		if($date==null)
 		{
-			$date=date('Y-m-d H:i:s');
+			$date=current_time('mysql', 0);
 		}
 		$id_methode = (int) $id_methode;
 		$tav = TABLE_AVOIR_VARIABLE;
@@ -335,8 +339,7 @@ class MethodeEvaluation {
 			FROM " . $tv . ", " . $tav . " t1
 			WHERE t1.id_methode=" . $id_methode . " 
 			AND t1.date < '" . $date . "'
-			AND NOT EXISTS
-			(
+			AND NOT EXISTS(
 				SELECT * 
 				FROM " . $tav . " t2
 				WHERE t2.id_methode=" . $id_methode . " 
@@ -352,7 +355,7 @@ class MethodeEvaluation {
 		
 		if($date==null)
 		{
-			$date=date('Y-m-d H:i:s');
+			$date=current_time('mysql', 0);
 		}
 		$id_methode = (int) $id_methode;
 		$tav = TABLE_AVOIR_VARIABLE;
@@ -378,7 +381,7 @@ class MethodeEvaluation {
 		global $wpdb;
 		
 		if($date==null){
-			$date = "NOW()";
+			$date = current_time('mysql', 0);
 		}
 		$id_methode = (int) $id_methode;
 		$t = TABLE_AVOIR_OPERATEUR;
@@ -403,7 +406,7 @@ class MethodeEvaluation {
 		
 		if($date==null)
 		{
-			$date=date('Y-m-d H:i:s');
+			$date=current_time('mysql', 0);
 		}
 		$id = (int) $id;
 		$formule = '';
@@ -468,7 +471,7 @@ class MethodeEvaluation {
 		
 		if($date==null)
 		{
-			$date=date('Y-m-d H:i:s');
+			$date=current_time('mysql', 0);
 		}
 		$table = TABLE_EQUIVALENCE_ETALON;
 		$resultat = $wpdb->get_row("

@@ -1633,3 +1633,8 @@ CREATE TABLE {$t} (
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE, TABLE_TACHE);
 }
+
+{/*	Version 71	*/
+	$digirisk_db_version = 71;
+	$digirisk_update_way[$digirisk_db_version] = 'update';
+}

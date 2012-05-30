@@ -107,6 +107,7 @@ class digirisk_permission
 
 		/*	Tools permission	*/
 		$permission['digi_delete_database'] = array('set_by_default' => 'no', 'permission_type' => 'delete', 'permission_sub_type' => '', 'permission_module' => 'tools', 'permission_sub_module' => 'db_tools');
+		$permission['digi_mark_notice_as_read_for_all'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'edit', 'permission_module' => 'tools', 'permission_sub_module' => 'admin_notice');
 
 		/*	User permission	*/
 		$permission['digi_import_user'] = array('set_by_default' => 'no', 'permission_type' => 'write', 'permission_sub_type' => 'add', 'permission_module' => 'user', 'permission_sub_module' => 'import');
@@ -396,12 +397,12 @@ class digirisk_permission
 			/*	Basic action 	*/
 			if(($action != '') && (($action == 'edit') || ($action == 'editandcontinue')))
 			{/*	Edit action	*/
-				$_REQUEST[self::dbTable]['last_update_date'] = date('Y-m-d H:i:s');
+				$_REQUEST[self::dbTable]['last_update_date'] = current_time('mysql', 0);
 				$actionResult = eva_database::update($_REQUEST[self::dbTable], $roleId, self::dbTable);
 			}
 			elseif(($action != '') && (($action == 'delete')))
 			{/*	Delete action	*/
-				$_REQUEST[self::dbTable]['deletion_date'] = date('Y-m-d H:i:s');
+				$_REQUEST[self::dbTable]['deletion_date'] = current_time('mysql', 0);
 				$_REQUEST[self::dbTable]['deletion_user_id'] = $current_user->ID;
 				$_REQUEST[self::dbTable]['status'] = 'deleted';
 				$actionResult = eva_database::update($_REQUEST[self::dbTable], $roleId, self::dbTable);
@@ -410,7 +411,7 @@ class digirisk_permission
 			elseif(($action != '') && (($action == 'save') || ($action == 'saveandcontinue') || ($action == 'add')))
 			{/*	Add action	*/
 				$_REQUEST[self::dbTable]['role_internal_name'] = 'digirisk_' . str_replace('-', '_', sanitize_title($_REQUEST[self::dbTable]['role_name']));
-				$_REQUEST[self::dbTable]['creation_date'] = date('Y-m-d H:i:s');
+				$_REQUEST[self::dbTable]['creation_date'] = current_time('mysql', 0);
 				$_REQUEST[self::dbTable]['creation_user_id'] = $current_user->ID;
 				$actionResult = eva_database::save($_REQUEST[self::dbTable], self::dbTable);
 
@@ -810,7 +811,7 @@ class digirisk_permission
 	function user_permission_set()
 	{
 		/*	Vérification qu'il existe bien un utilisateur à mettre à jour avant d'effectuer une action	*/
-		if ( ! $_POST['user_id'] ) return;
+		if ( empty($_POST['user_id']) ) return;
 		/*	Récupération des informations concernant l'utilisateur en cours d'édition	*/
 		$user = new WP_User($_POST['user_id']);
 

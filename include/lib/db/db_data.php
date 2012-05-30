@@ -331,3 +331,46 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	$digirisk_db_update[$digirisk_db_version][TABLE_PHOTO][] = "UPDATE " . TABLE_PHOTO . " SET photo = REPLACE(photo, 'uploads/', 'uploads/')";
 	$digirisk_db_update[$digirisk_db_version][TABLE_PHOTO][] = "UPDATE " . TABLE_PHOTO . " SET photo = REPLACE(photo, 'medias/results/', 'results/')";
 }
+
+{/*	Version 71	*/
+	$digirisk_db_version = 71;
+
+	/*	Create the new danger categories	*/
+	global $inrs_danger_categories;
+	foreach($inrs_danger_categories as $danger_cat){
+		if(!empty($danger_cat['version']) && ($danger_cat['version'] == $digirisk_db_version)){
+			$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom']);
+
+			/*	If user ask to add danger in categories	*/
+			$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+			if(!empty($danger_cat['risks']) && is_array($danger_cat['risks'])){
+				foreach($danger_cat['risks'] as $risk_to_create){
+					$wpdb->insert(TABLE_DANGER, array('nom' => $risk_to_create, 'id_categorie' => $new_danger_cat_id));
+				}
+			}
+
+			/*	Insert picture for danger categories	*/
+			$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
+			EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
+		}
+	}
+
+	/*	Rename the different danger categories	*/
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Accident de plain-pied', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Chute de plain-pied', 'evarisk')) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Activit&eacute; physique', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Manutention manuelle', 'evarisk')) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Produits, &eacute;missions et d&eacute;chets', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Produits chimiques, d&eacute;chets', 'evarisk')) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Agents biologique', 'evarisk') . "' WHERE LOWER(nom) = '" . $wpdb->escape(strtolower(__('Manque d\'hygi&egrave;ne', 'evarisk'))) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('&Eacute;quipements de travail', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Machines et outils', 'evarisk')) . "'";
+
+	/*	Rename danger and transfer to another category	*/
+	$digirisk_db_update[$digirisk_db_version][TABLE_DANGER][] = "UPDATE " . TABLE_DANGER . " SET nom = '" . __('Manque de formation', 'evarisk') . "', id_categorie = (" . $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE LOWER(nom) = %s", strtolower(__('Autres', 'evarisk'))) . ") WHERE LOWER(nom) = '" . strtolower(__('Divers Manque de formation', 'evarisk')) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_DANGER][] = "UPDATE " . TABLE_DANGER . " SET nom = '" . __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk') . "', id_categorie = (" . $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE LOWER(nom) = %s", strtolower(__('Autres', 'evarisk'))) . ") WHERE LOWER(nom) = '" . strtolower(__('Divers Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk')) . "'";
+
+	/*	Rename danger and transfer to another category	*/
+	$digirisk_db_update[$digirisk_db_version][TABLE_DANGER][] = "UPDATE " . TABLE_DANGER . " SET nom = '" . __('Travail sur &eacute;cran', 'evarisk') . "', id_categorie = (" . $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE LOWER(nom) = %s", strtolower(__('Activit&eacute; physique', 'evarisk'))) . ") WHERE LOWER(nom) = '" . strtolower(__('Divers travail sur &eacute;cran', 'evarisk')) . "'";
+
+	/*	Mark unused categories as deleted	*/
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET Status = 'Deleted' WHERE LOWER(nom) = '" . strtolower(__('Manque de formation', 'evarisk')) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET Status = 'Deleted' WHERE LOWER(nom) = '" . strtolower(__('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk')) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET Status = 'Deleted' WHERE LOWER(nom) = '" . strtolower(__('Travail sur &eacute;cran', 'evarisk')) . "'";
+}

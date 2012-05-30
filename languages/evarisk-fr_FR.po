@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evarisk v5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-14 18:03+0100\n"
-"PO-Revision-Date: 2012-05-14 18:03+0100\n"
+"POT-Creation-Date: 2012-05-30 19:16+0100\n"
+"PO-Revision-Date: 2012-05-30 19:16+0100\n"
 "Last-Translator: Equipe de développement <dev@eoxia.com>\n"
 "Language-Team: Evarisk <contact@evarisk.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,1182 +18,1196 @@ msgstr ""
 "X-Poedit-SearchPath-0: ../include\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: ../include/ajax.php:170
+#: ../include/ajax.php:206
 msgid "Vous ne pouvez pas effectuer ce d&eacute;placement"
 msgstr "Vous ne pouvez pas effectuer ce d&eacute;placement"
 
-#: ../include/ajax.php:189
-#: ../include/ajax.php:411
-#: ../include/ajax.php:695
-#: ../include/ajax.php:782
-#: ../include/ajax.php:2256
-#: ../include/ajax.php:2799
-#: ../include/ajax.php:3017
-#: ../include/ajax.php:3022
-#: ../include/ajax.php:3083
-#: ../include/ajax.php:3087
-#: ../include/ajax.php:3133
-#: ../include/ajax.php:3137
+#: ../include/ajax.php:225
+#: ../include/ajax.php:447
+#: ../include/ajax.php:658
+#: ../include/ajax.php:780
+#: ../include/ajax.php:2263
+#: ../include/ajax.php:2806
+#: ../include/ajax.php:3024
+#: ../include/ajax.php:3029
+#: ../include/ajax.php:3090
+#: ../include/ajax.php:3094
+#: ../include/ajax.php:3140
+#: ../include/ajax.php:3144
 msgid "sauvegard&eacute;e"
 msgstr "sauvegard&eacute;"
 
-#: ../include/ajax.php:216
-#: ../include/ajax.php:442
-#: ../include/ajax.php:698
-#: ../include/ajax.php:785
-#: ../include/ajax.php:2259
-#: ../include/ajax.php:2804
+#: ../include/ajax.php:252
+#: ../include/ajax.php:478
+#: ../include/ajax.php:675
+#: ../include/ajax.php:794
+#: ../include/ajax.php:2266
+#: ../include/ajax.php:2811
 msgid "mise &agrave; jour"
 msgstr "mise &agrave; jour"
 
-#: ../include/ajax.php:225
-#: ../include/ajax.php:453
-#: ../include/ajax.php:705
-#: ../include/ajax.php:792
-#: ../include/ajax.php:2335
-#: ../include/ajax.php:2876
-#: ../include/ajax.php:3017
-#: ../include/ajax.php:3083
-#: ../include/ajax.php:3133
+#: ../include/ajax.php:261
+#: ../include/ajax.php:489
+#: ../include/ajax.php:684
+#: ../include/ajax.php:803
+#: ../include/ajax.php:2342
+#: ../include/ajax.php:2883
+#: ../include/ajax.php:3024
+#: ../include/ajax.php:3090
+#: ../include/ajax.php:3140
 #, php-format
 msgid "La fiche %s a correctement &eacute;t&eacute; %s"
 msgstr "La fiche %s a correctement &eacute;t&eacute; %s"
 
-#: ../include/ajax.php:225
+#: ../include/ajax.php:261
 #: ../include/lib/evaDisplayDesign.class.php:1646
 #: ../include/lib/evaDisplayDesign.class.php:1651
 msgid "du groupement"
 msgstr "du groupement"
 
-#: ../include/ajax.php:309
-#: ../include/ajax.php:559
+#: ../include/ajax.php:345
+#: ../include/ajax.php:595
 msgid "Sauvegarde r&eacute;ussie"
 msgstr "Sauvegarde r&eacute;ussie"
 
-#: ../include/ajax.php:313
-#: ../include/ajax.php:563
+#: ../include/ajax.php:349
+#: ../include/ajax.php:599
 msgid "La sauvegarde a &eacute;chou&eacute;e"
 msgstr "La sauvegarde a &eacute;chou&eacute;e"
 
-#: ../include/ajax.php:333
-#: ../include/ajax.php:583
+#: ../include/ajax.php:369
+#: ../include/ajax.php:619
 msgid "La restauration a r&eacute;ussie"
 msgstr "La restauration a r&eacute;ussie"
 
-#: ../include/ajax.php:350
-#: ../include/ajax.php:600
+#: ../include/ajax.php:386
+#: ../include/ajax.php:636
 msgid "La restauration a &eacute;chou&eacute;e"
 msgstr "La restauration a &eacute;chou&eacute;e"
 
-#: ../include/ajax.php:453
-#: ../include/ajax.php:512
+#: ../include/ajax.php:489
+#: ../include/ajax.php:548
 #: ../include/lib/evaDisplayDesign.class.php:1407
 #: ../include/lib/evaDisplayDesign.class.php:1411
 msgid "de l'unit&eacute; de travail"
 msgstr "de l'unit&eacute; de travail"
 
-#: ../include/ajax.php:512
+#: ../include/ajax.php:548
 #, php-format
 msgid "Une erreur est survenue lors de l'enregistrement de la fiche %s"
 msgstr "Une erreur est survenue lors de l'enregistrement de la fiche %s"
 
-#: ../include/ajax.php:686
-msgid "Dangers de la cat&eacute;gorie"
-msgstr "Dangers de la cat&eacute;gorie"
-
-#: ../include/ajax.php:705
+#: ../include/ajax.php:684
 msgid "de la cat&eacute;gorie de dangers"
 msgstr "de la cat&eacute;gorie de dangers"
 
-#: ../include/ajax.php:792
+#: ../include/ajax.php:767
+msgid "Dangers de la cat&eacute;gorie"
+msgstr "Dangers de la cat&eacute;gorie"
+
+#: ../include/ajax.php:803
 msgid "du danger"
 msgstr "du danger"
 
-#: ../include/ajax.php:878
+#: ../include/ajax.php:838
 msgid "Le risque a bien &eacute;t&eacute; ajout&eacute;"
 msgstr "Le risque a bien &eacute;t&eacute; ajout&eacute;"
 
-#: ../include/ajax.php:885
+#: ../include/ajax.php:845
 msgid "Le risque n'a pas pu &ecirc;tre ajout&eacute;"
 msgstr "Le risque n'a pas pu &ecirc;tre ajout&eacute;"
 
-#: ../include/ajax.php:893
+#: ../include/ajax.php:853
 msgid "Ajouter un risque pour cette photo"
 msgstr "Ajouter un risque pour cette photo"
 
-#: ../include/ajax.php:1029
+#: ../include/ajax.php:989
 #, php-format
 msgid "Tous les utilisateurs (%s) :"
 msgstr "Tous les utilisateurs (%s) :"
 
-#: ../include/ajax.php:1053
+#: ../include/ajax.php:1013
 #, php-format
 msgid "Les utilisateurs ayant &eacutet&eacute pr&eacutesents &agrave l'audit (%s) :"
 msgstr "Les utilisateurs ayant &eacutet&eacute pr&eacutesents &agrave l'audit (%s) :"
 
-#: ../include/ajax.php:1065
+#: ../include/ajax.php:1025
 msgid "Aucun utilisateur inscrit n'a particip&eacute; &agrave; l'audit pour le moment"
 msgstr "Aucun utilisateur inscrit n'a particip&eacute; &agrave; l'audit pour le moment"
 
-#: ../include/ajax.php:1086
+#: ../include/ajax.php:1046
 #, php-format
 msgid "Les utilisateurs ayant &eacutet&eacute absents &agrave l'audit (%s) :"
 msgstr "Les utilisateurs ayant &eacutet&eacute absents &agrave l'audit (%s) :"
 
-#: ../include/ajax.php:1098
+#: ../include/ajax.php:1058
 msgid "Tous les utilisateurs ont particip&eacute;s &agrave; l'audit"
 msgstr "Tous les utilisateurs ont particip&eacute;s &agrave; l'audit"
 
-#: ../include/ajax.php:1102
+#: ../include/ajax.php:1062
 msgid "Il n'y a aucun utilisateur enregistr&eacute;"
 msgstr "Il n'y a aucun utilisateur enregistr&eacute;"
 
-#: ../include/ajax.php:1105
+#: ../include/ajax.php:1065
 msgid "Retour aux statistiques"
 msgstr "Retour aux statistiques"
 
-#: ../include/ajax.php:1125
+#: ../include/ajax.php:1085
 msgid "Tout cocher"
 msgstr "Tout cocher"
 
-#: ../include/ajax.php:1125
+#: ../include/ajax.php:1085
 msgid "Tout d&eacutecocher"
 msgstr "Tout d&eacute;cocher"
 
-#: ../include/ajax.php:1125
+#: ../include/ajax.php:1085
 msgid "Inverser la s&eacute;lection"
 msgstr "Inverser la s&eacute;lection"
 
-#: ../include/ajax.php:1126
+#: ../include/ajax.php:1086
 msgid "Cochez les cases pour prendre en compte les modifications"
 msgstr "Cochez les cases pour prendre en compte les modifications"
 
-#: ../include/ajax.php:1135
-#: ../include/ajax.php:1143
-#: ../include/ajax.php:6164
+#: ../include/ajax.php:1095
+#: ../include/ajax.php:1103
+#: ../include/ajax.php:6171
 msgid "Enregistrer"
 msgstr "Enregistrer"
 
-#: ../include/ajax.php:1148
-#: ../include/ajax.php:1479
-#: ../include/lib/doc.class.php:222
+#: ../include/ajax.php:1108
+#: ../include/ajax.php:1439
+#: ../include/lib/doc.class.php:218
 msgid "Annuler"
 msgstr "Annuler"
 
-#: ../include/ajax.php:1218
+#: ../include/ajax.php:1178
 msgid "&Ecirc;tes vous sur de vouloir annuler les modifications en cours?"
 msgstr "&Ecirc;tes vous sur de vouloir annuler les modifications en cours?"
 
-#: ../include/ajax.php:1251
+#: ../include/ajax.php:1211
 msgid "Une ou plusieurs erreurs sont survenues lors de l'enregistrement des corrections pour les risques."
 msgstr "Une ou plusieurs erreurs sont survenues lors de l'enregistrement des corrections pour les risques."
 
-#: ../include/ajax.php:1255
+#: ../include/ajax.php:1215
 msgid "Tous les risques ont &eacute;t&eacute; mis &agrave; jour"
 msgstr "Tous les risques ont &eacute;t&eacute; mis &agrave; jour"
 
-#: ../include/ajax.php:1277
+#: ../include/ajax.php:1237
 msgid "Une ou plusieurs erreurs sont survenues lors de l'enregistrement des corrections pour les actions prioritaires."
 msgstr "Une ou plusieurs erreurs sont survenues lors de l'enregistrement des corrections pour les actions prioritaires."
 
-#: ../include/ajax.php:1281
+#: ../include/ajax.php:1241
 msgid "Toutes les actions prioritaires ont &eacute;t&eacute; mise &agrave; jour"
 msgstr "Toutes les actions prioritaires ont &eacute;t&eacute; mise &agrave; jour"
 
-#: ../include/ajax.php:1307
+#: ../include/ajax.php:1267
 msgid "D&eacute;tails d'une action corrective"
 msgstr "D&eacute;tails d'une action corrective"
 
-#: ../include/ajax.php:1311
+#: ../include/ajax.php:1271
 #, php-format
 msgid "Actions correctives associ&eacute;s au risque %s"
 msgstr "Actions correctives associ&eacute;s au risque %s"
 
-#: ../include/ajax.php:1312
+#: ../include/ajax.php:1272
 msgid "Informations"
 msgstr "Informations"
 
-#: ../include/ajax.php:1332
+#: ../include/ajax.php:1292
 msgid "Contr&ocirc;le d'action corrective"
 msgstr "Contr&ocirc;le d'action corrective"
 
-#: ../include/ajax.php:1335
+#: ../include/ajax.php:1295
 msgid "taches controllee"
 msgstr "taches controllee"
 
-#: ../include/ajax.php:1335
+#: ../include/ajax.php:1295
 msgid "T&acirc;che d&eacute;j&agrave; controll&eacute;e"
 msgstr "T&acirc;che d&eacute;j&agrave; controll&eacute;e"
 
-#: ../include/ajax.php:1344
-#: ../include/ajax.php:2583
-#: ../include/ajax.php:2628
+#: ../include/ajax.php:1304
+#: ../include/ajax.php:2590
+#: ../include/ajax.php:2635
 #: ../include/lib/evaDisplayDesign.class.php:1958
 #: ../include/lib/evaDisplayDesign.class.php:1968
 msgid "D&eacute;but"
 msgstr "D&eacute;but"
 
-#: ../include/ajax.php:1344
-#: ../include/ajax.php:2583
-#: ../include/ajax.php:2628
+#: ../include/ajax.php:1304
+#: ../include/ajax.php:2590
+#: ../include/ajax.php:2635
 #: ../include/lib/evaDisplayDesign.class.php:1958
 #: ../include/lib/evaDisplayDesign.class.php:1968
 msgid "Fin"
 msgstr "Fin"
 
-#: ../include/ajax.php:1387
+#: ../include/ajax.php:1347
 msgid "fermer"
 msgstr "fermer"
 
-#: ../include/ajax.php:1442
+#: ../include/ajax.php:1402
 msgid "Aucune action n'est associ&eacute;e &agrave; ce risque"
 msgstr "Aucune action n'est associ&eacute;e &agrave; ce risque"
 
-#: ../include/ajax.php:1471
+#: ../include/ajax.php:1431
 msgid "Cotation actuelle"
 msgstr "Cotation actuelle"
 
-#: ../include/ajax.php:1474
+#: ../include/ajax.php:1434
 msgid "Nouvelle cotation"
 msgstr "Nouvelle cotation"
 
-#: ../include/ajax.php:1480
+#: ../include/ajax.php:1440
 msgid "Confirmer"
 msgstr "Confirmer"
 
-#: ../include/ajax.php:1524
+#: ../include/ajax.php:1484
 msgid "Le risque a correctement &eacute;t&eacute; copi&eacute;"
 msgstr "Le risque a correctement &eacute;t&eacute; copi&eacute;"
 
-#: ../include/ajax.php:1531
+#: ../include/ajax.php:1491
 msgid "Le risque n'a pas pu &ecirc;tre copi&eacute;"
 msgstr "Le risque n'a pas pu &ecirc;tre copi&eacute;"
 
-#: ../include/ajax.php:1550
+#: ../include/ajax.php:1510
 msgid "Le risque a correctement &eacute;t&eacute; d&eacute;plac&eacute;"
 msgstr "Le risque a correctement &eacute;t&eacute; d&eacute;plac&eacute;"
 
-#: ../include/ajax.php:1557
+#: ../include/ajax.php:1517
 msgid "Le risque n'a pas pu &ecirc;tre d&eacute;plac&eacute;"
 msgstr "Le risque n'a pas pu &ecirc;tre d&eacute;plac&eacute;"
 
-#: ../include/ajax.php:1634
+#: ../include/ajax.php:1597
 msgid "Q. risque"
 msgstr "Q. risque"
 
-#: ../include/ajax.php:1664
+#: ../include/ajax.php:1627
 msgid "D&eacute;placer ce risque"
 msgstr "D&eacute;placer ce risque"
 
-#: ../include/ajax.php:1669
+#: ../include/ajax.php:1632
 msgid "Rechercher dans la liste des &eacute;l&eacute;ments"
 msgstr "Rechercher dans la liste des &eacute;l&eacute;ments"
 
-#: ../include/ajax.php:1674
+#: ../include/ajax.php:1637
 msgid "D&eacute;placer"
 msgstr "D&eacute;placer"
 
-#: ../include/ajax.php:1675
+#: ../include/ajax.php:1638
 msgid "Copier"
 msgstr "Copier"
 
-#: ../include/ajax.php:1728
+#: ../include/ajax.php:1691
 msgid "loading"
 msgstr "Chargement..."
 
-#: ../include/ajax.php:1748
-#: ../include/ajax.php:1786
-#: ../include/ajax.php:1839
-#: ../include/ajax.php:1882
-#: ../include/ajax.php:1933
-#: ../include/ajax.php:1949
-#: ../include/ajax.php:4009
-#: ../include/ajax.php:4056
-#: ../include/ajax.php:4215
-#: ../include/ajax.php:4278
+#: ../include/ajax.php:1711
+#: ../include/ajax.php:1750
+#: ../include/ajax.php:1821
+#: ../include/ajax.php:1868
+#: ../include/ajax.php:1919
+#: ../include/ajax.php:1935
+#: ../include/ajax.php:4012
+#: ../include/ajax.php:4051
+#: ../include/ajax.php:4210
+#: ../include/ajax.php:4273
 msgid "Vous n'avez pas les droits n&eacute;cessaire pour effectuer cette action"
 msgstr "Vous n'avez pas les droits n&eacute;cessaire pour effectuer cette action"
 
-#: ../include/ajax.php:1766
+#: ../include/ajax.php:1729
 msgid "Une erreur est survenue lors de la mise &agrave; jour de l'&eacute;quivalence des variables de la m&eacute;thode."
 msgstr "Une erreur est survenue lors de la mise &agrave; jour de l'&eacute;quivalence des variables de la m&eacute;thode."
 
-#: ../include/ajax.php:1769
+#: ../include/ajax.php:1732
 msgid "La mise &agrave; jour de l'&eacute;quivalence des variables de la m&eacute;thode a correctement &eacute;t&eacute; effectu&eacute;e"
 msgstr "La mise &agrave; jour de l'&eacute;quivalence des variables de la m&eacute;thode a correctement &eacute;t&eacute; effectu&eacute;e"
 
-#: ../include/ajax.php:1816
+#: ../include/ajax.php:1780
 msgid "Une erreur est survenue lors de la modification des variables de la m&eacute;thode."
 msgstr "Une erreur est survenue lors de la modification des variables de la m&eacute;thode."
 
-#: ../include/ajax.php:1819
+#: ../include/ajax.php:1783
 msgid "Les variables de la m&eacute;thode ont correctement &eacute;t&eacute; modifi&eacute;es."
 msgstr "Les variables de la m&eacute;thode ont correctement &eacute;t&eacute; modifi&eacute;es."
 
-#: ../include/ajax.php:1822
+#: ../include/ajax.php:1804
 msgid "Une erreur est survenue lors de la mise &agrave; jour des variables de la m&eacute;thode"
 msgstr "Une erreur est survenue lors de la mise &agrave; jour des variables de la m&eacute;thode"
 
-#: ../include/ajax.php:1862
+#: ../include/ajax.php:1836
 msgid "Une erreur est survenue lors de la cr&eacute;ation de la m&eacute;thode."
 msgstr "Une erreur est survenue lors de la cr&eacute;ation de la m&eacute;thode."
 
-#: ../include/ajax.php:1866
+#: ../include/ajax.php:1837
 msgid "La m&eacute;thode a correctement &eacute;t&eacute; cr&eacute;e."
 msgstr "La m&eacute;thode a correctement &eacute;t&eacute; cr&eacute;e."
 
-#: ../include/ajax.php:1888
+#: ../include/ajax.php:1843
+msgid "Une erreur est survenue lors de la modification de la m&eacute;thode."
+msgstr "Une erreur est survenue lors de la modification de la m&eacute;thode."
+
+#: ../include/ajax.php:1844
+msgid "La m&eacute;thode a correctement &eacute;t&eacute; modifi&eacute;e."
+msgstr "La m&eacute;thode a correctement &eacute;t&eacute; modifi&eacute;e."
+
+#: ../include/ajax.php:1874
 msgid "Une erreur est survenue lors de la suppresssion de la m&eacute;thode."
 msgstr "Une erreur est survenue lors de la suppresssion de la m&eacute;thode."
 
-#: ../include/ajax.php:1891
+#: ../include/ajax.php:1877
 msgid "La m&eacute;thode a correctement &eacute;t&eacute; supprim&eacute;e."
 msgstr "La m&eacute;thode a correctement &eacute;t&eacute; supprim&eacute;e."
 
-#: ../include/ajax.php:1924
+#: ../include/ajax.php:1910
 msgid "Une erreur est survenue lors de la suppresssion de la variable."
 msgstr "Une erreur est survenue lors de la suppresssion de la variable."
 
-#: ../include/ajax.php:1927
+#: ../include/ajax.php:1913
 msgid "La variable a correctement &eacute;t&eacute; supprim&eacute;e."
 msgstr "La variable a correctement &eacute;t&eacute; supprim&eacute;e."
 
-#: ../include/ajax.php:1968
+#: ../include/ajax.php:1966
 msgid "Une erreur est survenue lors de l'enregistrement de la variable."
 msgstr "Une erreur est survenue lors de l'enregistrement de la variable."
 
-#: ../include/ajax.php:1972
+#: ../include/ajax.php:1970
 msgid "La m&eacute;thode a correctement &eacute;t&eacute; enregitr&eacute;e."
 msgstr "La m&eacute;thode a correctement &eacute;t&eacute; enregitr&eacute;e."
 
-#: ../include/ajax.php:2095
+#: ../include/ajax.php:2102
 msgid "Vous devez sp&eacute;cifier un nom"
 msgstr "Vous devez sp&eacute;cifier un nom"
 
-#: ../include/ajax.php:2184
+#: ../include/ajax.php:2191
 msgid "L'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e"
 msgstr "L'affectation de la t&acirc;che a correctement &eacute;t&eacute; effectu&eacute;e"
 
-#: ../include/ajax.php:2207
+#: ../include/ajax.php:2214
 msgid "L'affectation de la t&acirc;che n'a pas &eacute;t&eacute; effectu&eacute;e."
 msgstr "L'affectation de la t&acirc;che n'a pas &eacute;t&eacute; effectu&eacute;e."
 
-#: ../include/ajax.php:2262
+#: ../include/ajax.php:2269
 msgid "sold&eacute;e"
 msgstr "sold&eacute;e"
 
-#: ../include/ajax.php:2335
-#: ../include/ajax.php:2340
-#: ../include/ajax.php:2408
-#: ../include/ajax.php:2419
-#: ../include/ajax.php:2738
-#: ../include/ajax.php:2746
+#: ../include/ajax.php:2342
+#: ../include/ajax.php:2347
+#: ../include/ajax.php:2415
+#: ../include/ajax.php:2426
+#: ../include/ajax.php:2745
+#: ../include/ajax.php:2753
 msgid "de la t&acirc;che"
 msgstr "de la t&acirc;che"
 
-#: ../include/ajax.php:2340
-#: ../include/ajax.php:2879
-#: ../include/ajax.php:3022
-#: ../include/ajax.php:3087
-#: ../include/ajax.php:3137
+#: ../include/ajax.php:2347
+#: ../include/ajax.php:2886
+#: ../include/ajax.php:3029
+#: ../include/ajax.php:3094
+#: ../include/ajax.php:3144
 #, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; %s."
 msgstr "La fiche %s n'a pas &eacute;t&eacute; %s."
 
-#: ../include/ajax.php:2408
-#: ../include/ajax.php:3309
+#: ../include/ajax.php:2415
+#: ../include/ajax.php:3316
 #, php-format
 msgid "La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e"
 msgstr "La fiche %s a correctement &eacute;t&eacute; supprim&eacute;e"
 
-#: ../include/ajax.php:2419
+#: ../include/ajax.php:2426
 #, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e"
 msgstr "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e"
 
-#: ../include/ajax.php:2518
+#: ../include/ajax.php:2525
 msgid "Pour le t&eacute;l&eacute;charger, faites un clic droit puis enregistrer sous"
 msgstr "Pour le t&eacute;l&eacute;charger, faites un clic droit puis enregistrer sous"
 
-#: ../include/ajax.php:2518
+#: ../include/ajax.php:2525
 msgid "T&eacute;l&eacute;charger le fichier g&eacute;n&eacute;r&eacute;"
 msgstr "T&eacute;l&eacute;charger le fichier g&eacute;n&eacute;r&eacute;"
 
-#: ../include/ajax.php:2531
-#: ../include/ajax.php:3450
+#: ../include/ajax.php:2538
+#: ../include/ajax.php:3457
 msgid "Non commenc&eacute;e"
 msgstr "Non commenc&eacute;e"
 
-#: ../include/ajax.php:2534
-#: ../include/ajax.php:3453
+#: ../include/ajax.php:2541
+#: ../include/ajax.php:3460
 msgid "En cours"
 msgstr "En cours"
 
-#: ../include/ajax.php:2538
-#: ../include/ajax.php:3457
+#: ../include/ajax.php:2545
+#: ../include/ajax.php:3464
 msgid "Sold&eacute;e"
 msgstr "Sold&eacute;e"
 
-#: ../include/ajax.php:2557
+#: ../include/ajax.php:2564
 msgid "Cliquez pour supprimer"
 msgstr "Cliquez pour supprimer"
 
-#: ../include/ajax.php:2561
+#: ../include/ajax.php:2568
 msgid "Aucun utilisateur affect&eacute;"
 msgstr "Aucun utilisateur affect&eacute;"
 
-#: ../include/ajax.php:2583
+#: ../include/ajax.php:2590
 msgid "Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches"
 msgstr "Ces dates sont calcul&eacute;es en fonction de sous-t&acirc;ches"
 
-#: ../include/ajax.php:2586
-#: ../include/ajax.php:2674
+#: ../include/ajax.php:2593
+#: ../include/ajax.php:2681
 msgid "Voir l'action"
 msgstr "Voir l'action"
 
-#: ../include/ajax.php:2591
-#: ../include/ajax.php:2605
+#: ../include/ajax.php:2598
+#: ../include/ajax.php:2612
 msgid "&Eacute;valuation du risque associ&eacute;"
 msgstr "&Eacute;valuation du risque associ&eacute;"
 
-#: ../include/ajax.php:2601
+#: ../include/ajax.php:2608
 msgid "Efficacit&eacute; de l'action"
 msgstr "Efficacit&eacute; de l'action"
 
-#: ../include/ajax.php:2639
-#: ../include/ajax.php:2651
+#: ../include/ajax.php:2646
+#: ../include/ajax.php:2658
 msgid "Aucune photo d&eacute;finie"
 msgstr "Aucune photo d&eacute;finie"
 
-#: ../include/ajax.php:2658
-#: ../include/config/config.php:261
+#: ../include/ajax.php:2665
+#: ../include/config/config.php:267
 msgid "Photos"
 msgstr "Photos"
 
-#: ../include/ajax.php:2664
+#: ../include/ajax.php:2671
 msgid "Photo avant"
 msgstr "Photo avant"
 
-#: ../include/ajax.php:2665
+#: ../include/ajax.php:2672
 msgid "Photo apr&egraves"
 msgstr "Photo apr&egraves"
 
-#: ../include/ajax.php:2687
-#: ../include/ajax.php:5506
+#: ../include/ajax.php:2694
+#: ../include/ajax.php:5513
 msgid "Nom"
 msgstr "Nom"
 
-#: ../include/ajax.php:2691
-#: ../include/ajax.php:5506
+#: ../include/ajax.php:2698
+#: ../include/ajax.php:5513
 msgid "Description"
 msgstr "Description"
 
-#: ../include/ajax.php:2695
+#: ../include/ajax.php:2702
 msgid "Utilisateurs affect&eacute;s"
 msgstr "Utilisateurs affect&eacute;s"
 
-#: ../include/ajax.php:2699
+#: ../include/ajax.php:2706
 msgid "Suivi de l'action corrective"
 msgstr "Suivi de l'action corrective"
 
-#: ../include/ajax.php:2703
+#: ../include/ajax.php:2710
 msgid "Aucun suivi pour cette action"
 msgstr "Aucun suivi pour cette action"
 
-#: ../include/ajax.php:2738
+#: ../include/ajax.php:2745
 #, php-format
 msgid "Date de d&eacute;but %s"
 msgstr "Date de d&eacute;but %s"
 
-#: ../include/ajax.php:2738
-#: ../include/ajax.php:2746
+#: ../include/ajax.php:2745
+#: ../include/ajax.php:2753
 msgid "Aujourd'hui"
 msgstr "Aujourd'hui"
 
-#: ../include/ajax.php:2746
+#: ../include/ajax.php:2753
 #, php-format
 msgid "Date de fin %s"
 msgstr "Date de fin %s"
 
-#: ../include/ajax.php:2753
+#: ../include/ajax.php:2760
 #: ../include/lib/evaDisplayDesign.class.php:725
 msgid "Avancement"
 msgstr "Avancement"
 
-#: ../include/ajax.php:2759
+#: ../include/ajax.php:2766
 msgid "Appliquer ces changements &eacutegalement &agrave; tous les sous-&eacute;l&eacute;ments de l'&eacute;l&eacute;ment courant"
 msgstr "Appliquer ces changements &eacutegalement &agrave; tous les sous-&eacute;l&eacute;ments de l'&eacute;l&eacute;ment courant"
 
-#: ../include/ajax.php:2876
-#: ../include/ajax.php:2879
-#: ../include/ajax.php:3309
-#: ../include/ajax.php:3320
+#: ../include/ajax.php:2883
+#: ../include/ajax.php:2886
+#: ../include/ajax.php:3316
+#: ../include/ajax.php:3327
 msgid "de l'action"
 msgstr "de l'action"
 
-#: ../include/ajax.php:3013
+#: ../include/ajax.php:3020
 msgid "Votre demande d'action corrective a bien &eacute;t&eacute; envoy&eacute;e"
 msgstr "Votre demande d'action corrective a bien &eacute;t&eacute; envoy&eacute;e"
 
-#: ../include/ajax.php:3017
-#: ../include/ajax.php:3022
-#: ../include/ajax.php:3083
-#: ../include/ajax.php:3087
-#: ../include/ajax.php:3133
-#: ../include/ajax.php:3137
+#: ../include/ajax.php:3024
+#: ../include/ajax.php:3029
+#: ../include/ajax.php:3090
+#: ../include/ajax.php:3094
+#: ../include/ajax.php:3140
+#: ../include/ajax.php:3144
 msgid "de l'action corrective"
 msgstr "de l'action corrective"
 
-#: ../include/ajax.php:3168
+#: ../include/ajax.php:3175
 msgid "Vous ne pouvez plus modifier le risque &agrave; partir de cette interface. Vous devez ajouter une nouvelle action de contr&ocirc;le pour cela."
 msgstr "Vous ne pouvez plus modifier le risque &agrave; partir de cette interface. Vous devez ajouter une nouvelle action de contr&ocirc;le pour cela."
 
-#: ../include/ajax.php:3190
+#: ../include/ajax.php:3197
 msgid "Envoyer la photo avant"
 msgstr "Envoyer la photo avant"
 
-#: ../include/ajax.php:3194
+#: ../include/ajax.php:3201
 msgid "Envoyer la photo apr&egrave;s"
 msgstr "Envoyer la photo apr&egrave;s"
 
-#: ../include/ajax.php:3274
-#: ../include/ajax.php:3482
+#: ../include/ajax.php:3281
+#: ../include/ajax.php:3489
 msgid "Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es"
 msgstr "Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es"
 
-#: ../include/ajax.php:3279
-#: ../include/ajax.php:3486
+#: ../include/ajax.php:3286
+#: ../include/ajax.php:3493
 msgid "Les modifications n'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es"
 msgstr "Les modifications n'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es"
 
-#: ../include/ajax.php:3320
+#: ../include/ajax.php:3327
 #, php-format
 msgid "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e."
 msgstr "La fiche %s n'a pas &eacute;t&eacute; supprim&eacute;e."
 
-#: ../include/ajax.php:3532
+#: ../include/ajax.php:3539
 msgid "Document unique"
 msgstr "Document unique"
 
-#: ../include/ajax.php:3533
-#: ../include/config/config.php:261
+#: ../include/ajax.php:3540
+#: ../include/config/config.php:267
 msgid "Fiches de groupement"
 msgstr "Fiches de groupement"
 
-#: ../include/ajax.php:3534
-#: ../include/config/config.php:261
+#: ../include/ajax.php:3541
+#: ../include/config/config.php:267
 msgid "Fiches de poste"
 msgstr "Fiches de poste"
 
-#: ../include/ajax.php:3538
+#: ../include/ajax.php:3545
 msgid "Documents unique pour le groupement"
 msgstr "Documents unique pour le groupement"
 
-#: ../include/ajax.php:3541
+#: ../include/ajax.php:3548
 msgid "Fiches du groupement courant"
 msgstr "Fiches du groupement courant"
 
-#: ../include/ajax.php:3543
+#: ../include/ajax.php:3550
 msgid "Fiches des sous-groupements du groupement courant"
 msgstr "Fiches des sous-groupements du groupement courant"
 
-#: ../include/ajax.php:3547
+#: ../include/ajax.php:3554
 msgid "Fiches de poste pour le groupement"
 msgstr "Fiches de poste pour le groupement"
 
-#: ../include/ajax.php:3550
+#: ../include/ajax.php:3557
 msgid "T&eacute;l&eacute;charger Open Office"
 msgstr "T&eacute;l&eacute;charger Open Office"
 
-#: ../include/ajax.php:3630
+#: ../include/ajax.php:3637
 msgid "Nouveau"
 msgstr "Nouveau"
 
-#: ../include/ajax.php:3644
+#: ../include/ajax.php:3651
 msgid "Le document unique &agrave; bien &eacute;t&eacute; supprim&eacute;."
 msgstr "Le document unique &agrave; bien &eacute;t&eacute; supprim&eacute;."
 
-#: ../include/ajax.php:3737
+#: ../include/ajax.php:3744
 msgid "Une erreur est survenue lors de l'enregistrement des fiches de postes pour ce groupement"
 msgstr "Une erreur est survenue lors de l'enregistrement des fiches de postes pour ce groupement"
 
-#: ../include/ajax.php:3741
+#: ../include/ajax.php:3748
 msgid "Les fiches de poste ont correctement &eacute;t&eacute; enregistr&eacute;es."
 msgstr "Les fiches de poste ont correctement &eacute;t&eacute; enregistr&eacute;es."
 
-#: ../include/ajax.php:3829
+#: ../include/ajax.php:3836
 msgid "Une erreur est survenue lors de l'enregistrement des fiches de groupement pour ce groupement"
 msgstr "Une erreur est survenue lors de l'enregistrement des fiches de groupement pour ce groupement"
 
-#: ../include/ajax.php:3833
+#: ../include/ajax.php:3840
 msgid "Les fiches de groupement ont correctement &eacute;t&eacute; enregistr&eacute;es."
 msgstr "Les fiches de groupement ont correctement &eacute;t&eacute; enregistr&eacute;es."
 
-#: ../include/ajax.php:3863
+#: ../include/ajax.php:3870
 msgid "Le document a correctement &eacute;t&eacute; supprim&eacute;"
 msgstr "Le document a correctement &eacute;t&eacute; supprim&eacute;"
 
-#: ../include/ajax.php:3875
+#: ../include/ajax.php:3882
 msgid "Une erreur est survenue lors de la suppression du document"
 msgstr "Une erreur est survenue lors de la suppression du document"
 
-#: ../include/ajax.php:3906
+#: ../include/ajax.php:3913
 msgid "Aucun mod&eacute;le &agrave; pr&eacute;senter"
 msgstr "Aucun mod&eacute;le &agrave; pr&eacute;senter"
 
-#: ../include/ajax.php:3908
+#: ../include/ajax.php:3915
 msgid "Mod&egrave;le &agrave; utiliser"
 msgstr "Mod&egrave;le &agrave; utiliser"
 
-#: ../include/ajax.php:3985
-msgid "&Eacute;diter une pr&eacute;conisation"
-msgstr "&Eacute;diter une pr&eacute;conisation"
-
-#: ../include/ajax.php:4005
-#: ../include/ajax.php:4117
+#: ../include/ajax.php:4008
+#: ../include/ajax.php:4112
 msgid "Une erreur est survenue lors de l'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer."
 msgstr "Une erreur est survenue lors de l'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer."
 
-#: ../include/ajax.php:4013
-#: ../include/ajax.php:4121
+#: ../include/ajax.php:4016
+#: ../include/ajax.php:4116
 msgid "La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e."
 msgstr "La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e."
 
-#: ../include/ajax.php:4052
+#: ../include/ajax.php:4047
 msgid "Une erreur est survenue lors de la suppression de la pr&eacute;conisation. Merci de r&eacute;essayer."
 msgstr "Une erreur est survenue lors de la suppression de la pr&eacute;conisation. Merci de r&eacute;essayer."
 
-#: ../include/ajax.php:4060
+#: ../include/ajax.php:4055
 msgid "La pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e."
 msgstr "La pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e."
 
-#: ../include/ajax.php:4145
+#: ../include/ajax.php:4140
 msgid "Une erreur est survenue lors de la d&eacute;saffectation de la pr&eacute;conisation. Merci de r&eacute;essayer."
 msgstr "Une erreur est survenue lors de la d&eacute;saffectation de la pr&eacute;conisation. Merci de r&eacute;essayer."
 
-#: ../include/ajax.php:4149
+#: ../include/ajax.php:4144
 msgid "La pr&eacute;conisation a correctement &eacute;t&eacute; d&eacute;saffect&eacute;e."
 msgstr "La pr&eacute;conisation a correctement &eacute;t&eacute; d&eacute;saffect&eacute;e."
 
-#: ../include/ajax.php:4211
+#: ../include/ajax.php:4206
 msgid "Une erreur est survenue lors de la suppression de la famille de pr&eacute;conisation. Merci de r&eacute;essayer."
 msgstr "Une erreur est survenue lors de la suppression de la famille de pr&eacute;conisation. Merci de r&eacute;essayer."
 
-#: ../include/ajax.php:4219
+#: ../include/ajax.php:4214
 msgid "La famille de pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e."
 msgstr "La famille de pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e."
 
-#: ../include/ajax.php:4274
+#: ../include/ajax.php:4269
 msgid "Une erreur est survenue lors de l'enregistrement de la famille de pr&eacute;conisation. Merci de r&eacute;essayer."
 msgstr "Une erreur est survenue lors de l'enregistrement de la famille de pr&eacute;conisation. Merci de r&eacute;essayer."
 
-#: ../include/ajax.php:4282
+#: ../include/ajax.php:4277
 msgid "La famille de pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e."
 msgstr "La famille de pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e."
 
-#: ../include/ajax.php:4465
+#: ../include/ajax.php:4460
 msgid "Les droits ont bien &eacute;t&eacute; mis &agrave; jour"
 msgstr "Les droits ont bien &eacute;t&eacute; mis &agrave; jour"
 
-#: ../include/ajax.php:4520
+#: ../include/ajax.php:4515
 msgid "Une erreur est survenue lors de l'enregistrement de l'accident de travail"
 msgstr "Une erreur est survenue lors de l'enregistrement de l'accident de travail"
 
-#: ../include/ajax.php:4523
+#: ../include/ajax.php:4518
 msgid "L'accident de travail a bien &eacute;t&eacute; sauvegard&eacute;"
 msgstr "L'accident de travail a bien &eacute;t&eacute; sauvegard&eacute;"
 
-#: ../include/ajax.php:4748
+#: ../include/ajax.php:4743
 msgid "L'accident a &eacute;t&eacute; correctement mis &agrave; jour"
 msgstr "L'accident a &eacute;t&eacute; correctement mis &agrave; jour"
 
-#: ../include/ajax.php:4751
+#: ../include/ajax.php:4746
 msgid "Une erreur est survenue lors de l'enregistrement de l'accident"
 msgstr "Une erreur est survenue lors de l'enregistrement de l'accident"
 
-#: ../include/ajax.php:4808
+#: ../include/ajax.php:4803
 msgid "L'accident a &eacute;t&eacute; correctement supprim&eacute;"
 msgstr "L'accident a &eacute;t&eacute; correctement supprim&eacute;"
 
-#: ../include/ajax.php:4811
+#: ../include/ajax.php:4806
 msgid "Une erreur est survenue lors de la suppression de l'accident"
 msgstr "Une erreur est survenue lors de la suppression de l'accident"
 
-#: ../include/ajax.php:4910
+#: ../include/ajax.php:4905
 msgid "Les notifications ont bien &eacute;t&eacute; enregistr&eacute;es"
 msgstr "Les notifications ont bien &eacute;t&eacute; enregistr&eacute;es"
 
-#: ../include/ajax.php:4913
+#: ../include/ajax.php:4908
 #, php-format
 msgid "Une erreur est survenue lors de l'enregistrement des notifications seules %d des notifications demand&eacute;es ont &eacute;t&eacute; enregistr&eacute;es sur %d"
 msgstr "Une erreur est survenue lors de l'enregistrement des notifications seules %d des notifications demand&eacute;es ont &eacute;t&eacute; enregistr&eacute;es sur %d"
 
-#: ../include/ajax.php:4928
+#: ../include/ajax.php:4923
 msgid "Les notifications ont bien &eacute;t&eacute; supprim&eacute;es"
 msgstr "Les notifications ont bien &eacute;t&eacute; supprim&eacute;es"
 
-#: ../include/ajax.php:4931
+#: ../include/ajax.php:4926
 #, php-format
 msgid "Une erreur est survenue lors de la suppression des notifications seules %d des demandes de suppression ont &eacute;t&eacute; enregistr&eacute;es sur %d"
 msgstr "Une erreur est survenue lors de la suppression des notifications seules %d des demandes de suppression ont &eacute;t&eacute; enregistr&eacute;es sur %d"
 
-#: ../include/ajax.php:5002
+#: ../include/ajax.php:4997
 msgid "Divers"
 msgstr "Divers"
 
-#: ../include/ajax.php:5011
+#: ../include/ajax.php:5010
 msgid "Categorie Racine"
 msgstr "Categorie Racine"
 
-#: ../include/ajax.php:5084
+#: ../include/ajax.php:5083
 msgid "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l'action"
 msgstr "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo avant l'action"
 
-#: ../include/ajax.php:5088
+#: ../include/ajax.php:5087
 msgid "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo avant l'action"
 msgstr "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo avant l'action"
 
-#: ../include/ajax.php:5127
+#: ../include/ajax.php:5126
 msgid "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "La photo a bien &eacute;t&eacute; d&eacute;finie comme photo apr&egrave;s l'action"
 
-#: ../include/ajax.php:5131
+#: ../include/ajax.php:5130
 msgid "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "La photo n'a pas pu &ecirc;tre d&eacute;finie comme photo apr&egrave;s l'action"
 
-#: ../include/ajax.php:5170
+#: ../include/ajax.php:5169
 msgid "La photo n'est plus d&eacute;finie comme photo avant l'action"
 msgstr "La photo n'est plus d&eacute;finie comme photo avant l'action"
 
-#: ../include/ajax.php:5174
+#: ../include/ajax.php:5173
 msgid "La photo est toujours d&eacute;finie comme photo avant l'action"
 msgstr "La photo est toujours d&eacute;finie comme photo avant l'action"
 
-#: ../include/ajax.php:5213
+#: ../include/ajax.php:5212
 msgid "La photo n'est plus d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "La photo n'est plus d&eacute;finie comme photo apr&egrave;s l'action"
 
-#: ../include/ajax.php:5217
+#: ../include/ajax.php:5216
 msgid "La photo est toujours d&eacute;finie comme photo apr&egrave;s l'action"
 msgstr "La photo est toujours d&eacute;finie comme photo apr&egrave;s l'action"
 
-#: ../include/ajax.php:5351
+#: ../include/ajax.php:5244
+#, php-format
+msgid "Valeur r&eacute;el de la variable quand elle vaut %d : "
+msgstr "Valeur r&eacute;el de la variable quand elle vaut %d : "
+
+#: ../include/ajax.php:5358
 msgid "La restauration des &eacute;l&eacute;ments s&eacute;lectionn&eacute;s a &eacute;t&eacute; effectu&eacute;e avec succ&egrave;s"
 msgstr "La restauration des &eacute;l&eacute;ments s&eacute;lectionn&eacute;s a &eacute;t&eacute; effectu&eacute;e avec succ&egrave;s"
 
-#: ../include/ajax.php:5354
+#: ../include/ajax.php:5361
 msgid "Des erreurs sont survenues lors de la restauration des &eacute;l&eacute;ments s&eacute;lectionn&eacute;s"
 msgstr "Des erreurs sont survenues lors de la restauration des &eacute;l&eacute;ments s&eacute;lectionn&eacute;s"
 
-#: ../include/ajax.php:5412
-#: ../include/config/config.php:261
+#: ../include/ajax.php:5419
+#: ../include/config/config.php:267
 msgid "Groupements"
 msgstr "Groupements"
 
-#: ../include/ajax.php:5419
-#: ../include/config/config.php:261
+#: ../include/ajax.php:5426
+#: ../include/config/config.php:267
 msgid "Unit&eacute;s de travail"
 msgstr "Unit&eacute;s de travail"
 
-#: ../include/ajax.php:5428
+#: ../include/ajax.php:5435
 #: ../include/lib/evaDisplayDesign.class.php:726
 msgid "T&acirc;ches"
 msgstr "T&acirc;ches"
 
-#: ../include/ajax.php:5435
+#: ../include/ajax.php:5442
 msgid "Sous-t&acirc;ches"
 msgstr "Sous-t&acirc;ches"
 
-#: ../include/ajax.php:5444
+#: ../include/ajax.php:5451
 msgid "Cat&eacute;gories de danger"
 msgstr "Cat&eacute;gories de danger"
 
-#: ../include/ajax.php:5451
-#: ../include/config/config.php:261
+#: ../include/ajax.php:5458
+#: ../include/config/config.php:267
 msgid "Dangers"
 msgstr "Dangers"
 
-#: ../include/ajax.php:5460
-#: ../include/config/config.php:261
+#: ../include/ajax.php:5467
+#: ../include/config/config.php:267
 msgid "M&eacute;thodes d'&eacute;valuation"
 msgstr "M&eacute;thodes d'&eacute;valuation"
 
-#: ../include/ajax.php:5469
+#: ../include/ajax.php:5476
 msgid "R&ocirc;le pour les utilisateurs"
 msgstr "R&ocirc;le pour les utilisateurs"
 
-#: ../include/ajax.php:5479
-#: ../include/config/config.php:261
+#: ../include/ajax.php:5486
+#: ../include/config/config.php:267
 msgid "Cat&eacute;gories de pr&eacute;conisations"
 msgstr "Cat&eacute;gories de pr&eacute;conisations"
 
-#: ../include/ajax.php:5486
-#: ../include/config/config.php:261
+#: ../include/ajax.php:5493
+#: ../include/config/config.php:267
 msgid "Pr&eacute;conisations"
 msgstr "Pr&eacute;conisations"
 
-#: ../include/ajax.php:5506
+#: ../include/ajax.php:5513
 msgid "Photo"
 msgstr "Photo"
 
-#: ../include/ajax.php:5515
+#: ../include/ajax.php:5522
 msgid "Pas de photo"
 msgstr "Pas de photo"
 
-#: ../include/ajax.php:5534
-#: ../include/ajax.php:5583
-#: ../include/ajax.php:5617
-#: ../include/ajax.php:5649
-#: ../include/ajax.php:5677
-#: ../include/ajax.php:5709
-#: ../include/ajax.php:5755
+#: ../include/ajax.php:5541
+#: ../include/ajax.php:5590
+#: ../include/ajax.php:5624
+#: ../include/ajax.php:5656
+#: ../include/ajax.php:5684
+#: ../include/ajax.php:5716
+#: ../include/ajax.php:5762
 msgid "Hi&eacute;rarchie"
 msgstr "Hi&eacute;rarchie"
 
-#: ../include/ajax.php:5536
-#: ../include/ajax.php:5619
-#: ../include/ajax.php:5679
+#: ../include/ajax.php:5543
+#: ../include/ajax.php:5626
+#: ../include/ajax.php:5686
 msgid "Descendants"
 msgstr "Descendants"
 
-#: ../include/ajax.php:5767
+#: ../include/ajax.php:5774
 msgid "Cet &eacute;l&eacute;ment"
 msgstr "Cet &eacute;l&eacute;ment"
 
-#: ../include/ajax.php:5770
+#: ../include/ajax.php:5777
 msgid "Et sous-&eacute;l&eacute;ments"
 msgstr "Et sous-&eacute;l&eacute;ments"
 
-#: ../include/ajax.php:5774
+#: ../include/ajax.php:5781
 msgid "Restauration impossible"
 msgstr "Restauration impossible"
 
-#: ../include/ajax.php:5804
+#: ../include/ajax.php:5811
 msgid "La corbeille de cet &eacute;l&eacute;ment est vide"
 msgstr "La corbeille de cet &eacute;l&eacute;ment est vide"
 
-#: ../include/ajax.php:5810
+#: ../include/ajax.php:5817
 #, php-format
 msgid "Contenu de la corbeille pour les %s"
 msgstr "Contenu de la corbeille pour les %s"
 
-#: ../include/ajax.php:5817
+#: ../include/ajax.php:5824
 msgid "Aucun &eacute;l&eacute;ment n'a &eacute;t&eacute; s&eacute;lectionn&eacute;"
 msgstr "Aucun &eacute;l&eacute;ment n'a &eacute;t&eacute; s&eacute;lectionn&eacute;"
 
-#: ../include/ajax.php:5823
+#: ../include/ajax.php:5830
 msgid "Restaurer la s&eacute;lection"
 msgstr "Restaurer la s&eacute;lection"
 
-#: ../include/ajax.php:5913
+#: ../include/ajax.php:5920
 msgid "Souhaitez-vous d&eacute;cocher tous les sous-&eacute;l&eacute;ments &eacute;galement?"
 msgstr "Souhaitez-vous d&eacute;cocher tous les sous-&eacute;l&eacute;ments &eacute;galement?"
 
-#: ../include/ajax.php:6029
+#: ../include/ajax.php:6036
 msgid "Erreur"
 msgstr "Erreur"
 
-#: ../include/ajax.php:6042
+#: ../include/ajax.php:6049
 msgid "Afficher les corrections"
 msgstr "Afficher les corrections"
 
-#: ../include/ajax.php:6050
+#: ../include/ajax.php:6057
 #, php-format
 msgid "Historique du risque %s"
 msgstr "Historique du risque %s"
 
-#: ../include/ajax.php:6060
+#: ../include/ajax.php:6067
 msgid "Il n'y a aucun historique &agrave; afficher pour ce risque"
 msgstr "Il n'y a aucun historique &agrave; afficher pour ce risque"
 
-#: ../include/ajax.php:6199
+#: ../include/ajax.php:6206
 msgid "Donn&eacute;es enregistr&eacute;es avec succ&eacute;s"
 msgstr "Donn&eacute;es enregistr&eacute;es avec succ&eacute;s"
 
-#: ../include/ajax.php:6240
+#: ../include/ajax.php:6247
 msgid "Version"
 msgstr "Version"
 
-#: ../include/ajax.php:6254
-#: ../include/ajax.php:6297
-#: ../include/ajax.php:6310
+#: ../include/ajax.php:6261
+#: ../include/ajax.php:6304
+#: ../include/ajax.php:6317
 msgid "Field has been created"
 msgstr "Le chmaps a bien été créé"
 
-#: ../include/ajax.php:6257
-#: ../include/ajax.php:6300
-#: ../include/ajax.php:6313
+#: ../include/ajax.php:6264
+#: ../include/ajax.php:6307
+#: ../include/ajax.php:6320
 msgid "Field does not exist"
 msgstr "Le champs n'existe pas"
 
-#: ../include/ajax.php:6263
+#: ../include/ajax.php:6270
 #, php-format
 msgid "Added field list for %s"
 msgstr "Liste des champs ajoutés à la table %s"
 
-#: ../include/ajax.php:6274
+#: ../include/ajax.php:6281
 msgid "Field has been deleted"
 msgstr "Le champs a bien été supprimé"
 
-#: ../include/ajax.php:6277
+#: ../include/ajax.php:6284
 msgid "Field exists"
 msgstr "Le champs existe"
 
-#: ../include/ajax.php:6283
+#: ../include/ajax.php:6290
 #, php-format
 msgid "Liste des champs supprim&eacute;s pour la table %s"
 msgstr "Liste des champs supprim&eacute;s pour la table %s"
 
-#: ../include/ajax.php:6294
+#: ../include/ajax.php:6301
 msgid "field type"
 msgstr "du type"
 
-#: ../include/ajax.php:6304
-#: ../include/ajax.php:6317
+#: ../include/ajax.php:6311
+#: ../include/ajax.php:6324
 #, php-format
 msgid "Change %s for field %s to %s"
 msgstr "Changement %s pour le champs %s vers %s"
 
-#: ../include/ajax.php:6307
+#: ../include/ajax.php:6314
 msgid "field name"
 msgstr "du nom"
 
-#: ../include/ajax.php:6322
+#: ../include/ajax.php:6329
 #, php-format
 msgid "Updated field list for %s"
 msgstr "Liste des champs mis à jour pour %s"
 
-#: ../include/ajax.php:6334
+#: ../include/ajax.php:6341
 msgid "Index has been deleted"
 msgstr "L'index a bien été supprimé"
 
-#: ../include/ajax.php:6337
+#: ../include/ajax.php:6344
 msgid "Index does not exists"
 msgstr "L'index n'existe pas"
 
-#: ../include/ajax.php:6343
+#: ../include/ajax.php:6350
 #, php-format
 msgid "Liste des index supprim&eacute;s pour la table %s"
 msgstr "Liste des index supprim&eacute;s pour la table %s"
 
-#: ../include/ajax.php:6354
+#: ../include/ajax.php:6361
 msgid "Index has been created"
 msgstr "L'index a bien été créé"
 
-#: ../include/ajax.php:6357
+#: ../include/ajax.php:6364
 msgid "Index does not exist"
 msgstr "L'index n'existe pas"
 
-#: ../include/ajax.php:6363
+#: ../include/ajax.php:6370
 #, php-format
 msgid "Liste des index ajout&eacute;s pour la table %s"
 msgstr "Liste des index ajout&eacute;s pour la table %s"
 
-#: ../include/ajax.php:6374
+#: ../include/ajax.php:6381
 msgid "Table has been created"
 msgstr "La table a bien été créée"
 
-#: ../include/ajax.php:6377
+#: ../include/ajax.php:6384
 msgid "Table has not been created"
 msgstr "La table n'a pas pu être créée"
 
-#: ../include/ajax.php:6383
+#: ../include/ajax.php:6390
 msgid "Added table list"
 msgstr "Liste des tables ajoutées"
 
-#: ../include/ajax.php:6388
-#: ../include/ajax.php:6413
+#: ../include/ajax.php:6395
+#: ../include/ajax.php:6420
 #, php-format
 msgid "Table %s renomm&eacute;e en %s"
 msgstr "Table %s renomm&eacute;e en %s"
 
-#: ../include/ajax.php:6394
+#: ../include/ajax.php:6401
 msgid "Les deux tables sont toujours pr&eacute;sentes"
 msgstr "Les deux tables sont toujours pr&eacute;sentes"
 
-#: ../include/ajax.php:6399
+#: ../include/ajax.php:6406
 msgid "Table has been renamed"
 msgstr "La table a bien été renommée"
 
-#: ../include/ajax.php:6402
-#: ../include/ajax.php:6420
-#: ../include/ajax.php:6425
+#: ../include/ajax.php:6409
+#: ../include/ajax.php:6427
+#: ../include/ajax.php:6432
 msgid "Table has not been renamed"
 msgstr "La table n'a pas pu être renommée"
 
-#: ../include/ajax.php:6408
+#: ../include/ajax.php:6415
 msgid "Renamed table list"
 msgstr "Liste des tables renommées"
 
-#: ../include/ajax.php:6425
+#: ../include/ajax.php:6432
 msgid "Table has not been deleted"
 msgstr "La table n'a pas pu être supprimée"
 
-#: ../include/ajax.php:6432
+#: ../include/ajax.php:6439
 msgid "Table has been deleted"
 msgstr "La table a bien été supprimée"
 
-#: ../include/ajax.php:6436
+#: ../include/ajax.php:6443
 msgid "Liste des tables renomm&eacute;es pour suppression"
 msgstr "Liste des tables renomm&eacute;es pour suppression"
 
-#: ../include/ajax.php:6446
+#: ../include/ajax.php:6474
+#, php-format
+msgid "Les champs suivants de la table %s ne sont pas pr&eacute;sents: %s"
+msgstr "Les champs suivants de la table %s ne sont pas pr&eacute;sents: %s"
+
+#: ../include/ajax.php:6483
 msgid "Digirisk install is ok"
 msgstr "L'installation de Digirisk s'est déroulée avec succés"
 
-#: ../include/ajax.php:6446
+#: ../include/ajax.php:6483
 msgid "Votre installation du logiciel digirisk ne contient aucune erreur au niveau de la base de donn&eacute;es. Veuillez trouver le d&eacute;tail ci-dessous"
 msgstr "Votre installation du logiciel digirisk ne contient aucune erreur au niveau de la base de donn&eacute;es. Veuillez trouver le d&eacute;tail ci-dessous"
 
-#: ../include/ajax.php:6448
+#: ../include/ajax.php:6485
 msgid "Error in digirisk install"
 msgstr "Des erreurs sont présentes dans l'installation du plugin Digirisk"
 
-#: ../include/ajax.php:6448
+#: ../include/ajax.php:6485
 msgid "Il y a des erreurs dans votre installation du logiciel digirisk. Veuillez trouver le d&eacute;tail ci-dessous"
 msgstr "Il y a des erreurs dans votre installation du logiciel digirisk. Veuillez trouver le d&eacute;tail ci-dessous"
 
-#: ../include/ajax.php:6450
+#: ../include/ajax.php:6487
 #, php-format
 msgid "Il y a %d erreur(s) &agrave; la version %s"
 msgstr "Il y a %d erreur(s) &agrave; la version %s"
 
-#: ../include/ajax.php:6455
+#: ../include/ajax.php:6492
 msgid "Warning in digirisk install"
 msgstr "Il y a des avertissements dans votre installation"
 
-#: ../include/ajax.php:6455
+#: ../include/ajax.php:6492
 msgid "Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n'affectent pas le con fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s"
 msgstr "Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n'affectent pas le con fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s"
 
-#: ../include/ajax.php:6457
+#: ../include/ajax.php:6494
 #, php-format
 msgid "Il y a %d avertissement(s) &agrave; la version %s"
 msgstr "Il y a %d avertissement(s) &agrave; la version %s"
 
-#: ../include/ajax.php:6468
+#: ../include/ajax.php:6505
 #, php-format
 msgid "Version de la base de donn&eacute;es - Th&eacute;orique : %d - R&eacute;elle : %d"
 msgstr "Version de la base de donn&eacute;es - Th&eacute;orique : %d - R&eacute;elle : %d"
 
-#: ../include/ajax.php:6495
+#: ../include/ajax.php:6534
 #, php-format
 msgid "Les table suivantes ont &eacute;&eacute; supprim&eacute;es: %s"
 msgstr "Les table suivantes ont &eacute;&eacute; supprim&eacute;es: %s"
 
-#: ../include/ajax.php:6497
+#: ../include/ajax.php:6536
 #, php-format
 msgid "Les tables suivantes n'ont pas pu &ecirc;tre supprim&eacute;es: %s"
 msgstr "Les tables suivantes n'ont pas pu &ecirc;tre supprim&eacute;es: %s"
 
-#: ../include/ajax.php:6499
+#: ../include/ajax.php:6538
 #, php-format
 msgid "Les tables suivantes n'ont pas &eacute;t&eacute; trouv&eacute;es: %s"
 msgstr "Les tables suivantes n'ont pas &eacute;t&eacute; trouv&eacute;es: %s"
 
-#: ../include/ajax.php:6504
+#: ../include/ajax.php:6543
 #, php-format
 msgid "Les configurations du logiciel digirisk ont bien &eacute;t&eacute; supprim&eacute;es. %d lignes supprim&eacute;s"
 msgstr "Les configurations du logiciel digirisk ont bien &eacute;t&eacute; supprim&eacute;es. %d lignes supprim&eacute;s"
 
-#: ../include/ajax.php:6507
+#: ../include/ajax.php:6547
 msgid "Vous allez &ecirc;tre redirig&eacute; vers la page d'installation du logiciel digirisk d'ici quelques secondes"
 msgstr "Vous allez &ecirc;tre redirig&eacute; vers la page d'installation du logiciel digirisk d'ici quelques secondes"
 
-#: ../include/ajax.php:6627
-#: ../include/ajax.php:6738
+#: ../include/ajax.php:6719
+#: ../include/ajax.php:6817
 msgid "Stat index"
 msgstr "Stat index"
 
-#: ../include/ajax.php:6627
-#: ../include/ajax.php:6738
+#: ../include/ajax.php:6719
+#: ../include/ajax.php:6817
 msgid "Statistique"
 msgstr "Statistique"
 
-#: ../include/ajax.php:6627
-#: ../include/ajax.php:6738
+#: ../include/ajax.php:6719
+#: ../include/ajax.php:6817
 msgid "Valeur"
 msgstr "Valeur"
 
-#: ../include/ajax.php:6637
+#: ../include/ajax.php:6729
 msgid "Nombre d'utilisateurs total"
 msgstr "Nombre d'utilisateurs total"
 
-#: ../include/ajax.php:6643
+#: ../include/ajax.php:6735
 msgid "Utilisateur ayant particip&eacute; &agrave; l'audit"
 msgstr "Utilisateur ayant particip&eacute; &agrave; l'audit"
 
-#: ../include/ajax.php:6660
-#: ../include/ajax.php:6777
+#: ../include/ajax.php:6752
+#: ../include/ajax.php:6856
 msgid "Aucun r&eacute;sultat trouv&eacute;"
 msgstr "Aucun r&eacute;sultat trouv&eacute;"
 
-#: ../include/ajax.php:6679
-#: ../include/ajax.php:6682
+#: ../include/ajax.php:6771
+#: ../include/ajax.php:6774
 msgid "Aucune statistique trouv&eacute;e"
 msgstr "Aucune statistique trouv&eacute;e"
 
-#: ../include/ajax.php:6680
+#: ../include/ajax.php:6772
 msgid "Afficher _MENU_ statistiques"
 msgstr "Afficher _MENU_ statistiques"
 
-#: ../include/ajax.php:6681
+#: ../include/ajax.php:6773
 msgid "Aucune statistique"
 msgstr "Aucune statistique"
 
-#: ../include/ajax.php:6684
-#: ../include/ajax.php:6801
+#: ../include/ajax.php:6776
+#: ../include/ajax.php:6880
 msgid "Premi&eacute;re"
 msgstr "Premi&eacute;re"
 
-#: ../include/ajax.php:6685
-#: ../include/ajax.php:6802
+#: ../include/ajax.php:6777
+#: ../include/ajax.php:6881
 msgid "Derni&egrave;re"
 msgstr "Derni&egrave;re"
 
-#: ../include/ajax.php:6686
-#: ../include/ajax.php:6803
+#: ../include/ajax.php:6778
+#: ../include/ajax.php:6882
 msgid "Suivante"
 msgstr "Suivante"
 
-#: ../include/ajax.php:6687
-#: ../include/ajax.php:6804
+#: ../include/ajax.php:6779
+#: ../include/ajax.php:6883
 msgid "Pr&eacute;c&eacute;dente"
 msgstr "Pr&eacute;c&eacute;dente"
 
-#: ../include/ajax.php:6728
+#: ../include/ajax.php:6807
 msgid "Liste des utilisateurs"
 msgstr "Liste des utilisateurs"
 
-#: ../include/ajax.php:6748
+#: ../include/ajax.php:6827
 msgid "Nombre total de risque"
 msgstr "Nombre total de risque"
 
-#: ../include/ajax.php:6754
+#: ../include/ajax.php:6833
 msgid "Quotation la plus &eacute;lev&eacute;e"
 msgstr "Quotation la plus &eacute;lev&eacute;e"
 
-#: ../include/ajax.php:6760
+#: ../include/ajax.php:6839
 msgid "Quotation la plus basse"
 msgstr "Quotation la plus basse"
 
-#: ../include/ajax.php:6796
+#: ../include/ajax.php:6875
 msgid "Aucun risque trouv&eacute;e"
 msgstr "Aucun risque trouv&eacute;e"
 
-#: ../include/ajax.php:6797
+#: ../include/ajax.php:6876
 msgid "Afficher _MENU_ risques"
 msgstr "Afficher _MENU_ risques"
 
-#: ../include/ajax.php:6798
+#: ../include/ajax.php:6877
 msgid "Aucune risque"
 msgstr "Aucune risque"
 
-#: ../include/ajax.php:6799
+#: ../include/ajax.php:6878
 msgid "Aucune risque trouv&eacute;e"
 msgstr "Aucune risque trouv&eacute;e"
 
-#: ../include/ajax.php:6824
+#: ../include/ajax.php:6903
 msgid "Disponible prochainement"
 msgstr "Disponible prochainement"
 
@@ -1370,16 +1384,20 @@ msgstr ""
 "4 : Rien"
 
 #: ../include/config/config.php:238
-msgid "Chute de plain-pied"
-msgstr "Chute de plain-pied"
+msgid "Accident de plain-pied"
+msgstr "Accident de plain-pied"
 
 #: ../include/config/config.php:239
 msgid "Chute de hauteur"
 msgstr "Chute de hauteur"
 
 #: ../include/config/config.php:240
-msgid "Manutention manuelle"
-msgstr "Manutention manuelle"
+msgid "Activit&eacute; physique"
+msgstr "Activit&eacute; physique"
+
+#: ../include/config/config.php:240
+msgid "Travail sur &eacute;cran"
+msgstr "Travail sur &eacute;cran"
 
 #: ../include/config/config.php:241
 msgid "Manutention m&eacute;canique"
@@ -1394,16 +1412,16 @@ msgid "Effondrements, chute d'objet"
 msgstr "Effondrements, chute d'objet"
 
 #: ../include/config/config.php:244
-msgid "Machines et outils"
-msgstr "Machines et outils"
+msgid "&Eacute;quipements de travail"
+msgstr "&Eacute;quipements de travail"
 
 #: ../include/config/config.php:245
 msgid "Nuisances sonores"
 msgstr "Nuisances sonores"
 
 #: ../include/config/config.php:246
-msgid "Produits chimiques, d&eacute;chets"
-msgstr "Produits chimiques, d&eacute;chets"
+msgid "Produits, &eacute;missions et d&eacute;chets"
+msgstr "Produits, &eacute;missions et d&eacute;chets"
 
 #: ../include/config/config.php:247
 msgid "Incendie, explosion"
@@ -1418,94 +1436,106 @@ msgid "Eclairage"
 msgstr "Eclairage"
 
 #: ../include/config/config.php:250
-msgid "Travail sur &eacute;cran"
-msgstr "Travail sur &eacute;cran"
-
-#: ../include/config/config.php:251
 msgid "Ambiances climatiques"
 msgstr "Ambiances climatiques"
 
-#: ../include/config/config.php:252
-msgid "Manque d'hygi&egrave;ne"
-msgstr "Manque d'hygi&egrave;ne"
+#: ../include/config/config.php:251
+msgid "Agents biologique"
+msgstr "Agents biologique"
 
 #: ../include/config/config.php:253
-msgid "Soci&eacute;t&eacute; ext&eacute;rieure"
-msgstr "Soci&eacute;t&eacute; ext&eacute;rieure"
+msgid "Circulations internes"
+msgstr "Circulations internes"
 
 #: ../include/config/config.php:254
-msgid "Manque de formation"
-msgstr "Manque de formation"
+msgid "Rayonnements"
+msgstr "Rayonnements"
 
 #: ../include/config/config.php:255
+msgid "Risques psychosociaux"
+msgstr "Risques psychosociaux"
+
+#: ../include/config/config.php:257
 msgid "Autres"
 msgstr "Autres"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:257
+msgid "Manque de formation"
+msgstr "Manque de formation"
+
+#: ../include/config/config.php:257
+msgid "Soci&eacute;t&eacute; ext&eacute;rieure"
+msgstr "Soci&eacute;t&eacute; ext&eacute;rieure"
+
+#: ../include/config/config.php:267
 msgid "Cat&eacute;gories de dangers"
 msgstr "Cat&eacute;gories de dangers"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Actions correctives"
 msgstr "Actions correctives"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Sous-actions correctives"
 msgstr "Sous-actions correctives"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 #: ../include/lib/evaDisplayDesign.class.php:2278
 #: ../include/lib/evaDisplayDesign.class.php:2309
 msgid "Risques"
 msgstr "Risques"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Utilisateurs"
 msgstr "Utilisateurs"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Groupes d'utilisateurs"
 msgstr "Groupes d'utilisateurs"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "R&ocirc;les des utilisateurs"
 msgstr "R&ocirc;les des utilisateurs"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Groupes de questions"
 msgstr "Groupes de questions"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Questions"
 msgstr "Questions"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Produits"
 msgstr "Produits"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Cat&eacute;gorie de produits"
 msgstr "Cat&eacute;gorie de produits"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Documents unique"
 msgstr "Documents unique"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Groupes de fiches de groupement"
 msgstr "Groupes de fiches de groupement"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Groupes de fiches de poste"
 msgstr "Groupes de fiches de poste"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Accident de travail"
 msgstr "Accident de travail"
 
-#: ../include/config/config.php:261
+#: ../include/config/config.php:267
 msgid "Documents"
 msgstr "Documents"
+
+#: ../include/config/config.php:267
+msgid "Variable des m&eacute;thodes d'&eacute;valuation"
+msgstr "Variable des m&eacute;thodes d'&eacute;valuation"
 
 #: ../include/lib/doc.class.php:25
 msgid "Documentation modifi&eacute;e avec succ&eacute;s"
@@ -1515,121 +1545,121 @@ msgstr "Documentation modifi&eacute;e avec succ&eacute;s"
 msgid "Impossible de modifier la documentation"
 msgstr "Impossible de modifier la documentation"
 
-#: ../include/lib/doc.class.php:43
+#: ../include/lib/doc.class.php:39
 msgid "Documentation ajout&eacute;e avec succ&eacute;s"
 msgstr "Documentation ajout&eacute;e avec succ&eacute;s"
 
-#: ../include/lib/doc.class.php:46
+#: ../include/lib/doc.class.php:42
 msgid "Impossible d'ajouter la documentation"
 msgstr "Impossible d'ajouter la documentation"
 
-#: ../include/lib/doc.class.php:49
+#: ../include/lib/doc.class.php:45
 msgid "Les champs <code>Nom de la page</code>, <code>URL de la page</code> et <code>Texte</code> sont obligatoires"
 msgstr "Les champs <code>Nom de la page</code>, <code>URL de la page</code> et <code>Texte</code> sont obligatoires"
 
-#: ../include/lib/doc.class.php:56
+#: ../include/lib/doc.class.php:52
 msgid "Documentation supprim&eacute;e avec succ&eacute;s"
 msgstr "Documentation supprim&eacute;e avec succ&eacute;s"
 
-#: ../include/lib/doc.class.php:59
-#: ../include/lib/doc.class.php:61
+#: ../include/lib/doc.class.php:55
+#: ../include/lib/doc.class.php:57
 msgid "Impossible de supprimer cette documentation"
 msgstr "Impossible de supprimer cette documentation"
 
-#: ../include/lib/doc.class.php:101
+#: ../include/lib/doc.class.php:97
 msgid "G&eacute;rer la documentation"
 msgstr "G&eacute;rer la documentation"
 
-#: ../include/lib/doc.class.php:102
+#: ../include/lib/doc.class.php:98
 #: ../include/lib/evaDisplayDesign.class.php:40
 #: ../include/lib/evaDisplayDesign.class.php:510
 msgid "Ajouter"
 msgstr "Ajouter"
 
-#: ../include/lib/doc.class.php:104
+#: ../include/lib/doc.class.php:100
 msgid "Cette page vous permet d'associer de la documentation &agrave; certaines pages de vos extensions."
 msgstr "Cette page vous permet d'associer de la documentation &agrave; certaines pages de vos extensions."
 
-#: ../include/lib/doc.class.php:109
+#: ../include/lib/doc.class.php:105
 msgid "Nom de la page"
 msgstr "Nom de la page"
 
-#: ../include/lib/doc.class.php:110
+#: ../include/lib/doc.class.php:106
 msgid "URL"
 msgstr "URL"
 
-#: ../include/lib/doc.class.php:111
+#: ../include/lib/doc.class.php:107
 msgid "Texte"
 msgstr "Texte"
 
-#: ../include/lib/doc.class.php:112
+#: ../include/lib/doc.class.php:108
 msgid "Date de cr&eacute;ation"
 msgstr "Date de cr&eacute;ation"
 
-#: ../include/lib/doc.class.php:113
+#: ../include/lib/doc.class.php:109
 msgid "Action"
 msgstr "Action"
 
-#: ../include/lib/doc.class.php:122
+#: ../include/lib/doc.class.php:118
 msgid "Acc&eacute;der &agrave; ce lien"
 msgstr "Acc&eacute;der &agrave; ce lien"
 
-#: ../include/lib/doc.class.php:126
+#: ../include/lib/doc.class.php:122
 #: ../include/lib/evaDisplayDesign.class.php:2268
 msgid "&Eacute;diter"
 msgstr "&Eacute;diter"
 
-#: ../include/lib/doc.class.php:127
+#: ../include/lib/doc.class.php:123
 msgid "Supprimer"
 msgstr "Supprimer"
 
-#: ../include/lib/doc.class.php:134
+#: ../include/lib/doc.class.php:130
 msgid "Aucune documentation g&eacute;r&eacute;e"
 msgstr "Aucune documentation g&eacute;r&eacute;e"
 
-#: ../include/lib/doc.class.php:166
-#: ../include/lib/doc.class.php:211
+#: ../include/lib/doc.class.php:162
+#: ../include/lib/doc.class.php:207
 msgid "Revenir &agrave; la liste"
 msgstr "Revenir &agrave; la liste"
 
-#: ../include/lib/doc.class.php:169
+#: ../include/lib/doc.class.php:165
 msgid "Nom de la page document&eacute;e"
 msgstr "Nom de la page document&eacute;e"
 
-#: ../include/lib/doc.class.php:172
+#: ../include/lib/doc.class.php:168
 msgid "Correspond au nom de la page &agrave; documenter"
 msgstr "Correspond au nom de la page &agrave; documenter"
 
-#: ../include/lib/doc.class.php:177
+#: ../include/lib/doc.class.php:173
 msgid "URL de la page"
 msgstr "URL de la page"
 
-#: ../include/lib/doc.class.php:181
+#: ../include/lib/doc.class.php:177
 msgid "Correspond &agrave; l'URL de la page &agrave; documenter. Exemple&nbsp;: <code>http://www.monsite.com/wp-admin/tools.php?page="
 msgstr "Correspond &agrave; l'URL de la page &agrave; documenter. Exemple&nbsp;: <code>http://www.monsite.com/wp-admin/tools.php?page="
 
-#: ../include/lib/doc.class.php:183
-#: ../include/lib/doc.class.php:185
+#: ../include/lib/doc.class.php:179
+#: ../include/lib/doc.class.php:181
 msgid "Acc&eacute;der &agrave ce lien"
 msgstr "Acc&eacute;der &agrave ce lien"
 
-#: ../include/lib/doc.class.php:210
+#: ../include/lib/doc.class.php:206
 msgid "Suppression d'une documentation"
 msgstr "Suppression d'une documentation"
 
-#: ../include/lib/doc.class.php:213
+#: ../include/lib/doc.class.php:209
 msgid "Cette page vous permet de supprimer une documentation."
 msgstr "Cette page vous permet de supprimer une documentation."
 
-#: ../include/lib/doc.class.php:215
+#: ../include/lib/doc.class.php:211
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: ../include/lib/doc.class.php:217
+#: ../include/lib/doc.class.php:213
 msgid "Etes-vous certain de vouloir supprimer la documentation de la page"
 msgstr "Etes-vous certain de vouloir supprimer la documentation de la page"
 
-#: ../include/lib/doc.class.php:221
+#: ../include/lib/doc.class.php:217
 msgid "Confirmer la suppression"
 msgstr "Confirmer la suppression"
 
@@ -2027,7 +2057,7 @@ msgstr "Affecter"
 msgid "ou"
 msgstr "ou"
 
-#: ../include/lib/evaGoogleMaps.class.php:215
+#: ../include/lib/evaGoogleMaps.class.php:217
 msgid "Enregistrer les nouvelles coordonn&eacute;es"
 msgstr "Enregistrer les nouvelles coordonn&eacute;es"
 
@@ -2052,78 +2082,78 @@ msgstr "Les notes n'ont pas pu &ecirc;tre enregistr&eacute;es"
 msgid "Input type not allowed here in "
 msgstr "Input type not allowed here in "
 
-#: ../include/lib/init.class.php:79
+#: ../include/lib/init.class.php:83
 msgid "Options du logiciel digirisk"
 msgstr "Options du logiciel digirisk"
 
-#: ../include/lib/init.class.php:79
 #: ../include/lib/init.class.php:83
-#: ../include/lib/init.class.php:91
+#: ../include/lib/init.class.php:87
+#: ../include/lib/init.class.php:95
 msgid "Digirisk"
 msgstr "Digirisk"
 
-#: ../include/lib/init.class.php:83
-#: ../include/lib/init.class.php:85
+#: ../include/lib/init.class.php:87
+#: ../include/lib/init.class.php:89
 msgid "Installation"
 msgstr "Installation"
 
-#: ../include/lib/init.class.php:91
+#: ../include/lib/init.class.php:95
 msgid "Accueil"
 msgstr "Accueil"
 
-#: ../include/lib/init.class.php:94
+#: ../include/lib/init.class.php:98
 msgid "Tableau de bord"
 msgstr "Tableau de bord"
 
-#: ../include/lib/init.class.php:97
+#: ../include/lib/init.class.php:101
 msgid "&Eacute;valuation des risques"
 msgstr "&Eacute;valuation des risques"
 
-#: ../include/lib/init.class.php:103
+#: ../include/lib/init.class.php:107
 msgid "Profil utilisateur"
 msgstr "Profil utilisateur"
 
-#: ../include/lib/init.class.php:103
+#: ../include/lib/init.class.php:107
 msgid "Profil Digirisk"
 msgstr "Profil Digirisk"
 
-#: ../include/lib/init.class.php:106
+#: ../include/lib/init.class.php:110
 msgid "Import d'utilisateurs pour l'&eacute;valuation des risques"
 msgstr "Import d'utilisateurs pour l'&eacute;valuation des risques"
 
-#: ../include/lib/init.class.php:106
+#: ../include/lib/init.class.php:110
 msgid "Import Digirisk"
 msgstr "Import Digirisk"
 
-#: ../include/lib/init.class.php:109
+#: ../include/lib/init.class.php:113
 msgid "Gestion des groupes d'utilisateurs"
 msgstr "Gestion des groupes d'utilisateurs"
 
-#: ../include/lib/init.class.php:109
+#: ../include/lib/init.class.php:113
 msgid "Groupes Digirisk"
 msgstr "Groupes Digirisk"
 
-#: ../include/lib/init.class.php:112
+#: ../include/lib/init.class.php:116
 msgid "Gestion des droits des utilisateurs"
 msgstr "Gestion des droits des utilisateurs"
 
-#: ../include/lib/init.class.php:112
+#: ../include/lib/init.class.php:116
 msgid "Droits Digirisk"
 msgstr "Droits Digirisk"
 
-#: ../include/lib/init.class.php:114
+#: ../include/lib/init.class.php:118
 msgid "Outils pour le logiciel Digirisk"
 msgstr "Outils pour le logiciel Digirisk"
 
-#: ../include/lib/init.class.php:114
+#: ../include/lib/init.class.php:118
 msgid "Digirisk - Outils"
 msgstr "Digirisk - Outils"
 
-#: ../include/lib/init.class.php:115
+#: ../include/lib/init.class.php:119
 msgid "Documentation pour le logiciel Digirisk"
 msgstr "Documentation pour le logiciel Digirisk"
 
-#: ../include/lib/init.class.php:115
+#: ../include/lib/init.class.php:119
 msgid "Digirisk - Doc"
 msgstr "Digirisk - Doc"
 
@@ -2159,32 +2189,32 @@ msgstr "Explication de la m&eacute;thode Evarisk"
 msgid "Ins&eacute;rer les cat&eacute;gories de danger d&eacute;finies par l'INRS"
 msgstr "Ins&eacute;rer les cat&eacute;gories de danger d&eacute;finies par l'INRS"
 
-#: ../include/lib/install.class.php:60
-msgid "Ins&eacute;rer un danger dans chaque cat&eacute;gorie"
-msgstr "Ins&eacute;rer un danger dans chaque cat&eacute;gorie"
+#: ../include/lib/install.class.php:59
+msgid "Un danger sera ins&eacute;r&eacute; dans chaque cat&eacute;gorie. Sauf pour la cat&eacute;gorie \"Autres\" o&ugrave; plusieurs dangers seront ins&eacute;r&eacute;s"
+msgstr "Un danger sera ins&eacute;r&eacute; dans chaque cat&eacute;gorie. Sauf pour la cat&eacute;gorie \"Autres\" o&ugrave; plusieurs dangers seront ins&eacute;r&eacute;s"
 
-#: ../include/lib/install.class.php:64
+#: ../include/lib/install.class.php:63
 msgid "Th&egrave;me pour le portail"
 msgstr "Th&egrave;me pour le portail"
 
-#: ../include/lib/install.class.php:65
+#: ../include/lib/install.class.php:64
 msgid "Activer le th&egrave;me Evarisk. (NB: vous pourrez activer le th&egrave;me ult&eacute;rieurement)"
 msgstr "Activer le th&egrave;me Evarisk. (NB: vous pourrez activer le th&egrave;me ult&eacute;rieurement)"
 
-#: ../include/lib/install.class.php:70
+#: ../include/lib/install.class.php:69
 msgid "Installer le logiciel"
 msgstr "Installer le logiciel"
 
-#: ../include/lib/install.class.php:100
+#: ../include/lib/install.class.php:99
 #, php-format
 msgid "Installation termin&eacute;e. Vous allez &ecirc;tre redirig&eacute; dans quelque secondes. Si ce n'est pas le cas %s"
 msgstr "Installation termin&eacute;e. Vous allez &ecirc;tre redirig&eacute; dans quelque secondes. Si ce n'est pas le cas %s"
 
-#: ../include/lib/install.class.php:100
+#: ../include/lib/install.class.php:99
 msgid "Cliquez ici"
 msgstr "Cliquez ici"
 
-#: ../include/lib/install.class.php:109
+#: ../include/lib/install.class.php:108
 msgid ""
 "&Ecirc;tes vous s&ucirc;r de vouloir activer le th&egrave;me Evarisk pour votre Blog?\\n"
 "NB: Si vous avez un th&egrave;me personnalis&eacute; celui sera remplac&eacute; par le th&egrave;me Evarisk. Il restera disponible dans la liste des th&egrave;mes."
@@ -2192,7 +2222,7 @@ msgstr ""
 "&Ecirc;tes vous s&ucirc;r de vouloir activer le th&egrave;me Evarisk pour votre Blog?\\n"
 "NB: Si vous avez un th&egrave;me personnalis&eacute; celui sera remplac&eacute; par le th&egrave;me Evarisk. Il restera disponible dans la liste des th&egrave;mes."
 
-#: ../include/lib/install.class.php:114
+#: ../include/lib/install.class.php:113
 msgid "Installation en cours. Merci de patienter."
 msgstr "Installation en cours. Merci de patienter."
 
@@ -2397,270 +2427,269 @@ msgstr "Liste des champs suppl&eacute;mentaires pour les unit&eacute;s de travai
 msgid "Acc&egrave;s prot&eacute;g&eacute;"
 msgstr "Acc&egrave;s prot&eacute;g&eacute;"
 
-#: ../include/lib/permission.class.php:237
+#: ../include/lib/permission.class.php:238
 msgid "Droits d'acc&egrave;s de l'utilisateur pour le logiciel Digirisk"
 msgstr "Droits d'acc&egrave;s de l'utilisateur pour le logiciel Digirisk"
 
-#: ../include/lib/permission.class.php:243
+#: ../include/lib/permission.class.php:244
 msgid "Droits d'acc&egrave;s sp&eacute;cifiques de l'utilisateur pour le logiciel Digirisk"
 msgstr "Droits d'acc&egrave;s sp&eacute;cifiques de l'utilisateur pour le logiciel Digirisk"
 
-#: ../include/lib/permission.class.php:275
+#: ../include/lib/permission.class.php:276
 msgid "Le r&ocirc;le a &eacute;t&eacute; correctement enregistr&eacute;"
 msgstr "Le r&ocirc;le a &eacute;t&eacute; correctement enregistr&eacute;"
 
-#: ../include/lib/permission.class.php:278
+#: ../include/lib/permission.class.php:279
 msgid "Le r&ocirc;le a &eacute;t&eacute; correctement supprim&eacute;"
 msgstr "Le r&ocirc;le a &eacute;t&eacute; correctement supprim&eacute;"
 
-#: ../include/lib/permission.class.php:283
+#: ../include/lib/permission.class.php:284
 msgid "Une erreur est survenue lors de l'enregistrement du r&ocirc;le"
 msgstr "Une erreur est survenue lors de l'enregistrement du r&ocirc;le"
 
-#: ../include/lib/permission.class.php:287
+#: ../include/lib/permission.class.php:288
 msgid "Les droits du r&ocirc;le ont bien &eacute;t&eacute; mis &agrave; jour"
 msgstr "Les droits du r&ocirc;le ont bien &eacute;t&eacute; mis &agrave; jour"
 
-#: ../include/lib/permission.class.php:291
+#: ../include/lib/permission.class.php:292
 msgid "Le r&ocirc;le a &eacute;t&eacute; correctement ajout&eacute;"
 msgstr "Le r&ocirc;le a &eacute;t&eacute; correctement ajout&eacute;"
 
-#: ../include/lib/permission.class.php:302
+#: ../include/lib/permission.class.php:303
 #, php-format
 msgid "&Eacute;dition du r&ocirc;le: %s"
 msgstr "&Eacute;dition du r&ocirc;le: %s"
 
-#: ../include/lib/permission.class.php:308
-#: ../include/lib/permission.class.php:328
+#: ../include/lib/permission.class.php:309
+#: ../include/lib/permission.class.php:329
 msgid "Vous n'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;"
 msgstr "Vous n'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;"
 
-#: ../include/lib/permission.class.php:322
+#: ../include/lib/permission.class.php:323
 msgid "Ajouter un r&ocirc;le pour digirisk"
 msgstr "Ajouter un r&ocirc;le pour digirisk"
 
-#: ../include/lib/permission.class.php:343
+#: ../include/lib/permission.class.php:344
 msgid "Gestion des droits des utilisateurs par r&ocirc;le"
 msgstr "Gestion des droits des utilisateurs par r&ocirc;le"
 
-#: ../include/lib/permission.class.php:346
+#: ../include/lib/permission.class.php:347
 msgid "Ajouter un r&ocirc;le"
 msgstr "Ajouter un rôle"
 
-#: ../include/lib/permission.class.php:471
+#: ../include/lib/permission.class.php:472
 msgid "Nom du r&ocirc;le"
 msgstr "Nom du r&ocirc;le"
 
-#: ../include/lib/permission.class.php:472
+#: ../include/lib/permission.class.php:473
 msgid "Droits digirisk"
 msgstr "Droits digirisk"
 
-#: ../include/lib/permission.class.php:515
-#: ../include/lib/permission.class.php:1528
-#: ../include/lib/permission.class.php:1655
-#: ../include/lib/permission.class.php:1668
-#: ../include/lib/permission.class.php:1672
+#: ../include/lib/permission.class.php:516
+#: ../include/lib/permission.class.php:1529
+#: ../include/lib/permission.class.php:1656
+#: ../include/lib/permission.class.php:1667
+#: ../include/lib/permission.class.php:1670
 msgid "permission_"
 msgstr "permission_"
 
-#: ../include/lib/permission.class.php:520
+#: ../include/lib/permission.class.php:521
 msgid "Vous n'avez pas les autorisations pour voir le d&eacute;tail de ce r&ocirc;le"
 msgstr "Vous n'avez pas les autorisations pour voir le d&eacute;tail de ce rôle"
 
-#: ../include/lib/permission.class.php:524
+#: ../include/lib/permission.class.php:525
 msgid "Aucun droit du logiciel digirisk n'est affect&eacute; &agrave; ce r&ocirc;le"
 msgstr "Aucun droit du logiciel digirisk n'est affect&eacute; &agrave; ce rôle"
 
-#: ../include/lib/permission.class.php:530
+#: ../include/lib/permission.class.php:531
 msgid "Supprimer ce r&ocirc;le"
 msgstr "Supprimer ce r&ocirc;le"
 
-#: ../include/lib/permission.class.php:534
+#: ../include/lib/permission.class.php:535
 msgid "&Eacute;diter ce r&ocirc;le"
 msgstr "&Eacute;diter ce rôle"
 
-#: ../include/lib/permission.class.php:546
+#: ../include/lib/permission.class.php:547
 msgid "Aucun r&ocirc;le n'a &eacute;t&eacute; trouv&eacute;"
 msgstr "Aucun rôle n'a &eacute;t&eacute; trouv&eacute;"
 
-#: ../include/lib/permission.class.php:565
+#: ../include/lib/permission.class.php:566
 msgid "&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le?"
 msgstr "&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le?"
 
-#: ../include/lib/permission.class.php:631
+#: ../include/lib/permission.class.php:632
 msgid "Retour"
 msgstr "Retour"
 
-#: ../include/lib/permission.class.php:717
+#: ../include/lib/permission.class.php:718
 msgid "Cr&eacute;er le r&ocirc;le &agrave; partir d'un r&ocirc;le existant"
 msgstr "Cr&eacute;er le r&ocirc;le &agrave; partir d'un r&ocirc;le existant"
 
-#: ../include/lib/permission.class.php:718
+#: ../include/lib/permission.class.php:719
 msgid "Si vous choisissez un r&ocirc;le &agrave; copier, les droits de ce r&ocirc;le seront automatiquement coch&eacute; dans le prochain &eacute;cran"
 msgstr "Si vous choisissez un r&ocirc;le &agrave; copier, les droits de ce r&ocirc;le seront automatiquement coch&eacute; dans le prochain &eacute;cran"
 
-#: ../include/lib/permission.class.php:750
+#: ../include/lib/permission.class.php:751
 msgid "Permissions du r&ocirc;le"
 msgstr "Permissions du r&ocirc;le"
 
-#: ../include/lib/permission.class.php:766
+#: ../include/lib/permission.class.php:767
 msgid "&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le ?"
 msgstr "&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce r&ocirc;le ?"
 
-#: ../include/lib/permission.class.php:862
+#: ../include/lib/permission.class.php:863
 msgid "Droits des utilisateurs"
 msgstr "Droits des utilisateurs"
 
-#: ../include/lib/permission.class.php:870
+#: ../include/lib/permission.class.php:871
 msgid "Ouvrir dans une fen&ecirc;tre externe"
 msgstr "Ouvrir dans une fen&ecirc;tre externe"
 
-#: ../include/lib/permission.class.php:889
+#: ../include/lib/permission.class.php:890
 msgid "Enregistrer et fermer"
 msgstr "Enregistrer et fermer"
 
-#: ../include/lib/permission.class.php:963
-#: ../include/lib/permission.class.php:1129
+#: ../include/lib/permission.class.php:964
+#: ../include/lib/permission.class.php:1130
 msgid "Affect&eacute; &agrave; l'&eacute;l&eacute;ment"
 msgstr "Affect&eacute; &agrave; l'&eacute;l&eacute;ment"
 
-#: ../include/lib/permission.class.php:965
-#: ../include/lib/permission.class.php:1135
-#: ../include/lib/permission.class.php:1141
-#: ../include/lib/permission.class.php:1575
+#: ../include/lib/permission.class.php:966
+#: ../include/lib/permission.class.php:1136
+#: ../include/lib/permission.class.php:1142
+#: ../include/lib/permission.class.php:1576
 msgid "Voir"
 msgstr "Voir"
-
-#: ../include/lib/permission.class.php:971
-#: ../include/lib/permission.class.php:1151
-#: ../include/lib/permission.class.php:1157
-msgid "Ajouter un groupement"
-msgstr "Ajouter un groupement"
 
 #: ../include/lib/permission.class.php:972
 #: ../include/lib/permission.class.php:1152
 #: ../include/lib/permission.class.php:1158
-msgid "Ajouter une unit&eacute;"
-msgstr "Ajouter une unit&eacute;"
+msgid "Ajouter un groupement"
+msgstr "Ajouter un groupement"
 
 #: ../include/lib/permission.class.php:973
 #: ../include/lib/permission.class.php:1153
 #: ../include/lib/permission.class.php:1159
+msgid "Ajouter une unit&eacute;"
+msgstr "Ajouter une unit&eacute;"
+
+#: ../include/lib/permission.class.php:974
+#: ../include/lib/permission.class.php:1154
+#: ../include/lib/permission.class.php:1160
 msgid "R&eacute;cursif"
 msgstr "R&eacute;cursif"
 
-#: ../include/lib/permission.class.php:979
+#: ../include/lib/permission.class.php:980
 msgid "Pour tous les utilisateurs"
 msgstr "Pour tous les utilisateurs"
 
-#: ../include/lib/permission.class.php:982
 #: ../include/lib/permission.class.php:983
 #: ../include/lib/permission.class.php:984
-#: ../include/lib/permission.class.php:988
+#: ../include/lib/permission.class.php:985
 #: ../include/lib/permission.class.php:989
 #: ../include/lib/permission.class.php:990
-#: ../include/lib/permission.class.php:997
+#: ../include/lib/permission.class.php:991
 #: ../include/lib/permission.class.php:998
 #: ../include/lib/permission.class.php:999
-#: ../include/lib/permission.class.php:1003
+#: ../include/lib/permission.class.php:1000
 #: ../include/lib/permission.class.php:1004
 #: ../include/lib/permission.class.php:1005
-#: ../include/lib/permission.class.php:1019
+#: ../include/lib/permission.class.php:1006
 #: ../include/lib/permission.class.php:1020
 #: ../include/lib/permission.class.php:1021
-#: ../include/lib/permission.class.php:1025
+#: ../include/lib/permission.class.php:1022
 #: ../include/lib/permission.class.php:1026
 #: ../include/lib/permission.class.php:1027
-#: ../include/lib/permission.class.php:1034
+#: ../include/lib/permission.class.php:1028
 #: ../include/lib/permission.class.php:1035
 #: ../include/lib/permission.class.php:1036
-#: ../include/lib/permission.class.php:1040
+#: ../include/lib/permission.class.php:1037
 #: ../include/lib/permission.class.php:1041
 #: ../include/lib/permission.class.php:1042
+#: ../include/lib/permission.class.php:1043
 msgid "Tous"
 msgstr "Tous"
 
-#: ../include/lib/permission.class.php:982
 #: ../include/lib/permission.class.php:983
 #: ../include/lib/permission.class.php:984
-#: ../include/lib/permission.class.php:988
+#: ../include/lib/permission.class.php:985
 #: ../include/lib/permission.class.php:989
 #: ../include/lib/permission.class.php:990
-#: ../include/lib/permission.class.php:997
+#: ../include/lib/permission.class.php:991
 #: ../include/lib/permission.class.php:998
 #: ../include/lib/permission.class.php:999
-#: ../include/lib/permission.class.php:1003
+#: ../include/lib/permission.class.php:1000
 #: ../include/lib/permission.class.php:1004
 #: ../include/lib/permission.class.php:1005
-#: ../include/lib/permission.class.php:1019
+#: ../include/lib/permission.class.php:1006
 #: ../include/lib/permission.class.php:1020
 #: ../include/lib/permission.class.php:1021
-#: ../include/lib/permission.class.php:1025
+#: ../include/lib/permission.class.php:1022
 #: ../include/lib/permission.class.php:1026
 #: ../include/lib/permission.class.php:1027
-#: ../include/lib/permission.class.php:1034
+#: ../include/lib/permission.class.php:1028
 #: ../include/lib/permission.class.php:1035
 #: ../include/lib/permission.class.php:1036
-#: ../include/lib/permission.class.php:1040
+#: ../include/lib/permission.class.php:1037
 #: ../include/lib/permission.class.php:1041
 #: ../include/lib/permission.class.php:1042
+#: ../include/lib/permission.class.php:1043
 msgid "Aucun"
 msgstr "Aucun"
 
-#: ../include/lib/permission.class.php:1016
+#: ../include/lib/permission.class.php:1017
 msgid "Pour tous les utilisateurs affect&eacute;s"
 msgstr "Pour tous les utilisateurs affect&eacute;s"
 
-#: ../include/lib/permission.class.php:1114
-#: ../include/lib/permission.class.php:1325
+#: ../include/lib/permission.class.php:1115
+#: ../include/lib/permission.class.php:1326
 #, php-format
 msgid "Afficher %s enregistrements"
 msgstr "Afficher %s enregistrements"
 
-#: ../include/lib/permission.class.php:1115
-#: ../include/lib/permission.class.php:1326
+#: ../include/lib/permission.class.php:1116
+#: ../include/lib/permission.class.php:1327
 msgid "Aucun r&eacute;sultat"
 msgstr "Aucun r&eacute;sultat"
 
-#: ../include/lib/permission.class.php:1130
+#: ../include/lib/permission.class.php:1131
 #: ../include/lib/accident/accident.class.php:89
 #: ../include/lib/actionsCorrectives/actionsCorrectives.class.php:93
 msgid "Id."
 msgstr "Id."
 
-#: ../include/lib/permission.class.php:1132
+#: ../include/lib/permission.class.php:1133
 #: ../include/lib/accident/accident.class.php:963
 #: ../include/lib/accident/accident.class.php:1083
 msgid "Pr&eacute;nom"
 msgstr "Pr&eacute;nom"
 
-#: ../include/lib/permission.class.php:1178
+#: ../include/lib/permission.class.php:1179
 msgid "non"
 msgstr "non"
 
-#: ../include/lib/permission.class.php:1182
+#: ../include/lib/permission.class.php:1183
 msgid "oui"
 msgstr "oui"
 
-#: ../include/lib/permission.class.php:1348
-#: ../include/lib/permission.class.php:1627
+#: ../include/lib/permission.class.php:1349
+#: ../include/lib/permission.class.php:1626
 msgid "L&eacute;gende"
 msgstr "L&eacute;gende"
 
-#: ../include/lib/permission.class.php:1352
+#: ../include/lib/permission.class.php:1353
 msgid "Utilisateurs affect&eacute;s &agrave; l'&eacute;l&eacute;ment en cours d'&eacute;dition"
 msgstr "Utilisateurs affect&eacute;s &agrave; l'&eacute;l&eacute;ment en cours d'&eacute;dition"
 
-#: ../include/lib/permission.class.php:1355
-#: ../include/lib/permission.class.php:1629
+#: ../include/lib/permission.class.php:1356
+#: ../include/lib/permission.class.php:1628
 msgid "Le droit provient du r&ocirc;le de l'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface"
 msgstr "Le droit provient du r&ocirc;le de l'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface"
 
-#: ../include/lib/permission.class.php:1377
+#: ../include/lib/permission.class.php:1378
 msgid "utiliser le plugin"
 msgstr "utiliser le plugin"
 
-#: ../include/lib/permission.class.php:1378
 #: ../include/lib/permission.class.php:1379
 #: ../include/lib/permission.class.php:1380
 #: ../include/lib/permission.class.php:1381
@@ -2669,168 +2698,169 @@ msgstr "utiliser le plugin"
 #: ../include/lib/permission.class.php:1384
 #: ../include/lib/permission.class.php:1385
 #: ../include/lib/permission.class.php:1386
-#: ../include/lib/permission.class.php:1400
+#: ../include/lib/permission.class.php:1387
+#: ../include/lib/permission.class.php:1401
 #: ../include/lib/accident/accident.class.php:41
 #, php-format
 msgid "voir %s"
 msgstr "voir %s"
 
-#: ../include/lib/permission.class.php:1378
-#: ../include/lib/permission.class.php:1387
+#: ../include/lib/permission.class.php:1379
+#: ../include/lib/permission.class.php:1388
 msgid "les groupements"
 msgstr "les groupements"
 
-#: ../include/lib/permission.class.php:1379
+#: ../include/lib/permission.class.php:1380
 msgid "son groupement"
 msgstr "son groupement"
 
-#: ../include/lib/permission.class.php:1380
-#: ../include/lib/permission.class.php:1388
+#: ../include/lib/permission.class.php:1381
+#: ../include/lib/permission.class.php:1389
 msgid "les unit&eacute;s de travail"
 msgstr "les unit&eacute;s de travail"
 
-#: ../include/lib/permission.class.php:1381
+#: ../include/lib/permission.class.php:1382
 msgid "son unit&eacute; de travail"
 msgstr "son unit&eacute; de travail"
 
-#: ../include/lib/permission.class.php:1382
-#: ../include/lib/permission.class.php:1389
+#: ../include/lib/permission.class.php:1383
+#: ../include/lib/permission.class.php:1390
 msgid "les dangers"
 msgstr "les dangers"
 
-#: ../include/lib/permission.class.php:1383
+#: ../include/lib/permission.class.php:1384
 msgid "les m&eacute;thodes d'&eacute;valuation"
 msgstr "les m&eacute;thodes d'&eacute;valuation"
 
-#: ../include/lib/permission.class.php:1384
-#: ../include/lib/permission.class.php:1391
+#: ../include/lib/permission.class.php:1385
+#: ../include/lib/permission.class.php:1392
 msgid "les risques"
 msgstr "les risques"
 
-#: ../include/lib/permission.class.php:1385
-#: ../include/lib/permission.class.php:1392
+#: ../include/lib/permission.class.php:1386
+#: ../include/lib/permission.class.php:1393
 msgid "les veilles"
 msgstr "les veilles"
 
-#: ../include/lib/permission.class.php:1386
+#: ../include/lib/permission.class.php:1387
 msgid "les actions correctives"
 msgstr "les actions correctives"
 
-#: ../include/lib/permission.class.php:1387
 #: ../include/lib/permission.class.php:1388
 #: ../include/lib/permission.class.php:1389
 #: ../include/lib/permission.class.php:1390
 #: ../include/lib/permission.class.php:1391
 #: ../include/lib/permission.class.php:1392
+#: ../include/lib/permission.class.php:1393
 #, php-format
 msgid "&eacute;diter %s"
 msgstr "&eacute;diter %s"
 
-#: ../include/lib/permission.class.php:1390
+#: ../include/lib/permission.class.php:1391
 msgid "les methodes"
 msgstr "les methodes"
 
-#: ../include/lib/permission.class.php:1393
+#: ../include/lib/permission.class.php:1394
 #, php-format
 msgid "cr&eacute;er %s"
 msgstr "cr&eacute;er %s"
 
-#: ../include/lib/permission.class.php:1393
+#: ../include/lib/permission.class.php:1394
 msgid "des r&eacute;f&eacute;renciels"
 msgstr "des r&eacute;f&eacute;renciels"
 
-#: ../include/lib/permission.class.php:1394
 #: ../include/lib/permission.class.php:1395
 #: ../include/lib/permission.class.php:1396
 #: ../include/lib/permission.class.php:1397
 #: ../include/lib/permission.class.php:1398
 #: ../include/lib/permission.class.php:1399
+#: ../include/lib/permission.class.php:1400
 #, php-format
 msgid "g&eacute;rer %s"
 msgstr "g&eacute;rer %s"
 
-#: ../include/lib/permission.class.php:1394
+#: ../include/lib/permission.class.php:1395
 msgid "les attributs"
 msgstr "les attributs"
 
-#: ../include/lib/permission.class.php:1395
+#: ../include/lib/permission.class.php:1396
 msgid "les groupes d'utilisateurs"
 msgstr "les groupes d'utilisateurs"
 
-#: ../include/lib/permission.class.php:1396
+#: ../include/lib/permission.class.php:1397
 msgid "les droits d'acc&egrave;s"
 msgstr "les droits d'acc&egrave;s"
 
-#: ../include/lib/permission.class.php:1397
+#: ../include/lib/permission.class.php:1398
 msgid "les groupes d'&eacute;valuateurs"
 msgstr "les groupes d'&eacute;valuateurs"
 
-#: ../include/lib/permission.class.php:1398
+#: ../include/lib/permission.class.php:1399
 msgid "les utilisateurs"
 msgstr "les utilisateurs"
 
-#: ../include/lib/permission.class.php:1399
+#: ../include/lib/permission.class.php:1400
 msgid "les options"
 msgstr "les options"
 
-#: ../include/lib/permission.class.php:1400
+#: ../include/lib/permission.class.php:1401
 msgid "les pr&eacute;conisations"
 msgstr "les pr&eacute;conisations"
 
-#: ../include/lib/permission.class.php:1516
+#: ../include/lib/permission.class.php:1517
 msgid "Ces droits sont d&eacute;finis sur chaque &eacute;l&eacute;ment de l'arbre dans le menu \"&Eacute;valuation des risques\""
 msgstr "Ces droits sont d&eacute;finis sur chaque &eacute;l&eacute;ment de l'arbre dans le menu \"&Eacute;valuation des risques\""
 
-#: ../include/lib/permission.class.php:1630
+#: ../include/lib/permission.class.php:1629
 msgid "Permission ajout&eacute;e en plus de celle du r&ocirc;le de l'utilisateur"
 msgstr "Permission ajout&eacute;e en plus de celle du r&ocirc;le de l'utilisateur"
 
-#: ../include/lib/permission.class.php:1637
+#: ../include/lib/permission.class.php:1638
 msgid "Raccourci d'attribution"
 msgstr "Raccourci d'attribution"
 
-#: ../include/lib/permission.class.php:1639
+#: ../include/lib/permission.class.php:1640
 msgid "Tous les droits"
 msgstr "Tous les droits"
 
-#: ../include/lib/permission.class.php:1639
+#: ../include/lib/permission.class.php:1640
 msgid "Aucun droit"
 msgstr "Aucun droit"
 
-#: ../include/lib/permission.class.php:1640
+#: ../include/lib/permission.class.php:1641
 msgid "Tous les menus"
 msgstr "Tous les menus"
 
-#: ../include/lib/permission.class.php:1640
+#: ../include/lib/permission.class.php:1641
 msgid "Aucun menu"
 msgstr "Aucun menu"
 
-#: ../include/lib/permission.class.php:1641
+#: ../include/lib/permission.class.php:1642
 msgid "Tous les droits en lecture"
 msgstr "Tous les droits en lecture"
 
-#: ../include/lib/permission.class.php:1641
+#: ../include/lib/permission.class.php:1642
 msgid "Aucun droit en lecture"
 msgstr "Aucun droit en lecture"
 
-#: ../include/lib/permission.class.php:1642
+#: ../include/lib/permission.class.php:1643
 msgid "Tous les droits en &eacute;criture"
 msgstr "Tous les droits en &eacute;criture"
 
-#: ../include/lib/permission.class.php:1642
+#: ../include/lib/permission.class.php:1643
 msgid "Aucun droit en &eacute;criture"
 msgstr "Aucun droit en &eacute;criture"
 
-#: ../include/lib/permission.class.php:1643
+#: ../include/lib/permission.class.php:1644
 msgid "Tous les droits en suppression"
 msgstr "Tous les droits en suppression"
 
-#: ../include/lib/permission.class.php:1643
+#: ../include/lib/permission.class.php:1644
 msgid "Aucun droit en suppression"
 msgstr "Aucun droit en suppression"
 
-#: ../include/lib/permission.class.php:1656
-#: ../include/lib/permission.class.php:1677
+#: ../include/lib/permission.class.php:1657
+#: ../include/lib/permission.class.php:1675
 msgid "Tout d&eacute;cocher"
 msgstr "Tout d&eacute;cocher"
 
@@ -3363,19 +3393,19 @@ msgstr "Choisir"
 msgid "Cat&eacute;gories"
 msgstr "Cat&eacute;gories"
 
-#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:154
+#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:157
 msgid "La cat&eacute;gorie a bien &eacute;t&eacute; supprim&eacute;e"
 msgstr "La cat&eacute;gorie a bien &eacute;t&eacute; supprim&eacute;e"
 
-#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:169
+#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:172
 msgid "La cat&eacute;gorie n'a pas pu &ecirc;tre supprim&eacute;e"
 msgstr "La cat&eacute;gorie n'a pas pu &ecirc;tre supprim&eacute;e"
 
-#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:239
+#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:242
 msgid "Cat&eacute;gorie de dangers"
 msgstr "Cat&eacute;gorie de dangers"
 
-#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:239
+#: ../include/lib/danger/categorieDangers/categorieDangers.class.php:242
 #, php-format
 msgid "choisissez %s"
 msgstr "choisissez %s"
@@ -3464,10 +3494,42 @@ msgstr "NA"
 msgid "NC"
 msgstr "NC"
 
+#: ../include/lib/db/db_data.php:359
+msgid "Chute de plain-pied"
+msgstr "Chute de plain-pied"
+
+#: ../include/lib/db/db_data.php:360
+msgid "Manutention manuelle"
+msgstr "Manutention manuelle"
+
+#: ../include/lib/db/db_data.php:361
+msgid "Produits chimiques, d&eacute;chets"
+msgstr "Produits chimiques, d&eacute;chets"
+
+#: ../include/lib/db/db_data.php:362
+msgid "Manque d'hygi&egrave;ne"
+msgstr "Manque d'hygi&egrave;ne"
+
+#: ../include/lib/db/db_data.php:363
+msgid "Machines et outils"
+msgstr "Machines et outils"
+
+#: ../include/lib/db/db_data.php:366
+msgid "Divers Manque de formation"
+msgstr "Divers Manque de formation"
+
+#: ../include/lib/db/db_data.php:367
+msgid "Divers Soci&eacute;t&eacute; ext&eacute;rieure"
+msgstr "Divers Soci&eacute;t&eacute; ext&eacute;rieure"
+
+#: ../include/lib/db/db_data.php:370
+msgid "Divers travail sur &eacute;cran"
+msgstr "Divers travail sur &eacute;cran"
+
 #: ../include/lib/display/display.class.php:315
 #: ../include/lib/display/display.class.php:348
 #: ../include/lib/display/display.class.php:385
-#: ../include/lib/display/display.class.php:1114
+#: ../include/lib/display/display.class.php:1115
 msgid ""
 "&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?\\r\\n"
 "ATTENTION: si cet &eacute;l&eacute;ment poss&egrave;de des sous-&eacute;l&eacute;ment, ils seront inaccessibles"
@@ -3475,50 +3537,50 @@ msgstr ""
 "&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?\\r\\n"
 "ATTENTION: si cet &eacute;l&eacute;ment poss&egrave;de des sous-&eacute;l&eacute;ment, ils seront inaccessibles"
 
-#: ../include/lib/display/display.class.php:1119
+#: ../include/lib/display/display.class.php:1120
 msgid "Ic&ocirc;ne"
 msgstr "Ic&ocirc;ne"
 
-#: ../include/lib/display/display.class.php:1129
+#: ../include/lib/display/display.class.php:1130
 msgid "une m&eacute;thode"
 msgstr "une m&eacute;thode"
 
-#: ../include/lib/display/display.class.php:1151
-#: ../include/lib/display/display.class.php:1187
+#: ../include/lib/display/display.class.php:1152
+#: ../include/lib/display/display.class.php:1188
 msgid "&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?"
 msgstr "&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?"
 
-#: ../include/lib/display/display.class.php:1155
+#: ../include/lib/display/display.class.php:1156
 msgid "Formule"
 msgstr "Formule"
 
-#: ../include/lib/display/display.class.php:1165
+#: ../include/lib/display/display.class.php:1166
 msgid "un menu"
 msgstr "un menu"
 
-#: ../include/lib/display/display.class.php:1322
+#: ../include/lib/display/display.class.php:1340
 msgid "une pr&eacute;conisation"
 msgstr "une pr&eacute;conisation"
 
-#: ../include/lib/display/display.class.php:1330
-#: ../include/lib/display/display.class.php:1362
-#: ../include/lib/display/display.class.php:1391
+#: ../include/lib/display/display.class.php:1348
+#: ../include/lib/display/display.class.php:1380
+#: ../include/lib/display/display.class.php:1409
 msgid "Modifier la cat&eacute;gorie de pr&eacute;conisation"
 msgstr "Modifier la cat&eacute;gorie de pr&eacute;conisation"
 
-#: ../include/lib/display/display.class.php:1338
-#: ../include/lib/display/display.class.php:1370
-#: ../include/lib/display/display.class.php:1399
+#: ../include/lib/display/display.class.php:1356
+#: ../include/lib/display/display.class.php:1388
+#: ../include/lib/display/display.class.php:1417
 msgid "la cat&eacute;gorie de pr&eacute;conisation"
 msgstr "la cat&eacute;gorie de pr&eacute;conisation"
 
-#: ../include/lib/display/display.class.php:1348
+#: ../include/lib/display/display.class.php:1366
 #, php-format
 msgid "Photo par d&eacute;faut pour %s"
 msgstr "Photo par d&eacute;faut pour %s"
 
-#: ../include/lib/display/display.class.php:1445
-#: ../include/lib/display/display.class.php:1453
+#: ../include/lib/display/display.class.php:1463
+#: ../include/lib/display/display.class.php:1471
 msgid "la pr&eacute;conisation"
 msgstr "la pr&eacute;conisation"
 
@@ -4207,59 +4269,59 @@ msgstr "La localisation n'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e"
 msgid "Aucun photo d&eacute;finie"
 msgstr "Aucun photo d&eacute;finie"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1248
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1264
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1247
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1263
 msgid "Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos"
 msgstr "Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1271
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1270
 msgid "S&eacute;lectionner un document &agrave; envoyer"
 msgstr "S&eacute;lectionner un document &agrave; envoyer"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1271
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1270
 #, php-format
 msgid "Liste des extensions autoris&eacute;es %s"
 msgstr "Liste des extensions autoris&eacute;es %s"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1275
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1274
 #, php-format
 msgid "Vous n'avez pas s&eacute;lectionn&eacute; les extensions &agrave; autoriser. %s"
 msgstr "Vous n'avez pas s&eacute;lectionn&eacute; les extensions &agrave; autoriser. %s"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1275
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1274
 msgid "Ajouter des extensions"
 msgstr "Ajouter des extensions"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1312
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1311
 msgid "T&eacute;l&eacute;charger ce fichier"
 msgstr "T&eacute;l&eacute;charger ce fichier"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1313
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1312
 #, php-format
 msgid "Ajout&eacute; le %s &agrave; %s par %s"
 msgstr "Ajout&eacute; le %s &agrave; %s par %s"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1316
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1315
 msgid "Impossible de trouver le fichier sur le disque"
 msgstr "Impossible de trouver le fichier sur le disque"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1331
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1330
 msgid "&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document?"
 msgstr "&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document?"
 
-#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1346
+#: ../include/lib/gestionDocumentaire/gestionDoc.class.php:1345
 msgid "Aucun document n'a &eacute;t&eacute; associ&eacute; pour le moment"
 msgstr "Aucun document n'a &eacute;t&eacute; associ&eacute; pour le moment"
 
-#: ../include/lib/methode/eva_variable.class.php:210
+#: ../include/lib/methode/eva_variable.class.php:208
 msgid "Min"
 msgstr "Min"
 
-#: ../include/lib/methode/eva_variable.class.php:211
+#: ../include/lib/methode/eva_variable.class.php:209
 msgid "Max"
 msgstr "Max"
 
-#: ../include/lib/methode/eva_variable.class.php:212
+#: ../include/lib/methode/eva_variable.class.php:210
 msgid "Annotation"
 msgstr "Annotation"
 
@@ -4271,41 +4333,45 @@ msgstr "Supprimer la variable"
 msgid "&Eacute;diter la variable"
 msgstr "&Eacute;diter la variable"
 
-#: ../include/lib/methode/eva_variable.class.php:259
+#: ../include/lib/methode/eva_variable.class.php:260
 msgid "&Ecirc;tes vous s&ucirc;r de vouloir supprimer cette variable?"
 msgstr "&Ecirc;tes vous s&ucirc;r de vouloir supprimer cette variable?"
 
-#: ../include/lib/methode/eva_variable.class.php:286
+#: ../include/lib/methode/eva_variable.class.php:287
 msgid "Variables des m&eacute;thodes d'&eacute;valuation"
 msgstr "Variables des m&eacute;thodes d'&eacute;valuation"
 
-#: ../include/lib/methode/eva_variable.class.php:286
+#: ../include/lib/methode/eva_variable.class.php:287
 msgid "Ajouter une nouvelle variable"
 msgstr "Ajouter une nouvelle variable"
 
-#: ../include/lib/methode/eva_variable.class.php:350
+#: ../include/lib/methode/eva_variable.class.php:355
 msgid "Nom de la nouvelle variable : "
 msgstr "Nom de la nouvelle variable : "
 
-#: ../include/lib/methode/eva_variable.class.php:356
+#: ../include/lib/methode/eva_variable.class.php:361
 msgid "Minimum de la nouvelle variable : "
 msgstr "Minimum de la nouvelle variable : "
 
-#: ../include/lib/methode/eva_variable.class.php:362
+#: ../include/lib/methode/eva_variable.class.php:367
 msgid "Maximum de la nouvelle variable : "
 msgstr "Maximum de la nouvelle variable : "
 
-#: ../include/lib/methode/eva_variable.class.php:368
+#: ../include/lib/methode/eva_variable.class.php:373
 msgid "Annotation sur la nouvelle variable : "
 msgstr "Annotation sur la nouvelle variable : "
 
-#: ../include/lib/methode/eva_variable.class.php:396
-#: ../include/lib/methode/eva_variable.class.php:400
-#: ../include/lib/methode/eva_variable.class.php:404
+#: ../include/lib/methode/eva_variable.class.php:414
+msgid "Valeur diff&eacute;rente du chiffre"
+msgstr "Valeur diff&eacute;rente du chiffre"
+
+#: ../include/lib/methode/eva_variable.class.php:442
+#: ../include/lib/methode/eva_variable.class.php:446
+#: ../include/lib/methode/eva_variable.class.php:450
 msgid "Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res"
 msgstr "Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res"
 
-#: ../include/lib/methode/eva_variable.class.php:412
+#: ../include/lib/methode/eva_variable.class.php:458
 msgid "La valeur maximale doit &ecirc;tre sup&eacute;rieure &agrave; la valeur minimale."
 msgstr "La valeur maximale doit &ecirc;tre sup&eacute;rieure &agrave; la valeur minimale."
 
@@ -4313,31 +4379,93 @@ msgstr "La valeur maximale doit &ecirc;tre sup&eacute;rieure &agrave; la valeur 
 msgid "M&eacute;thodes"
 msgstr "M&eacute;thodes"
 
-#: ../include/lib/methode/methodeEvaluation.class.php:106
-#: ../include/lib/methode/methodeEvaluation.class.php:157
+#: ../include/lib/methode/methodeEvaluation.class.php:110
+#: ../include/lib/methode/methodeEvaluation.class.php:161
 msgid "Enlever cette variable"
 msgstr "Enlever cette variable"
 
-#: ../include/lib/methode/methodeEvaluation.class.php:120
+#: ../include/lib/methode/methodeEvaluation.class.php:124
 msgid "Gestion des variables"
 msgstr "Gestion des variables"
 
-#: ../include/lib/methode/methodeEvaluation.class.php:120
+#: ../include/lib/methode/methodeEvaluation.class.php:124
 msgid "G&eacute;rer les variables"
 msgstr "G&eacute;rer les variables"
 
-#: ../include/lib/methode/methodeEvaluation.class.php:163
+#: ../include/lib/methode/methodeEvaluation.class.php:167
 msgid "une variable &agrave; la m&eacute;thode"
 msgstr "une variable &agrave; la m&eacute;thode"
 
-#: ../include/lib/methode/methodeEvaluation.class.php:232
+#: ../include/lib/methode/methodeEvaluation.class.php:236
 #, php-format
 msgid "Valeur maximale de la m&eacute;thode &eacute;quivalent &agrave; %d :"
 msgstr "Valeur maximale de la m&eacute;thode &eacute;quivalent &agrave; %d :"
 
-#: ../include/lib/methode/methodeEvaluation.class.php:531
+#: ../include/lib/methode/methodeEvaluation.class.php:534
 msgid "Le champs nom de la m&eacute;thode doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res"
 msgstr "Le champs nom de la m&eacute;thode doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res"
+
+#: ../include/lib/notification/notification.class.php:28
+msgid "Une nouvelle version de l'ED840 &eacute;dit&eacute; par l'INRS a &eacute;t&eacute; mise en place dans le logiciel digirisk"
+msgstr "Une nouvelle version de l'ED840 &eacute;dit&eacute; par l'INRS a &eacute;t&eacute; mise en place dans le logiciel digirisk"
+
+#: ../include/lib/notification/notification.class.php:31
+#, php-format
+msgid "<li><a href=\"#\" >Cr&eacute;ation des cat&eacute;gories de danger suivantes</a>:<ul><li>%s</li><li>%s</li><li>%s</li></ul></li>"
+msgstr "<li><a href=\"#\" >Cr&eacute;ation des cat&eacute;gories de danger suivantes</a>:<ul><li>%s</li><li>%s</li><li>%s</li></ul></li>"
+
+#: ../include/lib/notification/notification.class.php:32
+#, php-format
+msgid "<li><a href=\"#\" >Renommage des cat&eacute;gories de danger suivantes</a>:<ul><li>%s devient %s</li><li>%s devient %s</li><li>%s devient %s</li><li>%s devient %s</li><li>%s devient %s</li></ul></li>"
+msgstr "<li><a href=\"#\" >Renommage des cat&eacute;gories de danger suivantes</a>:<ul><li>%s devient %s</li><li>%s devient %s</li><li>%s devient %s</li><li>%s devient %s</li><li>%s devient %s</li></ul></li>"
+
+#: ../include/lib/notification/notification.class.php:32
+msgid "Machine et outils"
+msgstr "Machine et outils"
+
+#: ../include/lib/notification/notification.class.php:33
+#, php-format
+msgid "<li><a href=\"#\" >D&eacute;placement des dangers suivants</a>:<ul><li>Le danger %s devient %s et est transf&eacute;r&eacute; vers la cat&eacute;gorie %s</li><li>Le danger %s devient %s et est transf&eacute;r&eacute; vers la cat&eacute;gorie %s</li><li>Le danger %s devient %s et est transf&eacute;r&eacute; vers la cat&eacute;gorie %s</li></ul></li>"
+msgstr "<li><a href=\"#\" >D&eacute;placement des dangers suivants</a>:<ul><li>Le danger %s devient %s et est transf&eacute;r&eacute; vers la cat&eacute;gorie %s</li><li>Le danger %s devient %s et est transf&eacute;r&eacute; vers la cat&eacute;gorie %s</li><li>Le danger %s devient %s et est transf&eacute;r&eacute; vers la cat&eacute;gorie %s</li></ul></li>"
+
+#: ../include/lib/notification/notification.class.php:33
+msgid "Divers soci&eacute;t&eacute ext&eacuterieure"
+msgstr "Divers soci&eacute;t&eacute ext&eacuterieure"
+
+#: ../include/lib/notification/notification.class.php:33
+msgid "Soci&eacute;t&eacute ext&eacuterieure"
+msgstr "Soci&eacute;t&eacute ext&eacuterieure"
+
+#: ../include/lib/notification/notification.class.php:78
+msgid "Voir le d&eacute;tail"
+msgstr "Voir le d&eacute;tail"
+
+#: ../include/lib/notification/notification.class.php:102
+#, php-format
+msgid "Version %s"
+msgstr "Version %s"
+
+#: ../include/lib/notification/notification.class.php:106
+#, php-format
+msgid "Marquer la notification de la version %s comme lue"
+msgstr "Marquer la notification de la version %s comme lue"
+
+#: ../include/lib/notification/notification.class.php:106
+msgid "Pour moi uniquement"
+msgstr "Pour moi uniquement"
+
+#: ../include/lib/notification/notification.class.php:106
+msgid "Pour tous les utilisateurs du site"
+msgstr "Pour tous les utilisateurs du site"
+
+#: ../include/lib/notification/notification.class.php:110
+#, php-format
+msgid "Marquer la notification de la version %s comme non lue"
+msgstr "Marquer la notification de la version %s comme non lue"
+
+#: ../include/lib/notification/notification.class.php:128
+msgid "&Ecirc;tes vous s&ucirc;r de vouloir marquer ce message comme lu pour l'ensemble des utilisateurs?"
+msgstr "&Ecirc;tes vous s&ucirc;r de vouloir marquer ce message comme lu pour l'ensemble des utilisateurs?"
 
 #: ../include/lib/outils/tools.class.php:26
 msgid "Outils du logiciel Digirisk"
@@ -4348,26 +4476,34 @@ msgid "Outils du logiciel"
 msgstr "Outils du logiciel"
 
 #: ../include/lib/outils/tools.class.php:31
+msgid "Notifications"
+msgstr "Notifications"
+
+#: ../include/lib/outils/tools.class.php:32
 msgid "V&eacute;rification de la base de donn&eacute;es"
 msgstr "V&eacute;rification de la base de donn&eacute;es"
 
-#: ../include/lib/outils/tools.class.php:35
+#: ../include/lib/outils/tools.class.php:36
 msgid "R&eacute;initialisation de la base de donn&eacute;es"
 msgstr "R&eacute;initialisation de la base de donn&eacute;es"
 
-#: ../include/lib/outils/tools.class.php:224
-msgid "Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es. Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite"
-msgstr "Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es. Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite"
+#: ../include/lib/outils/tools.class.php:219
+msgid "Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es (Suppression de toutes les donn&eacute;s pr&eacute;sentes dans la base). Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite"
+msgstr "Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es (Suppression de toutes les donn&eacute;s pr&eacute;sentes dans la base). Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite"
 
-#: ../include/lib/outils/tools.class.php:224
+#: ../include/lib/outils/tools.class.php:219
 msgid "Faites une sauvegarde de votre base de donn&eacute;es avant toute op&eacute;ration"
 msgstr "Faites une sauvegarde de votre base de donn&eacute;es avant toute op&eacute;ration"
 
-#: ../include/lib/outils/tools.class.php:225
+#: ../include/lib/outils/tools.class.php:221
+msgid "Redirection automatique vers la page d'installation apr&egrave;s r&eacute;initialisation de la base de donn&eacute;es"
+msgstr "Redirection automatique vers la page d'installation apr&egrave;s r&eacute;initialisation de la base de donn&eacute;es"
+
+#: ../include/lib/outils/tools.class.php:221
 msgid "R&eacute;initialiser la base"
 msgstr "R&eacute;initialiser la base"
 
-#: ../include/lib/outils/tools.class.php:229
+#: ../include/lib/outils/tools.class.php:225
 msgid "&Ecirc;tes vous s&ucirc;r de vouloir r&eacute;initialiser la base de donn&eacute;es? Cette op&eacute;ration supprimera le contenu du logiciel digirisk"
 msgstr "&Ecirc;tes vous s&ucirc;r de vouloir r&eacute;initialiser la base de donn&eacute;es? Cette op&eacute;ration supprimera le contenu du logiciel digirisk"
 
@@ -4415,46 +4551,43 @@ msgstr "D&eacute;finir comme photo principale"
 msgid "Etes vous sur de vouloir supprimer cette photo?"
 msgstr "Etes vous sur de vouloir supprimer cette photo?"
 
-#: ../include/lib/photo/evaPhoto.class.php:478
-msgid "D&eacute;poser les fichiers ici"
-msgstr "D&eacute;poser les fichiers ici"
-
-#: ../include/lib/photo/evaPhoto.class.php:482
-#: ../include/lib/photo/evaPhoto.class.php:486
-#: ../include/lib/photo/evaPhoto.class.php:490
-#: ../include/lib/photo/evaPhoto.class.php:494
+#: ../include/lib/photo/evaPhoto.class.php:477
+#: ../include/lib/photo/evaPhoto.class.php:481
+#: ../include/lib/photo/evaPhoto.class.php:485
+#: ../include/lib/photo/evaPhoto.class.php:489
+#: ../include/lib/photo/evaPhoto.class.php:493
 msgid "Envoyer une photo"
 msgstr "Envoyer une photo"
 
-#: ../include/lib/photo/evaPhoto.class.php:625
+#: ../include/lib/photo/evaPhoto.class.php:624
 msgid "T&eacute;l&eacute;charger un fichier"
 msgstr "T&eacute;l&eacute;charger un fichier"
 
-#: ../include/lib/photo/evaPhoto.class.php:741
+#: ../include/lib/photo/evaPhoto.class.php:740
 msgid "L'image a &eacute;t&eacute; supprim&eacute;e."
 msgstr "L'image a &eacute;t&eacute; supprim&eacute;e."
 
-#: ../include/lib/photo/evaPhoto.class.php:745
+#: ../include/lib/photo/evaPhoto.class.php:744
 msgid "L'image n'a pas pu &ecirc;tre supprim&eacute;e."
 msgstr "L'image n'a pas pu &ecirc;tre supprim&eacute;e."
 
-#: ../include/lib/photo/evaPhoto.class.php:791
+#: ../include/lib/photo/evaPhoto.class.php:790
 msgid "L'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale."
 msgstr "L'image a &eacute;t&eacute; correctement d&eacute;finie comme photo principale."
 
-#: ../include/lib/photo/evaPhoto.class.php:796
+#: ../include/lib/photo/evaPhoto.class.php:795
 msgid "L'image n'a pas pu &ecirc;tre d&eacute;finie comme photo principale."
 msgstr "L'image n'a pas pu &ecirc;tre d&eacute;finie comme photo principale."
 
-#: ../include/lib/photo/evaPhoto.class.php:811
+#: ../include/lib/photo/evaPhoto.class.php:810
 msgid "L'image n'est plus la photo principale."
 msgstr "L'image n'est plus la photo principale."
 
-#: ../include/lib/photo/evaPhoto.class.php:816
+#: ../include/lib/photo/evaPhoto.class.php:815
 msgid "L'image n'a pas pu &ecirc;tre d&eacute;finie comme n\\&eacute;tant plus la photo principale."
 msgstr "L'image n'a pas pu &ecirc;tre d&eacute;finie comme n\\&eacute;tant plus la photo principale."
 
-#: ../include/lib/photo/evaPhoto.class.php:878
+#: ../include/lib/photo/evaPhoto.class.php:877
 msgid "Voir la galerie"
 msgstr "Voir la galerie"
 
@@ -4560,59 +4693,71 @@ msgid "Produit non cat&eacute;goris&eacute;"
 msgstr "Produit non cat&eacute;goris&eacute;"
 
 #: ../include/lib/risque/Risque.class.php:441
-msgid "Quotation actuelle"
-msgstr "Quotation actuelle"
+msgid "Cotation"
+msgstr "Cotation"
 
-#: ../include/lib/risque/Risque.class.php:510
+#: ../include/lib/risque/Risque.class.php:495
+msgid "Valeurs identiques"
+msgstr "Valeurs identiques"
+
+#: ../include/lib/risque/Risque.class.php:495
+msgid "Valeurs inf&eacute;rieures"
+msgstr "Valeurs inf&eacute;rieures"
+
+#: ../include/lib/risque/Risque.class.php:495
+msgid "Valeurs sup&eacute;rieures"
+msgstr "Valeurs sup&eacute;rieures"
+
+#: ../include/lib/risque/Risque.class.php:522
 msgid " "
 msgstr " "
 
-#: ../include/lib/risque/Risque.class.php:524
+#: ../include/lib/risque/Risque.class.php:536
 msgid "Avant"
 msgstr "Avant"
 
-#: ../include/lib/risque/Risque.class.php:529
+#: ../include/lib/risque/Risque.class.php:541
 msgid "Apr&eacute;s"
 msgstr "Apr&eacute;s"
 
-#: ../include/lib/risque/Risque.class.php:534
+#: ../include/lib/risque/Risque.class.php:546
 msgid "Demande"
 msgstr "Demande"
 
-#: ../include/lib/risque/Risque.class.php:539
+#: ../include/lib/risque/Risque.class.php:551
 msgid "Actuelle"
 msgstr "Actuelle"
 
-#: ../include/lib/risque/Risque.class.php:572
+#: ../include/lib/risque/Risque.class.php:584
 msgid "Non &eacute;valu&eacute;"
 msgstr "Non &eacute;valu&eacute;"
 
-#: ../include/lib/risque/Risque.class.php:630
+#: ../include/lib/risque/Risque.class.php:642
 msgid "Supprimer cette liaison"
 msgstr "Supprimer cette liaison"
 
-#: ../include/lib/risque/Risque.class.php:644
+#: ../include/lib/risque/Risque.class.php:656
 msgid "&Ecirc;tes vous sur de vouloir supprimer cette liaison?"
 msgstr "&Ecirc;tes vous sur de vouloir supprimer cette liaison?"
 
-#: ../include/lib/risque/Risque.class.php:663
+#: ../include/lib/risque/Risque.class.php:675
 msgid "Risques associ&eacute;s &agrave; la photo"
 msgstr "Risques associ&eacute;s &agrave; la photo"
 
-#: ../include/lib/risque/Risque.class.php:663
-#: ../include/lib/risque/Risque.class.php:725
+#: ../include/lib/risque/Risque.class.php:675
+#: ../include/lib/risque/Risque.class.php:737
 msgid "Nom danger(Score) : Commentaire"
 msgstr "Nom danger(Score) : Commentaire"
 
-#: ../include/lib/risque/Risque.class.php:667
+#: ../include/lib/risque/Risque.class.php:679
 msgid "Aucun risque n'est associ&eacute; &agrave; cette photo"
 msgstr "Aucun risque n'est associ&eacute; &agrave; cette photo"
 
-#: ../include/lib/risque/Risque.class.php:720
+#: ../include/lib/risque/Risque.class.php:732
 msgid "collapsor"
 msgstr "collapsor"
 
-#: ../include/lib/risque/Risque.class.php:721
+#: ../include/lib/risque/Risque.class.php:733
 msgid "Risques non associ&eacute;s &agrave; une photo"
 msgstr "Risques non associ&eacute;s &agrave; une photo"
 
@@ -4865,297 +5010,297 @@ msgstr "Des erreurs sont survenues. Veuillez trouver la liste ci-dessous"
 msgid "Import d'utilisateurs"
 msgstr "Import d'utilisateurs"
 
-#: ../include/lib/users/evaUser.class.php:915
+#: ../include/lib/users/evaUser.class.php:916
 msgid "Ajout rapide d'utilisateurs"
 msgstr "Ajout rapide d'utilisateurs"
 
-#: ../include/lib/users/evaUser.class.php:918
+#: ../include/lib/users/evaUser.class.php:919
 msgid "Informations obligatoires"
 msgstr "Informations obligatoires"
 
-#: ../include/lib/users/evaUser.class.php:919
+#: ../include/lib/users/evaUser.class.php:920
 msgid "Champs suppl&eacute;mentaires"
 msgstr "Champs suppl&eacute;mentaires"
 
-#: ../include/lib/users/evaUser.class.php:925
+#: ../include/lib/users/evaUser.class.php:926
 msgid "domaine de l'adresse email"
 msgstr "domaine de l'adresse email"
 
-#: ../include/lib/users/evaUser.class.php:926
+#: ../include/lib/users/evaUser.class.php:927
 msgid "adresse.email"
 msgstr "adresse.email"
 
-#: ../include/lib/users/evaUser.class.php:929
+#: ../include/lib/users/evaUser.class.php:930
 msgid "mot de passe par d&eacute;faut"
 msgstr "mot de passe par d&eacute;faut"
 
-#: ../include/lib/users/evaUser.class.php:931
+#: ../include/lib/users/evaUser.class.php:932
 msgid "Laissez vide pour un mot de passe al&eacute;atoire"
 msgstr "Laissez vide pour un mot de passe al&eacute;atoire"
 
-#: ../include/lib/users/evaUser.class.php:935
+#: ../include/lib/users/evaUser.class.php:936
 msgid "Envoyer le mot de passe aux utilisateurs."
 msgstr "Envoyer le mot de passe aux utilisateurs."
 
-#: ../include/lib/users/evaUser.class.php:938
+#: ../include/lib/users/evaUser.class.php:939
 msgid "(Peut ne pas fonctionner sur certains serveurs)"
 msgstr "(Peut ne pas fonctionner sur certains serveurs)"
 
-#: ../include/lib/users/evaUser.class.php:942
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:943
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "nom"
 msgstr "nom"
 
-#: ../include/lib/users/evaUser.class.php:946
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:947
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "prenom"
 msgstr "prenom"
 
-#: ../include/lib/users/evaUser.class.php:950
-#: ../include/lib/users/evaUser.class.php:1020
+#: ../include/lib/users/evaUser.class.php:951
 #: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "email"
 msgstr "email"
 
-#: ../include/lib/users/evaUser.class.php:951
+#: ../include/lib/users/evaUser.class.php:952
 msgid "Vous pouvez remplir le champs \"Domaine de l'adresse email\" pour que vos emails soient automatique cr&eacute;&eacute;s"
 msgstr "Vous pouvez remplir le champs \"Domaine de l'adresse email\" pour que vos emails soient automatique cr&eacute;&eacute;s"
 
-#: ../include/lib/users/evaUser.class.php:956
+#: ../include/lib/users/evaUser.class.php:957
 msgid "Si aucun r&ocirc;le n'a &eacute;t&eacute; d&eacute;fini dans le fichier"
 msgstr "Si aucun r&ocirc;le n'a &eacute;t&eacute; d&eacute;fini dans le fichier"
 
-#: ../include/lib/users/evaUser.class.php:995
+#: ../include/lib/users/evaUser.class.php:996
 msgid "Ajouter &agrave; la liste des utilisateurs &agrave; importer"
 msgstr "Ajouter &agrave; la liste des utilisateurs &agrave; importer"
 
-#: ../include/lib/users/evaUser.class.php:995
+#: ../include/lib/users/evaUser.class.php:996
 msgid "Merci de remplir les champs marqu&eacute;s en rouge"
 msgstr "Merci de remplir les champs marqu&eacute;s en rouge"
 
-#: ../include/lib/users/evaUser.class.php:1005
-#: ../include/lib/users/evaUser.class.php:1040
+#: ../include/lib/users/evaUser.class.php:1006
+#: ../include/lib/users/evaUser.class.php:1041
 msgid "Importer les utilisateurs"
 msgstr "Importer les utilisateurs"
 
-#: ../include/lib/users/evaUser.class.php:1015
+#: ../include/lib/users/evaUser.class.php:1016
 msgid "Ajout d'utilisateur depuis un fichier"
 msgstr "Ajout d'utilisateur depuis un fichier"
 
-#: ../include/lib/users/evaUser.class.php:1018
+#: ../include/lib/users/evaUser.class.php:1019
 msgid "Vous pouvez t&eacute;l&eacute;charger le fichier pour construire l'import ici"
 msgstr "Vous pouvez t&eacute;l&eacute;charger le fichier pour construire l'import ici"
 
-#: ../include/lib/users/evaUser.class.php:1019
+#: ../include/lib/users/evaUser.class.php:1020
 msgid "Chaque ligne devra respecter le format ci-apr&egrave;s&nbsp;:"
 msgstr "Chaque ligne devra respecter le format ci-apr&egrave;s&nbsp;:"
 
-#: ../include/lib/users/evaUser.class.php:1020
+#: ../include/lib/users/evaUser.class.php:1021
 msgid "Les champs identifiants et email sont obligatoires."
 msgstr "Les champs identifiants et email sont obligatoires."
 
-#: ../include/lib/users/evaUser.class.php:1020
+#: ../include/lib/users/evaUser.class.php:1021
 msgid "Vous n'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent."
 msgstr "Vous n'&ecirc;tes pas oblig&eacute; de renseigner tous les champs mais tous les s&eacute;parateur doivent &ecirc;tre pr&eacute;sent."
 
-#: ../include/lib/users/evaUser.class.php:1020
+#: ../include/lib/users/evaUser.class.php:1021
 msgid "Exemple&nbsp;"
 msgstr "Exemple&nbsp;"
 
-#: ../include/lib/users/evaUser.class.php:1020
 #: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "identifiant"
 msgstr "identifiant"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "mot de passe"
 msgstr "mot de passe"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "role"
 msgstr "role"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "n&ordm; immatriculation"
 msgstr "n&ordm; immatriculation"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "cl&eacute; immatriculation"
 msgstr "cl&eacute; immatriculation"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "date de naissance"
 msgstr "date de naissance"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "sexe"
 msgstr "sexe"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "nationalit&eacute;"
 msgstr "nationalit&eacute;"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "adresse 1"
 msgstr "adresse 1"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "adresse 2"
 msgstr "adresse 2"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "code postal"
 msgstr "code postal"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "ville"
 msgstr "ville"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "date embauche"
 msgstr "date embauche"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "profession"
 msgstr "profession"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "qualification professionnelle"
 msgstr "qualification professionnelle"
 
-#: ../include/lib/users/evaUser.class.php:1021
+#: ../include/lib/users/evaUser.class.php:1022
 msgid "societe d'assurance"
 msgstr "societe d'assurance"
 
-#: ../include/lib/users/evaUser.class.php:1027
+#: ../include/lib/users/evaUser.class.php:1028
 msgid "S&eacute;parateur de champs"
 msgstr "S&eacute;parateur de champs"
 
-#: ../include/lib/users/evaUser.class.php:1034
+#: ../include/lib/users/evaUser.class.php:1035
 msgid "Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)"
 msgstr "Vous pouvez envoyer un fichier contenant les utilisateurs &agrave; cr&eacute;er (extension autoris&eacute;e *.odt, *.csv, *.txt)"
 
-#: ../include/lib/users/evaUser.class.php:1072
+#: ../include/lib/users/evaUser.class.php:1073
 #, php-format
 msgid "R&ocirc;le de l'utilisateur %s"
 msgstr "R&ocirc;le de l'utilisateur %s"
 
-#: ../include/lib/users/evaUser.class.php:1105
-#: ../include/lib/users/evaUser.class.php:1144
-#: ../include/lib/users/evaUser.class.php:1162
-#: ../include/lib/users/evaUser.class.php:1202
-#: ../include/lib/users/evaUser.class.php:1219
-#: ../include/lib/users/evaUser.class.php:1259
+#: ../include/lib/users/evaUser.class.php:1106
+#: ../include/lib/users/evaUser.class.php:1145
+#: ../include/lib/users/evaUser.class.php:1163
+#: ../include/lib/users/evaUser.class.php:1203
+#: ../include/lib/users/evaUser.class.php:1220
+#: ../include/lib/users/evaUser.class.php:1260
 #, php-format
 msgid "Arborescence parente de l'&eacute;l&eacute;ment : %s "
 msgstr "Arborescence parente de l'&eacute;l&eacute;ment : %s "
 
-#: ../include/lib/users/evaUser.class.php:1124
-#: ../include/lib/users/evaUser.class.php:1181
+#: ../include/lib/users/evaUser.class.php:1125
+#: ../include/lib/users/evaUser.class.php:1182
 #, php-format
 msgid "Arborescence descendante de l'&eacute;l&eacute;ment : %s "
 msgstr "Arborescence descendante de l'&eacute;l&eacute;ment : %s "
 
-#: ../include/lib/users/evaUser.class.php:1127
-#: ../include/lib/users/evaUser.class.php:1147
-#: ../include/lib/users/evaUser.class.php:1184
-#: ../include/lib/users/evaUser.class.php:1205
-#: ../include/lib/users/evaUser.class.php:1238
-#: ../include/lib/users/evaUser.class.php:1262
+#: ../include/lib/users/evaUser.class.php:1128
+#: ../include/lib/users/evaUser.class.php:1148
+#: ../include/lib/users/evaUser.class.php:1185
+#: ../include/lib/users/evaUser.class.php:1206
+#: ../include/lib/users/evaUser.class.php:1239
+#: ../include/lib/users/evaUser.class.php:1263
 msgid "Voir l'&eacute;l&eacute;ment"
 msgstr "Voir l'&eacute;l&eacute;ment"
 
-#: ../include/lib/users/evaUser.class.php:1235
+#: ../include/lib/users/evaUser.class.php:1236
 #, php-format
 msgid "Arborescence directe descendante de l'&eacute;l&eacute;ment : %s "
 msgstr "Arborescence directe descendante de l'&eacute;l&eacute;ment : %s "
 
-#: ../include/lib/users/evaUser.class.php:1269
+#: ../include/lib/users/evaUser.class.php:1270
 msgid "Liste des groupements auxquels l'utilisateur est affect&eacute; directement"
 msgstr "Liste des groupements auxquels l'utilisateur est affect&eacute; directement"
 
-#: ../include/lib/users/evaUser.class.php:1280
+#: ../include/lib/users/evaUser.class.php:1281
 msgid "Cet utilisateur n'est affect&eacute; a aucun groupement pour le moment"
 msgstr "Cet utilisateur n'est affect&eacute; a aucun groupement pour le moment"
 
-#: ../include/lib/users/evaUser.class.php:1283
-#: ../include/lib/users/evaUser.class.php:1312
+#: ../include/lib/users/evaUser.class.php:1284
+#: ../include/lib/users/evaUser.class.php:1313
 msgid "Unit&eacute; de travail"
 msgstr "Unit&eacute; de travail"
 
-#: ../include/lib/users/evaUser.class.php:1283
+#: ../include/lib/users/evaUser.class.php:1284
 msgid "Liste des unit&eacute;s de travail auxquelless l'utilisateur est affect&eacute; directement"
 msgstr "Liste des unit&eacute;s de travail auxquelless l'utilisateur est affect&eacute; directement"
 
-#: ../include/lib/users/evaUser.class.php:1294
+#: ../include/lib/users/evaUser.class.php:1295
 msgid "Cet utilisateur n'est affect&eacute; a aucune unit&eacute; de travail pour le moment"
 msgstr "Cet utilisateur n'est affect&eacute; a aucune unit&eacute; de travail pour le moment"
 
-#: ../include/lib/users/evaUser.class.php:1298
+#: ../include/lib/users/evaUser.class.php:1299
 msgid "Liste des groupements dans lesquels l'utilisateur a particip&eacute; &agrave; l'&eacute;valuation"
 msgstr "Liste des groupements dans lesquels l'utilisateur a particip&eacute; &agrave; l'&eacute;valuation"
 
-#: ../include/lib/users/evaUser.class.php:1309
+#: ../include/lib/users/evaUser.class.php:1310
 msgid "Cet utilisateur n'a particip&eacute; a aucune &eacute;valuation sur des groupements pour le moment"
 msgstr "Cet utilisateur n'a particip&eacute; a aucune &eacute;valuation sur des groupements pour le moment"
 
-#: ../include/lib/users/evaUser.class.php:1312
+#: ../include/lib/users/evaUser.class.php:1313
 msgid "Liste des unit&eacute;s de travail dans lesquelles l'utilisateur a particip&eacute; &agrave; l'&eacute;valuation"
 msgstr "Liste des unit&eacute;s de travail dans lesquelles l'utilisateur a particip&eacute; &agrave; l'&eacute;valuation"
 
-#: ../include/lib/users/evaUser.class.php:1323
+#: ../include/lib/users/evaUser.class.php:1324
 msgid "Cet utilisateur n'a particip&eacute; a aucune &eacute;valuation sur des unit&eacute;s de travail pour le moment"
 msgstr "Cet utilisateur n'a particip&eacute; a aucune &eacute;valuation sur des unit&eacute;s de travail pour le moment"
 
-#: ../include/lib/users/evaUser.class.php:1328
-#: ../include/lib/users/evaUser.class.php:1342
+#: ../include/lib/users/evaUser.class.php:1329
+#: ../include/lib/users/evaUser.class.php:1343
 msgid "Sous t&acirc;che des actions correctives"
 msgstr "Sous t&acirc;che des actions correctives"
 
-#: ../include/lib/users/evaUser.class.php:1328
+#: ../include/lib/users/evaUser.class.php:1329
 msgid "Liste des t&acirc;ches auxquelles l'utilisateur est affect&eacute;"
 msgstr "Liste des t&acirc;ches auxquelles l'utilisateur est affect&eacute;"
 
-#: ../include/lib/users/evaUser.class.php:1339
+#: ../include/lib/users/evaUser.class.php:1340
 msgid "Cet utilisateur n'est affect&eacute; a aucune t&acirc;che pour le moment"
 msgstr "Cet utilisateur n'est affect&eacute; a aucune t&acirc;che pour le moment"
 
-#: ../include/lib/users/evaUser.class.php:1342
+#: ../include/lib/users/evaUser.class.php:1343
 msgid "Liste des sous-t&acirc;ches auxquelles l'utilisateur est affect&eacute;"
 msgstr "Liste des sous-t&acirc;ches auxquelles l'utilisateur est affect&eacute;"
 
-#: ../include/lib/users/evaUser.class.php:1353
+#: ../include/lib/users/evaUser.class.php:1354
 msgid "Cet utilisateur n'est affect&eacute; a aucune sous t&acirc;che pour le moment"
 msgstr "Cet utilisateur n'est affect&eacute; a aucune sous t&acirc;che pour le moment"
 
-#: ../include/lib/users/evaUser.class.php:1363
-#: ../include/lib/users/evaUser.class.php:1406
+#: ../include/lib/users/evaUser.class.php:1364
+#: ../include/lib/users/evaUser.class.php:1407
 msgid "Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche"
 msgstr "Rechercher un utilisateur dans la liste pour acc&eacute;der &agrave; sa fiche"
 
-#: ../include/lib/users/evaUser.class.php:1371
+#: ../include/lib/users/evaUser.class.php:1372
 msgid "Affectation"
 msgstr "Affectation"
 
-#: ../include/lib/users/evaUser.class.php:1372
+#: ../include/lib/users/evaUser.class.php:1373
 msgid "&Eacute;valuation"
 msgstr "&Eacute;valuation"
 
-#: ../include/lib/users/evaUser.class.php:1374
+#: ../include/lib/users/evaUser.class.php:1375
 msgid "Droits"
 msgstr "Droits"
 
-#: ../include/lib/users/evaUser.class.php:1426
+#: ../include/lib/users/evaUser.class.php:1427
 #, php-format
 msgid "Profil utilisateur : %s"
 msgstr "Profil utilisateur : %s"
 
-#: ../include/lib/users/evaUser.class.php:1428
+#: ../include/lib/users/evaUser.class.php:1429
 #, php-format
 msgid "Votre profil utilisateur : %s"
 msgstr "Votre profil utilisateur : %s"
 
-#: ../include/lib/users/evaUser.class.php:1480
+#: ../include/lib/users/evaUser.class.php:1481
 msgid "Informations compl&eacute;mentaires evarisk"
 msgstr "Informations compl&eacute;mentaires evarisk"
 
@@ -5654,8 +5799,8 @@ msgid "Actions correctives pour %s"
 msgstr "Actions correctives pour %s"
 
 #: ../include/modules/metaBoxes/risque/risque.php:309
-msgid "Fiche d'action corrective"
-msgstr "Fiche d'action corrective"
+msgid "Action de contr&ocirc;le"
+msgstr "Action de contr&ocirc;le"
 
 #: ../include/modules/metaBoxes/risque/risque.php:313
 msgid "&Eacute;volution du risque"
@@ -5683,35 +5828,35 @@ msgstr "Voir les dangers"
 msgid "Vous &ecirc;tes sur le point de r&eacute;aliser le contr&ocirc;le de l'action %s"
 msgstr "Vous &ecirc;tes sur le point de r&eacute;aliser le contr&ocirc;le de l'action %s"
 
-#: ../include/modules/metaBoxes/risque/risque.php:594
+#: ../include/modules/metaBoxes/risque/risque.php:599
 msgid "Ajouter une action corrective pour le risque"
 msgstr "Ajouter une action corrective pour le risque"
 
-#: ../include/modules/metaBoxes/risque/risque.php:605
+#: ../include/modules/metaBoxes/risque/risque.php:610
 msgid "Photo associ&eacute;e &agrave; ce risque"
 msgstr "Photo associ&eacute;e &agrave; ce risque"
 
-#: ../include/modules/metaBoxes/risque/risque.php:605
+#: ../include/modules/metaBoxes/risque/risque.php:610
 msgid "Supprimer l'association"
 msgstr "Supprimer l'association"
 
-#: ../include/modules/metaBoxes/risque/risque.php:623
+#: ../include/modules/metaBoxes/risque/risque.php:628
 msgid "Ne pas afficher l'ancienne cotation dans les historiques de modifications"
 msgstr "Ne pas afficher l'ancienne cotation dans les historiques de modifications"
 
-#: ../include/modules/metaBoxes/risque/risque.php:726
+#: ../include/modules/metaBoxes/risque/risque.php:731
 msgid "Envoyer des photos"
 msgstr "Envoyer des photos"
 
-#: ../include/modules/metaBoxes/risque/risque.php:780
+#: ../include/modules/metaBoxes/risque/risque.php:785
 msgid "D&eacute;poser ici pour affecter ce risque &agrave; cette photo"
 msgstr "D&eacute;poser ici pour affecter ce risque &agrave; cette photo"
 
-#: ../include/modules/metaBoxes/risque/risque.php:827
+#: ../include/modules/metaBoxes/risque/risque.php:832
 msgid "Annuler l'ajout du risque"
 msgstr "Annuler l'ajout du risque"
 
-#: ../include/modules/metaBoxes/risque/risque.php:848
+#: ../include/modules/metaBoxes/risque/risque.php:853
 msgid "Enregistrer tout"
 msgstr "Enregistrer tout"
 
@@ -6056,596 +6201,636 @@ msgid "permission_tools_db_tools"
 msgstr "Outils pour la base de données"
 
 #: db_field_list.php:77
+msgid "permission_tools_admin_notice"
+msgstr "Notifications dans l'administration"
+
+#: db_field_list.php:78
 msgid "digi_tools_menu"
 msgstr "Acc&eacute;der aux outils"
 
-#: db_field_list.php:78
+#: db_field_list.php:79
 msgid "digi_delete_database"
 msgstr "Réinitialiser la base de données"
 
-#: db_field_list.php:81
+#: db_field_list.php:80
+msgid "digi_mark_notice_as_read_for_all"
+msgstr "Marquer les messages comme lus pour tous les utilisateurs du site"
+
+#: db_field_list.php:83
 msgid "digi_view_dashboard_menu"
 msgstr "Acc&eacute;der au tableau de bord"
 
-#: db_field_list.php:82
+#: db_field_list.php:84
 msgid "digi_view_recommandation_menu"
 msgstr "Acc&eacute;der aux pr&eacute;conisations"
 
-#: db_field_list.php:83
+#: db_field_list.php:85
 msgid "digi_view_method_menu"
 msgstr "Acc&eacute;der aux  m&eacute;thodes d'&eacute;valuation"
 
-#: db_field_list.php:84
+#: db_field_list.php:86
 msgid "digi_view_danger_menu"
 msgstr "Acc&eacute;der aux dangers"
 
-#: db_field_list.php:85
+#: db_field_list.php:87
 msgid "digi_view_evaluation_menu"
 msgstr "Acc&eacute;der &agrave; l'&eacute;valuation des risques"
 
-#: db_field_list.php:86
+#: db_field_list.php:88
 msgid "digi_view_correctiv_action_menu"
 msgstr "Acc&eacute;der aux actions corrective"
 
-#: db_field_list.php:87
+#: db_field_list.php:89
 msgid "digi_view_user_import_menu"
 msgstr "Acc&eacute;der &agrave; l'import des utilisateurs"
 
-#: db_field_list.php:88
+#: db_field_list.php:90
 msgid "digi_view_user_groups_menu"
 msgstr "Acc&eacute;der &agrave; la gestion des groupes"
 
-#: db_field_list.php:89
+#: db_field_list.php:91
 msgid "digi_view_options_menu"
 msgstr "Acc&eacute;der aux options"
 
-#: db_field_list.php:90
+#: db_field_list.php:92
 msgid "digi_view_regulatory_monitoring_menu"
 msgstr "Acc&eacute;der &agrave; la veille r&eacute;glementaire"
 
-#: db_field_list.php:91
+#: db_field_list.php:93
 msgid "digi_user_right_management_menu"
 msgstr "Acc&eacute;der &agrave; la gestion des droits des utilisateurs de Digirisk"
 
-#: db_field_list.php:92
+#: db_field_list.php:94
 msgid "permission_tools_menu"
 msgstr "Menu outils"
 
-#: db_field_list.php:95
+#: db_field_list.php:97
 msgid "digi_view_user_group"
 msgstr "Voir les groupes d'utilisateurs"
 
-#: db_field_list.php:96
+#: db_field_list.php:98
 msgid "digi_delete_user_group"
 msgstr "Supprimer les groupes d'utilisateurs"
 
-#: db_field_list.php:97
+#: db_field_list.php:99
 msgid "digi_add_user_group"
 msgstr "Ajouter les groupes d'utilisateurs"
 
-#: db_field_list.php:98
+#: db_field_list.php:100
 msgid "digi_view_detail_user_group"
 msgstr "Voir les d&eacute;tails des groupes d'utilisateurs"
 
-#: db_field_list.php:99
+#: db_field_list.php:101
 msgid "digi_edit_user_group"
 msgstr "&eacute;diter les groupes d'utilisateurs"
 
-#: db_field_list.php:101
+#: db_field_list.php:103
 msgid "digi_view_evaluator_group"
 msgstr "Voir les groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:102
+#: db_field_list.php:104
 msgid "digi_delete_evaluator_group"
 msgstr "Supprimer les groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:103
+#: db_field_list.php:105
 msgid "digi_add_evaluator_group"
 msgstr "Ajouter les groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:104
+#: db_field_list.php:106
 msgid "digi_view_detail_evaluator_group"
 msgstr "Voir les d&eacute;tails des groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:105
+#: db_field_list.php:107
 msgid "digi_edit_evaluator_group"
 msgstr "&eacute;diter les groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:107
+#: db_field_list.php:109
 msgid "digi_add_user_role"
 msgstr "Ajouter un rôle pour les d'utilisateurs"
 
-#: db_field_list.php:108
+#: db_field_list.php:110
 msgid "digi_edit_user_role"
 msgstr "&eacute;diter les rôles pour les d'utilisateurs"
 
-#: db_field_list.php:109
+#: db_field_list.php:111
 msgid "digi_delete_user_role"
 msgstr "Supprimer les rôle pour les d'utilisateurs"
 
-#: db_field_list.php:110
+#: db_field_list.php:112
 msgid "digi_view_detail_user_role"
 msgstr "Voir les d&eacute;tails des rôle pour les d'utilisateurs"
 
-#: db_field_list.php:112
+#: db_field_list.php:114
 msgid "digi_manage_user_right"
 msgstr "G&eacute;rer les droits d'acc&egrave;s des utilisateurs"
 
-#: db_field_list.php:114
+#: db_field_list.php:116
 msgid "digi_view_user_group_trash"
 msgstr "Voir la corbeille des groupes d'utilisateurs"
 
-#: db_field_list.php:115
+#: db_field_list.php:117
 msgid "digi_edit_user_group_trash"
 msgstr "&eacute;diter la corbeille des groupes d'utilisateurs"
 
-#: db_field_list.php:116
+#: db_field_list.php:118
 msgid "digi_view_evaluator_group_trash"
 msgstr "Voir la corbeille des groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:117
+#: db_field_list.php:119
 msgid "digi_edit_evaluator_group_trash"
 msgstr "&eacute;diter la corbeille des groupes d'&eacute;valuateurs"
 
-#: db_field_list.php:118
+#: db_field_list.php:120
 msgid "digi_view_user_role_trash"
 msgstr "Voir la corbeille des groupes d'utilisateurs"
 
-#: db_field_list.php:119
+#: db_field_list.php:121
 msgid "digi_edit_user_role_trash"
 msgstr "&eacute;diter la corbeille des rôles pour les d'utilisateurs"
 
-#: db_field_list.php:121
+#: db_field_list.php:123
 msgid "digi_import_user"
 msgstr "Impoter des utilisateurs"
 
-#: db_field_list.php:124
+#: db_field_list.php:126
 msgid "digi_add_recommandation_cat"
 msgstr "Ajouter des cat&eacute;gories de pr&eacute;conisations"
 
-#: db_field_list.php:125
+#: db_field_list.php:127
 msgid "digi_view_detail_recommandation_cat"
 msgstr "Voir les d&eacute;tails des cat&eacute;gories de pr&eacute;conisations"
 
-#: db_field_list.php:126
+#: db_field_list.php:128
 msgid "digi_edit_recommandation_cat"
 msgstr "&eacute;diter les cat&eacute;gories de pr&eacute;conisations"
 
-#: db_field_list.php:127
+#: db_field_list.php:129
 msgid "digi_delete_recommandation_cat"
 msgstr "Supprimer les cat&eacute;gories de pr&eacute;conisations"
 
-#: db_field_list.php:128
+#: db_field_list.php:130
 msgid "digi_add_recommandation"
 msgstr "Ajouter une pr&eacute;conisation"
 
-#: db_field_list.php:129
+#: db_field_list.php:131
 msgid "digi_view_detail_recommandation"
 msgstr "Voir les d&eacute;tails d'une pr&eacute;conisation"
 
-#: db_field_list.php:130
+#: db_field_list.php:132
 msgid "digi_edit_recommandation"
 msgstr "&eacute;diter une pr&eacute;conisation"
 
-#: db_field_list.php:131
+#: db_field_list.php:133
 msgid "digi_delete_recommandation"
 msgstr "Supprimer une pr&eacute;conisation"
 
-#: db_field_list.php:133
+#: db_field_list.php:135
 msgid "digi_view_recommandation_category_trash"
 msgstr "Voir la corbeille des cat&eacute;gories de pr&eacute;conisations"
 
-#: db_field_list.php:134
+#: db_field_list.php:136
 msgid "digi_edit_recommandation_category_trash"
 msgstr "&eacute;diter la corbeille des cat&eacute;gories de pr&eacute;conisations"
 
-#: db_field_list.php:135
+#: db_field_list.php:137
 msgid "digi_view_recommandation_trash"
 msgstr "Voir la corbeille des pr&eacute;conisations"
 
-#: db_field_list.php:136
+#: db_field_list.php:138
 msgid "digi_edit_recommandation_trash"
 msgstr "&eacute;diter la corbeille des pr&eacute;conisations"
 
-#: db_field_list.php:139
+#: db_field_list.php:141
 msgid "digi_add_method"
 msgstr "Ajouter une m&eacute;thode d'&eacute;valuation"
 
-#: db_field_list.php:140
+#: db_field_list.php:142
 msgid "digi_edit_method"
 msgstr "&eacute;diter les  m&eacute;thodes d'&eacute;valuation"
 
-#: db_field_list.php:141
+#: db_field_list.php:143
 msgid "digi_view_detail_method"
 msgstr "Voir les d&eacute;tails d'une m&eacute;thode d'&eacute;valuation"
 
-#: db_field_list.php:142
+#: db_field_list.php:144
 msgid "digi_delete_method"
 msgstr "Supprimer une m&eacute;thode d'&eacute;valuation"
 
-#: db_field_list.php:143
+#: db_field_list.php:145
 msgid "digi_add_method_var"
 msgstr "Ajouter une variable pour les m&eacute;thodes d'&eacute;valuation"
 
-#: db_field_list.php:145
+#: db_field_list.php:147
 msgid "digi_view_method_trash"
 msgstr "Voir la corbeille des  m&eacute;thodes d'&eacute;valuation"
 
-#: db_field_list.php:146
+#: db_field_list.php:148
 msgid "digi_edit_method_trash"
 msgstr "&eacute;diter la corbeille des  m&eacute;thodes d'&eacute;valuation"
 
-#: db_field_list.php:149
+#: db_field_list.php:151
 msgid "digi_add_danger_category"
 msgstr "Ajouter des cat&eacute;gories de danger"
 
-#: db_field_list.php:150
+#: db_field_list.php:152
 msgid "digi_edit_danger_category"
 msgstr "&eacute;diter des cat&eacute;gories de danger"
 
-#: db_field_list.php:151
+#: db_field_list.php:153
 msgid "digi_view_detail_danger_category"
 msgstr "Voir les d&eacute;tails des cat&eacute;gories de danger"
 
-#: db_field_list.php:152
+#: db_field_list.php:154
 msgid "digi_delete_danger_category"
 msgstr "Supprimer les cat&eacute;gories de danger"
 
-#: db_field_list.php:153
+#: db_field_list.php:155
 msgid "digi_move_danger_category"
 msgstr "D&eacute;placer des cat&eacute;gories de danger dans l'arbre"
 
-#: db_field_list.php:155
+#: db_field_list.php:157
 msgid "digi_add_danger"
 msgstr "Ajouter un danger"
 
-#: db_field_list.php:156
+#: db_field_list.php:158
 msgid "digi_edit_danger"
 msgstr "&eacute;diter un danger"
 
-#: db_field_list.php:157
+#: db_field_list.php:159
 msgid "digi_view_detail_danger"
 msgstr "Voir les d&eacute;tails d'un danger"
 
-#: db_field_list.php:158
+#: db_field_list.php:160
 msgid "digi_delete_danger"
 msgstr "Supprimer un danger"
 
-#: db_field_list.php:159
+#: db_field_list.php:161
 msgid "digi_move_danger"
 msgstr "D&eacute;placer un danger dans l'arbre"
 
-#: db_field_list.php:161
+#: db_field_list.php:163
 msgid "digi_view_danger_category_trash"
 msgstr "Voir la corbeille des cat&eacute;gories de danger"
 
-#: db_field_list.php:162
+#: db_field_list.php:164
 msgid "digi_edit_danger_category_trash"
 msgstr "&eacute;diter la corbeille des cat&eacute;gories de danger"
 
-#: db_field_list.php:163
+#: db_field_list.php:165
 msgid "digi_view_danger_trash"
 msgstr "Voir la corbeille des dangers"
 
-#: db_field_list.php:164
+#: db_field_list.php:166
 msgid "digi_edit_danger_trash"
 msgstr "&eacute;diter la corbeille des dangers"
 
-#: db_field_list.php:167
+#: db_field_list.php:169
 msgid "digi_add_groupement"
 msgstr "Ajouter des groupements"
 
-#: db_field_list.php:168
+#: db_field_list.php:170
 msgid "digi_edit_groupement"
 msgstr "&eacute;diter les groupements"
 
-#: db_field_list.php:169
+#: db_field_list.php:171
 msgid "digi_view_detail_groupement"
 msgstr "Voir les d&eacute;tails des groupement"
 
-#: db_field_list.php:170
+#: db_field_list.php:172
 msgid "digi_delete_groupement"
 msgstr "Supprimer les groupements"
 
-#: db_field_list.php:171
+#: db_field_list.php:173
 msgid "digi_move_groupement"
 msgstr "D&eacute;placer  les groupements dans l'arborescence"
 
-#: db_field_list.php:173
+#: db_field_list.php:175
 msgid "digi_add_unite"
 msgstr "Ajouter des unit&eacute;s de travail"
 
-#: db_field_list.php:174
+#: db_field_list.php:176
 msgid "digi_edit_unite"
 msgstr "&eacute;diter les unit&eacute;s de travail"
 
-#: db_field_list.php:175
+#: db_field_list.php:177
 msgid "digi_view_detail_unite"
 msgstr "Voir les d&eacute;tails des unit&eacute;s de travail"
 
-#: db_field_list.php:176
+#: db_field_list.php:178
 msgid "digi_delete_unite"
 msgstr "Supprimer les unit&eacute;s de travail"
 
-#: db_field_list.php:177
+#: db_field_list.php:179
 msgid "digi_move_unite"
 msgstr "D&eacute;placer les unit&eacute;s de travail dans l'arborescence"
 
-#: db_field_list.php:179
+#: db_field_list.php:181
 msgid "digi_view_groupement_trash"
 msgstr "Voir la corbeille des groupements"
 
-#: db_field_list.php:180
+#: db_field_list.php:182
 msgid "digi_edit_groupement_trash"
 msgstr "&eacute;diter la corbeille des groupements"
 
-#: db_field_list.php:181
+#: db_field_list.php:183
 msgid "digi_view_unite_trash"
 msgstr "Voir la corbeille des unit&eacute;s de travail"
 
-#: db_field_list.php:182
+#: db_field_list.php:184
 msgid "digi_edit_unite_trash"
 msgstr "&eacute;diter la corbeille des unit&eacute;s de travail"
 
-#: db_field_list.php:185
+#: db_field_list.php:187
 msgid "permission_risk"
 msgstr "Risques"
 
-#: db_field_list.php:186
+#: db_field_list.php:188
 msgid "permission_risk_histo"
 msgstr "Historisation des risques"
 
-#: db_field_list.php:187
+#: db_field_list.php:189
 msgid "digi_view_risk_trash"
 msgstr "Voir la corbeille des risques"
 
-#: db_field_list.php:188
+#: db_field_list.php:190
 msgid "digi_edit_risk_trash"
 msgstr "&eacute;diter la corbeille des risques"
 
-#: db_field_list.php:189
+#: db_field_list.php:191
 msgid "digi_view_risk_histo"
 msgstr "Voir l'historique des risques"
 
-#: db_field_list.php:190
+#: db_field_list.php:192
 msgid "digi_not_historicize_risk"
 msgstr "Choisir de ne pas afficher une &eacute;valuation dans l'historique"
 
-#: db_field_list.php:191
+#: db_field_list.php:193
 msgid "digi_view_mistake_risk_history"
 msgstr "Voir l'historique des risques avec les corrections"
 
-#: db_field_list.php:194
+#: db_field_list.php:196
 msgid "digi_view_correctiv_action"
 msgstr "Voir les actions corrective"
 
-#: db_field_list.php:195
+#: db_field_list.php:197
 msgid "permission_correctiv_action_task"
 msgstr "T&acirc;ches"
 
-#: db_field_list.php:196
+#: db_field_list.php:198
 msgid "permission_correctiv_action_action"
 msgstr "Sous-t&acirc;ches"
 
-#: db_field_list.php:197
+#: db_field_list.php:199
 msgid "permission_action"
 msgstr "Actions correctives"
 
-#: db_field_list.php:199
+#: db_field_list.php:201
 msgid "digi_view_task_trash"
 msgstr "Voir la corbeille des t&acirc;ches"
 
-#: db_field_list.php:200
+#: db_field_list.php:202
 msgid "digi_edit_task_trash"
 msgstr "&eacute;diter la corbeille des t&acirc;ches"
 
-#: db_field_list.php:201
+#: db_field_list.php:203
 msgid "digi_view_action_trash"
 msgstr "Voir la corbeille des sous-t&acirc;ches"
 
-#: db_field_list.php:202
+#: db_field_list.php:204
 msgid "digi_edit_action_trash"
 msgstr "&eacute;diter la corbeille des sous-t&acirc;ches"
 
-#: db_field_list.php:204
+#: db_field_list.php:206
 msgid "digi_control_task"
 msgstr "Contr&ocirc;ler les t&acirc;ches"
 
-#: db_field_list.php:205
+#: db_field_list.php:207
 msgid "digi_follow_action"
 msgstr "Voir le suivi des t&acirc;ches"
 
-#: db_field_list.php:207
+#: db_field_list.php:209
 msgid "digi_add_task"
 msgstr "Ajouter des t&acirc;ches"
 
-#: db_field_list.php:208
+#: db_field_list.php:210
 msgid "digi_edit_task"
 msgstr "&eacute;diter des t&acirc;ches"
 
-#: db_field_list.php:209
+#: db_field_list.php:211
 msgid "digi_view_detail_task"
 msgstr "Voir les d&eacute;tails des t&acirc;ches"
 
-#: db_field_list.php:210
+#: db_field_list.php:212
 msgid "digi_delete_task"
 msgstr "Supprimer les t&acirc;ches"
 
-#: db_field_list.php:211
+#: db_field_list.php:213
 msgid "digi_move_task"
 msgstr "D&eacute;placer les t&acirc;ches dans l'arborescence"
 
-#: db_field_list.php:213
+#: db_field_list.php:215
 msgid "digi_add_action"
 msgstr "Ajouter une sous-t&acirc;ches"
 
-#: db_field_list.php:214
+#: db_field_list.php:216
 msgid "digi_edit_action"
 msgstr "&eacute;diter les sous-t&acirc;ches"
 
-#: db_field_list.php:215
+#: db_field_list.php:217
 msgid "digi_view_detail_action"
 msgstr "Voir les d&eacute;tails d'une sous-t&acirc;che"
 
-#: db_field_list.php:216
+#: db_field_list.php:218
 msgid "digi_delete_action"
 msgstr "Supprimer une sous-t&acirc;che"
 
-#: db_field_list.php:217
+#: db_field_list.php:219
 msgid "digi_move_action"
 msgstr "D&eacute;placer une sous-t&acirc;ches dans l'arbre"
 
-#: db_field_list.php:219
+#: db_field_list.php:221
 msgid "digi_ask_action_front"
 msgstr "Demander une action corrective depuis le portail"
 
-#: db_field_list.php:222
+#: db_field_list.php:224
 msgid "permission_documentation_menu"
 msgstr "Menu principal"
 
-#: db_field_list.php:223
+#: db_field_list.php:225
 msgid "permission_documentation"
 msgstr "Documentation"
 
-#: db_field_list.php:224
+#: db_field_list.php:226
 msgid "digi_documentation_management_menu"
 msgstr "Acc&eacute;der &agrave; la gestion de la documentation de Digirisk"
 
-#: db_field_list.php:229
+#: db_field_list.php:231
 msgid "user_imatriculation"
 msgstr "N&ordm; d'immatriculation"
 
-#: db_field_list.php:230
+#: db_field_list.php:232
 msgid "user_imatriculation_key"
 msgstr "Cl&eacute; du n&ordm; d'immatriculation"
 
-#: db_field_list.php:231
+#: db_field_list.php:233
 msgid "user_birthday"
 msgstr "Date de naissance"
 
-#: db_field_list.php:232
+#: db_field_list.php:234
 msgid "user_gender"
 msgstr "Sexe"
 
-#: db_field_list.php:233
+#: db_field_list.php:235
 msgid "user_nationnality"
 msgstr "Nationalit&eacute;"
 
-#: db_field_list.php:234
+#: db_field_list.php:236
 msgid "user_adress"
 msgstr "Adresse"
 
-#: db_field_list.php:235
+#: db_field_list.php:237
 msgid "user_adress_2"
 msgstr "Adresse 2"
 
-#: db_field_list.php:236
+#: db_field_list.php:238
 msgid "user_hiring_date"
 msgstr "Date d'embauche"
 
-#: db_field_list.php:237
+#: db_field_list.php:239
 msgid "user_profession"
 msgstr "Profession"
 
-#: db_field_list.php:238
+#: db_field_list.php:240
 msgid "user_professional_qualification"
 msgstr "Qualification professionnelle"
 
-#: db_field_list.php:241
+#: db_field_list.php:243
 msgid "in_progress"
 msgstr "En cours"
 
-#: db_field_list.php:242
+#: db_field_list.php:244
 msgid "done"
 msgstr "Termin&eacute;"
 
-#: db_field_list.php:246
+#: db_field_list.php:248
 msgid "update"
 msgstr "Mise à jour"
 
-#: db_field_list.php:247
+#: db_field_list.php:249
 msgid "delete"
 msgstr "Suppression"
 
-#: db_field_list.php:248
+#: db_field_list.php:250
 msgid "transfer"
 msgstr "Déplacement de l'élément dans l'arbre"
 
-#: db_field_list.php:249
+#: db_field_list.php:251
 msgid "mark_done"
 msgstr "Marqué comme soldé"
 
-#: db_field_list.php:250
+#: db_field_list.php:252
 msgid "export"
 msgstr "Export de la tâche"
 
-#: db_field_list.php:251
+#: db_field_list.php:253
 msgid "add_new_subtask"
 msgstr "Ajout d'une sous-tâche"
 
-#: db_field_list.php:252
+#: db_field_list.php:254
 msgid "set_in_progress"
 msgstr "Marqué comme en cours"
 
-#: db_field_list.php:253
+#: db_field_list.php:255
 msgid "doc_add"
 msgstr "Ajout d'un document"
 
-#: db_field_list.php:254
+#: db_field_list.php:256
 msgid "doc_delete"
 msgstr "Suppression d'un document"
 
-#: db_field_list.php:255
+#: db_field_list.php:257
 msgid "picture_add"
 msgstr "Ajout d'une photo"
 
-#: db_field_list.php:256
+#: db_field_list.php:258
 msgid "picture_delete"
 msgstr "Suppression d'une photo"
 
-#: db_field_list.php:257
+#: db_field_list.php:259
 msgid "picture_as_main_add"
 msgstr "Définition de la photo principale"
 
-#: db_field_list.php:258
+#: db_field_list.php:260
 msgid "picture_as_main_delete"
 msgstr "Suppression de la définition de la photo principale"
 
-#: db_field_list.php:259
+#: db_field_list.php:261
 msgid "picture_as_after_add"
 msgstr "Définition de la photo après"
 
-#: db_field_list.php:260
+#: db_field_list.php:262
 msgid "picture_as_after_delete"
 msgstr "Suppression de la définition de la photo après"
 
-#: db_field_list.php:261
+#: db_field_list.php:263
 msgid "picture_as_before_add"
 msgstr "Définition de la photo avant"
 
-#: db_field_list.php:262
+#: db_field_list.php:264
 msgid "picture_as_before_delete"
 msgstr "Suppression de la définition de la photo avant"
 
-#: db_field_list.php:263
+#: db_field_list.php:265
 msgid "affectation_update"
 msgstr "Modification de l'affectation de la tâche"
 
-#: db_field_list.php:264
+#: db_field_list.php:266
 msgid "user_affectation_update"
 msgstr "Modification de la liste des utilisateurs"
 
-#: db_field_list.php:265
+#: db_field_list.php:267
 msgid "delete_user_from_affectation_list"
 msgstr "Modification de la liste des utilisateurs"
 
-#: db_field_list.php:266
+#: db_field_list.php:268
 msgid "add_user_from_affectation_list"
 msgstr "Modification de la liste des utilisateurs"
 
-#: db_field_list.php:267
+#: db_field_list.php:269
 msgid "follow_add"
 msgstr "Ajout d'un commentaire dans le suivi"
+
+#~ msgid "Mon texte d'exemple"
+#~ msgstr "En fait c'est ça qu'il faut écrire"
+
+#~ msgid "Produits, &eacute;missions et d&eacute;chets, d&eacute;chets"
+#~ msgstr "Produits, &eacute;missions et d&eacute;chets, d&eacute;chets"
+
+#~ msgid "Ins&eacute;rer un danger dans chaque cat&eacute;gorie"
+#~ msgstr "Ins&eacute;rer un danger dans chaque cat&eacute;gorie"
+
+#~ msgid "Produits chimique"
+#~ msgstr "Produits chimique"
+
+#~ msgid "Quotation actuelle"
+#~ msgstr "Quotation actuelle"
+
+#~ msgid "Fiche d'action corrective"
+#~ msgstr "Fiche d'action corrective"
+
+#, fuzzy
+#~ msgid ""
+#~ "<li><a href=\"#\" >D&eacute;placement des cat&eacute;gories de danger "
+#~ "suivantes</a>:<ul><li>%s</li><li>%s</li><li>%s</li></ul></li></li>"
+#~ msgstr ""
+#~ "<li><a href=\"#\" >Cr&eacute;ation des cat&eacute;gories de danger "
+#~ "suivantes</a>:<ul><li>%s</li><li>%s</li><li>%s</li></ul></li></li>"
+
+#~ msgid "&Eacute;diter une pr&eacute;conisation"
+#~ msgstr "&Eacute;diter une pr&eacute;conisation"
+
+#~ msgid "D&eacute;poser les fichiers ici"
+#~ msgstr "D&eacute;poser les fichiers ici"
 
 #, fuzzy
 #~ msgid "digi_config_menu"
@@ -6757,29 +6942,17 @@ msgstr "Ajout d'un commentaire dans le suivi"
 #~ msgid "Divers eclairage"
 #~ msgstr "Divers eclairage"
 
-#~ msgid "Divers travail sur &eacute;cran"
-#~ msgstr "Divers travail sur &eacute;cran"
-
 #~ msgid "Divers ambiances climatiques"
 #~ msgstr "Divers ambiances climatiques"
 
 #~ msgid "Divers manque d'hygi&egrave;ne"
 #~ msgstr "Divers manque d'hygi&egrave;ne"
 
-#~ msgid "Divers soci&eacute;t&eacute; ext&eacute;rieure"
-#~ msgstr "Divers soci&eacute;t&eacute; ext&eacute;rieure"
-
-#~ msgid "Divers manque de formation"
-#~ msgstr "Divers manque de formation"
-
 #~ msgid "Divers autres"
 #~ msgstr "Divers autres"
 
 #~ msgid "autres"
 #~ msgstr "autres"
-
-#~ msgid "chute de plain-pied"
-#~ msgstr "chute de plain-pied"
 
 #~ msgid "chute de hauteur"
 #~ msgstr "chute de hauteur"
@@ -6858,9 +7031,6 @@ msgstr "Ajout d'un commentaire dans le suivi"
 
 #~ msgid "Nombre entier"
 #~ msgstr "Nombre entier"
-
-#~ msgid "Nombre d&eacute;cimal"
-#~ msgstr "Nombre d&eacute;cimal"
 
 #~ msgid "Champs date"
 #~ msgstr "Champs date"

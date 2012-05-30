@@ -37,7 +37,7 @@ class digirisk_install
 		$basic_vars_list = (trim(substr($basic_vars_list, 3, -3)) !=  '')  ? '  (' . trim(substr($basic_vars_list, 2, -2)) . ')' : '';
 		/*	Create an output with the defined danger categories	*/
 		$basic_danger_cat_list = '';
-		foreach($inrs_danger_categories as $category){
+		foreach($inrs_danger_categories as $version_number => $category){
 			$basic_danger_cat_list .= '<div class="alignleft inrs_picto_container_install" ><img src="' . EVA_HOME_URL . $category['picture'] . '" alt="' . $category['nom'] . '" /><br/>' . $category['nom'] . '</div>';
 		}
 
@@ -56,8 +56,7 @@ class digirisk_install
 
 	<fieldset>
 		<legend>' . __('Cat&eacute;gories de danger', 'evarisk')  . '</legend>
-		<input type="checkbox" name="insert_inrs_danger_cat" id="insert_inrs_danger_cat" value="yes" checked="checked" />&nbsp;<label for="insert_inrs_danger_cat" >' . __('Ins&eacute;rer les cat&eacute;gories de danger d&eacute;finies par l\'INRS', 'evarisk') . '</label><br/>' . $basic_danger_cat_list . '
-		<div class="clear" ><input type="checkbox" name="insert_danger_in_cat" id="insert_danger_in_cat" value="yes" checked="checked" />&nbsp;<label for="insert_danger_in_cat" >' . __('Ins&eacute;rer un danger dans chaque cat&eacute;gorie', 'evarisk') . '</label></div>
+		<input type="checkbox" name="insert_inrs_danger_cat" id="insert_inrs_danger_cat" value="yes" checked="checked" />&nbsp;<label for="insert_inrs_danger_cat" >' . __('Ins&eacute;rer les cat&eacute;gories de danger d&eacute;finies par l\'INRS', 'evarisk') . '</label> (' . __('Un danger sera ins&eacute;r&eacute; dans chaque cat&eacute;gorie. Sauf pour la cat&eacute;gorie "Autres" o&ugrave; plusieurs dangers seront ins&eacute;r&eacute;s', 'evarisk') . ')<br/>' . $basic_danger_cat_list . '
 	</fieldset>
 
 	<fieldset>
@@ -459,7 +458,7 @@ class digirisk_install
 					$subQuery = "  ";
 					foreach($employeeGroups as $employeeGroup)
 					{
-						$subQuery .= "('', '" . $wpdb->escape($employeeGroup->user_group_id) . "', '" . $wpdb->escape($employeeGroup->user_group_status) . "', 'employee', NOW(), 1, '', '', '" . $wpdb->escape($employeeGroup->user_group_name) . "', '" . $wpdb->escape($employeeGroup->user_group_description) . "'), ";
+						$subQuery .= "('', '" . $wpdb->escape($employeeGroup->user_group_id) . "', '" . $wpdb->escape($employeeGroup->user_group_status) . "', 'employee', '" . current_time('mysql', 0) . "', 1, '', '', '" . $wpdb->escape($employeeGroup->user_group_name) . "', '" . $wpdb->escape($employeeGroup->user_group_description) . "'), ";
 					}
 					/*	Groupes	d'evaluateur	*/
 					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP);
@@ -537,7 +536,7 @@ class digirisk_install
 					{
 						$query = $wpdb->prepare("SELECT id FROM " . DIGI_DBT_USER_GROUP . " WHERE old_id = %d AND group_type = %s", $employeeGroupDetail->user_group_id, 'employee');
 						$newGroupId = $wpdb->get_row($query);
-						$subQuery .= "('', 'valid', NOW(), 1, '', '', '" . $wpdb->escape($employeeGroupDetail->user_id) . "', '" . $wpdb->escape($newGroupId->id) . "', '" . DIGI_DBT_USER_GROUP . "'), ";
+						$subQuery .= "('', 'valid', '" . current_time('mysql', 0) . "', 1, '', '', '" . $wpdb->escape($employeeGroupDetail->user_id) . "', '" . $wpdb->escape($newGroupId->id) . "', '" . DIGI_DBT_USER_GROUP . "'), ";
 					}
 					/*	Groupes d'evaluateurs	*/
 					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_DETAILS);

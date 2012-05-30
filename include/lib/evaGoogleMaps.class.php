@@ -196,7 +196,9 @@ class EvaGoogleMaps {
 					$googleMap .= '
 				}
 				digirisk(document).ready(function(){
-					google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});
+					if (typeof google === "object" && typeof google.load === "function") {
+						google.load("maps", "3",  {callback: initialize, other_params:"sensor=false"});
+					}
 					digirisk("#saveNewPosition").click(function(){
 						var new_position = "_pos_separator_";
 						digirisk(".markerNewPosition").each(function(){

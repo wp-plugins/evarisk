@@ -28,32 +28,26 @@ class digirisk_tools
 <div id="digirisk_configurations_container" class="clear" >
 	<div id="tools_tabs" >
 		<ul>
-			<li><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=tools&amp;action=db_manager" title="digirisk_tools_tab_container" ><?php _e('V&eacute;rification de la base de donn&eacute;es', 'evarisk'); ?></a></li>
+			<li><a href="#digirisk_notification_tab" title="digirisk_tools_tab_container" ><?php _e('Notifications', 'evarisk'); ?></a></li>
+			<li class="loading_pic_on_select" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=tools&amp;action=db_manager" title="digirisk_tools_tab_container" ><?php _e('V&eacute;rification de la base de donn&eacute;es', 'evarisk'); ?></a></li>
 <?php
 	if(current_user_can('digi_delete_database')){
 ?>
-			<li><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=tools&amp;action=db_reinit" title="digirisk_tools_tab_container" ><?php _e('R&eacute;initialisation de la base de donn&eacute;es', 'evarisk'); ?></a></li>
+			<li class="loading_pic_on_select" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=tools&amp;action=db_reinit" title="digirisk_tools_tab_container" ><?php _e('R&eacute;initialisation de la base de donn&eacute;es', 'evarisk'); ?></a></li>
 <?php
 	}
 ?>
 		</ul>
+		<div id="digirisk_notification_tab" ><?php echo digirisk_admin_notification::admin_message(); ?></div>
 		<div id="digirisk_tools_tab_container" >&nbsp;</div>
 	</div>
 </div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
-		jQuery("#digirisk_tools_tab_container").html(jQuery("#round_loading_img").html());
-		jQuery("#tools_tabs").tabs({
-      select: function(event, ui){
-				jQuery("#digirisk_tools_tab_container").html(jQuery("#round_loading_img").html());
-				var url = jQuery.data(ui.tab, "load.tabs");
-				jQuery("#digirisk_tools_tab_container").load(url);
-				jQuery("#tools_tabs ul li").each(function(){
-					jQuery(this).removeClass("ui-tabs-selected ui-state-active");
-				});
-				jQuery("#tools_tabs ul li:eq(" + ui.index + ")").addClass("ui-tabs-selected ui-state-active");
-				return false;
-      }
+		jQuery("#tools_tabs").tabs();
+		jQuery(".loading_pic_on_select a").click(function(){
+			jQuery("#digirisk_tools_tab_container").html(jQuery("#loadingImg").html());
+			jQuery("#digi_option_submit_button").hide();
 		});
 	});
 </script>

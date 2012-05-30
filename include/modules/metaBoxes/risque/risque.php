@@ -306,7 +306,7 @@
 						}
 					}
 					if(current_user_can('digi_control_task')){
-						$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Fiche d\'action corrective', 'evarisk') . '" title="' . __('Fiche d\'action corrective', 'evarisk') . '" class="simple-FAC" />';
+						$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-FAC" src="' . PICTO_LTL_ADD_ACTION . '" alt="' . __('Action de contr&ocirc;le', 'evarisk') . '" title="' . __('Action de contr&ocirc;le', 'evarisk') . '" class="simple-FAC" />';
 					}
 
 					if(current_user_can('digi_view_risk_histo')){
@@ -549,6 +549,11 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			else{// Sinon on sélectionne la première méthode
 				$idSelection = $methodes[0]->id;
 			}
+			$methode_output_value = $methode_output = array();
+			foreach($methodes as $methode){
+				$methode_output_value[] = $methode->id;
+				$methode_output[] = ELEMENT_IDENTIFIER_ME . $methode->id . ' - ' .  $methode->nom;
+			}
 		}
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Choix de la méthode
 			$script .= '
@@ -562,7 +567,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			if($nombreMethode <= 1){
 				$afficheSelecteurMethode = ' display:none; ';
 			}
-			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection) . '</div>';
+			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection, $methode_output_value, $methode_output) . '</div>';
 		}
 		else{
 			$formRisque .= EvaDisplayInput::afficherInput('hidden', $formId . 'methodeFormRisque', $idSelection, '', '', 'methode');

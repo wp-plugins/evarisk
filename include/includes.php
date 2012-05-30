@@ -22,6 +22,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence/arborescence_special.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'mailbox/messages.class.php' );
+require_once(EVA_LIB_PLUGIN_DIR . 'notification/notification.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'display/display.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php' );

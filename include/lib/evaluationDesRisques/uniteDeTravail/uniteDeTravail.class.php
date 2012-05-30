@@ -256,7 +256,7 @@ class eva_UniteDeTravail {
 	{
 		global $wpdb;
 		
-		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`, creation_date) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid', NOW())";
+		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`, creation_date) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid', '" . current_time('mysql', 0) . "')";
 		return $wpdb->query($sql);
 	}
 	
@@ -274,7 +274,7 @@ class eva_UniteDeTravail {
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "', lastupdate_date = NOW() WHERE `id`='" . $id_unite . "'";
+		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`='" . $id_unite . "'";
 		return $wpdb->query($sql);
 	}
 
@@ -292,9 +292,9 @@ class eva_UniteDeTravail {
 		$query = $wpdb->prepare(
 			"UPDATE " . TABLE_UNITE_TRAVAIL . " 
 				SET " . $whatToUpdate . " = '%s', 
-					lastupdate_date = NOW()
+					lastupdate_date = %s
 			WHERE id='" . $id_unite . "'",
-			 $whatToSet
+			 $whatToSet, current_time('mysql', 0)
 		);
 
 		return $wpdb->query($query);
@@ -308,7 +308,7 @@ class eva_UniteDeTravail {
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `id_groupement`='" . $idGroupementPere . "', lastupdate_date = NOW() WHERE `id`=" . $idUnite;
+		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `id_groupement`='" . $idGroupementPere . "', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`=" . $idUnite;
 		$wpdb->query($sql);
 	}
 	/**
@@ -319,7 +319,7 @@ class eva_UniteDeTravail {
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `Status`='Deleted', lastupdate_date = NOW() WHERE `id`=" . $id;
+		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `Status`='Deleted', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`=" . $id;
 		if($wpdb->query($sql))
 		{
 			echo 

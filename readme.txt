@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.3.2
 Tested up to: 3.3.2
-Stable tag: 5.1.5.3
+Stable tag: 5.1.5.4
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,28 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.5.4 =
+
+Am&eacute;liorations
+
+* ST329 - Mise &agrave; jour de l'affichage de la formule dans l'arbre des m&eacute;thodes &agrave; l'enregistrement
+* ST330 - Ajout de l'identifiant des variables / m&eacute;thodes / cat&eacute;gories de dangers dans les diff&eacute;rentes interface
+* ST331 - Am&eacute;liorations ergonomique (Changement de la balise titre de l'image "action de contr&ocirc;le" dans l'interface de listing des risques / Affichage d'une couleur diff&eacute;rente pour les valeurs des variables dans la boite de confirmation pour les actions de contr&ocirc;le)
+* ST333 - Ajout d'un syst&egrave;me de notification dans l'administration (Lorsqu'il y a des modifications tr&egrave;s importantes effectu&eacute;es dans le plugin, une banni&egrave;re s'affichera en haut de la partie administration pour chaque utilisateur, elle disparaitra lorsque l'utilisateur ira la marquer comme lue)
+
+Corrections
+
+* ST327 - Erreur fatale lors de la demande d'&eacute;dition d'une action corrective (Variable manquante)
+* ST328 - Affichage d'un message d'erreur avec une ic&ocirc;ne de succ&egrave;s lors de l'affectation d'une variable &agrave; une m&eacute;thode
+* ST332 - Corrections de bug mineurs
+* ST335 - Utilisation de la fonction current_time() de wordpress pour l'enregistrement des diff&eacute;rents &eacute;l&eacute;ments dans la base de donn&eacute;es (Si les heures du serveur apache et du serveur mysql n'&eacute;tait pas configur&eacute;e de mani&egrave;re identique, lors de l'enregistrement de certains &eacute;l&eacute;ments les dates ne correspondaient pas et provoquaient certains affichages ind&eacute;sirables)
+* ST336 - Erreur javascript lors de l'&eacute;dition d'un groupement ou d'une unit&eacute; si l'appel &agrave; la libraiire google map ne se faisait pas correctement
+
+Divers
+
+* ST334 - Mise &agrave; jour des dangers et cat&eacute;gories de danger &agrave; partir de l'ED840 publi&eacute; en 2011
 
 
 = Version 5.1.5.3 =

@@ -115,8 +115,11 @@ class categorieDangers {
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_CATEGORIE_DANGER);
 		$sql = "INSERT INTO " . TABLE_CATEGORIE_DANGER . " (`nom`, `Status`, `limiteGauche`, `limiteDroite`) VALUES ('" . $nom . "', 'Valid', '" . ($lim) . "', '" . ($lim+1) . "')";
 		$wpdb->query($sql);
+		$new_category = $wpdb->insert_id;
 		$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = ('Categorie Racine')";
 		$wpdb->query($sql);
+
+		return $new_category;
 	}
 	
 	function updateCategorie($id_categorie, $nom, $description, $idCategorieMere)
@@ -208,7 +211,7 @@ class categorieDangers {
 				$categoryResult['selectionCategorie'] = $selectionCategorie;
 				$categorieDangerMainPhoto = evaPhoto::getMainPhoto(TABLE_CATEGORIE_DANGER, $categorieDangers->id);
 				$categorieDangerMainPhoto = evaPhoto::checkIfPictureIsFile($categorieDangerMainPhoto, TABLE_CATEGORIE_DANGER);
-				$categoryResult['list'] .= '<div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . $categorieDangers->nom . '" title="' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" /></label></div>';
+				$categoryResult['list'] .= '<div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" title="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" /><div class="digirisk_danger_cat_identifier" >' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . '</div></label></div>';
 			}
 			if($categoryResult['list'] != '')
 			{

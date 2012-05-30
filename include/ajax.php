@@ -16,7 +16,7 @@ require_once(EVA_INC_PLUGIN_DIR . 'includes.php');
 /*
 * Paramètres passés en POST
 */
-if($_REQUEST['post'] == 'true'){
+if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 	/*	Refactoring actions	*/
 	if(isset($_REQUEST['act'])){
 		switch($_REQUEST['act'])
@@ -1433,7 +1433,7 @@ echo $output;
 	' . Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], 'current_quote_control') . '
 </div><br/>' . __('Nouvelle cotation', 'evarisk') . '
 <div class="new_risk_summary_task" >
-	' . Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], 'new_quote_control', array('date_to_take' => date('Y-m-d H:i:s'), 'value_to_take' => $vars, 'description_to_take' => $_REQUEST['new_description'])) . '
+	' . Risque::getTableQuotationRisque($_REQUEST['tableProvenance'], $_REQUEST['idProvenance'], 'new_quote_control', array('date_to_take' => current_time('mysql', 0), 'value_to_take' => $vars, 'description_to_take' => $_REQUEST['new_description'])) . '
 </div>
 <br/>
 <input type="button" class="button-secondary alignright" id="cancel_new_quote" value="' . __('Annuler', 'evarisk') . '" />
@@ -1531,6 +1531,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			case TABLE_METHODE:
 				switch($_REQUEST['act'])
 				{
+					case 'load_method_variable_container':{
+						MethodeEvaluation::evaluation_method_variable_manager($_REQUEST);
+					}break;
 					case 'reloadVariables':{
 						$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode'], '');
 						$idRisque = digirisk_tools::IsValid_Variable($_REQUEST['idRisque']);
@@ -1574,7 +1577,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							}
 							{//Affichage de la variable
 								$affichage .= '
-									<label for="' . $formId . 'var' . $variable->id . 'FormRisque">' . $variable->nom . ' :</label>
+									<label for="' . $formId . 'var' . $variable->id . 'FormRisque">' . ELEMENT_IDENTIFIER_V . $variable->id . ' - ' . $variable->nom . ' :</label>
 									<input type="text" class="sliderValue" readonly="readonly" id="' . $formId . 'var' . $variable->id . 'FormRisque" name="' . $formId . 'variables[' . $variable->id . ']" />
 									<div id="' . $formId . 'slider-range-min' . $variable->id . '" class="slider_variable"></div>';
 							}
@@ -1714,7 +1717,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$inserted_var_equivalence = $empty_var_equivalence = 0;
 							foreach($_POST['equivalent'] as $valeurEtalon => $valeurMaxMethode){
 								if($valeurMaxMethode != ''){
-									$inserted_var_equivalence += $wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode' => $id_methode, 'id_valeur_etalon' => $valeurEtalon, 'valeurMaxMethode' => $valeurMaxMethode, 'date' => date('Y-m-d H:i:s'), 'Status' => 'Valid'));
+									$inserted_var_equivalence += $wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode' => $id_methode, 'id_valeur_etalon' => $valeurEtalon, 'valeurMaxMethode' => $valeurMaxMethode, 'date' => current_time('mysql', 0), 'Status' => 'Valid'));
 								}
 								else{
 									$empty_var_equivalence++;
@@ -1736,6 +1739,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	actionMessageShow("#evaluation_method_var_equivalence_message", "' . $message . '");
 	setTimeout(\'actionMessageHide("#evaluation_method_var_equivalence_message")\', \'7000\');
 ' . $more_action . '
+	goTo("#postBoxMethodeEvaluationEquivalenceVariable");
 </script>';
 						}
 					}break;
@@ -1755,7 +1759,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$inserted_var = 0;
 							$ordre = 1;
 							foreach($_REQUEST['var'] as $var_id){
-								$inserted_var += $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode' => $id_methode, 'id_variable' => $var_id, 'ordre' => $ordre, 'date' => date('Y-m-d H:i:s'), 'Status' => 'Valid'));
+								$inserted_var += $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode' => $id_methode, 'id_variable' => $var_id, 'ordre' => $ordre, 'date' => current_time('mysql', 0), 'Status' => 'Valid'));
 
 								$ordre++;
 							}
@@ -1766,7 +1770,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							if($_REQUEST['op'] != null){
 								foreach($_REQUEST['op'] as $temp){
 									$operateur = str_replace(' ','',digirisk_tools::IsValid_Variable($temp));
-									$inserted_operator += $wpdb->insert(TABLE_AVOIR_OPERATEUR, array('id_methode' => $id_methode, 'operateur' => $operateur, 'ordre' => $ordre, 'date' => date('Y-m-d H:i:s'), 'Status' => 'Valid'));
+									$inserted_operator += $wpdb->insert(TABLE_AVOIR_OPERATEUR, array('id_methode' => $id_methode, 'operateur' => $operateur, 'ordre' => $ordre, 'date' => current_time('mysql', 0), 'Status' => 'Valid'));
 
 									$ordre++;
 								}
@@ -1775,11 +1779,29 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							if(($inserted_var != count($_REQUEST['var'])) || ($inserted_operator != count($_REQUEST['op']))){
 								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la modification des variables de la m&eacute;thode.', 'evarisk');
 							}
-							elseif(($inserted_var = count($_REQUEST['var'])) && ($inserted_operator = count($_REQUEST['op']))){
+							elseif(($inserted_var == count($_REQUEST['var'])) && ($inserted_operator == count($_REQUEST['op']))){
 								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les variables de la m&eacute;thode ont correctement &eacute;t&eacute; modifi&eacute;es.', 'evarisk');
+								if($inserted_var >= 2){
+									$method_formule = '';
+									$i=0;
+									foreach($_REQUEST['var'] as $var_index => $var_id){
+										$method_var = eva_Variable::getVariable($var_id);
+										$operator_indew_to_take = ($var_index-1);
+										if($i>0 && !empty($_REQUEST['op'][$operator_indew_to_take])){
+											$method_formule .= ' ' . $_REQUEST['op'][$operator_indew_to_take] . ' ';
+										}
+										$method_formule .= $method_var->nom;
+										$i++;
+									}
+								}
+								else{
+									$method_var = eva_Variable::getVariable($_REQUEST['var'][0]);
+								}
+								$more_action = '
+	jQuery("#info-' . $_REQUEST['table'] . '-' . $id_methode . '.evaluation_method_formule_cell").html("' . stripslashes($method_formule) . '");';
 							}
 							else{
-								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Une erreur est survenue lors de la mise &agrave; jour des variables de la m&eacute;thode', 'evarisk');
+								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la mise &agrave; jour des variables de la m&eacute;thode', 'evarisk');
 							}
 						}
 
@@ -1811,19 +1833,23 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 		"table": "' . $_REQUEST['table'] . '",
 		"elt": "node-main_table_' . $_REQUEST['table'] . '-' . $id . '"
 	})';
+								$error_message = __('Une erreur est survenue lors de la cr&eacute;ation de la m&eacute;thode.', 'evarisk');
+								$success_message = __('La m&eacute;thode a correctement &eacute;t&eacute; cr&eacute;e.', 'evarisk');
 							}
 							else{
 								$method_result = $wpdb->update(TABLE_METHODE, array('nom' => $nom), array('id' => $id), array('%s'), array('%d'));
 								$more_action = '
 	jQuery("#node-main_table_' . $_REQUEST['table'] . '-' . $id . '-name .node_name").html("' . stripslashes($nom) . '");';
+								$error_message = __('Une erreur est survenue lors de la modification de la m&eacute;thode.', 'evarisk');
+								$success_message = __('La m&eacute;thode a correctement &eacute;t&eacute; modifi&eacute;e.', 'evarisk');
 							}
 
-							if($method_result == 'error'){
-								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la cr&eacute;ation de la m&eacute;thode.', 'evarisk');
+							if($method_result === 'error'){
+								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . $error_message;
 								$more_action = '';
 							}
 							else{
-								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La m&eacute;thode a correctement &eacute;t&eacute; cr&eacute;e.', 'evarisk');
+								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . $success_message;
 							}
 						}
 
@@ -1949,6 +1975,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			"table": "' . TABLE_VARIABLE . '",
 			"act": "load_variable_management"
 		});
+		// alert(jQuery("#method_var_form #id_methode").val());
+		if(jQuery("#method_var_form #id_methode").val()>0){
+			jQuery(".evaluation_method_var_container").html(evarisk("#loadingImg").html());
+			jQuery(".evaluation_method_var_container").load(EVA_AJAX_FILE_URL,{
+				"post": "true", 
+				"table": "' . TABLE_METHODE . '",
+				"act": "load_method_variable_container",
+				"idElement": jQuery("#method_var_form #id_methode").val()
+			});
+		}
 		jQuery("#evaluation_method_form_container").dialog("close");';
 							}
 						}
@@ -2256,7 +2292,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$tache->setStartDate($_REQUEST['date_fin']);
 							$tache->setFinishDate($_REQUEST['date_debut']);
 							$tache->setProgressionStatus('Done');
-							$tache->setdateSolde(date('Y-m-d H:i:s'));
+							$tache->setdateSolde(current_time('mysql', 0));
 
 							/*	Get the task subelement to set the progression status to DoneByChief	*/
 							if($_REQUEST['markAllSubElementAsDone'] == 'true')
@@ -2798,7 +2834,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$activite->setProgressionStatus('Done');
 							global $current_user;
 							$activite->setidSoldeur($current_user->ID);
-							$activite->setdateSolde(date('Y-m-d H:i:s'));
+							$activite->setdateSolde(current_time('mysql', 0));
 						}
 						$activite->setidResponsable($_REQUEST['responsable_activite']);
 						$activite->save();
@@ -3944,7 +3980,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						if(($id_preconisation <= 0) && current_user_can('digi_add_recommandation')){	//	If the value is equal or less than 0 we create a new recommandation
 							$recommandations_informations['status'] = 'valid';
 							$recommandations_informations['id_categorie_preconisation'] = $id_categorie_preconisation;
-							$recommandations_informations['creation_date'] = date('Y-m-d H:i:s');
+							$recommandations_informations['creation_date'] = current_time('mysql', 0);
 							$recommandationActionResult = evaRecommandation::saveRecommandation($recommandations_informations);
 							$moreRecommandationScript .= '
 	var expanded = new Array();
@@ -4215,7 +4251,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						if(($id_categorie_preconisation <= 0) && current_user_can('digi_edit_recommandation_cat'))
 						{	//	If the value is equal or less than 0 we create a new recommandation
 							$recommandationCategory_informations['status'] = 'valid';
-							$recommandationCategory_informations['creation_date'] = date('Y-m-d H:i:s');
+							$recommandationCategory_informations['creation_date'] = current_time('mysql', 0);
 							$recommandationActionResult = evaRecommandationCategory::saveRecommandationCategory($recommandationCategory_informations);
 							$moreRecommandationCategoryScript .= '';
 						}
@@ -4462,7 +4498,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						/*	Create the accident if not existing into database	*/
 						if($accident_id <= 0){
 							$accident_main_informations['status'] = 'valid';
-							$accident_main_informations['creation_date'] = date('Y-m-d H:i:s');
+							$accident_main_informations['creation_date'] = current_time('mysql', 0);
 							$accident_main_informations['id_element'] = $idElement;
 							$accident_main_informations['table_element'] = $tableElement;
 							$accident_main_informations['declaration_state'] = 'in_progress';
@@ -4495,16 +4531,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 							$location['employer']['adress_postal_code'] = $_POST['employer']['postal_code'];
 							$location['employer']['adress_city'] = $_POST['employer']['city'];
 							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->employer_location_id > 0)){
-								$location['employer']['last_update_date'] = date('Y-m-d H:i:s');
+								$location['employer']['last_update_date'] = current_time('mysql', 0);
 								$save_result = eva_database::update($location['employer'], $current_accident->employer_location_id, DIGI_DBT_ACCIDENT_LOCATION);
 							}
 							else{
 								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
-									$location_employer['last_update_date'] = date('Y-m-d H:i:s');
+									$location_employer['last_update_date'] = current_time('mysql', 0);
 									$location_employer['status'] = 'moderated';
 									$save_result = eva_database::update($location_employer, $current_accident->employer_location_id, DIGI_DBT_ACCIDENT_LOCATION);
 								}
-								$location['employer']['creation_date'] = date('Y-m-d H:i:s');
+								$location['employer']['creation_date'] = current_time('mysql', 0);
 								$save_result = eva_database::save($location['employer'], DIGI_DBT_ACCIDENT_LOCATION);
 							}
 
@@ -4522,16 +4558,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 							$location['establishment']['adress_postal_code'] = $_POST['establishment']['postal_code'];
 							$location['establishment']['adress_city'] = $_POST['establishment']['city'];
 							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->establishment_location_id > 0)){
-								$location['establishment']['last_update_date'] = date('Y-m-d H:i:s');
+								$location['establishment']['last_update_date'] = current_time('mysql', 0);
 								$save_result = eva_database::update($location['establishment'], $current_accident->establishment_location_id, DIGI_DBT_ACCIDENT_LOCATION);
 							}
 							else{
 								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
-									$location_establishment['last_update_date'] = date('Y-m-d H:i:s');
+									$location_establishment['last_update_date'] = current_time('mysql', 0);
 									$location_establishment['status'] = 'moderated';
 									$save_result = eva_database::update($location_establishment, $current_accident->establishment_location_id, DIGI_DBT_ACCIDENT_LOCATION);
 								}
-								$location['establishment']['creation_date'] = date('Y-m-d H:i:s');
+								$location['establishment']['creation_date'] = current_time('mysql', 0);
 								$save_result = eva_database::save($location['establishment'], DIGI_DBT_ACCIDENT_LOCATION);
 							}
 
@@ -4552,16 +4588,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 							$user_meta = get_user_meta($_POST['accident_user']['victim_id'], 'digirisk_information', false);
 							$victim['victim_meta'] = serialize($user_meta[0]);
 							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->accident_victim_id > 0)){
-								$victim['last_update_date'] = date('Y-m-d H:i:s');
+								$victim['last_update_date'] = current_time('mysql', 0);
 								$save_result = eva_database::update($victim, $current_accident->accident_victim_id, DIGI_DBT_ACCIDENT_VICTIM);
 							}
 							else{
 								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
-									$current_victim['last_update_date'] = date('Y-m-d H:i:s');
+									$current_victim['last_update_date'] = current_time('mysql', 0);
 									$current_victim['status'] = 'moderated';
 									$save_result = eva_database::update($current_victim, $current_accident->accident_victim_id, DIGI_DBT_ACCIDENT_VICTIM);
 								}
-								$victim['creation_date'] = date('Y-m-d H:i:s');
+								$victim['creation_date'] = current_time('mysql', 0);
 								$save_result = eva_database::save($victim, DIGI_DBT_ACCIDENT_VICTIM);
 							}
 
@@ -4594,16 +4630,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 							$accident_main_informations['accident_title'] = $_POST['accident']['accident_title'];
 	
 							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->accident_details_id > 0)){
-								$accident['last_update_date'] = date('Y-m-d H:i:s');
+								$accident['last_update_date'] = current_time('mysql', 0);
 								$save_result = eva_database::update($accident, $current_accident->accident_details_id, DIGI_DBT_ACCIDENT_DETAILS);
 							}
 							else{
 								if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
-									$current_accident_details['last_update_date'] = date('Y-m-d H:i:s');
+									$current_accident_details['last_update_date'] = current_time('mysql', 0);
 									$current_accident_details['status'] = 'moderated';
 									$save_result = eva_database::update($current_accident_details, $current_accident->accident_details_id, DIGI_DBT_ACCIDENT_DETAILS);
 								}
-								$accident['creation_date'] = date('Y-m-d H:i:s');
+								$accident['creation_date'] = current_time('mysql', 0);
 								$save_result = eva_database::save($accident, DIGI_DBT_ACCIDENT_DETAILS);
 							}
 
@@ -4632,16 +4668,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 									if($witness_infos['user_id'] > 0){
 										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') 
 												&& (isset($witness_infos['tparty_id']) && ($witness_infos['tparty_id'] > 0)) ){
-											$accident_witness['last_update_date'] = date('Y-m-d H:i:s');
+											$accident_witness['last_update_date'] = current_time('mysql', 0);
 											$save_hurt_result = eva_database::update($accident_witness, $witness_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
 										}
 										else{
 											if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
-												$current_accident_witness['last_update_date'] = date('Y-m-d H:i:s');
+												$current_accident_witness['last_update_date'] = current_time('mysql', 0);
 												$current_accident_witness['status'] = 'moderated';
 												$save_result = eva_database::update($current_accident_witness, $witness_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
 											}
-											$accident_witness['creation_date'] = date('Y-m-d H:i:s');
+											$accident_witness['creation_date'] = current_time('mysql', 0);
 											$save_hurt_result = eva_database::save($accident_witness, DIGI_DBT_ACCIDENT_THIRD_PARTY);
 										}
 									}
@@ -4675,16 +4711,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 									if($third_party_infos['user_id'] > 0){
 										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') 
 												&& (isset($third_party_infos['tparty_id']) && ($third_party_infos['tparty_id'] > 0)) ){
-											$accident_third_party['last_update_date'] = date('Y-m-d H:i:s');
+											$accident_third_party['last_update_date'] = current_time('mysql', 0);
 											$save_hurt_result = eva_database::update($accident_third_party, $third_party_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
 										}
 										else{
 											if(($current_accident != null) && ($current_accident->declaration_state == 'done')){
-												$current_accident_third_party['last_update_date'] = date('Y-m-d H:i:s');
+												$current_accident_third_party['last_update_date'] = current_time('mysql', 0);
 												$current_accident_third_party['status'] = 'moderated';
 												$save_result = eva_database::update($current_accident_third_party, $third_party_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
 											}
-											$accident_witness['creation_date'] = date('Y-m-d H:i:s');
+											$accident_witness['creation_date'] = current_time('mysql', 0);
 											$save_hurt_result = eva_database::save($accident_third_party, DIGI_DBT_ACCIDENT_THIRD_PARTY);
 										}
 									}
@@ -4701,7 +4737,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 							}
 						}
 
-						$accident_main_informations['last_update_date'] = date('Y-m-d H:i:s');
+						$accident_main_informations['last_update_date'] = current_time('mysql', 0);
 						$save_result = eva_database::update($accident_main_informations, $accident_id, DIGI_DBT_ACCIDENT);
 						if(($save_result == 'done') || ($save_result == 'nothingToUpdate')){
 							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' alt=\'response\' style=\'vertical-align:middle;\' />&nbsp;' . __('L\'accident a &eacute;t&eacute; correctement mis &agrave; jour', 'evarisk');
@@ -4761,7 +4797,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						$accident_id = (isset($_REQUEST['accident_id']) && ($_REQUEST['accident_id'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['accident_id']) : '';
 
 						$accident_main_informations['status'] = 'deleted';
-						$accident_main_informations['last_update_date'] = date('Y-m-d H:i:s');
+						$accident_main_informations['last_update_date'] = current_time('mysql', 0);
 						$save_result = eva_database::update($accident_main_informations, $accident_id, DIGI_DBT_ACCIDENT);
 						if(($save_result == 'done') || ($save_result == 'nothingToUpdate')){
 							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' alt=\'response\' style=\'vertical-align:middle;\' />&nbsp;' . __('L\'accident a &eacute;t&eacute; correctement supprim&eacute;', 'evarisk');
@@ -4826,7 +4862,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						$idElement = (isset($_REQUEST['idElement']) && ($_REQUEST['idElement'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['idElement']) : '';
 						$accident_id = (isset($_REQUEST['accident_id']) && ($_REQUEST['accident_id'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['accident_id']) : '';
 						$step_to_load = (isset($_REQUEST['step_to_load']) && ($_REQUEST['step_to_load'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['step_to_load']) : '';
-						$accident_main_informations['last_update_date'] = date('Y-m-d H:i:s');
+						$accident_main_informations['last_update_date'] = current_time('mysql', 0);
 						$accident_main_informations['declaration_step'] = $step_to_load;
 						$accident_main_informations['declaration_state'] = ($step_to_load < 5) ? 'in_progress' : 'done';
 						$save_result = eva_database::update($accident_main_informations, $accident_id, DIGI_DBT_ACCIDENT);
@@ -4953,12 +4989,16 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 					$left_limit = 1;
 					$right_limit = 2;
 					foreach($inrs_danger_categories as $danger_cat){
-						$wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom' => $danger_cat['nom'], 'limiteGauche' => $left_limit, 'limiteDroite' => $right_limit));
-						$new_danger_cat_id = $wpdb->insert_id;
+						$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom']);
+						// $wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom' => $danger_cat['nom'], 'limiteGauche' => $left_limit, 'limiteDroite' => $right_limit));
+						// $new_danger_cat_id = $wpdb->insert_id;
 
-						/*	If user ask to add danger in categories	*/
-						if(isset($_REQUEST['insert_danger_in_cat']) && ($_REQUEST['insert_danger_in_cat'] == 'yes')){
-							$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+						/*	Add a danger in the current category	*/
+						$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+						if(!empty($danger_cat['risks']) && is_array($danger_cat['risks'])){
+							foreach($danger_cat['risks'] as $risk_to_create){
+								$wpdb->insert(TABLE_DANGER, array('nom' => $risk_to_create, 'id_categorie' => $new_danger_cat_id));
+							}
 						}
 
 						/*	Insert picture for danger categories	*/
@@ -6531,6 +6571,55 @@ switch($tableProvenance)
 					}break;
 				}
 			}break;
+
+			/*	Added v5.1.5.4	*/
+			case 'digirisk_notification':{
+				switch($_REQUEST['act']){
+					case 'mark_as_read':{
+						$meta_update_result = false;
+						$version_number = digirisk_tools::IsValid_Variable($_REQUEST['version']);
+						if(!empty($version_number)){
+
+							if(!empty($_REQUEST['for_all_user']) && ($_REQUEST['for_all_user'] == 'true')){
+								$query = $wpdb->prepare("SELECT ID FROM " . $wpdb->users);
+								$user_list = $wpdb->get_results($query);
+								foreach($user_list as $user){
+									$user_meta_notification_read = get_user_meta($user->ID, 'digirisk_notification', true);
+									$user_meta_notification_read['readed_notification'][$version_number] = true;
+									$meta_update_result = update_user_meta($user->ID, 'digirisk_notification', $user_meta_notification_read);
+								}
+							}
+							else{
+								/*	Update the user readed notice	*/
+								$current_user = wp_get_current_user();
+								$user_meta_notification_read = get_user_meta($current_user->ID, 'digirisk_notification', true);
+								$user_meta_notification_read['readed_notification'][$version_number] = true;
+								$meta_update_result = update_user_meta($current_user->ID, 'digirisk_notification', $user_meta_notification_read);
+							}
+						}
+
+						echo digirisk_admin_notification::admin_message() . '
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery("#digirisk_message_version_' . str_replace('.', '_', $_REQUEST['version']) . '").hide();
+	});
+</script>';
+					}break;
+					case 'mark_as_unread':{
+						$meta_update_result = false;
+						$version_number = digirisk_tools::IsValid_Variable($_REQUEST['version']);
+						if(!empty($version_number)){
+							/*	Update the user readed notice	*/
+							$current_user = wp_get_current_user();
+							$user_meta_notification_read = get_user_meta($current_user->ID, 'digirisk_notification', true);
+							unset($user_meta_notification_read['readed_notification'][$version_number]);
+							$meta_update_result = update_user_meta($current_user->ID, 'digirisk_notification', $user_meta_notification_read);
+						}
+
+						echo digirisk_admin_notification::admin_message();
+					}break;
+				}
+			}break;
 		}
 	}
 
@@ -6699,33 +6788,20 @@ else{
 								});
 								digirisk("#' . $idTable . '").children("tfoot").remove();
 								digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
-							});
-						digirisk("#ongletMassUpdate' . TABLE_RISQUE . '").click(function(){
-							digirisk("#risqMassUpdater").html(digirisk("#loadingImg").html());
-							digirisk("#risqMassUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true", 
-								"table":"' . TABLE_RISQUE . '", 
-								"act":"loadRisqMassUpdater", 
-								"tableElement":"' . $tableElement . '", 
-								"idElement":"' . $idElement . '"
-							});
-							digirisk("#risqMassUpdater").dialog("open");
-						});
-						digirisk(document).ready(function(){
-							digirisk("#vracStatsTabs").tabs();
-							digirisk("#vracStatsTabs input").click(function(){
-								digirisk("#namesUpdater").html(digirisk("#loadingPicContainer").html());
-									digirisk("#namesUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-										"post":"true", 
-										"table":"' . TABLE_RISQUE . '", 
-										"act":"loadNames"
+								digirisk("#vracStatsTabs").tabs();
+								digirisk("#vracStatsTabs input").click(function(){
+									digirisk("#namesUpdater").html(digirisk("#loadingPicContainer").html());
+										digirisk("#namesUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+											"post":"true", 
+											"table":"' . TABLE_RISQUE . '", 
+											"act":"loadNames"
+										});
+									digirisk("#namesUpdater").dialog({
+										height:400,
+										width:400
 									});
-								digirisk("#namesUpdater").dialog({
-								height:400,
-								width:400
+								});
 							});
-							});
-						});
 						</script>';
 						echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
 						echo '<br><input id="showNames" name="showNames" type="button" value=" ' . __('Liste des utilisateurs', 'evarisk') . ' "/>';

@@ -72,7 +72,7 @@ class EvaTask extends EvaBaseTask
 								'" . mysql_real_escape_string($efficacite) . "',
 								'" . mysql_real_escape_string($idPhotoAvant) . "', 
 								'" . mysql_real_escape_string($idPhotoApres) . "', 
-								NOW())";
+								'" . current_time('mysql', 0) . "')";
 		}
 		else
 		{//Update of the data base
@@ -239,7 +239,7 @@ class EvaTask extends EvaBaseTask
 						$subTask->setStartDate($date_debut);
 						$subTask->setFinishDate($date_fin);
 						$subTask->setidSoldeurChef($current_user->ID);
-						$subTask->setdateSolde(date('Y-m-d H:i:s'));
+						$subTask->setdateSolde(current_time('mysql', 0));
 						$subTask->save();
 
 						/*	Set actions	*/
@@ -256,7 +256,7 @@ class EvaTask extends EvaBaseTask
 								$subAction->setStartDate($date_debut);
 								$subAction->setFinishDate($date_fin);
 								$subAction->setidSoldeurChef($current_user->ID);
-								$subAction->setdateSolde(date('Y-m-d H:i:s'));
+								$subAction->setdateSolde(current_time('mysql', 0));
 								$subAction->save();
 								unset($subAction);
 							}
@@ -283,7 +283,7 @@ class EvaTask extends EvaBaseTask
 				$subAction->setStartDate($date_debut);
 				$subAction->setFinishDate($date_fin);
 				$subAction->setidSoldeurChef($current_user->ID);
-				$subAction->setdateSolde(date('Y-m-d H:i:s'));
+				$subAction->setdateSolde(current_time('mysql', 0));
 				$subAction->save();
 				unset($subAction);
 			}
@@ -415,7 +415,7 @@ class EvaTask extends EvaBaseTask
 			{
 				$this->setProgressionStatus('Done');
 				$this->setidSoldeur($current_user->ID);
-				$this->setdateSolde(date('Y-m-d H:i:s'));
+				$this->setdateSolde(current_time('mysql', 0));
 			}
 		}
 		elseif($progressionStatusToSet == 'inProgress')
@@ -440,7 +440,7 @@ class EvaTask extends EvaBaseTask
 		foreach($actions as $actionIndex => $action){
 			$action_details = explode('_aceff_', $action);
 			if($action_details[0] > 0){
-				$actionsList .= "('', 'valid', '" . $momentLiaison . "', NOW(), '" . $action_details[0] . "', '" . $id . "', '" . $table . "'), ";
+				$actionsList .= "('', 'valid', '" . $momentLiaison . "', '" . current_time('mysql', 0) . "', '" . $action_details[0] . "', '" . $id . "', '" . $table . "'), ";
 			}
 		}
 
@@ -727,7 +727,7 @@ class EvaTask extends EvaBaseTask
 					$outputDatas = false;
 				}
 
-				$classes = array('cbColumnLarge','','','cbNbUserGroup');
+				$classes = array('cbColumnLarge','','','','');
 				$tableOptions = '';
 			}
 			break;

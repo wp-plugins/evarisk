@@ -74,8 +74,10 @@ __('digi_edit_option', 'evarisk');
 
 /*	Toosl capabilities	*/
 __('permission_tools_db_tools', 'evarisk');
+__('permission_tools_admin_notice', 'evarisk');
 __('digi_tools_menu', 'evarisk');
 __('digi_delete_database', 'evarisk');
+__('digi_mark_notice_as_read_for_all', 'evarisk');
 
 /*	Menu capabilities	*/
 __('digi_view_dashboard_menu', 'evarisk');

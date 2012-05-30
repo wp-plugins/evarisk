@@ -364,10 +364,10 @@ if(current_user_can('wpshop_edit_product')){
 				$query = $wpdb->prepare(
 					"UPDATE " . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . " 
 					SET status = 'deleted', 
-						date_desAffectation = NOW(), 
+						date_desAffectation = %s, 
 						id_desAttributeur = %d 
 					WHERE id = %d", 
-					$current_user->ID, $elements->id
+					current_time('mysql', 0), $current_user->ID, $elements->id
 				);
 				$wpdb->query($query);
 
@@ -380,7 +380,7 @@ if(current_user_can('wpshop_edit_product')){
 		if(is_array($newElementList) && (count($newElementList) > 0)){
 			foreach($newElementList as $elementId){
 				if((trim($elementId) != '') && !array_key_exists($elementId, $linkedElementCheckList)){
-					$elementToTreat .= "('', 'valid', NOW(), '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $elementId . "', '" . $idElement . "', '" . $tableElement . "'), ";
+					$elementToTreat .= "('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $elementId . "', '" . $idElement . "', '" . $tableElement . "'), ";
 				}
 				if(trim($elementId) != ''){
 					/*	Save product informations into digirisk database	*/
@@ -496,7 +496,7 @@ if(current_user_can('wpshop_edit_product')){
 		if($action == 'updateproduct')
 		{
 			$newProduct = array();
-			$newProduct['last_update_date'] = date('Y-m-d H:i:s');
+			$newProduct['last_update_date'] = current_time('mysql', 0);
 			$saveAction = eva_database::update($newProduct, $digiProductInformations->id, DIGI_DBT_PRODUIT);
 		}
 		elseif($action == 'insertproduct')
@@ -504,7 +504,7 @@ if(current_user_can('wpshop_edit_product')){
 			$newProduct = array();
 			$newProduct['id'] = '';
 			$newProduct['status'] = 'valid';
-			$newProduct['creation_date'] = date('Y-m-d H:i:s');
+			$newProduct['creation_date'] = current_time('mysql', 0);
 			$newProduct['product_id'] = $productId;
 			/*	Build the category informations	*/
 			$newProduct['category_id'] = $newProduct['category_name'] = '  ';
@@ -561,7 +561,7 @@ if(current_user_can('wpshop_edit_product')){
 				if($action == 'updateattachment')
 				{
 					$newProduct = array();
-					$newProduct['last_update_date'] = date('Y-m-d H:i:s');
+					$newProduct['last_update_date'] = current_time('mysql', 0);
 					$saveAction = eva_database::update($newProduct, $digi_attachment_informations->id, DIGI_DBT_PRODUIT_ATTACHEMENT);
 				}
 				elseif($action == 'insertattachment')
@@ -569,7 +569,7 @@ if(current_user_can('wpshop_edit_product')){
 					$newProduct = array();
 					$newProduct['id'] = '';
 					$newProduct['status'] = 'valid';
-					$newProduct['creation_date'] = date('Y-m-d H:i:s');
+					$newProduct['creation_date'] = current_time('mysql', 0);
 					$newProduct['product_attachment_id'] = $attachment->ID;
 					$newProduct['product_id'] = $productId;
 					$newProduct['product_attachment_last_update_date'] = $attachment->post_modified;

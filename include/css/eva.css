@@ -494,6 +494,8 @@ th.columnCommentaireRisque*/
 
 .evaluation_var_slider_container{	margin-bottom:12px;	}
 
+.digirisk_danger_cat_identifier{	display:none; margin:0 auto; width:75%; text-align:right;	}
+
 #voir_risque_box_header{	margin:0px 12px 22px 0px; float:left;	}
 #add_new_risk_button{	margin:0px 0px 12px;	}
 #divPreconisationExistante table{	width:95%;	}
@@ -505,6 +507,13 @@ th.columnCommentaireRisque*/
 .risq_mover_container{	float:right; font-style:italic; font-size:10px; width:60%;	}
 #risq_mover_title{	cursor:pointer;	}
 #move_risk, #copy_risk{	text-align:center !important;	}
+
+.digirisk_risk_level_control_action_less{	background-color:green; color:white !important; vertical-align:middle !important;	}
+.digirisk_risk_level_control_action_equal{	background-color:orange; color:white !important; vertical-align:middle !important;	}
+.digirisk_risk_level_control_action_more{	background-color:red; font-weight:bold; vertical-align:middle !important;	}
+.digirisk_control_action_legend a, .digirisk_control_action_legend a:hover{ text-decoration:none; cursor:auto; color:#000000; }
+.digirisk_control_action_legend li{ float:left; margin:0px 6px; }
+.digirisk_control_action_legend li span{ padding:6px; }
 /* -- END Risques -- */
 
 

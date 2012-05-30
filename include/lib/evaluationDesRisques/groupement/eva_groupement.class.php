@@ -372,7 +372,7 @@ class EvaGroupement {
 		global $wpdb;
 		
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_GROUPEMENT);
-		$wpdb->insert(TABLE_GROUPEMENT, array('nom' => $nom, 'Status' => 'Valid', 'limiteGauche' => $lim, 'limiteDroite' => ($lim+1), 'creation_date' => date('Y-m-d H:i:s')), '%s');
+		$wpdb->insert(TABLE_GROUPEMENT, array('nom' => $nom, 'Status' => 'Valid', 'limiteGauche' => $lim, 'limiteDroite' => ($lim+1), 'creation_date' => current_time('mysql', 0)), '%s');
 
 		$sql = "UPDATE " . TABLE_GROUPEMENT . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = 'Groupement Racine'";
 		$wpdb->query($sql);
@@ -394,7 +394,7 @@ class EvaGroupement {
 		if($typeGroupement == ''){
 			$typeGroupement = 'none';
 		}
-		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => date('Y-m-d H:i:s'));
+		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => current_time('mysql', 0));
 		$wpdb->update(TABLE_GROUPEMENT, $groupementInformations, array( 'id' => $id_Groupement ), '%s', array('%d') );
 		
 		$groupementFils =  EvaGroupement::getGroupement($id_Groupement);
@@ -421,9 +421,9 @@ class EvaGroupement {
 		$query = $wpdb->prepare(
 			"UPDATE " . TABLE_GROUPEMENT . " 
 				SET " . $whatToUpdate . " = '%s' 
-				, lastupdate_date = NOW()
+				, lastupdate_date = %s
 			WHERE id='" . $id_Groupement . "'",
-			 $whatToSet
+			 $whatToSet, current_time('mysql', 0)
 		);
 
 		return $wpdb->query($query);
@@ -435,7 +435,7 @@ class EvaGroupement {
 	function deleteGroupement($id){
 		global $wpdb;
 
-		$sql = "UPDATE " . TABLE_GROUPEMENT . " set Status = 'Deleted', lastupdate_date = NOW() WHERE id = " . $id;
+		$sql = "UPDATE " . TABLE_GROUPEMENT . " set Status = 'Deleted', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE id = " . $id;
 		if($wpdb->query($sql)){
 			$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupement a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>');
 			$class = 'updated';

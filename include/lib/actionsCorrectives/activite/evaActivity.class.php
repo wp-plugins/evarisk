@@ -64,7 +64,7 @@ class EvaActivity extends EvaBaseActivity
 								'" . mysql_real_escape_string($dateSolde) . "', 
 								'" . mysql_real_escape_string($idPhotoAvant) . "', 
 								'" . mysql_real_escape_string($idPhotoApres) . "', 
-								NOW())";
+								'" . current_time('mysql', 0) . "')";
 		}
 		else
 		{//Update of the data base

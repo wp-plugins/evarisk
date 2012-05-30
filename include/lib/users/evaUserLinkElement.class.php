@@ -392,10 +392,10 @@ class evaUserLinkElement
 				$query = $wpdb->prepare(
 "UPDATE " . TABLE_LIAISON_USER_ELEMENT . " 
 SET status = 'deleted', 
-	date_desAffectation = NOW(), 
+	date_desAffectation = %s, 
 	id_desAttributeur = %d 
 WHERE id = %d", 
-$current_user->ID, $utilisateurs->id);
+current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 				$done_element += $wpdb->query($query);
 				if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
 					$wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID), array('id_user' => $utilisateurs->id_user, 'id_element' => $idElement, 'table_element' => $tableElement));
@@ -413,7 +413,7 @@ $current_user->ID, $utilisateurs->id);
 		if(is_array($newUserList) && (count($newUserList) > 0)){
 			foreach($newUserList as $userId){
 				if((trim($userId) != '') && !array_key_exists($userId, $listeUtilisateursLies)){
-					$userToTreat .= "('', 'valid', NOW(), '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $userId . "', '" . $idElement . "', '" . $tableElement . "'), ";
+					$userToTreat .= "('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $userId . "', '" . $idElement . "', '" . $tableElement . "'), ";
 				}
 			}
 		}

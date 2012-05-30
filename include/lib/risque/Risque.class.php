@@ -97,7 +97,7 @@ class Risque {
 		global $wpdb;
 		
 		if($date==null){
-			$date=date('Y-m-d H:i:s');
+			$date=current_time('mysql', 0);
 		}
 		
 		$score = digirisk_tools::IsValid_Variable($score);
@@ -277,7 +277,7 @@ class Risque {
 		$histoStatus = 'Valid';
 
 		if($idRisque == ''){//Ajout d'un risque
-			$sql = "INSERT INTO " . TABLE_RISQUE . " (id_danger, id_methode, id_element, nomTableElement, commentaire, date, Status) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', NOW(), 'Valid')";
+			$sql = "INSERT INTO " . TABLE_RISQUE . " (id_danger, id_methode, id_element, nomTableElement, commentaire, date, Status) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', '" . current_time('mysql', 0) . "', 'Valid')";
 			$idRisque = 0;
 			if($wpdb->query($sql)){
 				$idRisque = $wpdb->insert_id;
@@ -296,16 +296,16 @@ class Risque {
 			}
 		}
 		else{//Mise à jour d'un risque
-			$sql = "
+			$sql = $wpdb->prepare("
 				UPDATE " . TABLE_RISQUE . " 
-				SET id_danger = " . mysql_escape_string($idDanger) . ",
-					id_methode = " . mysql_escape_string($idMethode) . ",
-					id_element = " . mysql_escape_string($idElement) . ",
-					nomTableElement = '" . mysql_escape_string($tableElement) . "',
-					commentaire = '" . mysql_escape_string($description) . "',
-					date = NOW(),
+				SET id_danger = " . ($idDanger) . ",
+					id_methode = " . ($idMethode) . ",
+					id_element = " . ($idElement) . ",
+					nomTableElement = '" . ($tableElement) . "',
+					commentaire = '" . ($description) . "',
+					date = %s,
 					Status = 'Valid' 
-				WHERE id = " . mysql_escape_string($idRisque);
+				WHERE id = " . ($idRisque), current_time('mysql', 0));
 			$wpdb->query($sql);
 
 			if($histo != 'false'){
@@ -349,7 +349,7 @@ class Risque {
 			if($valeurVariable != 'undefined'){
 				$idVariable = digirisk_tools::IsValid_Variable($idVariable);
 				$valeurVariable = digirisk_tools::IsValid_Variable($valeurVariable);
-				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (id_risque, id_evaluation, id_variable, valeur, idEvaluateur, date, Status) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_real_escape_string($newId->newId) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_real_escape_string($current_user->ID) . "', NOW(), '" . mysql_real_escape_string($histoStatus) . "')";
+				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (id_risque, id_evaluation, id_variable, valeur, idEvaluateur, date, Status) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_real_escape_string($newId->newId) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_real_escape_string($current_user->ID) . "', '" .current_time('mysql', 0) . "', '" . mysql_real_escape_string($histoStatus) . "')";
 				$wpdb->query($sql);
 			}
 		}
@@ -438,7 +438,7 @@ class Risque {
 					$idLignes = null;
 					$idTable = 'tableDemandeAction_' . $unique_id . $tableElement . $idElement;
 					$titres[] = __("Id.", 'evarisk');
-					$titres[] = __("Quotation actuelle", 'evarisk');
+					$titres[] = __("Cotation", 'evarisk');
 					$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
 					$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
 					$classes[] = 'columnRId';
@@ -456,9 +456,9 @@ class Risque {
 
 					unset($ligneDeValeurs);
 					$ligneDeValeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
-					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'risque' . $niveauSeuil . 'Text');
+					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
-					if(isset($option['description_to_take']) && ($option['description_to_take'] != '')){
+					if(!empty($option['description_to_take'])){
 						$ligneDeValeurs[] = array('value' => nl2br($option['description_to_take']), 'class' => '');
 					}
 					else{
@@ -467,8 +467,15 @@ class Risque {
 					foreach($tableauVariables as $variable){
 						$titres[] = substr($variable['nom'], 0, 3) . '.';
 						$classes[] = 'columnVariableRisque';
-						if(isset($option['value_to_take']) && ($option['value_to_take'] != '')){
-							$ligneDeValeurs[] = array('value' => $option['value_to_take'][$variable['id']], 'class' => '');
+						if(!empty($option['value_to_take']) && ($unique_id == 'new_quote_control')){
+							$var_class = 'digirisk_risk_level_control_action_more';
+							if($option['value_to_take'][$variable['id']] < $variable['valeur']){
+								$var_class = 'digirisk_risk_level_control_action_less';
+							}
+							elseif($option['value_to_take'][$variable['id']] === $variable['valeur']){
+								$var_class = 'digirisk_risk_level_control_action_equal';
+							}
+							$ligneDeValeurs[] = array('value' => $option['value_to_take'][$variable['id']], 'class' => $var_class);
 						}
 						else{
 							$ligneDeValeurs[] = array('value' => $variable['valeur'], 'class' => '');
@@ -483,7 +490,12 @@ class Risque {
 						});
 					</script>';
 
-					return EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+					$output = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+					if($unique_id == 'new_quote_control'){
+						$output .= '<ul class="alignright digirisk_control_action_legend" ><li><a href="#" >' . __('Valeurs identiques', 'evarisk') . '</a><span class="digirisk_risk_level_control_action_equal" >X</span></li><li><a href="#" >' . __('Valeurs inf&eacute;rieures', 'evarisk') . '</a><span class="digirisk_risk_level_control_action_less" >X</span></li><li><a href="#" >' . __('Valeurs sup&eacute;rieures', 'evarisk') . '</a><span class="digirisk_risk_level_control_action_more" >X</span></li></ul><br class="clear" />';
+					}
+
+					return $output;
 				}
 			break;
 			default:

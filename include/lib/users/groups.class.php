@@ -205,19 +205,19 @@ digirisk(document).ready(function(){
 		/*	Basic action 	*/
 		if(($action != '') && (($action == 'edit') || ($action == 'editandcontinue')))
 		{/*	Edit action	*/
-			$_REQUEST[self::dbTable]['last_update_date'] = date('Y-m-d H:i:s');
+			$_REQUEST[self::dbTable]['last_update_date'] = current_time('mysql', 0);
 			$actionResult = eva_database::update($_REQUEST[self::dbTable], $id, self::dbTable);
 		}
 		elseif(($action != '') && (($action == 'delete')))
 		{/*	Delete action	*/
-			$_REQUEST[self::dbTable]['deletion_date'] = date('Y-m-d H:i:s');
+			$_REQUEST[self::dbTable]['deletion_date'] = current_time('mysql', 0);
 			$_REQUEST[self::dbTable]['deletion_user_id'] = $current_user->ID;
 			$_REQUEST[self::dbTable]['status'] = 'deleted';
 			$actionResult = eva_database::update($_REQUEST[self::dbTable], $id, self::dbTable);
 		}
 		elseif(($action != '') && (($action == 'save') || ($action == 'saveandcontinue') || ($action == 'add') || ($action == 'emadd') || ($action == 'evadd')))
 		{/*	Add action	*/
-			$_REQUEST[self::dbTable]['creation_date'] = date('Y-m-d H:i:s');
+			$_REQUEST[self::dbTable]['creation_date'] = current_time('mysql', 0);
 			$_REQUEST[self::dbTable]['creation_user_id'] = $current_user->ID;
 			$actionResult = eva_database::save($_REQUEST[self::dbTable], self::dbTable);
 			$id = $wpdb->insert_id;
@@ -962,10 +962,10 @@ digirisk(document).ready(function(){
 				$query = $wpdb->prepare(
 					"UPDATE " . DIGI_DBT_LIAISON_USER_GROUP . " 
 					SET status = 'deleted', 
-						date_desAffectation = NOW(), 
+						date_desAffectation = %s, 
 						id_desAttributeur = %d 
 					WHERE id = %d", 
-					$current_user->ID, $elements->id
+					current_time('mysql', 0), $current_user->ID, $elements->id
 				);
 				$wpdb->query($query);
 			}
@@ -976,7 +976,7 @@ digirisk(document).ready(function(){
 			{
 				if((trim($elementId) != '') && !array_key_exists($elementId, $linkedElementCheckList))
 				{
-					$elementToTreat .= "('', 'valid', NOW(), '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $elementId . "', '" . $idElement . "', '" . $tableElement . "'), ";
+					$elementToTreat .= "('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $elementId . "', '" . $idElement . "', '" . $tableElement . "'), ";
 				}
 			}
 		}

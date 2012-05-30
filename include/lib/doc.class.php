@@ -27,16 +27,12 @@ class digirisk_doc{
 					}
 					else $_SESSION[self::doc_slug . '_result'] = array('error', __('Impossible de modifier la documentation', 'evarisk'));
 				}
-				else {/*
-					$queryMessage = 'INSERT INTO '.$wpdb->prefix.self::prefix.'__documentation(doc_page_name, doc_html, doc_url, doc_creation_date)
-									VALUES ("' . $_POST['doc_page_name'] . '", "' . $_POST['content'] . '",  "' . substr(strstr($_POST['doc_url'], '='),1) . '", NOW())';					
-					$result = $wpdb->query($queryMessage);*/
-					
+				else {
 					$result = $wpdb->insert($wpdb->prefix.self::prefix.'__documentation', array(
 						'doc_page_name' => $_POST['doc_page_name'], 
 						'doc_html' => $_POST['content'],
 						'doc_url' => substr(strstr($_POST['doc_url'], '='),1),
-						'doc_creation_date' => date('Y-m-d H:i:s')
+						'doc_creation_date' => current_time('mysql', 0)
 					));
 					
 					if($result) {

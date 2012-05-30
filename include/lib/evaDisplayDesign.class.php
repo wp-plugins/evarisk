@@ -2026,7 +2026,7 @@ class EvaDisplayDesign {
 			for($i=0; $i<count($ligneDeValeurs); $i++)
 			{
 				$corpsTable .= '
-					<td class="' . $classes[$i] . ' ' . $ligneDeValeurs[$i]['class'] . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
+					<td class="' . $classes[$i] . ' ' . (!empty($ligneDeValeurs[$i]['class']) ? $ligneDeValeurs[$i]['class'] : '') . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
 			}
 			$corpsTable .= '</tr>';
 		}
