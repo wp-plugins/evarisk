@@ -14,20 +14,25 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 	
 	$result = handleUpload();
-	$tableElement = digirisk_tools::IsValid_Variable($result['tableElement']);
-	$idElement = digirisk_tools::IsValid_Variable($result['idElement']);
-	$fichier = digirisk_tools::IsValid_Variable($result['fichier']);
+	$tableElement = !empty($result['tableElement'])?digirisk_tools::IsValid_Variable($result['tableElement']):null;
+	$idElement = !empty($result['idElement'])?digirisk_tools::IsValid_Variable($result['idElement']):null;
+	$fichier = !empty($result['fichier'])?digirisk_tools::IsValid_Variable($result['fichier']):null;
 
-	/*	Ajoute la photo à la table de toutes les photos	(GED Photo) */
-	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
-	if($uploadStatus != 'error')
-	{
-		/*	Défini la photo comme étant par défault	*/
-		$uploadStatusMainPhoto = evaPhoto::setMainPhoto($tableElement, $idElement, $uploadStatus);
-		if($uploadStatusMainPhoto == 'error')
+	if(!empty($tableElement) && !empty($idElement) && !empty($fichier)){
+		/*	Ajoute la photo à la table de toutes les photos	(GED Photo) */
+		$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
+		if($uploadStatus != 'error')
 		{
-			$result[success] = $uploadStatusMainPhoto;
+			/*	Défini la photo comme étant par défault	*/
+			$uploadStatusMainPhoto = evaPhoto::setMainPhoto($tableElement, $idElement, $uploadStatus);
+			if($uploadStatusMainPhoto == 'error')
+			{
+				$result[success] = $uploadStatusMainPhoto;
+			}
 		}
+	}
+	else{
+		$result["success"] = false;
 	}
 
 	echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);

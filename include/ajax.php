@@ -6489,7 +6489,7 @@ switch($tableProvenance)
 							$plugin_install_error = substr($plugin_install_error, 0, -3) . '<hr/>';
 						}
 						if($warning_nb > 0){
-							$plugin_install_error .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Warning in digirisk install', 'evarisk') . '" title="' . __('Warning in digirisk install', 'evarisk') . '" />&nbsp;' . __('Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n\'affectent pas le con fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s', 'evarisk') . '<br/>';
+							$plugin_install_error .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Warning in digirisk install', 'evarisk') . '" title="' . __('Warning in digirisk install', 'evarisk') . '" />&nbsp;' . __('Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n\'affectent pas le bon fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s', 'evarisk') . '<br/>';
 							foreach($warning_list as $version => $element_nb){
 								$plugin_install_error .= '&nbsp;&nbsp;' . sprintf(__('Il y a %d avertissement(s) &agrave; la version %s', 'evarisk'), $element_nb, '<a href="#digi_plugin_v_' . $version . '" >' . $version . '</a>') . ' - ';
 							}

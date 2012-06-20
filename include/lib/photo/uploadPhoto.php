@@ -14,14 +14,19 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
 	$result = handleUpload();
-	$tableElement = digirisk_tools::IsValid_Variable($result['tableElement']);
-	$idElement = digirisk_tools::IsValid_Variable($result['idElement']);
-	$fichier = digirisk_tools::IsValid_Variable($result['fichier']);
+	$tableElement = !empty($result['tableElement'])?digirisk_tools::IsValid_Variable($result['tableElement']):null;
+	$idElement = !empty($result['idElement'])?digirisk_tools::IsValid_Variable($result['idElement']):null;
+	$fichier = !empty($result['fichier'])?digirisk_tools::IsValid_Variable($result['fichier']):null;
 	
-	$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
-	if($uploadStatus == 'error')
-	{
-		$result[success] = false;
+	if(!empty($tableElement) && !empty($idElement) && !empty($fichier)){
+		$uploadStatus = evaPhoto::saveNewPicture($tableElement, $idElement, $fichier);
+		if($uploadStatus == 'error')
+		{
+			$result[success] = false;
+		}
+	}
+	else{
+		$result["success"] = false;
 	}
 	
 	echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);

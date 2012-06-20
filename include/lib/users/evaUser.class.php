@@ -1281,7 +1281,7 @@ $user_additionnal_field .= '
 				$user_tree_affecation .= __('Cet utilisateur n\'est affect&eacute; a aucun groupement pour le moment', 'evarisk');
 			}
 			$user_tree_affecation .= '</div></div>
-			<div class="clear affected_element_to_user_final_container" ><img src="' . DEFAULT_WORKING_UNIT_PICTO . '" alt="' . __('Unit&eacute; de travail', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des unit&eacute;s de travail auxquelless l\'utilisateur est affect&eacute; directement', 'evarisk') . '<div class="user_affecation_element_container" >';
+			<div class="clear affected_element_to_user_final_container" ><img src="' . DEFAULT_WORKING_UNIT_PICTO . '" alt="' . __('Unit&eacute; de travail', 'evarisk') . '" class="middleAlign user_affecation_picto" />' .  __('Liste des unit&eacute;s de travail auxquelles l\'utilisateur est affect&eacute; directement', 'evarisk') . '<div class="user_affecation_element_container" >';
 			if(count($ut_list) > 0){
 				foreach($ut_list as $elt_id => $elt_detail){
 					$user_tree_affecation .= '

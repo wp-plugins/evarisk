@@ -11,7 +11,8 @@
 			fclose($input);			
 		}
 		function getName(){
-			return $_GET['name'];
+			$name = !empty($_GET['name'])?$_GET['name']:null;
+			return $name;
 		}
 		function getSize(){
 			return (int)$_SERVER['CONTENT_LENGTH'];
@@ -35,65 +36,60 @@
 	{
 		$maxFileSize = 100 * 1024 * 1024;
 
-		if (isset($_GET['qqfile']))
-		{
+		if (isset($_GET['qqfile'])){
+			$original_file = $_GET['qqfile'];
 			$file = new UploadFileXhr();
 		} 
-		elseif (isset($_FILES['qqfile']))
-		{
+		elseif (isset($_FILES['qqfile'])){
+			$original_file = $_FILES['qqfile'];
 			$file = new UploadFileForm();
 		} 
-		else 
-		{
+		else{
 			return array(success=>false);
 		}	
 
 		$size = $file->getSize();
-		if ($size == 0)
-		{
+		if ($size == 0){
 			return array(success=>false, error=>"File is empty.");
 		}				
-		if ($size > $maxFileSize)
-		{
+		if ($size > $maxFileSize){
 			return array(success=>false, error=>"File is too large.");
 		}
 
-		$pathinfo = pathinfo($file->getName());		
-		$ext = $pathinfo['extension'];
-
-		$tempFile = $_GET['qqfile'];
-		$targetPath = $_GET['folder'];
-		$targetFile =  str_replace('//','/',$targetPath) . digirisk_tools::slugify($_GET['qqfile']);
-		$numero = "";
-		$extention = "";
-		$nomFichier = "";
-		$temps = explode('.', digirisk_tools::slugify($_GET['qqfile']));
-		foreach($temps as $temp)
-		{
-			$nomFichier = $nomFichier . $extention;
-			$extention = $temp;
-		}
-		if(file_exists($targetFile))
-		{
-			$numero = 1;
-			$nomFichierTest = $nomFichier . $numero . '.' . $extention;
-			while(file_exists(str_replace('//','/',$targetPath) . $nomFichierTest))
-			{
-				$numero = $numero + 1;
-				$nomFichierTest = $nomFichier . $numero . '.'  . $extention;
+		$targetPath = !empty($_GET['folder'])?$_GET['folder']:null;
+		if(!empty($targetPath)){
+			$targetFile =  str_replace('//','/',$targetPath) . digirisk_tools::slugify($original_file);
+			$numero = "";
+			$extention = "";
+			$nomFichier = "";
+			$temps = explode('.', digirisk_tools::slugify($original_file));
+			foreach($temps as $temp){
+				$nomFichier = $nomFichier . $extention;
+				$extention = $temp;
 			}
-			$targetFile = str_replace('//','/',$targetPath). $nomFichierTest;
-		}
+			if(file_exists($targetFile)){
+				$numero = 1;
+				$nomFichierTest = $nomFichier . $numero . '.' . $extention;
+				while(file_exists(str_replace('//','/',$targetPath) . $nomFichierTest)){
+					$numero = $numero + 1;
+					$nomFichierTest = $nomFichier . $numero . '.'  . $extention;
+				}
+				$targetFile = str_replace('//','/',$targetPath). $nomFichierTest;
+			}
 
-		// Uncomment the following line if you want to make the directory if it doesn't exist
-		if(!file_exists(str_replace('//','/',$targetPath))){
-			mkdir(str_replace('//','/',$targetPath), 0755, true);
-			exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
-		}
-		$file->save($targetFile);
-		$fichier = str_replace(str_replace('\\', '/', EVA_HOME_DIR), '', $targetFile);
+			// Uncomment the following line if you want to make the directory if it doesn't exist
+			if(!file_exists(str_replace('//','/',$targetPath))){
+				mkdir(str_replace('//','/',$targetPath), 0755, true);
+				exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
+			}
+			$file->save($targetFile);
+			$fichier = str_replace(str_replace('\\', '/', EVA_HOME_DIR), '', $targetFile);
 
-		return array(success=>true, "tableElement"=>$_GET['tableElement'], "idElement"=>$_GET['idElement'], "fichier"=>$fichier);
+			return array("success"=>true, "tableElement"=>(!empty($_GET['tableElement'])?$_GET['tableElement']:null), "idElement"=>(!empty($_GET['idElement'])?$_GET['idElement']:null), "fichier"=>$fichier);
+		}
+		else{
+			return array("success"=>false, "error"=>"You are not allowed to upload file here");
+		}
 	}
 
 ?>

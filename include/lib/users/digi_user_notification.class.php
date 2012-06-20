@@ -634,15 +634,15 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 									$content_to_output = __('Statut', 'evarisk') . ' : ' . actionsCorrectives::check_progression_status_for_output($content);
 									if(($content == 'Done') || ($content == 'DoneByChief')){
 										$infos_soldeur = '';
-										if($modification_datas['idSoldeurChef'] > 0){
-											$responsable_infos = evaUser::getUserInformation($modification_datas['idSoldeurChef']);
-											$infos_soldeur = ELEMENT_IDENTIFIER_U . $modification_datas['idSoldeurChef'] . ' - ' . $responsable_infos[$modification_datas['idSoldeurChef']]['user_lastname'] . ' ' . $responsable_infos[$modification_datas['idSoldeurChef']]['user_firstname'];
+										if($modification_datas->idSoldeurChef > 0){
+											$responsable_infos = evaUser::getUserInformation($modification_datas->idSoldeurChef);
+											$infos_soldeur = ELEMENT_IDENTIFIER_U . $modification_datas->idSoldeurChef . ' - ' . $responsable_infos[$modification_datas->idSoldeurChef]['user_lastname'] . ' ' . $responsable_infos[$modification_datas->idSoldeurChef]['user_firstname'];
 										}
-										elseif($modification_datas['idSoldeur'] > 0){
-											$responsable_infos = evaUser::getUserInformation($modification_datas['idSoldeur']);
-											$infos_soldeur = ELEMENT_IDENTIFIER_U . $modification_datas['idSoldeurChef'] . ' - ' . $responsable_infos[$modification_datas['idSoldeur']]['user_lastname'] . ' ' . $responsable_infos[$modification_datas['idSoldeur']]['user_firstname'];
+										elseif($modification_datas->idSoldeur > 0){
+											$responsable_infos = evaUser::getUserInformation($modification_datas->idSoldeur);
+											$infos_soldeur = ELEMENT_IDENTIFIER_U . $modification_datas->idSoldeurChef . ' - ' . $responsable_infos[$modification_datas->idSoldeur]['user_lastname'] . ' ' . $responsable_infos[$modification_datas->idSoldeur]['user_firstname'];
 										}
-										$content_to_output .= '  ' . sprintf(__('Sold&eacute;e le %s par %s', 'evarisk'), $modification_datas['dateSolde'], $infos_soldeur);
+										$content_to_output .= '  ' . sprintf(__('Sold&eacute;e le %s par %s', 'evarisk'), $modification_datas->dateSolde, $infos_soldeur);
 									}
 								break;
 								case 'idResponsable':

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evarisk v5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-30 19:16+0100\n"
-"PO-Revision-Date: 2012-05-30 19:16+0100\n"
+"POT-Creation-Date: 2012-06-20 11:54+0100\n"
+"PO-Revision-Date: 2012-06-20 11:54+0100\n"
 "Last-Translator: Equipe de développement <dev@eoxia.com>\n"
 "Language-Team: Evarisk <contact@evarisk.com>\n"
 "MIME-Version: 1.0\n"
@@ -1077,8 +1077,8 @@ msgid "Warning in digirisk install"
 msgstr "Il y a des avertissements dans votre installation"
 
 #: ../include/ajax.php:6492
-msgid "Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n'affectent pas le con fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s"
-msgstr "Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n'affectent pas le con fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s"
+msgid "Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n'affectent pas le bon fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s"
+msgstr "Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n'affectent pas le bon fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s"
 
 #: ../include/ajax.php:6494
 #, php-format
@@ -4489,7 +4489,7 @@ msgstr "R&eacute;initialisation de la base de donn&eacute;es"
 
 #: ../include/lib/outils/tools.class.php:219
 msgid "Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es (Suppression de toutes les donn&eacute;s pr&eacute;sentes dans la base). Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite"
-msgstr "Attention, cette interface permet de r&eacute;initialiser la base de donn&eacute;es (Suppression de toutes les donn&eacute;s pr&eacute;sentes dans la base). Cette op&eacute;ration ne peut &ecirc;tre invers&eacute;e par la suite"
+msgstr "Attention, cette interface permet de rénitialiser la base de données (Suppression de toutes les données présentes dans la base). Cette opération ne peut être inversée par la suite"
 
 #: ../include/lib/outils/tools.class.php:219
 msgid "Faites une sauvegarde de votre base de donn&eacute;es avant toute op&eacute;ration"
@@ -5229,8 +5229,8 @@ msgid "Unit&eacute; de travail"
 msgstr "Unit&eacute; de travail"
 
 #: ../include/lib/users/evaUser.class.php:1284
-msgid "Liste des unit&eacute;s de travail auxquelless l'utilisateur est affect&eacute; directement"
-msgstr "Liste des unit&eacute;s de travail auxquelless l'utilisateur est affect&eacute; directement"
+msgid "Liste des unit&eacute;s de travail auxquelles l'utilisateur est affect&eacute; directement"
+msgstr "Liste des unit&eacute;s de travail auxquelles l'utilisateur est affect&eacute; directement"
 
 #: ../include/lib/users/evaUser.class.php:1295
 msgid "Cet utilisateur n'est affect&eacute; a aucune unit&eacute; de travail pour le moment"
