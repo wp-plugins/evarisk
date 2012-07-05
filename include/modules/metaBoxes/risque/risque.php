@@ -481,8 +481,8 @@
 			$risque = null;
 		}
 
-		$sub_action = digirisk_tools::IsValid_Variable($_REQUEST['sub_action']);
-		$task_to_associate = digirisk_tools::IsValid_Variable($_REQUEST['task_to_associate']);
+		$sub_action = (!empty($_REQUEST['sub_action'])?digirisk_tools::IsValid_Variable($_REQUEST['sub_action']):'');
+		$task_to_associate = (!empty($_REQUEST['task_to_associate'])?digirisk_tools::IsValid_Variable($_REQUEST['task_to_associate']):'');
 
 		{//Choix de la catégorie de dangers
 			$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque, $formId);
@@ -543,18 +543,23 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 		{/*	Get method list	*/
 			$methodes = MethodeEvaluation::getMethods('Status="Valid"');
-			if($risque[0] != null){// Si l'on édite un risque, on sélectionne la bonne méthode
+			if($risque[0] != null)// Si l'on édite un risque, on sélectionne la bonne méthode
 				$idSelection = $risque[0]->id_methode;
-			}
-			else{// Sinon on sélectionne la première méthode
+			else// Sinon on sélectionne la première méthode
 				$idSelection = $methodes[0]->id;
-			}
+			$output_method = array();
+
 			$methode_output_value = $methode_output = array();
 			foreach($methodes as $methode){
-				$methode_output_value[] = $methode->id;
-				$methode_output[] = ELEMENT_IDENTIFIER_ME . $methode->id . ' - ' .  $methode->nom;
+				$method_vars = MethodeEvaluation::getVariablesMethode($methode->id);
+				if(!empty($method_vars)){
+					$methode_output_value[] = $methode->id;
+					$methode_output[] = ELEMENT_IDENTIFIER_ME . $methode->id . ' - ' .  $methode->nom;
+					$output_method[]=$methode;
+				}
 			}
 		}
+
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Choix de la méthode
 			$script .= '
 			digirisk("#' . $formId . 'methodeFormRisque").change(function(){
@@ -562,12 +567,12 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '"});
 			});';
 			$selection = MethodeEvaluation::getMethod($idSelection);
-			$nombreMethode = count($methodes);
+			$nombreMethode = count($output_method);
 			$afficheSelecteurMethode = '';
 			if($nombreMethode <= 1){
 				$afficheSelecteurMethode = ' display:none; ';
 			}
-			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($methodes, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection, $methode_output_value, $methode_output) . '</div>';
+			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($output_method, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection, $methode_output_value, $methode_output) . '</div>';
 		}
 		else{
 			$formRisque .= EvaDisplayInput::afficherInput('hidden', $formId . 'methodeFormRisque', $idSelection, '', '', 'methode');
@@ -600,16 +605,16 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 		}
 		if(current_user_can('digi_view_correctiv_action') && ($risque[0] != null) && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0))){
-			$formRisque .= '<div id="' . $currentId . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
+			$formRisque .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
 		}
 
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Photo associée au risque
 			if($idRisque != ''){
 				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $idRisque);
 				if(count($pictureAssociated) > 0){
-					$formRisque .= '<div class="alignleft pointer" id="' . $currentId . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $currentId . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
+					$formRisque .= '<div class="alignleft pointer" id="' . $idElement . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $idElement . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
 					$script .= '
-		digirisk("#' . $currentId . 'deletePictureAssociation").click(function(){
+		digirisk("#' . $idElement . 'deletePictureAssociation").click(function(){
 			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
 			{
 				"post":"true",
@@ -625,7 +630,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		}
 
 		if(current_user_can('digi_not_historicize_risk') && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0)) && ($idRisque != '')){//Historisation du risque
-			$formRisque .= '<div class="alignright" id="' . $currentId . 'historisationContainer" ><input type="checkbox" value="non" name="' . $currentId . 'historisation" id="' . $currentId . 'historisation" /><label for="historisation" >' . __('Ne pas afficher l\'ancienne cotation dans les historiques de modifications','evarisk') . '</label></div>';
+			$formRisque .= '<div class="alignright" id="' . $idElement . 'historisationContainer" ><input type="checkbox" value="non" name="' . $idElement . 'historisation" id="' . $idElement . 'historisation" /><label for="historisation" >' . __('Ne pas afficher l\'ancienne cotation dans les historiques de modifications','evarisk') . '</label></div>';
 		}
 
 		{//Bouton enregistrer
@@ -663,12 +668,13 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				"act":"save", 
 				"tableElement":"' . $tableElement . '", 
 				"idElement":"' . $idElement . '", 
-				"idDanger":digirisk("#' . $formId . 'dangerFormRisque").val(), 
-				"idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), 
+				"idDanger":digirisk("#' . $formId . 'dangerFormRisque").val(),
+				"idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(),
 				"histo":historisation,
 				"variables":variables, 
 				"description_risque":digirisk("#' . $formId . 'descriptionFormRisque").val(), 
 				"preconisationRisque":digirisk("#' . $formId . 'preconisationRisque").val(),
+				"print_action_description_in_duer":digirisk("#' . $formId . 'print_action_description_duer").val(),
 				"idRisque":digirisk("#' . $formId . 'idRisque").val(), 
 				"pictureId":"' . $formId . '"';
 			if(($sub_action == 'control_asked_action') || ($task_to_associate > 0)){
@@ -685,7 +691,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		});';
 			if($idRisque != ''){
 				$scriptEnregistrement .= '
-		digirisk("#' . $currentId . 'divPreconisationExistante").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+		digirisk("#' . $idElement . 'divPreconisationExistante").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 			"post":"true", 
 			"table":"' . TABLE_RISQUE . '", 
 			"tableElement":"' . $tableElement . '", 

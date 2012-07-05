@@ -38,6 +38,8 @@ class EvaBaseTask
 	const idPhotoAvant = 'idPhotoAvant';
 	const idPhotoApres = 'idPhotoApres';
 	const is_readable_from_external = 'is_readable_from_external';
+	const nom_exportable_plan_action = 'nom_exportable_plan_action';
+	const description_exportable_plan_action = 'description_exportable_plan_action';
 
 /*
  * Class variable define
@@ -139,6 +141,9 @@ class EvaBaseTask
 	 * @var string picture after action
 	 */
 	var $idPhotoApres;
+	var $is_readable_from_external;
+	var $nom_exportable_plan_action;
+	var $description_exportable_plan_action;
 	
 /*
  *	Constructor, getters and setters
@@ -168,7 +173,7 @@ class EvaBaseTask
 	 * @param string $hasPriority
 	 * @param string $efficacite
 	 */
-	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idPhotoAvant = 0, $idPhotoAvant = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='', $efficacite ='')
+	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idPhotoAvant = 0, $idPhotoApres = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='', $efficacite ='', $is_readable_from_external ='')
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -191,6 +196,7 @@ class EvaBaseTask
 		$this->idSoldeur = $idSoldeur;
 		$this->idSoldeurChef = $idSoldeurChef;
 		$this->ProgressionStatus = $ProgressionStatus;
+		$this->is_readable_from_external = $is_readable_from_external;
 		$this->dateSolde = $dateSolde;
 		$this->hasPriority = $hasPriority;
 		$this->efficacite = $efficacite;
@@ -647,6 +653,42 @@ class EvaBaseTask
 	{
 		$this->idPhotoApres = $idPhotoApres;
 	}
+	
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getdescription_exportable_plan_action()
+	{
+		return $this->description_exportable_plan_action;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setdescription_exportable_plan_action($description_exportable_plan_action)
+	{
+		$this->description_exportable_plan_action = $description_exportable_plan_action;
+	}
+	
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getnom_exportable_plan_action()
+	{
+		return $this->nom_exportable_plan_action;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setnom_exportable_plan_action($nom_exportable_plan_action)
+	{
+		$this->nom_exportable_plan_action = $nom_exportable_plan_action;
+	}
 
 
 /*
@@ -656,8 +698,7 @@ class EvaBaseTask
 	 * Convert a wpdb object to an EvaBaseTask object
 	 * @param object $wpdbTask The object to convert
 	 */
-	function convertWpdb($wpdbTask)
-	{
+	function convertWpdb($wpdbTask){
 		$this->setId($wpdbTask->id);
 		$this->setName($wpdbTask->nom);
 		$this->setDescription($wpdbTask->description);
@@ -681,14 +722,16 @@ class EvaBaseTask
 		$this->setEfficacite($wpdbTask->efficacite);
 		$this->setidPhotoAvant($wpdbTask->idPhotoAvant);
 		$this->setidPhotoApres($wpdbTask->idPhotoApres);
+		$this->set_external_readable($wpdbTask->is_readable_from_external);
+		$this->setnom_exportable_plan_action($wpdbTask->nom_exportable_plan_action);
+		$this->setdescription_exportable_plan_action($wpdbTask->description_exportable_plan_action);
 	}
 
 	/**
 	 * Convert an EvaBaseTask object to a wpdb object
 	 * @return object The converted object
 	 */
-	function convertToWpdb()
-	{
+	function convertToWpdb(){
 		return 
 			(object)(
 				array(
@@ -715,7 +758,9 @@ class EvaBaseTask
 					self::dateSolde => $this->getdateSolde(),
 					self::hasPriority => $this->gethasPriority(),
 					self::efficacite => $this->getEfficacite(),
-					self::is_readable_from_external => $this->get_external_readable()
+					self::is_readable_from_external => $this->get_external_readable(),
+					self::nom_exportable_plan_action => $this->getnom_exportable_plan_action(),
+					self::description_exportable_plan_action => $this->getdescription_exportable_plan_action()
 				)
 			);
 	}

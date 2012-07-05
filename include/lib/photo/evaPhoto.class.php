@@ -51,8 +51,7 @@ class EvaPhoto {
 	 * @param mixed $photo The path to the picture
 	 * @return mixed $status The picture identifier if the photo is well insert and "error" else. 
 	 */
-	function saveNewPicture($tableElement, $idElement, $photo)
-	{
+	function saveNewPicture($tableElement, $idElement, $photo){
 		global $wpdb;
 		$status = 'error';
 		
@@ -60,24 +59,33 @@ class EvaPhoto {
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 		$photo = digirisk_tools::IsValid_Variable(digirisk_tools::slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
 
-		$query = 
-			$wpdb->prepare(
-				"INSERT INTO " . TABLE_PHOTO . " 
-					(id, photo) 
-				VALUES 
-					('', '%s')"
-				, $photo);
-		if($wpdb->query($query)){
-			$new_picture_id = $wpdb->insert_id;
-			$status = evaPhoto::associatePicture($tableElement, $idElement, $new_picture_id);
-			switch($tableElement){
-				case TABLE_ACTIVITE:
-				case TABLE_TACHE:
-					/*	Log modification on element and notify user if user subscribe	*/
-					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', $new_picture_id);
-				break;
+		/*	Check if the picture have already been inserted into database	*/
+		$query = $wpdb->prepare("SELECT id FROM ".TABLE_PHOTO." WHERE photo=%s", $photo);
+		$picture_id = $wpdb->get_var($query);
+		if(empty($picture_id)){
+			$query = 
+				$wpdb->prepare(
+					"INSERT INTO " . TABLE_PHOTO . " 
+						(id, photo) 
+					VALUES 
+						('', '%s')"
+					, $photo);
+			if($wpdb->query($query)){
+				$picture_id = $wpdb->insert_id;
+				$status = evaPhoto::associatePicture($tableElement, $idElement, $picture_id);
+				switch($tableElement){
+					case TABLE_ACTIVITE:
+					case TABLE_TACHE:
+						/*	Log modification on element and notify user if user subscribe	*/
+						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', $picture_id);
+					break;
+				}
 			}
 		}
+		else{
+			$status=$picture_id;
+		}
+
 		return $status;
 	}
 
@@ -88,8 +96,7 @@ class EvaPhoto {
 	 * @param int $pictureId The picture identifier we want to associate
 	 * @return mixed $status The picture identifier if the photo is well insert and "error" else. 
 	 */
-	function associatePicture($tableElement, $idElement, $pictureId)
-	{
+	function associatePicture($tableElement, $idElement, $pictureId){
 		global $wpdb;
 		$status = 'error';
 		
@@ -104,9 +111,7 @@ class EvaPhoto {
 					('', 'valid', 'no', '%d', '%d', '%s')"
 				, $pictureId, $idElement, $tableElement);
 		if($wpdb->query($query))
-		{
 			$status = $pictureId;
-		}
 
 		return $status;
 	}
@@ -147,8 +152,8 @@ class EvaPhoto {
 	*
 	*	@return mixed $gallery The html code width the different element for the picture gallery
 	*/
-	function getGallery($tableElement, $idElement)
-	{
+	function getGallery($tableElement, $idElement){
+		$moreOutputOptions = '';
 		$gallery = '
 			<div id="galeriePhoto' . $tableElement . $idElement .'">
 				<div class="galeryPhoto alignleft">
@@ -156,8 +161,7 @@ class EvaPhoto {
 						<ul class="thumbs noscript clear">';
 
 		$photos = evaPhoto::getPhotos($tableElement, $idElement);
-		foreach($photos as $photo)
-		{
+		foreach($photos as $photo){
 			$isFile = 'notAfile';
 			if(is_file(EVA_GENERATED_DOC_DIR . $photo->photo))
 			{
@@ -184,8 +188,8 @@ class EvaPhoto {
 			if($is_File){
 				$gallery .= '
 							<li class="alignleft" >
-								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" title="' . $photo->description . '">
-									<div>' . ELEMENT_IDENTIFIER_PIC . $photo->id . '</div><img src="' . $pathToMediasDir . $photo->photo . '" alt="' . $photo->description . '" />
+								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" >
+									<div>' . ELEMENT_IDENTIFIER_PIC . $photo->id . '</div><img src="' . $pathToMediasDir . $photo->photo . '" />
 								</a>							
 								<div class="caption">';
 
@@ -254,9 +258,6 @@ class EvaPhoto {
 							$add_button_action = false;
 						}
 					}
-					break;
-					default:
-						$moreOutputOptions = '';
 					break;
 				}
 

@@ -739,7 +739,7 @@ class evaRecommandation
 			$recommandationInfos = evaRecommandation::getRecommandation($id_preconisation);
 			$id_categorie_preconisation = $recommandationInfos->id_categorie_preconisation;
 			$nom_preconisation = html_entity_decode($recommandationInfos->nom, ENT_QUOTES, 'UTF-8');
-			$description_preconisation = html_entity_decode($recommandationInfos->impressionRecommandation, ENT_QUOTES, 'UTF-8');
+			$description_preconisation = html_entity_decode($recommandationInfos->description, ENT_QUOTES, 'UTF-8');
 		}
 		else{
 			$id_categorie_preconisation = $_REQUEST['idPere'];

@@ -18,8 +18,6 @@ class evaUser
 	*/
 	protected $_userToUpdate = '';
 
-
-
 	/**
 	*	Get the wordpress' user list
 	*
@@ -84,25 +82,18 @@ class evaUser
 		$user_info = get_userdata($userId);
 
 		unset($valeurs);
-		$valeurs['user_id'] = $user_info->ID;
+		$valeurs['user_id'] = $userId;
 		if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) )
-		{
 			$valeurs['user_lastname'] = $user_info->user_lastname;
-		}
 		else
-		{
 			$valeurs['user_lastname'] = '';
-		}
-		if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) )
-		{
-			$valeurs['user_firstname'] = $user_info->user_firstname;
-		}
-		else
-		{
-			$valeurs['user_firstname'] = $user_info->user_nicename;
-		}
 
-		$listeComplete[$user_info->ID] = $valeurs;
+		if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) )
+			$valeurs['user_firstname'] = $user_info->user_firstname;
+		else
+			$valeurs['user_firstname'] = '';
+
+		$listeComplete[$userId] = $valeurs;
 
 		return $listeComplete;
 	}
@@ -130,38 +121,36 @@ class evaUser
 		$required_class = array();
 
 		/*	Get the current user meta	*/
-		$user_meta = get_user_meta($user->ID, 'digirisk_information', false);
-		if(is_array($user_meta[0]) && (count($user_meta[0]) > 0)){
+		$user_meta = (!empty($user)?get_user_meta($user->ID, 'digirisk_information', false):array());
+		$user_additionnal_field_alert = '<span class="required" >' . __('L\'ensemble des champs ci-dessous sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
+		$required_class['user_imatriculation'] = $required_class['user_birthday'] = $required_class['user_gender'] = $required_class['user_nationnality'] = $required_class['user_adress'] =  $required_class['user_hiring_date'] = $required_class['user_profession'] = $required_class['user_professional_qualification'] = ' class="required" ';
+		$required_class['user_adress_2']=$required_class['user_insurance_ste']=' ';
+		if(!empty($user_meta[0])){
 			$required_filed_empty = 0;
 			foreach($user_meta[0] as $field_identifier => $field_content){
 				$required_class[$field_identifier] = '';
 				if((trim($field_content) == '') && (in_array($field_identifier, $userWorkAccidentMandatoryFields))){
-					if($field_identifier == 'user_imatriculation_key'){
+					if($field_identifier == 'user_imatriculation_key')
 						$field_identifier = 'user_imatriculation';
-					}
-					elseif($field_identifier == 'user_adress_2'){
+					elseif($field_identifier == 'user_adress_2')
 						$field_identifier = 'user_adress';
-					}
+
 					$required_class[$field_identifier] = ' class="required" ';
 					$required_filed_empty++;
 				}
 			}
-			if($required_filed_empty > 0){
-				$user_additionnal_field_alert = '<span class="required" >' . __('Les champs marqu&eacutes en rouge sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
-			}
-		}
-		else{
-			$user_additionnal_field_alert = '<span class="required" >' . __('L\'ensemble des champs ci-dessous sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
-			$required_class['user_imatriculation'] = $required_class['user_birthday'] = $required_class['user_gender'] = $required_class['user_nationnality'] = $required_class['user_adress'] =  $required_class['user_hiring_date'] = $required_class['user_profession'] = $required_class['user_professional_qualification'] = ' class="required" ';
+			if($required_filed_empty > 0)
+				$user_additionnal_field_alert = '<span class="required" >' . __('Les champs marqu&eacute;s en rouge sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
+
 		}
 		if($output_type == 'normal'){
 			$user_additionnal_field .= '
 <h3 id="digi_user_informations" >' . __('Informations compl&eacute;mentaires pour le logiciel Digirisk', 'digirisk') . '</h3>
 ' . $user_additionnal_field_alert;
-			if($user_meta[0]['user_is_valid_for_accident'] == 'yes'){
+			if(!empty($user_meta[0]) && ($user_meta[0]['user_is_valid_for_accident'] == 'yes')){
 				$user_additionnal_field .= '<span class="user_is_valid_for_accident" >' . __('L\'utilisateur est &eacute;ligible &agrave; la d&eacute;claration d\'un accident du travail', 'evarisk') . '</span>';
 			}
-			elseif($user_meta[0]['user_is_valid_for_accident'] == 'no'){
+			elseif(!empty($user_meta[0]) && ($user_meta[0]['user_is_valid_for_accident'] == 'no')){
 				$user_additionnal_field .= '<span class="user_is_not_valid_for_accident" >' . __('L\'utilisateur n\'est pas &eacute;ligible &agrave; la d&eacute;claration d\'un accident du travail', 'evarisk') . '</span>';
 			}
 		}
@@ -172,8 +161,8 @@ $user_additionnal_field .= '
 			<label for="user_imatriculation" ' . $required_class['user_imatriculation'] . ' >' . __('N&ordm; d\'immatriculation', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_imatriculation', $user_meta[0]['user_imatriculation'], '', null, 'digirisk_user_information[user_imatriculation]', false, false, 13, 'regular-text', '', '', '', 'digi_user_immatriculation', true) . '
-			' .	EvaDisplayInput::afficherInput('text', 'user_imatriculation_key', $user_meta[0]['user_imatriculation_key'], '', null, 'digirisk_user_information[user_imatriculation_key]', false, false, 2, '', '', '10%', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_imatriculation', (!empty($user_meta[0])?$user_meta[0]['user_imatriculation']:''), '', null, 'digirisk_user_information[user_imatriculation]', false, false, 13, 'regular-text', '', '', '', 'digi_user_immatriculation', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_imatriculation_key', (!empty($user_meta[0])?$user_meta[0]['user_imatriculation_key']:''), '', null, 'digirisk_user_information[user_imatriculation_key]', false, false, 2, '', '', '10%', '', '', true) . '
 		</td>
 	</tr>
 	<tr>
@@ -181,7 +170,7 @@ $user_additionnal_field .= '
 			<label for="user_birthday" ' . $required_class['user_birthday'] . ' >' . __('Date de naissance', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_birthday', $user_meta[0]['user_birthday'], '', null, 'digirisk_user_information[user_birthday]', false, false, 10, 'regular-text', 'date', '') . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_birthday', (!empty($user_meta[0])?$user_meta[0]['user_birthday']:''), '', null, 'digirisk_user_information[user_birthday]', false, false, 10, 'regular-text', 'date', '') . '
 		</td>
 	</tr>
 	<tr>
@@ -189,7 +178,7 @@ $user_additionnal_field .= '
 			<label for="user_gender" ' . $required_class['user_gender'] . ' >' . __('Sexe', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::createComboBox('user_gender', 'digirisk_user_information[user_gender]', $optionUserGender, $user_meta[0]['user_gender'], 'user_combo') . '
+			' .	EvaDisplayInput::createComboBox('user_gender', 'digirisk_user_information[user_gender]', $optionUserGender, (!empty($user_meta[0])?$user_meta[0]['user_gender']:''), 'user_combo') . '
 		</td>
 	</tr>
 	<tr>
@@ -197,7 +186,7 @@ $user_additionnal_field .= '
 			<label for="user_nationnality" ' . $required_class['user_nationnality'] . ' >' . __('Nationalit&eacute;', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::createComboBox('user_nationnality', 'digirisk_user_information[user_nationnality]', $optionUserNationality, $user_meta[0]['user_nationnality'], 'user_combo') . '
+			' .	EvaDisplayInput::createComboBox('user_nationnality', 'digirisk_user_information[user_nationnality]', $optionUserNationality, (!empty($user_meta[0])?$user_meta[0]['user_nationnality']:''), 'user_combo') . '
 		</td>
 	</tr>';
 	if($output_type == 'normal'){
@@ -218,8 +207,8 @@ $user_additionnal_field .= '
 			<label for="user_adress_2" ' . $required_class['user_adress_2'] . ' >' . __('Adresse ligne 2', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_adress', $user_meta[0]['user_adress'], '', null, 'digirisk_user_information[user_adress]', false, false, 255, 'regular-text', '', '', '', '', true) . '
-			' .	EvaDisplayInput::afficherInput('text', 'user_adress_2', $user_meta[0]['user_adress_2'], '', null, 'digirisk_user_information[user_adress_2]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress', (!empty($user_meta[0])?$user_meta[0]['user_adress']:''), '', null, 'digirisk_user_information[user_adress]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress_2', (!empty($user_meta[0])?$user_meta[0]['user_adress_2']:''), '', null, 'digirisk_user_information[user_adress_2]', false, false, 255, 'regular-text', '', '', '', '', true) . '
 		</td>
 	</tr>
 	<tr>
@@ -227,7 +216,7 @@ $user_additionnal_field .= '
 			<label for="user_adress_postal_code" ' . $required_class['user_adress'] . ' >' . __('Code postal', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_adress_postal_code', $user_meta[0]['user_adress_postal_code'], '', null, 'digirisk_user_information[user_adress_postal_code]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress_postal_code', (!empty($user_meta[0])?$user_meta[0]['user_adress_postal_code']:''), '', null, 'digirisk_user_information[user_adress_postal_code]', false, false, 255, 'regular-text', '', '', '', '', true) . '
 		</td>
 	</tr>
 	<tr>
@@ -235,7 +224,7 @@ $user_additionnal_field .= '
 			<label for="user_adress_city" ' . $required_class['user_adress'] . ' >' . __('Ville', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_adress_city', $user_meta[0]['user_adress_city'], '', null, 'digirisk_user_information[user_adress_city]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_adress_city', (!empty($user_meta[0])?$user_meta[0]['user_adress_city']:''), '', null, 'digirisk_user_information[user_adress_city]', false, false, 255, 'regular-text', '', '', '', '', true) . '
 		</td>
 	</tr>
 	<tr>
@@ -251,7 +240,7 @@ $user_additionnal_field .= '
 			<label for="user_hiring_date" ' . $required_class['user_hiring_date'] . ' >' . __('Date d\'embauche', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_hiring_date', $user_meta[0]['user_hiring_date'], '', null, 'digirisk_user_information[user_hiring_date]', false, false, 10, 'regular-text', 'date', '') . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_hiring_date', (!empty($user_meta[0])?$user_meta[0]['user_hiring_date']:''), '', null, 'digirisk_user_information[user_hiring_date]', false, false, 10, 'regular-text', 'date', '') . '
 		</td>
 	</tr>
 	<tr>
@@ -259,7 +248,7 @@ $user_additionnal_field .= '
 			<label for="user_profession" ' . $required_class['user_profession'] . ' >' . __('Profession', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_profession', $user_meta[0]['user_profession'], '', null, 'digirisk_user_information[user_profession]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_profession', (!empty($user_meta[0])?$user_meta[0]['user_profession']:''), '', null, 'digirisk_user_information[user_profession]', false, false, 255, 'regular-text', '', '', '', '', true) . '
 		</td>
 	</tr>
 	<tr>
@@ -267,7 +256,7 @@ $user_additionnal_field .= '
 			<label for="user_professional_qualification" ' . $required_class['user_professional_qualification'] . ' >' . __('Qualification professionnelle', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_professional_qualification', $user_meta[0]['user_professional_qualification'], '', null, 'digirisk_user_information[user_professional_qualification]', false, false, 255, 'regular-text', '', '', '', '', true) . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_professional_qualification', (!empty($user_meta[0])?$user_meta[0]['user_professional_qualification']:''), '', null, 'digirisk_user_information[user_professional_qualification]', false, false, 255, 'regular-text', '', '', '', '', true) . '
 		</td>
 	</tr>
 	<tr>
@@ -283,12 +272,12 @@ $user_additionnal_field .= '
 			<label for="user_insurance_ste" ' . $required_class['user_insurance_ste'] . ' >' . __('Soci&eacute;t&eacute; d\'assurance', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_insurance_ste', $user_meta[0]['user_insurance_ste'], '', null, 'digirisk_user_information[user_insurance_ste]', false, false, 10, 'regular-text', '', '') . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_insurance_ste', (!empty($user_meta[0])?$user_meta[0]['user_insurance_ste']:''), '', null, 'digirisk_user_information[user_insurance_ste]', false, false, 10, 'regular-text', '', '') . '
 		</td>
 	</tr>';
 
 	$options = get_option('digirisk_options');
-	$user_extra_fields = unserialize($options['digi_users_digirisk_extra_field']);
+	$user_extra_fields = (!empty($options['digi_users_digirisk_extra_field'])?unserialize($options['digi_users_digirisk_extra_field']):array());
 	if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
 		foreach($user_extra_fields as $field){
 			$user_additionnal_field .= 
@@ -297,7 +286,7 @@ $user_additionnal_field .= '
 			<label for="user_' . $field . '" ' . $required_class[$field] . ' >' . __($field, 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_' . $field, $user_meta[0][$field], '', null, 'digirisk_user_information[' . $field . ']', false, false, 10, 'regular-text', '', '') . '
+			' .	EvaDisplayInput::afficherInput('text', 'user_' . $field, (!empty($user_meta[0])?$user_meta[0][$field]:''), '', null, 'digirisk_user_information[' . $field . ']', false, false, 10, 'regular-text', '', '') . '
 		</td>
 	</tr>';
 		}
@@ -558,8 +547,7 @@ $user_additionnal_field .= '
 	/**
 	*
 	*/
-	function importUserPage()
-	{
+	function importUserPage(){
 		global $wpdb;
 		$separatorExample = '<span class="fieldSeparator" >[fieldSeparator]</span>';
 
@@ -570,34 +558,26 @@ $user_additionnal_field .= '
 
 		$optionEmailDomain = '';
 		$checkEmailDomain = digirisk_options::getOptionValue('emailDomain');
-		if(isset($_POST['domaineMail']) && ($checkEmailDomain != $_POST['domaineMail']))
-		{
+		if(isset($_POST['domaineMail']) && ($checkEmailDomain != $_POST['domaineMail'])){
 			digirisk_options::updateDigiOption('emailDomain', $_POST['domaineMail']);
 			$checkEmailDomain = digirisk_options::getOptionValue('emailDomain');
 		}
 
-		if($importAction != '')
-		{
+		if($importAction != ''){
 			$userToCreate = array();
 			$importResult = '';
 
 			/*	Check if there are lines to create without sending a file	*/
 			$userLinesToCreate = isset($_POST['userLinesToCreate']) ? (string) digirisk_tools::IsValid_Variable($_POST['userLinesToCreate']) : '';
 			if($userLinesToCreate != '')
-			{
 				$userToCreate = array_merge($userToCreate, explode("\n", trim($userLinesToCreate)));
-			}
 			else
-			{
 				$importResult .= __('Aucun utilisateurs n\'a &eacute;t&eacute; ajout&eacute; depuis le champs texte', 'evarisk') . '<br/>';
-			}
 
 			/*	Check if a file has been sending */
-			if($_FILES['userFileToCreate']['error'] != UPLOAD_ERR_NO_FILE)
-			{
+			if($_FILES['userFileToCreate']['error'] != UPLOAD_ERR_NO_FILE){
 				$file = $_FILES['userFileToCreate'];
-				if($file['error'])
-				{
+				if($file['error']){
 					switch ($file['error']){
 						case UPLOAD_ERR_INI_SIZE:
 							$subFileError .= sprintf(__('Le fichier que vous avez envoy&eacute; est trop lourd: %s taille autoris&eacute;e %s', 'evarisk'), $file['size'], upload_max_filesize);
@@ -612,29 +592,18 @@ $user_additionnal_field .= '
 					$importResult .= '<h4 style="color:#FF0000;">' . __('Une erreur est survenue lors de l\'envoie du fichier', 'evarisk') . '</h4><p>' . $subFileError . '</p>';
 				}
 				elseif(!is_uploaded_file($file['tmp_name']))
-				{
 					$importResult .= sprintf(__('Le fichier %s n\'a pas pu &ecirc;tre envoy&eacute;', 'evarisk'), $file['name']);
-				}
 				else
-				{
 					$userToCreate = array_merge($userToCreate, file($file['tmp_name']));
-				}
-			}
-			else
-			{
-				// $importResult .= __('Aucun fichier n\'a &eacute;t&eacute; envoy&eacute;', 'evarisk') . '<br/>';
 			}
 
-			if(is_array($userToCreate) && (count($userToCreate) > 0))
-			{
+			if(is_array($userToCreate) && (count($userToCreate) > 0)){
 				$createdUserNumber = 0;
 				$errors = array();
 
-				foreach($userToCreate as $userInfos) 
-				{
+				foreach($userToCreate as $userInfos) {
 					$userInfosComponent = array();
-					if (trim($userInfos) != '') 
-					{
+					if (trim($userInfos) != ''){
 						$userInfosComponent = explode($fieldSeparator, $userInfos);
 						$userInfosComponent[0] = trim(strtolower(digirisk_tools::slugify_noaccent($userInfosComponent[0])));
 						$userInfosComponent[1] = trim($userInfosComponent[1]);
@@ -645,38 +614,31 @@ $user_additionnal_field .= '
 						$checkErrors = 0;
 
 						/*	Check if the email adress is valid or already exist	*/
-						if(!is_email($userInfosComponent[4]))
-						{
+						if(!is_email($userInfosComponent[4])){
 							$errors[] = sprintf(__('L\'adresse email <b>' . $userInfosComponent[4] . '</b> de la ligne %s n\'est <b>pas valide</b>', 'evarisk'), $userInfos);
 							$checkErrors++;
 						}
 						$checkIfMailExist = $wpdb->get_row("SELECT user_email FROM " . $wpdb->users . " WHERE user_email = '" . mysql_real_escape_string($userInfosComponent[4]) . "'");
-						if($checkIfMailExist)
-						{
+						if($checkIfMailExist){
 							$errors[] = sprintf(__('L\'adresse email <b>' . $userInfosComponent[4] . '</b> de la ligne %s est <b>d&eacute;j&agrave; utilis&eacute;</b>', 'evarisk'), $userInfos);
 							$checkErrors++;
 						}
 
 						/*	Check if the username is valid or already exist	*/
-						if(!validate_username($userInfosComponent[0]))
-						{
+						if(!validate_username($userInfosComponent[0])){
 							$errors[] = sprintf(__('L\'identifiant <b>' . $userInfosComponent[0] . '</b> de la ligne %s n\'est <b>pas valide</b>', 'evarisk'), $userInfos);
 							$checkErrors++;
 						}
-						if(username_exists($userInfosComponent[0]))
-						{
+						if(username_exists($userInfosComponent[0])){
 							$errors[] = sprintf(__('L\'identifiant <b>' . $userInfosComponent[0] . '</b> de la ligne %s est <b>d&eacute;j&agrave; utilis&eacute;</b>', 'evarisk'), $userInfos);
 							$checkErrors++;
 						}
 
 						/*	There are no errors on the email and username so we can create the user	*/
-						if($checkErrors == 0)
-						{
+						if($checkErrors == 0){
 							/*	Check if the password is given in the list to create, if not we generate one */
 							if($userInfosComponent[3] == '')
-							{
 								$userInfosComponent[3] = substr(md5(uniqid(microtime())), 0, 7);
-							}
 
 							/*	Start creating the user	*/
 							$newUserID = 0;
@@ -692,11 +654,8 @@ $user_additionnal_field .= '
 								);
 
 							if($newUserID <= 0)
-							{
 								$errors[] = sprintf(__('L\'utilisateur de la ligne %s n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk'), $userInfos);
-							}
-							else
-							{
+							else{
 								$user_import['user_imatriculation'] = $userInfosComponent[6];
 								$user_import['user_imatriculation_key'] = $userInfosComponent[7];
 								$user_import['user_birthday'] = $userInfosComponent[8];
@@ -714,25 +673,21 @@ $user_additionnal_field .= '
 								global $userWorkAccidentMandatoryFields;
 								$user_is_valid_for_accident = 'yes';
 								foreach($userWorkAccidentMandatoryFields as $field_identifier){
-									if(isset($user_import[$field_identifier]) && (trim($user_import[$field_identifier]) == '')){
+									if(isset($user_import[$field_identifier]) && (trim($user_import[$field_identifier]) == ''))
 										$user_is_valid_for_accident = 'no';
-									}
 								}
 								$user_import['user_is_valid_for_accident'] = $user_is_valid_for_accident;
 
 								update_usermeta($newUserID, 'digirisk_information', $user_import);
 
 								if($sendUserMail != '')
-								{
 									wp_new_user_notification($newUserID, $userInfosComponent[3]);
-								}
 								$createdUserNumber++;
 
 								/*	Affect a role to the new user regarding on the import file or lines and if empty the main roe field	*/
 								if ($userInfosComponent[5] == '') 
-								{
 									$userInfosComponent[5] = $userRoles;
-								}
+
 								$userRole = new WP_User($newUserID);
 								$userRole->set_role($userInfosComponent[5]);
 							}
@@ -740,27 +695,19 @@ $user_additionnal_field .= '
 					}
 				}
 
-				if($createdUserNumber >= 1)
-				{
+				if($createdUserNumber >= 1){
 					$subResult = sprintf(__('%s utilisateur a &eacute;t&eacute; cr&eacute;&eacute;', 'evarisk'), $createdUserNumber);
 					if($createdUserNumber > 1)
-					{
 						$subResult = sprintf(__('%s utilisateurs ont &eacute;t&eacute; cr&eacute;&eacute;s', 'evarisk'), $createdUserNumber);
-					}
-					
+
 					$importResult .= '<h4 style="color:#00CC00;">' . __('L\'import s\'est termin&eacute; avec succ&eacute;s. Veuillez trouver le r&eacute;sultat ci-dessous', 'evarisk') . '</h4><ul>' . $subResult . '</ul>';
 
-
 					if($sendUserMail != '')
-					{
 						$importResult .= '<div style="font-weight:bold;" >' . __('Les nouveaux utilisateurs recevront leurs mot de passe par email', 'evarisk') . '</div>';
-					}
 				}
-				if(is_array($errors) && (count($errors) > 0))
-				{
+				if(is_array($errors) && (count($errors) > 0)){
 					$subErrors = '';
-					foreach($errors as $er)
-					{
+					foreach($errors as $er){
 						$subErrors .= '<li>' . $er . '</li>';
 					}
 					$importResult .= '<h4 style="color:#FF0000;">' . __('Des erreurs sont survenues. Veuillez trouver la liste ci-dessous', 'evarisk') . '</h4><ul>' . $subErrors . '</ul>';
@@ -909,7 +856,7 @@ $user_additionnal_field .= '
 		});
 	});
 </script>
-<form enctype="multipart/form-data" method="post" action="" >
+<form enctype="multipart/form-data" method="post" action="#" >
 	<input type="hidden" name="act" id="act" value="1" />
 
 	<!-- 	Start of fast add part	-->
@@ -1065,6 +1012,7 @@ $user_additionnal_field .= '
 
 		{/*	Get user right	*/
 			$user_roles = '  ';
+			$digiPermissionForm='';
 			foreach($user->roles as $role){
 				$user_roles .= translate_user_role($role) . ', ';
 			}
@@ -1391,7 +1339,7 @@ $user_additionnal_field .= '
 
 		/*	Autocomplete search	*/
 		jQuery("#digi_user_list").autocomplete({
-			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $idElement . '&all_user=yes",
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?all_user=yes",
 			select: function( event, ui ){
 				jQuery("#complete_user_list").hide();
 				jQuery("#user_profil_edition_tabs").html(jQuery("#loadingImg").html());
@@ -1429,7 +1377,7 @@ $user_additionnal_field .= '
 			$page_title = sprintf(__('Votre profil utilisateur : %s', 'evarisk'), ELEMENT_IDENTIFIER_U . $user_to_edit . '&nbsp;-&nbsp;' . $user_infos['user_lastname'] . '&nbsp;' . $user_infos['user_firstname']);
 		}
 
-		$user_profil_page = digirisk_display::start_page($page_title, '', '', '', $element_type, false, '', false, true, 'id="icon-users"') . $user_profil_content .	digirisk_display::end_page();
+		$user_profil_page = digirisk_display::start_page($page_title, '', '', '', '', false, '', false, true, 'id="icon-users"') . $user_profil_content .	digirisk_display::end_page();
 
 		echo $user_profil_page;
 	}

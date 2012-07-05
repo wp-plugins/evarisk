@@ -181,7 +181,7 @@ class EvaGroupement {
 		global $wpdb;
 		$groupement = EvaGroupement::getGroupement($idGroupement);
 		$sousEntitesGroupement = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement, 1, "nom ASC");
-		unset($resultats);
+		unset($resultats);$resultats=array();
 		$unites = EvaGroupement::getUnitesDescendantesDuGroupement($idGroupement, 1, "nom ASC");
 		$indiceGroupement = 0;
 		$indiceUnites = 0;
@@ -336,28 +336,27 @@ class EvaGroupement {
 	* @param string $id Group identifier
 	* @return the marker informations for the google maps
 	*/
-	function getMarkersGeoLoc($id)
-	{
+	function getMarkersGeoLoc($id){
 		global $wpdb;
+		$geoLoc = null;
 		
-		if(($id == null) && (!is_int($id)) && ($id <= 0))
-		{
-			$geoLoc = null;
-		}
-		else
-		{
+		if(!empty($id) && is_int($id)){
 			$query = $wpdb->prepare("SELECT * FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $id);
 			$group = $wpdb->get_row($query);
-			$address = new EvaAddress($group->id_adresse);
-			$address->load();
-			$geoLoc = $address->getGeoLoc();
-			$scoreRisque = EvaGroupement::getScoreRisque($group->id);
-			$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_GROUPEMENT_ICON . '" alt="Groupement : "/><strong>' . $group->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . EvaGroupement::getNiveauRisque($scoreRisque) . '</span></em>';
-			$geoLoc['type'] = "groupement"; 
-			$geoLoc['adress'] = $group->id_adresse; 
-			$geoLoc['image'] = GOOGLEMAPS_GROUPE; 
-			return $geoLoc;
+
+			if(!empty($group)){
+				$address = new EvaAddress($group->id_adresse);
+				$address->load();
+				$geoLoc = $address->getGeoLoc();
+				$scoreRisque = EvaGroupement::getScoreRisque($group->id);
+				$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_GROUPEMENT_ICON . '" alt="Groupement : "/><strong>' . $group->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . EvaGroupement::getNiveauRisque($scoreRisque) . '</span></em>';
+				$geoLoc['type'] = "groupement"; 
+				$geoLoc['adress'] = $group->id_adresse; 
+				$geoLoc['image'] = GOOGLEMAPS_GROUPE;
+			}
 		}
+
+		return $geoLoc;
 	}
 
 /*

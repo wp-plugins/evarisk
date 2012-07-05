@@ -47,15 +47,19 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						case TABLE_METHODE:
 						case TABLE_GROUPEMENT:
 						case TABLE_TACHE:
-							$output .= '
+							if(!empty($_REQUEST['id'])){
+								$output .= '
 							digirisk("#node-' . $tableId . '-' . $_REQUEST['id'] . '").addClass("edited");';
+							}
 						break;
 						case TABLE_UNITE_TRAVAIL:
 						case TABLE_ACTIVITE:
 						case TABLE_DANGER:
 						case TABLE_PRECONISATION:
-							$output .= '
+							if(!empty($_REQUEST['id'])){
+								$output .= '
 							digirisk("#leaf-' . $_REQUEST['id'] . '").addClass("edited");';
+							}
 						break;
 					}
 				}
@@ -824,7 +828,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					{
 						$pictureId = isset($_REQUEST['pictureId']) ? (digirisk_tools::IsValid_Variable($_REQUEST['pictureId'])) : '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_REQUEST['description'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']);
+						$_REQUEST['description'] = !empty($_REQUEST['description'])?str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']):'';
 						$_REQUEST['description'] = str_replace("’", "'",$_REQUEST['description']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
@@ -1252,10 +1256,10 @@ echo $output;
 					break;
 					case 'loadAssociatedTask':
 					{
-						$id_risque = digirisk_tools::IsValid_Variable($_REQUEST['idRisque']);
-						$extra = digirisk_tools::IsValid_Variable($_REQUEST['extra']);
-						$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
-						$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
+						$id_risque = (!empty($_REQUEST['idRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['idRisque']):'');
+						$extra = (!empty($_REQUEST['extra'])?digirisk_tools::IsValid_Variable($_REQUEST['extra']):'');
+						$idElement = (!empty($_REQUEST['idElement'])?digirisk_tools::IsValid_Variable($_REQUEST['idElement']):'');
+						$tableElement = (!empty($_REQUEST['tableElement'])?digirisk_tools::IsValid_Variable($_REQUEST['tableElement']):'');
 						$idTable = 'loadAssociatedTask_' . $extra . '_' . $id_risque;
 						/*	Get the different corrective actions for the actual risk	*/
 						$actionsCorrectives = '';
@@ -1535,10 +1539,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						MethodeEvaluation::evaluation_method_variable_manager($_REQUEST);
 					}break;
 					case 'reloadVariables':{
-						$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode'], '');
-						$idRisque = digirisk_tools::IsValid_Variable($_REQUEST['idRisque']);
-						$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
-						$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
+						$idMethode = (!empty($_REQUEST['idMethode'])?digirisk_tools::IsValid_Variable($_REQUEST['idMethode'], ''):'');
+						$idRisque = (!empty($_REQUEST['idRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['idRisque']):'');
+						$idElement = (!empty($_REQUEST['idElement'])?digirisk_tools::IsValid_Variable($_REQUEST['idElement']):'');
+						$tableElement = (!empty($_REQUEST['tableElement'])?digirisk_tools::IsValid_Variable($_REQUEST['tableElement']):'');
 						$formId = (isset($_REQUEST['formId'])) ? digirisk_tools::IsValid_Variable($_REQUEST['formId']) : '';
 						unset($valeurInitialVariables);
 						if($idRisque != ''){
@@ -1589,7 +1593,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									});
 								</script>';
 						$quotation = 0;
-						if($risque != null){
+						if(!empty($risque)){
 							$score = Risque::getScoreRisque($risque);
 							$quotation = Risque::getEquivalenceEtalon($idMethode, $score);
 						}
@@ -1605,7 +1609,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						/*	END - Get the explanation picture if exist - END	*/
 
 						$method_operator_date = null;
-						if($risque != null){
+						if(!empty($risque)){
 							$method_operator_date = $risque[0]->date;
 						}
 
@@ -1613,6 +1617,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$listeVariables = MethodeEvaluation::getVariablesMethode($idMethode, $method_operator_date);
 						$formule = '';
 						foreach($listeVariables as $index => $variable){
+							$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $variable->id, 'Valid');
 							$formule .= 'jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val()';
 							$formule .= (isset($listeOperateur[$index]->operateur) && ($listeOperateur[$index]->operateur!= '')) ? ' ' . $listeOperateur[$index]->operateur . ' ' : '';
 						}
@@ -1621,7 +1626,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						echo '
 <div class="eval_method_var" >' . $affichage . '</div><div class="eval_method_explanation" >' . $methodExplanationPicture . '</div>';
-						if($risque != null){
+						if(!empty($risque)){
 							echo '
 <div class="clear risq_mover_container" >
 	<div id="risq_mover_title" class="alignright" >' . __('D&eacute;placer ce risque', 'evarisk') . '</div>
@@ -1897,11 +1902,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo eva_Variable::existing_var_output();
 					}break;
 					case 'load_variable_management_form':{
-						$id = digirisk_tools::IsValid_Variable($_REQUEST['id'], 0);
+						$id = !empty($_REQUEST['id'])?digirisk_tools::IsValid_Variable($_REQUEST['id']):0;
 						echo eva_Variable::var_edition_form($id);
 					}break;
 					case 'delete_var':{
-						$id = digirisk_tools::IsValid_Variable($_REQUEST['id'], 0);
+						$id = !empty($_REQUEST['id'])?digirisk_tools::IsValid_Variable($_REQUEST['id']):0;
 						$message = '';
 
 						if(current_user_can('digi_delete_method_var')){
@@ -2123,8 +2128,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				}
 				break;
 			case TABLE_TACHE:
-				switch($_REQUEST['act'])
-				{
+			if(!empty($_REQUEST['act'])){
+				switch($_REQUEST['act']){
 					case 'transfert':
 					{
 						$fils = $_REQUEST['idElementSrc'];
@@ -2277,11 +2282,12 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tache->setDescription($_REQUEST['description']);
 						$tache->setIdFrom($_REQUEST['idProvenance']);
 						$tache->setTableFrom($_REQUEST['tableProvenance']);
+						$tache->setnom_exportable_plan_action(!empty($_REQUEST['nom_exportable_plan_action'])?$_REQUEST['nom_exportable_plan_action']:'no');
+						$tache->setdescription_exportable_plan_action(!empty($_REQUEST['description_exportable_plan_action'])?$_REQUEST['description_exportable_plan_action']:'no');
 						$tache->setProgressionStatus('notStarted');
-						if(($_REQUEST['avancement'] > '0') || ($tache->getProgressionStatus() == 'inProgress'))
-						{
+						if(!empty($_REQUEST['avancement']) || ($tache->getProgressionStatus() == 'inProgress'))
 							$tache->setProgressionStatus('inProgress');
-						}
+
 						$tache->setidResponsable($_REQUEST['responsable_tache']);
 						$tache->setEfficacite($_REQUEST['efficacite']);
 						if($_REQUEST['act'] == 'taskDone')
@@ -2310,9 +2316,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$racine->save();
 						}
 						if($_REQUEST['act'] != 'taskDone')
-						{
 							$tache->computeProgression();
-						}
+
 						$tache->save();
 						$tacheMere = new EvaTask();
 						$tacheMere->convertWpdb(Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb()));
@@ -2551,7 +2556,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					case 'loadDetails':
 					case 'load_details_simple':
 					{
-						$output = '';
+						$output = $moreInfos = '';
 						$id = digirisk_tools::IsValid_Variable($_REQUEST['id']);
 						$element_identifier = explode('_t_elt_', $id);
 
@@ -2791,7 +2796,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					}
 					break;
 				}
-				break;
+			}
+			break;
 			case TABLE_ACTIVITE:
 				switch($_REQUEST['act'])
 				{
@@ -2812,9 +2818,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							break;
 						}
 						$orignal_requested_act = $_REQUEST['act'];
-						if($_REQUEST['act'] == 'update_from_external'){
+						if($_REQUEST['act'] == 'update_from_external')
 							$_REQUEST['act'] = 'update';
-						}
+
 						$activite = new EvaActivity($_REQUEST['id']);
 						$activite->load();
 						$old_activite = new EvaActivity($_REQUEST['id']);
@@ -2822,21 +2828,23 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$activite->setName($_REQUEST['nom_activite']);
 						$activite->setDescription($_REQUEST['description']);
 						$activite->setRelatedTaskId($_REQUEST['idPere']);
-						$activite->setStartDate($_REQUEST['date_debut']);
-						$activite->setFinishDate($_REQUEST['date_fin']);
-						$activite->setCout($_REQUEST['cout']);
-						$activite->setProgression($_REQUEST['avancement']);
+						$activite->setStartDate(!empty($_REQUEST['date_debut'])?$_REQUEST['date_debut']:'');
+						$activite->setFinishDate(!empty($_REQUEST['date_fin'])?$_REQUEST['date_fin']:'');
+						$activite->setCout(!empty($_REQUEST['cout'])?$_REQUEST['cout']:'');
+						$activite->setProgression(!empty($_REQUEST['avancement'])?$_REQUEST['avancement']:'');
+						$activite->setnom_exportable_plan_action(!empty($_REQUEST['nom_exportable_plan_action'])?$_REQUEST['nom_exportable_plan_action']:'no');
+						$activite->setdescription_exportable_plan_action(!empty($_REQUEST['description_exportable_plan_action'])?$_REQUEST['description_exportable_plan_action']:'no');
 						$activite->setProgressionStatus('notStarted');
-						if(($_REQUEST['avancement'] > '0') || ($activite->getProgressionStatus() == 'inProgress')){
+						if((!empty($_REQUEST['avancement']) && ($_REQUEST['avancement'] > '0')) || ($activite->getProgressionStatus() == 'inProgress'))
 							$activite->setProgressionStatus('inProgress');
-						}
-						if(($_REQUEST['avancement'] == '100') || ($_REQUEST['act'] == 'actionDone')){
+
+						if((!empty($_REQUEST['avancement']) && ($_REQUEST['avancement'] == '100')) || ($_REQUEST['act'] == 'actionDone')){
 							$activite->setProgressionStatus('Done');
 							global $current_user;
 							$activite->setidSoldeur($current_user->ID);
 							$activite->setdateSolde(current_time('mysql', 0));
 						}
-						$activite->setidResponsable($_REQUEST['responsable_activite']);
+						$activite->setidResponsable(!empty($_REQUEST['responsable_activite'])?$_REQUEST['responsable_activite']:0);
 						$activite->save();
 
 						/*	Update the action ancestor	*/
@@ -2844,7 +2852,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$relatedTask->load();
 						$relatedTask->getTimeWindow();
 						$relatedTask->computeProgression();
-						$relatedTask->setEfficacite($_REQUEST['correctiv_action_efficiency_control']);
+						$relatedTask->setEfficacite(!empty($_REQUEST['correctiv_action_efficiency_control'])?$_REQUEST['correctiv_action_efficiency_control']:'');
 						$relatedTask->save();
 
 						/*	Update the task ancestor	*/
@@ -3376,8 +3384,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						echo $messageInfo;
 					}
 					break;
-					case 'setActivityInProgress':
-					{
+					case 'setActivityInProgress':{
 						$id = digirisk_tools::IsValid_Variable($_REQUEST['id']);
 						$activite = new EvaActivity($id);
 						$activite->load();
@@ -3388,8 +3395,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $id, 'set_in_progress', '', '');
 
 						$updateTaskProgressionInTree = '';
-						if(($taskId != '') && ($taskId > 0))
-						{
+						if(($taskId != '') && ($taskId > 0)){
 							/*	Update the action ancestor	*/
 							$relatedTask = new EvaTask($taskId);
 							$relatedTask->load();
@@ -3399,8 +3405,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 							/*	Log modification on element and notify user if user subscribe	*/
 							digirisk_user_notification::log_element_modification(TABLE_TACHE, $taskId, 'set_in_progress', '', '');
 							$updateTaskProgressionInTree .= '
-	digirisk(".taskInfoContainer-' . $taskId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-	{
+	digirisk(".taskInfoContainer-' . $taskId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 		"post": "true", 
 		"table": "' . TABLE_TACHE . '",
 		"act": "actualiseProgressionInTree",
@@ -3520,6 +3525,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 				}
 				break;
 			case TABLE_DUER:
+				$output='';
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
 				switch($_REQUEST['act'])
@@ -4893,7 +4899,7 @@ echo '<pre>';print_r($_FILES);echo '</pre>';
 						$notification_to_delete = (isset($_REQUEST['notification_to_delete']) && ($_REQUEST['notification_to_delete'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['notification_to_delete']) : '';
 
 						if(is_array($_REQUEST['user_notification_insert'])){
-							$action_nb = 0;
+							$action_nb=$done_link=0;
 							foreach($_REQUEST['user_notification_insert'] as $action => $user_list){
 								$list = '  ';
 								foreach($user_list as $user_id => $action_id){
@@ -6221,7 +6227,7 @@ switch($tableProvenance)
 
 						echo '
 <table id="complete_hierarchy_table" summary="arborescence societe" cellpadding="0" cellspacing="0" class="widefat post fixed">' . 
-	arborescence_special::lectureArborescenceRisque(arborescence_special::arborescenceRisque(TABLE_GROUPEMENT, 1), $element_to_select[0], $element_to_select[1]) . '
+	arborescence_special::lectureArborescenceRisque(arborescence_special::arborescenceRisque(TABLE_GROUPEMENT, 1), (!empty($element_to_select[0])?$element_to_select[0]:''), (!empty($element_to_select[1])?$element_to_select[1]:0)) . '
 </table>';
 					}break;
 					case 'load_partial':{
@@ -6277,7 +6283,7 @@ switch($tableProvenance)
 												$query = $wpdb->prepare("SHOW COLUMNS FROM " .$table_name . " WHERE Field = %s", $column_name);
 												$columns = $wpdb->get_row($query);
 												$sub_modif .= $column_name;
-												if($columns->Field != $column_name){
+												if(empty($columns) || ($columns->Field != $column_name)){
 													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Field has been deleted', 'evarisk') . '" title="' . __('Field has been deleted', 'evarisk') . '" class="db_deleted_field_check" />';
 												}
 												else{
@@ -6337,7 +6343,7 @@ switch($tableProvenance)
 												$query = $wpdb->prepare("SHOW INDEX FROM " .$table_name . " WHERE Column_name = %s", $column_name);
 												$columns = $wpdb->get_row($query);
 												$sub_modif .= $column_name;
-												if($columns->Column_name != $column_name){
+												if((empty($columns)) || ($columns->Column_name != $column_name)){
 													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Index has been deleted', 'evarisk') . '" title="' . __('Index has been deleted', 'evarisk') . '" class="db_deleted_index_check" />';
 												}
 												else{
@@ -6625,23 +6631,20 @@ switch($tableProvenance)
 
 	//Chargement des meta-boxes
 	if(isset($_REQUEST['nomMetaBox'])){
-		switch($_REQUEST['nomMetaBox'])
-		{
+		switch($_REQUEST['nomMetaBox']){
 			case 'Geolocalisation':
-				if($_REQUEST['markers'] != "")
-				{
-					foreach($_REQUEST['markers'] as $markerImplode)
-					{
+				$markers = array();
+				if($_REQUEST['markers'] != ""){
+					foreach($_REQUEST['markers'] as $markerImplode){
 						$markerNArray = explode('"; "', stripcslashes($markerImplode));
-						for($i=0; $i<count($_REQUEST["keys"]); $i++)
-						{
+						for($i=0; $i<count($_REQUEST["keys"]); $i++){
 							$markerAArray[$_REQUEST["keys"][$i]] = $markerNArray[$i];
 						}
 						$markers[] = $markerAArray;
 					}
 				}
 				echo EvaGoogleMaps::getGoogleMap($_REQUEST['idGoogleMapsDiv'], $markers);
-				break;
+			break;
 		}
 	}
 }

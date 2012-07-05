@@ -78,7 +78,7 @@ class digirisk_product_categories
 		$categories = get_terms(WPSHOP_NEWTYPE_IDENTIFIER_CATEGORIES, array('hide_empty' => '0', 'parent' => $category_id));
 		if(count($categories) > 0){
 			$options = get_option('digirisk_product_options');
-			$choosenCategories = unserialize($options['product_categories']);
+			$choosenCategories = !empty($options['product_categories'])?unserialize($options['product_categories']):array();
 			foreach($categories as $category){
 				$checked = (is_array($choosenCategories) && in_array($category->term_id, $choosenCategories)) ? ' checked="checked" ' : '';
 				$category_tree_output .= '

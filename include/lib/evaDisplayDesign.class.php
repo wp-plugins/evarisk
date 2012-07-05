@@ -645,7 +645,7 @@ class EvaDisplayDesign {
 	 */
 	function getTableArborescence($racine, $table, $idTable, $nomRacine, $draggable = true, $outputAction = true)
 	{
-		$elements = $monCorpsTable = $class = $infoRacine = '';
+		$elements = $monCorpsTable = $class = $infoRacine = $tableArborescente = '';
 		$showTrashUtilities = false;
 		switch($table)
 		{
@@ -1791,8 +1791,7 @@ class EvaDisplayDesign {
 	* @param string $table Father element table name.
 	* @return string HTML code of the inner table.
 	*/
-	function build_tree($elementsFils, $elementPere, $table, $titreInfo, $idTable, $moreInfo)
-	{
+	function build_tree($elementsFils, $elementPere, $table, $titreInfo, $idTable, $moreInfo){
 		$monCorpsTable = $monCorpsSubElements = '';
 		$ddFeuilleClass = 'feuilleArbre';
 		$nomFeuilleClass = 'nomFeuilleArbre';
@@ -2011,24 +2010,22 @@ class EvaDisplayDesign {
 	{
 		$barreTitre = '';
 		$corpsTable = '';
-		for($i=0; $i<count($titres); $i++)
-		{
+		for($i=0; $i<count($titres); $i++){
 			$barreTitre .= '<th class="' . $classes[$i] . '" scope="col">' . $titres[$i] . '</th>';
 		}
 		if($barreTitre != '')
-		{
 			$barreTitre = '<tr valign="top">' . $barreTitre . '</tr>';
-		}
-		for($numeroLigne=0; $numeroLigne<count($lignesDeValeurs); $numeroLigne++)
-		{
-			$ligneDeValeurs = $lignesDeValeurs[$numeroLigne];
-			$corpsTable .= '<tr id="' . $idLignes[$numeroLigne] . '" valign="top" class="tr_' . $idTable . '" >';
-			for($i=0; $i<count($ligneDeValeurs); $i++)
-			{
-				$corpsTable .= '
-					<td class="' . $classes[$i] . ' ' . (!empty($ligneDeValeurs[$i]['class']) ? $ligneDeValeurs[$i]['class'] : '') . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
+
+		if(!empty($lignesDeValeurs)){
+			for($numeroLigne=0; $numeroLigne<count($lignesDeValeurs); $numeroLigne++){
+				$ligneDeValeurs = $lignesDeValeurs[$numeroLigne];
+				$corpsTable .= '<tr id="' . $idLignes[$numeroLigne] . '" valign="top" class="tr_' . $idTable . '" >';
+				for($i=0; $i<count($ligneDeValeurs); $i++){
+					$corpsTable .= '
+						<td class="' . $classes[$i] . ' ' . (!empty($ligneDeValeurs[$i]['class']) ? $ligneDeValeurs[$i]['class'] : '') . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
+				}
+				$corpsTable .= '</tr>';
 			}
-			$corpsTable .= '</tr>';
 		}
 		$table = $script . '<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed" >
 				<thead>

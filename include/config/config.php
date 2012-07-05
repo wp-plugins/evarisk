@@ -250,9 +250,9 @@
 	$inrs_danger_categories[] = array('nom' => __('Ambiances climatiques', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/climat_PictoCategorie.png');
 	$inrs_danger_categories[] = array('nom' => __('Agents biologique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manqueHygiene_PictoCategorie.png');
 
-	$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Circulations internes', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png');
-	$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Rayonnements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png');
-	$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Risques psychosociaux', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png');
+	$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Circulations internes', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/circulation.png');
+	$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Rayonnements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/rayonnement.png');
+	$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Risques psychosociaux', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/rps.png');
 
 	$inrs_danger_categories[] = array('nom' => __('Autres', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png', 'risks' => array(__('Manque de formation', 'evarisk'), __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk')));
 
@@ -260,13 +260,19 @@
 	// $inrs_danger_categories[] = array('nom' => __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/societeExt_PictoCategorie.png');
 	// $inrs_danger_categories[] = array('nom' => __('Manque de formation', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manqueFormation_PictoCategorie.png');
 
+	DEFINE('DIGI_INRS_DANGER_LIST', serialize($inrs_danger_categories));
+	
+	/*	Define the char for correctiv actions into DUER 	*/
+	DEFINE('DIGI_TASK_SEP', '_');
+	DEFINE('DIGI_SUBTASK_SEP', '+');
+
 
 	/**
 	*	Define the different existing element type
 	*/
 	$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT', __('Documents', 'evarisk') => 'DOC', __('Photos', 'evarisk') => 'PIC', __('Variable des m&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'V');
 	$digirisk_tree_options = get_option('digirisk_tree_options');
-	$identifierList = unserialize($digirisk_tree_options['digi_tree_element_identifier']);
+	$identifierList = (!empty($digirisk_tree_options['digi_tree_element_identifier']) ? unserialize($digirisk_tree_options['digi_tree_element_identifier']) : array());
 	foreach($treeElementList as $elementName => $elementDefault){
 		$optionValue = $elementDefault;
 		if(isset($identifierList[$elementDefault]) && (trim($identifierList[$elementDefault]) != '')){
@@ -290,9 +296,6 @@
 	*	Vars to delete when sure that the corresponding version is passed
 	*/
 	{
-		//version 23
-		DEFINE('EVA_MODELES_PLUGIN_OLD_DIR', EVA_HOME_DIR . 'medias/modeles/');
-
 		//version 35
 		DEFINE('EVA_RESULTATS_PLUGIN_OLD_URL', EVA_HOME_URL . 'medias/results/');
 		DEFINE('EVA_UPLOADS_PLUGIN_OLD_URL', EVA_HOME_URL . 'medias/uploads/');

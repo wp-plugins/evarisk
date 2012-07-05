@@ -123,7 +123,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$groupement_new .= ELEMENT_IDENTIFIER_GP . $postId . '<br/>';
 	}
 
-	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = $contenuAideSiret = $contenuAideSiren = $social_activity_number = "";
+	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = $contenuAideSiret = $contenuAideSiren = $social_activity_number = $contenuAideType = $contenuInputSiren = $contenuAidesocial_activity_number = "";
 	{//Nom du groupement
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
@@ -249,7 +249,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 	}
 	{//	Champs complémentaires
 		$options = get_option('digirisk_options');
-		$user_extra_fields = unserialize($options['digi_users_digirisk_extra_field']);
+		$user_extra_fields = (!empty($options['digi_users_digirisk_extra_field'])?unserialize($options['digi_users_digirisk_extra_field']):array());
 		if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
 			foreach($user_extra_fields as $field){
 				$groupement_new .= EvaDisplayInput::afficherInput('text', 'user_' . $field, $user_meta[0][$field], '', __($field, 'evarisk'), 'digirisk_user_information[' . $field . ']', false, false, 10, 'regular-text', '', '');

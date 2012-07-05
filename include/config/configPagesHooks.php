@@ -13,3 +13,7 @@
 	DEFINE('PAGE_HOOK_EVARISK_ATTRIBUTS_UTILISATEURS', 'evarisk-attributs-utilisateurs');
 	DEFINE('PAGE_HOOK_EVARISK_TACHE', 'evarisk-taches');
 	DEFINE('PAGE_HOOK_EVARISK_ACTIVITE', 'evarisk-activite');
+	DEFINE('PAGE_HOOK_EVARISK_PRECONISATION', 'evarisk-recommandation');
+	DEFINE('PAGE_HOOK_EVARISK_EVALUATION_METHODE', 'evarisk-evaluation_method');
+	DEFINE('PAGE_HOOK_EVARISK_MENU', 'evarisk-menus');
+	DEFINE('PAGE_HOOK_EVARISK_CATEGORIE_PRECONISATION', 'evarisk-categories_recommandation');

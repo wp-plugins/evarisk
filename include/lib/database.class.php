@@ -115,7 +115,7 @@ class eva_database
 			else
 			{
 				$fieldtype = explode('(',$field_definition->Type);
-				if($fieldtype[1] != '')$fieldtype[1] = str_replace(')','',$fieldtype[1]);
+				if(!empty($fieldtype[1]))$fieldtype[1] = str_replace(')','',$fieldtype[1]);
 
 				if(($fieldtype[0] == 'char') || ($fieldtype[0] == 'varchar') || ($fieldtype[0] == 'int'))
 				{

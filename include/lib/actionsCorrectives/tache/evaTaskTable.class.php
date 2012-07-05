@@ -22,8 +22,7 @@ class EvaTaskTable extends EvaBaseTask
 	 * Constructor of the EvaTaskTable class
 	 * @param array $tasks Collection of evaTask object indexed by identifier.
 	 */
-	function EvaTaskTable($tasks = array())
-	{
+	function EvaTaskTable($tasks = array()){
 		$this->tasks = $tasks;
 		unset($this->id);
 		unset($this->leftLimit);
@@ -48,6 +47,9 @@ class EvaTaskTable extends EvaBaseTask
 		unset($this->efficacite);
 		unset($this->idPhotoAvant);
 		unset($this->idPhotoApres);
+		unset($this->is_readable_from_external);
+		unset($this->nom_exportable_plan_action);
+		unset($this->description_exportable_plan_action);
 	}
   
 	/**
@@ -122,6 +124,9 @@ class EvaTaskTable extends EvaBaseTask
 			$dateSolde = digirisk_tools::IsValid_Variable($task->getdateSolde());
 			$hasPriority = digirisk_tools::IsValid_Variable($task->gethasPriority());
 			$efficacite = digirisk_tools::IsValid_Variable($task->getEfficacite());
+			$is_readable_from_external = digirisk_tools::IsValid_Variable($task->get_external_readable());
+			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($task->getnom_exportable_plan_action());
+			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($task->getdescription_exportable_plan_action());
 		}
     {//Query creation
       $sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -200,6 +205,18 @@ class EvaTaskTable extends EvaBaseTask
 			if($idPhotoApres != '')
       {
         $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
+      }	
+			if($is_readable_from_external != '')
+      {
+        $sql = $sql . " AND " . self::is_readable_from_external . " = '" . mysql_real_escape_string($is_readable_from_external) . "'";
+      }	
+			if($nom_exportable_plan_action != '')
+      {
+        $sql = $sql . " AND " . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "'";
+      }	
+			if($description_exportable_plan_action != '')
+      {
+        $sql = $sql . " AND " . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "'";
       }
     }
     

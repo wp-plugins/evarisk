@@ -73,25 +73,21 @@ class digirisk_form
 	function check_input_type($input_def, $input_domain = '')
 	{
 		$input_option = '';
-		if($input_def['option'])
-		{
+		if(!empty($input_def['option']))
 			$input_option = $input_def['option'];
-		}
+
 		$valueToPut = '';
-		if($input_def['valueToPut'])
-		{
+		if(!empty($input_def['valueToPut']))
 			$valueToPut = $input_def['valueToPut'];
-		}
+
 		$input_id = $input_def['name'];
-		if($input_def['id'])
-		{
+		if(!empty($input_def['id']))
 			$input_id = $input_def['id'];
-		}
+
 		$input_name = $input_def['name'];
-		if($input_domain != '')
-		{
+		if(!empty($input_domain))
 			$input_name = $input_domain . '[' . $input_def['name'] . ']';
-		}
+
 		$input_value = $input_def['value'];
 		$input_type = $input_def['type'];
 		$the_input = '';

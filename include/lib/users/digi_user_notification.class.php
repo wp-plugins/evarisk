@@ -38,6 +38,7 @@ class digirisk_user_notification{
 	function get_action($action_infos){
 		global $wpdb;
 		$actions = array();
+		$conditions = '';
 
 		if(is_array($action_infos) && (count($action_infos) > 0)){
 			foreach($action_infos as $field_name => $field_infos){
@@ -82,6 +83,7 @@ WHERE 1" . $conditions, $conditions_value);
 
 <!--	Save button -->
 <div class="clear" id="saveButtonBoxContainer" >';
+	$saveButtonOuput=false;
 	switch($element_type){
 		case TABLE_TACHE:
 			$currentTask = new EvaTask($element_identifier);
@@ -89,7 +91,7 @@ WHERE 1" . $conditions, $conditions_value);
 			$ProgressionStatus = $currentTask->getProgressionStatus();
 
 			if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') ){
-				$saveButtonOuput = 'yes';
+				$saveButtonOuput = true;
 			}
 		break;
 		case TABLE_ACTIVITE:
@@ -98,7 +100,7 @@ WHERE 1" . $conditions, $conditions_value);
 			$ProgressionStatus = $current_action->getProgressionStatus();
 
 			if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee')== 'oui') ){
-				$saveButtonOuput = 'yes';
+				$saveButtonOuput = true;
 			}
 		break;
 	}
@@ -244,7 +246,7 @@ WHERE LUN.status = 'valid'
 				$stored_notification_link_list[$notification_link->id_user][] = $notification_link->id_notification;
 			}
 			{/*	Affichage de la liste des utilisateurs	*/
-				$idTable = 'listeIndividusPourNotification' . $tableElement . $idElement;
+				$idTable = 'listeIndividusPourNotification' . $table_element . $id_element;
 				unset($titres);
 				$titres[] = ucfirst(strtolower(__('Id.', 'evarisk')));
 				$titres[] = ucfirst(strtolower(__('Nom', 'evarisk')));
@@ -277,6 +279,7 @@ WHERE LUN.status = 'valid'
 				unset($valeurs);
 				$user_info = evaUser::getUserInformation($utilisateur->id_user);
 
+				$idLigne='digi_notification_user_line-'.$utilisateur->id_user;
 				$valeurs[] = array('value' => ELEMENT_IDENTIFIER_U . $utilisateur->id_user, 'class' => '');
 				$valeurs[] = array('value' => $user_info[$utilisateur->id_user]['user_lastname'], 'class' => '');
 				$valeurs[] = array('value' => $user_info[$utilisateur->id_user]['user_firstname'], 'class' => '');
@@ -468,7 +471,7 @@ WHERE LUN.status = 'valid'
 						foreach($modification_datas as $user_id){
 							if($user_id > 0){
 								$user_info = evaUser::getUserInformation($user_id);
-								$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
+								$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . (!empty($user_info[$user_id]['user_lastname'])?$user_info[$user_id]['user_lastname']:'') . ' ' . (!empty($user_info[$user_id]['user_fistname'])?$user_info[$user_id]['user_fistname']:'') . "
 ";
 							}
 						}
@@ -482,7 +485,7 @@ WHERE LUN.status = 'valid'
 						foreach($modification_datas as $user_id){
 							if($user_id > 0){
 								$user_info = evaUser::getUserInformation($user_id);
-								$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_fistname'] . "
+								$modification_content .= '- ' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . (!empty($user_info[$user_id]['user_lastname'])?$user_info[$user_id]['user_lastname']:'') . ' ' . (!empty($user_info[$user_id]['user_fistname'])?$user_info[$user_id]['user_fistname']:'') . "
 ";
 							}
 						}
@@ -710,7 +713,7 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 		$action_detailled_information = self::get_action(array('action' => array('%s', $action), 'table_element' => array('%s', $table_element)));
 
 		/*	Insert the modification into database	*/
-		$wpdb->insert(DIGI_DBT_ELEMENT_MODIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_action' => $action_detailled_information[0]->id, 'id_element' => $id_element, 'table_element' => $table_element, 'old_content' => serialize($old_content)));
+		$wpdb->insert(DIGI_DBT_ELEMENT_MODIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_action' => (!empty($action_detailled_information)?$action_detailled_information[0]->id:0), 'id_element' => $id_element, 'table_element' => $table_element, 'old_content' => serialize($old_content)));
 
 		digirisk_user_notification::notify_affiliated_user($table_element, $id_element, $action, $old_content, $new_content);
 	}

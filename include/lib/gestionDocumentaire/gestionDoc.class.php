@@ -339,7 +339,8 @@ class eva_gestionDoc
 			LIMIT 1"
 		);
 		$documentDefaultId = $wpdb->get_row($query);
-		$idDocument = $documentDefaultId->id;
+		if(!empty($documentDefaultId))
+			$idDocument = $documentDefaultId->id;
 
 		return $idDocument;
 	}
@@ -901,20 +902,15 @@ class eva_gestionDoc
 
 					{/*	Remplissage du template pour le plan d'action	*/
 						$planDaction = unserialize($lastDocument->plan_d_action);
-						$storedPlanDaction = eva_documentUnique::readBilanUnitaire($planDaction, 'plan_d_action');
+						$storedPlanDaction = eva_documentUnique::readBilanUnitaire($planDaction['affected'], 'plan_d_action');
 
 						/*	Lecture des types de risques existants pour construction du plan d'action	*/
-						foreach($typeRisquePlanAction as $riskTypeIdentifier => $riskTypeValue)
-						{
+						foreach($typeRisquePlanAction as $riskTypeIdentifier => $riskTypeValue){
 							$planDactionR = $odf->setSegment($riskTypeIdentifier);
-							if($planDactionR)
-							{
-								if( is_array($storedPlanDaction[$riskTypeValue]) )
-								{
-									foreach($storedPlanDaction[$riskTypeValue] AS $elements)
-									{
-										foreach($elements AS $element)
-										{
+							if($planDactionR){
+								if( is_array($storedPlanDaction[$riskTypeValue]) ){
+									foreach($storedPlanDaction[$riskTypeValue] AS $elements){
+										foreach($elements AS $element){
 											$element['nomElement'] = str_replace('<br />', "
 		", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
 											$element['identifiantRisque'] = str_replace('<br />', "
@@ -938,6 +934,38 @@ class eva_gestionDoc
 								}
 								$odf->mergeSegment($planDactionR);
 							}
+						}
+
+						$planDactionUA = $odf->setSegment('planDaction');
+						if($planDactionUA){
+							if( is_array($planDaction['unaffected']) ){
+								foreach($planDaction['unaffected'] AS $element){
+									// foreach($elements AS $element){
+										$element['idAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['idAction']));
+										$element['nomAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomAction']));
+										$element['descriptionAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['descriptionAction']));
+										$element['ajoutAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['ajoutAction']));
+										$element['responsableAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['responsableAction']));
+										$element['affectationAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['affectationAction']));
+
+										$planDactionUA->setVars('idAction', $element['idAction'], true, 'UTF-8');
+										$planDactionUA->setVars('nomAction', $element['nomAction'], true, 'UTF-8');
+										$planDactionUA->setVars('descriptionAction', $element['descriptionAction'], true, 'UTF-8');
+										$planDactionUA->setVars('ajoutAction', $element['ajoutAction'], true, 'UTF-8');
+										$planDactionUA->setVars('responsableAction', $element['responsableAction'], true, 'UTF-8');
+										$planDactionUA->setVars('affectationAction', $element['affectationAction'], true, 'UTF-8');
+
+										$planDactionUA->merge();
+									// }
+								}
+							}
+							$odf->mergeSegment($planDactionUA);
 						}
 					}
 

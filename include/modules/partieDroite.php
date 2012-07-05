@@ -6,7 +6,7 @@
 	$tableElement = $_POST['tableElement'];
 	$idElement = $_POST['idElement'];
 	$partition = isset($_POST['partition'])?$_POST['partition']:'tout';
-	$element = '';
+	$element = $script = '';
 	$v_nb = 0;
 
 	require_once(EVA_CONFIG);
@@ -16,7 +16,7 @@
 			$pageHook = PAGE_HOOK_EVARISK_EVALUATION_METHODE;
 			MethodeEvaluation::includes_evaluation_method_boxes($idElement, $partition);
 			$element = MethodeEvaluation::getMethod($idElement);
-			$element_status = ucfirst($element->Status);
+			$element_status = !empty($element)?ucfirst($element->Status):'';
 			$markers = '';
 			$v_nb = 1;
 		break;
@@ -25,7 +25,7 @@
 			$pageHook = PAGE_HOOK_EVARISK_MENU;
 			digirisk_menu::includes_menu_boxes($idElement, $partition);
 			$element = digirisk_menu::get_element("'valid'", array('id' => $idElement), '');
-			$element_status = ucfirst($element->status);
+			$element_status = !empty($element)?ucfirst($element->status):'';
 			$markers = '';
 			$v_nb = 1;
 		break;
@@ -34,14 +34,14 @@
 			$pageHook = PAGE_HOOK_EVARISK_CATEGORIE_PRECONISATION;
 			evaRecommandationCategory::includes_recommandation_category_boxes($idElement, $partition);
 			$element = evaRecommandationCategory::getCategoryRecommandation($idElement);
-			$element_status = ucfirst($element->status);
+			$element_status = !empty($element)?ucfirst($element->status):'';
 			$markers = '';
 		break;
 		case TABLE_PRECONISATION:
 			$pageHook = PAGE_HOOK_EVARISK_PRECONISATION;
 			evaRecommandation::includes_recommandation_boxes($idElement, $partition);
 			$element = evaRecommandation::getRecommandation($idElement);
-			$element_status = ucfirst($element->status);
+			$element_status = !empty($element)?ucfirst($element->status):'';
 			$markers = '';
 		break;
 
@@ -49,7 +49,7 @@
 			$pageHook = PAGE_HOOK_EVARISK_CATEGORIES_DANGERS;
 			digirisk_danger::includesDangers($idElement, $partition);
 			$element = categorieDangers::getCategorieDanger($idElement);
-			$element_status = $element->Status;
+			$element_status = !empty($element)?$element->Status:'';
 			$markers = '';
 			$v_nb = 1;
 		break;
@@ -57,7 +57,7 @@
 			$pageHook = PAGE_HOOK_EVARISK_DANGERS;
 			digirisk_danger::includesDangers($idElement, $partition);
 			$element = EvaDanger::getDanger($idElement);
-			$element_status = $element->Status;
+			$element_status = !empty($element)?$element->Status:'';
 			$markers = '';
 			$v_nb = 1;
 		break;

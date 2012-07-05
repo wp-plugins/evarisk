@@ -44,12 +44,15 @@ class EvaTask extends EvaBaseTask
 			$efficacite = digirisk_tools::IsValid_Variable($this->getEfficacite());
 			$idPhotoAvant = digirisk_tools::IsValid_Variable($this->getidPhotoAvant());
 			$idPhotoApres = digirisk_tools::IsValid_Variable($this->getidPhotoApres());
+			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getnom_exportable_plan_action());
+			$is_readable_from_external = digirisk_tools::IsValid_Variable($this->get_external_readable());
+			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getdescription_exportable_plan_action());
 		}
 		
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ",  " . self::firstInsert . ")
+			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::is_readable_from_external . ", " . self::firstInsert . ")
 				VALUES ('" . mysql_real_escape_string($name) . "', 
 								'" . mysql_real_escape_string($leftLimit) . "', 
 								'" . mysql_real_escape_string($rightLimit) . "', 
@@ -72,6 +75,9 @@ class EvaTask extends EvaBaseTask
 								'" . mysql_real_escape_string($efficacite) . "',
 								'" . mysql_real_escape_string($idPhotoAvant) . "', 
 								'" . mysql_real_escape_string($idPhotoApres) . "', 
+								'" . mysql_real_escape_string($nom_exportable_plan_action) . "', 
+								'" . mysql_real_escape_string($description_exportable_plan_action) . "', 
+								'" . mysql_real_escape_string($is_readable_from_external) . "', 
 								'" . current_time('mysql', 0) . "')";
 		}
 		else
@@ -97,6 +103,9 @@ class EvaTask extends EvaBaseTask
 				" . self::ProgressionStatus . " = '" . mysql_real_escape_string($ProgressionStatus) . "' ,
 				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "' ,
 				" . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "' ,
+				" . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "' ,
+				" . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "' ,
+				" . self::is_readable_from_external . " = '" . mysql_real_escape_string($is_readable_from_external) . "' ,
 				" . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "' 
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
@@ -341,7 +350,7 @@ class EvaTask extends EvaBaseTask
 						$date = explode('-', $activityFinishDate);
 						$activityFinishYear = $date[0];
 						$activityFinishMonth = $date[1];
-						$activityFinishMonth = $date[2];
+						$activityFinishDay = $date[2];
 
 						if(($activityStartYear < $startYear) 
 							OR ($activityStartYear == $startYear AND $activityStartMonth < $startMonth) 
@@ -490,21 +499,20 @@ class EvaTask extends EvaBaseTask
 		$tache->setTableFrom($_POST['tableProvenance']);
 		$tache->setidResponsable($_POST['responsable_activite']);
 		$tache->setProgressionStatus('notStarted');
+		$tache->setnom_exportable_plan_action(!empty($_POST['nom_exportable_plan_action'])?$_POST['nom_exportable_plan_action']:'no');
+		$tache->setdescription_exportable_plan_action(!empty($_POST['description_exportable_plan_action'])?$_POST['description_exportable_plan_action']:'no');
 
-		if(isset($_POST['correctiv_action_efficiency_control'])){
+		if(isset($_POST['correctiv_action_efficiency_control']))
 			$tache->setEfficacite($_POST['correctiv_action_efficiency_control']);
-		}
 
-		if($_POST['avancement'] > '0'){
+		if($_POST['avancement'] > '0')
 			$tache->setProgressionStatus('inProgress');
-		}
 
-		if(isset($_POST['hasPriority'])){
+
+		if(isset($_POST['hasPriority']))
 			$tache->sethasPriority($_POST['hasPriority']);
-		}
-		else{
+		else
 			$tache->sethasPriority('no');
-		}
 
 		if($_POST['avancement'] == '100'){
 			$tache->setProgressionStatus('Done');

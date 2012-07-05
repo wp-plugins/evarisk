@@ -275,7 +275,7 @@ class digirisk_display
 	* @return string HTML code of the table.
 	*/
 	function standard_tree($tree_root, $element_type, $output_table_id, $nomRacine, $draggable = true, $outputAction = true){
-		$monCorpsTable = $class = $infoRacine = $actions = $script_action = '';
+		$monCorpsTable = $class = $infoRacine = $actions = $script_action = $tableArborescente = '';
 		$showTrashUtilities = $output_info = false;
 
 		$main_tree_id = $tree_root->id;
@@ -423,6 +423,7 @@ class digirisk_display
 	<thead>
 		<tr>
 			<th>' . $infoRacine['title'] . '</th>';
+		$info_racine_output='';
 		if($output_info){
 			$tableArborescente .= '
 			<th class="infoList">' . $titreInfo . '</th>';
@@ -451,7 +452,7 @@ class digirisk_display
 
 		/*	If option is set to not load complete tree	*/
 		$options = get_option('digirisk_tree_options');
-		if($options['digi_tree_load_complete_tree'] == 'non'){
+		if(!empty($options['digi_tree_load_complete_tree']) && ($options['digi_tree_load_complete_tree'] == 'non')){
 			$tableArborescente .= '
 		jQuery("#' . $output_table_id . ' .nomNoeudArbre").click(function(){
 			if(jQuery(this).parent("tr").hasClass("expanded") && !jQuery(this).parent("tr").hasClass("already_load")){
@@ -1002,6 +1003,7 @@ class digirisk_display
 	* @return string The information.
 	*/
 	function get_info_column_content($table, $elementId, $more_info = false){
+		$info=array();
 		switch($table){
 			case TABLE_DANGER :
 				$info['title'] = __('Cat&eacute;gories de danger', 'evarisk');
@@ -1067,6 +1069,11 @@ class digirisk_display
 					$info['class'] = 'userForbiddenActionCursor';
 				}
 			break;
+			default:
+				$info['title'] = '';
+				$info['value'] = '';
+				$info['class'] = '';
+			break;
 		}
 
 		return $info;
@@ -1084,7 +1091,7 @@ class digirisk_display
 	* @return string HTML code of the table.
 	*/
 	function standard_configuration_tree($element_type, $output_table_id, $nomRacine, $draggable = true, $outputAction = true){
-		$infoRacine = $actions = $script_action = '';
+		$infoRacine = $actions = $script_action = $tableArborescente = '';
 		$showTrashUtilities = $output_info = false;
 
 		switch($element_type){
@@ -1127,7 +1134,7 @@ class digirisk_display
 				if($outputAction){
 					if(current_user_can('digi_add_method')){
 						$actions = '
-							<td class="noPadding addMain" id="addMain' . $element_type . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une m&eacute;thode', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une m&eacute;thode', 'evarisk')) . '" /></td>';
+							<td class="noPadding addMain" id="addMain' . $element_type . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une m&eacute;thode', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une m&eacute;thode', 'evarisk')) . '" /></td>';
 					}
 					else{
 						$actions = '
@@ -1148,7 +1155,7 @@ class digirisk_display
 					}
 
 					$script_action = '
-		action_on_add_button("' . $output_table_id . '", "' . $element_type . '", "' . $sub_element_type . '", "");
+		action_on_add_button("' . $output_table_id . '", "' . $element_type . '", "", "");
 		main_tree_action_node("' . $output_table_id . '", "' . $element_type . '", "' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?', 'evarisk') . '");';
 				}
 
@@ -1243,15 +1250,15 @@ class digirisk_display
 		if(!empty($_REQUEST['idPere'])){
 			$element = EvaGroupement::getGroupement($_REQUEST['idPere']);
 			$parent_arborescence = Arborescence::getAncetre($_REQUEST['table'], $element);
-			if(is_array($parent_arboresence) && !empty($parent_arboresence)){
-				foreach($parent_arboresence as $selected_element_ancester){
+			if(is_array($parent_arborescence) && !empty($parent_arborescence)){
+				foreach($parent_arborescence as $selected_element_ancester){
 					if(!in_array('node-main_table_' . $_REQUEST['table'] . '-' . $selected_element_ancester->id, $_REQUEST['expanded'])){
 						$tableArborescente .= '
 			jQuery("#node-main_table_' . $_REQUEST['table'] . '-' . $selected_element_ancester->id . '-name").children("span.expander").click();/* Expand ancester */';
 					}
 				}
 			}
-			if(!in_array('node-main_table_' . $_REQUEST['table'] . '-' . $selected_element_ancester->id . '-name', $_REQUEST['expanded'])){
+			if(!in_array('node-main_table_' . $_REQUEST['table'] . '-' . $_REQUEST['idPere'] . '-name', $_REQUEST['expanded'])){
 				$tableArborescente .= '
 		jQuery("#node-main_table_' . $_REQUEST['table'] . '-' . $_REQUEST['idPere'] . '-name").children("span.expander").click();';
 			}
@@ -1337,7 +1344,7 @@ class digirisk_display
 						$tdAddMain = '<td class="noPadding" >&nbsp;</td>';
 
 						if(current_user_can('digi_add_recommandation')){
-							$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une pr&eacute;conisation', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une pr&eacute;conisation', 'evarisk')) . '" />';
+							$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une pr&eacute;conisation', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une pr&eacute;conisation', 'evarisk')) . '" />';
 						}
 						else{
 							$tdAddSecondary = '<td class="noPadding >&nbsp;';

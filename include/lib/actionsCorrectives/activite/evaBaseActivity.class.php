@@ -31,6 +31,8 @@ class EvaBaseActivity
 	const dateSolde = 'dateSolde';
 	const idPhotoAvant = 'idPhotoAvant';
 	const idPhotoApres = 'idPhotoApres';
+	const nom_exportable_plan_action = 'nom_exportable_plan_action';
+	const description_exportable_plan_action = 'description_exportable_plan_action';
 
 /*
  * Class variable define
@@ -112,6 +114,8 @@ class EvaBaseActivity
 	 * @var string picture after action
 	 */
 	var $idPhotoApres;
+	var $nom_exportable_plan_action;
+	var $description_exportable_plan_action;
 	
 /*
  *	Constructeur et accesseurs
@@ -137,7 +141,7 @@ class EvaBaseActivity
 	 * @param string $ProgressionStatus The progression status
 	 * @param date $dateSolde The date the action was mark as done
 	 */
-	function EvaBaseactivity($id = null, $relatedTaskId = null, $name = '',	$description = '', $startDate = '', $finishDate = '', $place = '', $cout = '', $progression = 0, $status = 'Valid', $firstInsert = '', $idCreateur ='', $idResponsable ='', $idSoldeur ='', $idSoldeurChef ='',  $idPhotoAvant ='',  $idPhotoApres ='', $ProgressionStatus ='', $dateSolde ='')
+	function EvaBaseactivity($id = null, $relatedTaskId = null, $name = '',	$description = '', $startDate = '', $finishDate = '', $place = '', $cout = '', $progression = 0, $status = 'Valid', $firstInsert = '', $idCreateur ='', $idResponsable ='', $idSoldeur ='', $idSoldeurChef ='',  $idPhotoAvant ='',  $idPhotoApres ='', $ProgressionStatus ='', $nom_exportable_plan_action ='', $description_exportable_plan_action ='', $dateSolde ='')
 	{
 		$this->id = $id;
 		$this->relatedTaskId = $relatedTaskId;
@@ -157,6 +161,8 @@ class EvaBaseActivity
 		$this->idPhotoApres = $idPhotoApres;
 		$this->ProgressionStatus = $ProgressionStatus;
 		$this->dateSolde = $dateSolde;
+		$this->nom_exportable_plan_action = $nom_exportable_plan_action;
+		$this->description_exportable_plan_action = $description_exportable_plan_action;
 	}
 	
 	/**
@@ -501,6 +507,41 @@ class EvaBaseActivity
 		$this->idPhotoApres = $idPhotoApres;
 	}
 	
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getnom_exportable_plan_action()
+	{
+		return $this->nom_exportable_plan_action;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setnom_exportable_plan_action($nom_exportable_plan_action)
+	{
+		$this->nom_exportable_plan_action = $nom_exportable_plan_action;
+	}
+	/**
+	 * Returns The date that the action was mark as done
+	 * @return date the date
+	 */
+	function getdescription_exportable_plan_action()
+	{
+		return $this->description_exportable_plan_action;
+	}
+
+	/**
+	 * Returns The date that the action was mark as done
+	 * @param string $dateSolde The date
+	 */
+	function setdescription_exportable_plan_action($description_exportable_plan_action)
+	{
+		$this->description_exportable_plan_action = $description_exportable_plan_action;
+	}
+	
 /*
  * Others methods
  */
@@ -529,6 +570,8 @@ class EvaBaseActivity
 		$this->setdateSolde($wpdbActivity->dateSolde);
 		$this->setidPhotoAvant($wpdbActivity->idPhotoAvant);
 		$this->setidPhotoApres($wpdbActivity->idPhotoApres);
+		$this->setnom_exportable_plan_action($wpdbActivity->nom_exportable_plan_action);
+		$this->setdescription_exportable_plan_action($wpdbActivity->description_exportable_plan_action);
 	}
 
 	/**
@@ -557,6 +600,8 @@ class EvaBaseActivity
 					self::idResponsable => $this->getidResponsable(),
 					self::firstInsert => $this->getFirstInsert(),
 					self::ProgressionStatus => $this->ProgressionStatus(),
+					self::nom_exportable_plan_action => $this->getnom_exportable_plan_action(),
+					self::description_exportable_plan_action => $this->getdescription_exportable_plan_action(),
 					self::dateSolde => $this->dateSolde()
 				)
 			);

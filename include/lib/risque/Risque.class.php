@@ -142,7 +142,8 @@ class Risque {
 			ORDER BY tableValeurEtalon1.niveauSeuil DESC
 			LIMIT 1"
 		);
-		return (int)$resultat->niveauSeuil;
+		$niveauSeuil=(!empty($resultat->niveauSeuil)?(int)$resultat->niveauSeuil:0);
+		return $niveauSeuil;
 	}	
 	
 	function getNiveauRisque($niveauSeuil){
@@ -524,11 +525,10 @@ class Risque {
 		$classes[] = '';
 		$classes[] = 'columnQuotation';
 
-		$idLignes[] = 'risque-' . $actionCorrective->getId();
-
 		if(is_array($association_time) && (count($association_time) > 0)){
 			$i = 0;
 			foreach($association_time as $time){
+					$idLignes[] = 'risque-' . $actionCorrective->getId() . '-' . $time;
 					/*	Get the name for the association time	*/
 					switch($time){
 						case 'before':
@@ -566,15 +566,19 @@ class Risque {
 						$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
 					}
 
-					$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
-					$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
-					foreach($listeVariables as $ordre => $variable){
-						$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
-					}
+					$quotation=$niveauSeuil=null;
+					if(!empty($risque)){
+						$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
+						$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risque[0]->date);
+						foreach($listeVariables as $ordre => $variable){
+							$tableauVariables[] = array('nom' => $variable->nom, 'valeur' => $valeurVariables[$variable->id]);
+						}
 
-					$idMethode = $risque[0]->id_methode;
-					$score = Risque::getScoreRisque($risque);
-					$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+						$idMethode = $risque[0]->id_methode;
+						$score = Risque::getScoreRisque($risque);
+					
+						$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
+					}
 					$niveauSeuil = Risque::getSeuil($quotation);
 
 					unset($ligneDeValeurs);

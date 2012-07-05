@@ -390,7 +390,7 @@ class eva_Variable {
 						jQuery("#'. $idInputMax . '").blur(function(){
 							jQuery("#'. $idInputMin . '").blur();
 						});';
-			if(is_array($existing_alternativ_vars) && !empty($existing_alternativ_vars)){
+			if(!empty($existing_alternativ_vars)){
 					$script .= '
 						jQuery("#'. $idInput . '").prop("checked", true);
 						jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");

@@ -231,36 +231,36 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function digirisk_options_validator($input){
 		global $wpdb;
-		$newinput['digi_activ_trash'] = trim($input['digi_activ_trash']);
+		$newinput['digi_activ_trash'] = (!empty($input['digi_activ_trash'])?trim($input['digi_activ_trash']):'');
 
-		$newinput['responsable_Tache_Obligatoire'] = trim($input['responsable_Tache_Obligatoire']);
-		$newinput['responsable_Action_Obligatoire'] = trim($input['responsable_Action_Obligatoire']);
-		$newinput['possibilite_Modifier_Tache_Soldee'] = trim($input['possibilite_Modifier_Tache_Soldee']);
-		$newinput['possibilite_Modifier_Action_Soldee'] = trim($input['possibilite_Modifier_Action_Soldee']);
-		$newinput['avertir_Solde_Action_Non_100'] = trim($input['avertir_Solde_Action_Non_100']);
-		$newinput['avertir_Solde_Tache_Ayant_Action_Non_100'] = trim($input['avertir_Solde_Tache_Ayant_Action_Non_100']);
-		$newinput['affecter_uniquement_tache_soldee_a_un_risque'] = trim($input['affecter_uniquement_tache_soldee_a_un_risque']);
-		$newinput['action_correctives_avancees'] = trim($input['action_correctives_avancees']);
-		$newinput['export_only_priority_task'] = trim($input['export_only_priority_task']);
-		$newinput['export_tasks'] = trim($input['export_tasks']);
-		$newinput['digi_ac_allowed_ext'] = $input['digi_ac_allowed_ext'];
-		$newinput['digi_ac_allow_front_ask'] = $input['digi_ac_allow_front_ask'];
-		$newinput['digi_ac_front_ask_parent_task_id'] = $input['digi_ac_front_ask_parent_task_id'];
+		$newinput['responsable_Tache_Obligatoire'] = (!empty($input['responsable_Tache_Obligatoire'])?trim($input['responsable_Tache_Obligatoire']):'');
+		$newinput['responsable_Action_Obligatoire'] = (!empty($input['responsable_Action_Obligatoire'])?trim($input['responsable_Action_Obligatoire']):'');
+		$newinput['possibilite_Modifier_Tache_Soldee'] = (!empty($input['possibilite_Modifier_Tache_Soldee'])?trim($input['possibilite_Modifier_Tache_Soldee']):'');
+		$newinput['possibilite_Modifier_Action_Soldee'] = (!empty($input['possibilite_Modifier_Action_Soldee'])?trim($input['possibilite_Modifier_Action_Soldee']):'');
+		$newinput['avertir_Solde_Action_Non_100'] = (!empty($input['avertir_Solde_Action_Non_100'])?trim($input['avertir_Solde_Action_Non_100']):'');
+		$newinput['avertir_Solde_Tache_Ayant_Action_Non_100'] = (!empty($input['avertir_Solde_Tache_Ayant_Action_Non_100'])?trim($input['avertir_Solde_Tache_Ayant_Action_Non_100']):'');
+		$newinput['affecter_uniquement_tache_soldee_a_un_risque'] = (!empty($input['affecter_uniquement_tache_soldee_a_un_risque'])?trim($input['affecter_uniquement_tache_soldee_a_un_risque']):'');
+		$newinput['action_correctives_avancees'] = (!empty($input['action_correctives_avancees'])?trim($input['action_correctives_avancees']):'');
+		$newinput['export_only_priority_task'] = (!empty($input['export_only_priority_task'])?trim($input['export_only_priority_task']):'');
+		$newinput['export_tasks'] = (!empty($input['export_tasks'])?trim($input['export_tasks']):'');
+		$newinput['digi_ac_allowed_ext'] = (!empty($input['digi_ac_allowed_ext'])?$input['digi_ac_allowed_ext']:'');
+		$newinput['digi_ac_allow_front_ask'] = (!empty($input['digi_ac_allow_front_ask'])?$input['digi_ac_allow_front_ask']:'');
+		$newinput['digi_ac_front_ask_parent_task_id'] = (!empty($input['digi_ac_front_ask_parent_task_id'])?$input['digi_ac_front_ask_parent_task_id']:'');
 
-		$newinput['risques_avances'] = trim($input['risques_avances']);
+		$newinput['risques_avances'] = (!empty($input['risques_avances'])?trim($input['risques_avances']):'');
 
-		$newinput['taille_photo_poste_fiche_de_poste'] = trim($input['taille_photo_poste_fiche_de_poste']);
+		$newinput['taille_photo_poste_fiche_de_poste'] = (!empty($input['taille_photo_poste_fiche_de_poste'])?trim($input['taille_photo_poste_fiche_de_poste']):'');
 
-		$newinput['recommandation_efficiency_activ'] = trim($input['recommandation_efficiency_activ']);
+		$newinput['recommandation_efficiency_activ'] = (!empty($input['recommandation_efficiency_activ'])?trim($input['recommandation_efficiency_activ']):'');
 
-		$newinput['emailDomain'] = trim(str_replace('@', '', $input['emailDomain']));
-		$newinput['digi_users_access_field'] = trim($input['digi_users_access_field']);
-		$newinput['identifiant_htpasswd'] = trim($input['identifiant_htpasswd']);
-		$newinput['password_htpasswd'] = trim($input['password_htpasswd']);
+		$newinput['emailDomain'] = (!empty($input['emailDomain'])?trim(str_replace('@', '', $input['emailDomain'])):'');
+		$newinput['digi_users_access_field'] = (!empty($input['digi_users_access_field'])?trim($input['digi_users_access_field']):'');
+		$newinput['identifiant_htpasswd'] = (!empty($input['identifiant_htpasswd'])?trim($input['identifiant_htpasswd']):'');
+		$newinput['password_htpasswd'] = (!empty($input['password_htpasswd'])?trim($input['password_htpasswd']):'');
 		
 		digirisk_options::create_files($newinput['digi_users_access_field'],$newinput['identifiant_htpasswd'],$newinput['password_htpasswd']);
 		
-		$newinput['digi_users_digirisk_extra_field'] = serialize($input['digi_users_digirisk_extra_field']);
+		$newinput['digi_users_digirisk_extra_field'] = (!empty($input['digi_users_digirisk_extra_field'])?serialize($input['digi_users_digirisk_extra_field']):'');
 
 		return $newinput;
 	}
@@ -715,7 +715,7 @@ if(current_user_can('digi_edit_option')){
 		if(is_array($posts_status) && (count($posts_status) > 0)){
 			$tableContent = '<span class="evarisk_options_explanation" > ' . __('Vous pouvez d&eacute;finir le statut des produits que vous voulez afficher (si aucun n\'est s&eacute;lectionn&eacute; seul les produits avec le statut "publi&eacute;" seront affich&eacute;s dans Digirisk)', 'evarisk') . '</span><br/>';
 			$options = get_option('digirisk_product_options');
-			$choosenStatus = unserialize($options['product_status']);
+			$choosenStatus = !empty($options['product_status'])?unserialize($options['product_status']):array();
 			foreach($posts_status as $status){
 				$checked = (is_array($choosenStatus) && in_array($status, $choosenStatus)) ? ' checked="checked" ' : '';
 				$tableContent .= '
@@ -795,7 +795,7 @@ if(current_user_can('digi_edit_option')){
 		global $treeElementList;
 
 		$options = get_option('digirisk_tree_options');
-		$identifierList = unserialize($options['digi_tree_element_identifier']);
+		$identifierList = !empty($options['digi_tree_element_identifier'])?unserialize($options['digi_tree_element_identifier']):array();
 		$optionOutput = '
 <table summary="element identifier definer" cellpadding="0" cellspacing="0" >';
 		$i = 0;
@@ -946,8 +946,12 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function getOptionValue($optionName, $option = 'digirisk_options'){
 		$digirisk_options = get_option($option);
+		$option_value='';
 
-		return $digirisk_options[$optionName];
+		if(!empty($digirisk_options[$optionName]))
+			$option_value = $digirisk_options[$optionName];
+
+		return $option_value;
 	}
 	/**
 	*	Update the database option

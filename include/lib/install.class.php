@@ -167,8 +167,10 @@ class digirisk_install
 
 		/*	Check if there are modification to do	*/
 		if($current_def_max_version >= $current_db_version){
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			/*	Check the lowest version of db to execute	*/
 			$lowest_version_to_execute = (($current_def_max_version - $version_nb_delta) < 0) ? 0 : ($current_def_max_version - $version_nb_delta);
+
 			for($i = $lowest_version_to_execute; $i <= $current_def_max_version; $i++){
 				/*	Check if there are modification to do	*/
 				if(isset($digirisk_update_way[$i])){
@@ -177,9 +179,9 @@ class digirisk_install
 
 					/*	Check if there are modification to make on table	*/
 					if(isset($digirisk_db_table_list[$i])){
-						require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 						foreach($digirisk_db_table_list[$i] as $table_name){
-							$table_update_result = dbDelta($digirisk_db_table[$table_name]);
+							if(!empty($digirisk_db_table[$table_name]))
+								$table_update_result = dbDelta($digirisk_db_table[$table_name]);
 						}
 						$do_changes = true;
 					}
@@ -192,7 +194,7 @@ class digirisk_install
 			/********************/
 			/*		Update		*/
 			/********************/
-					if(is_array($digirisk_db_update) && is_array($digirisk_db_update[$i]) && (count($digirisk_db_update[$i]) > 0)){
+					if(is_array($digirisk_db_update) && !empty($digirisk_db_update[$i]) && (count($digirisk_db_update[$i]) > 0)){
 						foreach($digirisk_db_update[$i] as $table_name => $def){
 							foreach($def as $information_index => $table_information){
 								$query = $wpdb->prepare($table_information);
@@ -210,7 +212,7 @@ class digirisk_install
 			/******************************************************/
 			/*		Make special operation on database structure		*/
 			/******************************************************/
-					if(is_array($digirisk_table_structure_change) && is_array($digirisk_table_structure_change[$i]) && (count($digirisk_table_structure_change[$i]) > 0)){
+					if(is_array($digirisk_table_structure_change) && !empty($digirisk_table_structure_change[$i]) && (count($digirisk_table_structure_change[$i]) > 0)){
 						foreach($digirisk_table_structure_change[$i] as $table_name => $operations_to_make){
 							foreach($operations_to_make as $operation_index => $operation){
 								$query = $wpdb->prepare($operation['MAIN_ACTION'] . " TABLE " . $table_name . " " . $operation['ACTION'] . " " . $operation['ACTION_CONTENT']);
@@ -237,14 +239,16 @@ class digirisk_install
 	*/
 	function insert_data_for_version($i, $do_changes = ''){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_db_options_update, $standard_message_subject_to_send, $standard_message_to_send;
+		$dependance_to_make = false;
+		$dependance_list=array();
 
 		/*	Options content	*/
-		if(is_array($digirisk_db_options_add) && is_array($digirisk_db_options_add[$i]) && (count($digirisk_db_options_add[$i]) > 0)){
+		if(is_array($digirisk_db_options_add) && !empty($digirisk_db_options_add[$i]) && (count($digirisk_db_options_add[$i]) > 0)){
 			foreach($digirisk_db_options_add[$i] as $option_name => $option_content){
 				add_option($option_name, $option_content, '', 'yes');
 			}
 		}
-		if(is_array($digirisk_db_options_update) && is_array($digirisk_db_options_update[$i]) && (count($digirisk_db_options_update[$i]) > 0)){
+		if(is_array($digirisk_db_options_update) && !empty($digirisk_db_options_update[$i]) && (count($digirisk_db_options_update[$i]) > 0)){
 			foreach($digirisk_db_options_update[$i] as $option_name => $option_content){
 				$option_current_content = get_option($option_name);
 				foreach($option_content as $option_key => $option_value){
@@ -255,7 +259,7 @@ class digirisk_install
 		}
 
 		/*	Add datas	*/
-		if(is_array($digirisk_db_content_add) && is_array($digirisk_db_content_add[$i]) && (count($digirisk_db_content_add[$i]) > 0)){
+		if(is_array($digirisk_db_content_add) && !empty($digirisk_db_content_add[$i]) && (count($digirisk_db_content_add[$i]) > 0)){
 			foreach($digirisk_db_content_add[$i] as $table_name => $def){
 				foreach($def as $information_index => $table_information){
 					if(isset($table_information['dependance'])){
@@ -275,7 +279,7 @@ class digirisk_install
 		}
 
 		/*	Update datas	*/
-		if(is_array($digirisk_db_content_update) && is_array($digirisk_db_content_update[$i]) && (count($digirisk_db_content_update[$i]) > 0)){
+		if(is_array($digirisk_db_content_update) && !empty($digirisk_db_content_update[$i]) && (count($digirisk_db_content_update[$i]) > 0)){
 			foreach($digirisk_db_content_update[$i] as $table_name => $def){
 				foreach($def as $information_index => $table_information){
 					if(isset($table_information['dependance'])){

@@ -228,6 +228,7 @@ class MethodeEvaluation {
 	<div class="evaluation_method_var_equivalence_container" >';
 
 		/*	Read each equivalence possible value	*/
+		$j=0;
 		for($i = $etalon->min; $i <= $etalon->max; $i = $i + $etalon->pas){
 			$equivalent = methodeEvaluation::getEquivalentEtalon($id_methode, $i);
 			$contenuInput = (isset($equivalent)) ?$equivalent->valeurMaxMethode : '';

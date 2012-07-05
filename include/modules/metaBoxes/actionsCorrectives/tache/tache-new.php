@@ -18,6 +18,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$postId = $arguments['idElement'];
     $tache = new EvaTask($postId);
 		$tache->load();
+
 		$contenuInputTitre = html_entity_decode($tache->getName(), ENT_NOQUOTES, 'UTF-8');
 		$contenuInputDescription = $tache->getDescription();
 		$idProvenance = $tache->getIdFrom();
@@ -25,6 +26,8 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$contenuInputResponsable = $tache->getidResponsable();
 		$contenuInputRealisateur = $tache->getidSoldeur();
 		$ProgressionStatus = $tache->getProgressionStatus();
+		$nom_exportable_plan_action = $tache->getnom_exportable_plan_action();
+		$description_exportable_plan_action = $tache->getdescription_exportable_plan_action();
 		$startDate = $tache->getStartDate();
 		$endDate = $tache->getFinishDate();
 		$firstInsert = $tache->getFirstInsert();
@@ -33,7 +36,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$readable_external = $tache->get_external_readable();
 		$grise = false;
 		$tacheMere = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
-		$idPere = $tacheMere->id;
+		$idPere = (!empty($tacheMere)?$tacheMere->id:0);
     $saveOrUpdate = 'update';
 	}
 	else{
@@ -41,6 +44,8 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$contenuInputDescription = '';
 		$contenuInputResponsable = '';
 		$contenuInputRealisateur = '';
+		$nom_exportable_plan_action = '';
+		$description_exportable_plan_action = '';
 		$ProgressionStatus = '';
 		$startDate = '';
 		$endDate = '';
@@ -54,7 +59,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$readable_external = 'no';
     $saveOrUpdate = 'save';
 	}
-  
+
   $idForm = 'informationGeneralesTache';
 	$tache_new = '<form method="post" id="' . $idForm . '" name="' . $idForm . '" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >';
 	{//Champs cachés
@@ -69,7 +74,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 	}
 	{//Nom de la tâche
 		$contenuAideTitre = "";
-		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . " :";
+		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . ' :  <div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action" value="yes"'.(empty($nom_exportable_plan_action) || ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 		$nomChamps = "nom_tache";
 		$idTitre = "nom_tache";
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
@@ -121,7 +126,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		});
 		/*	Autocomplete search	*/
 		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
-			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '",
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $arguments['tableElement'] . '&id_element=' . $arguments['idElement'] . '",
 			select: function( event, ui ){
 				jQuery("#responsable_tache").val(ui.item.value);
 				jQuery("#responsible_name").html(ui.item.label);
@@ -174,7 +179,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 	}
 	{//Description
 		$contenuAideDescription = "";
-		$labelInput = __("Description", 'evarisk') . ' : ';
+		$labelInput = __("Description", 'evarisk') . ' :  <div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action" value="yes"'.(empty($description_exportable_plan_action) || ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 		$id = "descriptionTache";
 		$nomChamps = "description";
 		$rows = 5;
@@ -189,8 +194,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$scriptEnregistrementSave = '<script type="text/javascript">
 			digirisk(document).ready(function() {				
 				digirisk("#' . $idBouttonEnregistrer . '").click(function() {
-					if(digirisk("#' . $idTitre . '").is(".form-input-tip"))
-					{
+					if(digirisk("#' . $idTitre . '").is(".form-input-tip")){
 						document.getElementById("' . $idTitre . '").value="";
 						digirisk("#' . $idTitre . '").removeClass("form-input-tip");
 					}
@@ -203,12 +207,14 @@ function getTaskGeneralInformationPostBoxBody($arguments){
           if(jQuery.trim(valeurActuelle) == ""){
             alert(digi_html_accent_for_js("' . __("Vous n\'avez pas donne de nom a la t&acirc;che", 'evarisk') . '"));
           }
-					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui"))
-					{
+					else if(((idResponsable <= "0") ||(idResponsable == "")) && (idResponsableIsMandatory == "oui")){
 						alert(digi_html_accent_for_js("' . __("Vous devez choisir une personne en charge de la t&acirc;che", 'evarisk') . '"));
 					}
-          else
-          {
+          else{
+						var nom_exportable = "no";
+						if(digirisk("#nom_exportable_plan_action").is(":checked")){	var nom_exportable = "yes"; }
+						var description_exportable = "no";
+						if(digirisk("#description_exportable_plan_action").is(":checked")){	var description_exportable = "yes"; }
             digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
               "table": "' . TABLE_TACHE . '",
               "act": digirisk("#actTache").val(),
@@ -221,7 +227,9 @@ function getTaskGeneralInformationPostBoxBody($arguments){
               "affichage": digirisk("#affichageTache").val(),
               "idsFilAriane": digirisk("#idsFilArianeTache").val(),
               "idProvenance": digirisk("#idProvenanceTache").val(),
-              "tableProvenance": digirisk("#tableProvenanceTache").val()
+              "tableProvenance": digirisk("#tableProvenanceTache").val(),
+							"nom_exportable_plan_action": nom_exportable,
+							"description_exportable_plan_action": description_exportable
             });
           }
 				});
@@ -264,7 +272,9 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 									"avancement": digirisk("#avancement").val(),
 									"date_fin": digirisk("#date_fin").val(),
 									"date_debut": digirisk("#date_debut").val(),
-									"markAllSubElementAsDone": markAllSubElementAsDone
+									"markAllSubElementAsDone": markAllSubElementAsDone,
+									"nom_exportable_plan_action": digirisk("#nom_exportable_plan_action").val(),
+									"description_exportable_plan_action": digirisk("#description_exportable_plan_action").val()
 								})
 								digirisk(this).dialog("close");
 							}
@@ -278,8 +288,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 					}
 				});
 				digirisk("#' . $idBoutton . '").click(function(){
-					if(digirisk("#' . $idTitre . '").is(".form-input-tip"))
-					{
+					if(digirisk("#' . $idTitre . '").is(".form-input-tip")){
 						document.getElementById("' . $idTitre . '").value="";
 						digirisk("#' . $idTitre . '").removeClass("form-input-tip");
 					}

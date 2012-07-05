@@ -8,7 +8,7 @@ if($_REQUEST['act'] == 'save'){
 	$idRisque = digirisk_tools::IsValid_Variable($_REQUEST['idRisque']);
 
 	/*	Check if there are correctiv actions to link with this risk	*/
-	$actionsCorrectives = digirisk_tools::IsValid_Variable($_REQUEST['actionsCorrectives']);
+	$actionsCorrectives = !empty($_REQUEST['actionsCorrectives'])?digirisk_tools::IsValid_Variable($_REQUEST['actionsCorrectives']):'';
 	if(($actionsCorrectives != '') && ($idRisque > 0)){
 		Risque::update_risk_rating_link_with_task($idRisque, $actionsCorrectives, array('before', 'after'));
 		$task = new EvaTask();
@@ -29,11 +29,12 @@ if($_REQUEST['act'] == 'save'){
 	}
 
 	/*	Check if there are recommendation to link with this risk	*/
-	$preconisationRisque = digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisque']);
+	$preconisationRisque = !empty($_REQUEST['preconisationRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisque']):'';
 	if($preconisationRisque != ''){
 		$infosDanger = EvaDanger::getDanger($idDanger);
 		$_POST['nom_activite'] = substr($preconisationRisque, 0, 50);
 		$_POST['description'] = $preconisationRisque;
+		$_POST['print_action_description_in_duer'] = $preconisationRisque;
 		$_POST['cout'] = '';
 		$_POST['idProvenance'] = $idRisque;
 		$_POST['tableProvenance'] = TABLE_RISQUE;
@@ -41,7 +42,9 @@ if($_REQUEST['act'] == 'save'){
 		$_POST['date_debut'] = date('Y-m-d');
 		$_POST['date_fin'] = date('Y-m-d', mktime(0, 0, 0, date("m")+1, date("d"), date("Y")));
 		$_POST['avancement'] = '0';
-		// $_POST['hasPriority'] = 'yes';
+		$_POST['nom_exportable_plan_action'] = 'yes';
+		$_POST['description_exportable_plan_action'] = 'yes';
+		$_POST['hasPriority'] = 'yes';
 
 		/*	Make the link between a corrective action and a risk evaluation	*/
 		$query = 
@@ -61,9 +64,8 @@ if($_REQUEST['act'] == 'save'){
 		evaActivity::saveNewActivity();
 	}
 
-	if($_REQUEST['act'] == 'save'){
+	if($_REQUEST['act'] == 'save')
 		echo '<script type="text/javascript" >goTo("#postBoxRisques");</script>';
-	}
 }
 
 if($_REQUEST['act'] == 'delete')

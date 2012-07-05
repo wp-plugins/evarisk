@@ -126,6 +126,7 @@ class digirisk_accident
 			$tableRowValue[] = array('class' => self::currentPageCode . '_victim_cell', 'value' => '');
 			$tableRowValue[] = array('class' => self::currentPageCode . '_action_cell', 'value' => '');
 			$tableRows[] = $tableRowValue;
+			$tableRowsId[] = 'no-accident-found';
 		}
 
 		$element_list_metabox .= EvaDisplayDesign::getTable($tableId, $tableTitles, $tableRows, $tableClasses, $tableRowsId, '') . '
@@ -501,7 +502,7 @@ class digirisk_accident
 	function get_accident_form_part($part, $tableElement = '', $idElement = '', $accident = null){
 		global $wpdb, $digi_hour, $digi_minute, $optionAciddentConsequence, $optionAccidentDeclarationType, $optionAccidentDeclarationBy, $optionYesNoList;
 		$error = 0;
-		$container_state = $container_more_content = '';
+		$container_state = $container_more_content = $accident_form_part = '';
 		$container_state_opener = 'accident_container_closer';
 
 		/*	Add the current working element information (Just for information)	*/
@@ -535,8 +536,7 @@ class digirisk_accident
 		}
 
 		switch($part){
-			case 'accident_place':
-			{
+			case 'accident_place':{
 				if(($accident != null) && ($accident->declaration_state == 'in_progress') && ($accident->declaration_step > 1)){
 					$container_state = ' class="hide" ';
 					$container_more_content = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="step_done" />';
@@ -579,7 +579,7 @@ class digirisk_accident
 					$idAdresse = $groupement->id_adresse;
 					$employer_id = $idElement;
 				}
-				if($employer_id > 0){
+				if(!empty($employer_id)){
 					$employer_part .= self::get_element_address($idAdresse, 'employer');
 					$accident_form_part .= '
 			<div class="edit_missing_information employer_editor alignright" id="element_' . $employer_id . '" ><img src="' . str_replace(".png", "_vs.png", PICTO_EDIT) . '" alt="" /></div>';

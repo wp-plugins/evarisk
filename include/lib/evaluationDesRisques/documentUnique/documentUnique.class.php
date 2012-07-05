@@ -60,44 +60,39 @@ class eva_documentUnique
 	*
 	*	@return array $lignesDeValeurs The different risqs ordered by element
 	*/
-	function listeRisquePourElement($tableElement, $idElement, $outputInterfaceType = '')
-	{
+	function listeRisquePourElement($tableElement, $idElement, $outputInterfaceType = ''){
+		global $wpdb;
 		$lignesDeValeurs = array();
 
 		/*	Get the risk list for the given element	*/
 		$temp = Risque::getRisques($tableElement, $idElement, "Valid");
 		/*	If there are risks we store in a more simple array for future reading	*/
-		if($temp != null)
-		{
-			foreach($temp as $risque)
-			{
+		if($temp != null){
+			foreach($temp as $risque){
 				$risques['"' . $risque->id . "'"][] = $risque; 
 			}
 		}
 
 		/*	If there are risks we read them	*/
-		if($risques != null)
-		{
+		if(!empty($risques)){
 			$i = 0;
 			unset($tmpLigneDeValeurs);
-			foreach($risques as $risque)
-			{		
+			foreach($risques as $risque){		
 				$idMethode = $risque[0]->id_methode;
 				$score = Risque::getScoreRisque($risque);
 				$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 				$niveauSeuil = Risque::getSeuil($quotation);
 				$elementPrefix = '';
 
-				switch($tableElement)
-				{/*	Define the prefix for the current element looking on the type	*/
+				switch($tableElement){/*	Define the prefix for the current element looking on the type	*/
 					case TABLE_GROUPEMENT:
 						$element = EvaGroupement::getGroupement($idElement);
 						$elementPrefix = ELEMENT_IDENTIFIER_GP . $idElement . ' - ';
-						break;
+					break;
 					case TABLE_UNITE_TRAVAIL:
 						$element = eva_UniteDeTravail::getWorkingUnit($idElement);
 						$elementPrefix = ELEMENT_IDENTIFIER_UT . $idElement . ' - ';
-						break;
+					break;
 				}
 
 				/*	Build the output array we the result	*/
@@ -105,21 +100,18 @@ class eva_documentUnique
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->nomDanger, 'class' => '');
-				if($outputInterfaceType == '')
-				{/*	If we want a "simple" output	*/
+
+				if($outputInterfaceType == '')/*	If we want a "simple" output	*/
 					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->commentaire, 'class' => '');
-				}
-				else
-				{/*	If the output must have specific content	*/
-					{/*	Prioritary action	*/
-						$contenuInput = '';
-						$preconisationActionID = 0;
-						if($risque[0] != null)
-						{/*		If there si a risk so we add the correctiv action	*/
-							$tache = EvaTask::getPriorityTask(TABLE_RISQUE, $risque[0]->id);
-							$tache = new EvaTask($tache->id);
-							if($tache->id > 0)
-							{
+				else{/*	If the output must have specific content	*/
+					/*	Prioritary action	*/
+					$contenuInput = '';
+					$preconisationActionID = 0;
+					if(!empty($risque[0])){/*		If there si a risk so we add the correctiv action	*/
+						$tache = EvaTask::getPriorityTask(TABLE_RISQUE, $risque[0]->id);
+						if(!empty($tache) && (count($tache)==1)){
+							$tache = new EvaTask($tache[0]->id);
+							if($tache->id > 0){
 								$tache->load();
 								$contenuInput = $tache->description;
 								$preconisationActionID = $tache->id;
@@ -127,44 +119,172 @@ class eva_documentUnique
 						}
 					}
 
-					if($outputInterfaceType == 'massUpdater')
-					{/*	In case we are on the mass updater interface	*/
+					if($outputInterfaceType == 'massUpdater'){/*	In case we are on the mass updater interface	*/
 						/*	Add the risq comment input	*/
 						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqComment" id="risqComment_' . $risque[0]->id . '" name="risqComment_' . $risque[0]->id . '" >' . $risque[0]->commentaire . '</textarea>', 'class' => '');
 
 						/*	Add the prioritary action input	*/
 						if($contenuInput != '')
-						{
 							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqPrioritaryCA" id="risqPrioritaryCA_' . $preconisationActionID . '" name="risqPrioritaryCA_' . $risque[0]->id . '" >' . $contenuInput . '</textarea>', 'class' => '');
-						}
 						else
-						{
 							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => __('Aucune action pr&eacute;vue', 'evarisk'), 'class' => '');
-						}
 
 						/*	Add the checkbox to define if this entry must be updated or not	*/
 						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<input type="checkbox" id="checkboxRisqMassUpdater_' . $risque[0]->id . '" name="checkboxRisqMassUpdater_' . $risque[0]->id . '" value="" class="checkboxRisqMassUpdater" /><input type="hidden" id="prioritaryActionMassUpdater_' . $risque[0]->id . '" value="' . $preconisationActionID . '" />', 'class' => '');
 					}
-					elseif($outputInterfaceType == 'exportActionPlan')
-					{/*	In case we are creating a new DUER	*/
-						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '', 'class' => '');
+					elseif($outputInterfaceType == 'exportActionPlan'){/*	In case we are creating a new DUER	*/
+						$query = $wpdb->prepare("SELECT TASK.id FROM ".TABLE_TACHE." AS TASK WHERE TASK.tableProvenance=%s AND idProvenance=%d",TABLE_RISQUE,$risque[0]->id);
+						$associated_task_list = $wpdb->get_results($query);
+						$associated_task_to_export = '';
+						foreach($associated_task_list as $task){
+							$racine = Arborescence::getRacine(TABLE_TACHE, " id='" . $task->id . "' ");
+
+							$task_export_content='';
+							$put_separator=false;
+							if($racine->nom_exportable_plan_action=='yes'){
+								$put_separator=true;
+								$task_export_content.=$racine->nom;
+							}
+
+							if($racine->description_exportable_plan_action=='yes'){
+								if($put_separator)$task_export_content.=' : ';
+								$task_export_content.=$racine->description.' ';
+							}
+
+							if(!empty($task_export_content))
+								$associated_task_to_export.=ELEMENT_IDENTIFIER_T.$racine->id.' - '.$task_export_content.'
+';
+	
+							$elements = Arborescence::getFils(TABLE_TACHE, $racine, "nom ASC");
+							$subcontent = self::complete_tree($elements, $racine, TABLE_TACHE, 'Info', $idTable, true);
+							$associated_task_to_export .= (!empty($subcontent)?$subcontent:'');
+						}
+						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $associated_task_to_export, 'class' => '');
 						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $contenuInput, 'class' => '');
 					}
 				}
+
 				$i++;
 			}
 
 			krsort($tmpLigneDeValeurs);
-			foreach($tmpLigneDeValeurs as $quotationLigneDeValeur => $contenuLigneDeValeur)
-			{
-				foreach($contenuLigneDeValeur as $ligneDeValeur)
-				{
+			foreach($tmpLigneDeValeurs as $quotationLigneDeValeur => $contenuLigneDeValeur){
+				foreach($contenuLigneDeValeur as $ligneDeValeur){
 					$lignesDeValeurs[] = $ligneDeValeur;
 				}
 			}
 		}	
 
 		return $lignesDeValeurs;
+	}
+	/**
+	*
+	*/
+	function complete_tree($elementsFils, $elementPere, $table){
+		$monCorpsTable = $monCorpsSubElements = '';
+		$ddFeuilleClass = 'feuilleArbre';
+		$nomFeuilleClass = 'nomFeuilleArbre';
+
+		$user_is_allowed_to_view_details = false;
+		switch($table){
+			case TABLE_CATEGORIE_DANGER :
+				$sousTable = TABLE_DANGER;
+				$subElements = categorieDangers::getDangersDeLaCategorie($elementPere->id);
+				$actionSize = 4;
+			break;
+			case TABLE_GROUPEMENT :
+				$sousTable = TABLE_UNITE_TRAVAIL;
+				$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
+				$actionSize = 4;
+			break;
+			case TABLE_TACHE :
+				$sousTable = TABLE_ACTIVITE;
+				$tacheMere = new EvaTask($elementPere->id);
+				$tacheMere->load();
+				$subElements = $tacheMere->getWPDBActivitiesDependOn();
+				$actionSize = 3;
+				$user_is_allowed_to_view_details = current_user_can('digi_view_detail_action');
+			break;
+			case TABLE_GROUPE_QUESTION :
+				$sousTable = TABLE_QUESTION;
+				$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($elementPere->id);
+				$actionSize = 3;
+			break;
+		}
+
+		foreach($subElements as $subElement){
+			$content='';
+			$put_separator=false;
+			if($subElement->nom_exportable_plan_action=='yes'){
+				$put_separator=true;
+				$content.=$subElement->nom;
+			}
+
+			if($subElement->description_exportable_plan_action=='yes'){
+				if($put_separator)$content.=' : ';
+				$content.=$subElement->description.' ';
+			}
+
+			if(!empty($content))
+				$monCorpsSubElements.=DIGI_TASK_SEP.' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id.' - '.$content.'
+';
+		}
+
+		if(count($elementsFils) != 0){
+			foreach($elementsFils as $element){
+				$elements_fils = '';
+				$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
+				$elements_pere = Arborescence::getPere($table, $element, " Status = 'Deleted' ");
+
+				if(count($elements_pere) <= 0){
+					switch($table){
+						case TABLE_CATEGORIE_DANGER :
+							$sousTable = TABLE_DANGER;
+							$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
+						break;
+						case TABLE_GROUPEMENT :
+							$sousTable = TABLE_UNITE_TRAVAIL;
+							$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
+						break;
+						case TABLE_TACHE :
+							$sousTable = TABLE_ACTIVITE;
+							$tache = new EvaTask($element->id);
+							$tache->load();
+							$subElements = $tache->getWPDBActivitiesDependOn();
+						break;
+						case TABLE_GROUPE_QUESTION :
+							$sousTable = TABLE_QUESTION;
+							$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element->id);
+						break;
+					}
+					$trouveElement = count($elements_fils) + count($subElements);
+
+					$content='';
+					$put_separator=false;
+					if($element->nom_exportable_plan_action=='yes'){
+						$put_separator=true;
+						$content.=$element->nom;
+					}
+
+					if($element->description_exportable_plan_action=='yes'){
+						if($put_separator)$content.=' : ';
+						$content.=$element->description.' ';
+					}
+
+					if(!empty($content))
+						$monCorpsTable .= DIGI_TASK_SEP.' '.ELEMENT_IDENTIFIER_T.$element->id.' - '.$content.'
+';
+
+					if($trouveElement){
+						$subcontent=self::complete_tree($elements_fils, $element, $table);
+
+						$monCorpsTable .= (!empty($subcontent)?DIGI_TASK_SEP.' '.$subcontent:'');
+					}
+				}
+			}
+		}
+
+		return $monCorpsTable . $monCorpsSubElements;
 	}
 
 	/**
@@ -177,66 +297,59 @@ class eva_documentUnique
 	*
 	*	@return mixed An html result with the different risqs or a link to print the work unit sheet
 	*/
-	function bilanRisque($tableElement, $idElement, $typeBilan = 'ligne', $outPut = 'html')
-	{
+	function bilanRisque($tableElement, $idElement, $typeBilan = 'ligne', $outPut = 'html'){
 		unset($titres, $classes, $idLignes, $lignesDeValeurs);
 
-		if($tableElement == TABLE_GROUPEMENT)
-		{
+		if($tableElement == TABLE_GROUPEMENT){
 			$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement, '');
 
-			if($outPut == 'html')
-			{
+			if($outPut == 'html'){
 				/*	Si on veut le bilan par ligne	*/
-				if($typeBilan == 'ligne')
-				{
-					{//Cr&eacute;ation de la table	
-						{//Script de d&eacute;finition de la dataTable pour la somme des risques par ligne
-							$idTable = 'tableBilanRisqueUnitaire' . $tableElement . $idElement . $typeBilan;
-							$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
-							$titres[] = __("Id. risque", 'evarisk');
-							$titres[] = __("Quotation", 'evarisk');
-							$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
-							$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
-							$classes[] = 'columnQuotation';
-							$classes[] = 'columnRId';
-							$classes[] = 'columnQuotation';
-							$classes[] = 'columnNomDanger';
-							$classes[] = 'columnCommentaireRisque';
+				if($typeBilan == 'ligne'){//Création de la table	
+					{//Script de d&eacute;finition de la dataTable pour la somme des risques par ligne
+						$idTable = 'tableBilanRisqueUnitaire' . $tableElement . $idElement . $typeBilan;
+						$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
+						$titres[] = __("Id. risque", 'evarisk');
+						$titres[] = __("Quotation", 'evarisk');
+						$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
+						$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
+						$classes[] = 'columnQuotation';
+						$classes[] = 'columnRId';
+						$classes[] = 'columnQuotation';
+						$classes[] = 'columnNomDanger';
+						$classes[] = 'columnCommentaireRisque';
 
-							$scriptVoirRisque = $scriptRisque . '
-							<script type="text/javascript">
-							digirisk(document).ready(function() {
-								digirisk("#' . $idTable . '").dataTable(
-								{
-								"bPaginate": false, 
-								"bLengthChange": false,
-								"bAutoWidth": false,
-								"bFilter": false,
-								"bInfo": false,
-								"aoColumns": 
-								[
-									{ "bSortable": true},
-									{ "bSortable": true},
-									{ "bSortable": true, "sType": "numeric"},
-									{ "bSortable": false},
-									{ "bSortable": false}
-								],
-									"aaSorting": [[2,"desc"]]});
-								digirisk("#' . $idTable . ' tfoot").remove();
-							});
-							</script>';
+						$scriptVoirRisque = $scriptRisque . '
+						<script type="text/javascript">
+						digirisk(document).ready(function() {
+							digirisk("#' . $idTable . '").dataTable(
+							{
+							"bPaginate": false, 
+							"bLengthChange": false,
+							"bAutoWidth": false,
+							"bFilter": false,
+							"bInfo": false,
+							"aoColumns": 
+							[
+								{ "bSortable": true},
+								{ "bSortable": true},
+								{ "bSortable": true, "sType": "numeric"},
+								{ "bSortable": false},
+								{ "bSortable": false}
+							],
+								"aaSorting": [[2,"desc"]]});
+							digirisk("#' . $idTable . ' tfoot").remove();
+						});
+						</script>';
 
-							$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
-						}
-
-						return $recapitulatifRisque;
+						$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
 					}
+
+					return $recapitulatifRisque;
 				}
 
 				/*	Si on veut le bilan par unit&eacute; de travail	*/
-				elseif($typeBilan == 'unite')
-				{
+				elseif($typeBilan == 'unite'){
 					$bilanParUnite = eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement');
 
 					$recapitulatifRisque = 
@@ -264,6 +377,8 @@ class eva_documentUnique
 				$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement, $outPut);
 				if($typeBilan == 'ligne')
 				{
+					foreach($lignesDeValeurs as $ligne_key => $ligne){$idLignes[$ligne_key] = $ligne[1]['value'];}
+					
 					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;
 					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
 					$titres[] = __("Id. risque", 'evarisk');
@@ -302,9 +417,7 @@ class eva_documentUnique
 				}
 			}
 			else
-			{
 				return $lignesDeValeurs;
-			}
 		}
 	}
 
@@ -315,80 +428,51 @@ class eva_documentUnique
 	*
 	*	@return array $listeRisque An ordered array with all the risqs by line. Ordered by risq level
 	*/
-	function readBilanUnitaire($bilanALire, $outputType = '')
-	{
+	function readBilanUnitaire($bilanALire, $outputType = ''){
 		$listeRisque = $listeRisque[SEUIL_BAS_FAIBLE] = $listeRisque[SEUIL_BAS_APLANIFIER] = $listeRisque[SEUIL_BAS_ATRAITER] = $listeRisque[SEUIL_BAS_INACCEPTABLE] = array();
 
-		$listeTousRisques = $bilanALire;
-
-		if( is_array($listeTousRisques) )
-		{
+		if( is_array($bilanALire) ){
 			$indexQuotation = 2;
-			foreach($listeTousRisques as $key => $informationsRisque)
-			{
-				if($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_INACCEPTABLE)
-				{
+			foreach($bilanALire as $key => $informationsRisque){
+				if($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_INACCEPTABLE){
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
 					$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
-					{
-						// $listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
-					}
 					else
-					{
 						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
 				}
-				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_ATRAITER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_ATRAITER))
-				{
+				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_ATRAITER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_ATRAITER)){
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
-					{
-						// $listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
-					}
 					else
-					{
 						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
 				}
-				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_APLANIFIER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_APLANIFIER))
-				{
+				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_APLANIFIER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_APLANIFIER)){
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
-					{
-						// $listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
-					}
 					else
-					{
 						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
 				}
-				elseif(($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_FAIBLE))
-				{
+				elseif(($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_FAIBLE)){
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['identifiantRisque'] = $informationsRisque[1]['value'];
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['quotationRisque'] = $informationsRisque[2]['value'];
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['nomDanger'] = $informationsRisque[3]['value'];
 					if($outputType == 'plan_d_action')
-					{
-						// $listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['preventionExistante'] = $informationsRisque[3]['value'];
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['actionPrevention'] = $informationsRisque[4]['value'];
-					}
 					else
-					{
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
-					}
 				}
 			}
 			if(is_array($listeRisque[SEUIL_BAS_FAIBLE]))krsort($listeRisque[SEUIL_BAS_FAIBLE]);
@@ -408,8 +492,7 @@ class eva_documentUnique
 	*
 	*	@return mixed The form or a link to the work unit sheet to print
 	*/
-	function formulaireGenerationDocumentUnique($tableElement, $idElement)
-	{
+	function formulaireGenerationDocumentUnique($tableElement, $idElement){
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/templateDocumentUnique.tpl.php');
 
 		unset($formulaireDocumentUniqueParams);
@@ -417,16 +500,13 @@ class eva_documentUnique
 		$lastDocumentUnique = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement);
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
-		if($tableElement == TABLE_GROUPEMENT)
-		{
+		if($tableElement == TABLE_GROUPEMENT){
 			$formulaireDocumentUniqueParams['#DATEDEBUT1#'] = date('Y-m-d');
 			$formulaireDocumentUniqueParams['#DATEFIN1#'] = date('Y-m-d');
 			$groupementInformations = Evagroupement::getGroupement($idElement);
 			$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = $groupementInformations->nom;
-			if(($groupementInformations->nom != $lastDocumentUnique->nomSociete) && ($lastDocumentUnique->nomSociete != ''))
-			{
+			if(!empty($groupementInformations->nom) && !empty($lastDocumentUnique->nomSociete) && ($groupementInformations->nom != $lastDocumentUnique->nomSociete))
 				$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = (isset($lastDocumentUnique->nomSociete) && ($lastDocumentUnique->nomSociete != '')) ? $lastDocumentUnique->nomSociete : '';
-			}
 			$formulaireDocumentUniqueParams['#TELFIXE#'] = (isset($lastDocumentUnique->telephoneFixe) && ($lastDocumentUnique->telephoneFixe != '')) ? $lastDocumentUnique->telephoneFixe : '';
 			$formulaireDocumentUniqueParams['#TELPORTABLE#'] = (isset($lastDocumentUnique->telephonePortable) && ($lastDocumentUnique->telephonePortable != '')) ? $lastDocumentUnique->telephonePortable : '';
 			$formulaireDocumentUniqueParams['#TELFAX#'] = (isset($lastDocumentUnique->telephoneFax) && ($lastDocumentUnique->telephoneFax != '')) ? $lastDocumentUnique->telephoneFax : '';
@@ -521,15 +601,13 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		digirisk("#ui-datepicker-div").hide();
 		digirisk("#modelDefaut").click(function(){
 			setTimeout(function(){
-				if(!digirisk("#modelDefaut").is(":checked"))
-				{
+				if(!digirisk("#modelDefaut").is(":checked")){
 					digirisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 					digirisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
 					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
 					digirisk("#modelListForGeneration").show();
 				}
-				else
-				{
+				else{
 					digirisk("#documentUniqueResultContainer").html("");
 					digirisk("#modelListForGeneration").html("");
 					digirisk("#modelListForGeneration").hide();
@@ -623,12 +701,16 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			}
 		}
 
+		$plan_d_action = array();
+		$plan_d_action['affected'] = eva_documentUnique::listRisk($tableElement, $idElement, 'exportActionPlan');
+		$plan_d_action['unaffected'] = actionsCorrectives::get_correctiv_action_for_duer();
+
 		{	/*	Enregistrement d'un document unique	*/
 			$query = 
 				"INSERT INTO " . TABLE_DUER . " 
 					(id, element, elementId, id_model, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER, plan_d_action) 
 				VALUES	
-					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . mysql_real_escape_string($informationDocumentUnique['localisation']) . "', '" . mysql_escape_string(serialize(digirisk_groups::getElement('', "'valid'", 'employee'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'affectedUserGroup'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement'))) . "', '" . $wpdb->escape($informationDocumentUnique['methodologie']) . "', '" . mysql_escape_string($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($informationDocumentUnique['alerte']) . "', '', '" . mysql_escape_string(serialize(eva_documentUnique::listRisk($tableElement, $idElement, 'exportActionPlan'))) . "')";
+					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . mysql_real_escape_string($informationDocumentUnique['localisation']) . "', '" . mysql_escape_string(serialize(digirisk_groups::getElement('', "'valid'", 'employee'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'affectedUserGroup'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement'))) . "', '" . $wpdb->escape($informationDocumentUnique['methodologie']) . "', '" . mysql_escape_string($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($informationDocumentUnique['alerte']) . "', '', '" . mysql_escape_string(serialize($plan_d_action)) . "')";
 			if($wpdb->query($query) === false)
 			{
 				$status['result'] = 'error'; 

@@ -43,8 +43,12 @@ class Arborescence {
 	static function getMaxLimiteDroite($table, $where='1')
 	{
 		global $wpdb;
+		$right_limit='';
 		$resultat = $wpdb->get_row( "SELECT * FROM " . $table . " table1 WHERE NOT EXISTS (SELECT * FROM " . $table . " table2 WHERE table1.limiteDroite < table2.limiteDroite AND " . $where . ") AND " . $where);
-		return $resultat->limiteDroite;
+		if(!empty($resultat))
+			$right_limit=$resultat->limiteDroite;
+		
+		return $right_limit;
 	}
 	
 	static function getByLimites($table, $limiteGauche, $limiteDroite, $where='1')

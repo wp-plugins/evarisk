@@ -171,11 +171,82 @@ digirisk(".open_close_row").click(function(){
 			return evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptTableauSuiviModification);
 		}
 		else
-		{
 			return __('Il n\'y a aucun risque pour cet &eacute;l&eacute;ment', 'evarisk');
-		}
 	}
 
+	/**
+	*
+	*/
+	function get_correctiv_action_for_duer(){
+		global $wpdb;
+		$actions = array();
+
+		$query = $wpdb->prepare("
+SELECT CONCAT('".ELEMENT_IDENTIFIER_T."',id) as idAction, nom, description, firstInsert, idResponsable, tableProvenance, idProvenance, nom_exportable_plan_action, description_exportable_plan_action
+FROM ".TABLE_TACHE." 
+WHERE (nom_exportable_plan_action=%s
+	OR description_exportable_plan_action=%s )
+	AND tableProvenance != %s
+	AND Status='Valid'
+", 'yes', 'yes', TABLE_RISQUE);
+		$action_list = $wpdb->get_results($query);
+		foreach($action_list as $action){
+			$export=false;
+			$nom=$description='';
+			if($action->nom_exportable_plan_action=='yes'){
+				$export=true;
+				$nom=$action->nom;
+			}
+			if($action->description_exportable_plan_action=='yes'){
+				$export=true;
+				$description=$action->description;
+			}
+
+			if($export){
+				$actions[$action->idAction]['idAction'] = $action->idAction;
+				$actions[$action->idAction]['nomAction'] = $nom;
+				$actions[$action->idAction]['descriptionAction'] = $description;
+				$actions[$action->idAction]['ajoutAction'] = mysql2date('d F Y', $action->firstInsert, true);
+				$responsable_infos = evaUser::getUserInformation($action->idResponsable);
+				$actions[$action->idAction]['responsableAction'] = (($action->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$action->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
+				$affectation = $wpdb->prepare("SELECT nom FROM ".$action->tableProvenance." WHERE id=%d", $action->idProvenance);
+				$actions[$action->idAction]['affectationAction'] = (($action->idResponsable>0) ? $action->idProvenance.' - '.$wpdb->get_var($affectation) : __('Aucune affectation pour cette t&acirc;che', 'evarisk'));
+			}
+		}
+
+		$query = $wpdb->prepare("
+SELECT CONCAT('".ELEMENT_IDENTIFIER_ST."',id) as idAction, nom, description, firstInsert, idResponsable, nom_exportable_plan_action, description_exportable_plan_action
+FROM ".TABLE_ACTIVITE." 
+WHERE (nom_exportable_plan_action=%s
+	OR description_exportable_plan_action=%s )
+	AND Status='Valid'
+", 'yes', 'yes');
+		$action_list = $wpdb->get_results($query);
+		foreach($action_list as $action){
+			$export=false;
+			$nom=$description='';
+			if($action->nom_exportable_plan_action=='yes'){
+				$export=true;
+				$nom=$action->nom;
+			}
+			if($action->description_exportable_plan_action=='yes'){
+				$export=true;
+				$description=$action->description;
+			}
+
+			if($export){
+				$actions[$action->idAction]['idAction'] = $action->idAction;
+				$actions[$action->idAction]['nomAction'] = $nom;
+				$actions[$action->idAction]['descriptionAction'] = $description;
+				$actions[$action->idAction]['ajoutAction'] = mysql2date('d F Y', $action->firstInsert, true);
+				$responsable_infos = evaUser::getUserInformation($action->idResponsable);
+				$actions[$action->idAction]['responsableAction'] = (($action->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$action->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
+				$actions[$action->idAction]['affectationAction'] = ' - ';
+			}
+		}
+
+		return $actions;
+	}
 
 	/**
 	*	Create the output for main correctiv action page

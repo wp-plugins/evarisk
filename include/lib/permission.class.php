@@ -390,10 +390,9 @@ class digirisk_permission
 		$action = isset($_REQUEST[self::dbTable . '_action']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable . '_action']) : '';
 		$role = isset($_REQUEST[self::dbTable]['id']) ? digirisk_tools::IsValid_Variable($_REQUEST[self::dbTable]['id']) : '';
 
-		if(($role == '') || array_key_exists($role, $digi_role))
-		{
+		if(($role == '') || array_key_exists($role, $digi_role)){
 			$roleForId = self::digirisk_get_role($role, 'role_internal_name');
-			$roleId = $roleForId[0]->id;
+			$roleId = (!empty($roleForId)?$roleForId[0]->id:0);
 			/*	Basic action 	*/
 			if(($action != '') && (($action == 'edit') || ($action == 'editandcontinue')))
 			{/*	Edit action	*/
@@ -430,9 +429,8 @@ class digirisk_permission
 			}
 		}
 		elseif(!array_key_exists($role, $digi_role))
-		{
 			$actionResult = 'rightAdded';
-		}
+
 
 		/*	Permission affectation to the selected role	*/
 		if(($role != '') && ($action != 'delete') && ($action != 'add'))
@@ -1493,13 +1491,15 @@ class digirisk_permission
 				$nbElementPermission = count($permissionDetail);
 
 				/*	On récupère le type d'élément auquel le droit est associé, le type de l'élément est toujours en avant dernière position	*/
-				switch($permissionDetail[$nbElementPermission - 2])
-				{
+				switch($permissionDetail[$nbElementPermission - 2]){
 					case 'unite':
 						$tableElement = TABLE_UNITE_TRAVAIL;
 					break;
 					case 'groupement':
 						$tableElement = TABLE_GROUPEMENT;
+					break;
+					default:
+						$tableElement = '';
 					break;
 				}
 
@@ -1515,7 +1515,7 @@ class digirisk_permission
 
 ?>
 <span class="digi_permission_check_all" ><?php _e('Ces droits sont d&eacute;finis sur chaque &eacute;l&eacute;ment de l\'arbre dans le menu "&Eacute;valuation des risques"', 'evarisk'); ?></span>
-<table summary="User specific rights for digirisk" cellpadding="0" cellspacing="0" class="form-table" >
+<table class="form-table" >
 	<tr>
 		<th>&nbsp;</th>
 		<td>
@@ -1620,13 +1620,13 @@ class digirisk_permission
 ?>
 <table class="form-table" >
 <?php
-		if(($_REQUEST['user_id'] != '') && ($_REQUEST['user_id'] > 0)){
+		if(!empty($_REQUEST['user_id'])){
 ?>
 	<tr>
 		<td><?php _e('L&eacute;gende', 'evarisk'); ?></td>
 		<td>
-			<span class="permissionGrantedFromParent" ><input type="checkbox" name="explanationBoxDisabled" id="explanationBoxDisabled" value="" checked="checked" disabled="disabled" />&nbsp;<?php _e('Le droit provient du r&ocirc;le de l\'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface', 'evarisk'); ?></span><br/>
-			<span class="permissionGranted" ><input type="checkbox" name="explanationBoxEnabled" id="explanationBoxEnabled" value="" checked="checked" />&nbsp;<?php _e('Permission ajout&eacute;e en plus de celle du r&ocirc;le de l\'utilisateur', 'evarisk'); ?></span>
+			<span class="permissionGrantedFromParent" ><?php if($interface_provenance == 'digi_user_profile'){ ?><img src="<?php echo admin_url('images/yes.png'); ?>" alt="user right affectation" class="middleAlign" /><?php }else{ ?><input type="checkbox" name="explanationBoxDisabled" id="explanationBoxDisabled" value="" checked="checked" disabled="disabled" /><?php } ?>&nbsp;<?php _e('Le droit provient du r&ocirc;le de l\'utilisateur et ne peut &ecirc;tre supprim&eacute; depuis cette interface', 'evarisk'); ?></span><br/>
+			<span class="permissionGranted" ><?php if($interface_provenance == 'digi_user_profile'){ ?><img src="<?php echo admin_url('images/yes.png'); ?>" alt="user right affectation" class="middleAlign" /><?php }else{ ?><input type="checkbox" name="explanationBoxEnabled" id="explanationBoxEnabled" value="" checked="checked" /><?php } ?>&nbsp;<?php _e('Permission ajout&eacute;e en plus de celle du r&ocirc;le de l\'utilisateur', 'evarisk'); ?></span>
 		</td>
 	</tr>
 <?php
@@ -1654,7 +1654,13 @@ class digirisk_permission
 	<tr>
 		<th>
 			<?php _e('permission_' . $module, 'evarisk'); ?>
+<?php
+				if($interface_provenance != 'digi_user_profile'){
+?>
 			<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
+<?php
+				}
+?>
 		</th>
 		<td>
 <?php
@@ -1663,17 +1669,19 @@ class digirisk_permission
 			<div class="sub_module <?php echo ($subModuleName != '') ? 'permission_module_' . $subModuleName : ''; ?>" >
 				<div class="sub_module_name" >
 <?php
-				if($subModuleName){
+				if($subModuleName)
 					_e('permission_' . $module . '_' . $subModuleName, 'evarisk');
-				}
-				else{
+				else
 					_e('permission_' . $module, 'evarisk');
-				}
 ?>
 				</div>
 				<div class="sub_module_content" >
+<?php
+				if($interface_provenance != 'digi_user_profile'){
+?>
 					<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module . '_' . $subModuleName; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module . '_' . $subModuleName; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
 <?php
+				}
 				/*	Liste des permissions pour le module et le sous-module	*/
 				foreach($moduleContent as $permission){
 					$checked = $permissionNameClass = '';

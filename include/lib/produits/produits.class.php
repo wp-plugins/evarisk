@@ -271,6 +271,7 @@ if(current_user_can('wpshop_edit_product')){
 			"aaSorting": [[2,"asc"]]';
 			}
 			else{/*	In case that no product is available into the selected categories	*/
+				$idLigne = $tableElement . $idElement . '_elementList_no_product';
 				/*	Overwrite the datatable titles and class	*/
 				$titres = array(ucfirst(strtolower(__('Aucun produit disponible', 'evarisk'))));
 				$classes = array('');
@@ -592,6 +593,7 @@ if(current_user_can('wpshop_edit_product')){
 	*	@return array $productListing The product list associated to selected categories
 	*/
 	function get_product_list($categories){
+		$productListing=array();
 		$digiriskSelectedProductStatus = unserialize(digirisk_options::getOptionValue('product_status', 'digirisk_product_options'));
 		if(is_array($digiriskSelectedProductStatus) && (count($digiriskSelectedProductStatus) > 0)){
 			$product_status = implode(', ', $digiriskSelectedProductStatus);
@@ -616,7 +618,7 @@ if(current_user_can('wpshop_edit_product')){
 		}
 		/*	Add uncategorized product	*/
 		$digiriskUncategorizedProductOutput = digirisk_options::getOptionValue('digi_product_uncategorized_field', 'digirisk_product_options');
-		if(($digiriskUncategorizedProductOutput == 'oui') && (($categoryToDisplay == '') || ($categoryToDisplay == '0'))){
+		if(($digiriskUncategorizedProductOutput == 'oui') && !empty($categoryToDisplay)){
 			$get_posts_parameters_uncategorized = $get_posts_parameters;
 			$get_posts_parameters_uncategorized[WPSHOP_NEWTYPE_IDENTIFIER_CATEGORIES] = '';
 			$products = get_posts($get_posts_parameters_uncategorized);

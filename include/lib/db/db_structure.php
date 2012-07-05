@@ -146,7 +146,9 @@ CREATE TABLE {$t} (
   `idPhotoAvant` int(10) unsigned NOT NULL,
   `idPhotoApres` int(10) unsigned NOT NULL,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Activity name',
+	`nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `description` text collate utf8_unicode_ci COMMENT 'Activity description',
+	`description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `dateDebut` date default NULL COMMENT 'Activity start date',
   `dateFin` date default NULL COMMENT 'Activity finish date',
   `avancement` int(10) default NULL COMMENT 'Activity progression',
@@ -186,9 +188,11 @@ CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Task Identifier',
 	`is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Task name',
+	`nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `limiteGauche` int(10) NOT NULL COMMENT 'Left limit to simulate the tree',
   `limiteDroite` int(10) NOT NULL COMMENT 'Right limit to simulate the tree',
   `description` text collate utf8_unicode_ci COMMENT 'Task description',
+	`description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `dateDebut` date default NULL COMMENT 'Task start date',
   `dateFin` date default NULL COMMENT 'Task finish date',
   `avancement` int(10) default NULL COMMENT 'Task progression',
@@ -1637,4 +1641,13 @@ CREATE TABLE {$t} (
 {/*	Version 71	*/
 	$digirisk_db_version = 71;
 	$digirisk_update_way[$digirisk_db_version] = 'update';
+}
+{/*	Version 72	*/
+	$digirisk_db_version = 72;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_TACHE] = array('nom_exportable_plan_action', 'description_exportable_plan_action');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('nom_exportable_plan_action', 'description_exportable_plan_action');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE, TABLE_TACHE);
 }
