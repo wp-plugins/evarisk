@@ -136,27 +136,23 @@ class eva_documentUnique
 						$query = $wpdb->prepare("SELECT TASK.id FROM ".TABLE_TACHE." AS TASK WHERE TASK.tableProvenance=%s AND idProvenance=%d",TABLE_RISQUE,$risque[0]->id);
 						$associated_task_list = $wpdb->get_results($query);
 						$associated_task_to_export = '';
-						foreach($associated_task_list as $task){
+						foreach ( $associated_task_list as $task ) {
 							$racine = Arborescence::getRacine(TABLE_TACHE, " id='" . $task->id . "' ");
 
 							$task_export_content='';
-							$put_separator=false;
-							if($racine->nom_exportable_plan_action=='yes'){
-								$put_separator=true;
+							if ( $racine->nom_exportable_plan_action == 'yes' ) {
 								$task_export_content.=$racine->nom;
+
+								if ( $racine->description_exportable_plan_action == 'yes' )
+									$task_export_content .= ' : ' . $racine->description.' ';
 							}
 
-							if($racine->description_exportable_plan_action=='yes'){
-								if($put_separator)$task_export_content.=' : ';
-								$task_export_content.=$racine->description.' ';
-							}
-
-							if(!empty($task_export_content))
+							if ( !empty( $task_export_content ) )
 								$associated_task_to_export.=ELEMENT_IDENTIFIER_T.$racine->id.' - '.$task_export_content.'
 ';
-	
+
 							$elements = Arborescence::getFils(TABLE_TACHE, $racine, "nom ASC");
-							$subcontent = self::complete_tree($elements, $racine, TABLE_TACHE, 'Info', $idTable, true);
+							$subcontent = self::output_correctiv_action_tree($elements, $racine, TABLE_TACHE);
 							$associated_task_to_export .= (!empty($subcontent)?$subcontent:'');
 						}
 						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $associated_task_to_export, 'class' => '');
@@ -180,111 +176,113 @@ class eva_documentUnique
 	/**
 	*
 	*/
-	function complete_tree($elementsFils, $elementPere, $table){
-		$monCorpsTable = $monCorpsSubElements = '';
-		$ddFeuilleClass = 'feuilleArbre';
-		$nomFeuilleClass = 'nomFeuilleArbre';
+	function output_correctiv_action_tree($elementsFils, $elementPere, $table, $output_type = '', $separator = ''){
+		global $wpdb;
+		$monCorpsTable = $monCorpsSubElements = $output = '';
 
-		$user_is_allowed_to_view_details = false;
-		switch($table){
-			case TABLE_CATEGORIE_DANGER :
-				$sousTable = TABLE_DANGER;
-				$subElements = categorieDangers::getDangersDeLaCategorie($elementPere->id);
-				$actionSize = 4;
-			break;
-			case TABLE_GROUPEMENT :
-				$sousTable = TABLE_UNITE_TRAVAIL;
-				$subElements = EvaGroupement::getUnitesDuGroupement($elementPere->id);
-				$actionSize = 4;
-			break;
-			case TABLE_TACHE :
-				$sousTable = TABLE_ACTIVITE;
-				$tacheMere = new EvaTask($elementPere->id);
-				$tacheMere->load();
-				$subElements = $tacheMere->getWPDBActivitiesDependOn();
-				$actionSize = 3;
-				$user_is_allowed_to_view_details = current_user_can('digi_view_detail_action');
-			break;
-			case TABLE_GROUPE_QUESTION :
-				$sousTable = TABLE_QUESTION;
-				$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($elementPere->id);
-				$actionSize = 3;
-			break;
+		if ($output_type == 'unaffected_task') {
+			$monCorpsTable = $monCorpsSubElements = $output = array();
 		}
+
+		$tacheMere = new EvaTask($elementPere->id);
+		$tacheMere->load();
+		$subElements = $tacheMere->getWPDBActivitiesDependOn();
 
 		foreach($subElements as $subElement){
 			$content='';
-			$put_separator=false;
-			if($subElement->nom_exportable_plan_action=='yes'){
-				$put_separator=true;
+
+			if ( $subElement->nom_exportable_plan_action == 'yes' ) {
 				$content.=$subElement->nom;
+
+				if ( $subElement->description_exportable_plan_action == 'yes' )
+					$content .= ' : ' . $subElement->description.' ';
 			}
 
-			if($subElement->description_exportable_plan_action=='yes'){
-				if($put_separator)$content.=' : ';
-				$content.=$subElement->description.' ';
-			}
-
-			if(!empty($content))
-				$monCorpsSubElements.=DIGI_TASK_SEP.' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id.' - '.$content.'
+			if ( !empty( $content ) ) {
+				if ( empty( $output_type ) ) {
+					$monCorpsSubElements.=DIGI_TASK_SEP.' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id.' - '.$content.'
 ';
+				}
+				elseif ( $output_type == 'unaffected_task' ) {
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['idAction'] = $separator . ' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id;
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['nomAction'] = $subElement->nom;
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['descriptionAction'] = $subElement->description;
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['ajoutAction'] = mysql2date('d F Y', $subElement->firstInsert, true);
+					$responsable_infos = evaUser::getUserInformation($subElement->idResponsable);
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['responsableAction'] = (($subElement->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$subElement->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['affectationAction'] = __('Aucune affectation pour cette t&acirc;che', 'evarisk');
+				}
+			}
 		}
 
-		if(count($elementsFils) != 0){
+		if ( !empty( $elementsFils ) ) {
 			foreach($elementsFils as $element){
 				$elements_fils = '';
 				$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
 				$elements_pere = Arborescence::getPere($table, $element, " Status = 'Deleted' ");
 
-				if(count($elements_pere) <= 0){
-					switch($table){
-						case TABLE_CATEGORIE_DANGER :
-							$sousTable = TABLE_DANGER;
-							$subElements = categorieDangers::getDangersDeLaCategorie($element->id);
-						break;
-						case TABLE_GROUPEMENT :
-							$sousTable = TABLE_UNITE_TRAVAIL;
-							$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
-						break;
-						case TABLE_TACHE :
-							$sousTable = TABLE_ACTIVITE;
-							$tache = new EvaTask($element->id);
-							$tache->load();
-							$subElements = $tache->getWPDBActivitiesDependOn();
-						break;
-						case TABLE_GROUPE_QUESTION :
-							$sousTable = TABLE_QUESTION;
-							$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element->id);
-						break;
-					}
+				if ( empty( $elements_pere ) && ( $element->tableProvenance != TABLE_RISQUE ) ) {
+					$tache = new EvaTask($element->id);
+					$tache->load();
+					$subElements = $tache->getWPDBActivitiesDependOn();
 					$trouveElement = count($elements_fils) + count($subElements);
-
 					$content='';
-					$put_separator=false;
-					if($element->nom_exportable_plan_action=='yes'){
-						$put_separator=true;
+
+					$exportable_element = false;
+					if ( $element->nom_exportable_plan_action == 'yes' ) {
+						$exportable_element = true;
 						$content.=$element->nom;
+
+						if ( $element->description_exportable_plan_action == 'yes' )
+							$content .= ' : ' . $element->description.' ';
 					}
 
-					if($element->description_exportable_plan_action=='yes'){
-						if($put_separator)$content.=' : ';
-						$content.=$element->description.' ';
-					}
-
-					if(!empty($content))
-						$monCorpsTable .= DIGI_TASK_SEP.' '.ELEMENT_IDENTIFIER_T.$element->id.' - '.$content.'
+					if ( $exportable_element ) {
+						if ( empty( $output_type ) ) {
+							$monCorpsTable .= DIGI_TASK_SEP.' '.ELEMENT_IDENTIFIER_T.$element->id.' - '.$content.'
 ';
+						}
+						elseif ($output_type == 'unaffected_task') {
+							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['idAction'] = $separator . DIGI_TASK_SEP.' '.ELEMENT_IDENTIFIER_T.$element->id;
+							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['nomAction'] = $element->nom;
+							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['descriptionAction'] = $element->description;
+							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['ajoutAction'] = mysql2date('d F Y', $element->firstInsert, true);
+							$responsable_infos = evaUser::getUserInformation($element->idResponsable);
+							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['responsableAction'] = (($element->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$element->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
+							$affectation = $wpdb->prepare("SELECT nom FROM ".$element->tableProvenance." WHERE id=%d", $element->idProvenance);
+							switch ( $element->tableProvenance ) {
+								case TABLE_GROUPEMENT:
+									$element_identifier = ELEMENT_IDENTIFIER_GP;
+								break;
+								case TABLE_UNITE_TRAVAIL:
+									$element_identifier = ELEMENT_IDENTIFIER_UT;
+								break;
+							}
+							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['affectationAction'] = (($element->idProvenance>0) ? $element_identifier.$element->idProvenance.' - '.$wpdb->get_var($affectation) : __('Aucune affectation pour cette t&acirc;che', 'evarisk') );
+						}
 
-					if($trouveElement){
-						$subcontent=self::complete_tree($elements_fils, $element, $table);
+						if ( $trouveElement ) {
+							$subcontent = self::output_correctiv_action_tree($elements_fils, $element, $table, $output_type, $separator . DIGI_TASK_SEP);
 
-						$monCorpsTable .= (!empty($subcontent)?DIGI_TASK_SEP.' '.$subcontent:'');
+							if ( empty( $output_type ) )
+								$monCorpsTable .= (!empty($subcontent)?DIGI_TASK_SEP.' '.$subcontent:'');
+							elseif ($output_type == 'unaffected_task') {
+								$monCorpsTable = array_merge((array)$monCorpsTable, (array)$subcontent);
+							}
+						}
 					}
 				}
 			}
 		}
 
-		return $monCorpsTable . $monCorpsSubElements;
+		if ( empty( $output_type ) ) {
+			$output = $monCorpsTable . $monCorpsSubElements;
+		}
+		elseif ($output_type == 'unaffected_task') {
+			$output = array_merge((array)$monCorpsTable, (array)$monCorpsSubElements);
+		}
+
+		return $output;
 	}
 
 	/**

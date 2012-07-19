@@ -15,8 +15,7 @@ class EvaTask extends EvaBaseTask
 	/**
 	* Save or update the Task in data base
 	*/
-	function save()
-	{
+	function save() {
 		global $wpdb;
 		global $current_user;
 		

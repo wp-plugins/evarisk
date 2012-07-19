@@ -185,6 +185,7 @@ class EvaPhoto {
 					$is_File = false;
 				break;
 			}
+			$img_nb = 0;
 			if($is_File){
 				$gallery .= '
 							<li class="alignleft" >
@@ -283,6 +284,7 @@ class EvaPhoto {
 				$gallery .= '
 								</div>
 							</li>';
+				$img_nb++;
 			}
 		}
 
@@ -301,7 +303,7 @@ class EvaPhoto {
 				</div>
 			</div>';
 
-		{	/*	Create the gallery with gallerific jquery plugin AND define the function for picture deletion	*/
+		if(!empty($img_nb)){	/*	Create the gallery with gallerific jquery plugin AND define the function for picture deletion	*/
 			$gallery .= 
 			'<script type="text/javascript">
 				function defaultPicture(tableElement, idElement, idPhoto){

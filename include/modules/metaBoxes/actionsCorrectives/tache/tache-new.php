@@ -60,6 +60,10 @@ function getTaskGeneralInformationPostBoxBody($arguments){
     $saveOrUpdate = 'save';
 	}
 
+	/*	Recupere la tache parent pour vérifier si on peut cocher les cases d'export dans le document unique	*/
+	$parent_task = new EvaTask($idPere);
+	$parent_task->load();
+
   $idForm = 'informationGeneralesTache';
 	$tache_new = '<form method="post" id="' . $idForm . '" name="' . $idForm . '" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >';
 	{//Champs cachés
@@ -74,10 +78,32 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 	}
 	{//Nom de la tâche
 		$contenuAideTitre = "";
-		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . ' :  <div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action" value="yes"'.(empty($nom_exportable_plan_action) || ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
+		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . ' : ';
+		$exportable_option = '';
+		if ( !empty ( $parent_task ) ) {
+			if ( ( $parent_task->name != __('Tache Racine', 'evarisk') ) && ( $parent_task->nom_exportable_plan_action == 'no' ) ) {
+				$labelInput .= '<input type="hidden" name="nom_exportable_plan_action" value="no" />';
+				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
+				$nom_exportable_plan_action = 'no';
+			}
+		}
+		$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"'.(empty($nom_exportable_plan_action) || ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 		$nomChamps = "nom_tache";
 		$idTitre = "nom_tache";
-		$tache_new = $tache_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
+		$tache_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput') . '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#nom_exportable_plan_action").click(function(){
+			if( !jQuery(this).is(":checked") ) {
+				jQuery("#description_exportable_plan_action").prop("checked",false);
+				jQuery("#description_exportable_plan_action").prop("disabled",true);
+			}
+			else{
+				jQuery("#description_exportable_plan_action").prop("disabled",false);
+			}
+		});
+	});
+</script>';
 	}
 	{//Dates
 		if(($firstInsert != '') || ($creatorID > 0)){
@@ -179,7 +205,16 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 	}
 	{//Description
 		$contenuAideDescription = "";
-		$labelInput = __("Description", 'evarisk') . ' :  <div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action" value="yes"'.(empty($description_exportable_plan_action) || ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
+		$labelInput = __("Description", 'evarisk') . ' : ';
+		$exportable_option = '';
+		if ( !empty ( $parent_task ) ) {
+			if ( ( ( $parent_task->name != __('Tache Racine', 'evarisk') ) && ( $parent_task->nom_exportable_plan_action == 'no' ) ) || ( $nom_exportable_plan_action == 'no' ) ) {
+				$labelInput .= '<input type="hidden" name="description_exportable_plan_action" value="no" />';
+				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
+				$description_exportable_plan_action = 'no';
+			}
+		}
+		$labelInput .= '<div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action"' . $exportable_option . ' value="yes"'.(empty($description_exportable_plan_action) || ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 		$id = "descriptionTache";
 		$nomChamps = "description";
 		$rows = 5;

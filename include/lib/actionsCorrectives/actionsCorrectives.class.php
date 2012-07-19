@@ -182,67 +182,51 @@ digirisk(".open_close_row").click(function(){
 		$actions = array();
 
 		$query = $wpdb->prepare("
-SELECT CONCAT('".ELEMENT_IDENTIFIER_T."',id) as idAction, nom, description, firstInsert, idResponsable, tableProvenance, idProvenance, nom_exportable_plan_action, description_exportable_plan_action
-FROM ".TABLE_TACHE." 
-WHERE (nom_exportable_plan_action=%s
-	OR description_exportable_plan_action=%s )
-	AND tableProvenance != %s
-	AND Status='Valid'
-", 'yes', 'yes', TABLE_RISQUE);
+SELECT CONCAT('".ELEMENT_IDENTIFIER_T."',TASK.id) as idAction, TASK.*
+FROM ".TABLE_TACHE." AS TASK
+	/*	INNER JOIN ".TABLE_TACHE." AS TASK_PARENT ON ( (TASK_PARENT.limiteGauche < TASK.limiteGauche) && (TASK_PARENT.limiteDroite > TASK.limiteDroite) AND ( TASK_PARENT.tableProvenance != %s ) )	*/
+WHERE TASK.nom_exportable_plan_action=%s
+	AND TASK.tableProvenance != %s
+	AND TASK.Status='Valid'
+ORDER BY TASK.limiteGauche, TASK.limiteDroite
+", TABLE_RISQUE, 'yes', TABLE_RISQUE);//exit($query);
 		$action_list = $wpdb->get_results($query);
-		foreach($action_list as $action){
-			$export=false;
-			$nom=$description='';
-			if($action->nom_exportable_plan_action=='yes'){
-				$export=true;
-				$nom=$action->nom;
-			}
-			if($action->description_exportable_plan_action=='yes'){
-				$export=true;
-				$description=$action->description;
+		foreach ( $action_list as $action ) {
+			$racine = Arborescence::getRacine(TABLE_TACHE, " id='" . $action->id . "' ");
+			$parents = Arborescence::getAncetre(TABLE_TACHE, $racine);
+			$export_task = true;
+			foreach ( $parents as $parent ) {
+				if ( ( $parent->nom != __('Tache Racine', 'evarisk') ) && ( $parent->tableProvenance != TABLE_RISQUE ) && ( $parent->nom_exportable_plan_action == 'yes'  ) ) {
+					$export_task = false;
+				}
 			}
 
-			if($export){
+			if ( $export_task ) {
+
 				$actions[$action->idAction]['idAction'] = $action->idAction;
-				$actions[$action->idAction]['nomAction'] = $nom;
-				$actions[$action->idAction]['descriptionAction'] = $description;
+				$actions[$action->idAction]['nomAction'] = $action->nom;
+				$actions[$action->idAction]['descriptionAction'] = $action->description;
 				$actions[$action->idAction]['ajoutAction'] = mysql2date('d F Y', $action->firstInsert, true);
 				$responsable_infos = evaUser::getUserInformation($action->idResponsable);
 				$actions[$action->idAction]['responsableAction'] = (($action->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$action->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
 				$affectation = $wpdb->prepare("SELECT nom FROM ".$action->tableProvenance." WHERE id=%d", $action->idProvenance);
-				$actions[$action->idAction]['affectationAction'] = (($action->idResponsable>0) ? $action->idProvenance.' - '.$wpdb->get_var($affectation) : __('Aucune affectation pour cette t&acirc;che', 'evarisk'));
-			}
-		}
+				switch ( $action->tableProvenance ) {
+					case TABLE_GROUPEMENT:
+						$element_identifier = ELEMENT_IDENTIFIER_GP;
+					break;
+					case TABLE_UNITE_TRAVAIL:
+						$element_identifier = ELEMENT_IDENTIFIER_UT;
+					break;
+				}
+				$direct_parent = Arborescence::getPere(TABLE_TACHE, $racine);
+				$actions[$action->idAction]['affectationAction'] = ( ($action->idProvenance>0) ? $element_identifier.$action->idProvenance.' - '.$wpdb->get_var($affectation) : __('Aucune affectation pour cette t&acirc;che', 'evarisk') );
 
-		$query = $wpdb->prepare("
-SELECT CONCAT('".ELEMENT_IDENTIFIER_ST."',id) as idAction, nom, description, firstInsert, idResponsable, nom_exportable_plan_action, description_exportable_plan_action
-FROM ".TABLE_ACTIVITE." 
-WHERE (nom_exportable_plan_action=%s
-	OR description_exportable_plan_action=%s )
-	AND Status='Valid'
-", 'yes', 'yes');
-		$action_list = $wpdb->get_results($query);
-		foreach($action_list as $action){
-			$export=false;
-			$nom=$description='';
-			if($action->nom_exportable_plan_action=='yes'){
-				$export=true;
-				$nom=$action->nom;
-			}
-			if($action->description_exportable_plan_action=='yes'){
-				$export=true;
-				$description=$action->description;
+				$elements = Arborescence::getFils(TABLE_TACHE, $racine, "nom ASC");
+				$sub_element = eva_documentUnique::output_correctiv_action_tree($elements, $racine, TABLE_TACHE, 'unaffected_task');
+
+				$actions = array_merge((array)$actions, (array)$sub_element);
 			}
 
-			if($export){
-				$actions[$action->idAction]['idAction'] = $action->idAction;
-				$actions[$action->idAction]['nomAction'] = $nom;
-				$actions[$action->idAction]['descriptionAction'] = $description;
-				$actions[$action->idAction]['ajoutAction'] = mysql2date('d F Y', $action->firstInsert, true);
-				$responsable_infos = evaUser::getUserInformation($action->idResponsable);
-				$actions[$action->idAction]['responsableAction'] = (($action->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$action->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
-				$actions[$action->idAction]['affectationAction'] = ' - ';
-			}
 		}
 
 		return $actions;

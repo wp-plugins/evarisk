@@ -317,6 +317,10 @@ class EvaActivity extends EvaBaseActivity
 			}
 		}
 
+		/*	Recupere la tache parent pour vérifier si on peut cocher les cases d'export dans le document unique	*/
+		$parent_task = new EvaTask($idPere);
+		$parent_task->load();
+
 		/*	Form initialisation	*/
 		$idBouttonEnregistrer = 'save_activite';
 		$idBouttonSold = 'actionDone';
@@ -341,10 +345,32 @@ class EvaActivity extends EvaBaseActivity
 		}
 		{/*	Sub-Task name					*/
 			$contenuAideTitre = "";
-			$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de l'action",'evarisk'))) . '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span> : <div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action" value="yes"'.(!empty($nom_exportable_plan_action) && ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
+			$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de l'action",'evarisk'))) . '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span> : ';
+			$exportable_option = '';
+			if ( !empty ( $parent_task ) ) {
+				if ( $parent_task->nom_exportable_plan_action == 'no' ) {
+					$labelInput .= '<input type="hidden" name="nom_exportable_plan_action" value="no" />';
+					$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
+					$nom_exportable_plan_action = 'no';
+				}
+			}
+			$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($nom_exportable_plan_action) && ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 			$nomChamps = "nom_activite";
 			$idTitre = "nom_activite";
-			$activite_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput', '', '99%');
+			$activite_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput', '', '99%') . '
+<script type="text/javascript" >
+	evarisk(document).ready(function(){
+		jQuery("#nom_exportable_plan_action").click(function(){
+			if( !jQuery(this).is(":checked") ) {
+				jQuery("#description_exportable_plan_action").prop("checked",false);
+				jQuery("#description_exportable_plan_action").prop("disabled",true);
+			}
+			else{
+				jQuery("#description_exportable_plan_action").prop("disabled",false);
+			}
+		});
+	});
+</script>';
 		}
 		{/*	Sub-Task creation informations		*/		
 			if(($firstInsert != '') || ($idCreateur > 0)){
@@ -362,6 +388,7 @@ class EvaActivity extends EvaBaseActivity
 				$activite_new .= '<br /><br class="clear" />';
 			}
 		}
+
 		if(!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action')){
 			/*	Sub-Task start date		*/
 			$contenuAideTitre = "";
@@ -385,7 +412,8 @@ class EvaActivity extends EvaBaseActivity
 			$id = "cout_activite";
 			$nomChamps = "cout";
 			$activite_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputCout, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, 255, '', '', '99%');
-			
+		}
+		if(empty($arguments['provenance']) || ($arguments['provenance'] != 'ask_correctiv_action')){
 			/*	Sub-Task progression	*/
 			$id = "avancement_activite";
 			$nomChamps = "avancement";
@@ -470,7 +498,16 @@ class EvaActivity extends EvaBaseActivity
 		}
 		{/*	Sub-Task Description	*/
 			$contenuAideDescription = "";
-			$labelInput = __("Description", 'evarisk') . ' : <div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action" value="yes"'.(!empty($description_exportable_plan_action) && ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
+			$labelInput = __("Description", 'evarisk') . ' : ';
+			$exportable_option = '';
+			if ( !empty ( $parent_task ) ) {
+				if ( ( $parent_task->nom_exportable_plan_action == 'no' ) || ( $nom_exportable_plan_action == 'no' ) ) {
+					$labelInput .= '<input type="hidden" name="description_exportable_plan_action" value="no" />';
+					$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
+					$description_exportable_plan_action = 'no';
+				}
+			}
+			$labelInput .= '<div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($description_exportable_plan_action) && ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 			$id = "description_activite";
 			$nomChamps = "description";
 			$rows = 5;

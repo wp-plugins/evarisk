@@ -2143,6 +2143,24 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$old_parent = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
 							$tache->transfert($idPere);
 
+							$relatedTask = new EvaTask($idPere);
+							$relatedTask->load();
+							/*	Check the state of export checkboxes in order to update sub element of current element	*/
+							if ( ( $relatedTask->name != __('Tache Racine', 'evarisk') ) &&  ( $relatedTask->getnom_exportable_plan_action() == 'no' ) ) {
+								/*	Change the sub task exportable status if no is selected for the current element	*/
+								$task_children = $relatedTask->getDescendants();
+								if ( !empty ( $task_children->tasks ) ) {
+									foreach ( $task_children->tasks as $task_id => $task_detail ) {
+										$sub_task = new EvaTask($task_id);
+										$sub_task->load();
+										$sub_task->setnom_exportable_plan_action('no');
+										$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $task_id );
+										$wpdb->query( $query );
+										$sub_task->save();
+									}
+								}
+							}
+	
 							/*	Log modification on element and notify user if user subscribe	*/
 							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'transfer', ($old_parent->id), ($idPere));
 						}
@@ -2159,6 +2177,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							/*	Update the action ancestor	*/
 							$relatedTask = new EvaTask($idPere);
 							$relatedTask->load();
+
+							/*	Check the state of export checkboxes in order to update sub element of current element	*/
+							if ( $relatedTask->getnom_exportable_plan_action() == 'no' ) {
+								$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $relatedTask->getId() );
+								$wpdb->query( $query );
+							}
+
 							$relatedTask->computeProgression();
 							$relatedTask->save();
 							unset($relatedTask);
@@ -2260,10 +2285,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					case 'save':
 					case 'update':
 					case 'taskDone':
-					{
 						global $wpdb;
-						switch($_REQUEST['act'])
-						{
+						switch ( $_REQUEST['act'] ) {
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
 								break;
@@ -2285,13 +2308,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tache->setnom_exportable_plan_action(!empty($_REQUEST['nom_exportable_plan_action'])?$_REQUEST['nom_exportable_plan_action']:'no');
 						$tache->setdescription_exportable_plan_action(!empty($_REQUEST['description_exportable_plan_action'])?$_REQUEST['description_exportable_plan_action']:'no');
 						$tache->setProgressionStatus('notStarted');
-						if(!empty($_REQUEST['avancement']) || ($tache->getProgressionStatus() == 'inProgress'))
+
+						if ( !empty( $_REQUEST['avancement'] ) || ( $tache->getProgressionStatus() == 'inProgress' ) )
 							$tache->setProgressionStatus('inProgress');
 
 						$tache->setidResponsable($_REQUEST['responsable_tache']);
 						$tache->setEfficacite($_REQUEST['efficacite']);
-						if($_REQUEST['act'] == 'taskDone')
-						{
+						if ( $_REQUEST['act'] == 'taskDone' ) {
 							global $current_user;
 							$tache->setidSoldeur($current_user->ID);
 							$tache->setProgression($_REQUEST['avancement']);
@@ -2301,13 +2324,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$tache->setdateSolde(current_time('mysql', 0));
 
 							/*	Get the task subelement to set the progression status to DoneByChief	*/
-							if($_REQUEST['markAllSubElementAsDone'] == 'true')
-							{
+							if ( $_REQUEST['markAllSubElementAsDone'] == 'true' )
 								$tache->markAllSubElementAsDone($_REQUEST['avancement'], $_REQUEST['date_fin'], $_REQUEST['date_debut']);
-							}
 						}
-						if($tache->getLeftLimit() == 0)
-						{
+						if ( $tache->getLeftLimit() == 0 ) {
 							$racine = new EvaTask(1);
 							$racine->load();
 							$tache->setLeftLimit($racine->getRightLimit());
@@ -2315,20 +2335,47 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$racine->setRightLimit(($racine->getRightLimit()) + 2);
 							$racine->save();
 						}
-						if($_REQUEST['act'] != 'taskDone')
+
+						if ( $_REQUEST['act'] != 'taskDone' )
 							$tache->computeProgression();
 
 						$tache->save();
 						$tacheMere = new EvaTask();
 						$tacheMere->convertWpdb(Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb()));
-						if($_REQUEST['idPere'] != $tacheMere->getId()){
+						if ( $_REQUEST['idPere'] != $tacheMere->getId() ) {
 							$tache->transfert($_REQUEST['idPere']);
 						}
 						$messageInfo = '<script type="text/javascript">
 								digirisk(document).ready(function(){';
-						if($tache->getStatus() != 'error'){
+						if ( $tache->getStatus() != 'error' ) {
+							/*	Reload the task content for future action	*/
 							$tache->load();
-							switch($_REQUEST['act']){
+
+							/*	Check the state of export checkboxes in order to update sub element of current element	*/
+							if ( $tache->getnom_exportable_plan_action() == 'no' ) {
+
+								/*	Set subtask exportble status	*/
+								$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $tache->getId() );
+								$wpdb->query( $query );
+
+								/*	Change the sub task exportable status if no is selected for the current element	*/
+								$task_children = $tache->getDescendants();
+								if ( !empty ( $task_children->tasks ) ) {
+									foreach ( $task_children->tasks as $task_id => $task_detail ) {
+										$sub_task = new EvaTask($task_id);
+										$sub_task->load();
+
+										$sub_task->setnom_exportable_plan_action('no');
+										$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $task_id );
+										$wpdb->query( $query );
+										$sub_task->save();
+									}
+								}
+
+							}
+
+							/*	Log the different modification	*/
+							switch ( $_REQUEST['act'] ) {
 								case 'save':
 									/*	Log modification on element and notify user if user subscribe	*/
 									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['idPere'], 'add_new_subtask', '', array(TABLE_TACHE, $tache->getId(), $_REQUEST['nom_tache'], $_REQUEST['description']));
@@ -2343,11 +2390,12 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'mark_done', '', '');
 								break;
 							}
+
 							$messageInfo = $messageInfo . '
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);';
 						}
-						else{
+						else {
 							$messageInfo = $messageInfo . '
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_tache']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);';
@@ -2400,7 +2448,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								});
 							</script>';
 						echo $messageInfo;
-					}
 					break;
 					case 'delete':
 					{
@@ -2970,7 +3017,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						global $current_user;
 						$provenance = digirisk_tools::IsValid_Variable($_POST['receiver_element']);
 						$token_for_element = digirisk_tools::IsValid_Variable($_POST['token_for_element']);
-echo '<pre>';print_r($_FILES);echo '</pre>';
+
 						$_POST['parentTaskId'] = evaTask::saveNewTask();
 						$asked_task = new EvaTask($_POST['parentTaskId']);
 						$asked_task->load();
