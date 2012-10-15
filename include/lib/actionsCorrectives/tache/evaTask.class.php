@@ -202,15 +202,13 @@ class EvaTask extends EvaBaseTask
 	* Get the descendants of the task.
 	* @return EvaTaskTable The descendants tasks
 	*/
-	function getDescendants()
-	{
+	function getDescendants() {
 		$wpdbTask = $this->convertToWpdb();
 		$wpdbTasks = Arborescence::getDescendants(TABLE_TACHE, $wpdbTask, $where = 1, $order= "limiteGauche ASC");
 		$descendants = new EvaTaskTable();
 		$descendants->removeAllTasks();
 		
-		foreach($wpdbTasks as $wpdbTask)
-		{
+		foreach ($wpdbTasks as $wpdbTask) {
 			$task = new EvaTask();
 			$task->convertWpdb($wpdbTask);
 			$descendants->addTask($task);

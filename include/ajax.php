@@ -14,7 +14,7 @@ require_once(EVA_INC_PLUGIN_DIR . 'includes.php');
 @header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
 /*
-* Paramètres passés en POST
+* Paramï¿½tres passï¿½s en POST
 */
 if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 	/*	Refactoring actions	*/
@@ -110,7 +110,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 				echo evaPhoto::deletePictureAction($_REQUEST['table'], $_REQUEST['idElement'], $_REQUEST['idPicture']);
 			break;
 			case 'reloadGallery':
-				$script = 
+				$script =
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
 						digirisk(".qq-upload-list").hide();
@@ -132,19 +132,19 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 			case 'loadUserInfo':
 			{
 				echo digirisk_accident::get_victim_accident_informations($_REQUEST['id_user']);
-			}			
+			}
 			break;
 
 			case 'loadWitnessInfo':
 			{
 				echo digirisk_accident::get_accident_third_party_informations($_REQUEST['id_user'], 'witness');
-			}			
+			}
 			break;
 
 			case 'loadThirdPartyInfo':
 			{
 				echo digirisk_accident::get_accident_third_party_informations($_REQUEST['id_user'], 'third_party');
-			}			
+			}
 			break;
 		}
 	}
@@ -184,15 +184,15 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 									$_REQUEST['description'] = $groupement->description;
 									$_REQUEST['telephone'] = $groupement->telephoneGroupement;
 									$_REQUEST['effectif'] = $groupement->effectif;
-									
+
 									$address = new EvaAddress($groupement->id_adresse);
-									
+
 									$address->load();
 									$contenuInputLigne1 = $address->getFirstLine();
 									$contenuInputLigne2 = $address->getSecondLine();
 									$contenuInputCodePostal = $address->getPostalCode();
 									$contenuInputVille = $address->getCity();
-									
+
 									$_REQUEST['adresse_ligne_1'] = $address->getFirstLine();
 									$_REQUEST['adresse_ligne_2'] = $address->getSecondLine();
 									$_REQUEST['code_REQUESTal'] = $address->getPostalCode();
@@ -205,14 +205,14 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							}
 							else
 							{
-								echo 
+								echo
 	'<script type="text/javascript" >
 			setTimeout(\'actionMessageShow("#message", "<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="error" />' . __('Vous ne pouvez pas effectuer ce d&eacute;placement', 'evarisk') . '")\', 700);
 			setTimeout(\'actionMessageHide("#message")\',7500);
 	</script>';
 							}
 						}
-						else //Le fils est une unité
+						else //Le fils est une unitï¿½
 						{
 							$idFils = str_replace('leaf-','', $fils);
 							eva_uniteDeTravail::transfertUnit($idFils, $idPere);
@@ -228,9 +228,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							case 'save':
 								$action = __('sauvegard&eacute;e', 'evarisk');
 								$afterActionList = '
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 										{
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_GROUPEMENT . '",
 											"act": "edit",
 											"id": "' . $_REQUEST['id'] . '",
@@ -240,7 +240,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 											"expanded": expanded
 										});';
 								$afterActionTable = '
-										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_GROUPEMENT . '",
 											"act": "edit",
 											"id": "' . $_REQUEST['id'] . '",
@@ -257,14 +257,14 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 								$afterActionList = '';
 								$afterActionTable = '';
 								break;
-						}	
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');		
+						}
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');
 						$messageInfo = '
 							<script type="text/javascript">
 								digirisk(document).ready(function(){
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du groupement', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_groupement']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);
-									
+
 									digirisk("#rightEnlarging").show();
 									digirisk("#equilize").click();
 									digirisk("#partieEdition").html(digirisk("#loadingImg").html());
@@ -273,7 +273,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 										if(digirisk("#filAriane :last-child").is("label"))
 											digirisk("#filAriane :last-child").remove();
 										digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_groupement'] . '</label>");
-										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_GROUPEMENT . '",
 											"act": "edit",
 											"id": "' . $_REQUEST['id'] . '",
@@ -290,7 +290,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 									{
 										var expanded = new Array();
 										digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
-										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_GROUPEMENT . '",
 											"act": "edit",
 											"id": "' . $_REQUEST['id'] . '",
@@ -309,7 +309,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					break;
 					case 'delete':
 					{
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');		
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');
 						echo '
 							<script type="text/javascript">
 								digirisk(document).ready(function() {
@@ -353,7 +353,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La sauvegarde a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
 							$actionAfterSuccess = '';
 						}
-	echo 
+	echo
 	'<script type="text/javascript">
 		digirisk(document).ready(function(){
 			actionMessageShow("#' . $messageContainerId . '", "' . $messageInfo . '");
@@ -375,7 +375,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 		var expanded = new Array();
 		digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
 		digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-			"post": "true", 
+			"post": "true",
 			"table": "' . TABLE_GROUPEMENT . '",
 			"act": "edit",
 			"id": "' . $_REQUEST['id'] . '",
@@ -391,7 +391,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							$moreAction = '';
 						}
 
-						echo 
+						echo
 	'<script type="text/javascript">
 		digirisk("#existingElementDialog").dialog("close");
 
@@ -414,7 +414,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					case 'save_groupement_missing_informations':
 					{
 						$_REQUEST['act'] = 'update';
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');	
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupementPersistance.php');
 						echo '
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -425,7 +425,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 			"accident_id": jQuery("#accident_form #tableElement").val(),
 			"tableElement": jQuery("#accident_form #tableElement").val(),
 			"idElement": jQuery("#accident_form #idElement").val(),
-			"step_to_load":jQuery("#accident_form #accident_form_step").val() 
+			"step_to_load":jQuery("#accident_form #accident_form_step").val()
 		});
 	});
 </script>';
@@ -450,9 +450,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 								{
 									$action = __('sauvegard&eacute;e', 'evarisk');
 									$afterActionList = '
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 										{
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_UNITE_TRAVAIL . '",
 											"act": "edit",
 											"id": "' . $_REQUEST['id'] . '",
@@ -462,9 +462,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 											"expanded": expanded
 										});';
 									$afterActionTable = '
-											digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+											digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 											{
-												"post": "true", 
+												"post": "true",
 												"table": "' . TABLE_UNITE_TRAVAIL . '",
 												"id": "' . $_REQUEST['id'] . '",
 												"page": digirisk("#pagemainPostBoxReference").val(),
@@ -492,7 +492,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 	digirisk(document).ready(function(){
 		actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de l\'unit&eacute; de travail', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_unite_travail']) . '"', $action)) . '");
 		setTimeout(\'actionMessageHide("#message")\',7500);
-		
+
 		digirisk("#rightEnlarging").show();
 		digirisk("#equilize").click();
 		digirisk("#partieEdition").html(digirisk("#loadingImg").html());';
@@ -507,9 +507,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 		digirisk("#rightEnlarging").show();
 		digirisk("#equilize").click();
 		digirisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_unite_travail'] . '</label>\');
-		digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
-			"post": "true", 
+			"post": "true",
 			"table": "' . TABLE_UNITE_TRAVAIL . '",
 			"id": "' . $_REQUEST['id'] . '",
 			"page": digirisk("#pagemainPostBoxReference").val(),
@@ -527,9 +527,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 								$messageInfo .= '
 		var expanded = new Array();
 		digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
-		digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
-			"post": "true", 
+			"post": "true",
 			"table": "' . TABLE_UNITE_TRAVAIL . '",
 			"act": "edit",
 			"id": "' . $_REQUEST['id'] . '",
@@ -603,7 +603,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							$messageInfo = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La sauvegarde a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>');
 							$actionAfterSuccess = '';
 						}
-	echo 
+	echo
 	'<script type="text/javascript">
 		digirisk(document).ready(function(){
 			actionMessageShow("#' . $messageContainerId . '", "' . $messageInfo . '");
@@ -625,7 +625,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 		var expanded = new Array();
 		digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
 		digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-			"post": "true", 
+			"post": "true",
 			"table": "' . TABLE_GROUPEMENT . '",
 			"act": "edit",
 			"id": "' . $_REQUEST['id'] . '",
@@ -641,7 +641,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							$moreAction = '';
 						}
 
-						echo 
+						echo
 	'<script type="text/javascript">
 		digirisk("#existingElementDialog").dialog("close");
 
@@ -667,7 +667,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 									jQuery(".expanded").each(function(){expanded.push(jQuery(this).attr("id"));});
 									jQuery("#main_tree_container").load(EVA_AJAX_FILE_URL,{
 										"post": "true",
-										"act": "reload_main_tree", 
+										"act": "reload_main_tree",
 										"table": sub_element_type,
 										"idPere": "' . $_REQUEST['categorieMere'] . '",
 										"elt": "node-main_table_" + sub_element_type + "-" + leafId,
@@ -681,7 +681,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 									jQuery("#node-main_table_' . $_REQUEST['table'] . '-' . $_REQUEST['id'] . '-name .node_name").html("' . stripslashes($_REQUEST['nom_categorie']) . '");';
 							break;
 						}
-						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');	
+						require_once(EVA_METABOXES_PLUGIN_DIR . 'dangers/categorieDangers/categorieDangersPersistance.php');
 						$messageInfo = '
 							<script type="text/javascript">
 								digirisk(document).ready(function(){
@@ -708,7 +708,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
 						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
 						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils))
-						//Le fils est une catégorie
+						//Le fils est une catï¿½gorie
 						{
 							$categorie = categorieDangers::getCategorieDanger($idFils);
 							$pereActu = Arborescence::getPere($_REQUEST['table'], $categorie);
@@ -743,19 +743,19 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 										evarisk("#needDangerCategory").show();';
 										if(count($dangers) > 1)
 										{
-											$script .= 
+											$script .=
 										'
 										evarisk("#' . $formId . 'divDangerFormRisque").show();
 										evarisk("#boutonAvanceRisque").children("span:first").html("-");';
 										}
 										else
 										{
-											$script .= 
+											$script .=
 										'
 										evarisk("#' . $formId . 'divDangerFormRisque").hide();
 										evarisk("#boutonAvanceRisque").children("span:first").html("+");';
 										}
-							$script .= 
+							$script .=
 									'})
 								</script>';
 						}
@@ -768,8 +768,44 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 	})
 </script>';
 						}
-						echo $script . EvaDisplayInput::afficherComboBox($dangers, $formId . 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $dangers[0]->id);
+                                                // Vï¿½rification s'il s'agit d'un danger par dï¿½faut
+                                                $nomDangerDefaut = '';
+
+                                                foreach($dangers as $danger)
+                                                {
+                                                    $methode = 1;
+                                                    if($danger->choix_danger != "")
+                                                    {
+                                                        $tableau = unserialize($danger->choix_danger);
+                                                        if(in_array("defaut", $tableau))
+                                                        {
+                                                            $nomDangerDefaut = $danger;
 					}
+                                                        if(in_array("penibilite", $tableau))
+                                                        {
+                                                            $methode = $danger->methode_eva_defaut;
+                                                        }
+                                                      }
+                                                      $script .= '<input type="hidden" value="'.$methode.'" id="methode_danger_'.$danger->id.'" />';
+                                                }
+
+                                                        $script .= '<script type="text/javascript">
+                                                                 jQuery(document).ready(function(){
+                                                                    jQuery("#dangerFormRisque").change(function()
+                                                                    {
+                                                                        jQuery("#methodeFormRisque option[value="+jQuery(this).val()+"]").attr("selected", "selected");
+
+                                                                     	digirisk("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
+                                                                        digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_"+jQuery(this).val()).val(), "idRisque": "' . $idElement . '"});
+
+                                                                    });
+                                                                 })
+                                                                </script>';
+
+						echo $script . EvaDisplayInput::afficherComboBox($dangers, $formId . 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $nomDangerDefaut);
+
+
+                                        }
 					break;
 				}
 			break;
@@ -787,7 +823,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 									jQuery(".expanded").each(function(){expanded.push(jQuery(this).attr("id"));});
 									jQuery("#main_tree_container").load(EVA_AJAX_FILE_URL,{
 										"post": "true",
-										"act": "reload_main_tree", 
+										"act": "reload_main_tree",
 										"table": sub_element_type,
 										"elt": "leaf-" + leafId + "-name",
 										"expanded": expanded
@@ -806,7 +842,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 								evarisk(document).ready(function(){
 									actionMessageShow("#message", "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('du danger', 'evarisk') . ' "' . stripslashes($_REQUEST['nom_danger']) . '"', $action)) . '");
 									setTimeout(\'actionMessageHide("#message")\',7500);
-									
+
 									evarisk("#rightEnlarging").show();
 									evarisk("#equilize").click();
 									sub_element_type = "' . $_REQUEST['table'] . '";
@@ -829,7 +865,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$pictureId = isset($_REQUEST['pictureId']) ? (digirisk_tools::IsValid_Variable($_REQUEST['pictureId'])) : '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
 						$_REQUEST['description'] = !empty($_REQUEST['description'])?str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']):'';
-						$_REQUEST['description'] = str_replace("’", "'",$_REQUEST['description']);
+						$_REQUEST['description'] = str_replace("ï¿½", "'",$_REQUEST['description']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
@@ -856,7 +892,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 <script type="text/javascript" >
 	digirisk("#addRiskForPictureText' . $pictureId . '").html("' . __('Ajouter un risque pour cette photo', 'evarisk') . '");
 	digirisk("#divDangerContainerSwitchPic' . $pictureId . '").attr("src").replace("collapse", "expand");
-	digirisk("#riskAssociatedToPicture' . $pictureId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#riskAssociatedToPicture' . $pictureId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
@@ -886,7 +922,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							evaPhoto::unAssociatePicture($tableElement, $idElement, str_replace('picture', '', str_replace('_', '', $oldidPicture)));
 							echo '
 <script type="text/javascript" >
-	digirisk("#riskAssociatedToPicture' . $oldidPicture . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#riskAssociatedToPicture' . $oldidPicture . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
@@ -899,7 +935,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$associateResult = evaPhoto::associatePicture($tableElement, $idElement, str_replace('picture', '', str_replace('_', '', $idPhoto)));
 						echo '
 <script type="text/javascript" >
-	digirisk("#riskAssociatedToPicture' . $idPhoto . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#riskAssociatedToPicture' . $idPhoto . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
@@ -922,7 +958,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							echo '
 <script type="text/javascript" >
 	if(digirisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_")){
-		digirisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
 			"post":"true",
 			"table":"' . TABLE_RISQUE . '",
@@ -999,14 +1035,14 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 							$output .= '
 </ul>';
 
-							//Requete n°2 : Tous les participants à l'audit
+							//Requete nï¿½2 : Tous les participants ï¿½ l'audit
 							$query = $wpdb->prepare("
 SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
 FROM " . $wpdb->usermeta . " AS META_1
 	INNER JOIN " . $wpdb->usermeta . " AS META_2 ON (META_2.user_id = META_1.user_id)
 	INNER JOIN " . TABLE_LIAISON_USER_ELEMENT . " AS LINK ON ((LINK.id_user = META_1.user_id) AND (((LINK.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group 
-							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP 
+						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group
+							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
 							WHERE USER_LINK_GROUP.status = 'valid')))))
 WHERE META_1.meta_key = 'last_name'
 	AND META_2.meta_key = 'first_name'
@@ -1029,7 +1065,7 @@ GROUP BY META_1.user_id , NOM ,  PRENOM");
 								$output .= '<br/>' . __('Aucun utilisateur inscrit n\'a particip&eacute; &agrave; l\'audit pour le moment', 'evarisk');
 							}
 
-							//Requete n°3 : Tous les absents à l'audit
+							//Requete nï¿½3 : Tous les absents ï¿½ l'audit
 							$query = $wpdb->prepare("
 SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
 FROM " . $wpdb->prefix . "usermeta AS META_1
@@ -1041,8 +1077,8 @@ WHERE META_1.meta_key = 'last_name'
 		SELECT LINK.id_user
 		FROM " . TABLE_LIAISON_USER_ELEMENT . " AS LINK
 		WHERE ((LINK.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group 
-							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP 
+						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group
+							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
 							WHERE USER_LINK_GROUP.status = 'valid'))) AND LINK.status = 'valid'
 	)
 GROUP BY META_1.user_id , NOM ,  PRENOM");
@@ -1094,7 +1130,7 @@ GROUP BY META_1.user_id , NOM ,  PRENOM");
 		case TABLE_GROUPEMENT:
 			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
 			{
-				$output .= 
+				$output .=
 	'
 	<input type="button" class="button-primary" name="saveRisqMassModification" id="saveRisqMassModification" value="' . __('Enregistrer', 'evarisk') . '" />';;
 			}
@@ -1102,14 +1138,14 @@ GROUP BY META_1.user_id , NOM ,  PRENOM");
 		case TABLE_UNITE_TRAVAIL:
 			if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $idElement))
 			{
-				$output .= 
+				$output .=
 	'
 	<input type="button" class="button-primary" name="saveRisqMassModification" id="saveRisqMassModification" value="' . __('Enregistrer', 'evarisk') . '" />';;
 			}
 		break;
 	}
 	$output .= '
-	<input type="button" class="button-secondary" name="cancelRisqMassModification" id="cancelRisqMassModification" value="' . __('Annuler', 'evarisk') . '" /> 
+	<input type="button" class="button-secondary" name="cancelRisqMassModification" id="cancelRisqMassModification" value="' . __('Annuler', 'evarisk') . '" />
 </div>
 <script type="text/javascript" >
 	digirisk("#risqMassUpdater textarea").keypress(function(){
@@ -1163,10 +1199,10 @@ GROUP BY META_1.user_id , NOM ,  PRENOM");
 			}
 		});
 
-		digirisk("#ajax-response-massUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#ajax-response-massUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
-			"post":"true", 
-			"table":"' . TABLE_RISQUE . '", 
+			"post":"true",
+			"table":"' . TABLE_RISQUE . '",
 			"act":"saveRisqMassUpdater",
 			"risqComment":risqComment,
 			"risqPrioritaryAction":risqPrioritaryAction
@@ -1242,7 +1278,7 @@ echo $output;
 						}
 						else
 						{
-							$risqACErrorMessage = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />' . __('Toutes les actions prioritaires ont &eacute;t&eacute; mise &agrave; jour', 'evarisk');
+							//$risqACErrorMessage = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />' . __('Toutes les actions prioritaires ont &eacute;t&eacute; mise &agrave; jour', 'evarisk');
 						}
 
 						echo '
@@ -1326,7 +1362,7 @@ echo $output;
 						jQuery("#' . $idTable . ' tr.parent").each(function(){
 							var childNodes = jQuery("table#' . $idTable . ' tbody tr.child-of-" + jQuery(this).attr("id"));
 							if(childNodes.length > 0){
-								jQuery(this).addClass("aFils");				
+								jQuery(this).addClass("aFils");
 								var premierFils = jQuery("table#' . $idTable . ' tbody tr.child-of-" + jQuery(this).attr("id") + ":first").attr("id");
 								if(premierFils != premierFils.replace(/node/g,"")){
 									jQuery(this).addClass("aFilsNoeud");
@@ -1360,7 +1396,7 @@ echo $output;
 						/*	Add the action when user click on the 	*/
 						jQuery(".view_correctiv_action").click(function(){
 							jQuery("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-								"post": "true", 
+								"post": "true",
 								"table": "' . TABLE_TACHE . '",
 								"id": jQuery(this).attr("id"),
 								"act": "loadDetails"
@@ -1370,7 +1406,7 @@ echo $output;
 						});
 						jQuery(".view_correctiv_action_sub_task").click(function(){
 							jQuery("#riskAssociatedTask' . $id_risque . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-								"post": "true", 
+								"post": "true",
 								"table": "' . TABLE_TACHE . '",
 								"id": jQuery(this).attr("id"),
 								"act": "loadDetails"
@@ -1419,7 +1455,7 @@ echo $output;
 
 						$quotation = Risque::getEquivalenceEtalon($idMethode, $score_risque, $date);
 						$seuil = Risque::getSeuil($quotation);
-						echo $quotation . '<script type="text/javascript" >digirisk(document).ready(function(){	jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '"); jQuery(".qr_risk").addClass("Seuil_' . $seuil . '");	});</script>';
+						echo $quotation . '<script type="text/javascript" >digirisk(document).ready(function(){	jQuery("#niveau_seuil_courant").val("' . $seuil . '"); jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '"); jQuery(".qr_risk").addClass("Seuil_' . $seuil . '");	});</script>';
 					}
 					break;
 
@@ -1536,7 +1572,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				switch($_REQUEST['act'])
 				{
 					case 'load_method_variable_container':{
-						MethodeEvaluation::evaluation_method_variable_manager($_REQUEST);
+						echo MethodeEvaluation::evaluation_method_management_content($_REQUEST);
 					}break;
 					case 'reloadVariables':{
 						$idMethode = (!empty($_REQUEST['idMethode'])?digirisk_tools::IsValid_Variable($_REQUEST['idMethode'], ''):'');
@@ -1550,6 +1586,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							foreach($risque as $ligneRisque){
 								$idMethode = ($idMethode == '') ? $ligneRisque->id_methode : $idMethode;
 								$valeurInitialVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
+
 							}
 						}
 						$variables = MethodeEvaluation::getDistinctVariablesMethode($idMethode);
@@ -1563,8 +1600,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							else{
 								$valeurInitialVariable = $variable->min;
 							}
-							{//Script de la variable
-								$vars_scripts .= '
+
+
+							{//Affichage de la variable
+								if ($variable->affichageVar == "slide") {
+									$vars_scripts .= '
 										jQuery("#' . $formId . 'slider-range-min' . $variable->id . '").slider({
 											range: "min",
 											value: ' . $valeurInitialVariable . ',
@@ -1578,12 +1618,32 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											}
 										});
 										jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val(jQuery("#' . $formId . 'slider-range-min' . $variable->id . '").slider("value"));';
-							}
-							{//Affichage de la variable
-								$affichage .= '
+
+									$affichage .= '
 									<label for="' . $formId . 'var' . $variable->id . 'FormRisque">' . ELEMENT_IDENTIFIER_V . $variable->id . ' - ' . $variable->nom . ' :</label>
 									<input type="text" class="sliderValue" readonly="readonly" id="' . $formId . 'var' . $variable->id . 'FormRisque" name="' . $formId . 'variables[' . $variable->id . ']" />
 									<div id="' . $formId . 'slider-range-min' . $variable->id . '" class="slider_variable"></div>';
+								}
+								else {
+                                	$affichage .= '<p class="digi_question_penibilite" >' . ELEMENT_IDENTIFIER_V . $variable->id . ' - '.$variable->questionTitre.'</p>';
+
+                                 	$tableau = unserialize($variable->questionVar);
+                                 	$i = $variable->min;
+                                 	foreach ($tableau as $t) {
+                                 		$checked = ($i == $valeurInitialVariable) ? ' checked="checked"' : '';
+                                 		$affichage.= '<input type="radio" id="' . $formId . 'variables_' . $variable->id . '_' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="score_risque_checkbox" value="'.$i.'"/><label for="' . $formId . 'variables_' . $variable->id . '_' . $i . '" >'.sprintf($t['question'], $t['seuil']).'</label><br/>';
+                                 		$i++;
+                                 	}
+			                    	$affichage .='<input type="hidden" id="' . $formId . 'var' . $variable->id . 'FormRisque" value=""/>';
+                                 	$affichage.= '
+                                 	<script type="text/javascript" >
+                                 		jQuery(".score_risque_checkbox").change(function(){
+                                 			var score = parseInt(jQuery(this).val());
+                                 			jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val(score);
+                                 			live_risk_calcul();
+                                 		 });
+                                 	</script>';
+								}
 							}
 						}
 						$affichage .= '</div>
@@ -1598,7 +1658,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$quotation = Risque::getEquivalenceEtalon($idMethode, $score);
 						}
 						$niveauSeuil = Risque::getSeuil($quotation);
-						$affichage .= '<div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div></div>';
+						$affichage .= '<input type="hidden" value="' . $niveauSeuil . '" id="niveau_seuil_courant" /><div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div></div>';
 
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
@@ -1618,7 +1678,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$formule = '';
 						foreach($listeVariables as $index => $variable){
 							$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $variable->id, 'Valid');
-							$formule .= 'jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val()';
+							$formule .= 'parseInt(jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val())';
 							$formule .= (isset($listeOperateur[$index]->operateur) && ($listeOperateur[$index]->operateur!= '')) ? ' ' . $listeOperateur[$index]->operateur . ' ' : '';
 						}
 						if($formule == ''){
@@ -1669,7 +1729,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			jQuery("#loading_picto_risk_mover_container").show();
 			jQuery("#button_risk_mover_container").hide();
 			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post": "true", 
+				"post": "true",
 				"table": "' . TABLE_RISQUE . '",
 				"act": "move_risk",
 				"id_risque": jQuery("#risk_to_move").val(),
@@ -1681,7 +1741,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			jQuery("#loading_picto_risk_mover_container").show();
 			jQuery("#button_risk_mover_container").hide();
 			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post": "true", 
+				"post": "true",
 				"table": "' . TABLE_RISQUE . '",
 				"act": "copy_risk",
 				"id_risque": jQuery("#risk_to_move").val(),
@@ -1695,15 +1755,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 		jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '");
 		jQuery(".qr_risk").html("<img src=\'' . PICTO_LOADING_ROUND . '\' alt=\'' . __('loading', 'evarisk') . '\' />");
 		jQuery(".qr_risk").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-			"post": "true", 
+			"post": "true",
 			"table": "' . TABLE_RISQUE . '",
 			"act": "reload_risk_cotation",
 			"score_risque": QR,
 			"date": "' . $method_operator_date . '",
 			"idMethode": "' . $idMethode . '",
-			"niveauSeuil": "' . $niveauSeuil . '"
+			"niveauSeuil": jQuery("#niveau_seuil_courant").val()
 		});
 	}
+
 </script>';
 					}
 					break;
@@ -1800,7 +1861,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									}
 								}
 								else{
-									$method_var = eva_Variable::getVariable($_REQUEST['var'][0]);
+									$method_formule = eva_Variable::getVariable($_REQUEST['var'][0]);
+									$method_formule = $method_formule->nom;
 								}
 								$more_action = '
 	jQuery("#info-' . $_REQUEST['table'] . '-' . $id_methode . '.evaluation_method_formule_cell").html("' . stripslashes($method_formule) . '");';
@@ -1813,9 +1875,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						if($message != ''){
 							echo '
 <script type="text/javascript" >
-	actionMessageShow("#evaluation_method_var_message", "' . $message . '");
-	setTimeout(\'actionMessageHide("#evaluation_method_var_message")\', \'7000\');
+	digirisk(document).ready(function(){
+		actionMessageShow("#evaluation_method_var_message", "' . $message . '");
+		setTimeout(\'actionMessageHide("#evaluation_method_var_message")\', \'7000\');
 ' . $more_action . '
+	});
 </script>';
 						}
 					}break;
@@ -1834,7 +1898,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	side_reloader("' . $_REQUEST['table'] . '", "' . $id . '", "", "");
 	jQuery("#main_tree_container").load(EVA_AJAX_FILE_URL,{
 		"post": "true",
-		"act": "reload_config_tree", 
+		"act": "reload_config_tree",
 		"table": "' . $_REQUEST['table'] . '",
 		"elt": "node-main_table_' . $_REQUEST['table'] . '-' . $id . '"
 	})';
@@ -1945,12 +2009,18 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$maximum = digirisk_tools::IsValid_Variable($_REQUEST['newvarmax'], 0);
 							$annotation = digirisk_tools::IsValid_Variable($_REQUEST['newvarannotation'], '');
 							$alterValues = $_REQUEST['newVariableAlterValue'];
+                                                        $methodeAffichage = digirisk_tools::IsValid_Variable($_REQUEST['methodeAffichage']);
+                                                        $questionTitre = digirisk_tools::IsValid_Variable($_REQUEST['newvarquestion']);
+                                                        $questionValues = $_REQUEST['varQuestion'];
+                                                        $seuilValues = $_REQUEST['varSeuil'];
+
 							if($id <= 0){
-								$result = $wpdb->insert(TABLE_VARIABLE, array('nom' => $nom, 'min' => $minimum, 'max' => $maximum, 'annotation' => $annotation, 'Status' => 'Valid'), array('%s', '%s', '%s', '%s', '%s', '%s'));
+
+								$result = $wpdb->insert(TABLE_VARIABLE, array('nom' => $nom, 'min' => $minimum, 'max' => $maximum, 'annotation' => $annotation, 'Status' => 'Valid', 'affichageVar' => $methodeAffichage, 'questionTitre' => $questionTitre), array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'));
 								$id = $wpdb->insert_id;
 							}
 							else{
-								$result = $wpdb->update(TABLE_VARIABLE, array('nom' => $nom, 'min' => $minimum, 'max' => $maximum, 'annotation' => $annotation), array('id' => $id), array('%s', '%s', '%s', '%s', '%s'), array('%d'));
+								$result = $wpdb->update(TABLE_VARIABLE, array('nom' => $nom, 'min' => $minimum, 'max' => $maximum, 'annotation' => $annotation, 'affichageVar' => $methodeAffichage, 'questionTitre' => $questionTitre), array('id' => $id), array('%s', '%s', '%s', '%s', '%s', '%s', '%s'), array('%d'));
 								if(($result == 1) || ($result == 0)){
 									$result = true;
 									$wpdb->update(TABLE_VALEUR_ALTERNATIVE, array('Status' => 'Deleted'), array('id_variable' => $id), array('%s'), array('%d'));
@@ -1966,6 +2036,18 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									}
 								}
 							}
+                                                        /*  Save an array in the database with every question and step of the var */
+                                                        if(!empty($questionValues) && !empty($seuilValues))
+                                                        {
+                                                            $dataTab;
+                                                            for($i = $minimum; $i <= $maximum; $i++)
+                                                            {
+                                                                $dataTab[]= array('question' => $questionValues[$i], 'seuil' => $seuilValues[$i]);
+                                                            }
+
+                                                            $tabToSave = serialize($dataTab);
+                                                            $wpdb -> update(TABLE_VARIABLE, array('questionVar' => $tabToSave), array('id' => $id), array('%s'), array('%d'));
+                                                        }
 
 							if(!$result){
 								$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la variable.', 'evarisk');
@@ -1976,7 +2058,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								$more_action = '
 		jQuery("#var_manager_window").html(evarisk("#loadingImg").html());
 		jQuery("#var_manager_window").load(EVA_AJAX_FILE_URL,{
-			"post": "true", 
+			"post": "true",
 			"table": "' . TABLE_VARIABLE . '",
 			"act": "load_variable_management"
 		});
@@ -1984,7 +2066,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 		if(jQuery("#method_var_form #id_methode").val()>0){
 			jQuery(".evaluation_method_var_container").html(evarisk("#loadingImg").html());
 			jQuery(".evaluation_method_var_container").load(EVA_AJAX_FILE_URL,{
-				"post": "true", 
+				"post": "true",
 				"table": "' . TABLE_METHODE . '",
 				"act": "load_method_variable_container",
 				"idElement": jQuery("#method_var_form #id_methode").val()
@@ -2062,7 +2144,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							case 'titre':
 								if($_REQUEST['nom'] != null and $_REQUEST['nom'] != '')
-								{ 
+								{
 									$retourALaLigne = array("\r\n", "\n", "\r");
 									$_REQUEST['nom'] = str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['nom']);
 									$temp = EvaGroupeQuestions::getGroupeQuestions($_REQUEST['id']);
@@ -2137,7 +2219,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$idPere = str_replace('node-' . $_REQUEST['location'] . '-','', $pere);
 						$idOrigine = str_replace('node-' . $_REQUEST['location'] . '-','', $_REQUEST['idElementOrigine']);
 						$idFils = (string)((int) str_replace('node-' . $_REQUEST['location'] . '-','', $fils));
-						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)){//Le fils est une tâche
+						if($idFils == str_replace('node-' . $_REQUEST['location'] . '-','', $fils)){//Le fils est une tï¿½che
 							$tache = new EvaTask($idFils);
 							$tache->load();
 							$old_parent = Arborescence::getPere(TABLE_TACHE, $tache->convertToWpdb());
@@ -2160,11 +2242,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									}
 								}
 							}
-	
+
 							/*	Log modification on element and notify user if user subscribe	*/
 							digirisk_user_notification::log_element_modification(TABLE_TACHE, $idFils, 'transfer', ($old_parent->id), ($idPere));
 						}
-						else{//Le fils est une activité
+						else{//Le fils est une activitï¿½
 							$idFils = str_replace('leaf-','', $fils);
 							$activite = new EvaActivity($idFils);
 							$activite->load();
@@ -2223,14 +2305,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								switch($provenanceComponents[0]){
 									case TABLE_RISQUE:
 										/*	Make the link between a corrective action and a risk evaluation	*/
-										$query = 
+										$query =
 											$wpdb->prepare(
-												"SELECT id_evaluation 
-												FROM " . TABLE_AVOIR_VALEUR . " 
-												WHERE id_risque = '%d' 
-													AND Status = 'Valid' 
-												ORDER BY id DESC 
-												LIMIT 1", 
+												"SELECT id_evaluation
+												FROM " . TABLE_AVOIR_VALEUR . "
+												WHERE id_risque = '%d'
+													AND Status = 'Valid'
+												ORDER BY id DESC
+												LIMIT 1",
 												$provenanceComponents[1]
 											);
 										$evaluation = $wpdb->get_row($query);
@@ -2296,7 +2378,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							case 'taskDone':
 								$action = __('sold&eacute;e', 'evarisk');
 								break;
-						}	
+						}
 						$tache = new EvaTask($_REQUEST['id']);
 						$tache->load();
 						$old_tache = new EvaTask($_REQUEST['id']);
@@ -2408,7 +2490,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										if(digirisk("#filAriane :last-child").is("label"))
 											digirisk("#filAriane :last-child").remove();
 										digirisk("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_tache'] . '</label>\');
-										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_TACHE . '",
 											"id": "' . $tache->getId() . '",
 											"page": digirisk("#pagemainPostBoxReference").val(),
@@ -2424,7 +2506,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									{
 										var expanded = new Array();
 										digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
-										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_TACHE . '",
 											"act": "edit",
 											"id": "' . $tache->getId() . '",
@@ -2433,9 +2515,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											"affichage": "affichageListe",
 											"expanded": expanded
 										});
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 										{
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_TACHE . '",
 											"act": "edit",
 											"id": "' . $tache->getId() . '",
@@ -2454,6 +2536,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tache = new EvaTask($_REQUEST['id']);
 						$tache->load();
 						$tache->setStatus('Deleted');
+						$task_children = $tache->getDescendants();
+						foreach($task_children->tasks as $index => $task){
+							$sub_tasks = EvaTask::getChildren($task->id);
+							$wpdb->update(TABLE_TACHE, array('Status'=>'Deleted'), array('id'=>$task->id));
+							foreach($sub_tasks as $index_2 => $sub_task){
+								$wpdb->update(TABLE_ACTIVITE, array('Status'=>'Deleted'), array('id'=>$sub_task->id));
+							}
+						}
 						$tache->save();
 
 						$messageInfo = '<script type="text/javascript">';
@@ -2491,7 +2581,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											digirisk("#filAriane :last-child").remove();
 										digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_tache'] . '</label>");
 										digirisk("#partieEdition").html("");
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_TACHE . '",
 											"id": "' . $tache->getId() . '",
 											"page": digirisk("#pagemainPostBoxReference").val(),
@@ -2508,7 +2598,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										var expanded = new Array();
 										digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
 										digirisk("#partieEdition").html("");
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 											"table": "' . TABLE_TACHE . '",
 											"act": "edit",
 											"id": "' . $tache->getId() . '",
@@ -2540,7 +2630,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										$existingPreconisation .= ' (' . str_replace("
 ", " / ", $task->description) . ')';
 									}
-									$existingPreconisation .= " 
+									$existingPreconisation .= "
 ";
 								}
 								$activities = $task->getActivitiesDependOn();
@@ -2552,7 +2642,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											$existingPreconisation .= ' (' . str_replace("
 ", " / ", $activity->description) . ')';
 										}
-										$existingPreconisation .= " 
+										$existingPreconisation .= "
 ";
 									}
 								}
@@ -2607,7 +2697,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$id = digirisk_tools::IsValid_Variable($_REQUEST['id']);
 						$element_identifier = explode('_t_elt_', $id);
 
-						/*	On récupère les utilisateurs déjà affectés à l'élément en cours.	*/
+						/*	On rï¿½cupï¿½re les utilisateurs dï¿½jï¿½ affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.	*/
 						$linkedUser = '';
 						$utilisateursLies = evaUserLinkElement::getAffectedUser($element_identifier[0], $element_identifier[1]);
 						if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
@@ -2691,7 +2781,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									"SELECT photo
 									FROM " . TABLE_PHOTO . " AS P
 										INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoAvant = P.id)
-									WHERE A.id = '%s' ", 
+									WHERE A.id = '%s' ",
 									$postId
 								);
 								$pictureBefore = $wpdb->get_var($query);
@@ -2703,7 +2793,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									"SELECT photo
 									FROM " . TABLE_PHOTO . " AS P
 										INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoApres = P.id)
-									WHERE A.id = '%s' ", 
+									WHERE A.id = '%s' ",
 									$postId
 								);
 								$pictureAfter = $wpdb->get_var($query);
@@ -2767,7 +2857,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	<tr>
 		<td colspan="2" class="correctiveActionFollow" >' . $suivi;
 							}
-							$output .= 
+							$output .=
 		'</td>
 	</tr>' . $moreInfos . '
 </table>
@@ -2791,7 +2881,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$progression = $tache->getProgression();
 						$startDate = $tache->getStartDate();
 						$endDate = $tache->getFinishDate();
-						{//Date de début de l'action
+						{//Date de dï¿½but de l'action
 							$contenuAideTitre = "";
 							$id = "date_debut";
 							$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de d&eacute;but %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionStart" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
@@ -2799,7 +2889,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$nomChamps = "date_debut";
 							$output .= $label . EvaDisplayInput::afficherInput('text', $id, $startDate, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date') . '';
 						}
-						{//Date de début de l'action
+						{//Date de dï¿½but de l'action
 							$contenuAideTitre = "";
 							$id = "date_fin";
 							$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de fin %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionEnd" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
@@ -2924,7 +3014,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								case 'update':
 								case 'update_from_external':
 									foreach($activite as $key => $value){
-										$activity_content[$key] = $value; 
+										$activity_content[$key] = $value;
 									}
 									/*	Log modification on element and notify user if user subscribe	*/
 									digirisk_user_notification::log_element_modification(TABLE_ACTIVITE, $_REQUEST['id'], 'update', $old_activite, $activity_content);
@@ -2955,7 +3045,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											jQuery("#filAriane :last-child").remove();
 										jQuery("#filAriane :last-child").after(\'<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_activite'] . '</label>\');
 										jQuery("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_ACTIVITE . '",
 											"id": "' . $activite->getId() . '",
 											"page": jQuery("#pagemainPostBoxReference").val(),
@@ -2971,7 +3061,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										var expanded = new Array();
 										jQuery(".expanded").each(function(){expanded.push(jQuery(this).attr("id"));});
 										jQuery("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "edit",
 											"id": "' . $activite->getId() . '",
@@ -2981,7 +3071,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											"expanded": expanded
 										});
 										jQuery("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "edit",
 											"id": "' . $activite->getId() . '",
@@ -3056,7 +3146,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						evaUserLinkElement::setLinkUserElement(TABLE_TACHE, $actionSave['task_id'], $current_user->ID);
 						evaUserLinkElement::setLinkUserElement(TABLE_ACTIVITE, $actionSave['action_id'], $current_user->ID);
-						
+
 						$task_notif_list = digirisk_user_notification::get_notification_list(TABLE_TACHE);
 						foreach($task_notif_list as $notification){
 							$wpdb->insert(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'valid', 'date_affectation' => current_time('mysql', 0), 'id_attributeur' => $current_user->ID, 'id_user' => $current_user->ID, 'id_notification' => $notification->id, 'id_element' => $actionSave['task_id'],	'table_element' => TABLE_TACHE));
@@ -3124,14 +3214,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$actionSave = evaActivity::saveNewActivity();
 
 						/*	Make the link between a corrective action and a risk evaluation	*/
-						$query = 
+						$query =
 							$wpdb->prepare(
-								"SELECT id_evaluation 
-								FROM " . TABLE_AVOIR_VALEUR . " 
-								WHERE id_risque = '%d' 
-									AND Status = 'Valid' 
-								ORDER BY id DESC 
-								LIMIT 1", 
+								"SELECT id_evaluation
+								FROM " . TABLE_AVOIR_VALEUR . "
+								WHERE id_risque = '%d'
+									AND Status = 'Valid'
+								ORDER BY id DESC
+								LIMIT 1",
 								$_REQUEST['idProvenance']
 							);
 						$evaluation = $wpdb->get_row($query);
@@ -3172,14 +3262,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 
 						if(isset($_REQUEST['original_act']) && ($_REQUEST['original_act'] == 'demandeAction')){
-							$query = 
+							$query =
 								$wpdb->prepare(
-									"SELECT id_evaluation 
-									FROM " . TABLE_AVOIR_VALEUR . " 
-									WHERE id_risque = '%d' 
-										AND Status = 'Valid' 
-									ORDER BY id DESC 
-									LIMIT 1", 
+									"SELECT id_evaluation
+									FROM " . TABLE_AVOIR_VALEUR . "
+									WHERE id_risque = '%d'
+										AND Status = 'Valid'
+									ORDER BY id DESC
+									LIMIT 1",
 									$_REQUEST['idProvenance']
 								);
 							$evaluation = $wpdb->get_row($query);
@@ -3262,20 +3352,20 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							function loadPictureBeforeAC(){
 								digirisk(".qq-upload-list").hide();
 								digirisk("#pictureBefore").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-									"post":"true", 
+									"post":"true",
 									"nom":"loadPictureAC",
 									"act":"before",
-									"tableProvenance":"' . $tableElement . '", 
+									"tableProvenance":"' . $tableElement . '",
 									"idProvenance": "' . $idElement . '"
 								});
 							}
 							function loadPictureAfterAC(){
 								digirisk(".qq-upload-list").hide();
 								digirisk("#PictureAfter").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-									"post":"true", 
+									"post":"true",
 									"nom":"loadPictureAC",
 									"act":"after",
-									"tableProvenance":"' . $tableElement . '", 
+									"tableProvenance":"' . $tableElement . '",
 									"idProvenance": "' . $idElement . '"
 								});
 							}
@@ -3326,7 +3416,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									unset($ancestorTask);
 								}
 						}
-						
+
 						$messageInfo = '<script type="text/javascript">
 							digirisk(document).ready(function(){
 								digirisk("#message' . $_REQUEST['tableProvenance'] . '").addClass("updated");';
@@ -3395,9 +3485,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											digirisk("#filAriane :last-child").remove();
 										digirisk("#filAriane :last-child").after("<label>&nbsp;&raquo;&nbsp;&Eacute;dition&nbsp;de&nbsp;' . $_REQUEST['nom_activite'] . '</label>");
 										digirisk("#partieEdition").html("");
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 										{
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_ACTIVITE . '",
 											"id": "' . $activite->getId() . '",
 											"page": digirisk("#pagemainPostBoxReference").val(),
@@ -3414,9 +3504,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										var expanded = new Array();
 										digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
 										digirisk("#partieEdition").html("");
-										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+										digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 										{
-											"post": "true", 
+											"post": "true",
 											"table": "' . TABLE_ACTIVITE . '",
 											"act": "changementPage",
 											"id": "' . $activite->getId() . '",
@@ -3453,7 +3543,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							digirisk_user_notification::log_element_modification(TABLE_TACHE, $taskId, 'set_in_progress', '', '');
 							$updateTaskProgressionInTree .= '
 	digirisk(".taskInfoContainer-' . $taskId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-		"post": "true", 
+		"post": "true",
 		"table": "' . TABLE_TACHE . '",
 		"act": "actualiseProgressionInTree",
 		"id": "' . $taskId . '"
@@ -3476,7 +3566,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									$updateTaskProgressionInTree .= '
 	digirisk(".taskInfoContainer-' . $task->id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
-		"post": "true", 
+		"post": "true",
 		"table": "' . TABLE_TACHE . '",
 		"act": "actualiseProgressionInTree",
 		"id": "' . $task->id . '"
@@ -3489,7 +3579,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 <script type="text/javascript">
 	digirisk(".activityInfoContainer-' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
-		"post": "true", 
+		"post": "true",
 		"table": "' . TABLE_ACTIVITE . '",
 		"act": "actualiseProgressionInTree",
 		"id": "' . $id . '"
@@ -3528,7 +3618,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				switch($_REQUEST['act'])
 				{
 					case 'save':{
-						$messageInfo = 
+						$messageInfo =
 							'<script type="text/javascript">
 								digirisk(document).ready(function(){
 									digirisk("#messageInfo' . $tableElement . $idElement . '").addClass("updated");';
@@ -3630,7 +3720,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 		digirisk(this).addClass("selected");
 		digirisk("#generatedFGPContainer").show();
 	});
-	
+
 	digirisk("#generatedFP").click(function(){
 		digirisk("#summaryGeneratedDocumentSlector div").each(function(){
 			digirisk(this).removeClass("selected");
@@ -3684,7 +3774,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$odtFile = 'documentUnique/' . $tableElement . '/' . $idElement . '/' . $documentUniqueInfos->nomDUER . '_V' . $documentUniqueInfos->revisionDUER . '.odt';
 						if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
 						{
-							echo 
+							echo
 '<script type="text/javascript" >
 	(function(){
 		jQuery("#reGenerateDUER' . $idDocument . 'Container").html(\'' . __('Nouveau', 'evarisk') . '&nbsp;<a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaDUEROdt" >Odt</a>\');
@@ -3702,7 +3792,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						if( $wpdb->query($query) )
 						{
 							$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('Le document unique &agrave; bien &eacute;t&eacute; supprim&eacute;.', 'evarisk');
-							echo 
+							echo
 '<script type="text/javascript" >
 	(function(){
 		actionMessageShow("#message' . TABLE_DUER . '", "' . $messageToOutput . '");
@@ -3856,7 +3946,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$_POST['idElement'] = $group['id'];
 							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $group['id'] . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $group['nom']));
 							$_POST['nomEntreprise'] = $groupementParent->nom;
-							
+
 							$_POST['description'] = $groupementParent->description;
 							$_POST['telephone'] = $groupementParent->telephoneGroupement;
 
@@ -3995,10 +4085,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$id_preconisation = $id;
 							$nom_preconisation = html_entity_decode($recommandationInfos->nom, ENT_QUOTES, 'UTF-8');
 							$description_preconisation = html_entity_decode($recommandationInfos->description, ENT_QUOTES, 'UTF-8');
-							$moreRecommandationForm = 
+							$moreRecommandationForm =
 		'digirisk("#recommandationPictureGalery").show();
 		digirisk("#pictureGallery' . TABLE_PRECONISATION . '_' . $id . '").html(digirisk("#loadingImg").html());
-		digirisk("#pictureGallery' . TABLE_PRECONISATION . '_' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#pictureGallery' . TABLE_PRECONISATION . '_' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
 			"post":"true",
 			"table":"' . TABLE_PRECONISATION . '",
@@ -4029,7 +4119,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$recommandations_informations['nom'] = $nom_preconisation;
 						$recommandations_informations['description'] = $description_preconisation;
 
-						//Check the value of the recommandation identifier. 
+						//Check the value of the recommandation identifier.
 						if(($id_preconisation <= 0) && current_user_can('digi_add_recommandation')){	//	If the value is equal or less than 0 we create a new recommandation
 							$recommandations_informations['status'] = 'valid';
 							$recommandations_informations['id_categorie_preconisation'] = $id_categorie_preconisation;
@@ -4041,7 +4131,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	side_reloader("' . $_REQUEST['table'] . '", "' . $recommandationActionResult . '", "", expanded);
 	jQuery("#main_tree_container").load(EVA_AJAX_FILE_URL,{
 		"post": "true",
-		"act": "reload_config_tree", 
+		"act": "reload_config_tree",
 		"table": "' . TABLE_CATEGORIE_PRECONISATION . '",
 		"idPere": "' . $id_categorie_preconisation . '",
 		"elt": "leaf-' . $recommandationActionResult . '",
@@ -4107,7 +4197,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e.', 'evarisk');
 							$moreRecommandationScript = '
-	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
 		"post":"true",
 		"table":"' . TABLE_PRECONISATION . '",
@@ -4266,7 +4356,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e.', 'evarisk');
 							$moreRecommandationScript = '
-	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
 		"post":"true",
 		"table":"' . TABLE_PRECONISATION . '",
@@ -4300,7 +4390,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$recommandationCategory_informations['impressionRecommandationCategorie'] = $impressionRecommandationCategorie;
 						$recommandationCategory_informations['tailleimpressionRecommandationCategorie'] = str_replace(',', '.', $tailleimpressionRecommandationCategorie);
 
-						//Check the value of the recommandation identifier. 
+						//Check the value of the recommandation identifier.
 						if(($id_categorie_preconisation <= 0) && current_user_can('digi_edit_recommandation_cat'))
 						{	//	If the value is equal or less than 0 we create a new recommandation
 							$recommandationCategory_informations['status'] = 'valid';
@@ -4329,7 +4419,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationCategoryActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
 							$moreRecommandationCategoryScript .= '
-	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 	{
 		"post":"true",
 		"table":"' . TABLE_PRECONISATION . '",
@@ -4358,10 +4448,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationCategoryInfos = evaRecommandationCategory::getCategoryRecommandation($id);
 							$id_categorie_preconisation = $id;
-							$moreRecommandationForm = 
+							$moreRecommandationForm =
 		'digirisk("#recommandationCategoryPictureGalery").show();
 		digirisk("#pictureGallery' . TABLE_CATEGORIE_PRECONISATION . '_' . $id . '").html(digirisk("#loadingImg").html());
-		digirisk("#pictureGallery' . TABLE_CATEGORIE_PRECONISATION . '_' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#pictureGallery' . TABLE_CATEGORIE_PRECONISATION . '_' . $id . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
 			"post":"true",
 			"table":"' . TABLE_CATEGORIE_PRECONISATION . '",
@@ -4522,7 +4612,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	setTimeout(\'actionMessageHide("#' . $_REQUEST['message'] . '")\',7500);
 
 	digirisk("#' . $_REQUEST['tableContainer'] . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-		"post": "true", 
+		"post": "true",
 		"table": "' . DIGI_DBT_PERMISSION . '",
 		"act": "reload_user_right_box",
 		"tableElement": "' . $tableElement . '",
@@ -4681,7 +4771,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$accident_main_informations['accident_date'] = $accident['accident_date'];
 							$accident_main_informations['accident_hour'] = $accident['accident_hour'];
 							$accident_main_informations['accident_title'] = $_POST['accident']['accident_title'];
-	
+
 							if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') && ($current_accident->accident_details_id > 0)){
 								$accident['last_update_date'] = current_time('mysql', 0);
 								$save_result = eva_database::update($accident, $current_accident->accident_details_id, DIGI_DBT_ACCIDENT_DETAILS);
@@ -4719,7 +4809,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									$accident_witness['adress_line_2'] = $user_meta[0]['user_adress_2'];
 
 									if($witness_infos['user_id'] > 0){
-										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') 
+										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress')
 												&& (isset($witness_infos['tparty_id']) && ($witness_infos['tparty_id'] > 0)) ){
 											$accident_witness['last_update_date'] = current_time('mysql', 0);
 											$save_hurt_result = eva_database::update($accident_witness, $witness_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
@@ -4762,7 +4852,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									$accident_third_party['adress_line_2'] = $user_meta[0]['user_adress_2'];
 
 									if($third_party_infos['user_id'] > 0){
-										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress') 
+										if(($current_accident != null) && ($current_accident->declaration_state == 'in_progress')
 												&& (isset($third_party_infos['tparty_id']) && ($third_party_infos['tparty_id'] > 0)) ){
 											$accident_third_party['last_update_date'] = current_time('mysql', 0);
 											$save_hurt_result = eva_database::update($accident_third_party, $third_party_infos['tparty_id'], DIGI_DBT_ACCIDENT_THIRD_PARTY);
@@ -4803,7 +4893,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		actionMessageShow("#message_accident", "' . $message . '");
-		setTimeout(\'actionMessageHide("#message_accident")\',7500);			
+		setTimeout(\'actionMessageHide("#message_accident")\',7500);
 		jQuery("#divAccidenContainer").html(jQuery("#loadingImg").html());
 		jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 			"post":"true",
@@ -4863,7 +4953,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		actionMessageShow("#message_accident", "' . $message . '");
-		setTimeout(\'actionMessageHide("#message_accident")\',7500);			
+		setTimeout(\'actionMessageHide("#message_accident")\',7500);
 		jQuery("#divAccidenContainer").html(jQuery("#loadingImg").html());
 		jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 			"post":"true",
@@ -4891,7 +4981,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									jQuery("#accident_form_error_nb").val(0);
 									jQuery("#accident_element_updater").dialog("open");
 									jQuery("#accident_element_updater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-										"post": "true", 
+										"post": "true",
 										"table": "' . TABLE_GROUPEMENT . '",
 										"act": "load_groupement_form",
 										"tableElement": "' . TABLE_GROUPEMENT . '",
@@ -5043,8 +5133,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					$right_limit = 2;
 					foreach($inrs_danger_categories as $danger_cat){
 						$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom']);
-						// $wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom' => $danger_cat['nom'], 'limiteGauche' => $left_limit, 'limiteDroite' => $right_limit));
-						// $new_danger_cat_id = $wpdb->insert_id;
 
 						/*	Add a danger in the current category	*/
 						$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
@@ -5100,6 +5188,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				digirisk_tools::copyEntireDirectory(EVA_HOME_DIR . 'evariskthemeplugin', WP_CONTENT_DIR . '/themes/Evarisk');
 				if(isset($_REQUEST['activate_evarisk_theme']) && ($_REQUEST['activate_evarisk_theme'] == 'yes')){
 					switch_theme('Evarisk', 'Evarisk');
+				}
+
+				/*
+				 * Execution des action sspecifiques pour certaines version
+				 */
+				$version_to_make = array(73);
+				foreach($version_to_make as $version_number){
+					digirisk_install::make_specific_operation_on_update($version_number);
 				}
 
 				/*	Create option allowing to know information about plugin databse version	*/
@@ -5283,6 +5379,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			case "loadFieldsNewVariable":
 			{
 				$var_id = digirisk_tools::IsValid_Variable($_REQUEST['var_id'], 0);
+				$choixTypeAffichage = digirisk_tools::IsValid_Variable($_REQUEST['choixTypeAffichage']);
 				$alternativ_vars = array();
 				if(!empty($var_id)){
 					$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $var_id, 'Valid');
@@ -5295,7 +5392,26 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					$idInput = 'newVariableAlterValueFor' . $i;
 					$nomChamps = 'newVariableAlterValue[' . $i . ']';
 					$labelInput = sprintf(__('Valeur r&eacute;el de la variable quand elle vaut %d : ', 'evarisk'), $i);
-					echo EvaDisplayInput::afficherInput('text', $idInput, (!empty($alternativ_vars[$i]) ? $alternativ_vars[$i] : ''), '', $labelInput, $nomChamps, true, false, 100, '', 'Float');
+
+					if ( $choixTypeAffichage == "checkbox" ) {
+							$query = $wpdb->get_row("SELECT questionVar FROM " . TABLE_VARIABLE. " WHERE id = ".$var_id." ");
+							$tableauVar = unserialize($query->questionVar);
+
+							$nomChampsQuestion = 'varQuestion[' . $i . ']';
+							$nomChampsSeuil = 'varSeuil[' . $i . ']';
+							$labelInputQuestion = sprintf(__('Question n %s &agrave; poser : ', 'evarisk'), $i);
+							$labelInputSeuil = sprintf(__('Valeur du Seuil n %s : ', 'evarisk'), $i);
+
+
+							echo '<div style="background : #F3F3F3; padding : 10px 5px 10px 5px; margin-bottom : 15px;">';
+							echo EvaDisplayInput::afficherInput('text', 'newVarSeuil'.$i, $tableauVar[$i-1]['seuil'], '', $labelInputSeuil, $nomChampsSeuil, true, false, 100, '', 'Float');
+							echo EvaDisplayInput::afficherInput('text', 'newVarQuestion'.$i, $tableauVar[$i-1]['question'], '', $labelInputQuestion,$nomChampsQuestion, true, false, 100, '');
+							echo '</div>';
+
+					}
+					else {
+						echo EvaDisplayInput::afficherInput('text', $idInput, (!empty($alternativ_vars[$i]) ? $alternativ_vars[$i] : ''), '', $labelInput, $nomChamps, true, false, 100, '', 'Float');
+					}
 				}
 			}
 			break;
@@ -5303,7 +5419,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			{
 					$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
 					$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
-					$veilleResult = evaAnswerToQuestion::getAnswersForStats(date('Y-m-d'), $tableElement, $idElement, 2); 
+					$veilleResult = evaAnswerToQuestion::getAnswersForStats(date('Y-m-d'), $tableElement, $idElement, 2);
 					$myCharts = ' ';
 					if( count($veilleResult) > 0)
 					{
@@ -5312,16 +5428,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$myCharts .= '[digi_html_accent_for_js(\''.$responseName.' ('.count($listResponse).')\'),'.count($listResponse).'],';
 					}
 					$chartContent = trim(substr($myCharts,0,-1));
-					
-					$messageInfo .= '<script type="text/javascript" language="javascript"> 
+
+					$messageInfo .= '<script type="text/javascript" language="javascript">
 						digirisk(document).ready(function(){
 							line1 = [' . $chartContent . '];
 							plot2 = $.jqplot("resultChart", [line1], {
-								seriesDefaults:{renderer:$.jqplot.PieRenderer}, 
+								seriesDefaults:{renderer:$.jqplot.PieRenderer},
 								legend:{show:true, escapeHtml:true}
 							});
 						});
-					</script> 
+					</script>
 					<div id="resultChart" style="margin-top:20px; margin-left:20px; width:400px; height:300px;">
 					</div>';
 					};
@@ -5351,7 +5467,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					// {
 						if($save == 'ok')
 						{
-							$messageInfo = 
+							$messageInfo =
 								'<span id="message" class="updated fade below-h2" style="cursor:pointer;" >
 									<strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse a bien &eacute;t&eacute; enregistr&eacute;e.</strong>
 								</span>
@@ -5361,7 +5477,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						else
 						{
-							$messageInfo = 
+							$messageInfo =
 								'<span id="message" class="updated fade below-h2">
 									<p><strong><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="noresponse" style="vertical-align:middle;" />&nbsp;La r&eacute;ponse n\'a pas pu &ecirc;tre enregistr&eacute;e</strong></p>
 								</span>
@@ -5420,7 +5536,7 @@ switch($tableProvenance)
 	case TABLE_PRECONISATION:
 	{
 		$actionAfterUpdate = '
-		digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
 			"post":"true",
 			"table":"' . TABLE_PRECONISATION . '",
@@ -5463,18 +5579,15 @@ switch($tableProvenance)
 				$trash_elements = array();
 				$i =0;
 				$statusFieldValue = 'Deleted';
-				switch($tableProvenance)
-				{
+				switch ($tableProvenance) {
 					case TABLE_GROUPEMENT:
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_groupement_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_groupement_trash')) {
 							$trash_elements[$i]['element'] = $tableProvenance;
 							$trash_elements[$i]['name'] = __('Groupements', 'evarisk');
 							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_GP;
 							$i++;
 						}
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_unite_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_unite_trash')) {
 							$trash_elements[$i]['element'] = TABLE_UNITE_TRAVAIL;
 							$trash_elements[$i]['name'] = __('Unit&eacute;s de travail', 'evarisk');
 							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_UT;
@@ -5482,15 +5595,13 @@ switch($tableProvenance)
 						}
 					break;
 					case TABLE_TACHE:
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_task_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_task_trash')) {
 								$trash_elements[$i]['element'] = $tableProvenance;
 								$trash_elements[$i]['name'] = __('T&acirc;ches', 'evarisk');
 								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_T;
 								$i++;
 						}
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_action_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_action_trash')) {
 							$trash_elements[$i]['element'] = TABLE_ACTIVITE;
 							$trash_elements[$i]['name'] = __('Sous-t&acirc;ches', 'evarisk');
 							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_ST;
@@ -5498,15 +5609,13 @@ switch($tableProvenance)
 						}
 					break;
 					case TABLE_CATEGORIE_DANGER:
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_danger_category_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_danger_category_trash')) {
 								$trash_elements[$i]['element'] = $tableProvenance;
 								$trash_elements[$i]['name'] = __('Cat&eacute;gories de danger', 'evarisk');
 								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_CD;
 								$i++;
 						}
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_danger_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_danger_trash')) {
 							$trash_elements[$i]['element'] = TABLE_DANGER;
 							$trash_elements[$i]['name'] = __('Dangers', 'evarisk');
 							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_D;
@@ -5514,8 +5623,7 @@ switch($tableProvenance)
 						}
 					break;
 					case TABLE_METHODE:
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_method_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_method_trash')) {
 							$trash_elements[$i]['element'] = $tableProvenance;
 							$trash_elements[$i]['name'] = __('M&eacute;thodes d\'&eacute;valuation', 'evarisk');
 							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_ME;
@@ -5523,8 +5631,7 @@ switch($tableProvenance)
 						}
 					break;
 					case DIGI_DBT_PERMISSION_ROLE:
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_user_role_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_user_role_trash')) {
 							$trash_elements[$i]['element'] = $tableProvenance;
 							$trash_elements[$i]['name'] = __('R&ocirc;le pour les utilisateurs', 'evarisk');
 							$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_UR;
@@ -5533,15 +5640,13 @@ switch($tableProvenance)
 					break;
 					case TABLE_CATEGORIE_PRECONISATION:
 						$statusFieldValue = 'deleted';
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_recommandation_category_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_recommandation_category_trash')) {
 								$trash_elements[$i]['element'] = $tableProvenance;
 								$trash_elements[$i]['name'] = __('Cat&eacute;gories de pr&eacute;conisations', 'evarisk');
 								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_CP;
 								$i++;
 						}
-						if(($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_recommandation_trash'))
-						{
+						if (($main_option['digi_activ_trash'] == 'oui') && current_user_can('digi_view_recommandation_trash')) {
 								$trash_elements[$i]['element'] = TABLE_PRECONISATION;
 								$trash_elements[$i]['name'] = __('Pr&eacute;conisations', 'evarisk');
 								$trash_elements[$i]['prefix_identifier'] = ELEMENT_IDENTIFIER_P;
@@ -5550,23 +5655,20 @@ switch($tableProvenance)
 					break;
 				}
 
-				if(is_array($trash_elements) && (count($trash_elements) > 0))
-				{
-					foreach($trash_elements as $element => $element_definition)
-					{
+				if (is_array($trash_elements) && (count($trash_elements) > 0)) {
+					foreach ($trash_elements as $element => $element_definition) {
 						$subTrashOutput = '';
 						/*	Check if there are something to display in trash for the current element	*/
 						$query = $wpdb->prepare("SELECT * FROM " . $element_definition['element'] . " WHERE status = '" . $statusFieldValue . "';");
 						$trashedElement = $wpdb->get_results($query);
-						if(count($trashedElement) > 0)
-						{
+						if (count($trashedElement) > 0) {
 							$userIsAllowedToUpdateTrash = false;
 							unset($lignesDeValeurs);
 							$idTable = 'trashedElement' . $element_definition['element'];
 							$titres = array(__('Photo', 'evarisk'), __('Nom', 'evarisk'), __('Description', 'evarisk'));
 							$classes = array('trashPicColumn', 'trashNameColumn', 'trashDescriptionColumn');
 							$columnAdded = false;
-							foreach($trashedElement as $element){
+							foreach ($trashedElement as $element) {
 								$nameField = 'nom';
 
 								unset($ligne);
@@ -5583,14 +5685,12 @@ switch($tableProvenance)
 								$is_disabled = '';
 
 								/*	Add the different column for each element type	*/
-								switch($element_definition['element'])
-								{
-									case TABLE_GROUPEMENT:
-									{
-										if(current_user_can('digi_edit_groupement_trash')){
+								switch ($element_definition['element']) {
+									case TABLE_GROUPEMENT: {
+										if (current_user_can('digi_edit_groupement_trash')) {
 											$userIsAllowedToUpdateTrash = true;
 										}
-										if(!$columnAdded){
+										if (!$columnAdded) {
 											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
 											$classes[] = 'trashParentColumn';
 											$titres[] = __('Descendants', 'evarisk');
@@ -5600,17 +5700,17 @@ switch($tableProvenance)
 										$ancetres = Arborescence::getAncetre($element_definition['element'], $element, "limiteGauche ASC", '1', "");
 										$direct_parent = Arborescence::getPere($element_definition['element'], $element, "1");
 										$parent_class .= ' direct_' . TABLE_GROUPEMENT . '_element_to_restore_' . $direct_parent->id;
-										if($direct_parent->Status != 'Valid'){
+										if ($direct_parent->Status != 'Valid') {
 											$is_disabled = ' disabled="disabled" ';
 											$parent_class .= ' orignal_disabled';
 										}
 										$miniFilAriane = '         ';
-										foreach($ancetres as $ancetre){
+										foreach ($ancetres as $ancetre) {
 											$ancester_children = EvaGroupement::getUnitesDuGroupement($ancetre->id);
-											if(is_array($ancester_children) && (count($ancester_children) > 0)){
+											if (is_array($ancester_children) && (count($ancester_children) > 0)) {
 												$able_to_restore_current_element = false;
 											}
-											if($ancetre->nom != "Groupement Racine"){
+											if ($ancetre->nom != "Groupement Racine") {
 												$miniFilAriane .= $element_definition['prefix_identifier'] . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
 												$parent_class .= ' children_of_' . TABLE_GROUPEMENT . '_element_to_restore_' . $ancetre->id;
 											}
@@ -5618,15 +5718,15 @@ switch($tableProvenance)
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 										$miniFilAriane = '         ';
 										$descendants = Arborescence::getDescendants($element_definition['element'], $element, '1', 'id ASC', "");
-										if(count($descendants) > 0){
-											foreach($descendants as $descendant){
+										if (count($descendants) > 0) {
+											foreach ($descendants as $descendant) {
 												$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
 											}
 											$has_sub_element = true;
 										}
 										$descendants = EvaGroupement::getUnitesDescendantesDuGroupement($element->id, '1', 'nom ASC', "");
-										if(count($descendants) > 0){
-											foreach($descendants as $descendant){
+										if (count($descendants) > 0) {
+											foreach ($descendants as $descendant) {
 												$miniFilAriane .= ELEMENT_IDENTIFIER_UT . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
 											}
 											$has_sub_element = true;
@@ -5634,12 +5734,11 @@ switch($tableProvenance)
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 									}
 									break;
-									case TABLE_UNITE_TRAVAIL:
-									{
-										if(current_user_can('digi_edit_groupement_trash')){
+									case TABLE_UNITE_TRAVAIL: {
+										if (current_user_can('digi_edit_groupement_trash')) {
 											$userIsAllowedToUpdateTrash = true;
 										}
-										if(!$columnAdded){
+										if (!$columnAdded) {
 											$titres[] = __('Hi&eacute;rarchie', 'evarisk');
 											$classes[] = 'trashParentColumn';
 											$columnAdded = true;
@@ -5647,20 +5746,20 @@ switch($tableProvenance)
 										$directParent = EvaGroupement::getGroupement($element->id_groupement);
 										$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $directParent, "limiteGauche ASC", '1', "");
 										$miniFilAriane = '         ';
-										foreach($ancetres as $ancetre){
-											if($ancetre->nom != "Groupement Racine"){
+										foreach ($ancetres as $ancetre) {
+											if ($ancetre->nom != "Groupement Racine") {
 												$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
 												$parent_class .= ' children_of_' . TABLE_GROUPEMENT . '_element_to_restore_' . $ancetre->id;
 											}
 										}
-										if($directParent->nom != "Groupement Racine"){
+										if ($directParent->nom != "Groupement Racine") {
 											$miniFilAriane .= ELEMENT_IDENTIFIER_GP . $directParent->id . '&nbsp;-&nbsp;' . $directParent->nom . ' &raquo; ';
 											$parent_class .= ' children_of_' . TABLE_GROUPEMENT . '_element_to_restore_' . $directParent->id . ' direct_' . TABLE_GROUPEMENT . '_element_to_restore_' . $directParent->id;
 											$parent_direct_children = Arborescence::getDescendants(TABLE_GROUPEMENT, $directParent);
-											if(is_array($parent_direct_children) && (count($parent_direct_children) > 0)){
+											if (is_array($parent_direct_children) && (count($parent_direct_children) > 0)) {
 												$able_to_restore_current_element = false;
 											}
-											if($directParent->Status != 'Valid'){
+											if ($directParent->Status != 'Valid') {
 												$is_disabled = ' disabled="disabled" ';
 												$parent_class .= ' orignal_disabled';
 											}
@@ -5680,22 +5779,38 @@ switch($tableProvenance)
 											$classes[] = 'trashChildrenColumn';
 											$columnAdded = true;
 										}
-										$ancetres = Arborescence::getAncetre(TABLE_TACHE, $element);
+										$ancetres = Arborescence::getAncetre(TABLE_TACHE, $element, "limiteGauche ASC", '1', "");
+										$direct_parent = Arborescence::getPere($element_definition['element'], $element, "1");
+										$parent_class .= ' direct_' . TABLE_TACHE . '_element_to_restore_' . $direct_parent->id;
+										if ($direct_parent->Status != 'Valid') {
+											$is_disabled = ' disabled="disabled" ';
+											$parent_class .= ' orignal_disabled';
+										}
 										$miniFilAriane = '         ';
 										foreach($ancetres as $ancetre){
+											$ancester_children = EvaTask::getChildren($ancetre->id);
+											if (is_array($ancester_children) && (count($ancester_children) > 0)) {
+// 												$able_to_restore_current_element = false;
+											}
 											if($ancetre->nom != "Tache Racine"){
 												$miniFilAriane .= ELEMENT_IDENTIFIER_T . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+												$parent_class .= ' children_of_' . TABLE_TACHE . '_element_to_restore_' . $ancetre->id;
 											}
 										}
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 										$miniFilAriane = '         ';
-										$descendants = Arborescence::getDescendants($element_definition['element'], $element);
-										foreach($descendants as $descendant){
-											$miniFilAriane .= ELEMENT_IDENTIFIER_T . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										$descendants = Arborescence::getDescendants($element_definition['element'], $element, '1', 'id ASC', "");
+										if (count($descendants) > 0) {
+											foreach($descendants as $descendant){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_T . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+											}
+											$has_sub_element = true;
 										}
 										$descendants = EvaTask::getChildren($element->id);
-										foreach($descendants as $descendant){
-											$miniFilAriane .= ELEMENT_IDENTIFIER_ST . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+										if (count($descendants) > 0) {
+											foreach($descendants as $descendant){
+												$miniFilAriane .= ELEMENT_IDENTIFIER_ST . $descendant->id . '&nbsp;-&nbsp;' . $descendant->nom . ' &raquo; ';
+											}
 										}
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 									}
@@ -5715,15 +5830,25 @@ switch($tableProvenance)
 										$directParent->load();
 										$directParent->limiteGauche = $directParent->leftLimit;
 										$directParent->limiteDroite = $directParent->rightLimit;
-										$ancetres = Arborescence::getAncetre(TABLE_TACHE, $directParent);
+										$ancetres = Arborescence::getAncetre(TABLE_TACHE, $directParent, "limiteGauche ASC", '1', "");
 										$miniFilAriane = '         ';
 										foreach($ancetres as $ancetre){
 											if($ancetre->nom != "Tache Racine"){
 												$miniFilAriane .= ELEMENT_IDENTIFIER_T . $ancetre->id . '&nbsp;-&nbsp;' . $ancetre->nom . ' &raquo; ';
+												$parent_class .= ' children_of_' . TABLE_TACHE . '_element_to_restore_' . $ancetre->id;
 											}
 										}
 										if($directParent->nom != "Tache Racine"){
 											$miniFilAriane .= ELEMENT_IDENTIFIER_T . $directParent->id . '&nbsp;-&nbsp;' . $directParent->name . ' &raquo; ';
+											$parent_class .= ' children_of_' . TABLE_TACHE . '_element_to_restore_' . $directParent->id . ' direct_' . TABLE_TACHE . '_element_to_restore_' . $directParent->id;
+											$parent_direct_children = Arborescence::getDescendants(TABLE_TACHE, $directParent);
+											if (is_array($parent_direct_children) && (count($parent_direct_children) > 0)) {
+												$able_to_restore_current_element = false;
+											}
+											if ($directParent->Status != 'Valid') {
+												$is_disabled = ' disabled="disabled" ';
+												$parent_class .= ' orignal_disabled';
+											}
 										}
 										$ligne[] = array('value' => substr($miniFilAriane, 0, -9), 'class' => '');
 									}
@@ -5985,7 +6110,7 @@ switch($tableProvenance)
 
 		jQuery("#updateTrash").click(function(){
 			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post": "true", 
+				"post": "true",
 				"tableProvenance": "' . $tableProvenance . '",
 				"nom": "updateTrash",
 				"elementToRestore" : jQuery("#elementToRestore").val()
@@ -6069,7 +6194,7 @@ switch($tableProvenance)
 				$completeRiskList = Risque::getRisques($tableElement, $idElement, 'Valid', $idProvenance, 'tableRisque.id ASC', "'Valid', 'Moderated'" . $output_mistake);
 				if($completeRiskList != null){
 					foreach($completeRiskList as $risque){
-						$risques[$risque->id][$risque->id_evaluation][] = $risque; 
+						$risques[$risque->id][$risque->id_evaluation][] = $risque;
 					}
 				}
 
@@ -6160,7 +6285,7 @@ switch($tableProvenance)
 				$riskList = Risque::getRisque($_REQUEST['idProvenance']);
 				if($riskList != null){
 					foreach($riskList as $risque){
-						$risques[$risque->id][] = $risque; 
+						$risques[$risque->id][] = $risque;
 					}
 				}
 				echo actionsCorrectives::output_correctiv_action_by_risk($risques, '
@@ -6181,7 +6306,7 @@ switch($tableProvenance)
 								"SELECT photo
 								FROM " . TABLE_PHOTO . " AS P
 									INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoAvant = P.id)
-								WHERE A.id = '%s' ", 
+								WHERE A.id = '%s' ",
 								$_REQUEST['idProvenance']
 							);
 							$picture = $wpdb->get_row($query);
@@ -6192,7 +6317,7 @@ switch($tableProvenance)
 								"SELECT photo
 								FROM " . TABLE_PHOTO . " AS P
 									INNER JOIN " . TABLE_ACTIVITE . " AS A ON (A.idPhotoApres = P.id)
-								WHERE A.id = '%s' ", 
+								WHERE A.id = '%s' ",
 								$_REQUEST['idProvenance']
 							);
 							$picture = $wpdb->get_row($query);
@@ -6209,7 +6334,7 @@ switch($tableProvenance)
 				$riskList = Risque::getRisques($tableElement, $idElement, "Valid");
 				if($riskList != null){
 					foreach($riskList as $risque){
-						$risques[$risque->id][] = $risque; 
+						$risques[$risque->id][] = $risque;
 					}
 				}
 				echo actionsCorrectives::output_correctiv_action_by_risk($risques);
@@ -6244,7 +6369,7 @@ switch($tableProvenance)
 							$positionDefinition = explode('-val-', $newPositionsElement);
 							$adressIdentifier = str_replace("adressIdentifier", "", $positionDefinition[0]);
 							$positionComponent = explode(", ", str_replace('(', '', str_replace(')', '', $positionDefinition[1])));
-							
+
 							/*	Load the current adress	*/
 							$elementAdress = new EvaBaseAddress($adressIdentifier);
 							$elementAdress->load();
@@ -6273,7 +6398,7 @@ switch($tableProvenance)
 						$element_to_select = explode('-_-', $selected_element);
 
 						echo '
-<table id="complete_hierarchy_table" summary="arborescence societe" cellpadding="0" cellspacing="0" class="widefat post fixed">' . 
+<table id="complete_hierarchy_table" summary="arborescence societe" cellpadding="0" cellspacing="0" class="widefat post fixed">' .
 	arborescence_special::lectureArborescenceRisque(arborescence_special::arborescenceRisque(TABLE_GROUPEMENT, 1), (!empty($element_to_select[0])?$element_to_select[0]:''), (!empty($element_to_select[1])?$element_to_select[1]:0)) . '
 </table>';
 					}break;
@@ -6466,7 +6591,7 @@ switch($tableProvenance)
 											$sub_modif .= ' / ';
 										}
 										$plugin_db_modification_content .= '<li class="renamed_table" >' . __('Renamed table list', 'evarisk') . '&nbsp;:&nbsp;' . substr($sub_modif, 0, -2);
-									}break;					
+									}break;
 									case 'TABLE_RENAME_FOR_DELETION':{
 										$sub_modif = '  ';
 										foreach($modif_list as $table){
@@ -6696,7 +6821,7 @@ switch($tableProvenance)
 	}
 }
 /*
-* Paramètres passés en GET
+* Paramï¿½tres passï¿½s en GET
 */
 else{
 	switch($_REQUEST['nom']){
@@ -6811,7 +6936,7 @@ else{
 
 					if($outputDatas)
 					{
-						$script = 
+						$script =
 						'<script type="text/javascript">
 							digirisk(document).ready(function() {
 								digirisk("#' . $idTable . '").dataTable({
@@ -6842,8 +6967,8 @@ else{
 								digirisk("#vracStatsTabs input").click(function(){
 									digirisk("#namesUpdater").html(digirisk("#loadingPicContainer").html());
 										digirisk("#namesUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-											"post":"true", 
-											"table":"' . TABLE_RISQUE . '", 
+											"post":"true",
+											"table":"' . TABLE_RISQUE . '",
 											"act":"loadNames"
 										});
 									digirisk("#namesUpdater").dialog({
@@ -6915,7 +7040,7 @@ else{
 
 					if($outputDatas)
 					{
-						$script = 
+						$script =
 						'<script type="text/javascript">
 							digirisk(document).ready(function() {
 								digirisk("#' . $idTable . '").dataTable({

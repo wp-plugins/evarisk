@@ -26,6 +26,13 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$contenuInputDescription = $danger->description;
 		$grise = false;
 		$catMere = categorieDangers::getCategorieDanger($danger->id_categorie);
+		
+		$tabParams = array();
+		if($danger->choix_danger != null)
+		{
+			$tabParams = unserialize($danger->choix_danger);
+		}
+		$defaultMethode = $danger->methode_eva_defaut;
 	}
 	else
 	{	
@@ -36,7 +43,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 	}
 
 	$danger_new = EvaDisplayInput::ouvrirForm('POST', 'informationGeneralesDanger', 'informationGeneralesDanger');
-	{//Champs cachés
+	{//Champs cachï¿½s
 		$danger_new = $danger_new . EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
 		$danger_new = $danger_new . EvaDisplayInput::afficherInput('hidden', 'affichage', $arguments['affichage'], '', null, 'affichage', false, false);
 		$danger_new = $danger_new . EvaDisplayInput::afficherInput('hidden', 'table', TABLE_DANGER, '', null, 'table', false, false);
@@ -50,7 +57,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$idTitre = "nom_danger";
 		$danger_new = $danger_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
-	{//Catégorie de dangers mère		
+	{//Catï¿½gorie de dangers mï¿½re		
 		$selection = $catMere->id;
 		$nameSelect = "categorieMere";
 		$idSelect = "categorieMere";
@@ -69,6 +76,42 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$nomChamps = "description";
 		$rows = 5;
 		$danger_new = $danger_new . EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, DESCRIPTION_DANGER_OBLIGATOIRE, $rows);
+	}
+	// Choix entre "Danger par defaut" et "penibilite"
+	{
+		$check_danger_defaut = (!empty($tabParams) && in_array("defaut", $tabParams)) ? ' checked="checked"' : '';
+		$check_danger_penible = '';
+		 $digi_penibilite_method_selector_class = ' class="digirisk_hide"';
+			if (!empty($tabParams) && in_array("penibilite", $tabParams)) {
+				$check_danger_penible = ' checked="checked"';
+				$digi_penibilite_method_selector_class = '';
+			}
+		$danger_new .= '<input'.$check_danger_defaut.' type="checkbox" name="choixDangerParDefaut" id="choixDangerParDefaut" value="defaut" class="choixDangerDefaut" /> <label for="choixDangerParDefaut" >'.__("Danger par d&eacutefaut", 'evarisk').'</label><br/>';
+		$danger_new .= '<input'.$check_danger_penible.' type="checkbox" name="choixPenible" id="choixPenible" value="penibilite" class="choixPenibilite" /> <label for="choixPenible" >'.__("P&eacutenibilit&eacute", 'evarisk') . '</label><br/>';
+	}
+	// ComboBox Methode d'ï¿½valuation par dï¿½faut
+	{
+		$selectName = 'select_methode_evaluation';
+		$labelSelect = __("M&eacutethode par d&eacutefaut pour la p&eacute;nibilit&eacute;", 'evarisk');
+		$idSelect = 'SelectMethodeEva';
+		$elements = MethodeEvaluation::getMethods();
+		$selected_method = '';
+		if(!empty($defaultMethode)){
+			$selected_method = MethodeEvaluation::getMethod($defaultMethode);
+		}
+		$script = '<script type="text/javascript">  
+					 jQuery(document).ready(function(){
+						jQuery(".choixPenibilite").click(function(){
+							if (jQuery(this).is(":checked")) {
+								jQuery("#digi_penibilite_method_selector").show();
+							}
+							else {
+								jQuery("#digi_penibilite_method_selector").hide();
+							}
+						});
+					});
+					</script>';
+		$danger_new .= '<div id="digi_penibilite_method_selector"' . $digi_penibilite_method_selector_class . ' >' . EvaDisplayInput::afficherComboBox($elements, $idSelect, $labelSelect, $selectName, '', $selected_method).$script.'</div>';	
 	}
 	{//Bouton Enregistrer
 		/*	We check if there are no danger with the same name	*/
@@ -113,6 +156,14 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 					}
 					else
 					{
+						var choix_danger = "";
+						if(jQuery("#choixDangerParDefaut").is(":checked")){
+							var choix_danger = jQuery("#choixDangerParDefaut").val();
+						}
+						var choix_penibilite = "";
+						if(jQuery("#choixPenible").is(":checked")){
+							var choix_penibilite = jQuery("#choixPenible").val();
+						}
 						'. $actionValue . '
 						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
 							"table": "' . TABLE_DANGER . '",
@@ -122,7 +173,10 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 							"categorieMere": digirisk("#categorieMere :selected").val(),
 							"description": digirisk("#description").val(),
 							"affichage": digirisk("#affichage").val(),
-							"idsFilAriane": digirisk("#idsFilAriane").val()
+							"idsFilAriane": digirisk("#idsFilAriane").val(),
+							"selectionMethode": digirisk("#SelectMethodeEva").val(),
+							"choix_danger": choix_danger, 
+							"choix_penibilite" : choix_penibilite
 						});
 					}
 				}
@@ -143,6 +197,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 			$danger_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 		}
 	}
+	
 	$danger_new = $danger_new . EvaDisplayInput::fermerForm('informationGeneralesDanger');
 	echo $danger_new;
 }

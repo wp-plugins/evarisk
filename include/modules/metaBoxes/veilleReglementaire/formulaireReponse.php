@@ -238,7 +238,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			if( !isset($_POST['response'][$id_question]) )
 			{
 				$reponseALaQuestion = EvaAnswerToQuestion::getLatestAnswerByQuestionAndElement($id_question, $tableElement, $idElement);
-				//réfléchir archivage...
+				//reflechir archivage...
 				// if( $reponseALaQuestion->date == date('Y-m-d'))
 				// {
 					$idReponseALaQuestion = $reponseALaQuestion->id_reponse;

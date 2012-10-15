@@ -115,7 +115,7 @@ class EvaDanger {
 		$wpdb->query($sql);
 	}
 
-	function updateDanger($id, $nom, $idCategorieMere, $description)
+	function updateDanger($id, $nom, $idCategorieMere, $description, $tab, $id_methode_eva)
 	{
 		global $wpdb;
 		
@@ -123,8 +123,9 @@ class EvaDanger {
 		$nom = digirisk_tools::IsValid_Variable($nom);
 		$idCategorieMere = digirisk_tools::IsValid_Variable($idCategorieMere);
 		$description = digirisk_tools::IsValid_Variable($description);
-		
-		$sql = "UPDATE " . TABLE_DANGER . " set `nom`='" . mysql_real_escape_string($nom) . "', `id_categorie`='" . mysql_real_escape_string($idCategorieMere) . "', description='" . mysql_real_escape_string($description) . "' WHERE `id`=" . mysql_real_escape_string($id);
+		$id_methode_eva = digirisk_tools::IsValid_Variable($id_methode_eva);
+
+		$sql = "UPDATE " . TABLE_DANGER . " set `nom`='" . mysql_real_escape_string($nom) . "', `id_categorie`='" . mysql_real_escape_string($idCategorieMere) . "', description='" . mysql_real_escape_string($description) . "'  , choix_danger='" . $tab . "' , methode_eva_defaut='" . mysql_real_escape_string($id_methode_eva) . "' WHERE `id`=" . mysql_real_escape_string($id);
 		$wpdb->query($sql);
 	}
 

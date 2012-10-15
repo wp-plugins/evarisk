@@ -17,6 +17,7 @@
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
 
+        
 	function getRisquesPostBoxBody($element){
 		$tableElement = $element['tableElement'];
 		$idElement = $element['idElement'];
@@ -227,7 +228,7 @@
 	}
 
 	/*
-	* Création de l'affichage global
+	* Cr?ation de l'affichage global
 	*/
 	function getVoirRisque($tableElement, $idElement)
 	{
@@ -239,7 +240,7 @@
 				$risques['"' . $risque->id . "'"][] = $risque; 
 			}
 		}
-		{//Création de la table
+		{//Cr?ation de la table
 			unset($titres,$classes, $idLignes, $lignesDeValeurs);
 			$idLignes = null;
 			$idTable = 'tableRisque' . $tableElement . $idElement;
@@ -353,7 +354,7 @@
 			}
 			$nombreRisqueUniteTravail = count($riskAndSubRisks);
 
-			{//Script de définition de la dataTable
+			{//Script de d?finition de la dataTable
 				$scriptVoirRisque = $scriptRisque . '
 <script type="text/javascript">
 	digirisk(document).ready(function() {
@@ -465,9 +466,9 @@
 	}
 
 	/*
-	* Création du formulaire d'ajout/édition
+	* Cr?ation du formulaire d'ajout/?dition
 	*/
-	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '', $formId = ''){
+	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '', $formId = '', $methode =''){
 		global $wpdb;
 
 		$divDangerContainerStyle = $script = '';
@@ -484,7 +485,7 @@
 		$sub_action = (!empty($_REQUEST['sub_action'])?digirisk_tools::IsValid_Variable($_REQUEST['sub_action']):'');
 		$task_to_associate = (!empty($_REQUEST['task_to_associate'])?digirisk_tools::IsValid_Variable($_REQUEST['task_to_associate']):'');
 
-		{//Choix de la catégorie de dangers
+		{//Choix de la cat?gorie de dangers
 			$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque, $formId);
 			$script .= $categorieDanger['script'];
 			$selectionCategorie = $categorieDanger['selectionCategorie'];
@@ -591,7 +592,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		{//Description
 			$contenuInput = '';
 			if($risque[0] != null)
-			{// Si l'on édite un risque, on remplit l'aire de texte avec sa description
+			{// Si l'on ?dite un risque, on remplit l'aire de texte avec sa description
 				$contenuInput = $risque[0]->commentaire;
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
@@ -608,7 +609,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			$formRisque .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
 		}
 
-		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Photo associée au risque
+		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Photo associ?e au risque
 			if($idRisque != ''){
 				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $idRisque);
 				if(count($pictureAssociated) > 0){
@@ -814,7 +815,7 @@ EvaDisplayInput::fermerForm('formRisque') . '
 			}
 		});
 	});
-	//Verification du nombre de risque ouvert pour ajout avec une photo, si supérieur à 1 alors on affiche le bouton enregistrer tout
+	//Verification du nombre de risque ouvert pour ajout avec une photo, si sup?rieur ? 1 alors on affiche le bouton enregistrer tout
 	function checkOpenRiskNumber()
 	{
 		var openNumber = 0

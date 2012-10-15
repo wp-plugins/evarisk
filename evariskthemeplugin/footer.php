@@ -26,7 +26,7 @@
 					<p>Copyright</p>
 					<nav>
 						<ul>
-							<li><a href="#">Mentions légales</a></li>
+							<li><a href="#">Mentions legales</a></li>
 							<li><a href="#">Eoxia</a></li>
 						</ul>
 					</nav>

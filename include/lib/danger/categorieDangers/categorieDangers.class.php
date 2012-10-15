@@ -180,8 +180,7 @@ class categorieDangers {
 		}
 	}
 
-	function getCategorieDangerForRiskEvaluation($risque, $formId = '')
-	{
+	function getCategorieDangerForRiskEvaluation($risque, $formId = '') {
 		$categoryResult = array();
 		$categoryResult['list'] = '';
 		$categoryResult['script'] = '';
@@ -192,29 +191,47 @@ class categorieDangers {
 		$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine);
 
 		if($risque[0] != null)
-		{// Si l'on édite un risque, on sélectionne la bonne catégorie de dangers
+		{// Si l'on ï¿½dite un risque, on sï¿½lectionne la bonne catï¿½gorie de dangers
 			$selectionCategorie = $risque[0]->idCategorie;
 		}
 		else
-		{// Sinon on sélectionne la racine
+		{// Sinon on sï¿½lectionne la racine
 			$selectionCategorie = $categorieRacine->id;
 		}
 
-		if(AFFICHAGE_PICTO_CATEGORIE)
-		{
-			foreach($categoriesDangers as $categorieDangers)
-			{
-				if($selectionCategorie == $categorieRacine->id)
-				{
+		if (AFFICHAGE_PICTO_CATEGORIE) {
+			foreach ($categoriesDangers as $categorieDangers) {
+				if ($selectionCategorie == $categorieRacine->id) {
 					$selectionCategorie = $categorieDangers->id;
 				}
 				$categoryResult['selectionCategorie'] = $selectionCategorie;
 				$categorieDangerMainPhoto = evaPhoto::getMainPhoto(TABLE_CATEGORIE_DANGER, $categorieDangers->id);
 				$categorieDangerMainPhoto = evaPhoto::checkIfPictureIsFile($categorieDangerMainPhoto, TABLE_CATEGORIE_DANGER);
-				$categoryResult['list'] .= '<div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" title="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" /><div class="digirisk_danger_cat_identifier" >' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . '</div></label></div>';
+				$conteneur_penibilite = '';
+				$dangers = categorieDangers::getDangersDeLaCategorie($categorieDangers->id, 'Status="Valid"');
+				if ( !empty($dangers) && is_array($dangers) ) {
+					foreach ($dangers as $danger) {
+						if ( !empty($danger->choix_danger) ) {
+							$choix_danger = unserialize($danger->choix_danger);
+							if ( is_array($choix_danger) && in_array('penibilite', $choix_danger) ) {
+								$conteneur_penibilite = '<div class="case_penibilite" id="case_penibilite_'.$danger->methode_eva_defaut.'" >' . __('P', 'evarisk') . '</div>';
+          						$categoryResult['script'] .= '
+		digirisk(document).ready(function(){
+			jQuery(".case_penibilite").click(function(){
+          		jQuery("#methodeFormRisque").val(jQuery(this).attr("id").replace("case_penibilite_", ""));
+          		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque . '"});
+			});
+		});';
+							}
+// 							$danger->methode_eva_defaut
+						}
+					}
+				}
+				$categoryResult['list'] .= '<div class="content_radio_picto_categorie"><div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" title="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" />' . $conteneur_penibilite . '<div class="digirisk_danger_cat_identifier" >' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . '</div></label></div></div>';
 			}
-			if($categoryResult['list'] != '')
-			{
+
+			if ($categoryResult['list'] != '') {
 				$formIdSelector = ($formId != '') ? '#' . $formId . ' ' : '';
 				$categoryResult['script'] .= '
 		digirisk("#' . $formId . 'divCategorieDangerFormRisque").hide();
@@ -222,11 +239,9 @@ class categorieDangers {
 		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";
 		digirisk("' . $formIdSelector . '.categoriesDangers").click(function(){
 			var ' . $formId . 'newCatId = (digirisk(this).attr("id")).replace("' . $formId . 'cat","");
-			if(' . $formId . 'oldCatId != ' . $formId . 'newCatId)
-			{
+			if (' . $formId . 'oldCatId != ' . $formId . 'newCatId) {
 				digirisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
-				digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-				{
+				digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 					"post":"true", 
 					"table":"' . TABLE_CATEGORIE_DANGER . '", 
 					"act":"reloadComboDangers", 
@@ -238,12 +253,11 @@ class categorieDangers {
 		});';
 			}
 		}
-		$categoryResult['list'] .= '
+		$categoryResult['list'] .= '<input type="hidden" id="valeurPenibilite" value="0"/>
 		<div id="' . $formId . 'divCategorieDangerFormRisque" >' . EvaDisplayInput::afficherComboBoxArborescente($categorieRacine, TABLE_CATEGORIE_DANGER, $formId . 'categorieDangerFormRisque', __('Cat&eacute;gorie de dangers', 'evarisk') . ' : ', 'categorieDangers', ucfirst(strtolower(sprintf(__("choisissez %s", 'evarisk'), __("une cat&eacute;gorie de dangers", 'evarisk')))), $selectionCategorie) . '</div>';
 		$categoryResult['script'] .= '
-	digirisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
-		digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-		{
+		digirisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
+		digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 			"post":"true", 
 			"table":"' . TABLE_CATEGORIE_DANGER . '", 
 			"act":"reloadComboDangers", 

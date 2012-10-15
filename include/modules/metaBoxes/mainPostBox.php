@@ -68,13 +68,13 @@ function getMainPostBoxBody($arguments)
 				digirisk(document).ready(function(){
 					//On affiche le fil d\'ariane
 					digirisk(\'#filAriane\').show();
-				
+
 					//On change le titre de la metaBox
 					if(' . $elementPere->id . ' != 1)
-						digirisk(\'#' . $postBoxId . ' h3 span\').html("' . addslashes($elementPere->nom) . '");					
-					
+						digirisk(\'#' . $postBoxId . ' h3 span\').html("' . addslashes($elementPere->nom) . '");
+
 					digirisk("#' . $postBoxId . ' .handlediv").after(\'<div id="favorite-actions-' . $postBoxId . '" class="alignright favorite-actions"><div id="favorite-toggle-' . $postBoxId . '" class="favorite-toggle alignright"></div><div id="favorite-first-' . $postBoxId . '" class="favorite-first"><a href="#" onclick="return false;">' . __('Ajouter', 'evarisk') . '...</a></div><div id="favorite-inside-' . $postBoxId . '" style="display: none;" class="favorite-inside"><div class="favorite-action"><a id="favorite-first-link-' . $postBoxId . '" href="#">' . $first . '</a></div><div class="favorite-action"><a id="favorite-second-link-' . $postBoxId . '" href="#">' . $second . '</a></div></div></div>\');
-			
+
 					digirisk(\'#favorite-inside-' . $postBoxId . '\').css("width", digirisk(\'#favorite-actions-' . $postBoxId . '\').innerWidth() -4 + "px");
 					digirisk(\'#favorite-toggle-' . $postBoxId . '\').hover(function() {
 						digirisk(\'#favorite-first-' . $postBoxId . '\').addClass("slide-down");
@@ -90,29 +90,29 @@ function getMainPostBoxBody($arguments)
 					digirisk(\'#favorite-actions-' . $postBoxId . '\').hover(function() {
 						clearTimeout(timeoutFavoriteActions);
 					},function() {
-						timeoutFavoriteActions = setTimeout 
-						( 
-							function() 
+						timeoutFavoriteActions = setTimeout
+						(
+							function()
 							{
 								digirisk(\'#favorite-inside-' . $postBoxId . '\').slideUp(100);
-								setTimeout 
-								( 
-									function() 
-									{ 
+								setTimeout
+								(
+									function()
+									{
 										digirisk(\'#favorite-first-' . $postBoxId . '\').removeClass("slide-down");
 										digirisk(\'#favorite-inside-' . $postBoxId . '\').removeClass("slideDown");
-									}, 
+									},
 									100
 								);
-							}, 
-							500 
+							},
+							500
 						);
 					});
 					digirisk(\'#favorite-first-link-' . $postBoxId . '\').click(function() {
 						digirisk(\'#rightEnlarging\').show();
 						digirisk(\'#equilize\').click();
-						
-						digirisk(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+
+						digirisk(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true",
 							"table": "' . $table . '",
 							"act": "add",
 							"page": digirisk(\'#page' . $postBoxId . 'Reference\').val(),
@@ -122,7 +122,7 @@ function getMainPostBoxBody($arguments)
 							"affichage": "affichageTable",
 							"partition": "tout"
 						});
-						digirisk(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+						digirisk(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true",
 							"table": "' . $table . '",
 							"act": "add",
 							"page": digirisk(\'#page' . $postBoxId . 'Reference\').val(),
@@ -132,7 +132,7 @@ function getMainPostBoxBody($arguments)
 							"affichage": "affichageTable",
 							"partition": "tout"
 						});
-						
+
 						digirisk(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 						digirisk(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 						return false;
@@ -140,8 +140,8 @@ function getMainPostBoxBody($arguments)
 					digirisk(\'#favorite-second-link-' . $postBoxId . '\').click(function() {
 						digirisk(\'#rightEnlarging\').show();
 						digirisk(\'#equilize\').click();
-						
-						digirisk(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+
+						digirisk(\'#partieEdition\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true",
 							"table": "' . $sousTable . '",
 							"act": "add",
 							"page": digirisk(\'#page' . $postBoxId . 'Reference\').val(),
@@ -151,7 +151,7 @@ function getMainPostBoxBody($arguments)
 							"affichage": "affichageTable",
 							"partition": "tout"
 						});
-						digirisk(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true", 
+						digirisk(\'#partieGauche\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {"post": "true",
 							"table": "' . $sousTable . '",
 							"act": "add",
 							"page": digirisk(\'#page' . $postBoxId . 'Reference\').val(),
@@ -161,13 +161,13 @@ function getMainPostBoxBody($arguments)
 							"affichage": "affichageTable",
 							"partition": "tout"
 						});
-						
+
 						digirisk(\'#partieEdition\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 						digirisk(\'#partieGauche\').html(\'<center><img src="' . PICTO_LOADING . '" /></center>\');
 						return false;
 					});
-					
-			
+
+
 					digirisk("#favorite-actions-' . $postBoxId . '").after(\'<div id="' . $postBoxId . 'Pere" title="' . __("Cliquer pour remonter d\'un niveau.", "evarisk") . '" class="flechePere"><img alt="pere" src="' . PICTO_FLECHE_PERE . '" title=""/></div>\');
 					if(digirisk("#filAriane a:last").attr("id") == digirisk(\'#filAriane :first-child\').attr("id"))
 					{

@@ -1,14 +1,14 @@
 <?php
 /**
- * 
- * 
+ *
+ *
  * @author Evarisk
  * @version v5.0
  */
 include_once(EVA_CONFIG );
 
 class EvaPhoto {
-	
+
 	/**
 	 * Returns all photos of the element
 	 * @param string $tableElement Table name of the element
@@ -20,7 +20,7 @@ class EvaPhoto {
 	function getPhotos($tableElement, $idElement, $where = "1", $order = "PICTURE.id ASC")
 	{
 		global $wpdb;
-		
+
 		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 		$where = digirisk_tools::IsValid_Variable($where);
@@ -30,9 +30,9 @@ class EvaPhoto {
 			"SELECT PICTURE.*, PICTURE_LINK.isMainPicture
 			FROM " . TABLE_PHOTO . " AS PICTURE
 				INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
-			WHERE PICTURE_LINK.tableElement='" . mysql_real_escape_string($tableElement) . "' 
+			WHERE PICTURE_LINK.tableElement='" . mysql_real_escape_string($tableElement) . "'
 				AND PICTURE_LINK.idElement='" . mysql_real_escape_string($idElement) . "'
-				AND PICTURE_LINK.status = 'valid' 
+				AND PICTURE_LINK.status = 'valid'
 				AND " . $where . "
 			ORDER BY " . $order);
 		$photos = $wpdb->get_results($query);
@@ -43,18 +43,18 @@ class EvaPhoto {
 /*
   * Persistance
   */
-	
+
 	/**
 	 * Save a new picture.
 	 * @param string $tableElement Table name of the element
 	 * @param int $idElement Id of the element in the table
 	 * @param mixed $photo The path to the picture
-	 * @return mixed $status The picture identifier if the photo is well insert and "error" else. 
+	 * @return mixed $status The picture identifier if the photo is well insert and "error" else.
 	 */
 	function saveNewPicture($tableElement, $idElement, $photo){
 		global $wpdb;
 		$status = 'error';
-		
+
 		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 		$photo = digirisk_tools::IsValid_Variable(digirisk_tools::slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
@@ -63,11 +63,11 @@ class EvaPhoto {
 		$query = $wpdb->prepare("SELECT id FROM ".TABLE_PHOTO." WHERE photo=%s", $photo);
 		$picture_id = $wpdb->get_var($query);
 		if(empty($picture_id)){
-			$query = 
+			$query =
 				$wpdb->prepare(
-					"INSERT INTO " . TABLE_PHOTO . " 
-						(id, photo) 
-					VALUES 
+					"INSERT INTO " . TABLE_PHOTO . "
+						(id, photo)
+					VALUES
 						('', '%s')"
 					, $photo);
 			if($wpdb->query($query)){
@@ -83,7 +83,7 @@ class EvaPhoto {
 			}
 		}
 		else{
-			$status=$picture_id;
+			$status = evaPhoto::associatePicture($tableElement, $idElement, $picture_id);
 		}
 
 		return $status;
@@ -94,20 +94,20 @@ class EvaPhoto {
 	 * @param string $tableElement Table name of the element
 	 * @param int $idElement Id of the element in the table
 	 * @param int $pictureId The picture identifier we want to associate
-	 * @return mixed $status The picture identifier if the photo is well insert and "error" else. 
+	 * @return mixed $status The picture identifier if the photo is well insert and "error" else.
 	 */
 	function associatePicture($tableElement, $idElement, $pictureId){
 		global $wpdb;
 		$status = 'error';
-		
+
 		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
-		$query = 
+		$query =
 			$wpdb->prepare(
-				"INSERT INTO " . TABLE_PHOTO_LIAISON . " 
-					(id, status, isMainPicture, idPhoto, idElement, tableElement) 
-				VALUES 
+				"INSERT INTO " . TABLE_PHOTO_LIAISON . "
+					(id, status, isMainPicture, idPhoto, idElement, tableElement)
+				VALUES
 					('', 'valid', 'no', '%d', '%d', '%s')"
 				, $pictureId, $idElement, $tableElement);
 		if($wpdb->query($query))
@@ -128,10 +128,10 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		$query = 
+		$query =
 			$wpdb->prepare(
 				"UPDATE " . TABLE_PHOTO_LIAISON . "
-				SET status = 'deleted' 
+				SET status = 'deleted'
 				WHERE tableElement = '%s'
 					AND idElement = '%d'
 					AND idPhoto = '%d' "
@@ -191,7 +191,7 @@ class EvaPhoto {
 							<li class="alignleft" >
 								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" >
 									<div>' . ELEMENT_IDENTIFIER_PIC . $photo->id . '</div><img src="' . $pathToMediasDir . $photo->photo . '" />
-								</a>							
+								</a>
 								<div class="caption">';
 
 				$add_button_action = true;
@@ -304,11 +304,11 @@ class EvaPhoto {
 			</div>';
 
 		if(!empty($img_nb)){	/*	Create the gallery with gallerific jquery plugin AND define the function for picture deletion	*/
-			$gallery .= 
+			$gallery .=
 			'<script type="text/javascript">
 				function defaultPicture(tableElement, idElement, idPhoto){
 					digirisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
+						"post": "true",
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
@@ -318,7 +318,7 @@ class EvaPhoto {
 
 				function setAsBeforePicture(tableElement, idElement, idPhoto){
 					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
+						"post": "true",
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
@@ -327,7 +327,7 @@ class EvaPhoto {
 				}
 				function unsetAsBeforePicture(tableElement, idElement, idPhoto){
 					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
+						"post": "true",
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
@@ -336,7 +336,7 @@ class EvaPhoto {
 				}
 				function setAsAfterPicture(tableElement, idElement, idPhoto){
 					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
+						"post": "true",
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
@@ -345,7 +345,7 @@ class EvaPhoto {
 				}
 				function unsetAsAfterPicture(tableElement, idElement, idPhoto){
 					digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
+						"post": "true",
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
@@ -355,7 +355,7 @@ class EvaPhoto {
 
 				function DeleteDefaultPicture(tableElement, idElement, idPhoto){
 					digirisk("#defaultPicture' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-						"post": "true",  
+						"post": "true",
 						"table": "' . $tableElement . '",
 						"idElement": "' . $idElement . '",
 						"idPhoto": idPhoto,
@@ -368,7 +368,7 @@ class EvaPhoto {
 						digirisk("#caption' . $tableElement . $idElement .'").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 						setTimeout(function(){
 							digirisk("#pictureGallery' . $tableElement . '_' . $idElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-								"post": "true",  
+								"post": "true",
 								"table": "' . $tableElement . '",
 								"idElement": "' . $idElement . '",
 								"idPicture": idPicture,
@@ -392,7 +392,7 @@ class EvaPhoto {
 						fadeSpeed:         \'fast\',
 						exemptionSelector: \'.selected\'
 					});
-					
+
 					// Initialize Advanced Galleriffic Gallery
 					var gallery = digirisk(\'#thumbs' . $tableElement . $idElement .'\').galleriffic({
 						delay:                     2500,
@@ -515,13 +515,13 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		$query = 
+		$query =
 			$wpdb->prepare(
 				"SELECT PICTURE.photo
 				FROM " . TABLE_PHOTO . " AS PICTURE
 					INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
 				WHERE PICTURE_LINK.tableElement = '%s'
-						AND PICTURE_LINK.idElement = '%d' 
+						AND PICTURE_LINK.idElement = '%d'
 						AND PICTURE_LINK.isMainPicture = 'yes'
 						AND PICTURE_LINK.status = 'valid' "
 				, $tableElement, $idElement);
@@ -545,14 +545,14 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		$query = 
+		$query =
 			$wpdb->prepare(
-				"SELECT PICTURE_LINK.isMainPicture 
+				"SELECT PICTURE_LINK.isMainPicture
 				FROM " . TABLE_PHOTO . " AS PICTURE
 					INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
 				WHERE PICTURE_LINK.tableElement = '%s'
-						AND PICTURE_LINK.idElement = '%d' 
-						AND PICTURE.id = '%d' 
+						AND PICTURE_LINK.idElement = '%d'
+						AND PICTURE.id = '%d'
 						AND PICTURE_LINK.status = 'valid' "
 				, $tableElement, $idElement, $idPicture);
 		if($mainPhotoInformation = $wpdb->get_row($query))
@@ -580,10 +580,10 @@ class EvaPhoto {
 		if($isMainPicture == 'yes')
 		{
 		/*	Delete the old main photo	*/
-			$query = 
+			$query =
 				$wpdb->prepare(
-					"UPDATE " . TABLE_PHOTO_LIAISON . " 
-						SET isMainPicture = 'no' 
+					"UPDATE " . TABLE_PHOTO_LIAISON . "
+						SET isMainPicture = 'no'
 						WHERE tableElement = '%s'
 							AND idElement = '%d' "
 					, $tableElement, $idElement);
@@ -591,10 +591,10 @@ class EvaPhoto {
 		}
 
 		/*	Set the main photo	*/
-		$query = 
+		$query =
 			$wpdb->prepare(
-				"UPDATE " . TABLE_PHOTO_LIAISON . " 
-					SET isMainPicture = '%s' 
+				"UPDATE " . TABLE_PHOTO_LIAISON . "
+					SET isMainPicture = '%s'
 					WHERE tableElement = '%s'
 						AND idElement = '%d'
 						AND idPhoto = '%d' "
@@ -631,8 +631,8 @@ class EvaPhoto {
 		$repertoireDestination = ($repertoireDestination == '') ? str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/') : $repertoireDestination;
 		$multiple = $multiple ? 'true' : 'false';
 
-		$formulaireUpload = 
-			'<script type="text/javascript">        
+		$formulaireUpload =
+			'<script type="text/javascript">
 				digirisk(document).ready(function(){
 					var uploader' . $idUpload . ' = new qq.FileUploader({
 						element: document.getElementById("' . $idUpload . '"),
@@ -674,13 +674,13 @@ class EvaPhoto {
 			else{
 				$formulaireUpload .= '&nbsp;';
 			}
-			$formulaireUpload .= 
+			$formulaireUpload .=
 			'</div>
-			<div id="' . $idUpload . '" class="divUpload">		
-				<noscript>			
+			<div id="' . $idUpload . '" class="divUpload">
+				<noscript>
 					<p>Please enable JavaScript to use file uploader.</p>
 					<!-- or put a simple form for upload here -->
-				</noscript>         
+				</noscript>
 			</div>';
 
 		return $formulaireUpload;
@@ -720,7 +720,7 @@ class EvaPhoto {
 				break;
 			}
 
-			$mainPictureUpdate = 
+			$mainPictureUpdate =
 				'digirisk("#defaultPicture' . $tableElement . '_' . $idElement . '").html("<img src=\'' . $definedDefaultPicture . '\' alt=\'main picture\' />");
 				digirisk("#photo' . $tableElement . $idElement . '").attr("src", "' . $definedDefaultPicture . '");';
 		}
@@ -731,7 +731,7 @@ class EvaPhoto {
 		$messageInfo = '<script type="text/javascript">
 			digirisk(document).ready(function(){
 				digirisk("#message' . $tableElement . '_' . $idElement . '").addClass("updated");';
-		if($updateAssociationResult != 'error'){	
+		if($updateAssociationResult != 'error'){
 			switch($tableElement){
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
@@ -894,10 +894,10 @@ class EvaPhoto {
 	function galleryContent($tableElement, $idElement, $userCanUploadPhoto = true){
 		$galleryOutput = '';
 
-		$galleryOutput = 
+		$galleryOutput =
 '<div id="message' . $tableElement . '_' . $idElement . '" ></div>';
 
-		$upload_button = 
+		$upload_button =
 '<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>';
 
 		if($userCanUploadPhoto){

@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin "document unique" manager
-* 
+*
 *	Define the different method to manage the "document unique" into the plugin
 * @author Evarisk <dev@evarisk.com>
 * @version 5.0
@@ -15,10 +15,10 @@
 * @package Digirisk
 * @subpackage librairies
 */
-class eva_documentUnique
-{
+class eva_documentUnique {
+
 	/**
-	*	
+	*
 	*
 	*	@see listeRisquePourElement
 	*	@param string $tableElement The type of the element we want to get the risk list for
@@ -69,7 +69,7 @@ class eva_documentUnique
 		/*	If there are risks we store in a more simple array for future reading	*/
 		if($temp != null){
 			foreach($temp as $risque){
-				$risques['"' . $risque->id . "'"][] = $risque; 
+				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
 
@@ -77,7 +77,7 @@ class eva_documentUnique
 		if(!empty($risques)){
 			$i = 0;
 			unset($tmpLigneDeValeurs);
-			foreach($risques as $risque){		
+			foreach($risques as $risque){
 				$idMethode = $risque[0]->id_methode;
 				$score = Risque::getScoreRisque($risque);
 				$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
@@ -169,7 +169,7 @@ class eva_documentUnique
 					$lignesDeValeurs[] = $ligneDeValeur;
 				}
 			}
-		}	
+		}
 
 		return $lignesDeValeurs;
 	}
@@ -303,7 +303,7 @@ class eva_documentUnique
 
 			if($outPut == 'html'){
 				/*	Si on veut le bilan par ligne	*/
-				if($typeBilan == 'ligne'){//Création de la table	
+				if($typeBilan == 'ligne'){//Crï¿½ation de la table
 					{//Script de d&eacute;finition de la dataTable pour la somme des risques par ligne
 						$idTable = 'tableBilanRisqueUnitaire' . $tableElement . $idElement . $typeBilan;
 						$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
@@ -322,12 +322,12 @@ class eva_documentUnique
 						digirisk(document).ready(function() {
 							digirisk("#' . $idTable . '").dataTable(
 							{
-							"bPaginate": false, 
+							"bPaginate": false,
 							"bLengthChange": false,
 							"bAutoWidth": false,
 							"bFilter": false,
 							"bInfo": false,
-							"aoColumns": 
+							"aoColumns":
 							[
 								{ "bSortable": true},
 								{ "bSortable": true},
@@ -350,7 +350,7 @@ class eva_documentUnique
 				elseif($typeBilan == 'unite'){
 					$bilanParUnite = eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement');
 
-					$recapitulatifRisque = 
+					$recapitulatifRisque =
 					'<table summary="risqsSummary' . $tableElement . '-' . $idElement . '" cellpadding="0" cellspacing="0" class="widefat post fixed">
 						<thead>
 							<tr>
@@ -358,10 +358,10 @@ class eva_documentUnique
 								<th>' . __('Somme des quotation', 'evarisk') . '</th>
 							</tr>
 						</thead>
-						
+
 						<tfoot>
 						</tfoot>
-						
+
 						<tbody>
 							' . eva_documentUnique::readExportedDatas($bilanParUnite, 'riskByElement', '', 'html') . '
 						</tbody>
@@ -376,7 +376,7 @@ class eva_documentUnique
 				if($typeBilan == 'ligne')
 				{
 					foreach($lignesDeValeurs as $ligne_key => $ligne){$idLignes[$ligne_key] = $ligne[1]['value'];}
-					
+
 					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;
 					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
 					$titres[] = __("Id. risque", 'evarisk');
@@ -398,7 +398,7 @@ class eva_documentUnique
 	digirisk(document).ready(function(){
 		digirisk("#' . $idTable . '").dataTable(
 		{
-			"bPaginate": false, 
+			"bPaginate": false,
 			"bLengthChange": false,
 			"bAutoWidth": false,
 			"bFilter": false,
@@ -526,7 +526,7 @@ class eva_documentUnique
 			}
 			$formulaireDocumentUniqueParams['#LOCALISATION#'] = (isset($lastDocumentUnique->planDUER) && ($lastDocumentUnique->planDUER != '') && ($lastDocumentUnique->planDUER != 'undefined')) ? $lastDocumentUnique->planDUER : ($groupementAdress);
 
-			$sourcesParDefaut = __("Le document de l'INRS ED 840 pour la sensibilisation aux risques, les pages 3 et 4 de ce document contenant : 
+			$sourcesParDefaut = __("Le document de l'INRS ED 840 pour la sensibilisation aux risques, les pages 3 et 4 de ce document contenant :
 La d&eacute;finition d'un risque et d'un danger, un sch&eacute;ma d'explication
 Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risque", 'evarisk');
 			$formulaireDocumentUniqueParams['#SOURCES#'] = (isset($lastDocumentUnique->sourcesDUER) && ($lastDocumentUnique->sourcesDUER != '') && ($lastDocumentUnique->sourcesDUER != 'undefined')) ? $lastDocumentUnique->sourcesDUER : ($sourcesParDefaut);
@@ -548,7 +548,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 			$lastDocumentUnique->id_model = (isset($lastDocumentUnique->id_model) && ($lastDocumentUnique->id_model != '')) ? $lastDocumentUnique->id_model : 0;
 
-			$output = 
+			$output =
 			EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationDUER(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -563,14 +563,14 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 		digirisk("#genererDUER").click(function(){
 			digirisk("#divDocumentUnique").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
-				"table":"' . TABLE_DUER . '", 
-				"act":"saveDocumentUnique", 
+				"post":"true",
+				"table":"' . TABLE_DUER . '",
+				"act":"saveDocumentUnique",
 				"tableElement":"' . $tableElement . '",
-				"idElement":"' . $idElement . '", 
-				"dateCreation":digirisk("#dateCreation").val(), 
-				"dateDebutAudit":digirisk("#dateDebutAudit").val(), 
-				"dateFinAudit":digirisk("#dateFinAudit").val(), 
+				"idElement":"' . $idElement . '",
+				"dateCreation":digirisk("#dateCreation").val(),
+				"dateDebutAudit":digirisk("#dateDebutAudit").val(),
+				"dateFinAudit":digirisk("#dateFinAudit").val(),
 				"nomEntreprise":digirisk("#nomEntreprise").val(),
 				"telephoneFixe":digirisk("#telephoneFixe").val(),
 				"telephonePortable":digirisk("#telephonePortable").val(),
@@ -619,7 +619,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		{
 			$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
 			$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
-			
+
 			$output = EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationFicheDePoste(), $formulaireDocumentUniqueParams) . '
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -662,10 +662,10 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 		{	/*	R&eacute;vision du document unique, en fonction de l'element et de la date de g&eacute;n&eacute;ration	*/
 			$revision = '';
-			$query = 
+			$query =
 				"SELECT max(revisionDUER) AS lastRevision
-				FROM " . TABLE_DUER . " 
-				WHERE element = '" . mysql_escape_string($tableElement) . "' 
+				FROM " . TABLE_DUER . "
+				WHERE element = '" . mysql_escape_string($tableElement) . "'
 					AND elementId = '" . mysql_escape_string($idElement) . "' ";
 					// AND dateGenerationDUER = '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "' ";
 			$revision = $wpdb->get_row($query);
@@ -704,14 +704,14 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		$plan_d_action['unaffected'] = actionsCorrectives::get_correctiv_action_for_duer();
 
 		{	/*	Enregistrement d'un document unique	*/
-			$query = 
-				"INSERT INTO " . TABLE_DUER . " 
-					(id, element, elementId, id_model, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER, plan_d_action) 
-				VALUES	
+			$query =
+				"INSERT INTO " . TABLE_DUER . "
+					(id, element, elementId, id_model, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER, plan_d_action)
+				VALUES
 					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . mysql_real_escape_string($informationDocumentUnique['localisation']) . "', '" . mysql_escape_string(serialize(digirisk_groups::getElement('', "'valid'", 'employee'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'affectedUserGroup'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement'))) . "', '" . $wpdb->escape($informationDocumentUnique['methodologie']) . "', '" . mysql_escape_string($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($informationDocumentUnique['alerte']) . "', '', '" . mysql_escape_string(serialize($plan_d_action)) . "')";
 			if($wpdb->query($query) === false)
 			{
-				$status['result'] = 'error'; 
+				$status['result'] = 'error';
 				$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
 			}
 			else
@@ -738,8 +738,8 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		global $wpdb;
 		$lastDocumentUnique = array();
 
-		$query = 
-			"SELECT * 
+		$query =
+			"SELECT *
 			FROM " . TABLE_DUER . "
 			WHERE element = '" . mysql_escape_string($tableElement) . "'
 				AND elementId = '" . mysql_escape_string($idElement) . "'";
@@ -768,7 +768,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		$isteDocumentUnique = array();
 		$outputListeDocumentUnique = '';
 
-		$query = 
+		$query =
 			"SELECT *, DATE_FORMAT(dateGenerationDUER, '%Y/%m/%d') AS DateGeneration
 			FROM " . TABLE_DUER . "
 			WHERE element = '" . mysql_escape_string($tableElement) . "'
@@ -797,7 +797,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 			if( count($listeParDate) > 0 )
 			{
-				$outputListeDocumentUnique .= 
+				$outputListeDocumentUnique .=
 '<table summary="" cellpadding="0" cellspacing="0" class="associated_document_list" >
 	<thead></thead>
 	<tfoot></tfoot>
@@ -843,7 +843,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		/*	If an error occured during the first generation, and that no file has been generate we propose a new generationof the file 	*/
 		jQuery(".DUERReGenerationButton").click(function(){
 			jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
+				"post":"true",
 				"table":"' . TABLE_DUER . '",
 				"act":"reGenerateDUER",
 				"tableElement":"' . $tableElement . '",
@@ -856,7 +856,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		jQuery(".deleteDUER").click(function(){
 			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document unique?', 'evarisk') . '"))){
 				jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-					"post":"true", 
+					"post":"true",
 					"table":"' . TABLE_DUER . '",
 					"act":"deleteDUER",
 					"tableElement":"' . $tableElement . '",
@@ -887,6 +887,11 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 	*/
 	function getBoxBilan($tableElement, $idElement)
 	{
+		/**
+		 * Synthese des risques
+		 * <div class="alignleft" id="generateRS" >' . __('Synth&egrave;se', 'evarisk') . '</div>
+		 */
+
 		$output = '
 <div class="clear" id="summaryDocumentGeneratorSlector" >
 	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
@@ -902,7 +907,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			digirisk(this).addClass("selected");
 			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
 			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
+				"post":"true",
 				"table":"' . TABLE_DUER . '",
 				"act":"documentUniqueGenerationForm",
 				"tableElement":"' . $tableElement . '",
@@ -916,7 +921,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			digirisk(this).addClass("selected");
 			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
 			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
+				"post":"true",
 				"table":"' . TABLE_DUER . '",
 				"act":"groupementSheetGeneration",
 				"tableElement":"' . $tableElement . '",
@@ -930,7 +935,21 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			digirisk(this).addClass("selected");
 			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
 			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
+				"post":"true",
+				"table":"' . TABLE_DUER . '",
+				"act":"workSheetUnitCollectionGenerationForm",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '"
+			});
+		});
+		digirisk("#generateRS").click(function(){
+			digirisk("#summaryDocumentGeneratorSlector div").each(function(){
+				digirisk(this).removeClass("selected");
+			});
+			digirisk(this).addClass("selected");
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true",
 				"table":"' . TABLE_DUER . '",
 				"act":"workSheetUnitCollectionGenerationForm",
 				"tableElement":"' . $tableElement . '",
@@ -1082,7 +1101,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 					if($outputType == 'html')
 					{/*	If we have to output into html	*/
-						$outputContent .= 
+						$outputContent .=
 							'<tr>
 								<td>' . $spacer . $elementPrefix . $content['nom'] . '</td>
 								<td>' . $dataContent . '</td>
@@ -1140,7 +1159,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 						if($outputType == 'html')
 						{/*	If we have to output into html	*/
-							$outputContent .= 
+							$outputContent .=
 								'<tr>
 									<td>' . $spacer . $elementPrefix . $contentInformations['nom'] . '</td>
 									<td>' . $dataContent . '</td>
@@ -1164,7 +1183,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 						if(isset($contentInformations['content']) && is_array($contentInformations['content']))
 						{
-							$subSpacer = $spacer . '&nbsp;&nbsp;'; 
+							$subSpacer = $spacer . '&nbsp;&nbsp;';
 							if($outputType == 'html')
 							{
 								$outputContent .= eva_documentUnique::readExportedDatas($contentInformations['content'], $exportDataType, $subSpacer, $outputType);
@@ -1185,7 +1204,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 				if(isset($content['content']) && is_array($content['content']))
 				{
-					$subSpacer = $spacer . '&nbsp;&nbsp;'; 
+					$subSpacer = $spacer . '&nbsp;&nbsp;';
 					if($outputType == 'html')
 					{
 						$outputContent .= eva_documentUnique::readExportedDatas($content['content'], $exportDataType, $subSpacer, $outputType);

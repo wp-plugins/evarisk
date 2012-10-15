@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * @author Soci&eacute;t&eacute; Evarisk
  * @version v5.0
  */
@@ -12,16 +12,15 @@ class eva_WorkUnitSheet
 	*	Return the form template for generating a work unit sheet
 	*	@return string HTML code of the form
 	*/
-	function getWorkUnitSheetForm()
-	{
-		return 
+	function getWorkUnitSheetForm() {
+		return
 '<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
 	<tr>
 		<td style="width:60%;vertical-align:top;" >
 			<table summary="" cellpadding="0" cellspacing="0" border="0" class="tabformulaire" style="width:100%;" >
 				<tr>
 					<td ><label for="nomFicheDePoste">' . __('nom de la fiche', 'evarisk') . '</label></td>
-					<td >' . EvaDisplayInput::afficherInput('text', 'nomFicheDePoste', '#NOMDOCUMENT#', '', '', 'nomFicheDePoste', false, false, 150, '', '', '100%', '', 'left;width:100%;', false) . '</td>
+					<td >' . EvaDisplayInput::afficherInput('text', 'nomFicheDePoste', '#NOMDOCUMENT#', '', '', 'nomFicheDePoste', false, false, 150, '', '', '100%', '', 'left', false) . '</td>
 				</tr>
 				<tr>
 					<td >&nbsp;</td>
@@ -54,8 +53,7 @@ class eva_WorkUnitSheet
 	*
 	*	@return mixed The complete html output of the form
 	*/
-	function getWorkUnitSheetGenerationForm($tableElement, $idElement)
-	{
+	function getWorkUnitSheetGenerationForm($tableElement, $idElement) {
 		unset($formulaireDocumentUniqueParams);
 		$formulaireDocumentUniqueParams = array();
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
@@ -137,8 +135,7 @@ class eva_WorkUnitSheet
 	*
 	*	@return mixed $lastDocument An object with all information about the last document
 	*/
-	function getGeneratedDocument($tableElement, $idElement, $type = 'last', $id = '')
-	{
+	function getGeneratedDocument($tableElement, $idElement, $type = 'last', $id = '') {
 		global $wpdb;
 		$lastDocument = array();
 
@@ -169,7 +166,7 @@ class eva_WorkUnitSheet
 				"SELECT *
 				FROM " . TABLE_FP . "
 				WHERE id_element = %d
-					AND table_element = %s 
+					AND table_element = %s
 					AND id = %d " . $queryOrder,
 					array($idElement, $tableElement, $id)
 			);
@@ -203,7 +200,7 @@ class eva_WorkUnitSheet
 
 					if( count($listeParDate) > 0 )
 					{
-						$outputListeDocumentUnique .= 
+						$outputListeDocumentUnique .=
 							'<table summary="" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;" >
 								<thead></thead>
 								<tfoot></tfoot>
@@ -260,8 +257,7 @@ class eva_WorkUnitSheet
 	*
 	*	@return array $status An array with the response status, if it's ok or not
 	*/
-	function saveWorkUnitSheet($tableElement, $idElement, $informations)
-	{
+	function saveWorkUnitSheet($tableElement, $idElement, $informations) {
 		$status = array();
 
 		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
@@ -270,18 +266,18 @@ class eva_WorkUnitSheet
 		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
-		/*	Révision du document, en fonction de l'element et de la date de génération	*/
+		/*	Rï¿½vision du document, en fonction de l'element et de la date de gï¿½nï¿½ration	*/
 		$revision = '';
 		$query = $wpdb->prepare(
 			"SELECT max(revision) AS lastRevision
-			FROM " . TABLE_FP . " 
+			FROM " . TABLE_FP . "
 			WHERE table_element = %s
 				AND id_element = %d ",
 			$tableElement, $idElement);
 		$revision = $wpdb->get_row($query);
 		$revisionDocument = $revision->lastRevision + 1;
 
-		/*	Génération de la référence du document	*/
+		/*	Gï¿½nï¿½ration de la rï¿½fï¿½rence du document	*/
 		switch($tableElement)
 		{
 			case TABLE_GROUPEMENT:
@@ -296,7 +292,7 @@ class eva_WorkUnitSheet
 		}
 		$referenceDocument = str_replace('-', '', $informations['dateCreation']) . '-' . $element . $idElement . '-V' . $revisionDocument;
 
-		/*	Génération du nom du document si aucun nom n'a été envoyé	*/
+		/*	Gï¿½nï¿½ration du nom du document si aucun nom n'a ï¿½tï¿½ envoyï¿½	*/
 		if($informations['nomDuDocument'] == '')
 		{
 			$dateElement = explode(' ', $informations['dateCreation']);
@@ -306,7 +302,7 @@ class eva_WorkUnitSheet
 			$informations['nomDuDocument'] = $documentName;
 		}
 
-		/*	Récupération des informations concernant les utilisateurs et les groupes d'utilisateurs	*/
+		/*	Rï¿½cupï¿½ration des informations concernant les utilisateurs et les groupes d'utilisateurs	*/
 		$affectedUserTmp = array();
 		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		foreach($affectedUserList as $user)
@@ -316,7 +312,7 @@ class eva_WorkUnitSheet
 		$affectedUser = serialize($affectedUserTmp);
 		$affectedUserGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_employee'));
 
-		/*	Récupération des informations concernant les évaluateurs et les groupes d'évaluateurs	*/
+		/*	Rï¿½cupï¿½ration des informations concernant les ï¿½valuateurs et les groupes d'ï¿½valuateurs	*/
 		$affectedUserTmp = array();
 		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement . '_evaluation', $idElement);
 		foreach($affectedUserList as $user)
@@ -326,10 +322,10 @@ class eva_WorkUnitSheet
 		$affectedEvaluators = serialize($affectedUserTmp);
 		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
 
-		/*	Récupération des informations concernant les risques	*/
+		/*	Rï¿½cupï¿½ration des informations concernant les risques	*/
 		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement));
 
-		/*	Récupération de la photo par défaut pour l'unité de travail	*/
+		/*	Rï¿½cupï¿½ration de la photo par dï¿½faut pour l'unitï¿½ de travail	*/
 		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
 		$defaultPictureToSet = '';
 		if($defaultPicture != 'error')
@@ -341,14 +337,14 @@ class eva_WorkUnitSheet
 			$defaultPictureToSet = 'noDefaultPicture';
 		}
 
-		/*	Vérification du modèle à utiliser pour la génération de la fiche de poste	*/
+		/*	Vï¿½rification du modï¿½le ï¿½ utiliser pour la gï¿½nï¿½ration de la fiche de poste	*/
 		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
 		if(($informations['id_model'] != 'undefined') && ($informations['id_model'] > 0))
 		{
 			$modelToUse = $informations['id_model'];
 		}
 
-		/*	Récupération des préconisations affectées à l'unité actuelle	*/
+		/*	Rï¿½cupï¿½ration des prï¿½conisations affectï¿½es ï¿½ l'unitï¿½ actuelle	*/
 		$recommandationList = array();
 		$affectedRecommandation = evaRecommandation::getRecommandationListForElement($tableElement, $idElement);
 		$i = $oldIdRecommandationCategory = 0;
@@ -385,15 +381,15 @@ class eva_WorkUnitSheet
 
 		/*	Enregistrement du document	*/
 		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_FP . " 
-				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk, recommandation) 
-			VALUES 
+			"INSERT INTO " . TABLE_FP . "
+				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk, recommandation)
+			VALUES
 				('', %s, %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 			, array(current_time('mysql', 0), $revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, digirisk_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
 		);
 		if($wpdb->query($query) === false)
 		{
-			$status['result'] = 'error'; 
+			$status['result'] = 'error';
 			$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
 			$status['errors']['query'] = $query;
 		}
@@ -415,8 +411,7 @@ class eva_WorkUnitSheet
 	*
 	*	@return string The hmtl code outputing the form to generate work unit sheet collection for a groupment
 	*/
-	function getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement)
-	{
+	function getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement) {
 		$tableElementForDoc = $tableElement . '_FP';
 		$output = '
 <table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
@@ -429,16 +424,15 @@ class eva_WorkUnitSheet
 				</div>
 				<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 			</div>
-			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" />  
+			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" />
 		</td>
 		<td id="documentModelContainer" >&nbsp;</td>
 	</tr>
 </table>
 <script type="text/javascript" >
-	digirisk("#saveWorkUnitSheetForGroupement").click(function(){
+	digirisk("#saveWorkUnitSheetForGroupement").click(function() {
 		digirisk("#documentFormContainer").html(digirisk("#loadingImg").html());
-		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-		{
+		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 			"post":"true",
 			"table":"' . TABLE_FP . '",
 			"act":"saveWorkUnitSheetForGroupement",
@@ -450,15 +444,13 @@ class eva_WorkUnitSheet
 
 	digirisk("#modelDefaut").click(function(){
 		setTimeout(function(){
-			if(!digirisk("#modelDefaut").is(":checked"))
-			{
+			if (!digirisk("#modelDefaut").is(":checked")) {
 				digirisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 				digirisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
 				digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":""});
 				digirisk("#modelListForGeneration").show();
 			}
-			else
-			{
+			else {
 				digirisk("#documentModelContainer").html("");
 				digirisk("#modelListForGeneration").html("");
 				digirisk("#modelListForGeneration").hide();
@@ -500,5 +492,5 @@ class eva_WorkUnitSheet
 
 		return $output;
 	}
-	
+
 }

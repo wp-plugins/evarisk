@@ -45,9 +45,36 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .column-danger-designation {  }
 .sans_puce { list-style-type: none; }
 .noPadding { padding: 0 !important;}
-.radioPictoCategorie {float:left; margin-right:2%; margin-bottom:2%;}
-.radioPictoCategorie img {vertical-align:middle; max-width:48px; cursor:pointer; }
-
+.content_radio_picto_categorie{position : relative; width : 70px; height : 50px;  float : left; margin-bottom : 2%; margin-right : 1%}
+.radioPictoCategorie {position : absolute; width : 70px; height : 50px; z-index : 0;}
+.radioPictoCategorie img {vertical-align:middle; max-width:48px; cursor:pointer; z-index : 0;}
+.case_penibilite{
+	width : 43px;
+	height : 16px;
+	z-index : 1;
+	position : absolute;
+	top : 29px;
+	left : 13px; 
+	background-color : #58D3F7; 
+	border: 1px solid #0489B1;
+	opacity:0.7; 
+	filter : alpha(opacity=70);
+	-webkit-border-bottom-right-radius: 5px; 
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	font-size : 16px; 
+	color : #0A2229; 
+	font-weight : 900; 
+	text-align : right; 
+	padding-top : 1px; 
+	padding-right : 3px;
+}
+.digi_question_penibilite{	font-weight:bold; text-decoration:underline; }
+.choixDangerDefaut{	vertical-align:middle !important; }
+.choixPenibilite{	vertical-align:middle !important; }
 
 .white_background th{	background:none #FFFFFF !important;	}
 .tabcroisillon{	margin:6px 0px;	}
@@ -359,12 +386,12 @@ div.inside{overflow: hidden; padding: 5px;}
 /* -- END Menu AJOUTER -- */
 
 
-/* -- Liste catégorie danger -- */
+/* -- Liste catï¿½gorie danger -- */
 .expander{		display: none;	}
 .aFils .expander{		display: inline;	}
 .actionButtonList{		width: 20%;	}
 .infoList{		width: 20%;	}	
-/* -- END Liste catégorie danger -- */
+/* -- END Liste catï¿½gorie danger -- */
 
 
 /* -- Galery photo -- */
@@ -384,7 +411,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 /* -- END Galery photo -- */
 
 
-/* -- Veille référentiel -- */
+/* -- Veille rï¿½fï¿½rentiel -- */
 .listeCreationVeille li	{		display: inline;		margin-right: 60px;	}
 .veille-reponse-titre	{		font-weight:bold;	}
 .veille-reponse-extraitTexte	{		border:1px solid #000000;		background-color:#FFFFCC;		text-align:justify;		font-size:11px;		margin:0px 24px;		padding:3px;	}
@@ -395,11 +422,11 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .veille-right-menu li	{		border:1px solid #E3E3E3;		color:#21759B;		background-color:#F2F1EF;		font-size:11px;	}
 
 .observationTropLongue	{		vertical-align: top;	}
-/* -- END Veille référentiel -- */
+/* -- END Veille rï¿½fï¿½rentiel -- */
 
 
 /* -- Partie droite -- */
-.titleDiv /* bientôt à enlever*/	
+.titleDiv /* bientï¿½t ï¿½ enlever*/	
 {		font-size: 1.3em;		font-weight: bold;	}
 .titleInfo	{		font-size: 1.3em;		font-weight: bold;		border: none !important;		background-color: transparent !important;	width:150%;	}
 .titleInfo:hover	{		border: 1px solid #646464 !important;	cursor:pointer !important;	}
@@ -762,8 +789,8 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 
 /* -- Document unique -- */
-#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
-#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
+#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP, #generateRS{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
+#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected, #generateRS.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
 #saveWorkUnitSheetForGroupement{	margin:6px auto;	}
 #workUnitSheetCollectionModelSelector{	margin:6px;	}
 #documentModelContainer{	width:40%;	}

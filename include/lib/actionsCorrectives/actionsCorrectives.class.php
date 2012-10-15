@@ -45,7 +45,9 @@ class actionsCorrectives
 					}
 				}
 				$taches->getTasksLike($tacheLike);
-				$correctiv_actions[] = $taches->getTasks();
+				$return_task = $taches->getTasks();
+
+				$correctiv_actions[] = $return_task;
 			}
 		}
 
@@ -248,7 +250,7 @@ ORDER BY TASK.limiteGauche, TASK.limiteDroite
 			$_POST['affichage'] = "affichageListe";
 		}
 		include_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );	
-		// On enlève le choix de l'affichage
+		// On enlï¿½ve le choix de l'affichage
 ?>
 		<script type="text/javascript">
 			digirisk(document).ready(function(){

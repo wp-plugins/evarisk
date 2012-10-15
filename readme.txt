@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 3.3.2
-Stable tag: 5.1.5.7
+Stable tag: 5.1.5.8
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,21 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+
+= Version 5.1.5.8 =
+
+Am&eacute;liorations
+
+* ST357 - Ajout des m&eacute;thodes et variables pour l'&eacute;valuation des p&eacute;nibilit&eacute;s les plus simples (Bruit, temperatures extremes, postures penibles)
+* ST359 - D&eacute;finition des risques potentiellement soumis &agrave; une p&eacute;nibilit&eacute; (Affichage d'un &eacute;l&eacute;ment permettant l'identification de ces risques soumis &agrave; p&eacute;nibilit&eacute;)
+* ST361 - S&eacute;lection de la m&eacute;thode choisie pour la p&eacute;nibilit&eacute; lors de l'&eacute;dition du danger
+
+Corrections
+
+* ST358 - Coloration de la cotation du risque lors de l'&eacute;valuation
+* ST360 - Non enregistrement des modifications apport&eacute;es sur un risque si des caract&egrave;res sp&eacute;ciaux &eacute;taient pr&eacute;sents dans la description du risque
+* ST362 - Homog&eacute;nisation du fonctionnement de la corbeille entre les groupements et actions correctives (Lorsqu'on supprimait une tache, les sous &eacute;l&eacute;ments de celle ci n'&eacute;taient pas supprim&eacute;s comme avec les groupements et unit&eacute; de travail. ce qui provoquait un affichage de certains &eacute;l&eacute;ments dans les autres interface alors que ceux ci n'auraient pas du apparaitre &agrave; nouveau)
 
 
 = Version 5.1.5.7 =

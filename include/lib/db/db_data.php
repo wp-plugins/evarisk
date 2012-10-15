@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin database start content definition file.
-* 
+*
 *	This file contains the different definitions for the database content.
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.4.9
@@ -43,10 +43,6 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	for($i=0; $i<=100; $i++){
 		unset($valeur_etalon);
 		$valeur_etalon = array('Status' => 'Valid', 'valeur' => $i);
-		//	Old script to delete if all is ok
-		// if($i%20 == 0){
-			// $valeur_etalon['niveauSeuil'] = $niveauSeuil;
-		// }
 		switch($i){
 			case 0:
 				$valeur_etalon['niveauSeuil'] = 1;
@@ -167,7 +163,7 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 
 		$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Protection obligatoire pour pi&eacute;tons', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/obligations/obligationPietons_s.png', 'yes', TABLE_PRECONISATION, 'Protection obligatoire pour pi&eacute;tons')), 'parent_element' => '&eacute;quipements de protection individuelle');
 	}
-	
+
 	{/*	Add the different basic prohibition	*/
 		$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Divers interdiction', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/interdictions/interdictionGenerale_s.png', 'yes', TABLE_PRECONISATION, 'Divers interdiction')), 'parent_element' => 'interdiction');
 
@@ -396,3 +392,16 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 		EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
 	}
 }
+
+{/*	Version 73	*/
+	$digirisk_db_version = 73;
+
+	$digirisk_db_update[$digirisk_db_version][TABLE_DANGER][] = "UPDATE " . TABLE_DANGER . " SET nom = '" . __('Divers', 'evarisk') . ' ' . strtolower( __('Activit&eacute; physique', 'evarisk')) . "' WHERE LOWER(nom) = '" . __('Divers', 'evarisk') . ' ' . strtolower(__('Manutention manuelle', 'evarisk')) . "'";
+	if ( $current_db_version <= $digirisk_db_version ) {	/*	Insert picture for danger categories	*/
+		$query = $wpdb->prepare("SELECT id FROM ".TABLE_CATEGORIE_DANGER." WHERE LOWER(nom) = %s", __('Divers', 'evarisk') . ' ' . strtolower(__('Manutention manuelle', 'evarisk')));
+		$cat_id = $wpdb->get_var($query);
+		$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rps.png');
+		EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
+	}
+}
+

@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin installer
-* 
+*
 * Define the different methods to install digirisk plugin
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.3.5
@@ -20,7 +20,7 @@ class digirisk_install
 	*	Define the main installation form
 	*/
 	function installation_form(){
-		global $evaluation_method_operator, $evaluation_main_vars, $inrs_danger_categories;
+		global $evaluation_method_operator, $evaluation_main_vars;
 		$installation_form = '';
 
 		/*	Create an ouput with the defined method operator	*/
@@ -37,8 +37,15 @@ class digirisk_install
 		$basic_vars_list = (trim(substr($basic_vars_list, 3, -3)) !=  '')  ? '  (' . trim(substr($basic_vars_list, 2, -2)) . ')' : '';
 		/*	Create an output with the defined danger categories	*/
 		$basic_danger_cat_list = '';
+		$inrs_danger_categories=unserialize(DIGI_INRS_DANGER_LIST);
 		foreach($inrs_danger_categories as $version_number => $category){
-			$basic_danger_cat_list .= '<div class="alignleft inrs_picto_container_install" ><img src="' . EVA_HOME_URL . $category['picture'] . '" alt="' . $category['nom'] . '" /><br/>' . $category['nom'] . '</div>';
+			if ( is_file(EVA_HOME_DIR . $category['picture']) ) {
+				$picture = EVA_HOME_URL . $category['picture'];
+			}
+			else {
+				$picture = EVA_CATEGORIE_DANGER_ICON;
+			}
+			$basic_danger_cat_list .= '<div class="alignleft inrs_picto_container_install" ><img src="' . $picture . '" alt="' . $category['nom'] . '" /><br/>' . $category['nom'] . '</div>';
 		}
 
 		$installation_form .= digirisk_display::start_page(__('Installation du logiciel d\'aide &agrave; l\'&eacute;valuation des risques', 'evarisk'), EVA_OPTIONS_ICON, __('Installation du logiciel d\'aide &agrave; l\'&eacute;valuation des risques', 'evarisk'), __('Installation du logiciel D\'aide &agrave; l\'&eacute;valuation des risques', 'evarisk'), TABLE_OPTION, false, '', false, false) . '
@@ -73,7 +80,7 @@ class digirisk_install
 	digirisk(document).ready(function(){
 		var autoInstall = false;';
 		if(STANDALONEVERSION){
-			$installation_form .= 
+			$installation_form .=
 		'var autoInstall = true;';
 		}
 
@@ -120,7 +127,7 @@ class digirisk_install
 		});';
 
 		if(STANDALONEVERSION){
-			$installation_form .= 
+			$installation_form .=
 		'jQuery("#digi_install_form").submit();';
 		}
 
@@ -138,20 +145,26 @@ class digirisk_install
 	function update_digirisk($version_to_launch = -1){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_table_structure_change, $digirisk_db_update, $standard_message_subject_to_send, $standard_message_to_send, $digirisk_db_table_operation_list;
 
-		{/*	Make action on each plugin launch	*/
-			/*	Initialisation des permissions	*/
-			digirisk_permission::digirisk_init_permission();
+		/*
+		 * 	Initialisation des permissions (Lancement a chaque chargement du plugin)
+		 */
+		digirisk_permission::digirisk_init_permission();
 
-			/*	Vérifie que le dossier upload soit bien créé	*/
-			digirisk_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
+		/*
+		 * Copie du dossier contenant les fichiers de modeles/images (Lancement a chaque chargement du plugin)
+		 */
+		digirisk_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
 
-			/*	Vérifie que le dossier result soit bien créé	*/
-			digirisk_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
+		/*
+		 * Copie/creation du dossier devant contenir les fichiers crees par le biais du logiciel DUER/Fiches de poste/... (Lancement a chaque chargement du plugin)
+		 */
+		digirisk_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 
-			/*	Vérifie que le dossier temporaire pour la création des fichiers odt soit bien créé	*/
-			if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp')){
-				digirisk_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
-			}
+		/*
+		 *	Creation du dossier temporatire permettant de creer les documents au format odt (Lancement a chaque chargement du plugin)
+		 */
+		if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp')){
+			digirisk_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
 		}
 
 		$current_db_version = digirisk_options::getDbOption('base_evarisk');
@@ -187,7 +200,7 @@ class digirisk_install
 					}
 
 			/********************/
-			/*		Insert data		*/
+			/*		Insert data	*/
 			/********************/
 					$do_changes = self::insert_data_for_version($i, $do_changes);
 
@@ -224,6 +237,8 @@ class digirisk_install
 				}
 			}
 		}
+
+// 			self::make_specific_operation_on_update('dev');
 
 		/*	Update the db version option value	*/
 		// $do_changes = false;
@@ -442,21 +457,21 @@ class digirisk_install
 				if($wpdb->get_var("show tables like '" . TABLE_OPTION . "'") == TABLE_OPTION ){/*	Deplacement de la gestion des options	*/
 					$optionToStore = array();
 
-					/*	Récupération de la liste des options existantes pour le transfert	*/
+					/*	Rï¿½cupï¿½ration de la liste des options existantes pour le transfert	*/
 					$query = $wpdb->prepare("
-						SELECT * 
+						SELECT *
 						FROM " . TABLE_OPTION);
 					$optionsList = $wpdb->get_results($query);
 					foreach($optionsList as $option){
 						$optionToStore[$option->nom] = $option->valeur;
 					}
-					/*	Ajout de l'entrée dans la table option avec toutes les valeurs des options	*/
+					/*	Ajout de l'entrï¿½e dans la table option avec toutes les valeurs des options	*/
 					add_option('digirisk_options', $optionToStore);
 				}
 
 				if(($wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP . "'") == TABLE_EVA_USER_GROUP) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP . "'") == TABLE_EVA_EVALUATOR_GROUP))
 				{/*	Transfert des anciens groupes dans la nouvelle table	*/
-					/*	Groupes d'employé	*/
+					/*	Groupes d'employï¿½	*/
 					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP);
 					$employeeGroups = $wpdb->get_results($query);
 					$subQuery = "  ";
@@ -475,15 +490,15 @@ class digirisk_install
 					$subQuery = trim(substr($subQuery, 0, -2));
 					if($subQuery != "")
 					{
-						$query = 
-							"INSERT INTO " . DIGI_DBT_USER_GROUP . " 
-								(id, old_id, status, group_type, creation_date, creation_user_id, deletion_date, deletion_user_id, name, description) 
-							VALUES 
+						$query =
+							"INSERT INTO " . DIGI_DBT_USER_GROUP . "
+								(id, old_id, status, group_type, creation_date, creation_user_id, deletion_date, deletion_user_id, name, description)
+							VALUES
 								" . $subQuery;
 						$wpdb->query($query);
 					}
 
-					/*	Transfert les tables non utilisées vers la "trash" section	*/
+					/*	Transfert les tables non utilisï¿½es vers la "trash" section	*/
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP . " TO " . TRASH_DIGI_DBT_USER_GROUP);
 					$wpdb->query($query);
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP);
@@ -492,7 +507,7 @@ class digirisk_install
 
 				if(($wpdb->get_var("show tables like '" . TABLE_LIAISON_USER_GROUPS . "'") == TABLE_LIAISON_USER_GROUPS) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP_BIND . "'") == TABLE_EVA_EVALUATOR_GROUP_BIND))
 				{/*	Transfert la liaison des anciens groupes vers les nouveaux	*/
-					/*	Groupes d'employé	*/
+					/*	Groupes d'employï¿½	*/
 					$query = $wpdb->prepare("SELECT * FROM " . TABLE_LIAISON_USER_GROUPS);
 					$employeeGroupsLink = $wpdb->get_results($query);
 					$subQuery = "  ";
@@ -515,15 +530,15 @@ class digirisk_install
 					$subQuery = trim(substr($subQuery, 0, -2));
 					if($subQuery != "")
 					{
-						$query = 
-							"INSERT INTO " . DIGI_DBT_LIAISON_USER_GROUP . " 
-								(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_group, id_element, table_element) 
-							VALUES 
+						$query =
+							"INSERT INTO " . DIGI_DBT_LIAISON_USER_GROUP . "
+								(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_group, id_element, table_element)
+							VALUES
 								" . $subQuery;
 						$wpdb->query($query);
 					}
 
-					/*	Transfert les tables non utilisées vers la "trash" section	*/
+					/*	Transfert les tables non utilisï¿½es vers la "trash" section	*/
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_LIAISON_USER_GROUPS . " TO " . TRASH_DIGI_DBT_LIAISON_USER_GROUPS);
 					$wpdb->query($query);
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_BIND . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_BIND);
@@ -532,7 +547,7 @@ class digirisk_install
 
 				if(($wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP_DETAILS . "'") == TABLE_EVA_USER_GROUP_DETAILS) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP_DETAILS . "'") == TABLE_EVA_EVALUATOR_GROUP_DETAILS))
 				{/*	Transfert des utilisateurs vers la table de liaison utilisateur element	*/
-					/*	Groupes d'employé	*/
+					/*	Groupes d'employï¿½	*/
 					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP_DETAILS);
 					$employeeGroupsDetail = $wpdb->get_results($query);
 					$subQuery = "  ";
@@ -555,15 +570,15 @@ class digirisk_install
 					$subQuery = trim(substr($subQuery, 0, -2));
 					if($subQuery != "")
 					{
-						$query = 
-							"INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " 
-								(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_user, id_element, table_element) 
-							VALUES 
+						$query =
+							"INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . "
+								(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_user, id_element, table_element)
+							VALUES
 								" . $subQuery;
 						$wpdb->query($query);
 					}
 
-					/*	Transfert les tables non utilisées vers la "trash" section	*/
+					/*	Transfert les tables non utilisï¿½es vers la "trash" section	*/
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_USER_GROUP_DETAILS);
 					$wpdb->query($query);
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_DETAILS);
@@ -606,6 +621,212 @@ class digirisk_install
 						$user->has_cap('digi_ask_action_front');
 					}
 				}
+			}break;
+
+			case '73':{
+				/*
+				 * Mise Ã  jour des sous elements de l'arbre des taches supprimees pour cohÃ©rence avec la corbeille des GP et UT
+				*/
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_TACHE . " WHERE Status = %s", 'Deleted');
+				$task_list = $wpdb->get_results($query);
+				foreach ($task_list as $deleted_task) {
+					$tache = new EvaTask($deleted_task->id);
+					$tache->load();
+					$task_children = $tache->getDescendants();
+					foreach ($task_children->tasks as $index => $task) {
+						$wpdb->update(TABLE_TACHE, array('Status'=>'Deleted'), array('id'=>$task->id));
+						$sub_tasks = EvaTask::getChildren($task->id);
+						foreach ($sub_tasks as $sub_task) {
+							$wpdb->update(TABLE_ACTIVITE, array('Status'=>'Deleted'), array('id'=>$sub_task->id));
+						}
+					}
+				}
+
+				/*	Ajout des mÃ©thodes d'evaluation pour la pÃ©nibilitÃ©	*/
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Manutention manuelle femme', 'evarisk'), 'Status' => 'Valid'));
+				$methode_manutention_femme = $wpdb->insert_id;
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Manutention manuelle homme', 'evarisk'), 'Status' => 'Valid'));
+				$methode_manutention_homme = $wpdb->insert_id;
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Vibration m&eacute;canique mains/bras', 'evarisk'), 'Status' => 'Valid'));
+				$methode_vibration_main_bras = $wpdb->insert_id;
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Vibration m&eacute;canique ensemble du corps', 'evarisk'), 'Status' => 'Valid'));
+				$methode_vibration_corps = $wpdb->insert_id;
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Posture p&eacute;nibles', 'evarisk'), 'Status' => 'Valid'));
+				$methode_posture = $wpdb->insert_id;
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Temp&eacute;ratures extr&ecirc;mes', 'evarisk'), 'Status' => 'Valid'));
+				$methode_temperature = $wpdb->insert_id;
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Bruit', 'evarisk'), 'Status' => 'Valid'));
+				$methode_bruit = $wpdb->insert_id;
+
+				/*	Changement d'image pour la catÃ©gorie	*/
+				$activite_physique_cat_id_query = $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE nom = %s", strtolower( __('Activit&eacute; physique', 'evarisk')));
+				$activite_physique_cat_id = $wpdb->get_var($activite_physique_cat_id_query);
+				$activite_physique_cat_id_pict = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $activite_physique_cat_id, 'medias/images/Pictos/categorieDangers/activitePhysique.png');
+				EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $activite_physique_cat_id, $activite_physique_cat_id_pict, 'yes');
+
+				/*	Create the new danger categories	*/
+				$inrs_danger_categories = unserialize(DIGI_INRS_DANGER_LIST);
+				foreach ($inrs_danger_categories as $danger_cat) {
+					if (!empty($danger_cat['version']) && ($danger_cat['version'] == $version)) {
+						$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom']);
+
+						/*	If user ask to add danger in categories	*/
+						$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+						if ( !empty($danger_cat['risks']) && is_array($danger_cat['risks']) ) {
+							foreach ( $danger_cat['risks'] as $risk_to_create ) {
+								$wpdb->insert(TABLE_DANGER, array('nom' => $risk_to_create, 'id_categorie' => $new_danger_cat_id));
+							}
+						}
+
+						/*	Insert picture for danger categories	*/
+						if ( !empty($danger_cat['picture']) ) {
+							$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
+							EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
+						}
+					}
+				}
+
+				/*
+				 * Ajout des variables permettant l'evaluation de la pÃ©nibilitÃ©
+				 */
+				/*	Manutention pour les hommes	*/
+				$question_manutention_homme[] = array('question'=>__('Charges < 10Kg ou 0,5 tonnes par jour', 'evarisk'), 'seuil'=>0);
+				$question_manutention_homme[] = array('question'=>__('Charges < 15Kg ou 1 tonne par jour', 'evarisk'), 'seuil'=>48);
+				$question_manutention_homme[] = array('question'=>__('Charges > 35Kg ou 2 tonnes par jour', 'evarisk'), 'seuil'=>51);
+				$question_manutention_homme[] = array('question'=>__('Charges > 49Kg ou 5 tonnes par jour', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Port de charge (Homme)', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir si des charges sont > &agrave; 49Kg ou 5 tonnes par jour\nRisque rouge si les charges sont > &agrave; 35Kg ou 2 tonnes par jour\nRisque orange si les charges sont < &agrave; 15Kg et 1 tonne par jour\nRisque blanc si les charges sont < 10Kg et 0,5 tonne par jour', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_manutention_homme), 'questionTitre'=>__('Poids total transport&eacute; sur une journ&eacute;e de travail de 7 heures', 'evarisk')));
+				$variable_manutention_homme = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_manutention_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_manutention_homme, 'id_variable'=>$variable_manutention_homme, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Manutention pour les femmes	*/
+				$question_manutention_femme[] = array('question'=>__('Charges < 5Kg ou 0,25 tonnes par jour', 'evarisk'), 'seuil'=>0);
+				$question_manutention_femme[] = array('question'=>__('Charges < 7,5Kg ou 0,5 tonne par jour', 'evarisk'), 'seuil'=>48);
+				$question_manutention_femme[] = array('question'=>__('Charges > 17,5Kg ou 1 tonnes par jour', 'evarisk'), 'seuil'=>51);
+				$question_manutention_femme[] = array('question'=>__('Charges > 25Kg ou 2,5 tonnes par jour', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Port de charge (Femme)', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir si des charges sont > &agrave; 25Kg ou 2,5 tonnes par jour\nRisque rouge si les charges sont > &agrave; 17,5Kg ou 1 tonne par jour\nRisque orange si les charges sont < &agrave; 7,5Kg et 0,5 tonne par jour\nRisque blanc si les charges sont < 5Kg et 0,25 tonne par jour', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_manutention_femme), 'questionTitre'=>__('Poids total transport&eacute; sur une journ&eacute;e de travail de 7 heures', 'evarisk')));
+				$variable_manutention_femme = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_manutention_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_manutention_femme, 'id_variable'=>$variable_manutention_femme, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Postures penibles */
+				$question_postures_penibles[] = array('question'=>__('Somme calcul&eacute; &agrave; partir de la check-list OSHA est < 3', 'evarisk'), 'seuil'=>0);
+				$question_postures_penibles[] = array('question'=>__('Somme calcul&eacute; &agrave; partir de la check-list OSHA est < 5', 'evarisk'), 'seuil'=>48);
+				$question_postures_penibles[] = array('question'=>__('Somme calcul&eacute; &agrave; partir de la check-list OSHA est >= 5', 'evarisk'), 'seuil'=>51);
+				$question_postures_penibles[] = array('question'=>__('Somme calcul&eacute; &agrave; partir de la check-list OSHA est > 9', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Postures p&eacute;nibles', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir si la somme est > 9 (choix arbitraire Evarisk)\nRisque rouge si la somme est >= 5 (choix OSHA)\nRisque orange si la somme est < 5 (choix arbitraire Evarisk)\nRisque blanc si la somme est < 3 (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_postures_penibles), 'questionTitre'=>__('&Eacute;valuation des facteurs de risque relatifs aux membres sup&eacute;rieurs', 'evarisk')));
+				$variable_postures_penible = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_posture_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_posture, 'id_variable'=>$variable_postures_penible, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Postures penibles Mains/bras */
+				$question_vibrations[] = array('question'=>__('Vibrations < 1,25 m/s&sup2;', 'evarisk'), 'seuil'=>0);
+				$question_vibrations[] = array('question'=>__('Vibrations < 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>48);
+				$question_vibrations[] = array('question'=>__('Vibrations > 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>51);
+				$question_vibrations[] = array('question'=>__('Vibrations > 5 m/s&sup2;', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Vibrations des mains/bras', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir > 5 M/s&sup2;\nRisque rouge > 2,5 M/S&sup2;\nRisque orange < 2,5 m/s&sup2;\Risque Blanc < 1,25 m/s&sup2; (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_vibrations), 'questionTitre'=>__('Pour une exposition quotidienne (8h)', 'evarisk')));
+				$variable_vibrations_main_bras = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_posture_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_vibration_main_bras, 'id_variable'=>$variable_vibrations_main_bras, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Postures penibles Corps */
+				$question_vibrations_corps[] = array('question'=>__('Vibrations < 1,25 m/s&sup2;', 'evarisk'), 'seuil'=>0);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations < 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>48);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations > 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>51);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations > 5 m/s&sup2;', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Vibration de l\'ensemble du corps', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir > 1.15 m/s&sup2;\nRisque rouge > 0,5 m/s&sup2;\nRisque orange < 0,5 m/s&sup2;\nRisque Blanc < 0,25 m/s&sup2; (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_vibrations_corps), 'questionTitre'=>__('Pour une exposition quotidienne (8h)', 'evarisk')));
+				$variable_vibrations_corps = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_posture_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_vibration_corps, 'id_variable'=>$variable_vibrations_corps, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Temperature */
+				$question_temperatures[] = array('question'=>__('20&deg;C < T > 24&deg;C', 'evarisk'), 'seuil'=>0);
+				$question_temperatures[] = array('question'=>__('15&deg;C < T > 30&deg;C', 'evarisk'), 'seuil'=>48);
+				$question_temperatures[] = array('question'=>__('T > 30&deg;C ou < 10&deg;C', 'evarisk'), 'seuil'=>51);
+				$question_temperatures[] = array('question'=>__('T > 33&deg;C ou < 5&deg;C', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Exposition &agrave; des temp&eacute;ratures extr&ecirc;mes', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir si T&deg; > 33&deg;C ou si T&deg; < 5&deg;C (seuil INRS ed 931)\nRisque rouge si T&deg; > 30&deg;C ou si T&deg; < 10&deg;C (travailler mieux)\nRisque orange si  15&deg;C < T&deg;< 30&deg;C (Choix arbitraire Evarisk)\nRisque Blanc si 20&deg;C < T&deg;< 24&deg;C (Choix INRS)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_temperatures), 'questionTitre'=>__('Exposition aux temp&eacute;ratures extr&ecirc;mes (Dur&eacute;e de 6 heures par jour)', 'evarisk')));
+				$variable_temperature = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_temperature_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_temperature, 'id_variable'=>$variable_temperature, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Bruit */
+				$question_bruit[] = array('question'=>__('Lex, 6h < 75dB(a) ou < 120 dB(c)', 'evarisk'), 'seuil'=>0);
+				$question_bruit[] = array('question'=>__('Lex, 8h < 80dB(a) ou < 112 dB(c)', 'evarisk'), 'seuil'=>48);
+				$question_bruit[] = array('question'=>__('Lex, 8h > 85dB(a) ou > 137 dB(c)', 'evarisk'), 'seuil'=>51);
+				$question_bruit[] = array('question'=>__('Lex, 8h > 87dB(a) ou > 140 dB(c)', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Exposition au bruit', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir Lex, 8h > 87 dB(a) ou > 140 dB(c) seuil r&eacute;glementaire (France et europe)\nRisque rouge Lex, 8h > 85 dB(a) ou > 137 dB(c) seuil r&eacute;glementaire (France et europe)\nRisque orange Lex, 8h  < 80 dB(a) ou < 112 dB(c) seuil europ&eacute;en\nRisque Blanc Lex, 6h < 75 dB(a) ou < 120 dB(c) seuil travailler mieux', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_bruit), 'questionTitre'=>__('Exposition au bruit', 'evarisk')));
+				$variable_bruit = $wpdb->insert_id;
+				/* Liaison entre variable et methode */
+				$liaison_methode_bruit_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_bruit, 'id_variable'=>$variable_bruit, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+
+				/*
+				 * Equivalence variable etalon
+				 */
+				/*	Manutention manuelle femme	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_femme, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_femme, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_femme, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_femme, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*	Manutention manuelle homme	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_homme, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_homme, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_homme, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_homme, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*	Postures penibles 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_posture, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_posture, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_posture, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_posture, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*	Vibrations mÃ©caniques mains/bras 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_main_bras, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_main_bras, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_main_bras, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_main_bras, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*	Vibrations mÃ©caniques ensemble du corps 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_corps, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_corps, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_corps, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_vibration_corps, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*	Temperature 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_temperature, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_temperature, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_temperature, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_temperature, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*	Bruit 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_bruit, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_bruit, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_bruit, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_bruit, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/*
+				 * Affectation du statut "penible" aux risques concernÃ©s
+				 */
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Nuisances sonores', 'evarisk')));
+				$risque_nuissance_sonore = $wpdb->get_var($query);
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_bruit), array('id' => $risque_nuissance_sonore));
+
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Ambiances climatiques', 'evarisk')));
+				$risque_temperature = $wpdb->get_var($query);
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_temperature), array('id' => $risque_temperature));
+
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Manutention manuelle', 'evarisk')));
+				$risque_manutention_manuelle = $wpdb->get_var($query);
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_manutention_homme), array('id' => $risque_manutention_manuelle));
+
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Postures penibles', 'evarisk')));
+				$risque_posture = $wpdb->get_var($query);
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_posture), array('id' => $risque_posture));
+
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Vibrations', 'evarisk')));
+				$risque_vibrations = $wpdb->get_var($query);
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_vibration_main_bras), array('id' => $risque_vibrations));
 			}break;
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
@@ -54,7 +54,136 @@ class MethodeEvaluation {
 	*
 	*	@return string $methode_vars_form The complete html output for the box
 	*/
-	function evaluation_method_variable_manager($argument){
+	function evaluation_method_variable_manager($argument, $display_button = true){
+		$id_methode = $argument['idElement'];
+		$valeurVariable1 = $methode_vars_form = '';
+
+		/*	Get the variables affected to the current method	*/
+		$variablesMethode = MethodeEvaluation::getVariablesMethode($id_methode);
+		$nbInput = count($variablesMethode);
+		foreach($variablesMethode as $variableMethode){
+			$varMethodeIds[] = $variableMethode->id;
+			$varMethodeNames[] = $variableMethode->nom;
+		}
+		/*	Get the operators affected to the current method	*/
+		$operateursMethode = MethodeEvaluation::getOperateursMethode($id_methode);
+		foreach($operateursMethode as $operateurMethode){
+			$opsMethode[] = $operateurMethode->operateur;
+		}
+
+
+		/*	Get the existing operator list	*/
+		unset($operateur);
+		$operateur = array();
+		$ops = Eva_Operateur::getOperators();
+		foreach($ops as $op){
+			$operateur[]=$op->symbole;
+			$operateurIndexSymbole[$op->symbole] = $op;
+		}
+		/*	Get the existing variables list	*/
+		unset($variable); unset($variableIndexId);
+		$variable = $variableIndexId = array();
+		$vars = MethodeEvaluation::getAllVariables();
+		$i=0;
+		$vars_array_value = $vars_array_output = array();
+		foreach($vars as $var){
+			$variableIndexId[$var->id] = $var;
+			$variable[] = $var->id;
+			$vars_array_output[] = ELEMENT_IDENTIFIER_V . $var->id . ' - ' . $var->nom;
+			$i++;
+		}
+
+
+		/*	Display the method var form output	*/
+		$methode_vars_form .= '
+	<div class="digirisk_hide fade below-h2 evaMessage" id="evaluation_method_var_message" >&nbsp;</div>
+	<div id="var_line_container" class="digirisk_hide" >
+		<div class="single_var_container clear" id="evaluation_method_#LINENUMBER#" >
+			<div class="alignleft" >
+				' . EvaDisplayInput::afficherComboBox($ops, 'op_#LINENUMBER#', null, 'op[]', '', '', $operateur, $operateur) .
+				EvaDisplayInput::afficherComboBox($vars, 'var_#LINENUMBER+1#', null, 'var[]', '', '', $variable, $vars_array_output) . '
+			</div>
+			<div class="single_var_delete_container aligleft" ><img src="' . PICTO_DELETE_VSMALL . '" alt="' . __('Enlever cette variable', 'evarisk') . '" title="' . __('Enlever cette variable', 'evarisk') . '" class="alignright" /></div>
+		</div>
+	</div>
+<form action="' . EVA_INC_PLUGIN_URL . 'ajax.php" id="method_var_form" method="post" >
+	<input type="hidden" name="post" id="post" value="true" />
+	<input type="hidden" name="table" id="table" value="' . TABLE_METHODE . '" />
+	<input type="hidden" name="act" id="act" value="save_method_var" />
+	<input type="hidden" name="id_methode" id="id_methode" value="' . $id_methode . '" />';
+
+		/*	If user is allowed to edit method vars	*/
+		$method_vars_script_action = '';
+		if(current_user_can('digi_edit_method_var')){
+			$methode_vars_form .= '
+	<div class="open_var_manager_container" ><div id="var_manager_window" title="' . __('Gestion des variables', 'evarisk') . '" class="digirisk_hide" >&nbsp;</div>' . __('G&eacute;rer les variables', 'evarisk') . '<span class="ui-icon open_var_manager" >&nbsp;</span></div>';
+			$method_vars_script_action = '
+		/*	Create the dialog box allowing to manage vars	*/
+		jQuery("#var_manager_window").dialog({
+			autoOpen: false,
+			modal: true,
+			width: 800,
+			height: 600,
+			close: function(){
+				jQuery(this).html("");
+			}
+		});
+
+		/*	Add support on link for manage vars	*/
+		jQuery(".open_var_manager_container").click(function(){
+			jQuery("#var_manager_window").dialog("open");
+			jQuery("#var_manager_window").html(evarisk("#loadingImg").html());
+			jQuery("#var_manager_window").load(EVA_AJAX_FILE_URL,{
+				"post": "true",
+				"table": "' . TABLE_VARIABLE . '",
+				"act": "load_variable_management"
+			});
+		});';
+		}
+
+		$methode_vars_form .= '
+	<div class="evaluation_method_var_container" >';
+		$methode_vars_form .= self::evaluation_method_management_content($argument);
+		$methode_vars_form .= '
+	</div>
+	<div class="clear" id="add_new_var_to_method" >
+		<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une variable &agrave; la m&eacute;thode', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une variable &agrave; la m&eacute;thode', 'evarisk')) . '" />
+	</div>
+	<input type="submit" name="save_evaluation_method" id="save_evaluation_method" class="clear alignright button-primary" value="' . __('Enregistrer', 'evarisk') . '" />
+</form>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){' . $method_vars_script_action . '
+		jQuery("#method_var_form").ajaxForm({
+			target: "#ajax-response"
+		});
+
+		jQuery(".single_var_delete_container img").live("click", function(){
+			jQuery(this).parent("div").parent("div .single_var_container").remove();
+		});
+
+		jQuery("#add_new_var_to_method").click(function(){
+			var next_var_id = 1;
+			if(jQuery(this).prev("div").hasClass("single_var_container")){
+				next_var_id += parseInt(jQuery(this).prev(".single_var_container").attr("id").replace("evaluation_method_", ""));
+			}
+			jQuery(this).before(jQuery("#var_line_container").html());
+
+			var new_line_id = jQuery(this).prev(".single_var_container").attr("id").replace("#LINENUMBER#", next_var_id);
+			jQuery(this).prev(".single_var_container").attr("id", new_line_id);
+
+			jQuery("#" + new_line_id + " div select:first").attr("id", jQuery("#" + new_line_id + " div select:first").attr("id").replace("#LINENUMBER#", next_var_id));
+			jQuery("#" + new_line_id + " div label:first").attr("id", jQuery("#" + new_line_id + " div label:first").attr("id").replace("#LINENUMBER#", next_var_id));
+			jQuery("#" + new_line_id + " div label:first").attr("for", jQuery("#" + new_line_id + " div select:first").attr("id"));
+			jQuery("#" + new_line_id + " div select:last").attr("id", jQuery("#" + new_line_id + " div select:last").attr("id").replace("#LINENUMBER+1#", next_var_id + 1));
+			jQuery("#" + new_line_id + " div label:last").attr("id", jQuery("#" + new_line_id + " div label:last").attr("id").replace("#LINENUMBER+1#", next_var_id + 1));
+			jQuery("#" + new_line_id + " div label:last").attr("for", jQuery("#" + new_line_id + " div select:last").attr("id"));
+		});
+	});
+</script>';
+
+		echo $methode_vars_form;
+	}
+	function evaluation_method_management_content($argument){
 		$id_methode = $argument['idElement'];
 		$valeurVariable1 = $methode_vars_form = '';
 
@@ -97,110 +226,24 @@ class MethodeEvaluation {
 			break;
 		}
 
-
-		/*	Display the method var form output	*/
-		$methode_vars_form .= '
-<div class="digirisk_hide fade below-h2 evaMessage" id="evaluation_method_var_message" >&nbsp;</div>
-<div id="var_line_container" class="digirisk_hide" >
-		<div class="single_var_container clear" id="evaluation_method_#LINENUMBER#" >
-			<div class="alignleft" >
-				' . EvaDisplayInput::afficherComboBox($ops, 'op_#LINENUMBER#', null, 'op[]', '', '', $operateur, $operateur) . 
-				EvaDisplayInput::afficherComboBox($vars, 'var_#LINENUMBER+1#', null, 'var[]', '', '', $variable, $vars_array_output) . '
-			</div>
-			<div class="single_var_delete_container aligleft" ><img src="' . PICTO_DELETE_VSMALL . '" alt="' . __('Enlever cette variable', 'evarisk') . '" title="' . __('Enlever cette variable', 'evarisk') . '" class="alignright" /></div>
-		</div>
-</div>
-<form action="' . EVA_INC_PLUGIN_URL . 'ajax.php" id="method_var_form" method="post" >
-	<input type="hidden" name="post" id="post" value="true" />
-	<input type="hidden" name="table" id="table" value="' . TABLE_METHODE . '" />
-	<input type="hidden" name="act" id="act" value="save_method_var" />
-	<input type="hidden" name="id_methode" id="id_methode" value="' . $id_methode . '" />
-
-	<div class="evaluation_method_var_container" >';
-
-		/*	If user is allowed to edit method vars	*/
-		$method_vars_script_action = '';
-		if(current_user_can('digi_edit_method_var')){
-			$methode_vars_form .= '<div class="open_var_manager_container" ><div id="var_manager_window" title="' . __('Gestion des variables', 'evarisk') . '" class="digirisk_hide" >&nbsp;</div>' . __('G&eacute;rer les variables', 'evarisk') . '<span class="ui-icon open_var_manager" >&nbsp;</span></div>';
-			$method_vars_script_action = '
-		/*	Create the dialog box allowing to manage vars	*/
-		jQuery("#var_manager_window").dialog({
-			autoOpen: false,
-			modal: true,
-			width: 800,
-			height: 600,
-			close: function(){
-				jQuery(this).html("");
-			}
-		});
-
-		/*	Add support on link for manage vars	*/
-		jQuery(".open_var_manager_container").click(function(){
-			jQuery("#var_manager_window").dialog("open");
-			jQuery("#var_manager_window").html(evarisk("#loadingImg").html());
-			jQuery("#var_manager_window").load(EVA_AJAX_FILE_URL,{
-				"post": "true", 
-				"table": "' . TABLE_VARIABLE . '",
-				"act": "load_variable_management"
-			});
-		});';
-		}
-
-		$methode_vars_form .= '<div class="clear" >
-			<div class="first_var" >
+		$output = '
+		<div class="first_var" >
 		' . EvaDisplayInput::afficherComboBox($vars, 'var_1', null, 'var[]', '', $valeurVariable1, $variable, $vars_array_output) . '
-			</div>';
+		</div>';
 		if(isset($variablesMethode) && count($variablesMethode)>0){
 			for($i=1; $i<count($variablesMethode); $i++){
-				$methode_vars_form .= '
-			<div class="single_var_container clear" id="evaluation_method_' . $i . '" >
-				<div class="alignleft" >
-					' . EvaDisplayInput::afficherComboBox($ops, 'op_' . $i, null, 'op[]', '', $operateurIndexSymbole[$opsMethode[($i-1)]], $operateur, $operateur) . 
+				$output .= '
+		<div class="single_var_container clear" id="evaluation_method_' . $i . '" >
+			<div class="alignleft" >
+				' . EvaDisplayInput::afficherComboBox($ops, 'op_' . $i, null, 'op[]', '', $operateurIndexSymbole[$opsMethode[($i-1)]], $operateur, $operateur) .
 					EvaDisplayInput::afficherComboBox($vars, 'var_' . ($i + 1), null, 'var[]', '', $variableIndexId[$varMethodeIds[$i]], $variable, $vars_array_output) . '
-				</div>
-				<div class="single_var_delete_container aligleft" ><img src="' . PICTO_DELETE_VSMALL . '" alt="' . __('Enlever cette variable', 'evarisk') . '" title="' . __('Enlever cette variable', 'evarisk') . '" class="alignright" /></div>
-			</div>';
+			</div>
+			<div class="single_var_delete_container aligleft" ><img src="' . PICTO_DELETE_VSMALL . '" alt="' . __('Enlever cette variable', 'evarisk') . '" title="' . __('Enlever cette variable', 'evarisk') . '" class="alignright" /></div>
+		</div>';
 			}
 		}
-		$methode_vars_form .= '
-			<div class="clear" id="add_new_var_to_method" >
-				<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une variable &agrave; la m&eacute;thode', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une variable &agrave; la m&eacute;thode', 'evarisk')) . '" />
-			</div>
-		</div>
-	</div>
-	<input type="submit" name="save_evaluation_method" id="save_evaluation_method" class="clear alignright button-primary" value="' . __('Enregistrer', 'evarisk') . '" />
-</form>
-<script type="text/javascript" >
-	digirisk(document).ready(function(){' . $method_vars_script_action . '
-		jQuery("#method_var_form").ajaxForm({
-			target: "#ajax-response"
-		});
 
-		jQuery(".single_var_delete_container img").live("click", function(){
-			jQuery(this).parent("div").parent("div .single_var_container").remove();
-		});
-
-		jQuery("#add_new_var_to_method").click(function(){
-			var next_var_id = 1;
-			if(jQuery(this).prev("div").hasClass("single_var_container")){
-				next_var_id += parseInt(jQuery(this).prev(".single_var_container").attr("id").replace("evaluation_method_", ""));
-			}
-			jQuery(this).before(jQuery("#var_line_container").html());
-
-			var new_line_id = jQuery(this).prev(".single_var_container").attr("id").replace("#LINENUMBER#", next_var_id);
-			jQuery(this).prev(".single_var_container").attr("id", new_line_id);
-
-			jQuery("#" + new_line_id + " div select:first").attr("id", jQuery("#" + new_line_id + " div select:first").attr("id").replace("#LINENUMBER#", next_var_id));
-			jQuery("#" + new_line_id + " div label:first").attr("id", jQuery("#" + new_line_id + " div label:first").attr("id").replace("#LINENUMBER#", next_var_id));
-			jQuery("#" + new_line_id + " div label:first").attr("for", jQuery("#" + new_line_id + " div select:first").attr("id"));
-			jQuery("#" + new_line_id + " div select:last").attr("id", jQuery("#" + new_line_id + " div select:last").attr("id").replace("#LINENUMBER+1#", next_var_id + 1));
-			jQuery("#" + new_line_id + " div label:last").attr("id", jQuery("#" + new_line_id + " div label:last").attr("id").replace("#LINENUMBER+1#", next_var_id + 1));
-			jQuery("#" + new_line_id + " div label:last").attr("for", jQuery("#" + new_line_id + " div select:last").attr("id"));
-		});
-	});
-</script>';
-
-		echo $methode_vars_form;
+		return $output;
 	}
 
 	/**
@@ -243,7 +286,7 @@ class MethodeEvaluation {
 	<input type="submit" name="save_evaluation_method_var_equivalence" id="save_evaluation_method_var_equivalence" class="clear alignright button-primary" value="' . __('Enregistrer', 'evarisk') . '" />
 </form>
 <script type="text/javascript" >
-	digirisk(document).ready(function(){		
+	digirisk(document).ready(function(){
 		jQuery("#method_var_equivalenceform_").ajaxForm({
 			target: "#ajax-response"
 		});
@@ -253,7 +296,7 @@ class MethodeEvaluation {
 		echo $methode_vars_equivalence_form;
 	}
 
-	
+
 	/**
 	 * @var Integer The method identifier
 	 */
@@ -262,11 +305,11 @@ class MethodeEvaluation {
 	 * @var String The method name
 	 */
 	var $name;
-	
+
 /*
  *	Constructeur et accesseurs
  */
-	
+
 	/**
 	 * Constructor of the method class
 	 * @param $id Integer The identifier to setI
@@ -276,7 +319,7 @@ class MethodeEvaluation {
 		$this->id = $id;
 		$this->name = $name;
 	}
-	
+
 	/**
 	 * Return the method identifier
 	 * @return Integer The identifier
@@ -319,16 +362,16 @@ class MethodeEvaluation {
 		$resultat = $wpdb->get_results( "SELECT * FROM {$t} WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
 	}
-	
+
 	function getAllVariables($where = "1", $order = "nom ASC"){
 		global $wpdb;
 		$resultat = eva_Variable::getVariables($where, $order);
 		return $resultat;
 	}
-	
+
 	function getVariablesMethode($id_methode, $date=null){
 		global $wpdb;
-		
+
 		if($date==null)
 		{
 			$date=current_time('mysql', 0);
@@ -336,24 +379,24 @@ class MethodeEvaluation {
 		$id_methode = (int) $id_methode;
 		$tav = TABLE_AVOIR_VARIABLE;
 		$tv =  TABLE_VARIABLE ;
-		return $wpdb->get_results( "SELECT * 
+		return $wpdb->get_results( "SELECT *
 			FROM " . $tv . ", " . $tav . " t1
-			WHERE t1.id_methode=" . $id_methode . " 
+			WHERE t1.id_methode=" . $id_methode . "
 			AND t1.date < '" . $date . "'
 			AND NOT EXISTS(
-				SELECT * 
+				SELECT *
 				FROM " . $tav . " t2
-				WHERE t2.id_methode=" . $id_methode . " 
+				WHERE t2.id_methode=" . $id_methode . "
 				AND t2.date < '" . $date . "'
 				AND t1.date < t2.date
 			)
-			AND id_variable=id 
+			AND id_variable=id
 			ORDER BY ordre ASC");
 	}
-	
+
 	function getDistinctVariablesMethode($id_methode, $date=null){
 		global $wpdb;
-		
+
 		if($date==null)
 		{
 			$date=current_time('mysql', 0);
@@ -362,49 +405,50 @@ class MethodeEvaluation {
 		$tav = TABLE_AVOIR_VARIABLE;
 		$tv =  TABLE_VARIABLE ;
 		return $wpdb->get_results( "
-			SELECT DISTINCT(nom), id, min, max, annotation
+			SELECT DISTINCT(nom), id, min, max, annotation, affichageVar, questionVar, questionTitre
 			FROM " . $tv . ", " . $tav . " t1
-			WHERE t1.id_methode=" . $id_methode . " 
+			WHERE t1.id_methode=" . $id_methode . "
 			AND t1.date < '" . $date . "'
 			AND NOT EXISTS
 			(
-				SELECT * 
+				SELECT *
 				FROM " . $tav . " t2
-				WHERE t2.id_methode=" . $id_methode . " 
+				WHERE t2.id_methode=" . $id_methode . "
 				AND t2.date < '" . $date . "'
 				AND t1.date < t2.date
 			)
-			AND id_variable=id 
+			AND id_variable=id
 			ORDER BY ordre ASC");
 	}
-	
+
 	function getOperateursMethode($id_methode, $date = null){
 		global $wpdb;
-		
+
 		if($date==null){
 			$date = current_time('mysql', 0);
 		}
 		$id_methode = (int) $id_methode;
 		$t = TABLE_AVOIR_OPERATEUR;
-		$query = $wpdb->prepare("SELECT * 
+		$query = $wpdb->prepare("SELECT *
 				FROM " . $t . " t1
 				WHERE t1.id_methode = %d
 				AND t1.date < %s
+                                AND t1.Status = 'Valid'
 				AND NOT EXISTS
 				(
-					SELECT * 
+					SELECT *
 					FROM " . $t . " t2
-					WHERE t2.id_methode = %d 
+					WHERE t2.id_methode = %d
 					AND t2.date < %s
 					AND t1.date < t2.date
 				)
 				ORDER BY ordre ASC", $id_methode, $date, $id_methode, $date);
 		return $wpdb->get_results($query);
 	}
-	
+
 	function getFormule($id, $date=null){
 		global $wpdb;
-		
+
 		if($date==null)
 		{
 			$date=current_time('mysql', 0);
@@ -412,17 +456,17 @@ class MethodeEvaluation {
 		$id = (int) $id;
 		$formule = '';
 		$t = TABLE_AVOIR_VARIABLE;
-		//on récupère les ids des variables
+		//on rï¿½cupï¿½re les ids des variables
 		$id_variables = $wpdb->get_results("
-			SELECT * 
+			SELECT *
 			FROM " . $t . " t1
-			WHERE t1.id_methode=" . $id . " 
+			WHERE t1.id_methode=" . $id . "
 			AND t1.date < '" . $date . "'
 			AND NOT EXISTS
 			(
-				SELECT * 
+				SELECT *
 				FROM " . $t . " t2
-				WHERE t2.id_methode=" . $id . " 
+				WHERE t2.id_methode=" . $id . "
 				AND t2.date < '" . $date . "'
 				AND t1.date < t2.date
 			)
@@ -435,58 +479,58 @@ class MethodeEvaluation {
 		{
 			//on recupere la variable...
 			$variable = $wpdb->get_row("SELECT * FROM " . $table_var . " WHERE id=" . $id_variable->id_variable);
-			//et l'opérateur
+			//et l'opï¿½rateur
 			$operateur = $wpdb->get_row("
-				SELECT * 
+				SELECT *
 				FROM " . $table_avoir_op . " t1
-				WHERE t1.id_methode=" . $id . " 
+				WHERE t1.id_methode=" . $id . "
 				AND t1.date < '" . $date . "'
 				AND t1.ordre=" . $ordre . "
 				AND NOT EXISTS
 				(
-					SELECT * 
+					SELECT *
 					FROM " . $table_avoir_op . " t2
-					WHERE t2.id_methode=" . $id . " 
+					WHERE t2.id_methode=" . $id . "
 					AND t2.date < '" . $date . "'
 					AND t2.ordre=" . $ordre . "
 					AND t1.date < t2.date
 				)
 				ORDER BY ordre ASC");
-			//et on complète la formule
+			//et on complï¿½te la formule
 			$operateur = (!isset($operateur) OR $operateur == null)?'':$operateur->operateur;
 			$formule = $formule . ' ' . $operateur . ' ' . $variable->nom;
 			$ordre = $ordre + 1;
 		}
 		return $formule;
 	}
-	
+
 	function getEtalon(){
 		global $wpdb;
 		$table = TABLE_ETALON;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . $table);
 		return $resultat;
 	}
-	
+
 	function getEquivalentEtalon($idMethode, $valeurEtalon, $date=null){
 		global $wpdb;
-		
+
 		if($date==null)
 		{
 			$date=current_time('mysql', 0);
 		}
 		$table = TABLE_EQUIVALENCE_ETALON;
 		$resultat = $wpdb->get_row("
-			SELECT * 
+			SELECT *
 			FROM " . $table . " t1
-			WHERE t1.id_methode=" . $idMethode . " 
-			AND t1.id_valeur_etalon=" . $valeurEtalon . " 
+			WHERE t1.id_methode=" . $idMethode . "
+			AND t1.id_valeur_etalon=" . $valeurEtalon . "
 			AND t1.date < '" . $date . "'
 			AND NOT EXISTS
 			(
-				SELECT * 
+				SELECT *
 				FROM " . $table . " t2
-				WHERE t2.id_methode=" . $idMethode . " 
-				AND t1.id_valeur_etalon=" . $valeurEtalon . " 
+				WHERE t2.id_methode=" . $idMethode . "
+				AND t1.id_valeur_etalon=" . $valeurEtalon . "
 				AND t2.date < '" . $date . "'
 				AND t1.date < t2.date
 			)");

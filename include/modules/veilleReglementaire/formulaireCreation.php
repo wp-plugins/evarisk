@@ -189,7 +189,7 @@
 			if(document.getElementById('texteATraiter').value == "")
 			{
 				digirisk('#texteATraiter').addClass('form-input-tip');
-				document.getElementById('texteATraiter').value="Copier le texte Règlementaire ici.";
+				document.getElementById('texteATraiter').value="Copier le texte Reglementaire ici.";
 			}
 		});
 	});
@@ -231,13 +231,13 @@
 		}
 		if(value_radio == 'titre')
 		{
-			var changer = "le titre et la numérotation de " + titreReferent;
+			var changer = "le titre et la numerotation de " + titreReferent;
 			var ajouter = "le titre sous le titre " + titreReferent;
 		}
 		else if(value_radio == 'extraitTexte')
 		{
 			var changer = "l'extrait de texte de " + titreReferent;
-			var ajouter = "à l'extrait de texte du titre " + titreReferent;
+			var ajouter = "a l'extrait de texte du titre " + titreReferent;
 		}
 		else if(value_radio == 'question')
 		{
@@ -256,7 +256,7 @@
 	<form id="regulatoryWatchAdd" method="POST" name="regulatoryWatchForm">
 		<div id="partieTexteVeille">
 			<p> S&eacute;l&eacute;ctionnez la partie de texte &agrave; traiter </p>
-			<textarea id="texteATraiter" class="form-input-tip" rows=12 style="width: 100%;" aria-required="true" name="texteATraiter">Copier le texte Règlementaire ici.</textarea>
+			<textarea id="texteATraiter" class="form-input-tip" rows=12 style="width: 100%;" aria-required="true" name="texteATraiter">Copier le texte Reglementaire ici.</textarea>
 		</div>
 		<div id="partieTraitementVeille" style="display: none">
 			<div>
@@ -277,7 +277,7 @@
 				<li>
 					<input type="radio" checked="checked" name="choixTitreOuQuestion" value="titre" id="choixTitre"/>
 					<label for="choixTitre"> Titre </label>
-					<label for="codeTitre"> dont la numérotation hierachique est : </label>
+					<label for="codeTitre"> dont la numerotation hierachique est : </label>
 					<input type="text" name="codeTitre" id="codeTitre"/>
 				</li>
 				<li>

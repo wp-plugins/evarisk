@@ -45,11 +45,11 @@ class Risque {
 		$listeOperateursSimple;
 
 
-		//résolution des opération de forte priorité (i.e. * et /)
+		//rï¿½solution des opï¿½ration de forte prioritï¿½ (i.e. * et /)
 		$scoreRisque = $listeValeurs[0];
 		$numeroValeur = 0;
 		if($listeOperateurs != null){
-			// invariant de boucle : la valeur $listeValeurs[$numeroValeur] est traité
+			// invariant de boucle : la valeur $listeValeurs[$numeroValeur] est traitï¿½
 			foreach($listeOperateurs as $operateur){
 				$numeroValeur = $numeroValeur + 1;
 				switch($operateur){
@@ -59,7 +59,7 @@ class Risque {
 					case '/' : 
 						$scoreRisque = $scoreRisque / $listeValeurs[$numeroValeur];
 						break;
-					//default <=> opérateur de faible priorité (i.e. + et -)
+					//default <=> opï¿½rateur de faible prioritï¿½ (i.e. + et -)
 					default : 
 						$listeValeursSimples[] = $scoreRisque;
 						$listeOperateursSimples[] = $operateur;
@@ -68,14 +68,14 @@ class Risque {
 				}
 			}
 		}
-		//Comme il y a une valeur de plus que d'operateur, on la range à la fin
+		//Comme il y a une valeur de plus que d'operateur, on la range ï¿½ la fin
 		$listeValeursSimples[] = $scoreRisque;
 
-		//résolution du score
+		//rï¿½solution du score
 		$scoreRisque = $listeValeursSimples[0];
 		$numeroValeur = 0;
 		if(isset($listeOperateursSimples) && ($listeOperateursSimples != null)){
-			// invariant de boucle : la valeur $listeValeursSimples[$numeroValeur] est traité
+			// invariant de boucle : la valeur $listeValeursSimples[$numeroValeur] est traitï¿½
 			foreach($listeOperateursSimples as $operateur){
 				$numeroValeur = $numeroValeur + 1;
 				switch($operateur){
@@ -107,6 +107,7 @@ class Risque {
 			WHERE tableEquivalenceEtalon1.valeurMaxMethode >= " . $score . "
 			AND tableEquivalenceEtalon1.id_methode = " . $idMethode . "
 			AND tableEquivalenceEtalon1.date <= '" . $date . "'
+                        AND tableEquivalenceEtalon1.Status = 'Valid'
 			AND NOT EXISTS
 			(
 				SELECT * 
@@ -274,7 +275,7 @@ class Risque {
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 		$description = digirisk_tools::IsValid_Variable($description);
 		$description = str_replace("[retourALaLigne]","\n", $description);
-		$description = str_replace("’","'", $description);
+		$description = str_replace("ï¿½","'", $description);
 		$histoStatus = 'Valid';
 
 		if($idRisque == ''){//Ajout d'un risque
@@ -296,26 +297,11 @@ class Risque {
 </script>';
 			}
 		}
-		else{//Mise à jour d'un risque
-			$sql = $wpdb->prepare("
-				UPDATE " . TABLE_RISQUE . " 
-				SET id_danger = " . ($idDanger) . ",
-					id_methode = " . ($idMethode) . ",
-					id_element = " . ($idElement) . ",
-					nomTableElement = '" . ($tableElement) . "',
-					commentaire = '" . ($description) . "',
-					date = %s,
-					Status = 'Valid' 
-				WHERE id = " . ($idRisque), current_time('mysql', 0));
-			$wpdb->query($sql);
+		else{//Mise ï¿½ jour d'un risque
+			$wpdb->update(TABLE_RISQUE, array('id_danger'=>$idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid'), array('id' => $idRisque));
 
-			if($histo != 'false'){
-				$sql = "
-					UPDATE " . TABLE_AVOIR_VALEUR . " 
-					SET Status = 'Moderated' 
-					WHERE id_risque = " . mysql_escape_string($idRisque) . "
-					AND Status = 'Valid'";
-				$wpdb->query($sql);
+			if ($histo != 'false') {
+				$wpdb->update(TABLE_AVOIR_VALEUR, array('Status'=>'Moderated'), array('id_risque'=>$idRisque, 'Status'=>'Valid'));
 			}
 			else{
 
@@ -334,12 +320,7 @@ class Risque {
 					$wpdb->update(TABLE_LIAISON_TACHE_ELEMENT, array('status' => 'deleted'), array('id' => $task_link->link_id));
 				}
 
-				$sql = "
-					UPDATE " . TABLE_AVOIR_VALEUR . " 
-					SET Status = 'Deleted' 
-					WHERE id_risque = " . mysql_escape_string($idRisque) . "
-					AND Status = 'Valid'";
-				$wpdb->query($sql);
+				$wpdb->update(TABLE_AVOIR_VALEUR, array('Status'=>'Deleted'), array('id_risque'=>$idRisque, 'Status'=>'Valid'));
 			}
 		}
 
@@ -350,8 +331,7 @@ class Risque {
 			if($valeurVariable != 'undefined'){
 				$idVariable = digirisk_tools::IsValid_Variable($idVariable);
 				$valeurVariable = digirisk_tools::IsValid_Variable($valeurVariable);
-				$sql = "INSERT INTO " . TABLE_AVOIR_VALEUR . " (id_risque, id_evaluation, id_variable, valeur, idEvaluateur, date, Status) VALUES (" . mysql_escape_string($idRisque) . ", " . mysql_real_escape_string($newId->newId) . ", " . mysql_escape_string($idVariable) . ", '" . mysql_escape_string($valeurVariable) . "', '" . mysql_real_escape_string($current_user->ID) . "', '" .current_time('mysql', 0) . "', '" . mysql_real_escape_string($histoStatus) . "')";
-				$wpdb->query($sql);
+				$wpdb->insert(TABLE_AVOIR_VALEUR, array('id_risque'=>$idRisque, 'id_evaluation'=>$newId->newId, 'id_variable'=>$idVariable, 'valeur'=>$valeurVariable, 'idEvaluateur'=>$current_user->ID, 'date'=>current_time('mysql', 0), 'Status'=>$histoStatus));
 			}
 		}
 
@@ -366,15 +346,8 @@ class Risque {
 		global $wpdb;
 		$status = 'error';
 
-		$query = 
-			$wpdb->prepare(
-				"UPDATE " . TABLE_RISQUE . " 
-				SET Status = 'Deleted'
-				WHERE id = '%s'
-					AND id_element = '%s'
-					AND nomTableElement = '%s'"
-				, $idRisque, $idElement, $tableElement);
-		if($wpdb->query($query)){
+		$delete_element = $wpdb->update(TABLE_RISQUE, array('Status' => 'Deleted'), array('id' => $idRisque, 'id_element' => $idElement, 'nomTableElement' => $tableElement));
+		if($delete_element !== false){
 			$status = 'ok';
 		}
 
@@ -389,21 +362,16 @@ class Risque {
 	*
 	*	@return array $info An array with the sum of risqs
 	*/
-	function getSommeRisque($table, $elementId)
-	{
+	function getSommeRisque($table, $elementId){
 		$temp = Risque::getRisques($table, $elementId, "Valid");
-		if($temp != null)
-		{
-			foreach($temp as $risque)
-			{
+		if ($temp != null) {
+			foreach ($temp as $risque) {
 				$risques['"' . $risque->id . "'"][] = $risque; 
 			}
 		}
 		$sumR = 0;
-		if(isset($risques) && ($risques != null))
-		{
-			foreach($risques as $risque)
-			{
+		if (isset($risques) && ($risques != null)) {
+			foreach ($risques as $risque) {
 				$idMethode = $risque[0]->id_methode;
 				$score = Risque::getScoreRisque($risque);
 				$sumR += Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
@@ -424,7 +392,7 @@ class Risque {
 		{
 			case TABLE_RISQUE :
 				$risque = Risque::getRisque($idElement);
-				{//Création de la table
+				{//Creation de la table
 					unset($tableauVariables);
 					foreach($risque as $ligneRisque){
 						$valeurVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;

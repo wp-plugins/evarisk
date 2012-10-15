@@ -332,14 +332,18 @@ class eva_Variable {
 			$var_name = $var_information->nom;
 			$var_minimum = $var_information->min;
 			$var_maximum = $var_information->max;
-			$var_annotation = str_replace('\n', "
-", $var_information->annotation);
-
+			$var_annotation = str_replace('\n', "", $var_information->annotation);
+                        $var_typeAffichage = $var_information-> affichageVar;
+                        $var_question = $var_information-> questionTitre;
 			$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $var_id, 'Valid');
 			$existing_alternativ_vars = $wpdb->get_results($query);
 
 			$save_button_value = __('Enregistrer', 'evarisk');
 		}
+                else
+                {
+                   $var_typeAffichage = "slide"; 
+                }
 
 		$var_form .= '
 <p class="var_form_error_message digirisk_hide">&nbsp;</p>
@@ -347,7 +351,7 @@ class eva_Variable {
 	<input type="hidden" name="post" id="post" value="true" />
 	<input type="hidden" name="table" id="table" value="' . TABLE_VARIABLE . '" />
 	<input type="hidden" name="act" id="act" value="save" />
-	<input type="hidden" name="id_variable" id="id_variable" value="' . $var_id . '" />' ;
+	<input type="hidden" name="id_variable" id="id_variable" value="' . $var_id . '" />';
 
 		{//New variable name
 			$idInputNom = 'newvarname';
@@ -372,6 +376,28 @@ class eva_Variable {
 			$nomChamps = 'newvarannotation';
 			$labelInput = __('Annotation sur la nouvelle variable : ', 'evarisk');
 			$var_form .= EvaDisplayInput::afficherInput('textarea', $idInput, $var_annotation, '', $labelInput, $nomChamps, true, false, 5);
+		}
+		{//Variable's display method choice
+			$checked['slide'] = ' checked="checked"';
+			$checked['checkbox'] = '';
+			if (!empty($var_typeAffichage) ) {
+				$checked[$var_typeAffichage] = ' checked="checked"';
+			}
+            $form = '
+            	<input type="radio" name="methodeAffichage" id="methodeAffichage_slide" class="choixTypeAffichage" value="slide"' . $checked['slide'] . ' > <label for="methodeAffichage_slide" >'.__('Slide ', 'evarisk').'</label>
+            	<input type="radio" name="methodeAffichage" id="methodeAffichage_checkbox" class="choixTypeAffichage" value="checkbox"' . $checked['checkbox'] . ' > <label for="methodeAffichage_checkbox" >' .__('Checkbox ', 'evarisk').'</label>';
+			$var_form .= __('Type d\'affichage de la variable : ', 'evarisk').$form.'<br/><br/>';  
+		}
+        {//Variable question
+			$idInputQuestion = 'newvarquestion';
+			$nomChampsQuestion = 'newvarquestion';
+			$labelInput = __('Question de la variable : ', 'evarisk');
+                        
+                        $var_form .= '<div id="varQuestion">';
+                        
+			$var_form .= EvaDisplayInput::afficherInput('text', $idInputQuestion, $var_question, '', $labelInput, $nomChampsQuestion, true, false, 100);
+                        // Javascript actions to keep an eye on the variable's display method choice
+                        $var_form .='<input type="hidden" id="typeVar" /></div>';
 		}
 
 		{//New variable discreet values
@@ -398,18 +424,7 @@ class eva_Variable {
 			}
 			$script .= '
 					});
-					function load_alternativ_value_for_var(){
-						if(jQuery("#'. $idInput . '").is(":checked") && (jQuery("#'. $idInputMin . '").val() != "") && (jQuery("#'. $idInputMax . '").val() != "")){
-							jQuery("#digi_alternativ_value_for_vars").html(jQuery("#loadingImg").html());
-							jQuery("#digi_alternativ_value_for_vars").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true",
-								"nom":"loadFieldsNewVariable",
-								"min":jQuery("#'. $idInputMin . '").val(),
-								"max":jQuery("#'. $idInputMax . '").val(),
-								"var_id":"' . $var_id . '"
-							});
-						}
-					}
+                           
 				</script>';
 			$labelInput = __('Valeur diff&eacute;rente du chiffre', 'evarisk');
 			$var_form .= EvaDisplayInput::afficherInput('checkbox', $idInput, 'variable_has_alternative_value', '', $labelInput, $nomChamps, true, false, 1, '', '', '3%',$script) . '<div class="hide-if-js" id="digi_alternativ_value_for_vars">&nbsp;</div>';
@@ -429,6 +444,31 @@ class eva_Variable {
 			target: "#ajax-response",
 			beforeSubmit: validate_var_form
 		});
+                           jQuery("#typeVar").val("'.$var_typeAffichage.'");
+                           jQuery("#varQuestion").hide();
+                            if("'.$var_typeAffichage.'" === "checkbox")
+                            {
+                               
+                               jQuery("#varQuestion").show();
+                               jQuery("#checkValues").prop("checked", true);
+                               jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");
+                               load_alternativ_value_for_var();
+                            }
+                         });
+                         digirisk(".choixTypeAffichage").change(function(){
+                            jQuery("#typeVar").val(jQuery(this).val());
+                            if(jQuery(this).val() == "checkbox")
+                            {
+                                jQuery("#varQuestion").show();
+                                jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");
+                                jQuery("#checkValues").prop("checked", true);
+                                load_alternativ_value_for_var();
+                            }
+                            else
+                            {
+                                jQuery("#varQuestion").hide();
+                                load_alternativ_value_for_var();
+                            }
 	});
 
 	function validate_var_form(formData, jqForm, options){
@@ -436,9 +476,10 @@ class eva_Variable {
 		evarisk("#' . $idInputNom . '").removeClass("ui-state-error");
 		evarisk("#' . $idInputMin . '").removeClass("ui-state-error");
 		evarisk("#' . $idInputMax . '").removeClass("ui-state-error");
-
+                
 		for(var i=0; i < formData.length; i++){
 			if((formData[i].name == "' . $idInputNom . '") && !formData[i].value){
+                                
 				checkLength( evarisk("#' . $idInputNom . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
 				return false;
 			}
@@ -450,17 +491,33 @@ class eva_Variable {
 				checkLength( evarisk("#' . $idInputMax . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
 				return false;
 			}
+                     
 		}
-
+                
 		if(parseFloat(evarisk("#' . $idInputMin . '").val()) > parseFloat(evarisk("#' . $idInputMax . '").val())){
 			evarisk("#' . $idInputMin . '").addClass( "ui-state-error" );
 			evarisk("#' . $idInputMax . '").addClass( "ui-state-error" );
 			updateTips( digi_html_accent_for_js("' . __('La valeur maximale doit &ecirc;tre sup&eacute;rieure &agrave; la valeur minimale.', 'evarisk') . '"), evarisk(".var_form_error_message"));
-			return false;
+			
+                        return false;
 		}
-
+                
 		return true;
 	}
+        function load_alternativ_value_for_var(){
+               
+                if(jQuery("#checkValues").is(":checked") && (jQuery("#'. $idInputMin . '").val() != "") && (jQuery("#'. $idInputMax . '").val() != "")){
+                        jQuery("#digi_alternativ_value_for_vars").html(jQuery("#loadingImg").html());
+                        jQuery("#digi_alternativ_value_for_vars").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+                                "post":"true",
+                                "nom":"loadFieldsNewVariable",
+                                "min":jQuery("#'. $idInputMin . '").val(),
+                                "max":jQuery("#'. $idInputMax . '").val(),
+                                "choixTypeAffichage": jQuery("#typeVar").val(),
+                                "var_id":"' . $var_id . '"
+                        });
+                }
+        }
 </script>';
 
 		return $var_form;

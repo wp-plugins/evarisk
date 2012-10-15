@@ -272,7 +272,8 @@ CREATE TABLE {$t} (
   `description` text collate utf8_unicode_ci,
   `limiteGauche` int(16) NOT NULL,
   `limiteDroite` int(16) NOT NULL,
-  `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
+  `Status` varchar(255) NOT NULL default '',
+  `methode_eva_defaut` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `nom` (`nom`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -287,6 +288,8 @@ CREATE TABLE {$t} (
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `description` text collate utf8_unicode_ci,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
+  `choix_danger` varchar(255) NOT NULL default '',
+  `methode_eva_defaut` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `nom` (`nom`),
   UNIQUE KEY `id_categorie_2` (`id_categorie`,`code_danger`),
@@ -886,6 +889,9 @@ CREATE TABLE {$t} (
   `min` float unsigned NOT NULL,
   `max` float unsigned NOT NULL,
   `annotation` text collate utf8_unicode_ci,
+  `affichageVar` ENUM('slide', 'checkbox') collate utf8_unicode_ci NOT NULL default 'slide',
+  `questionVar` text NOT NULL default '',
+  `questionTitre` varchar(255) NOT NULL default '',
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -1650,4 +1656,15 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE] = array('nom_exportable_plan_action', 'description_exportable_plan_action');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE, TABLE_TACHE);
+}
+
+
+{/*	Version 73	*/
+	$digirisk_db_version = 73;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_VARIABLE] = array('affichageVar', 'questionVar', 'questionTitre');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_DANGER] = array('choix_danger', 'methode_eva_defaut');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_VARIABLE, TABLE_DANGER);
 }

@@ -220,14 +220,14 @@ class EvaDisplayInput {
 			}
 			else
 			{
-				$comboBox = $comboBox . '<option value="' . $element->id . '"';
+				$comboBox = $comboBox . '<option value="' . $element->id .'"';
 			}
 			if((isset($selection)) AND $selection != "")
 			{
 				if($element == $selection)
 				{
 					$comboBox = $comboBox . ' selected="selected"';
-				}
+				}   
 			}
 			if($tabDisplay != null)
 			{

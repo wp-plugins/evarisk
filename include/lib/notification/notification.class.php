@@ -74,7 +74,7 @@ class digirisk_admin_notification{
 			$container_class = 'digirisk_message_version_' . str_replace('.', '_', EVA_PLUGIN_VERSION);
 		}
 
-		if(!empty($message) && empty($user_meta_notification_read['readed_notification'][EVA_PLUGIN_VERSION]) && digirisk_options::getDbOption('base_evarisk')>=1){
+		if(!empty($message) && empty($user_meta_notification_read['readed_notification'][EVA_PLUGIN_VERSION])){
 			if($view_more)$message .= '<br/><br/><a class="digirisk_admin_notice_view_more_link" href="' . admin_url('tools.php?page=digirisk_tools') . '" > >> ' . __('Voir le d&eacute;tail', 'evarisk') . '</a>';
 			self::admin_notice_container($message, $container_class);
 		}

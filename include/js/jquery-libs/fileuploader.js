@@ -242,7 +242,7 @@ qq.FileUploader.prototype = {
 			if(self._options.multiple || (e.dataTransfer.files.length == 1))
 				self._uploadFileList(e.dataTransfer.files); 
 			else
-				alert('On ne peut télécharger qu\'un fichier ici.')
+				alert('On ne peut telecharger qu\'un fichier ici.')
             e.preventDefault();        
         });                      
     },

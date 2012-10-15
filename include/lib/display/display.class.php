@@ -1,7 +1,7 @@
 <?php
 /**
 * Template manager
-* 
+*
 * Define the different method to manage the plugin template
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.4.5
@@ -136,7 +136,7 @@ class digirisk_display
 	function page_content($page_parameters){
 
 		switch($page_parameters['element_type']){
-			case TABLE_GROUPEMENT:			
+			case TABLE_GROUPEMENT:
 				switch($menu){
 					case 'gestiongrptut':
 						$pageHook = PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION;
@@ -361,7 +361,7 @@ class digirisk_display
 					$actions = '
 						<td class="noPadding addMain" id="addMain' . $main_tree_id . '">';
 					if(current_user_can('digi_add_task')){
-						$actions .= 
+						$actions .=
 							'<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" />';
 					}
 					else{
@@ -644,7 +644,7 @@ class digirisk_display
 								$tdAddSecondaryStyle = '';
 							}
 
-							/*	Boutons d'ajouts d'un groupement ou d'une unité	*/
+							/*	Boutons d'ajouts d'un groupement ou d'une unitï¿½	*/
 							if(current_user_can('digi_add_groupement') || current_user_can('digi_add_groupement_groupement_' . $element_direct_children_type->id)){
 								$tdAddMain = '<td class="noPadding addMain" id="addMain' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_GROUPEMENT . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('un groupement', 'evarisk')) . '" />';
 							}
@@ -689,7 +689,7 @@ class digirisk_display
 								$nomNoeudClass = 'userForbiddenActionCursor';
 							}
 
-							/*	Ajout des différents boutons à l'interface	*/
+							/*	Ajout des diffï¿½rents boutons ï¿½ l'interface	*/
 							$actions = '
 								' . $tdAddMain . '
 								' . $tdAddSecondary . '
@@ -712,7 +712,7 @@ class digirisk_display
 								$tdAddMainStyle = '';
 								$tdAddSecondaryStyle = '';
 							}
-							
+
 							if(current_user_can('digi_add_danger_category')){
 								$tdAddMain = '<td class="noPadding addMain" id="addMain' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_CATEGORIE_DANGER . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une cat&eacute;gorie de dangers', 'evarisk')) . '" /></td><td id="addMain' . $element_direct_children_type->id . 'Alt" style="display:none;">';
 							}
@@ -942,7 +942,7 @@ class digirisk_display
 					case TABLE_TACHE:{
 						$tdSubEdit = '
 								<td colspan="2">&nbsp;</td>';
-						if(current_user_can('digi_edit_action')){ 
+						if(current_user_can('digi_edit_action')){
 							$tdSubEdit .= '
 								<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 						}
@@ -1393,7 +1393,7 @@ class digirisk_display
 
 						if(current_user_can('digi_delete_method')){
 							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la cat&eacute;gorie de pr&eacute;conisation', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la cat&eacute;gorie de pr&eacute;conisation', 'evarisk')) . '" />';
-						}						
+						}
 						else{
 							$tdDelete = '<td class="noPadding >&nbsp;';
 						}
@@ -1422,7 +1422,7 @@ class digirisk_display
 
 						if(current_user_can('digi_delete_menu')){
 							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la cat&eacute;gorie de pr&eacute;conisation', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la cat&eacute;gorie de pr&eacute;conisation', 'evarisk')) . '" />';
-						}						
+						}
 						else{
 							$tdDelete = '<td class="noPadding >&nbsp;';
 						}

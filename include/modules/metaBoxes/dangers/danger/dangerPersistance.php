@@ -22,8 +22,28 @@ if($_REQUEST['act'] == 'update')
 	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['nom_danger']));
 	$idCategorieMere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['categorieMere']));
 	$description = $_REQUEST['description'];
-	
-	EvaDanger::updateDanger($id_danger, $nom, $idCategorieMere, $description);
+	$id_methode_eva = $_REQUEST['selectionMethode'];
+        $penibilite = $_REQUEST['choix_penibilite'];
+        $dangerDefaut = $_REQUEST['choix_danger'];
+        
+        $tableauChoix  = array();
+        if($dangerDefaut != "")
+        {
+            $tableauChoix[] = $dangerDefaut;
+        }
+        
+        if($penibilite != "")
+        {
+            $tableauChoix[] = $penibilite;
+        }
+        else
+        {
+           $id_methode_eva = 0; 
+        }
+        
+        $tabToSave = serialize($tableauChoix);
+        
+	EvaDanger::updateDanger($id_danger, $nom, $idCategorieMere, $description, $tabToSave, $id_methode_eva);
 }
 if($_REQUEST['act'] == 'delete')
 {
