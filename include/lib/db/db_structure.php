@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin database definition file.
-* 
+*
 *	This file contains the different definitions for the database structure. It will permit to check if database is correctly build
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.4.9
@@ -1667,4 +1667,9 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_DANGER] = array('choix_danger', 'methode_eva_defaut');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_VARIABLE, TABLE_DANGER);
+}
+
+{/*	Version 74	*/
+	$digirisk_db_version = 74;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
 }

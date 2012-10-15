@@ -1,12 +1,12 @@
 <?php
 /**
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
 
 class categorieDangers {
-	
+
 	/**
 	 * @var int The danger categorie identifier
 	 */
@@ -15,11 +15,11 @@ class categorieDangers {
 	 * @var string The danger categorie name
 	 */
 	var $name;
-	
+
 /*
  *	Constructeur et accesseurs
  */
-	
+
 	/**
 	 * Constructor of the danger categorie class
 	 * @param int $id The identifier to setI
@@ -29,7 +29,7 @@ class categorieDangers {
 		$this->id = $id;
 		$this->name = $name;
 	}
-	
+
 	/**
 	 * Returns the danger categorie identifier
 	 * @return int The identifier
@@ -62,7 +62,7 @@ class categorieDangers {
 	{
 		$this->name = $name;
 	}
-	
+
 /*
  * Autres methodes
  */
@@ -73,23 +73,23 @@ class categorieDangers {
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE 1 AND id = " . $id);
 		return $resultat;
 	}
-	
+
 	function getCategorieDangerByName($nom)
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE Status = 'Valid' AND nom='" . $nom . "'");
 		return $resultat;
 	}
-	
+
 
 	function getCategoriesDanger($where = "1", $order = "id ASC") {
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE Status = 'Valid' AND " . $where . " ORDER BY " . $order);
 		return $resultat;
 	}
-	
+
 	function getCategoriesName($saufCategorie = '')
-	{	
+	{
 		$categories = categorieDangers::getCategoriesDanger();
 		foreach($categories as $categorie)
 		{
@@ -100,7 +100,7 @@ class categorieDangers {
 		}
 		return $tab_categories;
 	}
-	
+
 	function getDangersDeLaCategorie($idCategorie, $where = "1", $order="nom ASC")
 	{
 		global $wpdb;
@@ -108,49 +108,44 @@ class categorieDangers {
 		return $resultat;
 	}
 
-	function saveNewCategorie($nom)
-	{
+	function saveNewCategorie($nom) {
 		global $wpdb;
-		
+
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_CATEGORIE_DANGER);
-		$sql = "INSERT INTO " . TABLE_CATEGORIE_DANGER . " (`nom`, `Status`, `limiteGauche`, `limiteDroite`) VALUES ('" . $nom . "', 'Valid', '" . ($lim) . "', '" . ($lim+1) . "')";
-		$wpdb->query($sql);
+		$wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom'=>$nom, 'Status'=>'Valid', 'limiteGauche'=>$lim, 'limiteDroite'=>($lim+1)));
 		$new_category = $wpdb->insert_id;
-		$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = ('Categorie Racine')";
+		$wpdb->update(TABLE_CATEGORIE_DANGER, array('limiteDroite'=>($lim + 2)), array('nom'=>'Categorie Racine'));
 		$wpdb->query($sql);
 
 		return $new_category;
 	}
-	
-	function updateCategorie($id_categorie, $nom, $description, $idCategorieMere)
-	{
+
+	function updateCategorie($id_categorie, $nom, $description, $idCategorieMere) {
 		global $wpdb;
-		
-		$sql = "UPDATE `" . TABLE_CATEGORIE_DANGER . "` SET `nom`='" . $nom . "', description='" . $description . "' WHERE `id`='" . $id_categorie . "'";
-		$wpdb->query($sql);
+
+		$wpdb->update(TABLE_CATEGORIE_DANGER, array('nom'=>$nom, 'description'=>$description), array('id'=>$id_categorie));
 
 		$categorieFille =  categorieDangers::getCategorieDanger($id_categorie);
 		$categorieDestination =  categorieDangers::getCategorieDanger($idCategorieMere);
 		$catMere = Arborescence::getPere(TABLE_CATEGORIE_DANGER, $categorieFille);
 
-		if($categorieDestination->nom != $catMere->nom)
-		{
+		if ($categorieDestination->nom != $catMere->nom) {
 			$racine = categorieDangers::getCategorieDangerByName("Categorie Racine");
 			Arborescence::deplacerElements(TABLE_CATEGORIE_DANGER, $racine, $categorieFille, $categorieDestination);
 		}
 	}
-	
+
 	/**
-	  * Set the status of the group wich is the identifier to Delete 
+	  * Set the status of the group wich is the identifier to Delete
 	 */
 	function deleteCategorie($id)
 	{
 		global $wpdb;
-		
-		$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " set `Status`='Deleted' WHERE `id`=" . $id;
+
+		$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " set Status='Deleted' WHERE id=" . $id;
 		if($wpdb->query($sql))
 		{
-			echo 
+			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
 						digirisk("#message").addClass("updated");
@@ -165,7 +160,7 @@ class categorieDangers {
 		}
 		else
 		{
-			echo 
+			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
 						digirisk("#message").addClass("updated");
@@ -242,9 +237,9 @@ class categorieDangers {
 			if (' . $formId . 'oldCatId != ' . $formId . 'newCatId) {
 				digirisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
 				digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-					"post":"true", 
-					"table":"' . TABLE_CATEGORIE_DANGER . '", 
-					"act":"reloadComboDangers", 
+					"post":"true",
+					"table":"' . TABLE_CATEGORIE_DANGER . '",
+					"act":"reloadComboDangers",
 					"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
 					"formId":"' . $formId . '"
 				});
@@ -258,9 +253,9 @@ class categorieDangers {
 		$categoryResult['script'] .= '
 		digirisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
 		digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-			"post":"true", 
-			"table":"' . TABLE_CATEGORIE_DANGER . '", 
-			"act":"reloadComboDangers", 
+			"post":"true",
+			"table":"' . TABLE_CATEGORIE_DANGER . '",
+			"act":"reloadComboDangers",
 			"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
 			"formId":"' . $formId . '"
 		});

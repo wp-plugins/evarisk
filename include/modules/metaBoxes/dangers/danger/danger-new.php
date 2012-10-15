@@ -9,7 +9,7 @@ $postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
 $postBoxId = 'postBoxGeneralInformation';
 $postBoxCallbackFunction = 'getDangerGeneralInformationPostBoxBody';
 add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_DANGERS, 'rightSide', 'default');
-
+ 
 function getDangerGeneralInformationPostBoxBody($arguments)
 {
 	require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' ); 
@@ -113,6 +113,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 					</script>';
 		$danger_new .= '<div id="digi_penibilite_method_selector"' . $digi_penibilite_method_selector_class . ' >' . EvaDisplayInput::afficherComboBox($elements, $idSelect, $labelSelect, $selectName, '', $selected_method).$script.'</div>';	
 	}
+	
 	{//Bouton Enregistrer
 		/*	We check if there are no danger with the same name	*/
 		$saufDanger = $listeDangersExistants = $actionValue = '';

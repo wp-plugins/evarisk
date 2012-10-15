@@ -623,10 +623,8 @@ class digirisk_install
 				}
 			}break;
 
-			case '73':{
-				/*
-				 * Mise à jour des sous elements de l'arbre des taches supprimees pour cohérence avec la corbeille des GP et UT
-				*/
+			case '73':
+		/* Mise à jour des sous elements de l'arbre des taches supprimees pour cohérence avec la corbeille des GP et UT */
 				$query = $wpdb->prepare("SELECT id FROM " . TABLE_TACHE . " WHERE Status = %s", 'Deleted');
 				$task_list = $wpdb->get_results($query);
 				foreach ($task_list as $deleted_task) {
@@ -686,9 +684,7 @@ class digirisk_install
 					}
 				}
 
-				/*
-				 * Ajout des variables permettant l'evaluation de la pénibilité
-				 */
+		/* Ajout des variables permettant l'evaluation de la pénibilité */
 				/*	Manutention pour les hommes	*/
 				$question_manutention_homme[] = array('question'=>__('Charges < 10Kg ou 0,5 tonnes par jour', 'evarisk'), 'seuil'=>0);
 				$question_manutention_homme[] = array('question'=>__('Charges < 15Kg ou 1 tonne par jour', 'evarisk'), 'seuil'=>48);
@@ -760,9 +756,7 @@ class digirisk_install
 				$liaison_methode_bruit_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_bruit, 'id_variable'=>$variable_bruit, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
 
 
-				/*
-				 * Equivalence variable etalon
-				 */
+		/* Equivalence variable etalon */
 				/*	Manutention manuelle femme	*/
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_femme, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_manutention_femme, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
@@ -805,9 +799,7 @@ class digirisk_install
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_bruit, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_bruit, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
 
-				/*
-				 * Affectation du statut "penible" aux risques concernés
-				 */
+		/* Affectation du statut "penible" aux risques concernés */
 				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Nuisances sonores', 'evarisk')));
 				$risque_nuissance_sonore = $wpdb->get_var($query);
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_bruit), array('id' => $risque_nuissance_sonore));
@@ -827,7 +819,35 @@ class digirisk_install
 				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Vibrations', 'evarisk')));
 				$risque_vibrations = $wpdb->get_var($query);
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_vibration_main_bras), array('id' => $risque_vibrations));
-			}break;
+			break;
+
+			case 74:
+				/*	Check if default categories exist	*/
+				$inrs_danger_categories = unserialize(DIGI_INRS_DANGER_LIST);
+				foreach ($inrs_danger_categories as $danger_cat) {
+					$query = $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE nom = %s", $danger_cat['nom']);
+					$category_id = $wpdb->get_var($query);
+					if ( empty($category_id) ) {
+						$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom']);
+
+						/*	If user ask to add danger in categories	*/
+						$query = $wpdb->prepare("SELECT D.id FROM " . TABLE_DANGER . " AS D WHERE D.nom = %s AND D.Status = %s AND D.id_categorie NOT IN (SELECT id FROM " . TABLE_CATEGORIE_DANGER . ")", __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'Valid');
+						$danger_id = $wpdb->get_var($query);
+						if ( empty($danger_id) ) {
+							$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+						}
+						else {
+							$wpdb->update(TABLE_DANGER, array('id_categorie' => $new_danger_cat_id), array('id' => $danger_id));
+						}
+
+						/*	Insert picture for danger categories	*/
+						if ( !empty($danger_cat['picture']) ) {
+							$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
+							EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
+						}
+					}
+				}
+			break;
 		}
 	}
 
