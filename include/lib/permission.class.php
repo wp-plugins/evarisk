@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin permissions management
-* 
+*
 * Define method to manage permission for the software
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.3.1
@@ -16,7 +16,7 @@
 */
 class digirisk_permission
 {
-	
+
 	/**
 	*	Define the database table to use in the entire script
 	*/
@@ -192,30 +192,30 @@ class digirisk_permission
 	*/
 	function digirisk_init_permission()
 	{
-		/*	Récupération du rôle administrateur	*/
+		/*	Rï¿½cupï¿½ration du rï¿½le administrateur	*/
 		$role = get_role('administrator');
 
-		/*	Récupération des "anciens" droits	*/
+		/*	Rï¿½cupï¿½ration des "anciens" droits	*/
 		$droits = digirisk_permission::getDroitdigirisk();
 		foreach($droits as $droit => $appellation)
-		{/*	Lecture des "anciens" droits pour les retirer à l'administrateur	*/
+		{/*	Lecture des "anciens" droits pour les retirer ï¿½ l'administrateur	*/
 			if(($role != null) && $role->has_cap($droit))
 			{
 				$role->remove_cap($droit);
 			}
 		}
 
-		/*	Récupération des "nouveaux" droits	*/
+		/*	Rï¿½cupï¿½ration des "nouveaux" droits	*/
 		$droits = self::permission_list();
 		foreach($droits as $droit => $droit_definition)
-		{/*	Lecture des "nouveaux" droits pour affectation à l'administrateur	*/
+		{/*	Lecture des "nouveaux" droits pour affectation ï¿½ l'administrateur	*/
 			if(($role != null) && !$role->has_cap($droit))
 			{
 				$role->add_cap($droit);
 			}
 		}
 
-		/*	Vidage de l'objet rôle	*/
+		/*	Vidage de l'objet rï¿½le	*/
 		unset($role);
 	}
 
@@ -228,7 +228,7 @@ class digirisk_permission
 	{
 		global $digi_wp_role;
 
-		/*	Récupération des informations concernant l'utilisateur en cours d'édition	*/
+		/*	Rï¿½cupï¿½ration des informations concernant l'utilisateur en cours d'ï¿½dition	*/
 		$user = new WP_User($_REQUEST['user_id']);
 
 		ob_start();
@@ -262,7 +262,7 @@ class digirisk_permission
 		/*	Instanciation de l'objet role de worpdress	*/
 		$digi_wp_role = new WP_Roles();
 
-		/*	Récupération des roles créés dans digirisk	*/
+		/*	Rï¿½cupï¿½ration des roles crï¿½ï¿½s dans digirisk	*/
 		$digi_role = array();
 		$digiRoles = self::digirisk_get_role();
 		foreach($digiRoles as $digiRole)
@@ -302,12 +302,12 @@ class digirisk_permission
 			{
 				$editionPageTitle = sprintf(__('&Eacute;dition du r&ocirc;le: %s', 'evarisk'), '<span class="digiriskUserGroupEditionName" >' . translate_user_role($currentEditedElement['name']) . '</span>');
 				$editionInProgress = true;
-				/*	On vérifie que l'utilisateur a bien les droits sur la page courante, sinon on lui affiche un message en le remettant sur la page principale	*/
+				/*	On vï¿½rifie que l'utilisateur a bien les droits sur la page courante, sinon on lui affiche un message en le remettant sur la page principale	*/
 				if(!current_user_can('digi_edit_user_role'))
 				{
 					$editionInProgress = false;
 					$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Vous n\'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;', 'evarisk') . '</strong>');
-					$output .= 
+					$output .=
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		actionMessageShow("#message", "' . $message . '");
@@ -322,12 +322,12 @@ class digirisk_permission
 				$currentEditedElement = '';
 				$editionPageTitle = __('Ajouter un r&ocirc;le pour digirisk', 'evarisk');
 				$editionInProgress = true;
-				/*	On vérifie que l'utilisateur a bien les droits sur la page courante, sinon on lui affiche un message en le remettant sur la page principale	*/
+				/*	On vï¿½rifie que l'utilisateur a bien les droits sur la page courante, sinon on lui affiche un message en le remettant sur la page principale	*/
 				if(!current_user_can('digi_add_user_role'))
 				{
 					$editionInProgress = false;
 					$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Vous n\'&ecirc;tes pas autoris&eacute; &agrave; utiliser cette fonctionnalit&eacute;', 'evarisk') . '</strong>');
-					$output .= 
+					$output .=
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		actionMessageShow("#message", "' . $message . '");
@@ -474,7 +474,7 @@ class digirisk_permission
 		$classes[] = 'digirisk_user_role_column_caps_details';
 		$classes[] = 'digirisk_user_role_column_action';
 
-		/*	Récupére les droits liés au logiciel digirisk	*/
+		/*	Rï¿½cupï¿½re les droits liï¿½s au logiciel digirisk	*/
 		$digiriskPermission = self::permission_list();
 		foreach($digiriskPermission as $permission => $permission_definition)
 		{
@@ -589,10 +589,10 @@ class digirisk_permission
 		global $digi_wp_role;
 		$roles = '';
 
-		/*	Récupére la liste des rôles existant	*/
+		/*	Rï¿½cupï¿½re la liste des rï¿½les existant	*/
 		$roles = $digi_wp_role->roles;
 
-		/*	Si on a sélectionné un role en particulier alors on returne uniquement ce role	*/
+		/*	Si on a sï¿½lectionnï¿½ un role en particulier alors on returne uniquement ce role	*/
 		if($selectedRole != '')
 		{
 			$roles = $roles[$selectedRole];
@@ -627,7 +627,7 @@ class digirisk_permission
 			$currentPageButton .= '<input type="button" class="button-primary" id="delete" name="delete" value="' . __('Supprimer', 'evarisk') . '" />';
 		}
 
-		$currentPageButton .= '<h2 class="alignright cancelButton" ><a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_RIGHT) . '" class="button add-new-h2" >' . __('Retour', 'evarisk') . '</a></h2>';
+		$currentPageButton .= '<a href="' . admin_url('users.php?page=' . DIGI_URL_SLUG_USER_RIGHT) . '" class="button add-new-h2" >' . __('Retour', 'evarisk') . '</a>';
 
 		return $currentPageButton;
 	}
@@ -676,7 +676,7 @@ class digirisk_permission
 							}
 							elseif($input_def['name'] == 'role_name')
 							{
-								
+
 							}
 						}
 
@@ -734,12 +734,12 @@ class digirisk_permission
 			$the_form_content_hidden .= '<input type="hidden" name="wp_eva__permission_role[id]" id="wp_eva__permission_role_id" value="' . $currentElementId . '" />';
 		}
 
-		/*	Récupération des droits affectés au role en cours d'édition	*/
+		/*	Rï¿½cupï¿½ration des droits affectï¿½s au role en cours d'ï¿½dition	*/
 		$digiPermissionForm = '';
 		if($currentElementId != '')
 		{
 			$roleInEdition = $digi_wp_role->get_role($currentElementId);
-			/*	Récupération du code permettant d'afficher la liste des droits disponible pour le logiciel digirisk	*/
+			/*	Rï¿½cupï¿½ration du code permettant d'afficher la liste des droits disponible pour le logiciel digirisk	*/
 			ob_start();
 			self::permission_management($roleInEdition);
 			$digiPermissionForm = ob_get_contents();
@@ -753,11 +753,11 @@ class digirisk_permission
 
 		$elementEditionOutput = '
 <form action="" method="post" id="' . self::dbTable . '_form" >
-	<div id="pageHeaderButtonContainer" class="pageHeaderButton" >' . self::getPageFormButton() . '</div>
-	<input type="hidden" name="' . self::dbTable . '_action" id="' . self::dbTable . '_action" value="' . $action . '" /> 
+	<input type="hidden" name="' . self::dbTable . '_action" id="' . self::dbTable . '_action" value="' . $action . '" />
 	' . $the_form_content_hidden . '
 	' . $the_form_general_content . '
 	' . $digiPermissionForm . '
+	<div id="pageHeaderButtonContainer" class="pageHeaderButton" >' . self::getPageFormButton() . '</div>
 </form>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -792,7 +792,7 @@ class digirisk_permission
 		}
 
 		$query = $wpdb->prepare(
-		"SELECT * FROM 
+		"SELECT * FROM
 		" . DIGI_DBT_PERMISSION_ROLE . "
 		WHERE status = 'valid' " . $moreQuery);
 
@@ -808,27 +808,27 @@ class digirisk_permission
 	*/
 	function user_permission_set()
 	{
-		/*	Vérification qu'il existe bien un utilisateur à mettre à jour avant d'effectuer une action	*/
+		/*	Vï¿½rification qu'il existe bien un utilisateur ï¿½ mettre ï¿½ jour avant d'effectuer une action	*/
 		if ( empty($_POST['user_id']) ) return;
-		/*	Récupération des informations concernant l'utilisateur en cours d'édition	*/
+		/*	Rï¿½cupï¿½ration des informations concernant l'utilisateur en cours d'ï¿½dition	*/
 		$user = new WP_User($_POST['user_id']);
 
-		/*	Récupération des permissions envoyées	*/
+		/*	Rï¿½cupï¿½ration des permissions envoyï¿½es	*/
 		$userCapsList = $_POST['digi_permission'];
 
-		/*	Récupération des permissions existantes	*/
+		/*	Rï¿½cupï¿½ration des permissions existantes	*/
 		$existingPermission = self::permission_list();
 		foreach($existingPermission as $permission => $permission_definition)
 		{
-			/*	Vérification de la permission actuelle au cas ou elle serait nulle	*/
+			/*	Vï¿½rification de la permission actuelle au cas ou elle serait nulle	*/
 			if($permission != '')
 			{
-				/*	Si l'utilisateur possède une permission mais que celle ci n'est plus cochée => Suppression de la permission	*/
+				/*	Si l'utilisateur possï¿½de une permission mais que celle ci n'est plus cochï¿½e => Suppression de la permission	*/
 				if( $user->has_cap($permission) && ((!array_key_exists($permission, $userCapsList)) || (isset($userCapsList[$permission]) && ($userCapsList[$permission] != 'yes'))) )
 				{
 					$user->remove_cap($permission);
 				}
-				/*	Si l'utilisateur ne possède pas la permission mais que celle ci est cochée  => Ajout de la permission	*/
+				/*	Si l'utilisateur ne possï¿½de pas la permission mais que celle ci est cochï¿½e  => Ajout de la permission	*/
 				elseif( !$user->has_cap($permission) && ($userCapsList[$permission] == 'yes'))
 				{
 					$user->add_cap($permission);
@@ -838,14 +838,14 @@ class digirisk_permission
 	}
 
 	/**
-	*	
+	*
 	*/
 	function userRightPostBox($arguments, $moreArgs = '')
 	{
 		$idElement = $arguments['idElement'];
 		$tableElement = $arguments['tableElement'];
 
-		/*	Script associé au boutton de sauvegarde	*/
+		/*	Script associï¿½ au boutton de sauvegarde	*/
 		$scriptEnregistrement = '
 <script type="text/javascript">
 	digirisk("#save_right_' . $tableElement . '").click(function(){
@@ -856,7 +856,7 @@ class digirisk_permission
 	});
 </script>';
 
-		/*	Ajout de la pop up d'édition pour les écrans plus petits	*/
+		/*	Ajout de la pop up d'ï¿½dition pour les ï¿½crans plus petits	*/
 		$utilisateursMetaBox = '
 <div id="userPermissionManager" class="hide" title="' . __('Droits des utilisateurs', 'evarisk') . '" >
 	<div id="rightDialogMessage" class="hide" >&nbsp;</div>
@@ -899,7 +899,7 @@ class digirisk_permission
 		close: function(){
 			digirisk("#userPermissionManagerForm").html("");
 			digirisk("#userRightContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post": "true", 
+				"post": "true",
 				"table": "' . DIGI_DBT_PERMISSION . '",
 				"act": "reload_user_right_box",
 				"tableElement": "' . $tableElement . '",
@@ -911,7 +911,7 @@ class digirisk_permission
 	digirisk("#openRightManagerDialog").click(function(){
 		digirisk("#userRightContainerBox").html("");
 		digirisk("#saveButtonBoxContainer").hide();
-		digirisk("#userPermissionManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#userPermissionManagerForm").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
 			"post":"true",
 			"table":"' . DIGI_DBT_PERMISSION . '",
@@ -939,13 +939,13 @@ class digirisk_permission
 		$outputTable = '';
 		$rightType = array('see', 'edit', 'delete', 'add_gpt', 'add_unit');
 
-		/*	Initialisation des variables recevants les listes des droits des utilisateurs déjà affectés	*/
+		/*	Initialisation des variables recevants les listes des droits des utilisateurs dï¿½jï¿½ affectï¿½s	*/
 		foreach($rightType as $rightName)
 		{
 			$userRightDetail[$rightName] = '';
 		}
 
-		/*	on récupère les utilisateurs affectés à l'élément en cours.	*/
+		/*	on rï¿½cupï¿½re les utilisateurs affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.	*/
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		if(is_array($utilisateursLies) && (count($utilisateursLies) > 0))
@@ -956,7 +956,7 @@ class digirisk_permission
 			}
 		}
 
-		{/*	Affichage des racourcis de cochage/décochage en masse	*/		
+		{/*	Affichage des racourcis de cochage/dï¿½cochage en masse	*/
 			$idTable = 'checkAllInterface' . $tableElement . $idElement;
 			unset($titres);
 			$titres[] = __('Affect&eacute; &agrave; l\'&eacute;l&eacute;ment', 'evarisk');
@@ -1274,7 +1274,7 @@ class digirisk_permission
 			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>'');
 			$valeurs[] = array('value'=>'');
-			
+
 			switch($tableElement)
 			{
 				case TABLE_GROUPEMENT;
@@ -1331,7 +1331,7 @@ class digirisk_permission
 			$userListTable = evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
 		}
 
-		/*	Ajout de la liste des droits déjà affectés aux utilisateurs et des nouveaux droits en cours d'affectation	*/
+		/*	Ajout de la liste des droits dï¿½jï¿½ affectï¿½s aux utilisateurs et des nouveaux droits en cours d'affectation	*/
 		foreach($rightType as $rightName)
 		{
 			$outputTable .= '
@@ -1485,12 +1485,12 @@ class digirisk_permission
 		{
 			if(!$digi_wp_role->is_role($cap) && (substr($cap, 0, 5) == 'digi_'))
 			{
-				/*	On explose la permission pour récupérer les différentes informations	*/
+				/*	On explose la permission pour rï¿½cupï¿½rer les diffï¿½rentes informations	*/
 				$permissionDetail = explode('_', $cap);
 				/*	Comptage du nombre de partie dans la permission	*/
 				$nbElementPermission = count($permissionDetail);
 
-				/*	On récupère le type d'élément auquel le droit est associé, le type de l'élément est toujours en avant dernière position	*/
+				/*	On rï¿½cupï¿½re le type d'ï¿½lï¿½ment auquel le droit est associï¿½, le type de l'ï¿½lï¿½ment est toujours en avant derniï¿½re position	*/
 				switch($permissionDetail[$nbElementPermission - 2]){
 					case 'unite':
 						$tableElement = TABLE_UNITE_TRAVAIL;
@@ -1503,7 +1503,7 @@ class digirisk_permission
 					break;
 				}
 
-				/*	Suppression des éléments inutiles dans le nom de la permission pour garder uniquement les parties permettant de générer les noms des éléments	*/
+				/*	Suppression des ï¿½lï¿½ments inutiles dans le nom de la permission pour garder uniquement les parties permettant de gï¿½nï¿½rer les noms des ï¿½lï¿½ments	*/
 				$permission = str_replace('digi_', '', $cap);
 				$permission = str_replace('_' . $permissionDetail[$nbElementPermission - 2] . '_', '', $permission);
 				$permission = str_replace($permissionDetail[$nbElementPermission - 1], '', $permission);
@@ -1609,7 +1609,7 @@ class digirisk_permission
 		$permissionList = array();
 		$permissionCap = array();
 
-		/*	Récupération des permissions créées pour rangement par module	*/
+		/*	Rï¿½cupï¿½ration des permissions crï¿½ï¿½es pour rangement par module	*/
 		$existingPermission = self::permission_list();
 		foreach($existingPermission as $permission => $permission_definition){
 			$permissionList[$permission_definition['permission_module']][$permission_definition['permission_sub_module']][] = $permission;

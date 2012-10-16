@@ -860,7 +860,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 .digirisk_form_input textarea, .digirisk_form_input select, .digirisk_form_input input[type=text], .digirisk_form_input input[type=file]{	width:60% !important;	}
 .digirisk_form_input input[type=radio], .digirisk_form_input input[type=checkbox]{	margin:0px 1px 0px 6px; vertical-align:middle;	}
 
-.pageHeaderButton{	float:right; padding:17px 18px 0px 0px;	}
+.pageHeaderButton{	float: left; padding:17px 18px 0px 0px;	}
 .cancelButton{	padding:8px 0px 0px !important;	}
 /* -- End form -- */
 

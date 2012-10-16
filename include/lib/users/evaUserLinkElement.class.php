@@ -27,7 +27,7 @@ class evaUserLinkElement
 		$titres = array( '', ucfirst(strtolower(__('Id.', 'evarisk'))), ucfirst(strtolower(__('Nom', 'evarisk'))), ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk'))), ucfirst(strtolower(__('Inscription', 'evarisk'))));
 		unset($lignesDeValeurs);
 
-		//on récupère les utilisateurs déjà affectés à l'élément en cours.
+		//on rï¿½cupï¿½re les utilisateurs dï¿½jï¿½ affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0))
@@ -71,7 +71,7 @@ class evaUserLinkElement
 		}
 
 		$classes = array('addUserButtonDTable','userIdentifierColumn','','','');
-		$script = 
+		$script =
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		digirisk("#' . $idTable . '").dataTable({
@@ -134,7 +134,7 @@ class evaUserLinkElement
 		$alreadyLinkedUserId = $alreadyLinkedUser = '';
 		$idBoutonEnregistrer = 'save_group' . $tableElement;
 
-		//on récupère les utilisateurs déjà affectés à l'élément en cours.
+		//on rï¿½cupï¿½re les utilisateurs dï¿½jï¿½ affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
@@ -211,8 +211,10 @@ class evaUserLinkElement
 
 				checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 
-				jQuery(this).val("");
-				jQuery(this).blur();
+				setTimeout(function(){
+					jQuery("#searchUser' . $tableElement . '").val("");
+					jQuery("#searchUser' . $tableElement . '").blur();
+				}, 2);
 			}
 		});
 	});
@@ -280,7 +282,7 @@ class evaUserLinkElement
 					digirisk("#' . $idBoutonEnregistrer . '").click(function(){
 						digirisk("#saveButtonLoading' . $tableElement . '").show();
 						digirisk("#saveButtonContainer' . $tableElement . '").hide();
-						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 							"table": "' . TABLE_LIAISON_USER_ELEMENT . '",
 							"act": "save",
 							"utilisateurs": digirisk("#affectedUserIdList' . $tableElement . '").val(),
@@ -322,7 +324,7 @@ class evaUserLinkElement
 				AND status = 'valid' "
 			, $idElement, $tableElement
 		);
-		
+
 		return $wpdb->get_results($query);
 	}
 
@@ -352,7 +354,7 @@ class evaUserLinkElement
 				AND status = 'valid' "
 			, $condition
 		);
-		
+
 		return $wpdb->get_results($query);
 	}
 
@@ -370,7 +372,7 @@ class evaUserLinkElement
 		global $current_user;
 		$userToTreat = "  ";
 
-		//on récupère les utilisateurs déjà affectés à l'élément en cours.
+		//on rï¿½cupï¿½re les utilisateurs dï¿½jï¿½ affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
@@ -390,11 +392,11 @@ class evaUserLinkElement
 		foreach($listeUtilisateursLies as $utilisateurs){
 			if(is_array($newUserList) && !in_array($utilisateurs->id_user, $newUserList)){
 				$query = $wpdb->prepare(
-"UPDATE " . TABLE_LIAISON_USER_ELEMENT . " 
-SET status = 'deleted', 
-	date_desAffectation = %s, 
-	id_desAttributeur = %d 
-WHERE id = %d", 
+"UPDATE " . TABLE_LIAISON_USER_ELEMENT . "
+SET status = 'deleted',
+	date_desAffectation = %s,
+	id_desAttributeur = %d
+WHERE id = %d",
 current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 				$done_element += $wpdb->query($query);
 				if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
@@ -423,7 +425,7 @@ current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 			$query = $wpdb->prepare(
 				"REPLACE INTO " . TABLE_LIAISON_USER_ELEMENT . "
 					(id, status ,date_affectation ,id_attributeur ,date_desAffectation ,id_desAttributeur ,id_user ,id_element ,table_element)
-				VALUES 
+				VALUES
 					" . $endOfQuery
 			);
 			if($wpdb->query($query)){
@@ -464,7 +466,7 @@ current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 		}
 
 		if($script != ''){
-			echo 
+			echo
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		' . $script . '

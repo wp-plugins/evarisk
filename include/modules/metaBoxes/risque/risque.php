@@ -5,7 +5,7 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php' );
-	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
+	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php');
 	require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
@@ -17,7 +17,7 @@
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
 
-        
+
 	function getRisquesPostBoxBody($element){
 		$tableElement = $element['tableElement'];
 		$idElement = $element['idElement'];
@@ -29,9 +29,9 @@
 						//	Show the risk list for the actual element
 						digirisk("#ongletVoirLesRisques").click(function(){
 							digirisk("#divVoirRisques").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true", 
-								"table":"' . TABLE_RISQUE . '", 
-								"act":"reloadVoirRisque", 
+								"post":"true",
+								"table":"' . TABLE_RISQUE . '",
+								"act":"reloadVoirRisque",
 								"tableElement":"' . $tableElement . '",
 								"idElement":' . $idElement . '
 							});
@@ -43,9 +43,9 @@
 						digirisk("#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '").click(function(){
 							digirisk("#divSuiviAction' . TABLE_RISQUE . '").html(digirisk("#loadingImg").html());
 							digirisk("#divSuiviAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true", 
-								"tableElement":"' . $tableElement . '", 
-								"idElement":"' . $idElement . '", 
+								"post":"true",
+								"tableElement":"' . $tableElement . '",
+								"idElement":"' . $idElement . '",
 								"nom":"suiviFicheAction"
 							});
 							tabChange("#divSuiviAction' . TABLE_RISQUE . '", "#ongletSuiviFicheActionCorrective' . TABLE_RISQUE . '");
@@ -76,11 +76,11 @@
 							digirisk("#addRisqNormalMode").addClass("selected");
 							digirisk("#formRisque").html(digirisk("#loadingImg").html());
 							digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true", 
-								"table":"' . TABLE_RISQUE . '", 
-								"act":"reloadRiskForm", 
-								"tableElement":"' . $tableElement . '", 
-								"idElement":"' . $idElement . '", 
+								"post":"true",
+								"table":"' . TABLE_RISQUE . '",
+								"act":"reloadRiskForm",
+								"tableElement":"' . $tableElement . '",
+								"idElement":"' . $idElement . '",
 								"idRisque": ""
 							});
 							tabChange("#formRisque", "#ongletAjouterRisque");
@@ -104,11 +104,11 @@
 							digirisk("#addRisqAdvancedMode").addClass("selected");
 							digirisk("#formRisque").html(digirisk("#loadingImg").html());
 							digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true", 
-								"table":"' . TABLE_RISQUE . '", 
-								"act":"loadAdvancedRiskForm", 
-								"tableElement":"' . $tableElement . '", 
-								"idElement":"' . $idElement . '", 
+								"post":"true",
+								"table":"' . TABLE_RISQUE . '",
+								"act":"loadAdvancedRiskForm",
+								"tableElement":"' . $tableElement . '",
+								"idElement":"' . $idElement . '",
 								"idRisque": ""
 							});
 							tabChange("#formRisque", "#ongletAjouterRisque");
@@ -126,10 +126,10 @@
 						digirisk("#ongletMassUpdate' . TABLE_RISQUE . '").click(function(){
 							digirisk("#risqMassUpdater").html(digirisk("#loadingImg").html());
 							digirisk("#risqMassUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true", 
-								"table":"' . TABLE_RISQUE . '", 
-								"act":"loadRisqMassUpdater", 
-								"tableElement":"' . $tableElement . '", 
+								"post":"true",
+								"table":"' . TABLE_RISQUE . '",
+								"act":"loadRisqMassUpdater",
+								"tableElement":"' . $tableElement . '",
 								"idElement":"' . $idElement . '"
 							});
 							digirisk("#risqMassUpdater").dialog("open");
@@ -137,7 +137,7 @@
 					});
 				</script>';
 
-			
+
 			$liAjoutRisque = '
 					<li id="ongletAjouterRisque" class="tabs" style="display:inline"><label tabindex="2">' . ucfirst(strtolower(sprintf(__('Ajouter %s', 'evarisk'), __('un risque', 'evarisk')))) . '</label></li>';
 			$liEditionRisque = '
@@ -153,7 +153,7 @@
 	<div class="alignleft" id="addRisqAdvancedMode" >' . ucfirst(strtolower(__('Mode avanc&eacute; (par photo)', 'evarisk'))) . '</div>
 </div>';
 			}
-			$divEditionRisque .= 
+			$divEditionRisque .=
 '<div class="clear" >&nbsp;</div>
 <div class="clear" id="formRisque" >&nbsp;</div>
 </div>';
@@ -237,7 +237,7 @@
 		{
 			foreach($temp as $risque)
 			{
-				$risques['"' . $risque->id . "'"][] = $risque; 
+				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
 		{//Cr?ation de la table
@@ -254,7 +254,7 @@
 			$classes[] = 'columnNomDanger';
 			$classes[] = 'columnCommentaireRisque';
 			$classes[] = 'columnAction';
-			
+
 			$scriptRisque = '';
 			if(isset($risques) && ($risques != null)){
 				foreach($risques as $risque){
@@ -286,12 +286,12 @@
 	});
 </script>';
 					$idLignes[] = $idligne;
-					
+
 					$idMethode = $risque[0]->id_methode;
 					$score = Risque::getScoreRisque($risque);
 					$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 					$niveauSeuil = Risque::getSeuil($quotation);
-					
+
 					unset($ligneDeValeurs);
 					$ligneDeValeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
 					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
@@ -313,7 +313,7 @@
 					if(current_user_can('digi_view_risk_histo')){
 						$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-histo_risk" src="' . DIGI_PICTO_HISTO_RISK . '" alt="' . _c('&Eacute;volution du risque', 'evarisk') . '" title="' . __('&Eacute;volution du risque', 'evarisk') . '" class="risk-histo" />';
 					}
-					
+
 					switch($tableElement){
 						case TABLE_GROUPEMENT:
 							if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement)){
@@ -379,7 +379,7 @@
 			var nameDanger = digirisk(this).closest("tr").children("td").eq(1).html();
 			var commentaireRisque = digirisk(this).closest("tr").children("td").eq(2).html().replace("<br>", "\r\n");
 			if(confirm("' . __('Etes vous sur de vouloir supprimer cet enregistrement?', 'evarisk') . '\r\n" + nameDanger + "\r\n\t" + commentaireRisque)){
-				digirisk("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#divAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 				{
 					"post":"true",
 					"table":"' . TABLE_RISQUE . '",
@@ -395,7 +395,7 @@
 			hideExtraTab();
 			digirisk("#ongletFicheActionCorrective' . TABLE_RISQUE . '").css("display","inline");
 			digirisk("#divFicheAction' . TABLE_RISQUE . '").html(digirisk("#loadingImg").html());
-			digirisk("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#divFicheAction' . TABLE_RISQUE . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"tableElement":"' . $tableElement . '",
@@ -429,9 +429,9 @@
 		digirisk("#LeftRiskNb' . $tableElement . $idElement .'").html("' . $nombreRisqueUniteTravail . '");
 
 		digirisk("#' . $idTable . '").dataTable({
-			"sPaginationType": "full_numbers", 
+			"sPaginationType": "full_numbers",
 			"bAutoWidth": false,
-			"bInfo": false,								
+			"bInfo": false,
 			"aoColumns": [
 				{ "bSortable": false},
 				{ "bSortable": true, "sType": "numeric"},
@@ -460,9 +460,9 @@
 			}
 
 			$voirRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
-			
+
 			return $voirRisque;
-		}	
+		}
 	}
 
 	/*
@@ -493,9 +493,9 @@
 		{//Choix du danger
 			$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, $risque, $formId);
 			$script .= $ListDanger['script'];
-		}		
+		}
 
-		$formRisque = 
+		$formRisque =
 EvaDisplayInput::ouvrirForm('POST', $formId . 'formRisque', $formId . 'formRisque') .
 EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', null, 'idRisque', false, false);
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){
@@ -524,7 +524,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				<script type="text/javascript" >
 					digirisk(document).ready(function(){
 						jQuery(".asked_action_control_details").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-							"post": "true", 
+							"post": "true",
 							"table": "' . TABLE_TACHE . '",
 							"id": "' . TABLE_TACHE . '_t_elt_' . $task_to_associate . '",
 							"act": "load_details_simple"
@@ -544,10 +544,11 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 		{/*	Get method list	*/
 			$methodes = MethodeEvaluation::getMethods('Status="Valid"');
-			if($risque[0] != null)// Si l'on édite un risque, on sélectionne la bonne méthode
+			if($risque[0] != null)// Si l'on ï¿½dite un risque, on sï¿½lectionne la bonne mï¿½thode
 				$idSelection = $risque[0]->id_methode;
-			else// Sinon on sélectionne la première méthode
+			else {// Sinon on sï¿½lectionne la premiï¿½re mï¿½thode
 				$idSelection = $methodes[0]->id;
+			}
 			$output_method = array();
 
 			$methode_output_value = $methode_output = array();
@@ -557,11 +558,14 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 					$methode_output_value[] = $methode->id;
 					$methode_output[] = ELEMENT_IDENTIFIER_ME . $methode->id . ' - ' .  $methode->nom;
 					$output_method[]=$methode;
+					if ( ($methode->default_methode == 'yes') && empty($risque[0]) ) {
+						$idSelection = $methode->id;
+					}
 				}
 			}
 		}
 
-		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Choix de la méthode
+		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Choix de la mï¿½thode
 			$script .= '
 			digirisk("#' . $formId . 'methodeFormRisque").change(function(){
 				digirisk("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
@@ -580,7 +584,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		}
 
 		{//Evaluation des variables
-			$formRisque .= 
+			$formRisque .=
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "tableElement":"' . $tableElement . '",  "idElement":"' . $idElement . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $idRisque . '", "formId": "' . $formId . '"});
@@ -616,7 +620,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 					$formRisque .= '<div class="alignleft pointer" id="' . $idElement . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $idElement . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
 					$script .= '
 		digirisk("#' . $idElement . 'deletePictureAssociation").click(function(){
-			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_RISQUE . '",
@@ -637,7 +641,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		{//Bouton enregistrer
 			$allVariables = MethodeEvaluation::getAllVariables();
 			$idBouttonEnregistrer = 'enregistrerFormRisque' . $formId;
-			$scriptEnregistrement = 
+			$scriptEnregistrement =
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		//	Change the state of the danger container
@@ -664,19 +668,19 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			}';
 			$scriptEnregistrement .= '
 			digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post":"true", 
-				"table":"' . TABLE_RISQUE . '", 
-				"act":"save", 
-				"tableElement":"' . $tableElement . '", 
-				"idElement":"' . $idElement . '", 
+				"post":"true",
+				"table":"' . TABLE_RISQUE . '",
+				"act":"save",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '",
 				"idDanger":digirisk("#' . $formId . 'dangerFormRisque").val(),
 				"idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(),
 				"histo":historisation,
-				"variables":variables, 
-				"description_risque":digirisk("#' . $formId . 'descriptionFormRisque").val(), 
+				"variables":variables,
+				"description_risque":digirisk("#' . $formId . 'descriptionFormRisque").val(),
 				"preconisationRisque":digirisk("#' . $formId . 'preconisationRisque").val(),
 				"print_action_description_in_duer":digirisk("#' . $formId . 'print_action_description_duer").val(),
-				"idRisque":digirisk("#' . $formId . 'idRisque").val(), 
+				"idRisque":digirisk("#' . $formId . 'idRisque").val(),
 				"pictureId":"' . $formId . '"';
 			if(($sub_action == 'control_asked_action') || ($task_to_associate > 0)){
 				$scriptEnregistrement .= ',
@@ -693,10 +697,10 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			if($idRisque != ''){
 				$scriptEnregistrement .= '
 		digirisk("#' . $idElement . 'divPreconisationExistante").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-			"post":"true", 
-			"table":"' . TABLE_RISQUE . '", 
-			"tableElement":"' . $tableElement . '", 
-			"idElement":"' . $idElement . '", 
+			"post":"true",
+			"table":"' . TABLE_RISQUE . '",
+			"tableElement":"' . $tableElement . '",
+			"idElement":"' . $idElement . '",
 			"act":"loadAssociatedTask",
 			"idRisque":digirisk("#' . $formId . 'idRisque").val(),
 			"priority":"yes"
@@ -709,7 +713,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		}
 
 		$formRisque .= '
-'	. 
+'	.
 EvaDisplayInput::fermerForm('formRisque') . '
 <script type="text/javascript">
 	digirisk(document).ready(function(){
@@ -717,13 +721,13 @@ EvaDisplayInput::fermerForm('formRisque') . '
 		digirisk("#risk_priority_task").treeTable();
 	});
 </script>';
-		
+
 		return $formRisque;
 	}
 
 	/**
 	*	Create an advanced form to add a risq to an element
-	*	
+	*
 	*	@param mixed $tableElement The element type we want to add risq to
 	*	@param integer $idElement The element identifier we want to add risq to
 	*
@@ -794,7 +798,7 @@ EvaDisplayInput::fermerForm('formRisque') . '
 			},
 			drop: function(event, ui){
 				digirisk(ui.draggable).remove();
-				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 				{
 					"post":"true",
 					"table":"' . TABLE_RISQUE . '",
@@ -838,7 +842,7 @@ EvaDisplayInput::fermerForm('formRisque') . '
 			digirisk("#divDangerContainerSwitchPic" + idToLoad).attr("src", "' . PICTO_COLLAPSE . '");
 			digirisk("#addRiskForPictureText" + idToLoad).html("' . __('Annuler l\'ajout du risque', 'evarisk') . '");
 			digirisk("#" + idToLoad + "content").html(digirisk("#loadingImg").html());
-			digirisk("#" + idToLoad + "content").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			digirisk("#" + idToLoad + "content").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post":"true",
 				"table":"' . TABLE_RISQUE . '",

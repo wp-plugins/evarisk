@@ -1,7 +1,7 @@
 <?php
 /**
 * Product management
-* 
+*
 *	The product are defined into the wpshop plugin. Methods in this file will be used to access to the product definition, to display product and to store some informations of the product into digirisk database
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.2.9
@@ -64,7 +64,7 @@ class digirisk_product
 		if(is_array($linkedElement ) && (count($linkedElement) > 0)){
 			foreach($linkedElement as $element){
 				$linkedElementList[$element->id_product] = $element;
-				$alreadyLinked .= $element->id_product . ', ';			
+				$alreadyLinked .= $element->id_product . ', ';
 				$product = get_post($element->id_product);
 				$product_meta = get_post_meta($element->id_product, '_wpshop_product_metadata', true);
 				$product_meta['product_reference'] = ($product_meta['product_reference'] != '') ? $product_meta['product_reference'] : 'NC';
@@ -150,8 +150,10 @@ if(current_user_can('wpshop_edit_product')){
 
 				checkElementListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 
-				jQuery(this).val("");
-				jQuery(this).blur();
+				setTimeout(function(){
+					jQuery("#affectedElement' . $tableElement . '").val("");
+					jQuery("#affectedElement' . $tableElement . '").blur();
+				}, 2);
 			}
 		});
 
@@ -160,7 +162,7 @@ if(current_user_can('wpshop_edit_product')){
 		digirisk("#digi_wpshop_product_category_selector").change(function(){
 			digirisk("#productList' . $tableElement . '").html(digirisk("#loadingImg").html());
 			digirisk("#productList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true", 
+				"post":"true",
 				"table":"' . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . '",
 				"act":"reloadCategoryChoice",
 				"tableElement":"' . $tableElement . '",
@@ -185,7 +187,7 @@ if(current_user_can('wpshop_edit_product')){
 				break;
 			}
 		}
-		
+
 		if($showButton){//Bouton Enregistrer
 			$scriptEnregistrement = '
 <script type="text/javascript">
@@ -195,7 +197,7 @@ if(current_user_can('wpshop_edit_product')){
 			digirisk("#saveButtonLoading' . $tableElement . '").show();
 			digirisk("#saveButtonContainer' . $tableElement . '").hide();
 			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post": "true", 
+				"post": "true",
 				"table": "' . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . '",
 				"act": "save",
 				"element": digirisk("#affectedList' . $tableElement . '").val(),
@@ -294,7 +296,7 @@ if(current_user_can('wpshop_edit_product')){
 		}
 
 		/*	Add the js option for the table	*/
-		$script = 
+		$script =
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		digirisk("#' . $idTable . '").dataTable({
@@ -363,11 +365,11 @@ if(current_user_can('wpshop_edit_product')){
 		foreach($linkedElementCheckList as $elements){
 			if(is_array($newElementList) && !in_array($elements->id_product, $newElementList)){
 				$query = $wpdb->prepare(
-					"UPDATE " . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . " 
-					SET status = 'deleted', 
-						date_desAffectation = %s, 
-						id_desAttributeur = %d 
-					WHERE id = %d", 
+					"UPDATE " . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . "
+					SET status = 'deleted',
+						date_desAffectation = %s,
+						id_desAttributeur = %d
+					WHERE id = %d",
 					current_time('mysql', 0), $current_user->ID, $elements->id
 				);
 				$wpdb->query($query);
@@ -396,7 +398,7 @@ if(current_user_can('wpshop_edit_product')){
 			$query = $wpdb->prepare(
 				"REPLACE INTO " . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . "
 					(id, status ,date_affectation ,id_attributeur ,date_desAffectation ,id_desAttributeur ,id_product ,id_element ,table_element)
-				VALUES 
+				VALUES
 					" . $endOfQuery
 			);
 			if($wpdb->query($query))
@@ -410,7 +412,7 @@ if(current_user_can('wpshop_edit_product')){
 		}
 
 		if($outputMessage){
-			echo 
+			echo
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		actionMessageShow("#messageInfo_' . $tableElement . '_' . $idElement . $messageInfoContainerIdExt . '", "' . $message . '");
@@ -436,19 +438,19 @@ if(current_user_can('wpshop_edit_product')){
 	{
 		global $wpdb;
 		$bindedElement = array();
-		
+
 		$idElement = mysql_real_escape_string($idElement);
 		$tableElement = mysql_real_escape_string($tableElement);
-		
+
 		$query = $wpdb->prepare(
-		"SELECT ELT_LINK.* 
+		"SELECT ELT_LINK.*
 		FROM " . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . " AS ELT_LINK
-		WHERE ELT_LINK.table_element = '%s' 
-			AND ELT_LINK.id_element = %d 
-			AND ELT_LINK.status = 'valid' 
+		WHERE ELT_LINK.table_element = '%s'
+			AND ELT_LINK.id_element = %d
+			AND ELT_LINK.status = 'valid'
 		", $tableElement, $idElement);
 		$bindedElement = $wpdb->get_results($query);
-		
+
 		return $bindedElement;
 	}
 
@@ -463,7 +465,7 @@ if(current_user_can('wpshop_edit_product')){
 
 		/*	Get information about existing product in order to check if the product has already been added into database and the last update date of the product to determine if we have to insert it or not	*/
 		$query = $wpdb->prepare(
-			"SELECT id, product_last_update_date 
+			"SELECT id, product_last_update_date
 			FROM " . DIGI_DBT_PRODUIT . "
 			WHERE product_id = %d
 			ORDER BY id DESC
@@ -533,7 +535,7 @@ if(current_user_can('wpshop_edit_product')){
 			foreach ($attachments as $attachment){
 				/*	Get information about existing product in order to check if the product has already been added into database and the last update date of the product to determine if we have to insert it or not	*/
 				$query = $wpdb->prepare(
-					"SELECT id, product_attachment_last_update_date 
+					"SELECT id, product_attachment_last_update_date
 					FROM " . DIGI_DBT_PRODUIT_ATTACHEMENT . "
 					WHERE product_attachment_id = %d
 					ORDER BY id DESC

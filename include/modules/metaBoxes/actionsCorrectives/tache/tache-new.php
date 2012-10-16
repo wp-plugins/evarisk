@@ -8,7 +8,7 @@ $postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
 $postBoxId = 'postBoxGeneralInformation';
 $postBoxCallbackFunction = 'getTaskGeneralInformationPostBoxBody';
 add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_TACHE, 'rightSide', 'default');
-require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' ); 
+require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/tache/evaTask.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 
@@ -60,13 +60,13 @@ function getTaskGeneralInformationPostBoxBody($arguments){
     $saveOrUpdate = 'save';
 	}
 
-	/*	Recupere la tache parent pour vérifier si on peut cocher les cases d'export dans le document unique	*/
+	/*	Recupere la tache parent pour vï¿½rifier si on peut cocher les cases d'export dans le document unique	*/
 	$parent_task = new EvaTask($idPere);
 	$parent_task->load();
 
   $idForm = 'informationGeneralesTache';
 	$tache_new = '<form method="post" id="' . $idForm . '" name="' . $idForm . '" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >';
-	{//Champs cachés
+	{//Champs cachï¿½s
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'actTache', $saveOrUpdate, '', null, 'act', false, false);
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'affichageTache', $arguments['affichage'], '', null, 'affichage', false, false);
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'tableTache', TABLE_TACHE, '', null, 'table', false, false);
@@ -76,7 +76,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'idProvenanceTache', $idProvenance, '', null, 'idProvenance', false, false);
 		$tache_new = $tache_new . EvaDisplayInput::afficherInput('hidden', 'tableProvenanceTache', $tableProvenance, '', null, 'tableProvenance', false, false);
 	}
-	{//Nom de la tâche
+	{//Nom de la tï¿½che
 		$contenuAideTitre = "";
 		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de la t&acirc;che",'evarisk'))) . ' : ';
 		$exportable_option = '';
@@ -162,8 +162,10 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
 				jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
 
-				jQuery(this).val("");
-				jQuery(this).blur();
+				setTimeout(function(){
+					jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val("");
+					jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur();
+				}, 2);
 			}
 		});
 
@@ -227,7 +229,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 		$idResponsableIsMandatory = digirisk_options::getOptionValue('responsable_Tache_Obligatoire');
 
 		$scriptEnregistrementSave = '<script type="text/javascript">
-			digirisk(document).ready(function() {				
+			digirisk(document).ready(function() {
 				digirisk("#' . $idBouttonEnregistrer . '").click(function() {
 					if(digirisk("#' . $idTitre . '").is(".form-input-tip")){
 						document.getElementById("' . $idTitre . '").value="";
@@ -250,7 +252,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 						if(digirisk("#nom_exportable_plan_action").is(":checked")){	var nom_exportable = "yes"; }
 						var description_exportable = "no";
 						if(digirisk("#description_exportable_plan_action").is(":checked")){	var description_exportable = "yes"; }
-            digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+            digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
               "table": "' . TABLE_TACHE . '",
               "act": digirisk("#actTache").val(),
               "id": digirisk("#idTache").val(),
@@ -270,7 +272,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 				});
 			});
 			</script>';
-	}	
+	}
 	{//Bouton Solder
 		$idBoutton = 'taskDone';
 
@@ -292,7 +294,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 								}
 								digirisk("#taskDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
 								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-									"post": "true", 
+									"post": "true",
 									"table": "' . TABLE_TACHE . '",
 									"act": "taskDone",
 									"id": digirisk("#idTache").val(),
@@ -343,7 +345,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 						digirisk("#updateTaskStatus").dialog("open");
 						digirisk("#updateTaskStatus").html(digirisk("#loadingImg").html());
 						digirisk("#updateTaskStatus").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-							"post": "true", 
+							"post": "true",
 							"table": "' . TABLE_TACHE . '",
 							"act": "closeTask",
 							"id": digirisk("#idTache").val()
@@ -356,41 +358,41 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 	{//Boutons
 		if(($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui'))
 		{
-			$tache_new .= 
+			$tache_new .=
 				'<div class="alignright" id="TaskSaveButton" >';
 
 			if(($saveOrUpdate != 'save') && (($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted')))
 			{
 			$tache_new .= '
-					<div id="updateTaskStatus" class="hide" title="' . __('Mise &agrave; jour du statut de l\'action corrective', 'evarisk') . '" >&nbsp;</div>' . 
+					<div id="updateTaskStatus" class="hide" title="' . __('Mise &agrave; jour du statut de l\'action corrective', 'evarisk') . '" >&nbsp;</div>' .
 					EvaDisplayInput::afficherInput('button', $idBoutton, __('Solder la tache', 'evarisk'), null, '', $idBoutton, false, true, '', 'button-primary', '', '', $scriptEnregistrementDone, 'left');
 			}
 			elseif($saveOrUpdate == 'update')
 			{
-			$tache_new .= 
+			$tache_new .=
 					'<div style="float:left;" id="TaskSaveButton" >
 						<br/>
-						<div class="alignright button-primary" >' . 
-							__('Cette t&acirc;che est sold&eacute;e', 'evarisk') . 
+						<div class="alignright button-primary" >' .
+							__('Cette t&acirc;che est sold&eacute;e', 'evarisk') .
 						'</div>
 					</div>';
 			}
 
-			$tache_new .= 
-					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') . 
+			$tache_new .=
+					EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary', '', '', $scriptEnregistrementSave, 'left') .
 				'</div>
 				<script type="text/javascript" >digirisk("#TaskSaveButton").children("br").remove();</script>';
 		}
 		else
 		{
-			$tache_new .= 
-				'<div class="alignright button-primary" id="TaskSaveButton" >' . 
-					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . 
+			$tache_new .=
+				'<div class="alignright button-primary" id="TaskSaveButton" >' .
+					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') .
 				'</div>';
 		}
 
 		if(digirisk_options::getOptionValue('export_tasks') == 'oui'){
-			$tache_new .= 
+			$tache_new .=
 				'<br/>
 				<div>
 					<div class="alignright button-primary" id="taskExportButton" >
@@ -402,7 +404,7 @@ function getTaskGeneralInformationPostBoxBody($arguments){
 					digirisk(document).ready(function(){
 						digirisk("#taskExportButton").click(function(){
 							digirisk("#taskExportResult").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post": "true", 
+								"post": "true",
 								"table": "' . TABLE_TACHE . '",
 								"act": "exportTask",
 								"id": digirisk("#idTache").val()

@@ -10,11 +10,11 @@
 class evaUser
 {
 	/**
-	*	Set the current attribute group regarding the 
+	*	Set the current attribute group regarding the
 	*/
 	protected $_currentAttributeGroup = '';
 	/**
-	*	Set the current attribute group regarding the 
+	*	Set the current attribute group regarding the
 	*/
 	protected $_userToUpdate = '';
 
@@ -27,7 +27,7 @@ class evaUser
 	{
 		global $wpdb;
 
-		$query = 
+		$query =
 			"SELECT USERS.ID
 			FROM " . $wpdb->users . " AS USERS";
 		$userList = $wpdb->get_results($query);
@@ -190,7 +190,7 @@ $user_additionnal_field .= '
 		</td>
 	</tr>';
 	if($output_type == 'normal'){
-		$user_additionnal_field .= 
+		$user_additionnal_field .=
 	'<tr>
 		<th>
 			&nbsp;
@@ -280,7 +280,7 @@ $user_additionnal_field .= '
 	$user_extra_fields = (!empty($options['digi_users_digirisk_extra_field'])?unserialize($options['digi_users_digirisk_extra_field']):array());
 	if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
 		foreach($user_extra_fields as $field){
-			$user_additionnal_field .= 
+			$user_additionnal_field .=
 	'<tr>
 		<th>
 			<label for="user_' . $field . '" ' . $required_class[$field] . ' >' . __($field, 'evarisk') . '</label>
@@ -291,8 +291,8 @@ $user_additionnal_field .= '
 	</tr>';
 		}
 	}
-	
-	$user_additionnal_field .= 
+
+	$user_additionnal_field .=
 '</table>';
 
 		echo $user_additionnal_field;
@@ -309,12 +309,12 @@ $user_additionnal_field .= '
 	function getBindUsers($elementId, $elementTable)
 	{
 		global $wpdb;
-		
+
 		$elementId = mysql_real_escape_string($elementId);
 		$elementTable = mysql_real_escape_string($elementTable);
-		
+
 		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_ELEMENT . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
-		
+
 		return $wpdb->get_results($queryCleanGroupBind);
 	}
 
@@ -338,7 +338,7 @@ $user_additionnal_field .= '
 		unset($lignesDeValeurs);
 		$default_sort_column = 4;
 
-		//on récupère les utilisateurs déjà affectés à l'élément en cours.
+		//on rï¿½cupï¿½re les utilisateurs dï¿½jï¿½ affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
 		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
@@ -361,7 +361,7 @@ $user_additionnal_field .= '
 				$valeurs[] = array('value'=>$utilisateur['user_lastname']);
 				$valeurs[] = array('value'=>$utilisateur['user_firstname']);
 				$valeurs[] = array('value'=>mysql2date('d M Y', $utilisateur['user_registered'], true));
-				
+
 				if(is_int(strpos($tableElement, DIGI_DBT_ACCIDENT))){
 					$user_meta = get_user_meta($utilisateur['user_id'], 'digirisk_information', false);
 					$user_is_valid_for_accident = __('Non', 'evarisk');
@@ -488,7 +488,7 @@ $user_additionnal_field .= '
 			}
 			break;
 		}
-		$script = 
+		$script =
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		jQuery("#' . $idTable . '").dataTable({
@@ -523,18 +523,18 @@ $user_additionnal_field .= '
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT 
+			"SELECT
 				(
 					SELECT count(USERS.ID)
 					FROM " . $wpdb->prefix . "users AS USERS
 					WHERE USERS.ID != 1
-				) AS TOTAL_USER, 
+				) AS TOTAL_USER,
 				(
 					SELECT COUNT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
 					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
 					WHERE ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						OR ((USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (USER_LINK_EVALUATION.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group 
-							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP 
+						OR ((USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (USER_LINK_EVALUATION.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group
+							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
 							WHERE USER_LINK_GROUP.status = 'valid')))
 						AND USER_LINK_EVALUATION.status = 'valid'
 				) AS EVALUATED_USER
@@ -642,7 +642,7 @@ $user_additionnal_field .= '
 
 							/*	Start creating the user	*/
 							$newUserID = 0;
-							$newUserID = 
+							$newUserID =
 								wp_insert_user(
 									array(
 											"user_login" => $userInfosComponent[0],
@@ -669,7 +669,7 @@ $user_additionnal_field .= '
 								$user_import['user_profession'] = $userInfosComponent[16];
 								$user_import['user_professional_qualification'] = $userInfosComponent[17];
 								$user_import['user_insurance_ste'] = $userInfosComponent[18];
-								
+
 								global $userWorkAccidentMandatoryFields;
 								$user_is_valid_for_accident = 'yes';
 								foreach($userWorkAccidentMandatoryFields as $field_identifier){
@@ -685,7 +685,7 @@ $user_additionnal_field .= '
 								$createdUserNumber++;
 
 								/*	Affect a role to the new user regarding on the import file or lines and if empty the main roe field	*/
-								if ($userInfosComponent[5] == '') 
+								if ($userInfosComponent[5] == '')
 									$userInfosComponent[5] = $userRoles;
 
 								$userRole = new WP_User($newUserID);
@@ -717,7 +717,7 @@ $user_additionnal_field .= '
 		<div style="width:80%;margin:18px auto;padding:6px;border:1px dashed;"  ><?php echo $importResult; ?></div>
 <?php
 		}
-?>		
+?>
 <div id="icon-users" class="icon32"><br /></div>
 <h2><?php _e('Import d\'utilisateurs', 'evarisk'); ?></h2>
 <br/>
@@ -928,7 +928,7 @@ $user_additionnal_field .= '
 						</td>
 					</tr>
 				</table>
-			
+
 			</td>
 			<td class="digi_complmentary_fields_container" >
 				<div id="complementary_fieds" class="hide" ><?php self::user_additionnal_field(null, 'import'); ?></div>
@@ -1029,7 +1029,7 @@ $user_additionnal_field .= '
 		{/*	Get element associated 	*/
 			$user_tree_affecation = $user_tree_eval_affecation = $user_ac_affecation = '';
 			$gpt_list = $ut_list = $gpt_eval_list = $ut_eval_list = $t_list = $st_list = array();
-			$user_affectation = evaUserLinkElement::get_user_affected_element($user_to_edit);		
+			$user_affectation = evaUserLinkElement::get_user_affected_element($user_to_edit);
 			foreach($user_affectation as $affectation_information){
 				unset($sub_content);$sub_content = '';
 
@@ -1345,9 +1345,10 @@ $user_additionnal_field .= '
 				jQuery("#user_profil_edition_tabs").html(jQuery("#loadingImg").html());
 				window.top.location.href = "' . admin_url('users.php?page=digirisk_users_profil&user_to_edit=') . '" + ui.item.value;
 
-				jQuery(this).val(digi_html_accent_for_js(ui.item.label));
-
-				jQuery(this).blur();
+				setTimeout(function(){
+					jQuery("#digi_user_list").val("");
+					jQuery("#digi_user_list").blur();
+				}, 2);
 			}
 		});
 		jQuery("#digi_user_list").blur(function(){

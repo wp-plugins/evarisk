@@ -45,7 +45,7 @@ class arborescence_special
 		$outputContent = '';
 
 		if( is_array($arborescenceALire) )
-		{			
+		{
 			foreach($arborescenceALire as $key => $content)
 			{
 				if( isset($content['nom']) )
@@ -123,7 +123,7 @@ class arborescence_special
 
 						if(isset($contentInformations['content']) && is_array($contentInformations['content']))
 						{
-							$subespacement = $espacement . '&nbsp;&nbsp;'; 
+							$subespacement = $espacement . '&nbsp;&nbsp;';
 							$outputContent .= arborescence_special::lectureArborescenceRisque($contentInformations['content'], $selectedTable, $selectedTableElement, $subespacement);
 						}
 					}
@@ -131,7 +131,7 @@ class arborescence_special
 
 				if(isset($content['content']) && is_array($content['content']))
 				{
-					$subespacement = $espacement . '&nbsp;&nbsp;'; 
+					$subespacement = $espacement . '&nbsp;&nbsp;';
 					$outputContent .= arborescence_special::lectureArborescenceRisque($content['content'], $selectedTable, $selectedTableElement, $subespacement);
 				}
 			}
@@ -167,7 +167,7 @@ class arborescence_special
 				$picto = ULTRASMALL_GROUP_PICTO;
 			break;
 		}
-		$hierarchieLine = 									
+		$hierarchieLine =
 			'<tr>
 				<td style="width:2%;" ><input ' . $selected . ' type="radio" id="r' . $elementId . '" name="selectAffectaion" value="' . $elementId . '" /></td>
 				<td><label id="l' . $elementId . '" for="r' . $elementId . '" >' . $espacement . '<img style="height:15px;" alt="' . $tableElement . '" src="' . $picto . '" />' . $lineContent . '</label></td>
@@ -292,13 +292,13 @@ WHERE R.id = %d", $id_element);
 
 		return $completeTree;
 	}
-	
+
 	function lectureArborescenceAC($arborescenceALire, $selectedTable, $selectedTableElement, $espacement = '')
 	{
 		$outputContent = '';
 
 		if( is_array($arborescenceALire) )
-		{			
+		{
 			foreach($arborescenceALire as $key => $content)
 			{
 				if( isset($content['nom']) )
@@ -330,7 +330,7 @@ WHERE R.id = %d", $id_element);
 
 						if(isset($contentInformations['content']) && is_array($contentInformations['content']))
 						{
-							$subespacement = $espacement . '&nbsp;&nbsp;'; 
+							$subespacement = $espacement . '&nbsp;&nbsp;';
 							$outputContent .= arborescence_special::lectureArborescenceAC($contentInformations['content'], $selectedTable, $selectedTableElement, $subespacement);
 						}
 					}
@@ -338,7 +338,7 @@ WHERE R.id = %d", $id_element);
 
 				if(isset($content['content']) && is_array($content['content']))
 				{
-					$subespacement = $espacement . '&nbsp;&nbsp;'; 
+					$subespacement = $espacement . '&nbsp;&nbsp;';
 					$outputContent .= arborescence_special::lectureArborescenceAC($content['content'], $selectedTable, $selectedTableElement, $subespacement);
 				}
 			}
@@ -365,7 +365,7 @@ WHERE R.id = %d", $id_element);
 					{
 						$existingPreconisation .= '(' . $task->description . ')';
 					}
-					$existingPreconisation .= " 
+					$existingPreconisation .= "
 ";
 				}
 				$activities = $task->getActivitiesDependOn();
@@ -379,7 +379,7 @@ WHERE R.id = %d", $id_element);
 						{
 							$existingPreconisation .= '(' . $activity->description . ')';
 						}
-						$existingPreconisation .= " 
+						$existingPreconisation .= "
 ";
 					}
 				}
@@ -393,7 +393,7 @@ WHERE R.id = %d", $id_element);
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT id_tache 
+			"SELECT id_tache
 			FROM " . TABLE_LIAISON_TACHE_ELEMENT . "
 			WHERE id_element = %d
 				AND table_element = %s",
@@ -441,8 +441,10 @@ WHERE R.id = %d", $id_element);
 					"action": "load_partial",
 					"selected_element": ui.item.id
 				});
-				jQuery(this).val("");
-				jQuery(this).blur();
+				setTimeout(function(){
+					jQuery("#search_element").val("");
+					jQuery("#search_element").blur();
+				}, 2);
 			}
 		});
 

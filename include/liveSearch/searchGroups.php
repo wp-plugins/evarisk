@@ -25,7 +25,7 @@ $output_search = '';
 $found_result = false;
 if(!empty($items)){
 	$output_search = '[';
-	foreach ($items as $key=>$value){
+	foreach ($items as $key => $value){
 		if (strpos(strtolower($key), $q) !== false){
 			$found_result = true;
 

@@ -562,6 +562,9 @@ class MethodeEvaluation {
 	<label for="nom_methode" ><?php _e('Nom', 'evarisk'); ?></label><br/>
 	<input type="text" name="nom_methode" id="nom_methode" class="evaluation_method_input" value="<?php _e($nom_methode); ?>" />
 
+	<br/><input type="checkbox" name="default_methode" id="default_methode" value="yes"<?php echo (!empty($method_informations->default_methode) && ($method_informations->default_methode == 'yes') ? ' checked' : ''); ?> /> <label for="default_methode" ><?php _e('M&eacute;thode par d&eacute;faut', 'evarisk'); ?></label><br/>
+
+
 	<input type="submit" name="save_evaluation_method" id="save_evaluation_method" class="clear alignright button-primary" value="<?php _e('Enregistrer', 'evarisk'); ?>" />
 </form>
 <script type="text/javascript" >

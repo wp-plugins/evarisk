@@ -98,11 +98,7 @@ DEFINE('DAY_BEFORE_TODAY_GANTT', 14);
 DEFINE('DAY_AFTER_TODAY_GANTT', DAY_BEFORE_TODAY_GANTT);
 DEFINE('LARGEUR_INDENTATION_GANTT_EN_EM', 1.5);
 
-$linkToDownloadOpenOffice = 'http://download.services.openoffice.org/files/localized/fr/3.2.1/OOo_3.2.1_Win_x86_install-wJRE_fr.exe';
-$locale = get_locale();
-if( !empty( $locale ) && ($locale != 'fr_FR')){
-	$linkToDownloadOpenOffice = 'http://download.services.openoffice.org/files/localized/' . $locale . '/3.2.1/OOo_3.2.1_Win_x86_install-wJRE_' . $locale . '.exe';
-}
+$linkToDownloadOpenOffice = 'http://www.openoffice.org/fr/Telecharger';
 DEFINE('LINK_TO_DOWNLOAD_OPEN_OFFICE', $linkToDownloadOpenOffice);
 
 /**

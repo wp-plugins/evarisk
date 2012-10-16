@@ -1,6 +1,6 @@
 <?php
 /**
- * This class allows to work on single activity (equivalent to single row in data base) 
+ * This class allows to work on single activity (equivalent to single row in data base)
  *
  * @author Evarisk
  * @version v5.0
@@ -9,7 +9,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaBaseActivity.c
 
 class EvaActivity extends EvaBaseActivity
 {
-	
+
 	/*
 	* Data base link
 	*/
@@ -21,7 +21,7 @@ class EvaActivity extends EvaBaseActivity
 	{
 		global $wpdb;
 		global $current_user;
-		
+
 		{//Variables cleaning
 			$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 			$relatedTaskId = (int) digirisk_tools::IsValid_Variable($this->getRelatedTaskId());
@@ -44,37 +44,37 @@ class EvaActivity extends EvaBaseActivity
 			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getnom_exportable_plan_action());
 			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getdescription_exportable_plan_action());
 		}
-		
+
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
 			$sql = "INSERT INTO " . TABLE_ACTIVITE . " (" . self::relatedTaskId . ", " . self::name . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::cout . ", " . self::progression . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",   " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ",  " . self::dateSolde . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::firstInsert . ")
-				VALUES ('" . mysql_real_escape_string($relatedTaskId) . "', 
-								'" . mysql_real_escape_string($name) . "', 
-								'" . mysql_real_escape_string($description) . "', 
-								'" . mysql_real_escape_string($startDate) . "', 
+				VALUES ('" . mysql_real_escape_string($relatedTaskId) . "',
+								'" . mysql_real_escape_string($name) . "',
+								'" . mysql_real_escape_string($description) . "',
+								'" . mysql_real_escape_string($startDate) . "',
 								'" . mysql_real_escape_string($finishDate) . "',
-								'" . mysql_real_escape_string($place) . "', 
-								'" . mysql_real_escape_string($cout) . "', 
-								'" . mysql_real_escape_string($progression) . "', 
-								'" . mysql_real_escape_string($status) . "', 
-								'" . mysql_real_escape_string($idCreateur) . "', 
-								'" . mysql_real_escape_string($idResponsable) . "', 
-								'" . mysql_real_escape_string($idSoldeur) . "', 
-								'" . mysql_real_escape_string($idSoldeurChef) . "', 
-								'" . mysql_real_escape_string($ProgressionStatus) . "', 
-								'" . mysql_real_escape_string($dateSolde) . "', 
-								'" . mysql_real_escape_string($idPhotoAvant) . "', 
-								'" . mysql_real_escape_string($idPhotoApres) . "', 
-								'" . mysql_real_escape_string($nom_exportable_plan_action) . "', 
-								'" . mysql_real_escape_string($description_exportable_plan_action) . "', 
+								'" . mysql_real_escape_string($place) . "',
+								'" . mysql_real_escape_string($cout) . "',
+								'" . mysql_real_escape_string($progression) . "',
+								'" . mysql_real_escape_string($status) . "',
+								'" . mysql_real_escape_string($idCreateur) . "',
+								'" . mysql_real_escape_string($idResponsable) . "',
+								'" . mysql_real_escape_string($idSoldeur) . "',
+								'" . mysql_real_escape_string($idSoldeurChef) . "',
+								'" . mysql_real_escape_string($ProgressionStatus) . "',
+								'" . mysql_real_escape_string($dateSolde) . "',
+								'" . mysql_real_escape_string($idPhotoAvant) . "',
+								'" . mysql_real_escape_string($idPhotoApres) . "',
+								'" . mysql_real_escape_string($nom_exportable_plan_action) . "',
+								'" . mysql_real_escape_string($description_exportable_plan_action) . "',
 								'" . current_time('mysql', 0) . "')";
 		}
 		else
 		{//Update of the data base
-			$sql = "UPDATE " . TABLE_ACTIVITE . " set 
-				" . self::relatedTaskId . " = '" . mysql_real_escape_string($relatedTaskId) . "', 
-				" . self::name . " = '" . mysql_real_escape_string($name) . "', 
+			$sql = "UPDATE " . TABLE_ACTIVITE . " set
+				" . self::relatedTaskId . " = '" . mysql_real_escape_string($relatedTaskId) . "',
+				" . self::name . " = '" . mysql_real_escape_string($name) . "',
 				" . self::description . " = '" . mysql_real_escape_string($description) . "',
 				" . self::startDate . " = '" . mysql_real_escape_string($startDate) . "',
 				" . self::finishDate . " = '" . mysql_real_escape_string($finishDate) . "',
@@ -90,7 +90,7 @@ class EvaActivity extends EvaBaseActivity
 				" . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "' ,
 				" . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "' ,
 				" . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "' ,
-				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "' 
+				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
 
@@ -111,7 +111,7 @@ class EvaActivity extends EvaBaseActivity
 			}
 		}
 	}
-	
+
 	/**
 	* Load the activity with identifier key
 	*/
@@ -122,14 +122,14 @@ class EvaActivity extends EvaBaseActivity
 		if($id != 0)
 		{
 			$wpdbActivity = $wpdb->get_row( "SELECT * FROM " . TABLE_ACTIVITE . " WHERE " . self::id . " = " . $id);
-			
+
 			if($wpdbActivity != null)
 			{
 				$this->convertWpdb($wpdbActivity);
 			}
 		}
 	}
-	
+
 /*
 * Others methods
 */
@@ -239,7 +239,7 @@ class EvaActivity extends EvaBaseActivity
 			if(current_user_can('digi_ask_action_front')){
 				$task_asker = '
 	<div id="message' . $ask_argument['tableProvenance'] . '" class="digirisk_hide" >&nbsp;</div>
-	<div class="clear" >' . 
+	<div class="clear" >' .
 		self::sub_task_creation_form($ask_argument) . '
 	</div>
 	<div class="digirisk_hide" id="ajax-response" >&nbsp;</div>';
@@ -261,7 +261,7 @@ class EvaActivity extends EvaBaseActivity
 		return '<input type="file" name="correctiv_action_picture" id="correctiv_action_picture" />';
 		// evaPhoto::getUploadForm($table_provenance, $token, 'jQuery("#ask_correctiv_action_picture_form").html("");jQuery("#ask_correctiv_action_picture img").attr("src", "' . EVA_UPLOADS_PLUGIN_URL . $table_provenance . "/" . $token . '/" + response); jQuery("#ask_correctiv_action_picture").show();');
 	}
-	
+
 	/**
 	*	Create the form used for new activity creation. Return different shape following parameters
 	*
@@ -317,7 +317,7 @@ class EvaActivity extends EvaBaseActivity
 			}
 		}
 
-		/*	Recupere la tache parent pour vérifier si on peut cocher les cases d'export dans le document unique	*/
+		/*	Recupere la tache parent pour vï¿½rifier si on peut cocher les cases d'export dans le document unique	*/
 		$parent_task = new EvaTask($idPere);
 		$parent_task->load();
 
@@ -331,16 +331,16 @@ class EvaActivity extends EvaBaseActivity
 		$alertWhenMarkActionAsDone = digirisk_options::getOptionValue('avertir_Solde_Action_Non_100');
 
 		{/*	Hidden field					*/
-			$activite_new .= 
-	EvaDisplayInput::afficherInput('hidden', 'post', 'true', '', null, 'post', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'act', $saveOrUpdate, '', null, 'act', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'original_act', (!empty($arguments['requested_action'])?$arguments['requested_action']:''), '', null, 'original_act', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'affichage_activite', $arguments['affichage'], '', null, 'affichage', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'table', TABLE_ACTIVITE, '', null, 'table', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'id_activite', $idElement, '', null, 'id', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'idPere_activite', $idPere, '', null, 'idPere', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'idsFilAriane_activite', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false) . 
-	EvaDisplayInput::afficherInput('hidden', 'idProvenance_activite', (!empty($arguments['idProvenance'])?$arguments['idProvenance']:''), '', null, 'idProvenance', false, false) . 
+			$activite_new .=
+	EvaDisplayInput::afficherInput('hidden', 'post', 'true', '', null, 'post', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'act', $saveOrUpdate, '', null, 'act', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'original_act', (!empty($arguments['requested_action'])?$arguments['requested_action']:''), '', null, 'original_act', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'affichage_activite', $arguments['affichage'], '', null, 'affichage', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'table', TABLE_ACTIVITE, '', null, 'table', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'id_activite', $idElement, '', null, 'id', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'idPere_activite', $idPere, '', null, 'idPere', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'idsFilAriane_activite', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false) .
+	EvaDisplayInput::afficherInput('hidden', 'idProvenance_activite', (!empty($arguments['idProvenance'])?$arguments['idProvenance']:''), '', null, 'idProvenance', false, false) .
 	EvaDisplayInput::afficherInput('hidden', 'tableProvenance_activite', (!empty($arguments['tableProvenance'])?$arguments['tableProvenance']:''), '', null, 'tableProvenance', false, false);
 		}
 		{/*	Sub-Task name					*/
@@ -372,7 +372,7 @@ class EvaActivity extends EvaBaseActivity
 	});
 </script>';
 		}
-		{/*	Sub-Task creation informations		*/		
+		{/*	Sub-Task creation informations		*/
 			if(($firstInsert != '') || ($idCreateur > 0)){
 				if(($firstInsert != '') && ($idCreateur > 0)){
 					$subtask_creator_infos = evaUser::getUserInformation($idCreateur);
@@ -417,7 +417,7 @@ class EvaActivity extends EvaBaseActivity
 			/*	Sub-Task progression	*/
 			$id = "avancement_activite";
 			$nomChamps = "avancement";
-			$activite_new .= __("Avancement", 'evarisk') . ' : 
+			$activite_new .= __("Avancement", 'evarisk') . ' :
 <input type="text" name="' . $nomChamps . '" id="' . $id . '" style="width:5%;" value="' . $contenuInputAvancement . '" />' . __('%', 'evarisk') . '<div id="sliderAvancement" >&nbsp;</div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -437,12 +437,12 @@ class EvaActivity extends EvaBaseActivity
 </script>';
 
 			/*	Sub-Task Responsible	*/
-			$contenuAideDescription = "";		
+			$contenuAideDescription = "";
 			$labelInput = __("Responsable", 'evarisk');
 			if(digirisk_options::getOptionValue('responsable_Action_Obligatoire') == 'oui'){
 				$labelInput .= '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span>';
 			}
-			$labelInput .= ' : <span class="fieldInfo" >' . sprintf(__('(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le menu %s du plugin)', 'evarisk'), '<a href="' . get_bloginfo('siteurl') . '/wp-admin/options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION . '#digirisk_options_correctivaction" target="optionPage" >' . __('Options', 'evarisk') . '</a>') . '</span>'; 
+			$labelInput .= ' : <span class="fieldInfo" >' . sprintf(__('(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le menu %s du plugin)', 'evarisk'), '<a href="' . get_bloginfo('siteurl') . '/wp-admin/options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION . '#digirisk_options_correctivaction" target="optionPage" >' . __('Options', 'evarisk') . '</a>') . '</span>';
 			$id = "responsable_activite";
 			$nomChamps = "responsable_activite";
 
@@ -475,8 +475,10 @@ class EvaActivity extends EvaBaseActivity
 					jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
 					jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
 
-					jQuery(this).val("");
-					jQuery(this).blur();
+					setTimeout(function(){
+						jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val("");
+						jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur();
+					}, 2);
 				}
 			});
 
@@ -535,8 +537,8 @@ class EvaActivity extends EvaBaseActivity
 						digirisk(document).ready(function(){
 							setTimeout(function(){
 								digirisk("#divVariablesFormRisque-simpleFAC").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-									"post":"true", 
-									"table":"' . TABLE_METHODE . '", 
+									"post":"true",
+									"table":"' . TABLE_METHODE . '",
 									"act":"reloadVariables",
 									"idRisque":"' . $arguments['idProvenance'] . '"
 								});
@@ -555,7 +557,7 @@ class EvaActivity extends EvaBaseActivity
 				else{
 					$risque = null;
 				}
-				if($risque[0] != null){// Si l'on édite un risque, on remplit l'aire de texte avec sa description
+				if($risque[0] != null){// Si l'on ï¿½dite un risque, on remplit l'aire de texte avec sa description
 					$contenuInput = $risque[0]->commentaire;
 				}
 				$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
@@ -569,7 +571,7 @@ class EvaActivity extends EvaBaseActivity
 			$scriptEnregistrementInProgress = '<script type="text/javascript">
 				digirisk("#' . $idBouttonSetInProgress . '").click(function(){
 					digirisk("#inProgressButtonContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-						"post": "true", 
+						"post": "true",
 						"table": "' . TABLE_ACTIVITE . '",
 						"act": "setActivityInProgress",
 						"id": digirisk("#id_activite").val()
@@ -578,13 +580,13 @@ class EvaActivity extends EvaBaseActivity
 			</script>';
 		}
 
-		$sub_task_creation_form = 
-'<form method="post" id="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' . 
+		$sub_task_creation_form =
+'<form method="post" id="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' .
 $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
 		if((!empty($arguments['output_mode']) && $arguments['output_mode'] == 'return') && !empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action')){/*	Add picture button			*/
 			$sub_task_creation_form .= '<div id="photosActionsCorrectives" >&nbsp;</div>';
-			$addPictureButton = 
+			$addPictureButton =
 				'<div id="add_picture_alert" class="hide" title="' . __('Modification de la cotation d\'un risque depuis une action corrective', 'evarisk') . '" >&nbsp;</div><input type="button" name="add_control_picture" id="add_control_picture" class="button-primary alignleft" value="' . __('Enregistrer puis ajouter des photos', 'evarisk') . '" />';
 		}
 		{/*	Add buttons to output		*/
@@ -593,32 +595,32 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 				$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-secondary', '', '', $scriptEnregistrementInProgress, 'left') . '</span>';
 			}
 			if(($saveOrUpdate == 'add_control') || ($saveOrUpdate == 'ask_correctiv_action') || ($saveOrUpdate == 'addAction') || ($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui')){
-				$sub_task_creation_form .= 
+				$sub_task_creation_form .=
 					'<div class="alignright" id="ActionSaveButton" >' . $inProgressButton;
 
 				if(($saveOrUpdate == 'update') && (($ProgressionStatus == '') || ($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress'))){
-					$sub_task_creation_form .= 
+					$sub_task_creation_form .=
 						EvaDisplayInput::afficherInput('button', $idBouttonSold, __('Solder l\'action', 'evarisk'), null, '', $idBouttonSold, false, true, '', 'button-secondary', '', '', '', 'left');
 				}
 				elseif($saveOrUpdate == 'update'){
-					$sub_task_creation_form .= 
+					$sub_task_creation_form .=
 						'<div style="float:left;" id="ActionSaveButton" >
 							<br/>
-							<div class="alignright button-primary" >' . 
-								__('Cette action est sold&eacute;e', 'evarisk') . 
+							<div class="alignright button-primary" >' .
+								__('Cette action est sold&eacute;e', 'evarisk') .
 							'</div>
 						</div>';
 				}
 
-				$sub_task_creation_form .= 
-					$addPictureButton . 
-					'<div id="save_button_container"  >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left') . 
+				$sub_task_creation_form .=
+					$addPictureButton .
+					'<div id="save_button_container"  >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left') .
 					'</div><div id="save_in_progress" class="alignright digirisk_hide" ><img src="' . admin_url('images/loading.gif') . '" alt="loading in progress" /></div></div>';
 			}
 			else{
-				$sub_task_creation_form .= 
-					'<div class="alignright button-primary" id="ActionSaveButton" >' . 
-						__('Cette action est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . 
+				$sub_task_creation_form .=
+					'<div class="alignright button-primary" id="ActionSaveButton" >' .
+						__('Cette action est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') .
 					'</div>';
 			}
 		}
@@ -654,8 +656,8 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 				variables.push({var: jQuery(this).attr("name"), val: jQuery(this).val()});
 			});
 			jQuery("#add_picture_alert").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post":"true", 
-				"table":"' . TABLE_RISQUE . '", 
+				"post":"true",
+				"table":"' . TABLE_RISQUE . '",
 				"act":"load_quote_validation",
 				"idProvenance": "' . $_REQUEST['idProvenance'] . '",
 				"tableProvenance": "' . $_REQUEST['tableProvenance'] . '",
@@ -717,7 +719,7 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 		if(jQuery("#ask_correctiv_action_picture_form").length > 0){
 			jQuery("#ask_correctiv_action_picture_form").html("");
 		}
-		
+
 		jQuery("#save_button_container").hide();
 		jQuery("#save_in_progress").show();
 

@@ -176,6 +176,7 @@ class categorieDangers {
 	}
 
 	function getCategorieDangerForRiskEvaluation($risque, $formId = '') {
+		global $wpdb;
 		$categoryResult = array();
 		$categoryResult['list'] = '';
 		$categoryResult['script'] = '';
@@ -195,6 +196,25 @@ class categorieDangers {
 		}
 
 		if (AFFICHAGE_PICTO_CATEGORIE) {
+			/*	Get the default methode	*/
+			$query = $wpdb->prepare("SELECT id FROM " . TABLE_METHODE . " WHERE default_methode = 'yes'");
+			$default_methode = $wpdb->get_var($query);
+
+			$categoryResult['script'] .= '
+			jQuery(".default_methode").unbind("click");
+			jQuery(".default_methode").click( function() {
+          		jQuery("#methodeFormRisque").val("'.$default_methode.'");
+          		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque . '"});
+			});
+
+			jQuery(".case_penibilite").unbind("click");
+			jQuery(".case_penibilite").live("click", function(){
+          		jQuery("#methodeFormRisque").val(jQuery(this).attr("id").replace("case_penibilite_", ""));
+          		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque . '"});
+			});';
+
 			foreach ($categoriesDangers as $categorieDangers) {
 				if ($selectionCategorie == $categorieRacine->id) {
 					$selectionCategorie = $categorieDangers->id;
@@ -210,20 +230,12 @@ class categorieDangers {
 							$choix_danger = unserialize($danger->choix_danger);
 							if ( is_array($choix_danger) && in_array('penibilite', $choix_danger) ) {
 								$conteneur_penibilite = '<div class="case_penibilite" id="case_penibilite_'.$danger->methode_eva_defaut.'" >' . __('P', 'evarisk') . '</div>';
-          						$categoryResult['script'] .= '
-		digirisk(document).ready(function(){
-			jQuery(".case_penibilite").click(function(){
-          		jQuery("#methodeFormRisque").val(jQuery(this).attr("id").replace("case_penibilite_", ""));
-          		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque . '"});
-			});
-		});';
+
 							}
-// 							$danger->methode_eva_defaut
 						}
 					}
 				}
-				$categoryResult['list'] .= '<div class="content_radio_picto_categorie"><div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img src="' . $categorieDangerMainPhoto . '" alt="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" title="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" />' . $conteneur_penibilite . '<div class="digirisk_danger_cat_identifier" >' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . '</div></label></div></div>';
+				$categoryResult['list'] .= '<div class="content_radio_picto_categorie"><div class="radioPictoCategorie" ><input id="' . $formId . 'cat' . $categorieDangers->id . '" type="radio" name="' . $formId . 'categoriesDangers"  class="categoriesDangers" value="' . $categorieDangers->id . '" /><label for="' . $formId . 'cat' . $categorieDangers->id  . '" ><img class="default_methode" src="' . $categorieDangerMainPhoto . '" alt="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" title="' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . ' - ' . $categorieDangers->nom . '" id="' . $formId . 'imgCat' . $categorieDangers->id . '" />' . $conteneur_penibilite . '<div class="digirisk_danger_cat_identifier" >' . ELEMENT_IDENTIFIER_CD . $categorieDangers->id . '</div></label></div></div>';
 			}
 
 			if ($categoryResult['list'] != '') {

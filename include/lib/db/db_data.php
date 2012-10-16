@@ -405,3 +405,8 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	}
 }
 
+{/*	Version 75	*/
+	$digirisk_db_version = 75;
+
+	$digirisk_db_update[$digirisk_db_version][TABLE_DANGER][] = "UPDATE " . TABLE_METHODE . " SET default_methode = 'yes' WHERE LOWER(nom) = '" . __('Evarisk', 'evarisk') . "'";
+}

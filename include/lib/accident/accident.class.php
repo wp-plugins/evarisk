@@ -1,7 +1,7 @@
 <?php
 /**
 * Work accident management
-* 
+*
 *	Define the different tools to manage work accident
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.4.0
@@ -47,9 +47,9 @@ class digirisk_accident
 				//	Show the risk list for the actual element
 				jQuery("#ongletVoirLesAccidents").click(function(){
 					jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-						"post":"true", 
-						"table":"' . self::dbTable . '", 
-						"act":"reloadVoirAccident", 
+						"post":"true",
+						"table":"' . self::dbTable . '",
+						"act":"reloadVoirAccident",
 						"tableElement":"' . $tableElement . '",
 						"idElement":' . $idElement . '
 					});
@@ -57,9 +57,9 @@ class digirisk_accident
 				});
 				jQuery("#ongletAjouterUnAccident").live("click", function(){
 					jQuery("#divAccidenContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-						"post":"true", 
-						"table":"' . self::dbTable . '", 
-						"act":"addAccident", 
+						"post":"true",
+						"table":"' . self::dbTable . '",
+						"act":"addAccident",
 						"tableElement":"' . $tableElement . '",
 						"idElement":' . $idElement . '
 					});
@@ -290,7 +290,7 @@ class digirisk_accident
 					jQuery("#accident_form_error_nb").val(0);
 					jQuery("#accident_element_updater").dialog("open");
 					jQuery("#accident_element_updater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-						"post": "true", 
+						"post": "true",
 						"table": "' . TABLE_GROUPEMENT . '",
 						"act": "load_groupement_form",
 						"tableElement": "' . TABLE_GROUPEMENT . '",
@@ -335,11 +335,13 @@ class digirisk_accident
 							"id_user":ui.item.value
 						});
 
-						jQuery(this).val("");
-						jQuery(this).blur();
+						setTimeout(function(){
+							jQuery("#searchUser_accident_' . $tableElement . '").val("");
+							jQuery("#searchUser_accident_' . $tableElement . '").blur();
+						}, 2);
 					}
 				});
-				
+
 				jQuery("#victim_changer").click(function(){
 					jQuery("#victim_selector").toggle();
 					jQuery("#victim_changer span").toggleClass("accident_container_opener");
@@ -358,10 +360,12 @@ class digirisk_accident
 							"id_user":ui.item.value
 						});
 
-						jQuery(this).val("");
-						jQuery(this).blur();
+						setTimeout(function(){
+							jQuery("#search_accident_witness_' . $tableElement . '").val("");
+							jQuery("#search_accident_witness_' . $tableElement . '").blur();
+						}, 2);
 					}
-				});			
+				});
 
 				/**
 				*	Add action for accident declaration type combo box
@@ -410,8 +414,10 @@ class digirisk_accident
 							"act":"loadThirdPartyInfo",
 							"id_user":ui.item.value
 						});
-						jQuery(this).val("");
-						jQuery(this).blur();
+						setTimeout(function(){
+							jQuery("#search_accident_third_party_' . $tableElement . '").val("");
+							jQuery("#search_accident_third_party_' . $tableElement . '").blur();
+						}, 2);
 					}
 				});
 
@@ -437,8 +443,10 @@ class digirisk_accident
 					select: function( event, ui ){
 						jQuery(this).val(ui.item.label);
 
-						jQuery(this).val("");
-						jQuery(this).blur();
+						setTimeout(function(){
+							jQuery("#accident_police_report_writer").val("");
+							jQuery("#accident_police_report_writer").blur();
+						}, 2);
 					}
 				});
 
@@ -478,7 +486,7 @@ class digirisk_accident
 						"accident_id": "' . $accident_id . '",
 						"idElement":"' . $idElement . '",
 						"tableElement":"' . $tableElement . '",
-						"step_to_load":new_step 
+						"step_to_load":new_step
 					});
 				});
 			});
@@ -683,8 +691,8 @@ class digirisk_accident
 					jQuery("#accident_date").datepicker("option", "changeMonth", true);
 					jQuery("#accident_date").datepicker("option", "changeYear", true);
 					jQuery("#accident_date").datepicker("option", "navigationAsDateFormat", true);
-					jQuery("#accident_date").val("' . str_replace('"', '\"', str_replace(" 
-", "\\n", $accident->accident_date)) . '"); 
+					jQuery("#accident_date").val("' . str_replace('"', '\"', str_replace("
+", "\\n", $accident->accident_date)) . '");
 				});
 			</script>';
 			}
@@ -770,7 +778,7 @@ class digirisk_accident
 					$accident_declaration_register_nb = $accident_declaration_details['accident_declaration_register_nb'];
 					$accident_declaration_date = $accident_declaration_details['accident_declaration_date'];
 				}
-				
+
 				$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
 				$locale = ($locale == 'en') ? '' : $locale;
 				$accident_form_part .= '
@@ -793,8 +801,8 @@ class digirisk_accident
 									jQuery("#accident_declaration_date").datepicker("option", "changeMonth", true);
 									jQuery("#accident_declaration_date").datepicker("option", "changeYear", true);
 									jQuery("#accident_declaration_date").datepicker("option", "navigationAsDateFormat", true);
-									jQuery("#accident_declaration_date").val("' . str_replace('"', '\"', str_replace(" 
-", "\\n", $accident_declaration_date)) . '"); 
+									jQuery("#accident_declaration_date").val("' . str_replace('"', '\"', str_replace("
+", "\\n", $accident_declaration_date)) . '");
 								});
 							</script>
 						</td>
@@ -854,7 +862,7 @@ class digirisk_accident
 					</div>
 				</div>
 			</div>
-		</fieldset>';	
+		</fieldset>';
 			}
 			break;
 			case 'third_party':
@@ -1046,9 +1054,9 @@ class digirisk_accident
 		global $optionYesNoList;
 		$user_meta = get_user_meta($id_user, 'digirisk_information', false);
 		$user_main_info = evaUser::getUserInformation($id_user);
-		if(is_array($user_meta[0]) && (count($user_meta[0]) > 0) 
+		if(is_array($user_meta[0]) && (count($user_meta[0]) > 0)
 				|| ($third_party_infos != null)
-			/* && ($user_meta[0]['user_adress'] != '') && ($user_meta[0]['user_adress_2'] != '') 
+			/* && ($user_meta[0]['user_adress'] != '') && ($user_meta[0]['user_adress_2'] != '')
 			&& ($user_main_info[$id_user]['user_lastname'] != '') && ($user_main_info[$id_user]['user_firstname'] != '') */){
 			if(($third_party_infos == null) || ($accident->declaration_state == 'in_progress')){
 				if(isset($user_meta[0]) && is_array($user_meta[0])){

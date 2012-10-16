@@ -1719,8 +1719,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			select: function( event, ui ){
 				jQuery("#receiver_element").val(ui.item.value);
 
-				jQuery(this).val("");
-				jQuery(this).blur();
+				setTimeout(function(){
+					jQuery("#search_element").val("");
+					jQuery("#search_element").blur();
+				}, 2);
 			}
 		});
 
@@ -1891,8 +1893,12 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						else{
 							$nom = digirisk_tools::IsValid_Variable($_REQUEST['nom_methode']);
+							$default_methode = digirisk_tools::IsValid_Variable($_REQUEST['default_methode'], 'no');
+							if ( $default_methode == 'yes' ) {
+								$wpdb->update(TABLE_METHODE, array('default_methode' => 'no'), array('default_methode' => 'yes'));
+							}
 							if($id <= 0){
-								$method_result = $wpdb->insert(TABLE_METHODE, array('nom' => $nom, 'Status' => 'Valid'), array('%s', '%s'));
+								$method_result = $wpdb->insert(TABLE_METHODE, array('nom' => $nom, 'Status' => 'Valid', 'default_methode' => $default_methode), array('%s', '%s', '%s'));
 								$id = $wpdb->insert_id;
 								$more_action = '
 	side_reloader("' . $_REQUEST['table'] . '", "' . $id . '", "", "");
@@ -1906,7 +1912,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								$success_message = __('La m&eacute;thode a correctement &eacute;t&eacute; cr&eacute;e.', 'evarisk');
 							}
 							else{
-								$method_result = $wpdb->update(TABLE_METHODE, array('nom' => $nom), array('id' => $id), array('%s'), array('%d'));
+								$method_result = $wpdb->update(TABLE_METHODE, array('nom' => $nom, 'default_methode' => $default_methode), array('id' => $id), array('%s'), array('%d'));
 								$more_action = '
 	jQuery("#node-main_table_' . $_REQUEST['table'] . '-' . $id . '-name .node_name").html("' . stripslashes($nom) . '");';
 								$error_message = __('Une erreur est survenue lors de la modification de la m&eacute;thode.', 'evarisk');
@@ -5160,7 +5166,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						eva_Variable::create_basic_variable();
 					}
 
-					$wpdb->insert(TABLE_METHODE, array('nom' => 'Evarisk'));
+					$wpdb->insert(TABLE_METHODE, array('nom' => 'Evarisk', 'default_methode' => 'yes'));
 					$new_method_id = $wpdb->insert_id;
 
 					$method_picture_id = EvaPhoto::saveNewPicture(TABLE_METHODE, $new_method_id, 'uploads/wp_eva__methode/1/tabcoeff.gif');

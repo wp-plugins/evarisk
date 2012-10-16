@@ -657,6 +657,7 @@ $t = TABLE_METHODE;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
+  default_methode enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
   PRIMARY KEY  (`id`),
@@ -1672,4 +1673,11 @@ CREATE TABLE {$t} (
 {/*	Version 74	*/
 	$digirisk_db_version = 74;
 	$digirisk_update_way[$digirisk_db_version] = 'datas';
+}
+
+{/*	Version 75	*/
+	$digirisk_db_version = 75;
+	$digirisk_update_way[$digirisk_db_version] = 'datas';
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_METHODE);
 }
