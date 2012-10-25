@@ -2923,40 +2923,29 @@ class EvaDisplayDesign {
 		$allowedExtensions = "['odt']";
 		$multiple = false;
 		$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "gestionDocumentaire/uploadFile.php");
-		switch($tableElement)
-		{
+		switch ($tableElement) {
 			case TABLE_GROUPEMENT:
-			{
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt';
 				$table = TABLE_DUER;
-			}
 			break;
 			case TABLE_GROUPEMENT . '_FP' :
-			{
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDePoste/modeleDefaut.odt';
 				$table = TABLE_FP;
-			}
 			break;
 			case TABLE_GROUPEMENT . '_FGP' :
-			{
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDeGroupement/modeleDefaut_groupement.odt';
 				$table = TABLE_FP;
-			}
 			break;
 			case TABLE_UNITE_TRAVAIL:
-			{
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDePoste/modeleDefaut.odt';
 				$table = TABLE_FP;
-			}
 			break;
 			default:
-			{
 				sprintf(__('Le cas % n\'a pas &eacute;t&eacute; pr&eacute;vu dans %s &agrave; la ligne %s', 'evarisk'), $tableElement, __FILE__, __LINE__);
-			}
 			break;
 		}
 

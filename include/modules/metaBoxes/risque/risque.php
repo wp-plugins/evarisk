@@ -496,7 +496,7 @@
 		}
 
 		$formRisque =
-EvaDisplayInput::ouvrirForm('POST', $formId . 'formRisque', $formId . 'formRisque') .
+EvaDisplayInput::ouvrirForm('POST', $formId . 'formRisque-', $formId . 'formRisque-') .
 EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', null, 'idRisque', false, false);
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){
 			$formRisque .= '
@@ -534,7 +534,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 							min: 0,
 							max: 100,
 							step: 1,
-							slide: function(event, ui){
+							slide: function (event, ui) {
 								jQuery("#" + jQuery(this).attr("id").replace("correctiv_action_efficiency_control_slider", "correctiv_action_efficiency_control")).val( ui.value );
 							}
 						});
@@ -654,19 +654,31 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			}
 			digirisk("#' . $formId . 'divDangerContainer").toggle();
 		});
-		digirisk("#' . $idBouttonEnregistrer . '").click(function(){
+		digirisk("#' . $idBouttonEnregistrer . '").click(function() {
 			goTo("#postBoxRisques");
-			var variables = new Array();';
-			foreach($allVariables as $variable){
-				$scriptEnregistrement .= '
-			variables["' . $variable->id . '"] = digirisk("#' . $formId . 'var' . $variable->id . 'FormRisque").val();';
-			}
-			$scriptEnregistrement .= '
+			var variables = new Array();
+			jQuery(".digi_method_var_value").each(function() {
+				var var_id = jQuery(this).attr("id").replace("' . $formId . '_digi_eval_method_var_", "");
+				var add_to_tab = true;
+				if ( jQuery(this).hasClass("score_risque_checkbox") ) {
+					if (jQuery(this).is(":checked")) {
+						var new_var = var_id.split("-x-");
+						var_id = new_var[0];
+					}
+					else {
+						add_to_tab = false;
+					}
+				}
+				if (add_to_tab) {
+					variables[var_id] = jQuery(this).val();
+				}
+			});
+
 			var historisation = true;
 			if(digirisk("#' . $formId . 'historisation").is(":checked")){
 				historisation = false;
-			}';
-			$scriptEnregistrement .= '
+			}
+
 			digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 				"post":"true",
 				"table":"' . TABLE_RISQUE . '",
@@ -682,7 +694,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				"print_action_description_in_duer":digirisk("#' . $formId . 'print_action_description_duer").val(),
 				"idRisque":digirisk("#' . $formId . 'idRisque").val(),
 				"pictureId":"' . $formId . '"';
-			if(($sub_action == 'control_asked_action') || ($task_to_associate > 0)){
+			if (($sub_action == 'control_asked_action') || ($task_to_associate > 0)) {
 				$scriptEnregistrement .= ',
 				"actionsCorrectives":"' . $task_to_associate . '",
 				"action_efficiency":jQuery("#correctiv_action_efficiency_control' . $task_to_associate . '").val()';
@@ -696,7 +708,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		});';
 			if($idRisque != ''){
 				$scriptEnregistrement .= '
-		digirisk("#' . $idElement . 'divPreconisationExistante").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+		digirisk("#' . $idElement . 'divPreconisationExistante").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 			"post":"true",
 			"table":"' . TABLE_RISQUE . '",
 			"tableElement":"' . $tableElement . '",
@@ -714,7 +726,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 		$formRisque .= '
 '	.
-EvaDisplayInput::fermerForm('formRisque') . '
+EvaDisplayInput::fermerForm($formId . 'formRisque-') . '
 <script type="text/javascript">
 	digirisk(document).ready(function(){
 		' . $script . '

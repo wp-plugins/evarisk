@@ -77,7 +77,7 @@ class eva_WorkUnitSheet
 		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = digirisk_tools::slugify_noaccent($arborescence) . digirisk_tools::slugify_noaccent($workUnitinformations->nom);
 
 		$modelChoice = '';
-		$lastWorkUnitSheet = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+		$lastWorkUnitSheet = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_poste');
 		if(($lastWorkUnitSheet->id_model != '') && ($lastWorkUnitSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_poste')))
 		{
 			$modelChoice = '
@@ -125,282 +125,6 @@ class eva_WorkUnitSheet
 </script>';
 
 		return $output;
-	}
-
-	/**
-	*	Get the last document generated for a given element
-	*
-	*	@param mixed $tableElement The element type we want to get the last document for
-	*	@param integer $idElement The element identifier we want to get the lat document for
-	*
-	*	@return mixed $lastDocument An object with all information about the last document
-	*/
-	function getGeneratedDocument($tableElement, $idElement, $type = 'last', $id = '') {
-		global $wpdb;
-		$lastDocument = array();
-
-		$queryOrder = "";
-		switch($type)
-		{
-			case 'last':
-				$queryOrder = "
-				ORDER BY id DESC
-			LIMIT 1";
-			break;
-			case 'list':
-				$queryOrder = "
-				ORDER BY creation_date DESC, revision DESC";
-			break;
-		}
-
-		$query = $wpdb->prepare(
-			"SELECT *
-			FROM " . TABLE_FP . "
-			WHERE id_element = %d
-				AND table_element = %s " . $queryOrder,
-			array($idElement, $tableElement, $id)
-		);
-		if($id != '')
-		{
-			$query = $wpdb->prepare(
-				"SELECT *
-				FROM " . TABLE_FP . "
-				WHERE id_element = %d
-					AND table_element = %s
-					AND id = %d " . $queryOrder,
-					array($idElement, $tableElement, $id)
-			);
-		}
-		$lastDocument = $wpdb->get_results($query);
-
-		if( count($lastDocument) > 0 )
-		{
-			switch($type)
-			{
-				case 'last':
-					$outputListeDocumentUnique = $wpdb->get_row($query);
-				break;
-				case 'list':
-				{
-					$listeParDate = array();
-					foreach($lastDocument as $index => $document)
-					{
-						$dateElement = explode(' ', $document->creation_date);
-						if($document->name == '')
-						{
-
-							$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
-
-							$document->name = $documentName;
-						}
-						$listeParDate[$dateElement[0]][$document->id]['name'] = $document->name;
-						$listeParDate[$dateElement[0]][$document->id]['fileName'] = $document->name . '_V' . $document->revision;
-						$listeParDate[$dateElement[0]][$document->id]['revision'] = 'V' . $document->revision;
-					}
-
-					if( count($listeParDate) > 0 )
-					{
-						$outputListeDocumentUnique .=
-							'<table summary="" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;" >
-								<thead></thead>
-								<tfoot></tfoot>
-								<tbody>';
-						foreach($listeParDate as $date => $listeDUDate)
-						{
-							$outputListeDocumentUnique .= '
-									<tr>
-										<td colspan="3" style="text-decoration:underline;font-weight:bold;" >Le ' . mysql2date('d M Y', $date, true) . '</td>
-									</tr>';
-							foreach($listeDUDate as $index => $DUER)
-							{
-								$outputListeDocumentUnique .= '
-									<tr>
-										<td>&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_FP . $index . ')&nbsp;&nbsp;' . $DUER['name'] . '_' . $DUER['revision'] . '</td>';
-
-								/*	Check if an odt file exist to be downloaded	*/
-								$odtFile = 'ficheDePoste/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
-								if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
-								{
-								$outputListeDocumentUnique .= '
-									<td><a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaFPOdt" >Odt</a></td>';
-								}
-
-								$outputListeDocumentUnique .= '
-									</tr>';
-							}
-						}
-						$outputListeDocumentUnique .= '
-									<tr>
-										<td style="padding:18px;" ><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></td>
-									</tr>
-								</tbody>
-							</table>';
-					}
-				}
-				break;
-			}
-		}
-		else
-		{
-			$outputListeDocumentUnique = '<div class="noResultInBox" >' . __('Aucune fiche de poste n\'a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e pour le moment', 'evarisk') . '</div>';
-		}
-
-		return $outputListeDocumentUnique;
-	}
-
-	/**
-	*	Save a new "work unit sheet" in database
-	*
-	*	@param mixed $tableElement The element type we want to save a new document for
-	*	@param integer $idElement The element identifier we want to save a new document for
-	*	@param array $informations An array with all information to create the new document. Those informations come from the form
-	*
-	*	@return array $status An array with the response status, if it's ok or not
-	*/
-	function saveWorkUnitSheet($tableElement, $idElement, $informations) {
-		$status = array();
-
-		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
-
-		global $wpdb;
-		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
-		$idElement = digirisk_tools::IsValid_Variable($idElement);
-
-		/*	R�vision du document, en fonction de l'element et de la date de g�n�ration	*/
-		$revision = '';
-		$query = $wpdb->prepare(
-			"SELECT max(revision) AS lastRevision
-			FROM " . TABLE_FP . "
-			WHERE table_element = %s
-				AND id_element = %d ",
-			$tableElement, $idElement);
-		$revision = $wpdb->get_row($query);
-		$revisionDocument = $revision->lastRevision + 1;
-
-		/*	G�n�ration de la r�f�rence du document	*/
-		switch($tableElement)
-		{
-			case TABLE_GROUPEMENT:
-				$element = 'gpt';
-			break;
-			case TABLE_UNITE_TRAVAIL:
-				$element = 'ut';
-			break;
-			default:
-				$element = $tableElement;
-			break;
-		}
-		$referenceDocument = str_replace('-', '', $informations['dateCreation']) . '-' . $element . $idElement . '-V' . $revisionDocument;
-
-		/*	G�n�ration du nom du document si aucun nom n'a �t� envoy�	*/
-		if($informations['nomDuDocument'] == '')
-		{
-			$dateElement = explode(' ', $informations['dateCreation']);
-
-			$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $informations['nomEntreprise']));
-
-			$informations['nomDuDocument'] = $documentName;
-		}
-
-		/*	R�cup�ration des informations concernant les utilisateurs et les groupes d'utilisateurs	*/
-		$affectedUserTmp = array();
-		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		foreach($affectedUserList as $user)
-		{
-			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
-		}
-		$affectedUser = serialize($affectedUserTmp);
-		$affectedUserGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_employee'));
-
-		/*	R�cup�ration des informations concernant les �valuateurs et les groupes d'�valuateurs	*/
-		$affectedUserTmp = array();
-		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement . '_evaluation', $idElement);
-		foreach($affectedUserList as $user)
-		{
-			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
-		}
-		$affectedEvaluators = serialize($affectedUserTmp);
-		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
-
-		/*	R�cup�ration des informations concernant les risques	*/
-		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement));
-
-		/*	R�cup�ration de la photo par d�faut pour l'unit� de travail	*/
-		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
-		$defaultPictureToSet = '';
-		if($defaultPicture != 'error')
-		{
-			$defaultPictureToSet = $defaultPicture;
-		}
-		else
-		{
-			$defaultPictureToSet = 'noDefaultPicture';
-		}
-
-		/*	V�rification du mod�le � utiliser pour la g�n�ration de la fiche de poste	*/
-		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
-		if(($informations['id_model'] != 'undefined') && ($informations['id_model'] > 0))
-		{
-			$modelToUse = $informations['id_model'];
-		}
-
-		/*	R�cup�ration des pr�conisations affect�es � l'unit� actuelle	*/
-		$recommandationList = array();
-		$affectedRecommandation = evaRecommandation::getRecommandationListForElement($tableElement, $idElement);
-		$i = $oldIdRecommandationCategory = 0;
-		foreach($affectedRecommandation as $recommandation)
-		{
-			if($oldIdRecommandationCategory != $recommandation->recommandation_category_id)
-			{
-				$i = 0;
-				$oldIdRecommandationCategory = $recommandation->recommandation_category_id;
-			}
-			$recommandationCategoryMainPicture = evaPhoto::getMainPhoto(TABLE_CATEGORIE_PRECONISATION, $recommandation->recommandation_category_id);
-			$recommandationCategoryMainPicture = evaPhoto::checkIfPictureIsFile($recommandationCategoryMainPicture, TABLE_CATEGORIE_PRECONISATION);
-			if($recommandationCategoryMainPicture != false)
-			{
-				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = str_replace(EVA_HOME_URL, '', str_replace(EVA_GENERATED_DOC_URL, '', $recommandationCategoryMainPicture));
-			}
-			else
-			{
-				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = 'noDefaultPicture';
-			}
-			$recommandationList[$recommandation->recommandation_category_id][$i]['id_preconisation'] = $recommandation->id_preconisation;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['efficacite'] = $recommandation->efficacite;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['commentaire'] = $recommandation->commentaire;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_name'] = $recommandation->recommandation_category_name;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_name'] = $recommandation->recommandation_name;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandationCategorie'] = $recommandation->impressionRecommandationCategorie;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandationCategorie'] = $recommandation->tailleimpressionRecommandationCategorie;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandation'] = $recommandation->impressionRecommandation;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandation'] = $recommandation->tailleimpressionRecommandation;
-			$recommandationList[$recommandation->recommandation_category_id][$i]['photo'] = $recommandation->photo;
-			$i++;
-		}
-		$recommandation = serialize($recommandationList);
-
-		/*	Enregistrement du document	*/
-		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_FP . "
-				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk, recommandation)
-			VALUES
-				('', %s, %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array(current_time('mysql', 0), $revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, digirisk_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk, $recommandation)
-		);
-		if($wpdb->query($query) === false)
-		{
-			$status['result'] = 'error';
-			$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
-			$status['errors']['query'] = $query;
-		}
-		else
-		{
-			$status['result'] = 'ok';
-			/*	Save the odt file	*/
-			eva_gestionDoc::generateSummaryDocument($tableElement, $idElement, 'odt');
-		}
-
-		return $status;
 	}
 
 	/**
@@ -470,23 +194,18 @@ class eva_WorkUnitSheet
 	*
 	*	@return string The html code output with the list of document or a message saying there no document for this element
 	*/
-	function getWorkUnitSheetCollectionHistory($tableElement, $idElement)
-	{
+	function getWorkUnitSheetCollectionHistory($tableElement, $idElement) {
 		$output = '';
 
 		$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiche_de_poste_groupement', "dateCreation DESC");
-		if(count($ficheDePoste_du_Groupement) > 0)
-		{
-			foreach($ficheDePoste_du_Groupement as $fdpGpt)
-			{
-				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
-				{
+		if (count($ficheDePoste_du_Groupement) > 0) {
+			foreach($ficheDePoste_du_Groupement as $fdpGpt) {
+				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom)) {
 					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: (%s) <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), ELEMENT_IDENTIFIER_GFP . $fdpGpt->id, EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
 				}
 			}
 		}
-		else
-		{
+		else {
 			$output .= __('Aucune fiche n\'a &eacute;t&eacute; cr&eacute;e pour le moment', 'evarisk');
 		}
 

@@ -23,12 +23,11 @@
 			$idElement = $arguments['idElement'];
 			$tableElement = $arguments['tableElement'];
 
-			$scriptRisque = 
+			$scriptRisque =
 			'<script type="text/javascript">
-				function loadBilanBoxContent(boxId, action, table){
+				function loadBilanBoxContent(boxId, action, table) {
 					digirisk(boxId).html(digirisk("#loadingImg").html());
-					digirisk(boxId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-					{
+					digirisk(boxId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 						"post":"true",
 						"table":table,
 						"act":action,
@@ -63,14 +62,12 @@
 			$corpsPostBoxRisque = $scriptRisque . '
 				<div id="message' . TABLE_DUER . '" class="updated fade" style="cursor:pointer; display:none;"></div>
 				<ul class="eva_tabs" style="margin-bottom:2px;" >';
-			if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement))
-			{
+			if (current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement)) {
 				$userNotAllowed = '';
 				$corpsPostBoxRisque .= '
 					<li id="ongletDocumentUnique" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('G&eacute;n&eacute;rer le bilan', 'evarisk'))) . '</label></li>';
 			}
-			else
-			{
+			else {
 				$userNotAllowed = '<script type="text/javascript" >digirisk("#ongletHistoriqueDocument").click()</script>';
 			}
 			$corpsPostBoxRisque .= '

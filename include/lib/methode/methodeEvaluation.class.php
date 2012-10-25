@@ -372,8 +372,7 @@ class MethodeEvaluation {
 	function getVariablesMethode($id_methode, $date=null){
 		global $wpdb;
 
-		if($date==null)
-		{
+		if ($date==null) {
 			$date=current_time('mysql', 0);
 		}
 		$id_methode = (int) $id_methode;

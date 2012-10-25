@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin document manager
-* 
+*
 *	Define the different method to manage the different document into the plugin
 * @author Evarisk <dev@evarisk.com>
 * @version 5.0
@@ -15,9 +15,7 @@
 * @package Digirisk
 * @subpackage librairies
 */
-class eva_gestionDoc
-{
-
+class eva_gestionDoc {
 	/**
 	* Return an upload form
 	*
@@ -39,8 +37,8 @@ class eva_gestionDoc
 		$repertoireDestination = ($repertoireDestination == '') ? str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/') : $repertoireDestination;
 		$multiple = $multiple ? 'true' : 'false';
 
-		$formulaireUpload = 
-			'<script type="text/javascript">        
+		$formulaireUpload =
+			'<script type="text/javascript">
 				digirisk(document).ready(function(){
 					var uploader' . $idUpload . ' = new qq.FileUploader({
 						element: document.getElementById("' . $idUpload . '"),
@@ -79,7 +77,7 @@ class eva_gestionDoc
 			break;
 		}
 
-		$formulaireUpload .= 
+		$formulaireUpload .=
 						'}
 					});
 
@@ -102,10 +100,10 @@ class eva_gestionDoc
 					, "300");
 				});
 			</script>
-			<div id="' . $idUpload . '" class="divUpload">		
-				<noscript>			
+			<div id="' . $idUpload . '" class="divUpload">
+				<noscript>
 					<p>' . __("Vous devez activer le javascript pour pouvoir envoyer un fichier", "evarisk") . '</p>
-				</noscript>         
+				</noscript>
 			</div>';
 
 		return $formulaireUpload;
@@ -246,17 +244,133 @@ class eva_gestionDoc
 		}
 
 		$query = $wpdb->prepare(
-			"SELECT * FROM 
+			"SELECT * FROM
 			" . TABLE_GED_DOCUMENTS . "
 			WHERE table_element = %s
 				AND id_element = %d
-				AND status = 'valid' 
+				AND status = 'valid'
 				" . $morequery . "
 			ORDER BY " . $order,
 			$tableElement, $idElement);
 		$documentList = $wpdb->get_results($query);
 
 		return $documentList;
+	}
+
+	/**
+	 *	Get the last document generated for a given element
+	 *
+	 *	@param mixed $tableElement The element type we want to get the last document for
+	 *	@param integer $idElement The element identifier we want to get the lat document for
+	 *
+	 *	@return mixed $lastDocument An object with all information about the last document
+	 */
+	function getGeneratedDocument($tableElement, $idElement, $type = 'last', $id = '', $document_type = '') {
+		global $wpdb;
+		$lastDocument = array();
+
+		$queryOrder = "";
+		$query_params = array($idElement, $tableElement);
+
+		if ( !empty($id) ) {
+			$queryOrder .= "
+				AND id = %d";
+			$query_params[] = $id;
+		}
+
+		if ( !empty($document_type) ) {
+			$queryOrder .= "
+				AND document_type = %s";
+			$query_params[] = $document_type;
+		}
+
+		switch ($type) {
+			case 'last':
+				$queryOrder .= "
+				ORDER BY id DESC
+			LIMIT 1";
+				break;
+			case 'list':
+				$queryOrder .= "
+				ORDER BY creation_date DESC, revision DESC";
+				break;
+		}
+
+		$query = $wpdb->prepare(
+				"SELECT *
+			FROM " . TABLE_FP . "
+			WHERE id_element = %d
+				AND table_element = %s " . $queryOrder,
+				$query_params
+		);
+		$lastDocument = $wpdb->get_results($query);
+
+		if ( count($lastDocument) > 0 ) {
+
+			switch ( $document_type ) {
+				case 'fiche_de_groupement':
+						$document_prefix = 'ficheDeGroupement';
+					break;
+				case 'fiche_de_poste':
+						$document_prefix = 'ficheDePoste';
+					break;
+				case 'listing_des_risques':
+						$document_prefix = 'listingRisque';
+					break;
+			}
+
+			switch ($type) {
+				case 'last':
+					$outputListeDocumentUnique = $wpdb->get_row($query);
+					break;
+				case 'list':
+						$listeParDate = array();
+						foreach ($lastDocument as $index => $document) {
+							$dateElement = explode(' ', $document->creation_date);
+							if ($document->name == '') {
+								$document->name = str_replace('-', '', $dateElement[0]) . '_' . $document_prefix . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
+							}
+							$listeParDate[$dateElement[0]][$document->id]['name'] = $document->name;
+							$listeParDate[$dateElement[0]][$document->id]['fileName'] = $document->name . '_V' . $document->revision;
+							$listeParDate[$dateElement[0]][$document->id]['revision'] = 'V' . $document->revision;
+						}
+
+						if ( count($listeParDate) > 0 ) {
+							$outputListeDocumentUnique .=
+							'<table summary="" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;" >';
+							foreach ($listeParDate as $date => $listeDUDate) {
+								$outputListeDocumentUnique .= '
+									<tr>
+										<td colspan="3" style="text-decoration:underline;font-weight:bold;" >Le ' . mysql2date('d M Y', $date, true) . '</td>
+									</tr>';
+								foreach ($listeDUDate as $index => $DUER) {
+									$outputListeDocumentUnique .= '
+									<tr>
+										<td>&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_FP . $index . ')&nbsp;&nbsp;' . $DUER['name'] . '_' . $DUER['revision'] . '</td>';
+
+									/*	Check if an odt file exist to be downloaded	*/
+									$odtFile = $document_prefix . '/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
+									if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
+									{
+										$outputListeDocumentUnique .= '
+									<td><a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaFPOdt" >Odt</a></td>';
+									}
+
+									$outputListeDocumentUnique .= '
+									</tr>';
+								}
+							}
+							$outputListeDocumentUnique .= '
+							</table>';
+						}
+					break;
+			}
+		}
+		else {
+			$outputListeDocumentUnique = '<div class="noResultInBox" >' . __('Aucune fiche n\'a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e pour le moment', 'evarisk') . '</div>';
+		}
+
+		return $outputListeDocumentUnique;
 	}
 
 	/**
@@ -280,12 +394,12 @@ class eva_gestionDoc
 		}
 
 		$query = $wpdb->prepare(
-			"SELECT * FROM 
+			"SELECT * FROM
 			" . TABLE_GED_DOCUMENTS . "
-			WHERE status = 'valid' 
+			WHERE status = 'valid'
 				" . $morequery . "
 				AND table_element != 'all'
-			GROUP BY chemin, nom 
+			GROUP BY chemin, nom
 			ORDER BY " . $order,
 			$tableElement, $idElement);
 		$documentList = $wpdb->get_results($query);
@@ -346,6 +460,218 @@ class eva_gestionDoc
 	}
 
 	/**
+	 *	Save a new "work unit sheet" in database
+	 *
+	 *	@param mixed $tableElement The element type we want to save a new document for
+	 *	@param integer $idElement The element identifier we want to save a new document for
+	 *	@param array $informations An array with all information to create the new document. Those informations come from the form
+	 *
+	 *	@return array $status An array with the response status, if it's ok or not
+	 */
+	function save_element_sheet($tableElement, $idElement, $informations) {
+		global $wpdb;
+		$status = array();
+
+		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
+
+		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
+		$idElement = digirisk_tools::IsValid_Variable($idElement);
+
+		$query_params = array($tableElement, $idElement);
+		if (!empty($informations['document_type'])) {
+			$query_extra_params = "
+				AND document_type = %s";
+			$query_params[] = $informations['document_type'];
+		}
+
+		/*
+		 * Retrieve last revision for the document to generate
+		 */
+		$revision = '';
+		$query = $wpdb->prepare(
+			"SELECT max(revision) AS lastRevision
+			FROM " . TABLE_FP . "
+			WHERE table_element = %s
+				AND id_element = %d " . $query_extra_params,
+		$query_params);
+		$revision = $wpdb->get_row($query);
+		$revisionDocument = $revision->lastRevision + 1;
+
+		/*
+		 * Generate a reference for the document
+		 */
+		switch ($tableElement) {
+			case TABLE_GROUPEMENT:
+			case TABLE_GROUPEMENT . '_RS':
+				$element = 'gpt';
+				$current_element = EvaGroupement::getGroupement($idElement);
+				$element_identifier = ELEMENT_IDENTIFIER_GP;
+				break;
+			case TABLE_UNITE_TRAVAIL:
+			case TABLE_UNITE_TRAVAIL . '_RS':
+				$element = 'ut';
+				$current_element = eva_UniteDeTravail::getWorkingUnit($idElement);
+				$element_identifier = ELEMENT_IDENTIFIER_UT;
+				break;
+			default:
+				$element = $tableElement;
+				break;
+		}
+		$referenceDocument = str_replace('-', '', $informations['dateCreation']) . '-' . $element . $idElement . '-V' . $revisionDocument;
+
+		/*
+		 * Retrieve informations about users and groups associated to an element
+		 */
+		$affectedUserTmp = array();
+		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
+		foreach ($affectedUserList as $user) {
+			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
+		}
+		$affectedUser = serialize($affectedUserTmp);
+		$affectedUserGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_employee'));
+
+		/*
+		 * Retrieve informations about evaluators users and groups asociated to an element
+		 */
+		$affectedUserTmp = array();
+		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement . '_evaluation', $idElement);
+		foreach ($affectedUserList as $user) {
+			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
+		}
+		$affectedEvaluators = serialize($affectedUserTmp);
+		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
+
+		/*
+		 * Get the main picture for current element
+		 */
+		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
+		$defaultPictureToSet = '';
+		if ($defaultPicture != 'error') {
+			$defaultPictureToSet = $defaultPicture;
+		}
+		else {
+			$defaultPictureToSet = 'noDefaultPicture';
+		}
+
+		/*
+		 * Default element
+		 */
+		$element = $tableElement;
+
+		/*
+		 * Get risk list for current element
+		 */
+		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement, (!empty($informations['sheet_output_type']) ? $informations['sheet_output_type'] : ''), $informations['recursiv_mode']));
+
+		/*
+		 * Check element type
+		 */
+		if ( $informations['sheet_type'] == 'digi_groupement' ) {
+			$recommandation = '';
+			$element = $tableElement . '_FGP';
+			$model_shape = 'fiche_de_groupement';
+			$document_final_name = '_ficheDeGroupement_';
+		}
+		else if ( $informations['sheet_type'] == 'digi_unite_travail' ) {
+			/*
+			 * Get recommandations associated to the element
+			 */
+			$recommandationList = array();
+			$affectedRecommandation = evaRecommandation::getRecommandationListForElement($tableElement, $idElement);
+			$i = $oldIdRecommandationCategory = 0;
+			foreach ($affectedRecommandation as $recommandation) {
+				if ($oldIdRecommandationCategory != $recommandation->recommandation_category_id) {
+					$i = 0;
+					$oldIdRecommandationCategory = $recommandation->recommandation_category_id;
+				}
+				$recommandationCategoryMainPicture = evaPhoto::getMainPhoto(TABLE_CATEGORIE_PRECONISATION, $recommandation->recommandation_category_id);
+				$recommandationCategoryMainPicture = evaPhoto::checkIfPictureIsFile($recommandationCategoryMainPicture, TABLE_CATEGORIE_PRECONISATION);
+				if ($recommandationCategoryMainPicture != false) {
+					$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = str_replace(EVA_HOME_URL, '', str_replace(EVA_GENERATED_DOC_URL, '', $recommandationCategoryMainPicture));
+				}
+				else {
+					$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_photo'] = 'noDefaultPicture';
+				}
+				$recommandationList[$recommandation->recommandation_category_id][$i]['id_preconisation'] = $recommandation->id_preconisation;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['efficacite'] = $recommandation->efficacite;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['commentaire'] = $recommandation->commentaire;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_category_name'] = $recommandation->recommandation_category_name;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['recommandation_name'] = $recommandation->recommandation_name;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandationCategorie'] = $recommandation->impressionRecommandationCategorie;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandationCategorie'] = $recommandation->tailleimpressionRecommandationCategorie;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['impressionRecommandation'] = $recommandation->impressionRecommandation;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['tailleimpressionRecommandation'] = $recommandation->tailleimpressionRecommandation;
+				$recommandationList[$recommandation->recommandation_category_id][$i]['photo'] = $recommandation->photo;
+				$i++;
+			}
+			$recommandation = serialize($recommandationList);
+			$model_shape = 'fiche_de_poste';
+			$document_final_name = '_ficheDePoste_';
+		}
+		else if ( $informations['sheet_type'] == 'digi_risk_listing' ) {
+			$recommandation = '';
+			$element = $tableElement . '_RS';
+			$model_shape = 'listing_des_risques';
+			$document_final_name = '_listingRisque_';
+		}
+
+		/*
+		 * Check the model to use for document
+		 */
+		$modelToUse = eva_gestionDoc::getDefaultDocument($model_shape);
+		if ( ($informations['id_model'] != 'undefined') && ($informations['id_model'] > 0) ) {
+			$modelToUse = $informations['id_model'];
+		}
+
+		/*
+		 * Generate document name from given parameters
+		 */
+		if ( $informations['nomDuDocument'] == '' ) {
+			$dateElement = explode(' ', $informations['dateCreation']);
+			$documentName = str_replace('-', '', $dateElement[0]) . $document_final_name . digirisk_tools::slugify_noaccent(str_replace(' ', '_', (!empty($informations['nomEntreprise']) ? $informations['nomEntreprise'] : $current_element->nom)));
+			$informations['nomDuDocument'] = $documentName;
+		}
+
+		/**
+		 * Enregistrement du document
+		 */
+		$new_sheet_params = array();
+		$new_sheet_params['id'] 					= '';
+		$new_sheet_params['creation_date'] 			= current_time('mysql', 0);
+		$new_sheet_params['revision'] 				= $revisionDocument;
+		$new_sheet_params['id_element'] 			= $idElement;
+		$new_sheet_params['id_model'] 				= $modelToUse;
+		$new_sheet_params['table_element'] 			= $tableElement;
+		$new_sheet_params['reference'] 				= $referenceDocument;
+		$new_sheet_params['name'] 					= $informations['nomDuDocument'];
+		$new_sheet_params['description'] 			= $informations['description'];
+		$new_sheet_params['adresse']				= $informations['adresse'];
+		$new_sheet_params['telephone'] 				= $informations['telephone'];
+		$new_sheet_params['defaultPicturePath'] 	= $defaultPictureToSet;
+		$new_sheet_params['societyName'] 			= digirisk_tools::slugify_noaccent($informations['nomEntreprise']);
+		$new_sheet_params['users'] 					= $affectedUser;
+		$new_sheet_params['userGroups'] 			= $affectedUserGroups;
+		$new_sheet_params['evaluators'] 			= $affectedEvaluators;
+		$new_sheet_params['evaluatorsGroups'] 		= $affectedEvaluatorsGroups;
+		$new_sheet_params['unitRisk'] 				= $unitRisk;
+		$new_sheet_params['recommandation'] 		= $recommandation;
+		$new_sheet_params['document_type'] 			= $model_shape;
+		$new_sheet = $wpdb->insert(TABLE_FP, $new_sheet_params);
+		if ( $new_sheet === false ) {
+			$status['result'] = 'error';
+			$status['errors']['query_error'] = __("Une erreur est survenue lors de l'enregistrement", 'evarisk');
+			$status['errors']['query'] = $query;
+		}
+		else {
+			$status['result'] = 'ok';
+			/*	Save the odt file	*/
+			eva_gestionDoc::generateSummaryDocument($element, $idElement, 'odt');
+		}
+
+		return $status;
+	}
+
+	/**
 	*	Generate an output of summary about the risk on an element. Could be a "single document" or a "work unit sheet"
 	*
 	*	@param mixed $tableElement The element type we want to generate the document for
@@ -355,29 +681,19 @@ class eva_gestionDoc
 	*
 	*	@return mixed Depending on the output type we ask for, an html output or a file
 	*/
-	function generateSummaryDocument($tableElement, $idElement, $outputType, $idDocument = '')
-	{
+	function generateSummaryDocument($tableElement, $idElement, $outputType, $idDocument = '') {
 		global $typeRisque;
 		global $typeRisquePlanAction;
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/templateDocumentUnique.tpl.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'gestionDocumentaire/gestionDoc.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'arborescence/arborescence_special.class.php');
 
-		switch($tableElement)
-		{
+		switch ($tableElement) {
 			case TABLE_GROUPEMENT:
-			{
 				/**
 				*	Get the last summary document generated for the current element OR Get a given generated summary document
 				*/
-				if($idDocument != '')
-				{
-					$lastDocument = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement, $idDocument);
-				}
-				else
-				{
-					$lastDocument = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement);
-				}
+				$lastDocument = eva_documentUnique::getDernierDocumentUnique($tableElement, $idElement, $idDocument);
 				/**
 				*	Store the different informations about the last generated summary document in an array for more usability
 				*/
@@ -400,47 +716,35 @@ class eva_gestionDoc
 				$documentUniqueParam['#ALERTE#'] = $lastDocument->alerteDUER;
 
 				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'documentUnique/modeleDefaut.odt';
-			}
-			break;
+				break;
 			case TABLE_UNITE_TRAVAIL:
-			{
 				/**
 				*	Get the last summary document generated for the current element OR Get a given generated summary document
 				*/
-				if($idDocument != '')
-				{
-					$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last', $idDocument);
-				}
-				else
-				{
-					$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
-				}
+				$lastDocument = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', $idDocument, 'fiche_de_poste');
 				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/modeleDefaut.odt';
-			}
-			break;
-			case TABLE_GROUPEMENT . '_FGP':
-			{
+				break;
+			case TABLE_GROUPEMENT . '_FGP' :
 				/**
 				*	Get the last summary document generated for the current element OR Get a given generated summary document
 				*/
-				if($idDocument != '')
-				{
-					$lastDocument = eva_GroupSheet::getGeneratedDocument(TABLE_GROUPEMENT, $idElement, 'last', $idDocument);
-				}
-				else
-				{
-					$lastDocument = eva_GroupSheet::getGeneratedDocument(TABLE_GROUPEMENT, $idElement, 'last');
-				}
+				$lastDocument = eva_gestionDoc::getGeneratedDocument(str_replace('_FGP', '', $tableElement), $idElement, 'last', $idDocument, 'fiche_de_groupement');
 				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/modeleDefaut_groupement.odt';
-			}
-			break;
+				break;
+			case TABLE_GROUPEMENT . '_RS' :
+			case TABLE_UNITE_TRAVAIL . '_RS' :
+				/**
+				*	Get the last summary document generated for the current element OR Get a given generated summary document
+				*/
+				$lastDocument = eva_gestionDoc::getGeneratedDocument(str_replace('_RS', '', $tableElement), $idElement, 'last', $idDocument, 'listing_des_risques');
+				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'listingRisque/modeleDefault_listing_risque.odt';
+				break;
 		}
 
 		/**
 		*	If user ask for an "odt" file we include different librairies and model
 		*/
-		if($outputType == 'odt')
-		{
+		if($outputType == 'odt') {
 			require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
 
 			$config = array(
@@ -453,8 +757,7 @@ class eva_gestionDoc
 			/**
 			*	Get the last used model
 			*/
-			if($lastDocument->id_model > 1)
-			{
+			if($lastDocument->id_model > 1) {
 				$pathToModelFile = eva_gestionDoc::getDocumentPath($lastDocument->id_model);
 				$odf = new odf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
 			}
@@ -535,7 +838,7 @@ class eva_gestionDoc
 					$groupesUtilisateur = unserialize($lastDocument->groupesUtilisateurs);
 					if( is_array($groupesUtilisateur) )
 					{
-					$listeGroupeUtilisateur = 
+					$listeGroupeUtilisateur =
 							'<table summary="userGroupsSummary' . $tableElement . '-' . $idElement . '" cellpadding="0" cellspacing="0" class="widefat post fixed">
 								<thead>
 									<tr>
@@ -544,7 +847,7 @@ class eva_gestionDoc
 										<th>' . __('Nombre d\'utilisateur du groupe', 'evarisk') . '</th>
 									</tr>
 								</thead>
-								<tfoot></tfoot>						
+								<tfoot></tfoot>
 								<tbody>
 									' . digirisk_groups::outputGroupListing($groupesUtilisateur, 'html') . '
 								</tbody>
@@ -560,7 +863,7 @@ class eva_gestionDoc
 					$groupesUtilisateursAffectes = unserialize($lastDocument->groupesUtilisateursAffectes);
 					if( is_array($groupesUtilisateursAffectes) )
 					{
-					$listeGroupeUtilisateur = 
+					$listeGroupeUtilisateur =
 							'<table summary="userGroupsSummary' . $tableElement . '-' . $idElement . '" cellpadding="0" cellspacing="0" class="widefat post fixed">
 								<thead>
 									<tr>
@@ -568,7 +871,7 @@ class eva_gestionDoc
 										<th>' . __('Groupes utilisateurs (m&eacute;tiers)', 'evarisk') . '</th>
 									</tr>
 								</thead>
-								<tfoot></tfoot>						
+								<tfoot></tfoot>
 								<tbody>
 									' . eva_documentUnique::readExportedDatas($groupesUtilisateursAffectes, 'affectedUserGroup', '', 'html') . '
 								</tbody>
@@ -690,7 +993,7 @@ class eva_gestionDoc
 					$bilanParUnite = unserialize($lastDocument->risquesParUnite);
 					if( is_array($bilanParUnite) )
 					{
-					$risqueParUniteDeTravail = 
+					$risqueParUniteDeTravail =
 							'<table summary="risqsSummary' . $tableElement . '-' . $idElement . '" cellpadding="0" cellspacing="0" class="widefat post fixed">
 								<thead>
 									<tr>
@@ -698,7 +1001,7 @@ class eva_gestionDoc
 										<th>' . __('Somme des quotations', 'evarisk') . '</th>
 									</tr>
 								</thead>
-								<tfoot></tfoot>						
+								<tfoot></tfoot>
 								<tbody>
 									' . eva_documentUnique::readExportedDatas($bilanParUnite, 'riskByElement', '', 'html') . '
 								</tbody>
@@ -736,11 +1039,9 @@ class eva_gestionDoc
 		/**
 		*	Generate the odt file
 		*/
-		elseif($outputType == 'odt')
-		{
+		else if ($outputType == 'odt') {
 			ini_set("memory_limit","256M");
-			switch($tableElement)
-			{
+			switch ($tableElement) {
 				case TABLE_GROUPEMENT:
 				{
 					$documentUniqueParam['#NOMENTREPRISE#'] = str_replace('<br />', "
@@ -773,8 +1074,7 @@ class eva_gestionDoc
 
 					$documentUniqueParam['#DISPODESPLANS#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#']));
-					if(trim($documentUniqueParam['#DISPODESPLANS#']) == '')
-					{
+					if (trim($documentUniqueParam['#DISPODESPLANS#']) == '') {
 						$documentUniqueParam['#DISPODESPLANS#'] = __('La localisation n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
 					}
 
@@ -801,10 +1101,10 @@ class eva_gestionDoc
 							{
 								$element['userGroupName'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent($element['userGroupName']));
-								$element['userGroupName'] = str_replace('&nbsp;', ' ', $element['userGroupName']);
+								$element['userGroupName'] = str_replace('&nbsp;', 'ï¿½', $element['userGroupName']);
 								$element['userGroupDescription'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent($element['userGroupDescription']));
-								$element['userGroupDescription'] = str_replace('&nbsp;', ' ', $element['userGroupDescription']);
+								$element['userGroupDescription'] = str_replace('&nbsp;', 'ï¿½', $element['userGroupDescription']);
 								$userGroup->nomGroupe(digirisk_tools::slugify_noaccent($element['userGroupName']));
 								$userGroup->descriptionGroupe(digirisk_tools::slugify_noaccent($element['userGroupDescription']));
 								$userGroup->nombreUtilisateursGroupe($element['userGroupTotalUserNumber']);
@@ -836,49 +1136,19 @@ class eva_gestionDoc
 						}
 					}
 
-					{/*	Remplissage du template pour les risques unitaires	*/
-						$listeRisques = unserialize($lastDocument->risquesUnitaires);
-						$listeRisque = eva_documentUnique::readBilanUnitaire($listeRisques);
+					/*	Remplissage du template pour les risques unitaires	*/
+					$listeRisques = unserialize($lastDocument->risquesUnitaires);
+					$listeRisque = eva_documentUnique::readBilanUnitaire($listeRisques);
 
-						/*	Lecture des types de risques existants	*/
-						foreach($typeRisque as $riskTypeIdentifier => $riskTypeValue)
-						{
-							$risque = $odf->setSegment($riskTypeIdentifier);
-							if($risque)
-							{
-								if( is_array($listeRisque[$riskTypeValue]) )
-								{
-									foreach($listeRisque[$riskTypeValue] AS $elements)
-									{
-										foreach($elements AS $element)
-										{
-											$element['nomElement'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
-											$element['identifiantRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
-											$element['quotationRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
-											$element['nomDanger'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
-											$element['commentaireRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
-
-											$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
-											$risque->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
-											$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
-											$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
-											$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
-									
-											$risque->merge();
-										}
-									}
-								}
-								$odf->mergeSegment($risque);
-							}
+					/*	Lecture des types de risques existants	*/
+					foreach ($typeRisque as $riskTypeIdentifier => $riskTypeValue) {
+						$risque = $odf->setSegment($riskTypeIdentifier);
+						if($risque) {
+							$odf->mergeSegment(self::transform_risk_listing ($listeRisque[$riskTypeValue], $risque));
 						}
 					}
 
-					{/*	Remplissage du template pour les risques par groupement et unité	*/
+					{/*	Remplissage du template pour les risques par groupement et unitï¿½	*/
 						$listeGroupement = array();
 						$bilanParUnite = unserialize($lastDocument->risquesParUnite);
 						$listeGroupement = eva_documentUnique::readExportedDatas($bilanParUnite, 'riskByElement', '', 'print');
@@ -976,22 +1246,23 @@ class eva_gestionDoc
 				case TABLE_GROUPEMENT . '_FGP':
 				case TABLE_UNITE_TRAVAIL:
 				{
-					if($tableElement == TABLE_GROUPEMENT . '_FGP')
-					{
+					if ($tableElement == TABLE_GROUPEMENT . '_FGP') {
 						$workUnitinformations = EvaGroupement::getGroupement($idElement);
 
 						$odf->setVars('reference', ELEMENT_IDENTIFIER_GP . $idElement);
 						$odf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeGroupement/' . TABLE_GROUPEMENT . '/' . $idElement . '/';
 					}
-					else
-					{
+					else {
 						$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
 
 						$odf->setVars('referenceUnite', ELEMENT_IDENTIFIER_UT . $idElement);
 						$odf->setVars('nomUnite', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
+						$odf->setVars('reference', ELEMENT_IDENTIFIER_UT . $idElement);
+						$odf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
 					}
+
 					$odf->setVars('description', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($lastDocument->description)));
 					$odf->setVars('telephone', str_replace('<br />', "
@@ -1051,97 +1322,28 @@ class eva_gestionDoc
 						}
 					}
 
-					{/*	Remplissage du template pour les groupes d'utilisateurs affectes	*/
+					/*	Remplissage du template pour les groupes d'utilisateurs affectes	*/
 						$listeDesGroupesAffectes = array();
 						$listeDesGroupesAffectes = unserialize($lastDocument->userGroups);
 
 						$userGroupAffected = $odf->setSegment('gpUserAffected');
-						if($userGroupAffected)
-						{
-							foreach($listeDesGroupesAffectes AS $element)
-							{
-								$element['name'] = str_replace('<br />', "
-	", digirisk_tools::slugify_noaccent($element['name']));
-								$element['name'] = str_replace('&nbsp;', ' ', $element['name']);
-								$element['description'] = str_replace('<br />', "
-	", digirisk_tools::slugify_noaccent($element['description']));
-								$element['description'] = str_replace('&nbsp;', ' ', $element['description']);
-								$userGroupAffected->idGroupe(digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_GPU . $element['id']));
-								$userGroupAffected->nomGroupe(digirisk_tools::slugify_noaccent($element['name']));
-								$userGroupAffected->descriptionGroupe(digirisk_tools::slugify_noaccent($element['description']));
-								$userList = '';
-								if($element['userList'] == '')
-								{
-									$element['userNumber'] = '0';
-								}
-								else
-								{
-									if(substr($element['userList'], -1) == ',')
-									{
-										$element['userList'] = substr($element['userList'], 0, -1);
-									}
-									$groupUsers = explode(',', $element['userList']);
-									$element['userNumber'] = count($groupUsers);
-									foreach($groupUsers as $user)
-									{
-										if($user > 0)
-										{
-											$userInformations = evaUser::getUserInformation($user);
-											$userList .= $userInformations[$user]['user_lastname'] . ' ' . $userInformations[$user]['user_firstname'] . ', ';
-										}
-									}
-								}
-								$userGroupAffected->nombreUtilisateur($element['userNumber']);
-								$userGroupAffected->listeUtilisateur($userList);
-								$userGroupAffected->merge();
-							}
-							$odf->mergeSegment($userGroupAffected);
+						if ($userGroupAffected) {
+							$odf->mergeSegment( self::transform_users_group($listeDesGroupesAffectes, $userGroupAffected) );
 						}
-					}
 
-					{/*	Remplissage du template pour les risques unitaires	*/
+					/*	Remplissage du template pour les risques unitaires	*/
 						$listeRisques = unserialize($lastDocument->unitRisk);
 						$listeRisque = eva_documentUnique::readBilanUnitaire($listeRisques);
 
 						/*	Lecture des types de risques existants	*/
-						foreach($typeRisque as $riskTypeIdentifier => $riskTypeValue)
-						{
+						foreach ($typeRisque as $riskTypeIdentifier => $riskTypeValue) {
 							$risque = $odf->setSegment($riskTypeIdentifier);
-							if($risque)
-							{
-								if( is_array($listeRisque[$riskTypeValue]) )
-								{
-									foreach($listeRisque[$riskTypeValue] AS $elements)
-									{
-										foreach($elements AS $element)
-										{
-											$element['nomElement'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
-											$element['identifiantRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
-											$element['quotationRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
-											$element['nomDanger'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
-											$element['commentaireRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
-
-											$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
-											$risque->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
-											$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
-											$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
-											$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
-									
-											$risque->merge();
-										}
-									}
-								}
-								$odf->mergeSegment($risque);
+							if($risque) {
+								$odf->mergeSegment(self::transform_risk_listing($listeRisque[$riskTypeValue], $risque));
 							}
 						}
-					}
 
-					{/*	Remplissage du template pour les préconisations afffectées à l'unité de travail	*/
+					{/*	Remplissage du template pour les prï¿½conisations afffectï¿½es ï¿½ l'unitï¿½ de travail	*/
 						$listePreconisationsAffectees = array();
 						$listePreconisationsAffectees = unserialize($lastDocument->recommandation);
 
@@ -1180,7 +1382,7 @@ class eva_gestionDoc
 										$recommandation['recommandation_name'] = '';
 										$recommandation['commentaire'] = '';
 									}
-									
+
 									if($recommandation['commentaire'] != '')
 									{
 										$recommandation['commentaire'] = " : " . $recommandation['commentaire'] . "
@@ -1192,15 +1394,13 @@ class eva_gestionDoc
 									$afffectedRecommandation->recommandations->setVars('recommandationComment', str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent($recommandation['commentaire'])));
 
-									if(($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly') || ($recommandationCategory[0]['impressionRecommandation'] == 'textandpicture'))
-									{
+									if (($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly') || ($recommandationCategory[0]['impressionRecommandation'] == 'textandpicture')) {
 										$recommandationIcon = evaPhoto::checkIfPictureIsFile($recommandation['photo'], TABLE_PRECONISATION);
 										$recommandationIcon = str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $recommandationIcon);
 										$recommandationIcon = str_replace(EVA_HOME_URL, EVA_HOME_DIR, $recommandationIcon);
 										$afffectedRecommandation->recommandations->setImage('recommandationIcon', $recommandationIcon , $recommandationCategory[0]['tailleimpressionRecommandation']);
 									}
-									else
-									{
+									else {
 										$afffectedRecommandation->recommandations->setVars('recommandationIcon', '');
 									}
 
@@ -1223,6 +1423,37 @@ class eva_gestionDoc
 					$fileName = str_replace(' ', '',$lastDocument->name) . '_V' . $lastDocument->revision;
 				}
 				break;
+				case TABLE_GROUPEMENT . '_RS' :
+				case TABLE_UNITE_TRAVAIL . '_RS' :
+						$listing_risk_params = array();
+						if ($tableElement == TABLE_GROUPEMENT . '_RS') {
+							$current_element = EvaGroupement::getGroupement($idElement);
+							$element_identifier = ELEMENT_IDENTIFIER_GP;
+							$element_directory = TABLE_GROUPEMENT;
+						}
+						else {
+							$current_element = eva_UniteDeTravail::getWorkingUnit($idElement);
+							$element_identifier = ELEMENT_IDENTIFIER_UT;
+							$element_directory = TABLE_UNITE_TRAVAIL;
+						}
+						$odf->setVars('reference', $element_identifier . $idElement);
+						$odf->setVars('nom', digirisk_tools::slugify_noaccent($current_element->nom));
+						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'listingRisque/' . $element_directory . '/' . $idElement . '/';
+
+						/*	Remplissage du template pour les risques unitaires	*/
+						$listeRisques = unserialize($lastDocument->unitRisk);
+						$listeRisque = eva_documentUnique::readBilanUnitaire($listeRisques, 'risk_summary');
+
+						/*	Lecture des types de risques existants	*/
+						foreach ($typeRisque as $riskTypeIdentifier => $riskTypeValue) {
+							$risque = $odf->setSegment($riskTypeIdentifier);
+							if($risque) {
+								$odf->mergeSegment(self::transform_risk_listing($listeRisque[$riskTypeValue], $risque));
+							}
+						}
+
+						$fileName = str_replace(' ', '', $lastDocument->name) . '_V' . $lastDocument->revision;
+					break;
 			}
 
 			if(!is_dir($finalDir)){
@@ -1230,6 +1461,100 @@ class eva_gestionDoc
 			}
 			$odf->saveToDisk($finalDir . $fileName . '.odt');
 		}
+	}
+
+	/**
+	 * Transform output for users group
+	 *
+	 * @param array $liste_groupes The users group list to read and to put into
+	 * @param object $odf_element The element part to fill into document
+	 * @return object
+	 */
+	function transform_users_group($liste_groupes, $odf_element) {
+
+		foreach ($liste_groupes AS $element) {
+			$element['name'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent($element['name']));
+			$element['name'] = str_replace('&nbsp;', 'ï¿½', $element['name']);
+			$element['description'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent($element['description']));
+			$element['description'] = str_replace('&nbsp;', 'ï¿½', $element['description']);
+			$odf_element->idGroupe(digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_GPU . $element['id']));
+			$odf_element->nomGroupe(digirisk_tools::slugify_noaccent($element['name']));
+			$odf_element->descriptionGroupe(digirisk_tools::slugify_noaccent($element['description']));
+			$userList = '';
+			if ($element['userList'] == '') {
+				$element['userNumber'] = '0';
+			}
+			else {
+				if (substr($element['userList'], -1) == ',') {
+					$element['userList'] = substr($element['userList'], 0, -1);
+				}
+				$groupUsers = explode(',', $element['userList']);
+				$element['userNumber'] = count($groupUsers);
+				foreach ($groupUsers as $user) {
+					if ($user > 0) {
+						$userInformations = evaUser::getUserInformation($user);
+						$userList .= $userInformations[$user]['user_lastname'] . ' ' . $userInformations[$user]['user_firstname'] . ', ';
+					}
+				}
+			}
+			$odf_element->nombreUtilisateur($element['userNumber']);
+			$odf_element->listeUtilisateur($userList);
+			$odf_element->merge();
+		}
+
+		return $odf_element;
+	}
+
+	/**
+	 * Generate risk listing
+	 *
+	 * @param array $listeRisque The element list to use for filling document
+	 * @param object $risque The part of output document to fill
+	 *
+	 * @return object The generated output
+	 */
+	function transform_risk_listing ($listeRisque, $risque) {
+		if ( is_array($listeRisque) ) {
+			foreach ($listeRisque AS $elements) {
+				foreach ($elements AS $element) {
+					$element['nomElement'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+					$element['identifiantRisque'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
+					$element['quotationRisque'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+					$element['nomDanger'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+					$element['commentaireRisque'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+					$element['actionPrevention'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
+					$element['methodeElement'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['methodeElement']));
+
+					$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
+					$risque->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
+					$risque->setVars('quotationRisque', $element['quotationRisque'], true, 'UTF-8');
+					$risque->setVars('nomDanger', $element['nomDanger'], true, 'UTF-8');
+					$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
+					$risque->setVars('actionPrevention', $element['actionPrevention'], true, 'UTF-8');
+					$risque->setVars('methodeElement', $element['methodeElement'], true, 'UTF-8');
+
+					if(is_file(EVA_GENERATED_DOC_DIR . $element['photoAssociee'])){
+						$risque->setImage('photoAssociee', EVA_GENERATED_DOC_DIR . $element['photoAssociee'], digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
+					}
+					else{
+						$risque->setVars('photoAssociee', digirisk_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
+					}
+
+					$risque->merge();
+				}
+			}
+		}
+
+		return $risque;
 	}
 
 	/**
@@ -1342,7 +1667,7 @@ class eva_gestionDoc
 				else{
 					$document_list_output .= __('Impossible de trouver le fichier sur le disque', 'evarisk');
 				}
-				$document_list_output .= 
+				$document_list_output .=
 		'</td>
 	</tr>';
 			}
@@ -1357,7 +1682,7 @@ class eva_gestionDoc
 		jQuery(".delete_associated_document").click(function(){
 			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer ce document?', 'evarisk') . '"))){
 				jQuery("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-					"post":"true", 
+					"post":"true",
 					"table":"' . TABLE_GED_DOCUMENTS . '",
 					"tableElement":"' . $tableElement . '",
 					"idElement":"' . $idElement . '",
@@ -1374,5 +1699,99 @@ class eva_gestionDoc
 		}
 
 		return $document_list_output;
+	}
+
+	/**
+	 *	Generate a form to save work unit sheet collection for a groupment
+	 *
+	 *	@param mixed $tableElement The element type we want to get form for
+	 *	@param integer $idElement The element identifier we wan to get form for
+	 *
+	 *	@return string The hmtl code outputing the form to generate work unit sheet collection for a groupment
+	 */
+	function getRiskListingGenerationForm($tableElement, $idElement) {
+		$tableElementForDoc = $tableElement . '_RS';
+// 		<div id="workUnitSheetCollectionModelSelector" >
+// 		<div>
+// 		<input type="checkbox" id="modelDefaut" checked="checked" name="modelUse" value="modeleDefaut" />
+// 		<label for="modelDefaut" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+// 		</div>
+// 		<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
+// 		</div>
+
+		$output = '
+<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
+	<tr>
+		<td id="documentFormContainer" >';
+		if ( $tableElement == TABLE_GROUPEMENT ) {
+			$output .= '<div><input type="checkbox" checked="checked" class="clear" value="yes" id="recursiv_mode" name="recursiv_mode" /> <label for="recursiv_mode" >' . __('Lister les risques de mani&egrave;re r&eacute;cursive', 'evarisk') . '</label></div>';
+		}
+		$output .= '<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer la synth&egrave;se des risques', 'evarisk') . '" id="save_list_risk" />
+		</td>
+		<td id="documentModelContainer" >&nbsp;</td>
+	</tr>
+</table>
+<script type="text/javascript" >
+	digirisk("#save_list_risk").click(function() {
+		var recursiv_mode = false;
+		if (jQuery("#recursiv_mode").is(":checked")) {
+			recursiv_mode = true;
+		}
+		digirisk("#documentFormContainer").html(digirisk("#loadingImg").html());
+		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			"post":"true",
+			"table":"' . TABLE_GED_DOCUMENTS . '",
+			"act":"save_list_risk",
+			"recursiv_mode": recursiv_mode,
+			"tableElement":"' . $tableElement . '",
+			"idElement":' . $idElement . ',
+			"id_model":digirisk("#modelToUse' . $tableElementForDoc . '").val()
+		});
+	});
+
+	digirisk("#modelDefaut").click(function(){
+		setTimeout(function(){
+			if (!digirisk("#modelDefaut").is(":checked")) {
+				digirisk("#documentModelContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+				digirisk("#documentModelContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
+				digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":""});
+				digirisk("#modelListForGeneration").show();
+			}
+			else {
+				digirisk("#documentModelContainer").html("");
+				digirisk("#modelListForGeneration").html("");
+				digirisk("#modelListForGeneration").hide();
+			}
+		},600);
+	});
+</script>';
+
+		return $output;
+	}
+
+	/**
+	 *	Get the history of work unit sheet generated for a given element
+	 *
+	 *	@param mixed $tableElement The element type we want to get form for
+	 *	@param integer $idElement The element identifier we wan to get form for
+	 *
+	 *	@return string The html code output with the list of document or a message saying there no document for this element
+	 */
+	function getRiskListingGenerationHistory($tableElement, $idElement) {
+		$output = '';
+
+		$ficheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiche_de_poste_groupement', "dateCreation DESC");
+		if (count($ficheDePoste_du_Groupement) > 0) {
+			foreach ($ficheDePoste_du_Groupement as $fdpGpt) {
+				if (is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom)) {
+					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: (%s) <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), ELEMENT_IDENTIFIER_GFP . $fdpGpt->id, EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
+				}
+			}
+		}
+		else {
+			$output .= __('Aucune fiche n\'a &eacute;t&eacute; cr&eacute;e pour le moment', 'evarisk');
+		}
+
+		return $output;
 	}
 }

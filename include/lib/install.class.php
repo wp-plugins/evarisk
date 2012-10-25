@@ -848,6 +848,11 @@ class digirisk_install
 					}
 				}
 			break;
+
+			case 76:
+				$wpdb->update(TABLE_FP, array('document_type' => 'fiche_de_groupement'), array('table_element' => TABLE_GROUPEMENT));
+				$wpdb->update(TABLE_FP, array('document_type' => 'fiche_de_poste'), array('table_element' => TABLE_UNITE_TRAVAIL));
+			break;
 		}
 	}
 

@@ -1611,7 +1611,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											min:	' . $variable->min . ',
 											max:	' . $variable->max . ',
 											slide: function(event, ui){
-												jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val(ui.value);
+												jQuery("#' . $formId . '_digi_eval_method_var_' . $variable->id . '").val(ui.value);
 											},
 											stop: function(event, ui){
 												live_risk_calcul();
@@ -1620,8 +1620,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val(jQuery("#' . $formId . 'slider-range-min' . $variable->id . '").slider("value"));';
 
 									$affichage .= '
-									<label for="' . $formId . 'var' . $variable->id . 'FormRisque">' . ELEMENT_IDENTIFIER_V . $variable->id . ' - ' . $variable->nom . ' :</label>
-									<input type="text" class="sliderValue" readonly="readonly" id="' . $formId . 'var' . $variable->id . 'FormRisque" name="' . $formId . 'variables[' . $variable->id . ']" />
+									<label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '">' . ELEMENT_IDENTIFIER_V . $variable->id . ' - ' . $variable->nom . ' :</label>
+									<input value="' . $valeurInitialVariable . '" type="text" class="sliderValue digi_method_var_value" readonly="readonly" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '" name="' . $formId . 'variables[' . $variable->id . ']" />
 									<div id="' . $formId . 'slider-range-min' . $variable->id . '" class="slider_variable"></div>';
 								}
 								else {
@@ -1631,15 +1631,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
                                  	$i = $variable->min;
                                  	foreach ($tableau as $t) {
                                  		$checked = ($i == $valeurInitialVariable) ? ' checked="checked"' : '';
-                                 		$affichage.= '<input type="radio" id="' . $formId . 'variables_' . $variable->id . '_' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="score_risque_checkbox" value="'.$i.'"/><label for="' . $formId . 'variables_' . $variable->id . '_' . $i . '" >'.sprintf($t['question'], $t['seuil']).'</label><br/>';
+                                 		$affichage.= '<input type="radio" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="digi_method_var_value score_risque_checkbox" value="'.$i.'" /><label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '" >'.sprintf($t['question'], $t['seuil']).'</label><br/>';
                                  		$i++;
                                  	}
-			                    	$affichage .='<input type="hidden" id="' . $formId . 'var' . $variable->id . 'FormRisque" value=""/>';
-                                 	$affichage.= '
+			                    	$affichage .='<input type="hidden" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '" value="" />
                                  	<script type="text/javascript" >
-                                 		jQuery(".score_risque_checkbox").change(function(){
+                                 		jQuery(".score_risque_checkbox").change( function() {
                                  			var score = parseInt(jQuery(this).val());
-                                 			jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val(score);
+                                 			jQuery("#' . $formId . '_digi_eval_method_var_' . $variable->id . '").val(score);
                                  			live_risk_calcul();
                                  		 });
                                  	</script>';
@@ -1678,7 +1677,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$formule = '';
 						foreach($listeVariables as $index => $variable){
 							$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $variable->id, 'Valid');
-							$formule .= 'parseInt(jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val())';
+							$formule .= 'parseInt(jQuery("#' . $formId . '_digi_eval_method_var_' . $variable->id . '").val())';
 							$formule .= (isset($listeOperateur[$index]->operateur) && ($listeOperateur[$index]->operateur!= '')) ? ' ' . $listeOperateur[$index]->operateur . ' ' : '';
 						}
 						if($formule == ''){
@@ -3679,7 +3678,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo  eva_documentUnique::getBoxBilan($tableElement, $idElement);
 					break;
 					case 'voirHistoriqueDocument' :
-					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 
@@ -3688,6 +3686,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	<div class="alignleft selected" id="generatedDUER" >' . __('Document unique', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
 </div>';
 
 						/*	Start "document unique" part	*/
@@ -3695,17 +3694,22 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						/*	Start groupe sheet part	*/
 						$output .= '<div class="hide generatedDocContainer" id="generatedFGPContainer" ><div class="clear bold" >' . __('Fiches du groupement courant', 'evarisk') . '</div>
-						<div class="FGPContainer" >' . eva_GroupSheet::getGeneratedDocument($tableElement, $idElement, 'list') . '</div><div class="clear" >&nbsp;</div>
+						<div class="FGPContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_de_groupement') . '</div><div class="clear" >&nbsp;</div>
 						<div class="clear bold" >' . __('Fiches des sous-groupements du groupement courant', 'evarisk') . '</div>
 						<div class="FGPContainer" >' . eva_GroupSheet::getGroupSheetCollectionHistory($tableElement, $idElement) . '</div></div>';
 
 						/*	Start work unit sheet part	*/
 						$output .= '<div class="hide generatedDocContainer" id="generatedFPContainer" ><div class="clear bold" >' . __('Fiches de poste pour le groupement', 'evarisk') . '</div>
-						<div class="FPContainer" >' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '</div></div>
+						<div class="FPContainer" >' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '</div></div>';
 
+						/*	Start risk listing summary part	*/
+						$output .= '<div class="hide generatedDocContainer" id="generatedRSContainer" ><div class="clear bold" >' . __('Fiches de synth&egrave;se des risques', 'evarisk') . '</div>
+						<div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'listing_des_risques') . '</div></div>';
+
+						$output .= '
 <div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
 <script type="text/javascript" >
-	digirisk("#generatedDUER").click(function(){
+	digirisk("#summaryGeneratedDocumentSlector div").click(function(){
 		digirisk("#summaryGeneratedDocumentSlector div").each(function(){
 			digirisk(this).removeClass("selected");
 		});
@@ -3713,30 +3717,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			digirisk(this).hide();
 		});
 		digirisk(this).addClass("selected");
-		digirisk("#generatedDUERContainer").show();
+		digirisk("#" + jQuery(this).attr("id") + "Container").show();
 	});
 
-	digirisk("#generatedFGP").click(function(){
-		digirisk("#summaryGeneratedDocumentSlector div").each(function(){
-			digirisk(this).removeClass("selected");
-		});
-		digirisk(".generatedDocContainer").each(function(){
-			digirisk(this).hide();
-		});
-		digirisk(this).addClass("selected");
-		digirisk("#generatedFGPContainer").show();
-	});
-
-	digirisk("#generatedFP").click(function(){
-		digirisk("#summaryGeneratedDocumentSlector div").each(function(){
-			digirisk(this).removeClass("selected");
-		});
-		digirisk(".generatedDocContainer").each(function(){
-			digirisk(this).hide();
-		});
-		digirisk(this).addClass("selected");
-		digirisk("#generatedFPContainer").show();
-	});
 	var currentTab = digirisk("#subTabSelector").val();
 	if(currentTab != ""){
 		digirisk("#generated" + currentTab).click();
@@ -3744,7 +3727,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	digirisk("#subTabSelector").val("");
 </script>';
 						echo $output;
-					}
 					break;
 					case 'saveDocumentUnique' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUniquePersistance.php');
@@ -3762,6 +3744,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$idElement = $_REQUEST['idElement'];
 						echo eva_WorkUnitSheet::getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement);
 					}
+					break;
+					case 'riskListingGeneration':
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_gestionDoc::getRiskListingGenerationForm($tableElement, $idElement);
 					break;
 					case 'documentUniqueGenerationForm':
 					{
@@ -3840,11 +3827,39 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						echo eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '<script type="text/javascript" >digirisk(document).ready(function(){digirisk("#ui-datepicker-div").hide();});</script>';
 					break;
-					case 'workUnitSheetHisto':
+					case 'workUnitSheetHisto' :
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
-						echo eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'list');
-					break;
+
+						$output .= '
+<div class="clear" id="summaryGeneratedDocumentSlector" >
+	<div class="alignleft selected" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
+</div>
+<div id="generatedFPContainer" class="generatedDocContainer" ><div class="clear bold" >' . __('Fiches de poste', 'evarisk') . '</div><div class="DUERContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_de_poste') . '</div></div>
+<div class="hide generatedDocContainer" id="generatedRSContainer" ><div class="clear bold" >' . __('Fiches de synth&egrave;se des risques', 'evarisk') . '</div>
+<div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'listing_des_risques') . '</div></div>
+<div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
+<script type="text/javascript" >
+	digirisk("#summaryGeneratedDocumentSlector div").click(function(){
+		digirisk("#summaryGeneratedDocumentSlector div").each(function(){
+			digirisk(this).removeClass("selected");
+		});
+		digirisk(".generatedDocContainer").each(function(){
+			digirisk(this).hide();
+		});
+		digirisk(this).addClass("selected");
+		digirisk("#" + jQuery(this).attr("id") + "Container").show();
+	});
+
+	var currentTab = digirisk("#subTabSelector").val();
+	if(currentTab != ""){
+		digirisk("#generated" + currentTab).click();
+	}
+	digirisk("#subTabSelector").val("");
+</script>';
+						echo $output;
+						break;
 					case 'saveWorkUnitSheetForGroupement':
 					{
 						$file_to_zip = array();
@@ -3870,7 +3885,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$_POST['nomEntreprise'] = $groupementParent->nom;
 
 							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
-							$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+							$lastDocument = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_poste');
 							$odtFile = 'ficheDePoste/' . $workUnit['table'] . '/' . $workUnit['id'] . '/' . $lastDocument->name . '_V' . $lastDocument->revision . '.odt';
 							if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
 							{
@@ -3962,7 +3977,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 
 							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDeGroupementPersistance.php');
-							$lastDocument = eva_WorkUnitSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+							$lastDocument = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_groupement');
 							$odtFile = 'ficheDeGroupement/' . $group['table'] . '/' . $group['id'] . '/' . $lastDocument->name . '_V' . $lastDocument->revision . '.odt';
 							if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
 							{
@@ -4008,8 +4023,42 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			case TABLE_GED_DOCUMENTS:
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
-				switch($_REQUEST['act'])
-				{
+				switch ($_REQUEST['act']) {
+					case 'save_list_risk':
+						$sheet_infos = array();
+						$sheet_infos['sheet_type'] = 'digi_risk_listing';
+						$sheet_infos['sheet_output_type'] = 'export_risk_summary';
+						$sheet_infos['document_type'] = 'listing_des_risques';
+						$sheet_infos['dateCreation'] = date('Ymd');
+						$sheet_infos['recursiv_mode'] = !empty($_POST['recursiv_mode']) ? $_POST['recursiv_mode'] : false;
+
+						$messageInfo = $moremessageInfo = '';
+						$sauvegardeFicheDePoste = eva_gestionDoc::save_element_sheet($tableElement, $idElement, $sheet_infos);
+
+						if ($sauvegardeFicheDePoste['result'] != 'error') {
+							$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La synth&eacute;se &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
+							$moremessageInfo = 'digirisk("#subTabSelector").val("RS");
+				digirisk("#ongletHistoriqueDocument").click();';
+						}
+						else {
+							$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('La synth&eacute;se n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
+						}
+
+						$table_message_to_update = TABLE_DUER;
+						if( $table_element == TABLE_UNITE_TRAVAIL ){
+							$table_message_to_update = TABLE_FP;
+						}
+						$messageInfo = '
+			<script type="text/javascript">
+				digirisk(document).ready(function(){
+					actionMessageShow("#message' . $table_message_to_update . '", "' . $messageToOutput . '");
+					setTimeout(\'actionMessageHide("#message' . $table_message_to_update . '")\',5000);
+					' . $moremessageInfo . '
+				});
+			</script>';
+
+						echo $messageInfo;
+						break;
 					case 'delete_document':
 						global $current_user;
 						$delete_result = $wpdb->update(TABLE_GED_DOCUMENTS, array('status' => 'deleted', 'dateSuppression' => current_time('mysql', 0), 'idSuppresseur' => $current_user->ID), array('id' => $_REQUEST['idDocument']));
@@ -4027,7 +4076,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								break;
 							}
 						}
-						else{
+						else {
 							$message = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de la suppression du document', 'evarisk');
 						}
 

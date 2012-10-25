@@ -437,6 +437,7 @@ $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `creation_date` datetime default NULL,
+  `document_type` char(30) collate utf8_unicode_ci NOT NULL,
   `id_model` int(10) unsigned NOT NULL default '1' COMMENT 'The model used to generate the document',
   `revision` int(3) default NULL COMMENT 'Document version',
   `id_element` int(10) unsigned NOT NULL COMMENT 'The element''s id associated to the document',
@@ -1680,4 +1681,13 @@ CREATE TABLE {$t} (
 	$digirisk_update_way[$digirisk_db_version] = 'datas';
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_METHODE);
+}
+
+{/*	Version 76	*/
+	$digirisk_db_version = 76;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('document_type');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
 }

@@ -789,8 +789,8 @@ td.details table{	margin:0px 0px 24px !important;	}
 
 
 /* -- Document unique -- */
-#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP, #generateRS{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
-#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected, #generateRS.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
+#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP, #generateRS, #generatedRS{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
+#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected, #generatedRS.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
 #saveWorkUnitSheetForGroupement{	margin:6px auto;	}
 #workUnitSheetCollectionModelSelector{	margin:6px;	}
 #documentModelContainer{	width:40%;	}

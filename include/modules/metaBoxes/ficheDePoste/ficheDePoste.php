@@ -25,48 +25,51 @@
 
 			$corpsPostBoxRisque = '
 <div id="message' . TABLE_FP . '" class="updated fade" style="cursor:pointer; display:none;"></div>
-<ul class="eva_tabs">';
-	if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
-	{
+<input type="hidden" name="subTabSelector" id="subTabSelector" value="" />
+<ul class="eva_tabs" style="margin-bottom:2px;" >';
+	if ( current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']) ) {
 		$userNotAllowed = '';
 		$corpsPostBoxRisque .= '
-	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>';
+	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>
+	<li id="ongletImpressionListingRisque" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Synth&eacute;se des risques', 'evarisk'))) . '</label></li>';
 	}
-	else
-	{
-		$userNotAllowed = 'digirisk("#ongletHistoriqueFicheDePoste").click();';
+	else {
+		$userNotAllowed = 'digirisk("#ongletHistoriqueDocument").click();';
 	}
 	$corpsPostBoxRisque .= '
-	<li id="ongletHistoriqueFicheDePoste" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Historique des fiches de poste', 'evarisk'))) . '</label></li>
+	<li id="ongletHistoriqueDocument" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Historique des fiches de poste', 'evarisk'))) . '</label></li>
 </ul>
 <div id="divImpressionFicheDePoste" class="eva_tabs_panel">' . eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '</div>
+<div id="divImpressionListingRisque" class="eva_tabs_panel" style="display:none"></div>
 <div id="divHistoriqueFicheDePoste" class="eva_tabs_panel" style="display:none"></div>
 <script type="text/javascript" >
+	function loadBilanBoxContent_FP(boxId, action, table) {
+		digirisk(boxId).html(digirisk("#loadingImg").html());
+		digirisk(boxId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+			"post":"true",
+			"table":table,
+			"act":action,
+			"tableElement":"' . $tableElement . '",
+			"idElement":' . $idElement . '
+		});
+	}
+
 	digirisk(document).ready(function(){
 		digirisk("#ongletImpressionFicheDePoste").click(function(){
-			commonTabChange("postBoxFicheDePoste", "#divImpressionFicheDePoste", "#ongletHistoriqueFicheDePoste");
-			digirisk("#divImpressionFicheDePoste").html(digirisk("#loadingImg").html());
-			digirisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
-				"post":"true", 
-				"table":"' . TABLE_FP . '", 
-				"act":"generateWorkUnitSheet", 
-				"tableElement":"' . $tableElement . '",
-				"idElement":' . $idElement . '
-			});
+			commonTabChange("postBoxFicheDePoste", "#divImpressionFicheDePoste", "#ongletImpressionFicheDePoste");
+			loadBilanBoxContent_FP("#divImpressionFicheDePoste", "generateWorkUnitSheet", "' . TABLE_FP . '");
 		});
-		digirisk("#ongletHistoriqueFicheDePoste").click(function(){
-			commonTabChange("postBoxFicheDePoste", "#divHistoriqueFicheDePoste", "#ongletImpressionFicheDePoste");
-			digirisk("#divHistoriqueFicheDePoste").html(digirisk("#loadingImg").html());
-			digirisk("#divHistoriqueFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
-				"post":"true", 
-				"table":"' . TABLE_FP . '", 
-				"act":"workUnitSheetHisto", 
-				"tableElement":"' . $tableElement . '",
-				"idElement":' . $idElement . '
-			});
+
+		digirisk("#ongletImpressionListingRisque").click(function(){
+			commonTabChange("postBoxFicheDePoste", "#divImpressionListingRisque", "#ongletImpressionListingRisque");
+			loadBilanBoxContent_FP("#divImpressionListingRisque", "riskListingGeneration", "' . TABLE_DUER . '");
 		});
+
+		digirisk("#ongletHistoriqueDocument").click(function(){
+			commonTabChange("postBoxFicheDePoste", "#divHistoriqueFicheDePoste", "#ongletHistoriqueDocument");
+			loadBilanBoxContent_FP("#divHistoriqueFicheDePoste", "workUnitSheetHisto", "' . TABLE_FP . '");
+		});
+
 		' . $userNotAllowed . '
 	});
 </script>';

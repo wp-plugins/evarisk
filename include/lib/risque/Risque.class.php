@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * @author Soci&eacute;t&eacute; Evarisk
  * @version v5.0
  */
@@ -9,7 +9,7 @@ include_once(EVA_LIB_PLUGIN_DIR . 'methode/methodeEvaluation.class.php');
 include_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');
 
 class Risque {
-	
+
 	function getScoreRisque($risque, $method_option = ''){
 		$date_to_take = $risque[0]->date;
 		/*	Add option allowing to modify method behavior */
@@ -21,21 +21,25 @@ class Risque {
 
 		$methode = MethodeEvaluation::getMethod($risque[0]->id_methode);
 		$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $date_to_take);
-		unset($listeIdVariables);$listeIdVariables = array();
+		unset($listeIdVariables);
+		$listeIdVariables = array();
 		foreach($listeVariables as $ordre => $variable){
 			$listeIdVariables['"' . $variable->id . '"'][]=$ordre;
 		}
 		unset($listeValeurs);
 		foreach($risque as $ligneRisque){
-			foreach($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre){
-				if(isset($method_option['value_to_take']) && ($method_option['value_to_take'] != '')){
-					$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $method_option['value_to_take'][$ligneRisque->id_variable], $date_to_take);
-				}
-				else{
-					$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
+			if(!empty($listeIdVariables) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])){
+				foreach($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre){
+					if(isset($method_option['value_to_take']) && ($method_option['value_to_take'] != '')){
+						$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $method_option['value_to_take'][$ligneRisque->id_variable], $date_to_take);
+					}
+					else{
+						$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
+					}
 				}
 			}
 		}
+
 		$listeOperateursComplexe = MethodeEvaluation::getOperateursMethode($methode->id, $date_to_take);
 		unset($listeOperateurs);
 		foreach($listeOperateursComplexe as $operateurComplexe){
@@ -53,14 +57,14 @@ class Risque {
 			foreach($listeOperateurs as $operateur){
 				$numeroValeur = $numeroValeur + 1;
 				switch($operateur){
-					case '*' : 
+					case '*' :
 						$scoreRisque = $scoreRisque * $listeValeurs[$numeroValeur];
 						break;
-					case '/' : 
+					case '/' :
 						$scoreRisque = $scoreRisque / $listeValeurs[$numeroValeur];
 						break;
 					//default <=> op�rateur de faible priorit� (i.e. + et -)
-					default : 
+					default :
 						$listeValeursSimples[] = $scoreRisque;
 						$listeOperateursSimples[] = $operateur;
 						$scoreRisque = $listeValeurs[$numeroValeur];
@@ -79,10 +83,10 @@ class Risque {
 			foreach($listeOperateursSimples as $operateur){
 				$numeroValeur = $numeroValeur + 1;
 				switch($operateur){
-					case '+' : 
+					case '+' :
 						$scoreRisque = $scoreRisque + $listeValeursSimples[$numeroValeur];
 						break;
-					case '-' : 
+					case '-' :
 						$scoreRisque = $scoreRisque - $listeValeursSimples[$numeroValeur];
 						break;
 					default : break;
@@ -92,14 +96,14 @@ class Risque {
 
 		return $scoreRisque;
 	}
-	
+
 	function getEquivalenceEtalon($idMethode, $score, $date=null){
 		global $wpdb;
-		
+
 		if($date==null){
 			$date=current_time('mysql', 0);
 		}
-		
+
 		$score = digirisk_tools::IsValid_Variable($score);
 		$idMethode = digirisk_tools::IsValid_Variable($idMethode);
 		$resultat = $wpdb->get_row("SELECT tableEquivalenceEtalon1.id_valeur_etalon equivalenceEtalon
@@ -110,7 +114,7 @@ class Risque {
                         AND tableEquivalenceEtalon1.Status = 'Valid'
 			AND NOT EXISTS
 			(
-				SELECT * 
+				SELECT *
 				FROM " . TABLE_EQUIVALENCE_ETALON . " tableEquivalenceEtalon2
 				WHERE tableEquivalenceEtalon2.valeurMaxMethode >= " . $score . "
 				AND tableEquivalenceEtalon2.id_methode = " . $idMethode . "
@@ -119,11 +123,11 @@ class Risque {
 				AND tableEquivalenceEtalon2.id_valeur_etalon < tableEquivalenceEtalon1.id_valeur_etalon
 			)");
 		return $resultat->equivalenceEtalon;
-	}	
-	
+	}
+
 	function getSeuil($quotation){
 		global $wpdb;
-		
+
 		$quotation = digirisk_tools::IsValid_Variable($quotation);
 		$resultat = $wpdb->get_row( "
 			SELECT tableValeurEtalon1.niveauSeuil niveauSeuil
@@ -133,7 +137,7 @@ class Risque {
 			AND tableValeurEtalon1.niveauSeuil != 'NULL'
 			AND NOT EXISTS
 			(
-				SELECT * 
+				SELECT *
 				FROM " . TABLE_VALEUR_ETALON . " tableValeurEtalon2
 				WHERE tableValeurEtalon2.valeur >= " . $quotation . "
 				AND tableValeurEtalon2.Status = 'Valid'
@@ -145,8 +149,8 @@ class Risque {
 		);
 		$niveauSeuil=(!empty($resultat->niveauSeuil)?(int)$resultat->niveauSeuil:0);
 		return $niveauSeuil;
-	}	
-	
+	}
+
 	function getNiveauRisque($niveauSeuil){
 		switch($niveauSeuil){
 			case 0:
@@ -173,26 +177,24 @@ class Risque {
 		}
 		return $niveauRisque;
 	}
-	
+
 	function getRisque($id){
 		global $wpdb;
 		$id = digirisk_tools::IsValid_Variable($id);
 
 		$query = $wpdb->prepare("SELECT tableRisque.*,
-				tableAvoirValeur.date date, tableAvoirValeur.Status status, tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, 
-				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie 
-			FROM " . TABLE_RISQUE . " tableRisque, 
-				" . TABLE_AVOIR_VALEUR . " tableAvoirValeur, 
-				" . TABLE_DANGER . " tableDanger 
+				tableAvoirValeur.date date, tableAvoirValeur.Status status, tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur,
+				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie
+			FROM " . TABLE_RISQUE . " tableRisque
+				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.Status = 'Valid' AND tableAvoirValeur.id_risque=tableRisque.id),
+				" . TABLE_DANGER . " tableDanger
 			WHERE tableRisque.id=" . mysql_real_escape_string($id) . "
-				AND tableAvoirValeur.Status = 'Valid'
-				AND tableAvoirValeur.id_risque=tableRisque.id
 				AND tableRisque.id_danger=tableDanger.id");
 		$resultat = $wpdb->get_results($query);
 
 		return $resultat;
 	}
-	
+
 	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC', $evaluation_status = "'Valid'"){
 		global $wpdb;
 		$where = digirisk_tools::IsValid_Variable($where);
@@ -214,31 +216,29 @@ class Risque {
 
 		$query = $wpdb->prepare(
 			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
-				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date, 
-				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie 
-			FROM " . TABLE_RISQUE . " tableRisque, 
-				" . TABLE_AVOIR_VALEUR . " tableAvoirValeur, 
-				" . TABLE_DANGER . " tableDanger 
+				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date,
+				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie
+			FROM " . TABLE_RISQUE . " tableRisque
+				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.id_risque = tableRisque.id AND tableAvoirValeur.Status IN (" . $evaluation_status . ")),
+				" . TABLE_DANGER . " tableDanger
 			WHERE " . $tableElement . "
 				AND " . $idElement . "
-				AND " . $status . " 
-				AND " . $where . " 
-				AND tableAvoirValeur.id_risque = tableRisque.id 
-				AND tableAvoirValeur.Status IN (" . $evaluation_status . ")
-				AND tableRisque.id_danger = tableDanger.id 
+				AND " . $status . "
+				AND " . $where . "
+				AND tableRisque.id_danger = tableDanger.id
 			ORDER BY " . $order, '%Y-%m-%d %r');
 		$resultat = $wpdb->get_results( $query );
 
 		return $resultat;
-	}	
+	}
 
 	function getriskLinkToTask($idRisque, $id_tache, $beforeAfter){
 		global $wpdb;
 
-		$query = 
-			"SELECT 
+		$query =
+			"SELECT
 				R.id id, R.id_danger id_danger, R.id_methode id_methode, R.commentaire commentaire, R.date date,
-				VR.id_risque id_risque, VR.id_variable id_variable, VR.valeur valeur, 
+				VR.id_risque id_risque, VR.id_variable id_variable, VR.valeur valeur,
 				D.nom nomDanger, D.id idDanger, D.description descriptionDanger, D.id_categorie idCategorie
 			FROM " . TABLE_RISQUE . " R
 				INNER JOIN " . TABLE_DANGER . " D ON (D.id = R.id_danger)
@@ -264,7 +264,7 @@ class Risque {
 		$resultat = $wpdb->get_row( "SELECT count(id) nombreRisques FROM " . TABLE_RISQUE . " WHERE id_element=" . mysql_real_escape_string($idElement) . " AND nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' AND " . $status . " AND " . mysql_real_escape_string($where) . " ORDER BY " . mysql_real_escape_string($order));
 		return $resultat->nombreRisques;
 	}
-	
+
 	function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo){
 		global $wpdb;
 		global $current_user;
@@ -313,7 +313,7 @@ class Risque {
 		LEFT JOIN " . TABLE_LIAISON_TACHE_ELEMENT . " AS LINKTASKELMT ON ((LINKTASKELMT.id_element = AVALEUR.id_evaluation) AND (LINKTASKELMT.table_element = %s) AND (LINKTASKELMT.wasLinked = %s))
 		INNER JOIN " . TABLE_TACHE . " AS TASK ON ((TASK.id = LINKTASKELMT.id_tache) AND (TASK.tableProvenance = %s) AND (TASK.idProvenance = %d))
 	WHERE AVALEUR.id_risque = %d
-		AND AVALEUR.Status = %s", 
+		AND AVALEUR.Status = %s",
 	TABLE_AVOIR_VALEUR, 'after', TABLE_RISQUE, $idRisque, $idRisque, 'Valid');
 				$task_link = $wpdb->get_row($query);
 				if(is_object($task_link)){
@@ -366,7 +366,7 @@ class Risque {
 		$temp = Risque::getRisques($table, $elementId, "Valid");
 		if ($temp != null) {
 			foreach ($temp as $risque) {
-				$risques['"' . $risque->id . "'"][] = $risque; 
+				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
 		$sumR = 0;
@@ -544,7 +544,7 @@ class Risque {
 
 						$idMethode = $risque[0]->id_methode;
 						$score = Risque::getScoreRisque($risque);
-					
+
 						$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 					}
 					$niveauSeuil = Risque::getSeuil($quotation);
@@ -597,17 +597,15 @@ class Risque {
 			FROM " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK
 				INNER JOIN " . TABLE_RISQUE . " AS RISQUE ON ((RISQUE.id = PICTURE_LINK.idElement) AND (RISQUE.Status = 'Valid'))
 			WHERE PICTURE_LINK.idPhoto = '%d'
-				AND PICTURE_LINK.tableElement = '%s' 
+				AND PICTURE_LINK.tableElement = '%s'
 				AND PICTURE_LINK.status = 'valid' ",
 			$idPicture, TABLE_RISQUE
 		);
 		$queryResult = $wpdb->get_results($query);
-		if(count($queryResult) > 0)
-		{
+		if (count($queryResult) > 0) {
 			$riskArray = array();
 			$i = 0;
-			foreach($queryResult as $risk)
-			{
+			foreach ($queryResult as $risk) {
 				$risque = Risque::getRisque($risk->id);
 				$score = Risque::getEquivalenceEtalon($risk->id_methode, Risque::getScoreRisque($risque), $risk->date);
 
@@ -620,13 +618,13 @@ class Risque {
 		digirisk(".riskAssociatedToPicture").unbind("click");
 		digirisk(".riskAssociatedToPicture").click(function(){
 			digirisk("#formRisque").html(digirisk("#loadingImg").html());
-			tabChange("#formRisque", "#ongletAjouterRisque");
-			digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": digirisk(this).attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
+			tabChange("#divFormRisque", "#ongletAjouterRisque");
+			digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": digirisk(this).parent("div").attr("id").replace("loadRiskId", ""), "idElement":"' . $queryResult[0]->id_element . '", "tableElement":"' . $queryResult[0]->nomTableElement . '"});
 		});
 		digirisk(".deleteLinkBetweenRiskAndPicture").unbind("click");
 		digirisk(".deleteLinkBetweenRiskAndPicture").click(function(){
 			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous sur de vouloir supprimer cette liaison?', 'evarisk') . '"))){
-				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 				{
 					"post":"true",
 					"table":"' . TABLE_RISQUE . '",
@@ -668,8 +666,8 @@ class Risque {
 				AND RISQUE.id_element = '%s'
 				AND RISQUE.nomTableElement = '%s'
 				AND RISQUE.id NOT IN (
-					SELECT idElement 
-					FROM " . TABLE_PHOTO_LIAISON . " 
+					SELECT idElement
+					FROM " . TABLE_PHOTO_LIAISON . "
 					WHERE tableElement = '%s'
 						AND status = 'valid'
 				)",
@@ -722,7 +720,7 @@ class Risque {
 		{
 			foreach($completeRiskList as $risque)
 			{
-				$risques["'" . $risque->id . "'"][] = $risque; 
+				$risques["'" . $risque->id . "'"][] = $risque;
 			}
 		}
 		$lowerRisk = $higherRisk = 0;
@@ -754,10 +752,10 @@ class Risque {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT 
+			"SELECT
 				(
 					SELECT COUNT(id)
-					FROM " . TABLE_RISQUE . " 
+					FROM " . TABLE_RISQUE . "
 					WHERE Status = 'Valid'
 				) AS TOTAL_RISK_NUMBER
 			"
@@ -780,14 +778,14 @@ class Risque {
 		global $wpdb;
 
 		if(is_array($rating) && in_array('before', $rating)){	/*	Make the link between a corrective action and a risk evaluation	*/
-			$query = 
+			$query =
 				$wpdb->prepare(
-					"SELECT id_evaluation 
-					FROM " . TABLE_AVOIR_VALEUR . " 
+					"SELECT id_evaluation
+					FROM " . TABLE_AVOIR_VALEUR . "
 					WHERE id_risque = %d
-						AND Status = %s 
-					ORDER BY id DESC 
-					LIMIT 1", 
+						AND Status = %s
+					ORDER BY id DESC
+					LIMIT 1",
 					$idRisque, 'Valid'
 				);
 			$evaluation = $wpdb->get_row($query);
@@ -807,14 +805,14 @@ class Risque {
 		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 
 		if(is_array($rating) && in_array('after', $rating)){	/*	Make the link between a corrective action and a risk evaluation	*/
-			$query = 
+			$query =
 				$wpdb->prepare(
-					"SELECT id_evaluation 
-					FROM " . TABLE_AVOIR_VALEUR . " 
-					WHERE id_risque = '%d' 
-						AND Status = 'Valid' 
-					ORDER BY id DESC 
-					LIMIT 1", 
+					"SELECT id_evaluation
+					FROM " . TABLE_AVOIR_VALEUR . "
+					WHERE id_risque = '%d'
+						AND Status = 'Valid'
+					ORDER BY id DESC
+					LIMIT 1",
 					$idRisque
 				);
 			$evaluation = $wpdb->get_row($query);

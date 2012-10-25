@@ -8,6 +8,8 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 	$tableElement = digirisk_tools::IsValid_Variable($_POST['tableElement']);
 	$idElement = digirisk_tools::IsValid_Variable($_POST['idElement']);
 
+	$workUnitSheetInfos['sheet_type'] = 'digi_unite_travail';
+
 	$workUnitSheetInfos['nomDuDocument'] = digirisk_tools::IsValid_Variable($_POST['nomDuDocument']);
 	$workUnitSheetInfos['nomEntreprise'] = digirisk_tools::IsValid_Variable($_POST['nomEntreprise']);
 	$workUnitSheetInfos['dateCreation'] = date('Ymd');
@@ -16,8 +18,11 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 	$workUnitSheetInfos['adresse'] = (isset($_POST['adresse']) && ($_POST['adresse'] != '') && ($_POST['adresse'] != NULL)) ? digirisk_tools::IsValid_Variable($_POST['adresse']) : __('NC', 'evarisk');
 	$workUnitSheetInfos['telephone'] = (isset($_POST['telephone']) && ($_POST['telephone'] != '') && ($_POST['telephone'] != NULL)) ? digirisk_tools::IsValid_Variable($_POST['telephone']) : __('NC', 'evarisk');
 
+	$workUnitSheetInfos['recursiv_mode'] = !empty($_POST['recursiv_mode']) ? $_POST['recursiv_mode'] : false;
+	$sheet_infos['document_type'] = 'fiche_de_poste';
+
 	$messageInfo = $moremessageInfo = '';
-	$sauvegardeFicheDePoste = eva_WorkUnitSheet::saveWorkUnitSheet($tableElement, $idElement, $workUnitSheetInfos);
+	$sauvegardeFicheDePoste = eva_gestionDoc::save_element_sheet($tableElement, $idElement, $workUnitSheetInfos);
 
 	if($_POST['act'] != 'saveWorkUnitSheetForGroupement')
 	{
@@ -37,6 +42,8 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 					actionMessageShow("#message' . TABLE_FP . '", "' . $messageToOutput . '");
 					setTimeout(\'actionMessageHide("#message' . TABLE_FP . '")\',5000);
 					' . $moremessageInfo . '
+					digirisk("#subTabSelector").val("FP");
+					digirisk("#ongletHistoriqueDocument").click();
 				});
 			</script>';
 	}

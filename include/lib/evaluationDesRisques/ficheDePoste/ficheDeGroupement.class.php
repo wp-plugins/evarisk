@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin group manager
-* 
+*
 *	Define the different method to manage the group into the plugin
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.3.2
@@ -24,7 +24,7 @@ class eva_GroupSheet
 	*/
 	function getGroupSheetForm()
 	{
-		return 
+		return
 '<table summary="" border="0" cellpadding="0" cellspacing="0" align="center" class="tabcroisillon" style="width:100%;" >
 	<tr>
 		<td style="width:60%;vertical-align:top;" >
@@ -91,7 +91,7 @@ class eva_GroupSheet
 		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = digirisk_tools::slugify_noaccent($arborescence) . digirisk_tools::slugify_noaccent($groupInformations->nom);
 
 		$modelChoice = '';
-		$lastGroupSheet = eva_GroupSheet::getGeneratedDocument($tableElement, $idElement, 'last');
+		$lastGroupSheet = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_groupement');
 		if(($lastGroupSheet->id_model != '') && ($lastGroupSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_groupement')))
 		{
 			$modelChoice = '
@@ -156,243 +156,6 @@ class eva_GroupSheet
 	}
 
 	/**
-	*	Get the last document generated for a given element
-	*
-	*	@param mixed $tableElement The element type we want to get the last document for
-	*	@param integer $idElement The element identifier we want to get the lat document for
-	*
-	*	@return mixed $lastDocument An object with all information about the last document
-	*/
-	function getGeneratedDocument($tableElement, $idElement, $type = 'last', $id = '')
-	{
-		global $wpdb;
-		$lastDocument = array();
-
-		$queryOrder = "";
-		switch($type)
-		{
-			case 'last':
-				$queryOrder = "
-				ORDER BY id DESC
-			LIMIT 1";
-			break;
-			case 'list':
-				$queryOrder = "
-				ORDER BY creation_date DESC, revision DESC";
-			break;
-		}
-
-		$query = $wpdb->prepare(
-			"SELECT *
-			FROM " . TABLE_FP . "
-			WHERE id_element = %d
-				AND table_element = %s " . $queryOrder,
-			array($idElement, $tableElement, $id));
-		if($id != '')
-		{
-			$query = $wpdb->prepare(
-				"SELECT *
-				FROM " . TABLE_FP . "
-				WHERE id_element = %d
-					AND table_element = %s 
-					AND id = %d " . $queryOrder,
-					array($idElement, $tableElement, $id)
-			);
-		}
-		$lastDocument = $wpdb->get_results($query);
-
-		if( count($lastDocument) > 0 )
-		{
-			switch($type)
-			{
-				case 'last':
-					$outputListeDocumentUnique = $wpdb->get_row($query);
-				break;
-				case 'list':
-				{
-					$listeParDate = array();
-					foreach($lastDocument as $index => $document)
-					{
-						$dateElement = explode(' ', $document->creation_date);
-						if($document->name == '')
-						{
-
-							$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
-
-							$document->name = $documentName;
-						}
-						$listeParDate[$dateElement[0]][$document->id]['name'] = $document->name;
-						$listeParDate[$dateElement[0]][$document->id]['fileName'] = $document->name . '_V' . $document->revision;
-						$listeParDate[$dateElement[0]][$document->id]['revision'] = 'V' . $document->revision;
-					}
-
-					if( count($listeParDate) > 0 )
-					{
-						$outputListeDocumentUnique .= 
-							'<table summary="" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;" >
-								<thead></thead>
-								<tfoot></tfoot>
-								<tbody>';
-						foreach($listeParDate as $date => $listeDUDate)
-						{
-							$outputListeDocumentUnique .= '
-									<tr>
-										<td colspan="3" style="text-decoration:underline;font-weight:bold;" >Le ' . mysql2date('d M Y', $date, true) . '</td>
-									</tr>';
-							foreach($listeDUDate as $index => $DUER)
-							{
-								$outputListeDocumentUnique .= '
-									<tr>
-										<td>&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_FGP . $index . ')&nbsp;&nbsp;' . $DUER['name'] . '_' . $DUER['revision'] . '</td>';
-
-								/*	Check if an odt file exist to be downloaded	*/
-								$odtFile = 'ficheDeGroupement/' . $tableElement . '/' . $idElement . '/' . $DUER['fileName'] . '.odt';
-								if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
-								{
-								$outputListeDocumentUnique .= '
-									<td><a href="' . EVA_RESULTATS_PLUGIN_URL . $odtFile . '" target="evaFGPOdt" >Odt</a></td>';
-								}
-
-								$outputListeDocumentUnique .= '
-									</tr>';
-							}
-						}
-						$outputListeDocumentUnique .= '
-								</tbody>
-							</table>';
-					}
-				}
-				break;
-			}
-		}
-		else
-		{
-			$outputListeDocumentUnique = '<div class="noResultInBox" >' . __('Aucune fiche de groupement n\'a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e pour le moment', 'evarisk') . '</div>';
-		}
-
-		return $outputListeDocumentUnique;
-	}
-
-	/**
-	*	Save a new "work unit sheet" in database
-	*
-	*	@param mixed $tableElement The element type we want to save a new document for
-	*	@param integer $idElement The element identifier we want to save a new document for
-	*	@param array $informations An array with all information to create the new document. Those informations come from the form
-	*
-	*	@return array $status An array with the response status, if it's ok or not
-	*/
-	function saveGroupSheet($tableElement, $idElement, $informations)
-	{
-		global $wpdb;
-		$status = array();
-
-		require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
-
-		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
-		$idElement = digirisk_tools::IsValid_Variable($idElement);
-
-		/*	Révision du document, en fonction de l'element et de la date de génération	*/
-		$revision = '';
-		$query = $wpdb->prepare(
-			"SELECT max(revision) AS lastRevision
-			FROM " . TABLE_FP . " 
-			WHERE table_element = %s
-				AND id_element = %d ",
-			$tableElement, $idElement);
-		$revision = $wpdb->get_row($query);
-		$revisionDocument = $revision->lastRevision + 1;
-
-		/*	Génération de la référence du document	*/
-		switch($tableElement)
-		{
-			case TABLE_GROUPEMENT:
-				$element = 'gpt';
-			break;
-			case TABLE_UNITE_TRAVAIL:
-				$element = 'ut';
-			break;
-			default:
-				$element = $tableElement;
-			break;
-		}
-		$referenceDocument = str_replace('-', '', $informations['dateCreation']) . '-' . $element . $idElement . '-V' . $revisionDocument;
-
-		/*	Génération du nom du document si aucun nom n'a été envoyé	*/
-		if($informations['nomDuDocument'] == '')
-		{
-			$dateElement = explode(' ', $informations['dateCreation']);
-
-			$documentName = str_replace('-', '', $dateElement[0]) . '_ficheDePoste_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $informations['nomEntreprise']));
-
-			$informations['nomDuDocument'] = $documentName;
-		}
-
-		/*	Récupération des informations concernant les utilisateurs et les groupes d'utilisateurs	*/
-		$affectedUserTmp = array();
-		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		foreach($affectedUserList as $user)
-		{
-			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
-		}
-		$affectedUser = serialize($affectedUserTmp);
-		$affectedUserGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_employee'));
-
-		/*	Récupération des informations concernant les évaluateurs et les groupes d'évaluateurs	*/
-		$affectedUserTmp = array();
-		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement . '_evaluation', $idElement);
-		foreach($affectedUserList as $user)
-		{
-			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
-		}
-		$affectedEvaluators = serialize($affectedUserTmp);
-		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
-
-		/*	Récupération des informations concernant les risques	*/
-		$unitRisk = serialize(eva_documentUnique::listRisk($tableElement, $idElement, '', false));
-
-		/*	Récupération de la photo par défaut pour l'unité de travail	*/
-		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
-		$defaultPictureToSet = '';
-		if($defaultPicture != 'error')
-		{
-			$defaultPictureToSet = $defaultPicture;
-		}
-		else
-		{
-			$defaultPictureToSet = 'noDefaultPicture';
-		}
-
-		/*	Vérification du modèle à utiliser pour la génération de la fiche de groupement	*/
-		$modelToUse = eva_gestionDoc::getDefaultDocument('fiche_de_groupement');
-		if(($informations['id_model'] != 'undefined') && ($informations['id_model'] > 0))
-		{
-			$modelToUse = $informations['id_model'];
-		}
-
-		/*	Enregistrement du document	*/
-		$query = $wpdb->prepare("INSERT INTO " . TABLE_FP . " 
-				(id, creation_date, revision, id_element, id_model, table_element, reference, name, description, adresse, telephone, defaultPicturePath, societyName, users, userGroups, evaluators, evaluatorsGroups, unitRisk) 
-			VALUES 
-				('', %s, %d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			, array(current_time('mysql', 0), $revisionDocument, $idElement, $modelToUse, $tableElement, $referenceDocument, $informations['nomDuDocument'], $informations['description'], $informations['adresse'], $informations['telephone'], $defaultPictureToSet, digirisk_tools::slugify_noaccent($informations['nomEntreprise']), $affectedUser, $affectedUserGroups, $affectedEvaluators, $affectedEvaluatorsGroups, $unitRisk));
-		if($wpdb->query($query) === false)
-		{
-			$status['result'] = 'error'; 
-			$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
-			$status['errors']['query'] = $query;
-		}
-		else
-		{
-			$status['result'] = 'ok';
-			/*	Save the odt file	*/
-			eva_gestionDoc::generateSummaryDocument($tableElement . '_FGP', $idElement, 'odt');
-		}
-
-		return $status;
-	}
-
-	/**
 	*	Generate a form to save work unit sheet collection for a groupment
 	*
 	*	@param mixed $tableElement The element type we want to get form for
@@ -414,7 +177,7 @@ class eva_GroupSheet
 				</div>
 				<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 			</div>
-			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveGroupSheetForGroupement" />  
+			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveGroupSheetForGroupement" />
 		</td>
 		<td id="documentModelContainer" >&nbsp;</td>
 	</tr>
@@ -422,7 +185,7 @@ class eva_GroupSheet
 <script type="text/javascript" >
 	digirisk("#saveGroupSheetForGroupement").click(function(){
 		digirisk("#documentFormContainer").html(digirisk("#loadingImg").html());
-		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+		digirisk("#documentFormContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 		{
 			"post":"true",
 			"table":"' . TABLE_FP . '",
@@ -485,5 +248,5 @@ class eva_GroupSheet
 
 		return $output;
 	}
-	
+
 }
