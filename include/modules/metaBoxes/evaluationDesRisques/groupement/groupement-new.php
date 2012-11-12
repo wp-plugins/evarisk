@@ -2,7 +2,7 @@
 /*
  * @version v5.0
  */
- 
+
 //Postbox definition
 $postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
 $postBoxId = 'postBoxGeneralInformation';
@@ -10,7 +10,7 @@ $postBoxCallbackFunction = 'getGroupGeneralInformationPostBoxBody';
 add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
 
 function getGroupGeneralInformationPostBoxBody($arguments){
-	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php' ); 
+	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
@@ -58,7 +58,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$groupementPere = Arborescence::getPere(TABLE_GROUPEMENT, $groupement);
 	}
 	else
-	{	
+	{
 		$contenuInputTitre = '';
 		$contenuInputDescription = '';
 		$contenuInputLigne1 = '';
@@ -109,7 +109,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$idForm .= $arguments['form_id'];
 	}
 	$groupement_new .= EvaDisplayInput::ouvrirForm('post', $idForm, $idForm);
-	{//Champs cachés
+	{//Champs cachï¿½s
 		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
 		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'latitude', '', '', null, 'latitude', false, false);
 		$groupement_new .= EvaDisplayInput::afficherInput('hidden', 'longitude', '', '', null, 'longitude', false, false);
@@ -139,7 +139,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$type_input_possible_value = array('' => __('Choisir', 'evarisk'), 'employer' => __('Employeur', 'evarisk'));
 		$groupement_new .= '<label for="' . $idChamps . '" >' . __('Type de groupement', 'evarisk') . '</label><br/>' . EvaDisplayInput::createComboBox($idChamps, $nomChamps, $type_input_possible_value, $contenuInputType);
 	}
-	{//Groupement père
+	{//Groupement pï¿½re
 		$search = "`Status`='Valid' AND nom<>'Groupement Racine'";
 		$order = "nom ASC";
 		$groupements = EvaGroupement::getGroupements($search,$order);
@@ -192,7 +192,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 			$labelInputCP[1] = ($labelInputCP[0] == "&")?ucfirst($labelInputCP[1]):$labelInputCP[1];
 			$idCP = "code_postal";
 			$nomChamps = "code_postal";
-			$taille = 5; 
+			$taille = 5;
 			$groupement_new .= EvaDisplayInput::afficherInput('text', $idCP, $contenuInputCodePostal, $contenuAideCodePostal, $labelInputCP, $nomChamps, $grise, ADRESSE_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
 		}
 		{//Ville
@@ -205,7 +205,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		}
 		$groupement_new .= '</div>';
 	}
-	{//Téléphone
+	{//Tï¿½lï¿½phone
 		$labelInput = ucfirst(strtolower(__("T&eacute;l&eacute;phone", 'evarisk'))) . " :";
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
 		$id = "telephone";
@@ -247,7 +247,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		// $taille = 10;
 		// $groupement_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputEffectif, $contenuAideEffectif, $labelInput, $nomChamps, $grise, EFFECTIF_GROUPEMENT_OBLIGATOIRE, $taille, '', 'Number');
 	}
-	{//	Champs complémentaires
+	{//	Champs complï¿½mentaires
 		$options = get_option('digirisk_options');
 		$user_extra_fields = (!empty($options['digi_users_digirisk_extra_field'])?unserialize($options['digi_users_digirisk_extra_field']):array());
 		if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
@@ -257,12 +257,12 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		}
 	}
 
-	if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $arguments['idElement']))
+	if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $arguments['idElement'])  || (($saveOrUpdate == 'save') && current_user_can('digi_add_groupement_groupement_' . $selection)))
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE ? "true" : "false";
 		$scriptGeolocalisation = evaGoogleMaps::scriptGeoloc($idBouttonEnregistrer, $postId, $idL1, $idL2, $idCP, $idV, "latitude", "longitude");
-		
+
 		$groupsNames = EvaGroupement::getGroupementsName($saufGroupement, " Status = 'Deleted' ");
 		$existingDeletedGtp = 'false';
 		if(count($groupsNames) != 0)
@@ -285,17 +285,17 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 			}
 			$existingValidGtp .= "}";
 		}
-		{//Script relatif à l'enregistrement
+		{//Script relatif ï¿½ l'enregistrement
 			$scriptEnregistrement = '
 			<script type="text/javascript">
-				digirisk(document).ready(function() {	
+				digirisk(document).ready(function() {
 					digirisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
 						if(digirisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 						{
 							document.getElementById(\'' . $idTitre . '\').value=\'\';
 							digirisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 						}
-						
+
 						if(' . $geolocObligatoire . ' && !geolocPossible)
 						{
 							var message = "' . ucfirst(sprintf(__('Vous devez obligatoirement remplir les champs de l\'adresse suivant : %s, %s et %s', 'evarisk'), substr($labelInputL1, 0, strlen($labelInputL1)-2),  substr($labelInputCP, 0, strlen($labelInputCP)-2),  substr($labelInputV, 0, strlen($labelInputV)-2))) . '.";

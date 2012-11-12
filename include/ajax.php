@@ -865,7 +865,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$pictureId = isset($_REQUEST['pictureId']) ? (digirisk_tools::IsValid_Variable($_REQUEST['pictureId'])) : '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
 						$_REQUEST['description'] = !empty($_REQUEST['description'])?str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']):'';
-						$_REQUEST['description'] = str_replace("�", "'",$_REQUEST['description']);
+						$_REQUEST['description'] = str_replace("…", "...",$_REQUEST['description']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');

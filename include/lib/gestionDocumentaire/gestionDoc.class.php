@@ -503,13 +503,19 @@ class eva_gestionDoc {
 		switch ($tableElement) {
 			case TABLE_GROUPEMENT:
 			case TABLE_GROUPEMENT . '_RS':
-				$element = 'gpt';
+				$element = ELEMENT_IDENTIFIER_FGP;
+				if ($informations['document_type'] == 'listing_des_risques') {
+					$element = ELEMENT_IDENTIFIER_FSGP;
+				}
 				$current_element = EvaGroupement::getGroupement($idElement);
 				$element_identifier = ELEMENT_IDENTIFIER_GP;
 				break;
 			case TABLE_UNITE_TRAVAIL:
 			case TABLE_UNITE_TRAVAIL . '_RS':
-				$element = 'ut';
+				$element = ELEMENT_IDENTIFIER_FUT;
+				if ($informations['document_type'] == 'listing_des_risques') {
+					$element = ELEMENT_IDENTIFIER_FSUT;
+				}
 				$current_element = eva_UniteDeTravail::getWorkingUnit($idElement);
 				$element_identifier = ELEMENT_IDENTIFIER_UT;
 				break;
@@ -660,7 +666,6 @@ class eva_gestionDoc {
 		if ( $new_sheet === false ) {
 			$status['result'] = 'error';
 			$status['errors']['query_error'] = __("Une erreur est survenue lors de l'enregistrement", 'evarisk');
-			$status['errors']['query'] = $query;
 		}
 		else {
 			$status['result'] = 'ok';

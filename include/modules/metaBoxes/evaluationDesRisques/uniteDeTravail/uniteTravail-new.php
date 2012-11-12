@@ -11,13 +11,13 @@ add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVAR
 
 function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 {
-	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php' ); 
-	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php' ); 
+	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php' );
+	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php' );
-	
+
 	$id = $arguments['idElement'];
 	$idPere = $arguments['idPere'];
 	$affichage = $arguments['affichage'];
@@ -26,7 +26,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 
 	{//Initializing
 		if($id!=null)
-		{	
+		{
 			$saveOrUpdate = 'update';
 			$uniteTravail = eva_UniteDeTravail::getWorkingUnit($id);
 			$saufUniteTravail = $uniteTravail->nom;
@@ -61,7 +61,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 			$grise = false;
 		}
 		else
-		{	
+		{
 			$contenuInputTitre = '';
 			$contenuInputDescription = '';
 			$contenuInputLigne1 = '';
@@ -107,7 +107,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 
 	$idForm = 'informationGeneralesUT';
 	$uniteDeTravail_new .= EvaDisplayInput::ouvrirForm('POST', $idForm, $idForm);
-	{//Champs cachés
+	{//Champs cachï¿½s
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'latitude', '', '', null, 'latitude', false, false);
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('hidden', 'longitude', '', '', null, 'longitude', false, false);
@@ -119,14 +119,14 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 	if($id > 0){
 		$uniteDeTravail_new .= ELEMENT_IDENTIFIER_UT . $id . '<br/>';
 	}
-	{//Nom de l'unité
+	{//Nom de l'unitï¿½
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("de l'unit&eacute; de travail", 'evarisk')))) . " :";
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
 		$nomChamps = "nom_unite_travail";
 		$idTitre = "nom_unite_travail";
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, '', $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
-	{//Groupement père
+	{//Groupement pï¿½re
 		$search = "`Status`='Valid' AND nom<>'Groupement Racine'";
 		$order = "nom ASC";
 		$groupements = EvaGroupement::getGroupements($search,$order);
@@ -181,7 +181,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 			$labelInputCP[1] = ($labelInputCP[0] == "&")?ucfirst($labelInputCP[1]):$labelInputCP[1];
 			$idCP = "code_postal";
 			$nomChamps = "code_postal";
-			$taille = 5; 
+			$taille = 5;
 			$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('text', $idCP, $contenuInputCodePostal, '', $labelInputCP, $nomChamps, $grise, ADRESSE_UNITE_TRAVAIL_OBLIGATOIRE, $taille, '', 'Number');
 		}
 		{//Ville
@@ -194,7 +194,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		}
 		$uniteDeTravail_new = $uniteDeTravail_new . '</div>';
 	}
-	{//Téléphone
+	{//Tï¿½lï¿½phone
 		$labelInput = ucfirst(strtolower(__("T&eacute;l&eacute;phone", 'evarisk'))) . " :";
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
 		$idChamps = "telephone";
@@ -211,7 +211,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		// $uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('text', $idChamps, $contenuInputEffectif, '', $labelInput, $nomChamps, $grise, EFFECTIF_UNITE_TRAVAIL_OBLIGATOIRE, $taille, '', 'Number');
 	}
 
-	if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
+	if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']) || (($saveOrUpdate == 'save') && current_user_can('digi_add_unite_groupement_' . $selection)))
 	{//Bouton enregistrer
 		$idBouttonEnregistrer = 'save';
 		$existingDeletedWU = "false";
@@ -238,7 +238,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		}
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
 		$scriptGeolocalisation = evaGoogleMaps::scriptGeoloc($idBouttonEnregistrer, $id, $idL1, $idL2, $idCP, $idV, "latitude", "longitude");
-		{//Script relatif à l'enregistrement
+		{//Script relatif ï¿½ l'enregistrement
 			$scriptEnregistrement = '
 			<script type="text/javascript">
 				digirisk(document).ready(function() {
@@ -248,7 +248,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 							document.getElementById(\'' . $idTitre . '\').value=\'\';
 							digirisk(\'#' . $idTitre . '\').removeClass(\'form-input-tip\');
 						}
-						
+
 						if(' . $geolocObligatoire . ' && !geolocPossible)
 						{
 							var message = "' . ucfirst(sprintf(__('Vous devez obligatoirement remplir les champs de l\'adresse suivant : %s, %s et %s', 'evarisk'), substr($labelInputL1, 0, strlen($labelInputL1)-2),  substr($labelInputCP, 0, strlen($labelInputCP)-2),  substr($labelInputV, 0, strlen($labelInputV)-2))) . '.";
