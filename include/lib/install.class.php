@@ -715,7 +715,7 @@ class digirisk_install
 				/* Liaison entre variable et methode */
 				$liaison_methode_posture_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_posture, 'id_variable'=>$variable_postures_penible, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
 
-				/*	Postures penibles Mains/bras */
+				/*	Vibrations Mains/bras */
 				$question_vibrations[] = array('question'=>__('Vibrations < 1,25 m/s&sup2;', 'evarisk'), 'seuil'=>0);
 				$question_vibrations[] = array('question'=>__('Vibrations < 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>48);
 				$question_vibrations[] = array('question'=>__('Vibrations > 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>51);
@@ -725,11 +725,11 @@ class digirisk_install
 				/* Liaison entre variable et methode */
 				$liaison_methode_posture_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_vibration_main_bras, 'id_variable'=>$variable_vibrations_main_bras, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
 
-				/*	Postures penibles Corps */
-				$question_vibrations_corps[] = array('question'=>__('Vibrations < 1,25 m/s&sup2;', 'evarisk'), 'seuil'=>0);
-				$question_vibrations_corps[] = array('question'=>__('Vibrations < 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>48);
-				$question_vibrations_corps[] = array('question'=>__('Vibrations > 2,5 m/s&sup2;', 'evarisk'), 'seuil'=>51);
-				$question_vibrations_corps[] = array('question'=>__('Vibrations > 5 m/s&sup2;', 'evarisk'), 'seuil'=>80);
+				/*	Vibrations Corps */
+				$question_vibrations_corps[] = array('question'=>__('Vibrations < 0,25 m/s&sup2;', 'evarisk'), 'seuil'=>0);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations < 0,5 m/s&sup2;', 'evarisk'), 'seuil'=>48);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations > 0,5 m/s&sup2;', 'evarisk'), 'seuil'=>51);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations > 1,15 m/s&sup2;', 'evarisk'), 'seuil'=>80);
 				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Vibration de l\'ensemble du corps', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir > 1.15 m/s&sup2;\nRisque rouge > 0,5 m/s&sup2;\nRisque orange < 0,5 m/s&sup2;\nRisque Blanc < 0,25 m/s&sup2; (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_vibrations_corps), 'questionTitre'=>__('Pour une exposition quotidienne (8h)', 'evarisk')));
 				$variable_vibrations_corps = $wpdb->insert_id;
 				/* Liaison entre variable et methode */
@@ -746,11 +746,11 @@ class digirisk_install
 				$liaison_methode_temperature_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_temperature, 'id_variable'=>$variable_temperature, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
 
 				/*	Bruit */
-				$question_bruit[] = array('question'=>__('Lex, 6h < 75dB(a) ou < 120 dB(c)', 'evarisk'), 'seuil'=>0);
-				$question_bruit[] = array('question'=>__('Lex, 8h < 80dB(a) ou < 112 dB(c)', 'evarisk'), 'seuil'=>48);
-				$question_bruit[] = array('question'=>__('Lex, 8h > 85dB(a) ou > 137 dB(c)', 'evarisk'), 'seuil'=>51);
-				$question_bruit[] = array('question'=>__('Lex, 8h > 87dB(a) ou > 140 dB(c)', 'evarisk'), 'seuil'=>80);
-				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Exposition au bruit', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir Lex, 8h > 87 dB(a) ou > 140 dB(c) seuil r&eacute;glementaire (France et europe)\nRisque rouge Lex, 8h > 85 dB(a) ou > 137 dB(c) seuil r&eacute;glementaire (France et europe)\nRisque orange Lex, 8h  < 80 dB(a) ou < 112 dB(c) seuil europ&eacute;en\nRisque Blanc Lex, 6h < 75 dB(a) ou < 120 dB(c) seuil travailler mieux', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_bruit), 'questionTitre'=>__('Exposition au bruit', 'evarisk')));
+				$question_bruit[] = array('question'=>__('Lex, 8h < 80 dB(A) ou < 135 dB(C)', 'evarisk'), 'seuil'=>0);
+				$question_bruit[] = array('question'=>__('Lex, 8h entre 80 dB(A) et 85 dB(A) ou entre 135 dB(C) et 137 dB(C)', 'evarisk'), 'seuil'=>48);
+				$question_bruit[] = array('question'=>__('Lex, 8h > 85 dB(A) ou > 137 dB(C)', 'evarisk'), 'seuil'=>51);
+				$question_bruit[] = array('question'=>__('Lex, 8h > 87 dB(A) ou > 140 dB(C)', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Exposition au bruit', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir Lex, 8h > 87 dB(A) ou > 140 dB(C) seuil r&eacute;glementaire (France et europe)\nRisque rouge Lex, 8h > 85 dB(A) ou > 137 dB(C) seuil r&eacute;glementaire (France et europe)\nRisque orange Lex, 8h entre 80 dB(A) et 85 dB(A) ou entre 135 dB(C) et 137 dB(C) seuil europ&eacute;en\nRisque Blanc Lex, 8h < 80 dB(A) ou < 135 dB(C) seuil travailler mieux', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_bruit), 'questionTitre'=>__('Exposition au bruit', 'evarisk')));
 				$variable_bruit = $wpdb->insert_id;
 				/* Liaison entre variable et methode */
 				$liaison_methode_bruit_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode_bruit, 'id_variable'=>$variable_bruit, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
@@ -852,6 +852,30 @@ class digirisk_install
 			case 76:
 				$wpdb->update(TABLE_FP, array('document_type' => 'fiche_de_groupement'), array('table_element' => TABLE_GROUPEMENT));
 				$wpdb->update(TABLE_FP, array('document_type' => 'fiche_de_poste'), array('table_element' => TABLE_UNITE_TRAVAIL));
+			break;
+
+			case 77:
+				/*	Vibrations Corps */
+				$question_vibrations_corps[] = array('question'=>__('Vibrations < 0,25 m/s&sup2;', 'evarisk'), 'seuil'=>0);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations < 0,5 m/s&sup2;', 'evarisk'), 'seuil'=>48);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations > 0,5 m/s&sup2;', 'evarisk'), 'seuil'=>51);
+				$question_vibrations_corps[] = array('question'=>__('Vibrations > 1,15 m/s&sup2;', 'evarisk'), 'seuil'=>80);
+				$wpdb->update(TABLE_VARIABLE, array('annotation'=>__('Risque noir > 1.15 m/s&sup2;\nRisque rouge > 0,5 m/s&sup2;\nRisque orange < 0,5 m/s&sup2;\nRisque Blanc < 0,25 m/s&sup2; (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_vibrations_corps)), array('nom' => __('Vibration de l\'ensemble du corps', 'evarisk')));
+
+				/*	Temperature */
+				$question_bruit[] = array('question'=>__('Lex, 8h < 80 dB(A) ou < 135 dB(C)', 'evarisk'), 'seuil'=>0);
+				$question_bruit[] = array('question'=>__('Lex, 8h entre 80 dB(A) et 85 dB(A) ou entre 135 dB(C) et 137 dB(C)', 'evarisk'), 'seuil'=>48);
+				$question_bruit[] = array('question'=>__('Lex, 8h > 85 dB(A) ou > 137 dB(C)', 'evarisk'), 'seuil'=>51);
+				$question_bruit[] = array('question'=>__('Lex, 8h > 87 dB(A) ou > 140 dB(C)', 'evarisk'), 'seuil'=>80);
+				$wpdb->update(TABLE_VARIABLE, array('annotation'=>__('Risque noir Lex, 8h > 87 dB(A) ou > 140 dB(C) seuil r&eacute;glementaire (France et europe)\nRisque rouge Lex, 8h > 85 dB(A) ou > 137 dB(C) seuil r&eacute;glementaire (France et europe)\nRisque orange Lex, 8h entre 80 dB(A) et 85 dB(A) ou entre 135 dB(C) et 137 dB(C) seuil europ&eacute;en\nRisque Blanc Lex, 8h < 80 dB(A) ou < 135 dB(C) seuil travailler mieux', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_bruit)), array('nom' => __('Exposition au bruit', 'evarisk')));
+
+				$query = $wpdb->prepare("SELECT RISK_EVAL.id, RISK.commentaire FROM " . TABLE_AVOIR_VALEUR . " AS RISK_EVAL INNER JOIN " . TABLE_RISQUE . " AS RISK ON (RISK.id = RISK_EVAL.id_risque) WHERE RISK.Status = 'Valid' AND RISK_EVAL.Status = 'Valid' GROUP BY RISK_EVAL.id_evaluation");
+				$risk_list = $wpdb->get_results($query);
+				if ( !empty($risk_list) ) {
+					foreach ( $risk_list as $risk) {
+						$wpdb->update(TABLE_AVOIR_VALEUR, array('commentaire' => $risk->commentaire), array('id' => $risk->id));
+					}
+				}
 			break;
 		}
 	}

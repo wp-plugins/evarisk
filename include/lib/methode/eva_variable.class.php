@@ -333,19 +333,97 @@ class eva_Variable {
 			$var_minimum = $var_information->min;
 			$var_maximum = $var_information->max;
 			$var_annotation = str_replace('\n', "", $var_information->annotation);
-                        $var_typeAffichage = $var_information-> affichageVar;
-                        $var_question = $var_information-> questionTitre;
+			$var_typeAffichage = $var_information->affichageVar;
+			$var_question = $var_information->questionTitre;
 			$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $var_id, 'Valid');
 			$existing_alternativ_vars = $wpdb->get_results($query);
 
 			$save_button_value = __('Enregistrer', 'evarisk');
 		}
-                else
-                {
-                   $var_typeAffichage = "slide";
-                }
+        else {
+        	$var_typeAffichage = "slide";
+        }
+
+		$idInputNom = 'newvarname';
+		$idInputMin = 'newvarmin';
+		$idInputMax = 'newvarmax';
 
 		$var_form .= '
+<script type="text/javascript" >
+	function load_alternativ_value_for_var() {
+		if(jQuery("#checkValues").is(":checked") && (jQuery("#'. $idInputMin . '").val() != "") && (jQuery("#'. $idInputMax . '").val() != "")){
+			jQuery("#digi_alternativ_value_for_vars").html(jQuery("#loadingImg").html());
+			jQuery("#digi_alternativ_value_for_vars").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+				"post":"true",
+				"nom":"loadFieldsNewVariable",
+				"min":jQuery("#'. $idInputMin . '").val(),
+				"max":jQuery("#'. $idInputMax . '").val(),
+				"choixTypeAffichage": jQuery("#typeVar").val(),
+				"var_id":"' . $var_id . '"
+			});
+		}
+	}
+
+	function validate_var_form(formData, jqForm, options){
+		/*	re-initialise field state	*/
+		evarisk("#' . $idInputNom . '").removeClass("ui-state-error");
+		evarisk("#' . $idInputMin . '").removeClass("ui-state-error");
+		evarisk("#' . $idInputMax . '").removeClass("ui-state-error");
+
+		for (var i=0; i < formData.length; i++) {
+			if((formData[i].name == "' . $idInputNom . '") && !formData[i].value) {
+				checkLength( evarisk("#' . $idInputNom . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
+				return false;
+			}
+			else if((formData[i].name == "' . $idInputMin . '") && !formData[i].value) {
+				checkLength( evarisk("#' . $idInputMin . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
+				return false;
+			}
+			else if((formData[i].name == "' . $idInputMax . '") && !formData[i].value) {
+				checkLength( evarisk("#' . $idInputMax . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
+				return false;
+			}
+		}
+
+		if(parseFloat(evarisk("#' . $idInputMin . '").val()) > parseFloat(evarisk("#' . $idInputMax . '").val())){
+			evarisk("#' . $idInputMin . '").addClass( "ui-state-error" );
+			evarisk("#' . $idInputMax . '").addClass( "ui-state-error" );
+			updateTips( digi_html_accent_for_js("' . __('La valeur maximale doit &ecirc;tre sup&eacute;rieure &agrave; la valeur minimale.', 'evarisk') . '"), evarisk(".var_form_error_message"));
+
+			return false;
+		}
+
+		return true;
+	}
+	digirisk(document).ready(function(){
+		jQuery("#var_editor").ajaxForm({
+			target: "#ajax-response",
+			beforeSubmit: validate_var_form
+		});
+		jQuery("#typeVar").val("'.$var_typeAffichage.'");
+		jQuery("#varQuestion").hide();
+		if ("'.$var_typeAffichage.'" === "checkbox") {
+			jQuery("#varQuestion").show();
+			jQuery("#checkValues").prop("checked", true);
+			jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");
+			load_alternativ_value_for_var();
+		}
+
+		digirisk(".choixTypeAffichage").live ("change", function(){
+			jQuery("#typeVar").val(jQuery(this).val());
+			if (jQuery(this).val() == "checkbox") {
+				jQuery("#varQuestion").show();
+				jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");
+				jQuery("#checkValues").prop("checked", true);
+				load_alternativ_value_for_var();
+			}
+			else {
+				jQuery("#varQuestion").hide();
+				load_alternativ_value_for_var();
+			}
+		});
+	});
+</script>
 <p class="var_form_error_message digirisk_hide">&nbsp;</p>
 <form method="post" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" id="var_editor" >
 	<input type="hidden" name="post" id="post" value="true" />
@@ -354,19 +432,16 @@ class eva_Variable {
 	<input type="hidden" name="id_variable" id="id_variable" value="' . $var_id . '" />';
 
 		{//New variable name
-			$idInputNom = 'newvarname';
 			$nomChamps = 'newvarname';
 			$labelInput = __('Nom de la nouvelle variable : ', 'evarisk');
 			$var_form .= EvaDisplayInput::afficherInput('text', $idInputNom, $var_name, '', $labelInput, $nomChamps, true, false, 100);
 		}
 		{//New variable minimum
-			$idInputMin = 'newvarmin';
 			$nomChamps = 'newvarmin';
 			$labelInput = __('Minimum de la nouvelle variable : ', 'evarisk');
 			$var_form .= EvaDisplayInput::afficherInput('text', $idInputMin, $var_minimum, '', $labelInput, $nomChamps, true, false, 100,'','Number');
 		}
 		{//New variable maximum
-			$idInputMax = 'newvarmax';
 			$nomChamps = 'newvarmax';
 			$labelInput = __('Maximum de la nouvelle variable : ', 'evarisk');
 			$var_form .= EvaDisplayInput::afficherInput('text', $idInputMax, $var_maximum, '', $labelInput, $nomChamps, true, false, 100,'','Number');
@@ -437,82 +512,7 @@ class eva_Variable {
 		}
 
 		$var_form .= '
-</form>
-<script type="text/javascript" >
-	function load_alternativ_value_for_var() {
-		if(jQuery("#checkValues").is(":checked") && (jQuery("#'. $idInputMin . '").val() != "") && (jQuery("#'. $idInputMax . '").val() != "")){
-			jQuery("#digi_alternativ_value_for_vars").html(jQuery("#loadingImg").html());
-			jQuery("#digi_alternativ_value_for_vars").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post":"true",
-				"nom":"loadFieldsNewVariable",
-				"min":jQuery("#'. $idInputMin . '").val(),
-				"max":jQuery("#'. $idInputMax . '").val(),
-				"choixTypeAffichage": jQuery("#typeVar").val(),
-				"var_id":"' . $var_id . '"
-			});
-		}
-	}
-	digirisk(document).ready(function(){
-		jQuery("#var_editor").ajaxForm({
-			target: "#ajax-response",
-			beforeSubmit: validate_var_form
-		});
-		jQuery("#typeVar").val("'.$var_typeAffichage.'");
-		jQuery("#varQuestion").hide();
-		if ("'.$var_typeAffichage.'" === "checkbox") {
-			jQuery("#varQuestion").show();
-			jQuery("#checkValues").prop("checked", true);
-			jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");
-			load_alternativ_value_for_var();
-		}
-
-		digirisk(".choixTypeAffichage").live ("change", function(){
-			jQuery("#typeVar").val(jQuery(this).val());
-			if (jQuery(this).val() == "checkbox") {
-				jQuery("#varQuestion").show();
-				jQuery("#digi_alternativ_value_for_vars").toggleClass("hide-if-js");
-				jQuery("#checkValues").prop("checked", true);
-				load_alternativ_value_for_var();
-			}
-			else {
-				jQuery("#varQuestion").hide();
-				load_alternativ_value_for_var();
-			}
-		});
-	});
-
-	function validate_var_form(formData, jqForm, options){
-		/*	re-initialise field state	*/
-		evarisk("#' . $idInputNom . '").removeClass("ui-state-error");
-		evarisk("#' . $idInputMin . '").removeClass("ui-state-error");
-		evarisk("#' . $idInputMax . '").removeClass("ui-state-error");
-
-		for (var i=0; i < formData.length; i++) {
-			if((formData[i].name == "' . $idInputNom . '") && !formData[i].value) {
-				checkLength( evarisk("#' . $idInputNom . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
-				return false;
-			}
-			else if((formData[i].name == "' . $idInputMin . '") && !formData[i].value) {
-				checkLength( evarisk("#' . $idInputMin . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
-				return false;
-			}
-			else if((formData[i].name == "' . $idInputMax . '") && !formData[i].value) {
-				checkLength( evarisk("#' . $idInputMax . '"), "", 1, 255, "' . __('Le champs nom de la variable doit contenir entre !#!minlength!#! et !#!maxlength!#! caract&egrave;res', 'evarisk') . '" , evarisk(".var_form_error_message"))
-				return false;
-			}
-		}
-
-		if(parseFloat(evarisk("#' . $idInputMin . '").val()) > parseFloat(evarisk("#' . $idInputMax . '").val())){
-			evarisk("#' . $idInputMin . '").addClass( "ui-state-error" );
-			evarisk("#' . $idInputMax . '").addClass( "ui-state-error" );
-			updateTips( digi_html_accent_for_js("' . __('La valeur maximale doit &ecirc;tre sup&eacute;rieure &agrave; la valeur minimale.', 'evarisk') . '"), evarisk(".var_form_error_message"));
-
-			return false;
-		}
-
-		return true;
-	}
-</script>';
+</form>';
 
 		return $var_form;
 	}

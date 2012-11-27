@@ -29,10 +29,11 @@ if($_REQUEST['act'] == 'save'){
 	}
 
 	/*	Check if there are recommendation to link with this risk	*/
+	$preconisationRisqueTitle = !empty($_REQUEST['preconisationRisqueTitle'])?digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisqueTitle']):'';
 	$preconisationRisque = !empty($_REQUEST['preconisationRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisque']):'';
-	if($preconisationRisque != ''){
+	if ( !empty($preconisationRisque) || !empty($preconisationRisqueTitle ) ) {
 		$infosDanger = EvaDanger::getDanger($idDanger);
-		$_POST['nom_activite'] = substr($preconisationRisque, 0, 50);
+		$_POST['nom_activite'] = !empty($preconisationRisqueTitle) ? $preconisationRisqueTitle : substr(nl2br($preconisationRisque), 0, 255);
 		$_POST['description'] = $preconisationRisque;
 		$_POST['print_action_description_in_duer'] = $preconisationRisque;
 		$_POST['cout'] = '';
@@ -47,14 +48,14 @@ if($_REQUEST['act'] == 'save'){
 		$_POST['hasPriority'] = 'yes';
 
 		/*	Make the link between a corrective action and a risk evaluation	*/
-		$query = 
+		$query =
 			$wpdb->prepare(
-				"SELECT id_evaluation 
-				FROM " . TABLE_AVOIR_VALEUR . " 
-				WHERE id_risque = '%d' 
-					AND Status = 'Valid' 
-				ORDER BY id DESC 
-				LIMIT 1", 
+				"SELECT id_evaluation
+				FROM " . TABLE_AVOIR_VALEUR . "
+				WHERE id_risque = '%d'
+					AND Status = 'Valid'
+				ORDER BY id DESC
+				LIMIT 1",
 				$idRisque
 			);
 		$evaluation = $wpdb->get_row($query);
@@ -76,7 +77,7 @@ if($_REQUEST['act'] == 'delete')
 	$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
 	$deleteResult = Risque::deleteRisk($idRisque, $tableElement, $idElement);
 
-	$messageInfo = 
+	$messageInfo =
 	'<script type="text/javascript">
 		digirisk(document).ready(function(){
 			digirisk("#message' . $table . '").addClass("updated");';

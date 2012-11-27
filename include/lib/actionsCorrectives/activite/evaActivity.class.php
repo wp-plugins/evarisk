@@ -354,6 +354,9 @@ class EvaActivity extends EvaBaseActivity
 					$nom_exportable_plan_action = 'no';
 				}
 			}
+			if ( $ProgressionStatus == 'Done' ) {
+				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; car cette t&acirc;che est sold&eacute;e', 'evarisk') . '"';
+			}
 			$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($nom_exportable_plan_action) && ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 			$nomChamps = "nom_activite";
 			$idTitre = "nom_activite";
@@ -508,6 +511,9 @@ class EvaActivity extends EvaBaseActivity
 					$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
 					$description_exportable_plan_action = 'no';
 				}
+			}
+			if ( $ProgressionStatus == 'Done' ) {
+				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; car cette t&acirc;che est sold&eacute;e', 'evarisk') . '"';
 			}
 			$labelInput .= '<div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($description_exportable_plan_action) && ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 			$id = "description_activite";

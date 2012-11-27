@@ -216,7 +216,7 @@ class Risque {
 
 		$query = $wpdb->prepare(
 			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
-				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date,
+				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date, tableAvoirValeur.commentaire AS histo_com,
 				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie
 			FROM " . TABLE_RISQUE . " tableRisque
 				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.id_risque = tableRisque.id AND tableAvoirValeur.Status IN (" . $evaluation_status . ")),
@@ -327,11 +327,17 @@ class Risque {
 		$sql = "SELECT MAX(id_evaluation) + 1 AS newId FROM " . TABLE_AVOIR_VALEUR;
 		$newId = $wpdb->get_row($sql);
 		if((INT)$newId->newId <= 0)$newId->newId = 1;
+		$r_nb = 1;
 		foreach($variables as $idVariable => $valeurVariable){
 			if($valeurVariable != 'undefined'){
+				$comment = null;
+				if ( $r_nb == 1 ) {
+					$comment = $description;
+				}
 				$idVariable = digirisk_tools::IsValid_Variable($idVariable);
 				$valeurVariable = digirisk_tools::IsValid_Variable($valeurVariable);
-				$wpdb->insert(TABLE_AVOIR_VALEUR, array('id_risque'=>$idRisque, 'id_evaluation'=>$newId->newId, 'id_variable'=>$idVariable, 'valeur'=>$valeurVariable, 'idEvaluateur'=>$current_user->ID, 'date'=>current_time('mysql', 0), 'Status'=>$histoStatus));
+				$wpdb->insert(TABLE_AVOIR_VALEUR, array('id_risque'=>$idRisque, 'id_evaluation'=>$newId->newId, 'id_variable'=>$idVariable, 'valeur'=>$valeurVariable, 'idEvaluateur'=>$current_user->ID, 'date'=>current_time('mysql', 0), 'Status'=>$histoStatus, 'commentaire'=>$comment));
+				$r_nb++;
 			}
 		}
 

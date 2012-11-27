@@ -606,8 +606,8 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 		if(current_user_can('digi_add_task')){//Preconisation (action prioritaire)
 			$contenuInput = '';
-			$labelInput = ucfirst(strtolower(__("Ajouter une action corrective pour le risque", 'evarisk')));
-			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			$labelInput = ucfirst(strtolower(__("Description de l'action corrective associée au risque", 'evarisk')));
+			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('text', $formId . 'preconisationRisqueTitle', $contenuInput, '', ucfirst(strtolower(__("Nom de l'action corrective associée au risque", 'evarisk'))) . ' : ', $formId . 'preconisationRisqueTitle', false, false, 255, '', '', '95%', '') . '' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 		}
 		if(current_user_can('digi_view_correctiv_action') && ($risque[0] != null) && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0))){
 			$formRisque .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
@@ -691,6 +691,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				"variables":variables,
 				"description_risque":digirisk("#' . $formId . 'descriptionFormRisque").val(),
 				"preconisationRisque":digirisk("#' . $formId . 'preconisationRisque").val(),
+				"preconisationRisqueTitle":digirisk("#' . $formId . 'preconisationRisqueTitle").val(),
 				"print_action_description_in_duer":digirisk("#' . $formId . 'print_action_description_duer").val(),
 				"idRisque":digirisk("#' . $formId . 'idRisque").val(),
 				"pictureId":"' . $formId . '"';

@@ -11,7 +11,7 @@ class actionsCorrectives
 	*	@param array $risks Optionnal An array with the risk list to get directly correctiv action linked
 	*	@param array $constraint Optionnal An array with the different constraint to check before getting correctiv actions
 	*
-	*	@return array $correctiv_actions An array with the list of linked correctiv actions 
+	*	@return array $correctiv_actions An array with the list of linked correctiv actions
 	*/
 	function get_activity_associated_to_risk($table_element = '', $id_element = '', $risks = '', $constraint = ''){
 		$correctiv_actions = array();
@@ -20,7 +20,7 @@ class actionsCorrectives
 			$riskList = Risque::getRisques($table_element, $id_element, "Valid");
 			if($riskList != null){
 				foreach($riskList as $risque){
-					$risks[$risque->id][] = $risque; 
+					$risks[$risque->id][] = $risque;
 				}
 			}
 		}
@@ -160,8 +160,8 @@ digirisk(".open_close_row").click(function(){
 		var containerId = digirisk(this).attr("id").replace("pic_line", "");
 		digirisk("#" + containerId).html(digirisk("#loadingImg").html());
 		digirisk("#" + containerId).load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-			"post":"true", 
-			"table":"' . TABLE_RISQUE . '", 
+			"post":"true",
+			"table":"' . TABLE_RISQUE . '",
 			"act":"loadAssociatedTask",
 			"idRisque": containerId.replace("' . ELEMENT_IDENTIFIER_R . '", ""),
 			"extra":"correctiv_action_follow"
@@ -177,8 +177,8 @@ digirisk(".open_close_row").click(function(){
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function get_correctiv_action_for_duer(){
 		global $wpdb;
 		$actions = array();
@@ -191,7 +191,7 @@ WHERE TASK.nom_exportable_plan_action=%s
 	AND TASK.tableProvenance != %s
 	AND TASK.Status='Valid'
 ORDER BY TASK.limiteGauche, TASK.limiteDroite
-", TABLE_RISQUE, 'yes', TABLE_RISQUE);//exit($query);
+", TABLE_RISQUE, 'yes', TABLE_RISQUE);
 		$action_list = $wpdb->get_results($query);
 		foreach ( $action_list as $action ) {
 			$racine = Arborescence::getRacine(TABLE_TACHE, " id='" . $action->id . "' ");
@@ -204,8 +204,8 @@ ORDER BY TASK.limiteGauche, TASK.limiteDroite
 			}
 
 			if ( $export_task ) {
-
 				$actions[$action->idAction]['idAction'] = $action->idAction;
+				$actions[$action->idAction]['etatAction'] = actionsCorrectives::check_progression_status_for_output($action->ProgressionStatus) . ' ('. (!empty($action->avancement) ? $action->avancement : 0) . '%)';
 				$actions[$action->idAction]['nomAction'] = $action->nom;
 				$actions[$action->idAction]['descriptionAction'] = $action->description;
 				$actions[$action->idAction]['ajoutAction'] = mysql2date('d F Y', $action->firstInsert, true);
@@ -249,7 +249,7 @@ ORDER BY TASK.limiteGauche, TASK.limiteDroite
 		if(!isset($_POST['affichage'])){
 			$_POST['affichage'] = "affichageListe";
 		}
-		include_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );	
+		include_once(EVA_LIB_PLUGIN_DIR . 'classicalPage.php' );
 		// On enl�ve le choix de l'affichage
 ?>
 		<script type="text/javascript">

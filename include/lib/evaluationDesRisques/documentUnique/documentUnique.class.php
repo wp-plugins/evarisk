@@ -150,9 +150,10 @@ class eva_documentUnique {
 									$task_export_content .= ' : ' . $racine->description.' ';
 							}
 
-							if ( !empty( $task_export_content ) )
-								$associated_task_to_export.=ELEMENT_IDENTIFIER_T.$racine->id.' - '.$task_export_content.'
+							if ( !empty( $task_export_content ) ) {
+								$associated_task_to_export .= actionsCorrectives::check_progression_status_for_output($racine->ProgressionStatus) . ' - '. (!empty($racine->avancement) ? $racine->avancement : 0) . '% - ' . ELEMENT_IDENTIFIER_T.$racine->id.' - '.$task_export_content.'
 ';
+							}
 
 							$elements = Arborescence::getFils(TABLE_TACHE, $racine, "nom ASC");
 							$subcontent = self::output_correctiv_action_tree($elements, $racine, TABLE_TACHE);
@@ -163,45 +164,47 @@ class eva_documentUnique {
 					}
 				}
 
-				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $risque[0]->id);
-				if ( !empty($pictureAssociated) ) {
-					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $pictureAssociated[0]->photo, 'class' => '');
-				}
-				else {
-					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => 'noPicture', 'class' => '');
-				}
+				if ( empty($outputInterfaceType) || ($outputInterfaceType == 'export_risk_summary') ) {
+					$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $risque[0]->id);
+					if ( !empty($pictureAssociated) ) {
+						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $pictureAssociated[0]->photo, 'class' => '');
+					}
+					else {
+						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => 'noPicture', 'class' => '');
+					}
 
-				$methode_details = '';
-				$methode_info = MethodeEvaluation::getMethod($risque[0]->id_methode);
-				$listeVariables = MethodeEvaluation::getVariablesMethode($risque[0]->id_methode, $risque[0]->date);
-				unset($listeIdVariables);
-				$listeIdVariables = array();
-				foreach ($listeVariables as $ordre => $variable) {
-					$listeIdVariables['"' . $variable->id . '"'][]=$ordre;
-				}
-				unset($listeValeurs);
-				foreach ($risque as $ligneRisque) {
-					if (!empty($listeIdVariables) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
-						foreach ($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre) {
-							$var_infos = eva_Variable::getVariable($ligneRisque->id_variable);
-							$listeValeurs[$ordre] = '<br />' . ELEMENT_IDENTIFIER_V . $ligneRisque->id_variable . ' - ' . $var_infos->nom . ' : ' . Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
+					$methode_details = '';
+					$methode_info = MethodeEvaluation::getMethod($risque[0]->id_methode);
+					$listeVariables = MethodeEvaluation::getVariablesMethode($risque[0]->id_methode, $risque[0]->date);
+					unset($listeIdVariables);
+					$listeIdVariables = array();
+					foreach ($listeVariables as $ordre => $variable) {
+						$listeIdVariables['"' . $variable->id . '"'][]=$ordre;
+					}
+					unset($listeValeurs);
+					foreach ($risque as $ligneRisque) {
+						if (!empty($listeIdVariables) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
+							foreach ($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre) {
+								$var_infos = eva_Variable::getVariable($ligneRisque->id_variable);
+								$listeValeurs[$ordre] = '<br />' . ELEMENT_IDENTIFIER_V . $ligneRisque->id_variable . ' - ' . $var_infos->nom . ' : ' . Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
+							}
 						}
 					}
-				}
-				if (!empty($listeValeurs) && is_array($listeValeurs)) {
-					ksort($listeValeurs);
-					foreach ($listeValeurs as $val) {
-						$methode_details .= $val;
+					if (!empty($listeValeurs) && is_array($listeValeurs)) {
+						ksort($listeValeurs);
+						foreach ($listeValeurs as $val) {
+							$methode_details .= $val;
+						}
 					}
-				}
 
-				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => ELEMENT_IDENTIFIER_ME . $risque[0]->id_methode . ' - ' . $methode_info->nom . $methode_details, 'class' => '');
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => ELEMENT_IDENTIFIER_ME . $risque[0]->id_methode . ' - ' . $methode_info->nom . $methode_details, 'class' => '');
+				}
 
 				$i++;
 			}
 
-			krsort($tmpLigneDeValeurs);
-			foreach($tmpLigneDeValeurs as $quotationLigneDeValeur => $contenuLigneDeValeur){
+			krsort( $tmpLigneDeValeurs );
+			foreach ( $tmpLigneDeValeurs as $quotationLigneDeValeur => $contenuLigneDeValeur ) {
 				foreach($contenuLigneDeValeur as $ligneDeValeur){
 					$lignesDeValeurs[] = $ligneDeValeur;
 				}
@@ -238,11 +241,12 @@ class eva_documentUnique {
 
 			if ( !empty( $content ) ) {
 				if ( empty( $output_type ) ) {
-					$monCorpsSubElements.=DIGI_TASK_SEP.' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id.' - '.$content.'
+					$monCorpsSubElements .= actionsCorrectives::check_progression_status_for_output($subElement->ProgressionStatus) . ' ('. (!empty($subElement->avancement) ? $subElement->avancement : 0) . '%) ' . DIGI_TASK_SEP.' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id.' - '.$content.'
 ';
 				}
 				elseif ( $output_type == 'unaffected_task' ) {
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['idAction'] = $separator . ' '.DIGI_SUBTASK_SEP.' '.ELEMENT_IDENTIFIER_ST.$subElement->id;
+					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['etatAction'] = actionsCorrectives::check_progression_status_for_output($subElement->ProgressionStatus) . ' ('. (!empty($subElement->avancement) ? $subElement->avancement : 0) . '%)';
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['nomAction'] = $subElement->nom;
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['descriptionAction'] = $subElement->description;
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['ajoutAction'] = mysql2date('d F Y', $subElement->firstInsert, true);
@@ -464,7 +468,7 @@ class eva_documentUnique {
 	*
 	*	@return array $listeRisque An ordered array with all the risqs by line. Ordered by risq level
 	*/
-	function readBilanUnitaire($bilanALire, $outputType = ''){
+	function readBilanUnitaire( $bilanALire, $outputType = '' ) {
 		$listeRisque = $listeRisque[SEUIL_BAS_FAIBLE] = $listeRisque[SEUIL_BAS_APLANIFIER] = $listeRisque[SEUIL_BAS_ATRAITER] = $listeRisque[SEUIL_BAS_INACCEPTABLE] = array();
 
 		if( is_array($bilanALire) ){

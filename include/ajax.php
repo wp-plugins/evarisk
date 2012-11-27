@@ -1446,9 +1446,8 @@ echo $output;
 					}
 					break;
 
-					case 'reload_risk_cotation':
-					{
-						$score_risque = digirisk_tools::IsValid_Variable($_REQUEST['score_risque']);
+					case 'reload_risk_cotation': {
+						$score_risque = digirisk_tools::IsValid_Variable($_POST['score_risque']);
 						$date = digirisk_tools::IsValid_Variable($_REQUEST['date']);
 						$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode']);
 						$niveauSeuil = digirisk_tools::IsValid_Variable($_REQUEST['niveauSeuil']);
@@ -1586,7 +1585,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							foreach($risque as $ligneRisque){
 								$idMethode = ($idMethode == '') ? $ligneRisque->id_methode : $idMethode;
 								$valeurInitialVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
-
 							}
 						}
 						$variables = MethodeEvaluation::getDistinctVariablesMethode($idMethode);
@@ -1603,6 +1601,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 
 							{//Affichage de la variable
+								$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $variable->id, 'Valid');
+								$existing_alternativ_vars = $wpdb->get_results($query);
+								if ( !empty($existing_alternativ_vars) ) {
+									foreach ( $existing_alternativ_vars as $alternativ ) {
+										$affichage .= '<input type="hidden" value="' . $alternativ->valeurAlternative . '" id="' . $formId . 'slider-range-min' . $variable->id . '_alternativ_' . $alternativ->valeur . '" name="' . $formId . 'slider-range-min' . $variable->id . '_alternativ_' . $alternativ->valeur . '" />';
+									}
+								}
 								if ($variable->affichageVar == "slide") {
 									$vars_scripts .= '
 										jQuery("#' . $formId . 'slider-range-min' . $variable->id . '").slider({
@@ -1611,7 +1616,12 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											min:	' . $variable->min . ',
 											max:	' . $variable->max . ',
 											slide: function(event, ui){
-												jQuery("#' . $formId . '_digi_eval_method_var_' . $variable->id . '").val(ui.value);
+												if ( jQuery("#' . $formId . 'slider-range-min' . $variable->id . '_alternativ_" + ui.value).val() != undefined ) {
+													jQuery("#' . $formId . '_digi_eval_method_var_' . $variable->id . '").val( jQuery("#' . $formId . 'slider-range-min' . $variable->id . '_alternativ_" + ui.value).val() );
+												}
+												else{
+													jQuery("#' . $formId . '_digi_eval_method_var_' . $variable->id . '").val(ui.value);
+												}
 											},
 											stop: function(event, ui){
 												live_risk_calcul();
@@ -3860,8 +3870,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 </script>';
 						echo $output;
 						break;
-					case 'saveWorkUnitSheetForGroupement':
-					{
+					case 'saveWorkUnitSheetForGroupement':{
 						$file_to_zip = array();
 
 						$mainTableElement = $tableElement = $_REQUEST['tableElement'];
@@ -3869,8 +3878,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$groupementParent = EvaGroupement::getGroupement($idElement);
 						$arbre = arborescence::getCompleteUnitList($tableElement, $idElement);
 						$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'documentUnique/' . $tableElement . '/' . $idElement. '/';
-						foreach($arbre as $workUnit)
-						{
+						$dir_with_files = $pathToZip . date('YmdHis') . '_fichesDePoste';
+						mkdir($dir_with_files);
+						foreach ( $arbre as $workUnit ) {
 							$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($workUnit['id']);
 							$_POST['description'] = $workUnitinformations->description;
 							$_POST['telephone'] = $workUnitinformations->telephoneUnite;
@@ -3881,35 +3891,38 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 							$_POST['tableElement'] = $workUnit['table'];
 							$_POST['idElement'] = $workUnit['id'];
-							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $workUnit['id'] . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $workUnit['nom']));
+							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $workUnit['id'] . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', str_replace('/', '_', $workUnit['nom'])));
 							$_POST['nomEntreprise'] = $groupementParent->nom;
 
 							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
 							$lastDocument = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_poste');
-							$odtFile = 'ficheDePoste/' . $workUnit['table'] . '/' . $workUnit['id'] . '/' . $lastDocument->name . '_V' . $lastDocument->revision . '.odt';
-							if( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) )
-							{
+							$odt_file_name = $lastDocument->name . '_V' . $lastDocument->revision . '.odt';
+							$odtFile = 'ficheDePoste/' . $workUnit['table'] . '/' . $workUnit['id'] . '/' . $odt_file_name;
+							if ( is_file(EVA_RESULTATS_PLUGIN_DIR . $odtFile) ) {
 								$file_to_zip[] = EVA_RESULTATS_PLUGIN_DIR . $odtFile;
+								copy(EVA_RESULTATS_PLUGIN_DIR . $odtFile, $dir_with_files . '/' . $odt_file_name);
 							}
+						}
+
+						if ( is_dir($dir_with_files) ) {
+							eva_gestionDoc::saveNewDoc('fiche_de_poste_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $dir_with_files));
 						}
 
 						$saveZipFileActionMessage = '';
 						digirisk_tools::make_recursiv_dir($pathToZip);
-						if(count($file_to_zip) > 0)
-						{
+						if ( count($file_to_zip) > 0 ) {
 							/*	ZIP THE FILE	*/
 							$zipFileName = date('YmdHis') . '_fichesDePoste.zip';
 							$archive = new eva_Zip($zipFileName);
 							$archive->setFiles($file_to_zip);
 							$archive->compressToPath($pathToZip);
 							$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiche_de_poste_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
-							if($saveWorkSheetUnitStatus == 'error')
-							{
+							if ( $saveWorkSheetUnitStatus == 'error' ) {
 								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches de postes pour ce groupement', 'evarisk');
 							}
-							else
-							{
+							else {
 								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les fiches de poste ont correctement &eacute;t&eacute; enregistr&eacute;es.', 'evarisk');
+								rmdir($dir_with_files);
 							}
 						$saveZipFileActionMessage = '
 	digirisk(document).ready(function(){
@@ -6267,7 +6280,7 @@ switch($tableProvenance)
 							$score = Risque::getScoreRisque($risque);
 							$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 							$evaluation_status = ($risque[0]->evaluation_status == 'Deleted') ? '"' . $riskLevel . ' - (' . __('Erreur', 'evarisk') . ')"' : $riskLevel;
-							$line .= '["' . $risque[0]->evaluation_date . '",' . $riskLevel . ', ' . $evaluation_status . '], ';
+							$line .= '["' . $risque[0]->evaluation_date . '",' . $riskLevel . ', "' . $risque[0]->histo_com . '"], ';
 						}
 
 						$line = trim(substr($line, 0, -2));
@@ -6288,10 +6301,37 @@ switch($tableProvenance)
 				var line1=[' . $line . '];
 				var plot1 = jQuery.jqplot("risk_chart_' . $id_risque . '", [line1], {
 					title:digi_html_accent_for_js("' . sprintf(__('Historique du risque %s', 'evarisk'), ELEMENT_IDENTIFIER_R . $id_risque) . ' - ' . $risque[0]->nomDanger . '"),
-					axes:{xaxis:{renderer:jQuery.jqplot.DateAxisRenderer, tickOptions:{formatString:"%d/%m/%y %T"}}, yaxis:{min:0, max:100}},
-					seriesDefaults:{pointLabels:{show:true, ypadding:4}},
-					highlighter:{show:true, sizeAdjust:7.5},
-					cursor:{show: false}
+					axes:{
+						xaxis:{
+							renderer:jQuery.jqplot.DateAxisRenderer,
+							tickOptions:{
+								formatString:"%d/%m/%y %T"
+							}
+						},
+						yaxis:{
+							min:0,
+							max:100,
+							tickOptions:{
+								formatString:"%s"
+							}
+						}
+					},
+					seriesDefaults:{
+						pointLabels:{
+							show:true,
+							ypadding:4
+						}
+					},
+					highlighter:{
+						show:true,
+						showMarker:false,
+						tooltipAxes: "xy",
+						yvalues: 3,
+						formatString:"<table class\'jqplot-highlighter\' ><tr><td>'.__('Date', 'evarisk').'</td><td>%s</td></tr><tr><td>'.__('Niveau', 'evarisk').'</td><td>%d</td></tr><tr><td>'.__('Commentaire', 'evarisk').'</td><td>%s</td></tr></table>"
+					},
+					cursor:{
+						show: false
+					}
 				});
 			});
 		</script>';

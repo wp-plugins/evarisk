@@ -1187,15 +1187,15 @@ class eva_gestionDoc {
 									foreach($storedPlanDaction[$riskTypeValue] AS $elements){
 										foreach($elements AS $element){
 											$element['nomElement'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomElement']));
 											$element['identifiantRisque'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['identifiantRisque']));
 											$element['quotationRisque'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['quotationRisque']));
 											$element['nomDanger'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
 											$element['actionPrevention'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
 
 											$planDactionR->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
 											$planDactionR->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
@@ -1212,32 +1212,33 @@ class eva_gestionDoc {
 						}
 
 						$planDactionUA = $odf->setSegment('planDaction');
-						if($planDactionUA){
-							if( is_array($planDaction['unaffected']) ){
-								foreach($planDaction['unaffected'] AS $element){
-									// foreach($elements AS $element){
-										$element['idAction'] = str_replace('<br />', "
+						if ( $planDactionUA ) {
+							if ( is_array($planDaction['unaffected']) ) {
+								foreach ( $planDaction['unaffected'] AS $element ) {
+									$element['idAction'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent_no_utf8decode($element['idAction']));
-										$element['nomAction'] = str_replace('<br />', "
+									$element['nomAction'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomAction']));
-										$element['descriptionAction'] = str_replace('<br />', "
+									$element['descriptionAction'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent_no_utf8decode($element['descriptionAction']));
-										$element['ajoutAction'] = str_replace('<br />', "
+									$element['ajoutAction'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent_no_utf8decode($element['ajoutAction']));
-										$element['responsableAction'] = str_replace('<br />', "
+									$element['responsableAction'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent_no_utf8decode($element['responsableAction']));
-										$element['affectationAction'] = str_replace('<br />', "
+									$element['affectationAction'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent_no_utf8decode($element['affectationAction']));
+									$element['etatAction'] = str_replace('<br />', "
+	", digirisk_tools::slugify_noaccent_no_utf8decode($element['etatAction']));
 
-										$planDactionUA->setVars('idAction', $element['idAction'], true, 'UTF-8');
-										$planDactionUA->setVars('nomAction', $element['nomAction'], true, 'UTF-8');
-										$planDactionUA->setVars('descriptionAction', $element['descriptionAction'], true, 'UTF-8');
-										$planDactionUA->setVars('ajoutAction', $element['ajoutAction'], true, 'UTF-8');
-										$planDactionUA->setVars('responsableAction', $element['responsableAction'], true, 'UTF-8');
-										$planDactionUA->setVars('affectationAction', $element['affectationAction'], true, 'UTF-8');
+									$planDactionUA->setVars('affectationAction', $element['affectationAction'], true, 'UTF-8');
+									$planDactionUA->setVars('idAction', $element['idAction'], true, 'UTF-8');
+									$planDactionUA->setVars('etatAction', $element['etatAction'], true, 'UTF-8');
+									$planDactionUA->setVars('nomAction', $element['nomAction'], true, 'UTF-8');
+									$planDactionUA->setVars('descriptionAction', $element['descriptionAction'], true, 'UTF-8');
+									$planDactionUA->setVars('ajoutAction', $element['ajoutAction'], true, 'UTF-8');
+									$planDactionUA->setVars('responsableAction', $element['responsableAction'], true, 'UTF-8');
 
-										$planDactionUA->merge();
-									// }
+									$planDactionUA->merge();
 								}
 							}
 							$odf->mergeSegment($planDactionUA);

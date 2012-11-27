@@ -807,6 +807,7 @@ CREATE TABLE {$t} (
   `idEvaluateur` bigint(20) NOT NULL COMMENT 'Allow to know who is the person who change the risk',
   `date` datetime NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
+  `commentaire` text collate utf8_unicode_ci,
   PRIMARY KEY (`id_risque`,`id_variable`,`date`),
   KEY `id_risque` (`id_risque`),
   KEY `id_variable` (`id_variable`),
@@ -1690,4 +1691,13 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('document_type');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_FP);
+}
+
+{/*	Version 77	*/
+	$digirisk_db_version = 77;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_AVOIR_VALEUR] = array('commentaire');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_AVOIR_VALEUR);
 }
