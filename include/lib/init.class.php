@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin Loader
-* 
+*
 * Define the different element usefull for the plugin usage. The menus, includes script, start launch script, css, translations
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.2.9
@@ -35,7 +35,7 @@ class digirisk_init
 		$moFile = EVA_HOME_DIR . 'languages/evarisk-' . $locale . '.mo';
 		if( !empty($locale) && (is_file($moFile)) ){
 			load_textdomain('evarisk', $moFile);
-		}		
+		}
 		else{
 			load_textdomain('evarisk', EVA_HOME_DIR . 'languages/evarisk-fr_FR.mo');
 		}
@@ -127,6 +127,7 @@ class digirisk_init
 	*	Define the javascript to include in each page
 	*/
 	function digirisk_admin_js(){
+		global $wp_version;
 		wp_enqueue_script('jquery');
 
 		wp_enqueue_script('jquery-ui-core');
@@ -140,7 +141,12 @@ class digirisk_init
 
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
 
-		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
+		if ( $wp_version >= 3.5) {
+			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui-last.js', '', EVA_PLUGIN_VERSION);
+		}
+		else {
+			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
+		}
 
 		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
@@ -178,6 +184,7 @@ class digirisk_init
 	*	Admin javascript "frontend" part definition
 	*/
 	function frontend_js(){
+		global $wp_version;
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-form');
@@ -185,7 +192,12 @@ class digirisk_init
 		wp_enqueue_script('jquery-ui-slider');
 
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
+		if ( $wp_version >= 3.5) {
+			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui-last.js', '', EVA_PLUGIN_VERSION);
+		}
+		else {
+			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
+		}
 	}
 
 	/**
@@ -197,7 +209,7 @@ class digirisk_init
 
 		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/jquery-libs/datatable.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_datatable');
-		
+
 		wp_register_style('eva_jquery_treetable', EVA_INC_PLUGIN_URL . 'css/jquery-libs/treeTable.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_treetable');
 		wp_register_style('eva_jquery_fileuploader', EVA_INC_PLUGIN_URL . 'css/jquery-libs/fileuploader.css', '', EVA_PLUGIN_VERSION);

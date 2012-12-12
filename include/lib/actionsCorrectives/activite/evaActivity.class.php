@@ -392,7 +392,7 @@ class EvaActivity extends EvaBaseActivity
 			}
 		}
 
-		if(!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action')){
+		if(empty($arguments['provenance']) || (!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action'))){
 			/*	Sub-Task start date		*/
 			$contenuAideTitre = "";
 			$id = "date_debut_activite";
