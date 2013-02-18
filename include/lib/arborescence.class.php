@@ -89,7 +89,7 @@ class Arborescence {
 			AND table2.limiteGauche < " . $element->limiteGauche . "
 			AND table2.limiteDroite > " . $element->limiteDroite . "
 			AND table1.limiteGauche < table2.limiteGauche
-		)");
+		)", "");
 		$resultat = $wpdb->get_row($query);
 		return $resultat;
 	}
@@ -143,14 +143,14 @@ class Arborescence {
 		$tableauElements;
 		
 		/*
-		  * On extrait l'élément fils et ses descendants de l'arbre :
-		  *	- On déplace l'élément fils et ses descendants avant 0
+		  * On extrait l'ï¿½lï¿½ment fils et ses descendants de l'arbre :
+		  *	- On dï¿½place l'ï¿½lï¿½ment fils et ses descendants avant 0
 		  */
-		// $limiteDroite majore les limites de l'élément fils et de ses descendants
+		// $limiteDroite majore les limites de l'ï¿½lï¿½ment fils et de ses descendants
 		$decrement = $limiteDroite + 1;
-		// Tout élément dont les limites sont comprises entre $limiteGauche et $limiteDroite est soit  l'élément fils, soit un de ses descendants
+		// Tout ï¿½lï¿½ment dont les limites sont comprises entre $limiteGauche et $limiteDroite est soit  l'ï¿½lï¿½ment fils, soit un de ses descendants
 		$elements = Arborescence::getByLimites($table, $limiteGauche,$limiteDroite);
-		// Pour chaque élément, on déduit le decrement de ses limites
+		// Pour chaque ï¿½lï¿½ment, on dï¿½duit le decrement de ses limites
 		foreach($elements as $element)
 		{
 			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche  - $decrement ) . "', `limiteDroite`= '" . ($element->limiteDroite - $decrement ) . "' WHERE`id` = '" . $element->id . "'";
@@ -159,10 +159,10 @@ class Arborescence {
 
 		/*
 		  * On referme l'arbre :
-		  *	- On tri les limites des éléments de l'arbre par ordre croissant
-		  *	- On affecte les valeurs de 0 à 2*(nombre d'éléments de l'abre) -1 dans l'ordre
+		  *	- On tri les limites des ï¿½lï¿½ments de l'arbre par ordre croissant
+		  *	- On affecte les valeurs de 0 ï¿½ 2*(nombre d'ï¿½lï¿½ments de l'abre) -1 dans l'ordre
 		  */
-		// Tout élément dont les limites sont comprises entre la  limite gauche et la limite droite de la racine est un élément de l'arbre
+		// Tout ï¿½lï¿½ment dont les limites sont comprises entre la  limite gauche et la limite droite de la racine est un ï¿½lï¿½ment de l'arbre
 		$elements = Arborescence::getByLimites($table, $racine->limiteGauche, $racine->limiteDroite);
 		for($i=0; $i<count($elements); $i++)
 		{
@@ -173,7 +173,7 @@ class Arborescence {
 			$tableauElements[$i*2+1][1] = 'd';
 			$tableauElements[$i*2+1][2] = $elements[$i]->id;
 		}
-		// On tri le tableau $tableauElements à partir de l'élément 0 de chaque indice
+		// On tri le tableau $tableauElements ï¿½ partir de l'ï¿½lï¿½ment 0 de chaque indice
 		sort($tableauElements);
 		for($i=0; $i<count($tableauElements); $i++)
 		{
@@ -193,19 +193,19 @@ class Arborescence {
 		}
 		
 		/*
-		  * On réintègre l'élément fils :
-		  *	- On ouvre l'abre à l'emplacement où l'on veut inserer l'élément fils et ses descendants
-		  *	- On insère l'élément fils et ses descendants dans l'arbre
+		  * On rï¿½intï¿½gre l'ï¿½lï¿½ment fils :
+		  *	- On ouvre l'abre ï¿½ l'emplacement oï¿½ l'on veut inserer l'ï¿½lï¿½ment fils et ses descendants
+		  *	- On insï¿½re l'ï¿½lï¿½ment fils et ses descendants dans l'arbre
 		  */
-		// Tout élément dont les limites sont comprises entre $limiteDroiteDestination et la limite droite de la racine est un élément dont les deux limites doivent être déplacé de $ecart
+		// Tout ï¿½lï¿½ment dont les limites sont comprises entre $limiteDroiteDestination et la limite droite de la racine est un ï¿½lï¿½ment dont les deux limites doivent ï¿½tre dï¿½placï¿½ de $ecart
 		$elements = Arborescence::getByLimites($table, $limiteDroiteDestination, $racine->limiteDroite);
 		foreach($elements as $element)
 		{
 			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche + $ecart) . "', `limiteDroite`= '" . ($element->limiteDroite + $ecart) . "' WHERE`id` = '" . $element->id . "'";
 			$wpdb->query($sql);
 		}
-		// Tout élément dont la limite droite est comprise entre $limiteDroiteDestination et la limite droite de la racine
-		// et la limite gauche est avant $limiteDroiteDestination est un élément dont la limite droite doit être déplacé de $ecart
+		// Tout ï¿½lï¿½ment dont la limite droite est comprise entre $limiteDroiteDestination et la limite droite de la racine
+		// et la limite gauche est avant $limiteDroiteDestination est un ï¿½lï¿½ment dont la limite droite doit ï¿½tre dï¿½placï¿½ de $ecart
 		foreach($elements as $element)
 		{
 			$elementsApres[] = $element->id;
@@ -218,7 +218,7 @@ class Arborescence {
 		$elementsArbre = Arborescence::getByLimites($table, $racine->limiteGauche, $racine->limiteDroite);
 		foreach($elementsArbre as $elementArbre)
 		{
-			// Tout élément qui n'est ni avant ni après $limiteDroiteDestination la chevauche (donc un élémént à modifier)
+			// Tout ï¿½lï¿½ment qui n'est ni avant ni aprï¿½s $limiteDroiteDestination la chevauche (donc un ï¿½lï¿½mï¿½nt ï¿½ modifier)
 			if($elementsAvant != null && $elementsApres != null)
 			{
 				if((!(in_array($elementArbre->id, $elementsAvant))) && (!(in_array($elementArbre->id, $elementsApres))))
@@ -250,7 +250,7 @@ class Arborescence {
 			}
 		}
 		
-		// On récupère l'élément fils et ses descendants
+		// On rï¿½cupï¿½re l'ï¿½lï¿½ment fils et ses descendants
 		$elements = Arborescence::getByLimites($table, ($limiteGauche - $decrement ), ($limiteDroite - $decrement ));
 		$ecartAuNouvelEmplacement = ($limiteDroiteDestination - ($limiteDroite - $decrement ) + $ecart - 1);
 		foreach($elements as $element)

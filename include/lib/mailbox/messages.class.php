@@ -108,10 +108,10 @@ class digirisk_messages{
 		global $wpdb;
 		
 		if($type=='archived') {
-			$count = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) FROM '.self::message_db_table.' WHERE status="archived";'));
+			$count = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) FROM '.self::message_db_table.' WHERE status="archived";', ''));
 		}
 		else {
-			$count = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) FROM '.self::message_db_table.';'));
+			$count = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) FROM '.self::message_db_table.';', ''));
 		}
 		
 		return !empty($count) ? $count : 0;

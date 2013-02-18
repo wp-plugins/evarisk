@@ -1103,7 +1103,7 @@ class digirisk_display
 				$main_tree_id = $element_type;
 				if($outputAction){
 					$actions = '
-							<td class="noPadding addMain" id="addMain' . $element_type . '">&nbsp;</td>';
+							<td class="noPadding addMain" id="addMain' . $element_type . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'add_vs.png" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une m&eacute;thode', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une m&eacute;thode', 'evarisk')) . '" /></td>';
 					/*	Add trash	*/
 					$main_option = get_option('digirisk_options');
 					if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_recommandation_category_trash') || current_user_can('digi_view_recommandation_trash'))){

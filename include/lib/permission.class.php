@@ -794,7 +794,7 @@ class digirisk_permission
 		$query = $wpdb->prepare(
 		"SELECT * FROM
 		" . DIGI_DBT_PERMISSION_ROLE . "
-		WHERE status = 'valid' " . $moreQuery);
+		WHERE status = 'valid' " . $moreQuery, "");
 
 		$digiriskRoleList = $wpdb->get_results($query);
 

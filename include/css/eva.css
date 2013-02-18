@@ -931,12 +931,6 @@ td.details table{	margin:0px 0px 24px !important;	}
 .evaluation_method_input { margin-bottom:12px; width:95% !important; padding: .4em; }
 .evaluation_method_form_error_message {	margin:3px !important;	}
 
-.eval_method_var{ width:30%; float:left; min-height:250px;	}
-.eval_method_explanation{	width:70%; float:right; text-align:center; padding:13px 0px;	}
-.digi_eval_pic{	width:100%;	}
-
-.evaluation_var_slider_container{	margin-bottom:12px;	}
-
 .evaluation_method_var_container{	margin:12px; display:table; width:95%;	}
 .single_var_container{ margin:0px 0px 2px 25px; width:50%; }
 .single_var_delete_container{	display:table; width:25%;	}
@@ -945,6 +939,11 @@ td.details table{	margin:0px 0px 24px !important;	}
 .open_var_manager{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -32px -80px !important;}
 /*	End Evaluation method	*/
 
+.digi_affect_user_to_element {
+	position: absolute;
+	top: 40px;
+	left: 100px;
+}
 
 /*	General	*/
 .bold{font-weight:bold;}

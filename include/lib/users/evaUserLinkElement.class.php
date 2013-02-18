@@ -85,6 +85,7 @@ class evaUserLinkElement
 		digirisk("#' . $idTable . '").removeClass("dataTables_wrapper");
 		digirisk(".buttonActionUserLinkList").click(function(){
 			if(digirisk(this).hasClass("addUserToLinkList")){
+
 				var currentId = digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
 				cleanUserIdFiedList(currentId, "' . $tableElement . '");
 
@@ -173,6 +174,7 @@ class evaUserLinkElement
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
 <div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span></div></div>
+<div title="' . __('Affectation d\'un utilisateur', 'evarisk') . '" class="digi_affect_user_to_element" id="digi_dialog_affect_user_' . $tableElement . '" >JD</div>
 
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -201,6 +203,11 @@ class evaUserLinkElement
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
 
+		/**	Transform a div into a dialog box	*/
+		jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog({
+			autoOpen: false,
+			modal: true,
+		}).parent().position({ my: "center", at: "center", of: ".inside" });
 
 		/*	Autocomplete search	*/
 		jQuery("#searchUser' . $tableElement . '").autocomplete({
@@ -426,7 +433,7 @@ current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 				"REPLACE INTO " . TABLE_LIAISON_USER_ELEMENT . "
 					(id, status ,date_affectation ,id_attributeur ,date_desAffectation ,id_desAttributeur ,id_user ,id_element ,table_element)
 				VALUES
-					" . $endOfQuery
+					" . $endOfQuery . "", ""
 			);
 			if($wpdb->query($query)){
 				$message = addslashes('<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong>');

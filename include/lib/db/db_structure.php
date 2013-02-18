@@ -574,6 +574,8 @@ CREATE TABLE {$t} (
   `id_user` bigint(20) NOT NULL,
   `id_element` int(10) NOT NULL,
   `table_element` char(255) collate utf8_unicode_ci NOT NULL,
+  `date_affectation_reelle` datetime NOT NULL,
+  `date_desaffectation_reelle` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
   KEY `id_user` (`id_user`),
@@ -1700,4 +1702,13 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_AVOIR_VALEUR] = array('commentaire');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_AVOIR_VALEUR);
+}
+
+{/*	Version 78	*/
+	$digirisk_db_version = 78;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_LIAISON_USER_ELEMENT] = array('date_affectation_reelle', 'date_desaffectation_reelle');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_LIAISON_USER_ELEMENT);
 }

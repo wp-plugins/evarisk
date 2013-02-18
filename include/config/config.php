@@ -227,9 +227,7 @@ $evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 96, 'valeurMa
 $evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 98, 'valeurMaxMethode' => 768);
 $evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 100, 'valeurMaxMethode' => 1024);
 
-/**
- *
-*/
+/**	Define the danger list	*/
 $inrs_danger_categories = array();
 $inrs_danger_categories[] = array('nom' => __('Accident de plain-pied', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chutePP_PictoCategorie.png');
 $inrs_danger_categories[] = array('nom' => __('Chute de hauteur', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chuteH_PictoCategorie.png');

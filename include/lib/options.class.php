@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin options' management
-* 
+*
 * Define the settings page, with the different field to output and field's validators
 * @author Eoxia <dev@eoxia.com>
 * @version 1.0
@@ -17,7 +17,7 @@
 class digirisk_options
 {
 	/**
-	*	Declare the different options for the plugin	
+	*	Declare the different options for the plugin
 	*/
 	function declare_options(){
 		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
@@ -257,9 +257,9 @@ if(current_user_can('digi_edit_option')){
 		$newinput['digi_users_access_field'] = (!empty($input['digi_users_access_field'])?trim($input['digi_users_access_field']):'');
 		$newinput['identifiant_htpasswd'] = (!empty($input['identifiant_htpasswd'])?trim($input['identifiant_htpasswd']):'');
 		$newinput['password_htpasswd'] = (!empty($input['password_htpasswd'])?trim($input['password_htpasswd']):'');
-		
+
 		digirisk_options::create_files($newinput['digi_users_access_field'],$newinput['identifiant_htpasswd'],$newinput['password_htpasswd']);
-		
+
 		$newinput['digi_users_digirisk_extra_field'] = (!empty($input['digi_users_digirisk_extra_field'])?serialize($input['digi_users_digirisk_extra_field']):'');
 
 		return $newinput;
@@ -270,7 +270,7 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function main_options_output()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -287,14 +287,14 @@ if(current_user_can('digi_edit_option')){
 		{
 			echo $options['digi_activ_trash'];
 		}
-	}	
+	}
 
 	/**
 	*	Function allowing to set a explication area for the settings section
 	*/
 	function options_output_ac()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -455,13 +455,13 @@ if(current_user_can('digi_edit_option')){
 		{
 			echo $options['export_tasks'];
 		}
-	}	
+	}
 
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
 	function digi_ac_front_ask_parent_task_id(){
-	
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -484,7 +484,7 @@ if(current_user_can('digi_edit_option')){
 			else{
 				jQuery("#associated_task_container").hide();
 			}
-		});	
+		});
 	});
 </script>';
 		}
@@ -529,7 +529,7 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function options_output_risk()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -553,7 +553,7 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function options_output_fp()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -576,7 +576,7 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function options_output_recommandation()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -600,7 +600,7 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function options_output_users()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -632,7 +632,7 @@ if(current_user_can('digi_edit_option')){
 		else{
 			echo $options['digi_users_access_field'];
 		}
-	}	
+	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
@@ -727,7 +727,7 @@ if(current_user_can('digi_edit_option')){
 		}
 		else{
 			$tableContent = '<span class="evarisk_options_explanation" > ' . __('Une erreur est survenue lors de la r&eacute;cup&eacute;ration des statuts des produits. Seuls les produits "publi&eacute;s" seront affich&eacute;s', 'evarisk') . '</span><br/>';
-		}		
+		}
 
 		echo $tableContent;
 	}
@@ -753,7 +753,7 @@ if(current_user_can('digi_edit_option')){
 	*/
 	function options_output_tree()
 	{
-		
+
 	}
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -1037,7 +1037,7 @@ if(current_user_can('digi_edit_option')){
 			update_option('digirisk_db_option', serialize($optionValue));
 		}
 	}
-	
+
 	function create_files($allow_access, $id, $psw){
 		$dir_psswd = ABSPATH . 'digi_access/';
 		$urlPasswd = ".htpasswd"; //chemin du fichier password
@@ -1067,10 +1067,9 @@ if(current_user_can('digi_edit_option')){
 			}
 			if(!is_dir($dir_psswd)){
 				mkdir($dir_psswd, 0755, true);
-				exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
+				chmod($dir_psswd, 0755);
 			}
 
-			
 			$new_htaccess_file_content = fopen($urlAccess, "w");
 			$new_htaccess_file_content_lines = 'AuthName "' . html_entity_decode(__('Acc&egrave;s prot&eacute;g&eacute;', 'evarisk')) . '"
 AuthType Basic
@@ -1088,12 +1087,12 @@ Require valid-user';
 			fwrite($new_htaccess_file_content, $new_htaccess_file_content_lines);
 			Fclose($new_htaccess_file_content);
 
-			$htpasswd_file_content = fopen($dir_psswd . $urlPasswd,"w");
+			$htpasswd_file_content = fopen($dir_psswd . $urlPasswd, "w");
 			$password_to_write = $psw;
 			if(long2ip(ip2long($_SERVER['REMOTE_ADDR'])) != '127.0.0.1'){
 				$password_to_write = crypt($psw);
 			}
-			$htpasswd_file_content_lines = "$id:" . $password_to_write; //identifiants a récupérer par formulaire
+			$htpasswd_file_content_lines = "$id:" . $password_to_write; //identifiants a rï¿½cupï¿½rer par formulaire
 			Fwrite($htpasswd_file_content, $htpasswd_file_content_lines);
 			Fclose($htpasswd_file_content);
 		}

@@ -369,20 +369,30 @@ class eva_documentUnique {
 							"bAutoWidth": false,
 							"bFilter": false,
 							"bInfo": false,
-							"aoColumns":
-							[
+							"aoColumns": [
 								{ "bSortable": true},
 								{ "bSortable": true},
 								{ "bSortable": true, "sType": "numeric"},
 								{ "bSortable": false},
-								{ "bSortable": false}
+								{ "bSortable": false},
 							],
-								"aaSorting": [[2,"desc"]]});
+							"aaSorting": [[2,"desc"]]});
 							digirisk("#' . $idTable . ' tfoot").remove();
 						});
 						</script>';
 
-						$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
+						$real_line_to_show = array();
+						foreach ( $lignesDeValeurs as $line_key => $line_content ) {
+							$i = 0;
+							foreach ( $line_content as $line_content_details ) {
+								if ( $i <= 4) {
+									$real_line_to_show[$line_key][] = $line_content_details;
+								}
+								$i++;
+							}
+						}
+
+						$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $real_line_to_show, $classes, $idLignes, $scriptVoirRisque);
 					}
 
 					return $recapitulatifRisque;

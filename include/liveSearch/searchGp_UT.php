@@ -26,7 +26,7 @@ if(($search_in_element == 'all') || in_array(TABLE_UNITE_TRAVAIL, $search_in_ele
 	SELECT CONCAT('" . TABLE_UNITE_TRAVAIL . "-_-', UT.id) AS id, CONCAT('" . ELEMENT_IDENTIFIER_UT . "', UT.id, ' - ', UT.nom) AS name
 	FROM " . TABLE_UNITE_TRAVAIL . " AS UT
 	WHERE UT.Status = 'valid'" . $more_unit_query . "
-	ORDER BY UT.nom");
+	ORDER BY UT.nom", "");
 	$unit_list = $wpdb->get_results($query);
 	foreach($unit_list as $unit){
 		$items[$unit->name] = $unit->id;
@@ -43,7 +43,7 @@ if(($search_in_element == 'all') || in_array(TABLE_GROUPEMENT, $search_in_elemen
 	FROM " . TABLE_GROUPEMENT . " AS GP
 	WHERE GP.Status = 'valid'
 		AND nom != 'Groupement Racine'" . $more_grpt_query . "
-	ORDER BY GP.nom");
+	ORDER BY GP.nom", "");
 	$groupement_list = $wpdb->get_results($query);
 	foreach($groupement_list as $gpt){
 		$items[$gpt->name] = $gpt->id;
@@ -60,7 +60,7 @@ if(($search_in_element == 'all') || in_array(TABLE_RISQUE, $search_in_element)){
 	FROM " . TABLE_RISQUE . " AS R
 		INNER JOIN " . TABLE_DANGER . " AS D ON ((D.id = R.id_danger) AND (D.Status = 'Valid'))
 	WHERE R.Status = 'valid'" . $more_grpt_query . "
-	ORDER BY D.nom");
+	ORDER BY D.nom", "");
 	$risk_list = $wpdb->get_results($query);
 	foreach($risk_list as $risk){
 		$items[$risk->name] = $risk->id;

@@ -1048,7 +1048,7 @@ WHERE META_1.meta_key = 'last_name'
 	AND META_2.meta_key = 'first_name'
 	AND META_1.user_id <> 1
 	AND LINK.status = 'valid'
-GROUP BY META_1.user_id , NOM ,  PRENOM");
+GROUP BY META_1.user_id , NOM ,  PRENOM", "");
 							$users = $wpdb->get_results($query);
 							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute pr&eacutesents &agrave l\'audit (%s) :', 'evarisk'), count($users));
 							if(count($users) > 0){
@@ -1081,7 +1081,7 @@ WHERE META_1.meta_key = 'last_name'
 							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
 							WHERE USER_LINK_GROUP.status = 'valid'))) AND LINK.status = 'valid'
 	)
-GROUP BY META_1.user_id , NOM ,  PRENOM");
+GROUP BY META_1.user_id , NOM ,  PRENOM", "");
 							$users = $wpdb->get_results($query);
 							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute absents &agrave l\'audit (%s) :', 'evarisk'), count($users));
 							if(count($users) > 0){
@@ -1641,7 +1641,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
                                  	$i = $variable->min;
                                  	foreach ($tableau as $t) {
                                  		$checked = ($i == $valeurInitialVariable) ? ' checked="checked"' : '';
-                                 		$affichage.= '<input type="radio" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="digi_method_var_value score_risque_checkbox" value="'.$i.'" /><label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '" >'.sprintf($t['question'], $t['seuil']).'</label><br/>';
+                                 		$affichage.= '<input type="radio" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="digi_method_var_value score_risque_checkbox" value="'.$i.'" /><label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '" >'.(strpos($t['question'], '%s') ? sprintf($t['question'], $t['seuil']) : $t['question']).'</label><br/>';
                                  		$i++;
                                  	}
 			                    	$affichage .='<input type="hidden" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '" value="" />
@@ -4399,7 +4399,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			case TABLE_CATEGORIE_PRECONISATION:
 				switch($_REQUEST['act'])
 				{
-					case 'deleteRecommandationCategory':
+					case 'delete':
 					{
 						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id']) : '';
 						$recommandations_informations['status'] = 'deleted';
@@ -4424,11 +4424,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e.', 'evarisk');
 							$moreRecommandationScript = '
-	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-	{
+	digirisk("#digirisk_configurations_tab div").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 		"post":"true",
-		"table":"' . TABLE_PRECONISATION . '",
-		"act":"reloadRecommandationList"
+		"nom":"configuration",
+		"action":"recommandation",
 	});';
 						}
 
@@ -4440,8 +4439,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 </script>';
 					}
 					break;
-					case 'saveRecommandationCategorie':
-					{
+					case 'saveRecommandationCategorie': {
 						$moreRecommandationCategoryScript = '';
 
 						$nom_categorie = (isset($_REQUEST['nom_categorie']) && ($_REQUEST['nom_categorie'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['nom_categorie']) : '';
@@ -4487,11 +4485,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationCategoryActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
 							$moreRecommandationCategoryScript .= '
-	digirisk("#recommandationTable").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-	{
+	digirisk("#digirisk_configurations_tab div").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
 		"post":"true",
-		"table":"' . TABLE_PRECONISATION . '",
-		"act":"reloadRecommandationList"
+		"nom":"configuration",
+		"action":"recommandation",
 	});';
 						}
 
@@ -5727,7 +5724,7 @@ switch($tableProvenance)
 					foreach ($trash_elements as $element => $element_definition) {
 						$subTrashOutput = '';
 						/*	Check if there are something to display in trash for the current element	*/
-						$query = $wpdb->prepare("SELECT * FROM " . $element_definition['element'] . " WHERE status = '" . $statusFieldValue . "';");
+						$query = $wpdb->prepare("SELECT * FROM " . $element_definition['element'] . " WHERE status = '" . $statusFieldValue . "';", "");
 						$trashedElement = $wpdb->get_results($query);
 						if (count($trashedElement) > 0) {
 							$userIsAllowedToUpdateTrash = false;
@@ -6787,10 +6784,10 @@ switch($tableProvenance)
 						$redirect = (isset($_REQUEST['redirect']) && (trim($_REQUEST['redirect']) != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['redirect']) : '';
 						$deleted_table = $not_deleted_table = $not_found_table = '  ';
 						foreach($digirisk_db_table as $table_name => $table_definition){
-							$select_query = $wpdb->prepare("SHOW TABLES LIKE '" . $table_name . "' ");
+							$select_query = $wpdb->prepare("SHOW TABLES LIKE '" . $table_name . "' ", "");
 							$table_exist = $wpdb->query($select_query);
 							if($wpdb->num_rows == 1){
-								$query = $wpdb->prepare("DROP TABLE " . $table_name);
+								$query = $wpdb->prepare("DROP TABLE " . $table_name, "");
 								$table_deletion_operation = $wpdb->query($query);
 								if($table_deletion_operation){
 									$deleted_table .= $table_name . ', ';
@@ -6854,7 +6851,7 @@ switch($tableProvenance)
 						if(!empty($version_number)){
 
 							if(!empty($_REQUEST['for_all_user']) && ($_REQUEST['for_all_user'] == 'true')){
-								$query = $wpdb->prepare("SELECT ID FROM " . $wpdb->users);
+								$query = $wpdb->prepare("SELECT ID FROM " . $wpdb->users, "");
 								$user_list = $wpdb->get_results($query);
 								foreach($user_list as $user){
 									$user_meta_notification_read = get_user_meta($user->ID, 'digirisk_notification', true);

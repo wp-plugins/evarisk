@@ -210,7 +210,7 @@ class digirisk_install
 					if(is_array($digirisk_db_update) && !empty($digirisk_db_update[$i]) && (count($digirisk_db_update[$i]) > 0)){
 						foreach($digirisk_db_update[$i] as $table_name => $def){
 							foreach($def as $information_index => $table_information){
-								$query = $wpdb->prepare($table_information);
+								$query = $wpdb->prepare($table_information, '');
 								$wpdb->query($table_information);
 								$do_changes = true;
 							}
@@ -389,7 +389,7 @@ class digirisk_install
 				}
 			}break;
 			case 25:{
-				$sql = $wpdb->prepare("INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " SELECT '', status, date, 1, '', 0, id_user, id_element, table_element FROM " . TABLE_LIAISON_USER_EVALUATION);
+				$sql = $wpdb->prepare("INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " SELECT '', status, date, 1, '', 0, id_user, id_element, table_element FROM " . TABLE_LIAISON_USER_EVALUATION ."", "");
 				$wpdb->query($sql);
 			}break;
 			case 26:{
@@ -460,7 +460,7 @@ class digirisk_install
 					/*	R�cup�ration de la liste des options existantes pour le transfert	*/
 					$query = $wpdb->prepare("
 						SELECT *
-						FROM " . TABLE_OPTION);
+						FROM " . TABLE_OPTION . "", "");
 					$optionsList = $wpdb->get_results($query);
 					foreach($optionsList as $option){
 						$optionToStore[$option->nom] = $option->valeur;
@@ -472,7 +472,7 @@ class digirisk_install
 				if(($wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP . "'") == TABLE_EVA_USER_GROUP) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP . "'") == TABLE_EVA_EVALUATOR_GROUP))
 				{/*	Transfert des anciens groupes dans la nouvelle table	*/
 					/*	Groupes d'employ�	*/
-					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP);
+					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP ."", "");
 					$employeeGroups = $wpdb->get_results($query);
 					$subQuery = "  ";
 					foreach($employeeGroups as $employeeGroup)
@@ -480,7 +480,7 @@ class digirisk_install
 						$subQuery .= "('', '" . $wpdb->escape($employeeGroup->user_group_id) . "', '" . $wpdb->escape($employeeGroup->user_group_status) . "', 'employee', '" . current_time('mysql', 0) . "', 1, '', '', '" . $wpdb->escape($employeeGroup->user_group_name) . "', '" . $wpdb->escape($employeeGroup->user_group_description) . "'), ";
 					}
 					/*	Groupes	d'evaluateur	*/
-					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP);
+					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP, "");
 					$employeeGroups = $wpdb->get_results($query);
 					foreach($employeeGroups as $employeeGroup)
 					{
@@ -499,16 +499,16 @@ class digirisk_install
 					}
 
 					/*	Transfert les tables non utilis�es vers la "trash" section	*/
-					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP . " TO " . TRASH_DIGI_DBT_USER_GROUP);
+					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP . " TO " . TRASH_DIGI_DBT_USER_GROUP, "");
 					$wpdb->query($query);
-					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP);
+					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP, "");
 					$wpdb->query($query);
 				}
 
 				if(($wpdb->get_var("show tables like '" . TABLE_LIAISON_USER_GROUPS . "'") == TABLE_LIAISON_USER_GROUPS) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP_BIND . "'") == TABLE_EVA_EVALUATOR_GROUP_BIND))
 				{/*	Transfert la liaison des anciens groupes vers les nouveaux	*/
 					/*	Groupes d'employ�	*/
-					$query = $wpdb->prepare("SELECT * FROM " . TABLE_LIAISON_USER_GROUPS);
+					$query = $wpdb->prepare("SELECT * FROM " . TABLE_LIAISON_USER_GROUPS, "");
 					$employeeGroupsLink = $wpdb->get_results($query);
 					$subQuery = "  ";
 					foreach($employeeGroupsLink as $employeeGroupLink)
@@ -518,7 +518,7 @@ class digirisk_install
 						$subQuery .= "('', '" . $wpdb->escape($employeeGroupLink->Status) . "', '" . $wpdb->escape($employeeGroupLink->date) . "', 1, '', '', '" . $wpdb->escape($newGroupId->id) . "', '" . $wpdb->escape($employeeGroupLink->id_element) . "', '" . $wpdb->escape($employeeGroupLink->table_element) . "_employee'), ";
 					}
 					/*	Groupes d'evaluateurs	*/
-					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_BIND);
+					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_BIND, "");
 					$evaluatorsGroupsLink = $wpdb->get_results($query);
 					foreach($evaluatorsGroupsLink as $evaluatorsGroupLink)
 					{
@@ -548,7 +548,7 @@ class digirisk_install
 				if(($wpdb->get_var("show tables like '" . TABLE_EVA_USER_GROUP_DETAILS . "'") == TABLE_EVA_USER_GROUP_DETAILS) && ($wpdb->get_var("show tables like '" . TABLE_EVA_EVALUATOR_GROUP_DETAILS . "'") == TABLE_EVA_EVALUATOR_GROUP_DETAILS))
 				{/*	Transfert des utilisateurs vers la table de liaison utilisateur element	*/
 					/*	Groupes d'employ�	*/
-					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP_DETAILS);
+					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_USER_GROUP_DETAILS, "");
 					$employeeGroupsDetail = $wpdb->get_results($query);
 					$subQuery = "  ";
 					foreach($employeeGroupsDetail as $employeeGroupDetail)
@@ -558,7 +558,7 @@ class digirisk_install
 						$subQuery .= "('', 'valid', '" . current_time('mysql', 0) . "', 1, '', '', '" . $wpdb->escape($employeeGroupDetail->user_id) . "', '" . $wpdb->escape($newGroupId->id) . "', '" . DIGI_DBT_USER_GROUP . "'), ";
 					}
 					/*	Groupes d'evaluateurs	*/
-					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_DETAILS);
+					$query = $wpdb->prepare("SELECT * FROM " . TABLE_EVA_EVALUATOR_GROUP_DETAILS, "");
 					$evaluatorsGroupsDetail = $wpdb->get_results($query);
 					foreach($evaluatorsGroupsDetail as $evaluatorsGroupDetail)
 					{
@@ -579,9 +579,9 @@ class digirisk_install
 					}
 
 					/*	Transfert les tables non utilis�es vers la "trash" section	*/
-					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_USER_GROUP_DETAILS);
+					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_USER_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_USER_GROUP_DETAILS, "");
 					$wpdb->query($query);
-					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_DETAILS);
+					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_DETAILS, "");
 					$wpdb->query($query);
 				}
 			}break;
@@ -607,7 +607,7 @@ class digirisk_install
 				}
 			}break;
 			case 67:{
-				$query = $wpdb->prepare("SELECT action FROM " . DIGI_DBT_ELEMENT_NOTIFICATION);
+				$query = $wpdb->prepare("SELECT action FROM " . DIGI_DBT_ELEMENT_NOTIFICATION, "");
 				$action_list = $wpdb->get_results($query);
 				foreach($action_list as $action){
 					$wpdb->update(DIGI_DBT_ELEMENT_NOTIFICATION, array('last_update_date' => current_time('mysql', 0), 'action_title' => __($action->action, 'evarisk'), 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send), array('action' => $action->action));
@@ -869,13 +869,132 @@ class digirisk_install
 				$question_bruit[] = array('question'=>__('Lex, 8h > 87 dB(A) ou > 140 dB(C)', 'evarisk'), 'seuil'=>80);
 				$wpdb->update(TABLE_VARIABLE, array('annotation'=>__('Risque noir Lex, 8h > 87 dB(A) ou > 140 dB(C) seuil r&eacute;glementaire (France et europe)\nRisque rouge Lex, 8h > 85 dB(A) ou > 137 dB(C) seuil r&eacute;glementaire (France et europe)\nRisque orange Lex, 8h entre 80 dB(A) et 85 dB(A) ou entre 135 dB(C) et 137 dB(C) seuil europ&eacute;en\nRisque Blanc Lex, 8h < 80 dB(A) ou < 135 dB(C) seuil travailler mieux', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_bruit)), array('nom' => __('Exposition au bruit', 'evarisk')));
 
-				$query = $wpdb->prepare("SELECT RISK_EVAL.id, RISK.commentaire FROM " . TABLE_AVOIR_VALEUR . " AS RISK_EVAL INNER JOIN " . TABLE_RISQUE . " AS RISK ON (RISK.id = RISK_EVAL.id_risque) WHERE RISK.Status = 'Valid' AND RISK_EVAL.Status = 'Valid' GROUP BY RISK_EVAL.id_evaluation");
+				$query = $wpdb->prepare("SELECT RISK_EVAL.id, RISK.commentaire FROM " . TABLE_AVOIR_VALEUR . " AS RISK_EVAL INNER JOIN " . TABLE_RISQUE . " AS RISK ON (RISK.id = RISK_EVAL.id_risque) WHERE RISK.Status = 'Valid' AND RISK_EVAL.Status = 'Valid' GROUP BY RISK_EVAL.id_evaluation", "");
 				$risk_list = $wpdb->get_results($query);
 				if ( !empty($risk_list) ) {
 					foreach ( $risk_list as $risk) {
 						$wpdb->update(TABLE_AVOIR_VALEUR, array('commentaire' => $risk->commentaire), array('id' => $risk->id));
 					}
 				}
+			break;
+
+			case 78:
+			/**	Agents chimiques */
+				/**	Methode	*/
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Agents chimiques', 'evarisk'), 'Status' => 'Valid'));
+				$methode = $wpdb->insert_id;
+
+				/**	Question	*/
+				$question = array();
+				$question[] = array('question'=>__('Exposition à un ACD moins de 10 h/semaine', 'evarisk'), 'seuil'=>0);
+				$question[] = array('question'=>__('Exposition à un ACD entre 10 h/semaine et 17 h/semaine', 'evarisk'), 'seuil'=>48);
+				$question[] = array('question'=>__('Exposition à un ACD entre 17 h/semaine et 35 h/semaine', 'evarisk'), 'seuil'=>51);
+				$question[] = array('question'=>__('Exposition à des CMR ou dépassement de la VLEP ou dépassement de la VLCT', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Exposition aux agents chimiques', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir : exposition à des CMR ou dépassement de la VLEP ou dépassement de la VLCT\nRisque rouge : exposition à un ACD entre 17 h/semaine et 35 h/semaine\nRisque orange : exposition à un ACD entre 10 h/semaine et 17 h/semaine\nRisque blanc : exposition à un ACD moins de 10 h/semaine', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question), 'questionTitre'=>__('Exposition aux agents chimiques', 'evarisk')));
+				$variable = $wpdb->insert_id;
+
+				/** Liaison entre variable et methode */
+				$liaison_methode_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode, 'id_variable'=>$variable, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Equivalence etalon 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/* Affectation du statut "penible" aux risques concernés */
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Produits, &eacute;missions et d&eacute;chets', 'evarisk')));
+				$risque_categorie = $wpdb->get_var($query);
+				if ( empty($risque_categorie) ) {
+					$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Produits chimiques, d&eacute;chets', 'evarisk')));
+					$risque_categorie = $wpdb->get_var($query);
+				}
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
+
+			/**	Travail de nuit	*/
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Travail de nuit', 'evarisk'), 'Status' => 'Valid'));
+				$methode = $wpdb->insert_id;
+
+				/**	Question	*/
+				$question = array();
+				$question[] = array('question'=>__('Moins de 135 h sur 12 mois consécutifs (choix arbitraire Evarisk)', 'evarisk'), 'seuil'=>0);
+				$question[] = array('question'=>__('Entre 135 h et 270 h sur 12 mois consécutifs (choix arbitraire Evarisk)', 'evarisk'), 'seuil'=>48);
+				$question[] = array('question'=>__('Au moins 3 heures de travail quotidien pendant la période entre 21 h et 6 h, au moins deux fois par semaine ou 270 h sur 12 mois consécutifs', 'evarisk'), 'seuil'=>51);
+				$question[] = array('question'=>__('Au moins 6 heures de travail quotidien pendant la période entre 21 h et 6 h, au moins deux fois par semaine ou 540 h sur 12 mois consécutifs', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Travail de nuit', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir : au moins 6 heures de travail quotidien pendant la période entre 21 h et 6 h, au moins deux fois par semaine ou 540 h sur 12 mois consécutifs\nRisque rouge : au moins 3 heures de travail quotidien pendant la période entre 21 h et 6 h, au moins deux fois par semaine ou 270 h sur 12 mois consécutifs\nRisque orange : entre 135 h et 270 h sur 12 mois consécutifs (choix arbitraire Evarisk)\nRisque blanc : moins de 135 h sur 12 mois consécutifs (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question), 'questionTitre'=>__('Travail de nuit', 'evarisk')));
+				$variable = $wpdb->insert_id;
+
+				/** Liaison entre variable et methode */
+				$liaison_methode_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode, 'id_variable'=>$variable, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Equivalence etalon 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE nom = %s", __('Risques psychosociaux', 'evarisk'));
+				$category_id = $wpdb->get_var($query);
+				$wpdb->insert(TABLE_DANGER, array('nom' => __('Travail de nuit', 'evarisk'), 'id_categorie' => $category_id));
+				$risque_categorie = $wpdb->insert_id;
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
+
+
+			/**	Travail en équipe*/
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Travail en équipe successives alternantes', 'evarisk'), 'Status' => 'Valid'));
+				$methode = $wpdb->insert_id;
+
+				/**	Question	*/
+				$question = array();
+				$question[] = array('question'=>__('Pas de travail posté (choix arbitraire Evarisk)', 'evarisk'), 'seuil'=>0);
+				$question[] = array('question'=>__('Pas de travail posté (pas de 3 X 8, 4 X 8, 5 X 8) sauf cas exceptionnel (choix arbitraire Evarisk)', 'evarisk'), 'seuil'=>48);
+				$question[] = array('question'=>__('Travail posté mais que en 5 X 8 (exclut les 3 X 8, 4 X 8) (seuil travailler mieux)', 'evarisk'), 'seuil'=>51);
+				$question[] = array('question'=>__('Changement de poste entre poste du matin, du soir, de nuit ou de journée (un changement dans la semaine ou d’une semaine à l’autre ou d’une quinzaine à l’autre)', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Travail en équipe successives alternantes', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir : changement de poste entre poste du matin, du soir, de nuit ou de journée (un changement dans la semaine ou d’une semaine l’autre ou d’une quinzaine l’autre)\nRisque rouge : travail posté mais que en 5 X 8 (exclut les 3 X 8, 4 X 8) seuil travailler mieux http://www.travailler-mieux.gouv.fr/Travail-en-equipes-successives.html\nRisque orange : pas de travail posté (pas de 3 X 8, 4 X 8, 5 X 8) sauf cas exceptionnel (choix arbitraire Evarisk)\nRisque blanc : pas de travail posté (choix arbitraire Evarisk)', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question), 'questionTitre'=>__('Travail en équipe successives alternantes', 'evarisk')));
+				$variable = $wpdb->insert_id;
+
+				/** Liaison entre variable et methode */
+				$liaison_methode_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode, 'id_variable'=>$variable, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Equivalence etalon 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_DANGER . " WHERE nom = %s", __('Risques psychosociaux', 'evarisk'));
+				$category_id = $wpdb->get_var($query);
+				$wpdb->insert(TABLE_DANGER, array('nom' => __('Travail en équipe successives alternantes', 'evarisk'), 'id_categorie' => $category_id));
+				$risque_categorie = $wpdb->insert_id;
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('default','penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
+
+
+			/**	Travail répétitif	*/
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Travail répétitif', 'evarisk'), 'Status' => 'Valid'));
+				$methode = $wpdb->insert_id;
+
+				/**	Question	*/
+				$question = array();
+				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, moins de 10% du temps de travail', 'evarisk'), 'seuil'=>0);
+				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 10% et 30% du temps de travail', 'evarisk'), 'seuil'=>48);
+				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 30% et 50% du temps de travail', 'evarisk'), 'seuil'=>51);
+				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, plus de 50% du temps de travail', 'evarisk'), 'seuil'=>80);
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Travail répétitif', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir : temps de cycle < à 30 secondes ou > à 40 actions /minute, plus de 50 % du temps de travail\nRisque rouge : temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 30 % et 50 % du temps de travail\nRisque orange : temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 10 % et 30 % du temps de travail\nRisque blanc : temps de cycle < à 30 secondes ou > à 40 actions/minute, moins de 10 % du temps de travail', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question), 'questionTitre'=>__('Travail répétitif', 'evarisk')));
+				$variable = $wpdb->insert_id;
+
+				/** Liaison entre variable et methode */
+				$liaison_methode_variable = $wpdb->insert(TABLE_AVOIR_VARIABLE, array('id_methode'=>$methode, 'id_variable'=>$variable, 'ordre'=>1, 'date'=>current_time('mysql',0), 'Status'=>'Valid'));
+
+				/*	Equivalence etalon 	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>4, 'Status'=>'Valid'));
+
+				/* Affectation du statut "penible" aux risques concernés */
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Activit&eacute; physique', 'evarisk')));
+				$risque_categorie = $wpdb->get_var($query);
+				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
 			break;
 		}
 	}

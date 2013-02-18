@@ -555,7 +555,7 @@ class EvaTask extends EvaBaseTask
 						AND dateFin <= CURDATE() 
 						AND dateFin != '0000-00-00'
 						AND ProgressionStatus IN ('inProgress', 'notStarted')
-					ORDER BY dateFin DESC"
+					ORDER BY dateFin DESC", ""
 				);
 				$taskList = $wpdb->get_results($query);
 
@@ -602,7 +602,7 @@ class EvaTask extends EvaBaseTask
 						AND TASK.dateFin != '0000-00-00'
 						AND TASK.ProgressionStatus = 'inProgress'
 						AND TASK.id != '1'
-					ORDER BY TASK.dateFin DESC"
+					ORDER BY TASK.dateFin DESC", ""
 				);
 				$taskList = $wpdb->get_results($query);
 				foreach($taskList as $taskIndex => $task){
@@ -667,7 +667,7 @@ class EvaTask extends EvaBaseTask
 					WHERE LTE.table_element = '" . TABLE_AVOIR_VALEUR . "'
 						AND LTE.wasLinked = 'after'
 						AND LTE.status = 'valid'
-					GROUP BY RISK.id "
+					GROUP BY RISK.id ", ""
 				);
 				$riskList = $wpdb->get_results($query);
 
@@ -690,7 +690,7 @@ class EvaTask extends EvaBaseTask
 								$elementToSee = 'node-mainTable-' . $risk->id_element . '-name';
 							break;
 							case TABLE_UNITE_TRAVAIL:
-								$query = $wpdb->prepare("SELECT nom, id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = '" . $risk->id_element . "' ");
+								$query = $wpdb->prepare("SELECT nom, id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = '" . $risk->id_element . "' ", "");
 								$infos = $wpdb->get_row($query);
 								$idGroupement = $infos->id_groupement;
 								$nomElementCourant = $infos->nom;

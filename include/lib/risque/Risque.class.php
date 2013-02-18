@@ -189,7 +189,7 @@ class Risque {
 				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.Status = 'Valid' AND tableAvoirValeur.id_risque=tableRisque.id),
 				" . TABLE_DANGER . " tableDanger
 			WHERE tableRisque.id=" . mysql_real_escape_string($id) . "
-				AND tableRisque.id_danger=tableDanger.id");
+				AND tableRisque.id_danger=tableDanger.id", "");
 		$resultat = $wpdb->get_results($query);
 
 		return $resultat;
@@ -764,7 +764,7 @@ class Risque {
 					FROM " . TABLE_RISQUE . "
 					WHERE Status = 'Valid'
 				) AS TOTAL_RISK_NUMBER
-			"
+			", ""
 		);
 
 		return $wpdb->get_row($query);

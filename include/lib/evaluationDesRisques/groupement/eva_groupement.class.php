@@ -110,7 +110,7 @@ class EvaGroupement {
 		FROM " . TABLE_GROUPEMENT . " 
 		WHERE nom <> 'Groupement Racine' 
 			AND " . $where . " 
-		ORDER BY " . $order);
+		ORDER BY " . $order, "");
 		$resultat = $wpdb->get_results($query);
 
 		return $resultat;
@@ -210,7 +210,7 @@ class EvaGroupement {
 	}
 	
 	/**
-	* @todo employé évalué
+	* @todo employï¿½ ï¿½valuï¿½
 	*/
 	function getInfosGroupement($idGroupement)
 	{

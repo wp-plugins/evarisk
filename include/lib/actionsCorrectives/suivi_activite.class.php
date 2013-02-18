@@ -89,7 +89,7 @@ class suivi_activite
 			"INSERT INTO " . TABLE_ACTIVITE_SUIVI . "
 				(id, status, date, id_user, id_element, table_element, commentaire)
 			VALUES
-				('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '" . $idElement . "', '" . $tableElement . "', '" . str_replace("’","'", $commentaire) . "')"
+				('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '" . $idElement . "', '" . $tableElement . "', '" . str_replace("ï¿½","'", $commentaire) . "')", ""
 		);
 
 		if($wpdb->query($query))

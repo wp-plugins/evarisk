@@ -187,7 +187,7 @@ class eva_gestionDoc {
 
 		/*	Preparing the filed list to duplicate the document	*/
 		$query = $wpdb->prepare(
-			"SHOW COLUMNS FROM " . TABLE_GED_DOCUMENTS
+			"SHOW COLUMNS FROM " . TABLE_GED_DOCUMENTS, ""
 		);
 		$columnList = $wpdb->get_results($query);
 		$columns = "  ";
@@ -450,7 +450,7 @@ class eva_gestionDoc {
 				AND status = 'valid'
 				AND categorie = '" . $category . "'
 			ORDER BY dateCreation
-			LIMIT 1"
+			LIMIT 1", ""
 		);
 		$documentDefaultId = $wpdb->get_row($query);
 		if(!empty($documentDefaultId))

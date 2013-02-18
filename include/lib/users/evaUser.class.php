@@ -538,7 +538,7 @@ $user_additionnal_field .= '
 							WHERE USER_LINK_GROUP.status = 'valid')))
 						AND USER_LINK_EVALUATION.status = 'valid'
 				) AS EVALUATED_USER
-			LIMIT 1"
+			LIMIT 1", ""
 		);
 
 		return $wpdb->get_row($query);

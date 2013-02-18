@@ -20,7 +20,7 @@ class evaRecommandation
 		global $wpdb;
 		$informations = '';
 
-		$query = $wpdb->prepare("SELECT " . implode(', ', $informations_to_get) . " FROM " . TABLE_PRECONISATION . " WHERE 1" . $conditions);
+		$query = $wpdb->prepare("SELECT " . implode(', ', $informations_to_get) . " FROM " . TABLE_PRECONISATION . " WHERE 1" . $conditions, "");
 
 		if(count($informations_to_get) == 1){
 			$informations = $wpdb->get_var($query);
@@ -88,7 +88,7 @@ class evaRecommandation
 				LEFT JOIN " . TABLE_PRECONISATION . " AS RECOMMANDATION ON ((RECOMMANDATION.id_categorie_preconisation = RECOMMANDATION_CAT.id) AND (RECOMMANDATION.status = 'valid'))
 				LEFT JOIN " . TABLE_PHOTO_LIAISON . " AS LINK_ELT_PIC ON ((LINK_ELT_PIC.idElement = RECOMMANDATION.id) AND (LINK_ELT_PIC.tableElement = '" . TABLE_PRECONISATION . "') AND (LINK_ELT_PIC.isMainPicture = 'yes') AND (LINK_ELT_PIC.status = 'valid'))
 				LEFT JOIN " . TABLE_PHOTO . " AS PIC ON ((PIC.id = LINK_ELT_PIC.idPhoto) AND (PIC.status = 'valid'))
-			WHERE RECOMMANDATION_CAT.status = 'valid' )");
+			WHERE RECOMMANDATION_CAT.status = 'valid' )", "");
 		$recommandationList = $wpdb->get_results($query);
 
 		return $recommandationList;
@@ -262,7 +262,7 @@ class evaRecommandation
 			"INSERT INTO " . TABLE_LIAISON_PRECONISATION_ELEMENT . " 
 			(" . implode(', ', $whatToUpdate['fields']) . ")
 			VALUES
-			(" . implode(', ', $whatToUpdate['values']) . ") "
+			(" . implode(', ', $whatToUpdate['values']) . ") ", ""
 		);
 
 		if( $wpdb->query($query) )
@@ -328,7 +328,7 @@ class evaRecommandation
 			"INSERT INTO " . TABLE_PRECONISATION . " 
 			(" . implode(', ', $whatToUpdate['fields']) . ")
 			VALUES
-			(" . implode(', ', $whatToUpdate['values']) . ") "
+			(" . implode(', ', $whatToUpdate['values']) . ") ", ""
 		);
 
 		if($wpdb->query($query)){

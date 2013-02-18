@@ -45,7 +45,7 @@ class evaRecommandationCategory
 				LEFT JOIN " . TABLE_PHOTO_LIAISON . " AS LINK_ELT_PIC ON ((LINK_ELT_PIC.idElement = RECOMMANDATION_CAT.id) AND (tableElement = '" . TABLE_CATEGORIE_PRECONISATION . "') AND (LINK_ELT_PIC.isMainPicture = 'yes'))
 				LEFT JOIN " . TABLE_PHOTO . " AS PIC ON ((PIC.id = LINK_ELT_PIC.idPhoto))
 			WHERE RECOMMANDATION_CAT.status = 'valid'
-				GROUP BY RECOMMANDATION_CAT.id");
+				GROUP BY RECOMMANDATION_CAT.id", "");
 
 		$CategoryRecommandationList = $wpdb->get_results($query);
 
@@ -184,7 +184,7 @@ class evaRecommandationCategory
 		global $wpdb;
 		$informations = '';
 
-		$query = $wpdb->prepare("SELECT " . implode(', ', $informations_to_get) . " FROM " . TABLE_CATEGORIE_PRECONISATION . " WHERE 1" . $conditions);
+		$query = $wpdb->prepare("SELECT " . implode(', ', $informations_to_get) . " FROM " . TABLE_CATEGORIE_PRECONISATION . " WHERE 1" . $conditions, "");
 
 		if(count($informations_to_get) == 1){
 			$informations = $wpdb->get_var($query);

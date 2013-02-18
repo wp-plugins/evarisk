@@ -330,10 +330,12 @@ function checkUserListModification(tableElement, idButton){
 	}
 }
 function cleanUserIdFiedList(id, tableElement){
+	//jQuery("#digi_dialog_affect_user_" + tableElement).dialog("open");
+	
 	var actualAffectedUserList = digirisk("#affectedUserIdList" + tableElement).val().replace(" " + id + ", ", "");
 	digirisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList + id + ", ");
 
-	if(digirisk("#affectedUser" + tableElement + id)){
+	if (digirisk("#affectedUser" + tableElement + id)) {
 		digirisk("#affectedUser" + tableElement + id).remove();
 	}
 

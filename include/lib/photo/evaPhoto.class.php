@@ -34,7 +34,7 @@ class EvaPhoto {
 				AND PICTURE_LINK.idElement='" . mysql_real_escape_string($idElement) . "'
 				AND PICTURE_LINK.status = 'valid'
 				AND " . $where . "
-			ORDER BY " . $order);
+			ORDER BY " . $order, "");
 		$photos = $wpdb->get_results($query);
 
 		return $photos;

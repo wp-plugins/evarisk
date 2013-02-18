@@ -397,7 +397,7 @@ digirisk(document).ready(function(){
 				LEFT JOIN " . TABLE_LIAISON_USER_ELEMENT . " AS GROUP_USER_DETAILS ON ((GROUP_USER_DETAILS.id_element = GP.id) AND (GROUP_USER_DETAILS.table_element = '" . self::dbTable . "') AND (GROUP_USER_DETAILS.status = 'valid'))
 			WHERE GP.status IN (" . $status . ")
 				" . $moreQuery . "
-			GROUP BY GP.id"
+			GROUP BY GP.id", ""
 		);
 		$element = $wpdb->get_results($query);
 
@@ -967,7 +967,7 @@ digirisk(document).ready(function(){
 				"REPLACE INTO " . DIGI_DBT_LIAISON_USER_GROUP . "
 					(id, status ,date_affectation ,id_attributeur ,date_desAffectation ,id_desAttributeur ,id_group ,id_element ,table_element)
 				VALUES
-					" . $endOfQuery
+					" . $endOfQuery . "", ""
 			);
 			if($wpdb->query($query))
 			{

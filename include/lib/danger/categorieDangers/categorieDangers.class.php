@@ -195,7 +195,7 @@ class categorieDangers {
 
 		if (AFFICHAGE_PICTO_CATEGORIE) {
 			/*	Get the default methode	*/
-			$query = $wpdb->prepare("SELECT id FROM " . TABLE_METHODE . " WHERE default_methode = 'yes'");
+			$query = $wpdb->prepare("SELECT id FROM " . TABLE_METHODE . " WHERE default_methode = 'yes'", "");
 			$default_methode = $wpdb->get_var($query);
 
 			$categoryResult['script'] .= '
