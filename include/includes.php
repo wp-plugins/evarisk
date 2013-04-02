@@ -83,3 +83,5 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDeGrou
 
 require_once(EVA_LIB_PLUGIN_DIR . 'db/db_data.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'db/db_structure.php');
+
+require_once(EVA_INC_PLUGIN_DIR . 'digi_ajax.php');

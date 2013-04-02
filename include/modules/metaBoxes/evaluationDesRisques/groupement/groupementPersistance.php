@@ -10,7 +10,7 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 $search = "Status='Valid' AND nom<>'Groupement Racine'";
 $groupement = EvaGroupement::getGroupements($search);
-			
+
 if($_REQUEST['act'] == 'save')
 {
 	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
@@ -22,7 +22,7 @@ if($_REQUEST['act'] == 'update')
 {
 	$id_groupement = $_REQUEST['id'];
 	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
-	
+
 	$groupementUpdate = EvaGroupement::getGroupementByName($nom);
 	$ligne1 = $_REQUEST['adresse_ligne_1'];
 	$ligne2 = $_REQUEST['adresse_ligne_2'];
@@ -33,14 +33,14 @@ if($_REQUEST['act'] == 'update')
 	$address = new EvaAddress($groupementUpdate->id_adresse, $ligne1, $ligne2, $codePostal, $ville, $latitude, $longitude, 'Valid');
 	$address->save();
 	$idAdresse = $address->getId();
-	
+
 	$idGroupementPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
 	$typeGroupement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['typeGroupement']));
 	$siren = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['siren']));
 	$siret = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['siret']));
 	$social_activity_number = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['social_activity_number']));
-	
-	$effectif = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['effectif']));
+
+	$effectif = !empty($_REQUEST['effectif']) ? mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['effectif'])): '';
 	if($effectif == '')
 	{
 		$effectif = null;

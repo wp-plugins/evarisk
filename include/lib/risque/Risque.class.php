@@ -28,7 +28,7 @@ class Risque {
 		}
 		unset($listeValeurs);
 		foreach($risque as $ligneRisque){
-			if(!empty($listeIdVariables) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])){
+			if(!empty($listeIdVariables) && !empty($listeIdVariables['"' . $ligneRisque->id_variable . '"']) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])){
 				foreach($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre){
 					if(isset($method_option['value_to_take']) && ($method_option['value_to_take'] != '')){
 						$listeValeurs[$ordre] = Eva_variable::getValeurAlternative($ligneRisque->id_variable, $method_option['value_to_take'][$ligneRisque->id_variable], $date_to_take);
@@ -41,7 +41,7 @@ class Risque {
 		}
 
 		$listeOperateursComplexe = MethodeEvaluation::getOperateursMethode($methode->id, $date_to_take);
-		unset($listeOperateurs);
+		unset($listeOperateurs);$listeOperateurs = array();
 		foreach($listeOperateursComplexe as $operateurComplexe){
 			$listeOperateurs[] = $operateurComplexe->operateur;
 		}
@@ -183,7 +183,7 @@ class Risque {
 		$id = digirisk_tools::IsValid_Variable($id);
 
 		$query = $wpdb->prepare("SELECT tableRisque.*,
-				tableAvoirValeur.date date, tableAvoirValeur.Status status, tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur,
+				tableAvoirValeur.date date, tableAvoirValeur.Status status, tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation,
 				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie
 			FROM " . TABLE_RISQUE . " tableRisque
 				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.Status = 'Valid' AND tableAvoirValeur.id_risque=tableRisque.id),
@@ -199,7 +199,7 @@ class Risque {
 		global $wpdb;
 		$where = digirisk_tools::IsValid_Variable($where);
 		$order = digirisk_tools::IsValid_Variable($order);
-		if($status=='all'){
+		if( $status=='all' ){
 			$status = '1';
 		}
 		else{
@@ -216,7 +216,7 @@ class Risque {
 
 		$query = $wpdb->prepare(
 			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
-				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date, tableAvoirValeur.commentaire AS histo_com,
+				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date, tableAvoirValeur.commentaire AS histo_com, tableAvoirValeur.date AS unformatted_evaluation_date,
 				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie
 			FROM " . TABLE_RISQUE . " tableRisque
 				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.id_risque = tableRisque.id AND tableAvoirValeur.Status IN (" . $evaluation_status . ")),
@@ -278,18 +278,17 @@ class Risque {
 		$description = str_replace("�","'", $description);
 		$histoStatus = 'Valid';
 
-		if($idRisque == ''){//Ajout d'un risque
-			$sql = "INSERT INTO " . TABLE_RISQUE . " (id_danger, id_methode, id_element, nomTableElement, commentaire, date, Status) VALUES (" . mysql_escape_string($idDanger) . ", " . mysql_escape_string($idMethode) . ", " . mysql_escape_string($idElement) . ", '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($description) . "', '" . current_time('mysql', 0) . "', 'Valid')";
-			$idRisque = 0;
-			if($wpdb->query($sql)){
-				$idRisque = $wpdb->insert_id;
+		if ($idRisque == '') { /**	Add a new risk	*/
+			$new_risque = $wpdb->insert(TABLE_RISQUE, array('id_danger' => $idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid'));
+			$idRisque = $wpdb->insert_id;
+			if ($new_risque && !empty($idRisque) && is_int($idRisque)) {
 				echo '
 <script type="text/javascript" >
 	actionMessageShow("#message' . TABLE_RISQUE . '", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
 	setTimeout(\'actionMessageHide("#message' . TABLE_RISQUE . '")\',7500);
 </script>';
 			}
-			else{
+			else {
 				echo '
 <script type="text/javascript" >
 	actionMessageShow("#message' . TABLE_RISQUE . '", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
@@ -297,14 +296,13 @@ class Risque {
 </script>';
 			}
 		}
-		else{//Mise � jour d'un risque
+		else {/**	Update an existing risk	*/
 			$wpdb->update(TABLE_RISQUE, array('id_danger'=>$idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid'), array('id' => $idRisque));
 
 			if ($histo != 'false') {
 				$wpdb->update(TABLE_AVOIR_VALEUR, array('Status'=>'Moderated'), array('id_risque'=>$idRisque, 'Status'=>'Valid'));
 			}
-			else{
-
+			else {
 				/*	Check if the current risk evaluation is linked to a correctiv action	*/
 				$task_link= 0;
 				$query = $wpdb->prepare("
@@ -339,6 +337,10 @@ class Risque {
 				$wpdb->insert(TABLE_AVOIR_VALEUR, array('id_risque'=>$idRisque, 'id_evaluation'=>$newId->newId, 'id_variable'=>$idVariable, 'valeur'=>$valeurVariable, 'idEvaluateur'=>$current_user->ID, 'date'=>current_time('mysql', 0), 'Status'=>$histoStatus, 'commentaire'=>$comment));
 				$r_nb++;
 			}
+		}
+
+		if ( !empty($description) ) {
+			$wpdb->insert(TABLE_ACTIVITE_SUIVI, array('id' => null, 'status' => 'Valid', 'date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_element' => $newId->newId, 'table_element' => TABLE_AVOIR_VALEUR, 'commentaire' => $description, 'date_ajout' => $evaluation_infos->date, 'export' => 'yes'));
 		}
 
 		if(($histo == 'false') && (is_object($task_link))){/*	Check if the last evaluation is linked to a task. That means that we don't have the choice to show or not risk evaluation into statistics	*/

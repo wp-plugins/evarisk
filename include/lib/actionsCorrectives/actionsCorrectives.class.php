@@ -208,6 +208,17 @@ ORDER BY TASK.limiteGauche, TASK.limiteDroite
 				$actions[$action->idAction]['etatAction'] = actionsCorrectives::check_progression_status_for_output($action->ProgressionStatus) . ' ('. (!empty($action->avancement) ? $action->avancement : 0) . '%)';
 				$actions[$action->idAction]['nomAction'] = $action->nom;
 				$actions[$action->idAction]['descriptionAction'] = $action->description;
+				$follow_up_list = suivi_activite::getSuiviActivite(TABLE_TACHE, $action->id);
+				if ( !empty($follow_up_list) ) {
+					foreach ( $follow_up_list as $follow_up ) {
+						if ( $follow_up->export == 'yes' ) {
+							$actions[$action->idAction]['descriptionAction'] .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $follow_up->date_ajout, true ) . ' - ' . $follow_up->commentaire) . "
+
+";
+						}
+					}
+				}
 				$actions[$action->idAction]['ajoutAction'] = mysql2date('d F Y', $action->firstInsert, true);
 				$responsable_infos = evaUser::getUserInformation($action->idResponsable);
 				$actions[$action->idAction]['responsableAction'] = (($action->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$action->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));

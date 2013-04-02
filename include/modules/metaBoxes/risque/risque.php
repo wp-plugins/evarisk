@@ -230,16 +230,14 @@
 	/*
 	* Cr?ation de l'affichage global
 	*/
-	function getVoirRisque($tableElement, $idElement)
-	{
+	function getVoirRisque($tableElement, $idElement) {
 		$temp = Risque::getRisques($tableElement, $idElement, "Valid");
-		if($temp != null)
-		{
-			foreach($temp as $risque)
-			{
+		if ($temp != null) {
+			foreach ($temp as $risque) {
 				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
+
 		{//Cr?ation de la table
 			unset($titres,$classes, $idLignes, $lignesDeValeurs);
 			$idLignes = null;
@@ -468,15 +466,28 @@
 	/*
 	* Cr?ation du formulaire d'ajout/?dition
 	*/
-	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '', $formId = '', $methode =''){
-		global $wpdb;
+	function getFormulaireCreationRisque($tableElement, $idElement, $idRisque = '', $formId = '', $methode ='') {
+		global $wpdb, $current_user;
 
 		$divDangerContainerStyle = $script = '';
 		$divDangerContainerSwitchStyle = ' style="display:none;" ';
-		if($idRisque != ''){
+		if ( $idRisque != '' ) {
 			$risque = Risque::getRisque($idRisque);
-			$divDangerContainerStyle = ' style="display:none;" ';
-			$divDangerContainerSwitchStyle = '';
+			if ( DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+				$divDangerContainerStyle = ' style="display:none;" ';
+				$divDangerContainerSwitchStyle = '';
+			}
+
+			/**	Get risk history	*/
+			$hito_risk = array();
+			$completeRiskList = Risque::getRisques($tableElement, $idElement, 'Valid', "tableRisque.id = '" . digirisk_tools::IsValid_Variable($idRisque) . "'", 'tableRisque.date DESC', "'Valid', 'Moderated'");
+			$output_mistake = (isset($_REQUEST['output_mistake']) && (trim($_REQUEST['output_mistake']) != '')) ? ", 'Deleted'" : '';
+			if ( !empty($completeRiskList) ) {
+				foreach($completeRiskList as $risk_from_histo){
+					$hito_risk[$risk_from_histo->id_evaluation][] = $risk_from_histo;
+				}
+				krsort($hito_risk);
+			}
 		}
 		else{
 			$risque = null;
@@ -485,20 +496,18 @@
 		$sub_action = (!empty($_REQUEST['sub_action'])?digirisk_tools::IsValid_Variable($_REQUEST['sub_action']):'');
 		$task_to_associate = (!empty($_REQUEST['task_to_associate'])?digirisk_tools::IsValid_Variable($_REQUEST['task_to_associate']):'');
 
-		{//Choix de la cat?gorie de dangers
-			$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque, $formId);
-			$script .= $categorieDanger['script'];
-			$selectionCategorie = $categorieDanger['selectionCategorie'];
-		}
-		{//Choix du danger
-			$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, $risque, $formId);
-			$script .= $ListDanger['script'];
-		}
-
 		$formRisque =
 EvaDisplayInput::ouvrirForm('POST', $formId . 'formRisque-', $formId . 'formRisque-') .
 EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', null, 'idRisque', false, false);
-		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){
+		if (($sub_action != 'control_asked_action') || ($task_to_associate <= 0)) {
+			/**	Risk categories list	*/
+				$categorieDanger = categorieDangers::getCategorieDangerForRiskEvaluation($risque, $formId);
+				$script .= $categorieDanger['script'];
+				$selectionCategorie = $categorieDanger['selectionCategorie'];
+			/**	Risk list	*/
+				$ListDanger = evaDanger::getDangerForRiskEvaluation($selectionCategorie, $risque, $formId);
+				$script .= $ListDanger['script'];
+
 			$formRisque .= '
 	<div>
 		<div id="' . $formId . 'divDangerContainerSwitch" ' . $divDangerContainerSwitchStyle . ' class="pointer" >
@@ -508,7 +517,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		<div id="' . $formId . 'divDangerContainer" ' . $divDangerContainerStyle . ' >' . $categorieDanger['list'] . $ListDanger['list'] . '</div>
 	</div>';
 		}
-		else{
+		else {
 			$formRisque .= EvaDisplayInput::afficherInput('hidden', $formId . 'dangerFormRisque', $risque[0]->idDanger, '', '', 'danger');
 
 			$task = new EvaTask();
@@ -577,9 +586,16 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			if($nombreMethode <= 1){
 				$afficheSelecteurMethode = ' display:none; ';
 			}
-			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >' . EvaDisplayInput::afficherComboBox($output_method, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection, $methode_output_value, $methode_output) . '</div>';
+			$formRisque .= '<div id="choixMethodeEvaluation" style="' . $afficheSelecteurMethode . '" >';
+			if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+				$formRisque .= EvaDisplayInput::afficherComboBox($output_method, $formId . 'methodeFormRisque', __('M&eacute;thode d\'&eacute;valuation', 'evarisk') . ' : ', 'methode', '', $selection, $methode_output_value, $methode_output);
+			}
+			else {
+				$formRisque .= '<input type="hidden" name="' . $formId . 'methodeFormRisque" value="' . $idSelection . '" id="' . $formId . 'methodeFormRisque" />' . ELEMENT_IDENTIFIER_ME . $selection->id . ' - ' . $selection->nom;
+			}
+			$formRisque .= '</div>';
 		}
-		else{
+		else {
 			$formRisque .= EvaDisplayInput::afficherInput('hidden', $formId . 'methodeFormRisque', $idSelection, '', '', 'methode');
 		}
 
@@ -595,33 +611,65 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 		{//Description
 			$contenuInput = '';
-			if($risque[0] != null)
-			{// Si l'on ?dite un risque, on remplit l'aire de texte avec sa description
+			if ($risque[0] != null) {// Si l'on ?dite un risque, on remplit l'aire de texte avec sa description
 				$contenuInput = $risque[0]->commentaire;
 			}
 			$labelInput = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __('sur le risque', 'evarisk'))));
 			$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
-			$formRisque .= '<br/><div id="' . $formId . 'divDescription" class="clear risk_description_container" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'descriptionFormRisque', $contenuInput, '', $labelInput . ' : ', 'description_risque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			//$formRisque .= '<br/><div id="' . $formId . 'divDescription" class="clear risk_description_container" >' . EvaDisplayInput::afficherInput('textarea', $formId . 'descriptionFormRisque', /* $contenuInput */'', '', $labelInput . ' : ', 'description_risque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+
+			$current_id_evaluation = (!empty($risque[0]->id_evaluation) ? $risque[0]->id_evaluation : null);
+			$complete_interface = (!empty($current_id_evaluation) ? true : false);
+			$formRisque .= '<input type="hidden" name="random_eval" value="' . $current_id_evaluation . '" id="random_eval" /><input type="hidden" name="name_of_follow_up_inputs" value="' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '" id="name_of_follow_up_inputs" /><div class="digi_clear" ></div><div id="load' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '">' . suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $current_id_evaluation, $complete_interface) . '</div>';
+
+			/**	Read risk history if not empty	*/
+			if ( !empty($hito_risk) ) {
+				$formRisque .= '<div class="digi_clear" ></div>
+				<fieldset><legend>' . __('Historique de ce risque', 'evarisk') . '</legend>
+					<table class="digi_histo_risk_table" >
+						<tr><td>' . __('Date', 'evarisk') . '</td><td>' . __('Cotation', 'evarisk') . '</td></tr>';//<td>' . __('Commentaire', 'evarisk') . '</td>
+				foreach ($hito_risk as $histo_risk_info) {
+					$idMethode = $histo_risk_info[0]->id_methode;
+					$score = Risque::getScoreRisque($histo_risk_info);
+					$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $histo_risk_info[0]->date);
+					$evaluation_status = ($histo_risk_info[0]->evaluation_status == 'Deleted') ? '"' . $riskLevel . ' - (' . __('Erreur', 'evarisk') . ')"' : $riskLevel;
+					$formRisque .= '<tr><td>' . mysql2date('d/m/Y H:i:s', $histo_risk_info[0]->evaluation_date, true) . '</td><td>' . (!empty($riskLevel) ? $riskLevel : 0) . '</td></tr>';//<td>' . $histo_risk_info[0]->histo_com . '</td>
+				}
+				$formRisque .= '
+					</table>
+				</fieldset>';
+			}
 		}
 
+		/**	Add recommandation on the risk	*/
+		$recommandation_linked_to_risk = '';
+		$recommandation_linked_to_risk .= evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $idRisque, 'table_element' => TABLE_RISQUE, 'hide_save_button' => true));
+		if ( !empty($recommandation_linked_to_risk) ) {
+			$formRisque .= '<div class="digi_clear" ></div><fieldset><legend>' . __('Pr&eacute;conisations', 'evarisk') . '</legend>' . $recommandation_linked_to_risk . evaRecommandation::getRecommandationListForElementOutput(TABLE_RISQUE, $idRisque, false) . '</fieldset>';
+		}
+
+		/**	Add correctiv action directly to risk edition	*/
+		$correctiv_action_linked_to_risk = '';
 		if(current_user_can('digi_add_task')){//Preconisation (action prioritaire)
 			$contenuInput = '';
 			$labelInput = ucfirst(strtolower(__("Description de l'action corrective associée au risque", 'evarisk')));
-			$formRisque .= '<br/><div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('text', $formId . 'preconisationRisqueTitle', $contenuInput, '', ucfirst(strtolower(__("Nom de l'action corrective associée au risque", 'evarisk'))) . ' : ', $formId . 'preconisationRisqueTitle', false, false, 255, '', '', '95%', '') . '' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			$correctiv_action_linked_to_risk .= '<div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('text', $formId . 'preconisationRisqueTitle', $contenuInput, '', ucfirst(strtolower(__("Nom de l'action corrective associée au risque", 'evarisk'))) . ' : ', $formId . 'preconisationRisqueTitle', false, false, 255, '', '', '95%', '') . '' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 		}
 		if(current_user_can('digi_view_correctiv_action') && ($risque[0] != null) && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0))){
-			$formRisque .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
+			$correctiv_action_linked_to_risk .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
+		}
+		if ( !empty($correctiv_action_linked_to_risk) ) {
+			$formRisque .= '<div class="digi_clear" ></div><fieldset><legend>' . __('Actions correctives', 'evarisk') . '</legend>' . $correctiv_action_linked_to_risk . '</fieldset>';
 		}
 
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){//Photo associ?e au risque
-			if($idRisque != ''){
+			if ($idRisque != '') {
 				$pictureAssociated = evaPhoto::getPhotos(TABLE_RISQUE, $idRisque);
 				if(count($pictureAssociated) > 0){
-					$formRisque .= '<div class="alignleft pointer" id="' . $idElement . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $idElement . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div>';
+					$formRisque .= '<div class="digi_clear" ></div><fieldset><legend>' . __('Photos associ&eacute;es', 'evarisk') . '</legend><div class="alignleft pointer" id="' . $idElement . 'associatedPictureContainer" style="width:90%;" >' . __('Photo associ&eacute;e &agrave; ce risque', 'evarisk') . '<div id="' . $idElement . 'deletePictureAssociation" ><span class="ui-icon deleteLinkBetwwenRiskAndPicture alignleft" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>' . __('Supprimer l\'association', 'evarisk') . '</div><img class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $pictureAssociated[0]->photo . '" alt="picture to associated to this risk unvailable" /></div></fieldset>';
 					$script .= '
-		digirisk("#' . $idElement . 'deletePictureAssociation").click(function(){
-			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-			{
+		digirisk("#' . $idElement . 'deletePictureAssociation").click( function(){
+			digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true",
 				"table":"' . TABLE_RISQUE . '",
 				"tableElement":"' . TABLE_RISQUE . '",
@@ -634,7 +682,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			}
 		}
 
-		if(current_user_can('digi_not_historicize_risk') && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0)) && ($idRisque != '')){//Historisation du risque
+		if (current_user_can('digi_not_historicize_risk') && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0)) && ($idRisque != '')) {//Historisation du risque
 			$formRisque .= '<div class="alignright" id="' . $idElement . 'historisationContainer" ><input type="checkbox" value="non" name="' . $idElement . 'historisation" id="' . $idElement . 'historisation" /><label for="historisation" >' . __('Ne pas afficher l\'ancienne cotation dans les historiques de modifications','evarisk') . '</label></div>';
 		}
 
@@ -654,60 +702,95 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			}
 			digirisk("#' . $formId . 'divDangerContainer").toggle();
 		});
+
 		digirisk("#' . $idBouttonEnregistrer . '").click(function() {
-			goTo("#postBoxRisques");
-			var variables = new Array();
-			jQuery(".digi_method_var_value").each(function() {
-				var var_id = jQuery(this).attr("id").replace("' . $formId . '_digi_eval_method_var_", "");
-				var add_to_tab = true;
-				if ( jQuery(this).hasClass("score_risque_checkbox") ) {
-					if (jQuery(this).is(":checked")) {
-						var new_var = var_id.split("-x-");
-						var_id = new_var[0];
-					}
-					else {
-						add_to_tab = false;
-					}
-				}
-				if (add_to_tab) {
-					variables[var_id] = jQuery(this).val();
-				}
-			});
 
-			var historisation = true;
-			if(digirisk("#' . $formId . 'historisation").is(":checked")){
-				historisation = false;
-			}
+				goTo("#postBoxRisques");
+				var variables = new Array();
+				jQuery(".digi_method_var_value").each(function() {
+					var var_id = jQuery(this).attr("id").replace("' . $formId . '_digi_eval_method_var_", "");
+					var add_to_tab = true;
+					if ( jQuery(this).hasClass("score_risque_checkbox") ) {
+						if (jQuery(this).is(":checked")) {
+							var new_var = var_id.split("-x-");
+							var_id = new_var[0];
+						}
+						else {
+							add_to_tab = false;
+						}
+					}
+					if (add_to_tab) {
+						variables[var_id] = jQuery(this).val();
+					}
+				});
 
-			digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post":"true",
-				"table":"' . TABLE_RISQUE . '",
-				"act":"save",
-				"tableElement":"' . $tableElement . '",
-				"idElement":"' . $idElement . '",
-				"idDanger":digirisk("#' . $formId . 'dangerFormRisque").val(),
-				"idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(),
-				"histo":historisation,
-				"variables":variables,
-				"description_risque":digirisk("#' . $formId . 'descriptionFormRisque").val(),
-				"preconisationRisque":digirisk("#' . $formId . 'preconisationRisque").val(),
-				"preconisationRisqueTitle":digirisk("#' . $formId . 'preconisationRisqueTitle").val(),
-				"print_action_description_in_duer":digirisk("#' . $formId . 'print_action_description_duer").val(),
-				"idRisque":digirisk("#' . $formId . 'idRisque").val(),
-				"pictureId":"' . $formId . '"';
-			if (($sub_action == 'control_asked_action') || ($task_to_associate > 0)) {
-				$scriptEnregistrement .= ',
-				"actionsCorrectives":"' . $task_to_associate . '",
-				"action_efficiency":jQuery("#correctiv_action_efficiency_control' . $task_to_associate . '").val()';
-			}
-			$scriptEnregistrement .= '
+				var historisation = true;
+				if(digirisk("#' . $formId . 'historisation").is(":checked")){
+					historisation = false;
+				}
+
+				var recommandation_id = 0;
+				var recommandation_comment = "";
+				var recommandation_type = "";
+				var recommandation_efficiency = "";
+				jQuery("#formRisque- .recommandation").each(function() {
+					if ( jQuery(this).is(":checked") ) {
+						recommandation_id = jQuery(this).val();
+					}
+				});
+				if ( recommandation_id != 0) {
+					recommandation_efficiency = digirisk("#efficacite_preconisation").val();
+					recommandation_type = digirisk("#preconisation_type").val();
+					recommandation_comment = digirisk("#commentaire_preconisation").val();
+				}
+
+				var follow_up_content = "";
+				var follow_up_export = "no";
+				var follow_up_date = "";
+				if ( jQuery("#commentaire" + jQuery("#name_of_follow_up_inputs").val() + "_").val() != "" ) {
+					follow_up_content = jQuery("#commentaire" + jQuery("#name_of_follow_up_inputs").val() + "_").val();
+					if ( jQuery("#digi_print_comment_in_doc" + jQuery("#name_of_follow_up_inputs").val() + "_").is(":checked") ) {
+						follow_up_export = "yes";
+					}
+					follow_up_date = jQuery("#date_ajout" + jQuery("#name_of_follow_up_inputs").val() + "_").val();
+				}
+
+				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+					"post":"true",
+					"table":"' . TABLE_RISQUE . '",
+					"act":"save",
+					"tableElement":"' . $tableElement . '",
+					"idElement":"' . $idElement . '",
+					"idDanger":digirisk("#' . $formId . 'dangerFormRisque").val(),
+					"idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(),
+					"histo":historisation,
+					"variables":variables,
+
+					"random_eval": jQuery("#random_eval").val(),
+
+					"recommandation": recommandation_id,
+					"recommandation_efficacite": recommandation_efficiency,
+					"recommandation_type": recommandation_type,
+					"recommandation_commentaire": recommandation_comment,
+
+					"follow_up_content": follow_up_content,
+					"follow_up_export": follow_up_export,
+					"follow_up_date": follow_up_date,
+
+					"preconisationRisque":digirisk("#' . $formId . 'preconisationRisque").val(),
+					"preconisationRisqueTitle":digirisk("#' . $formId . 'preconisationRisqueTitle").val(),
+					"print_action_description_in_duer":digirisk("#' . $formId . 'print_action_description_duer").val(),
+					"idRisque":digirisk("#' . $formId . 'idRisque").val(),
+					"pictureId":"' . $formId . '"';
+				if (($sub_action == 'control_asked_action') || ($task_to_associate > 0)) {
+					$scriptEnregistrement .= ',
+					"actionsCorrectives":"' . $task_to_associate . '",
+					"action_efficiency":jQuery("#correctiv_action_efficiency_control' . $task_to_associate . '").val()';
+				}
+				$scriptEnregistrement .= '
 			});
-			digirisk("#formRisque").html(digirisk("#loadingImg").html());
-			digirisk("#divVoirRisques").html(digirisk("#loadingImg").html());
-			setTimeout(function(){digirisk("#ongletVoirLesRisques").click();},1000);
-			return false;
 		});';
-			if($idRisque != ''){
+			if ( !empty($idRisque) ) {
 				$scriptEnregistrement .= '
 		digirisk("#' . $idElement . 'divPreconisationExistante").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 			"post":"true",

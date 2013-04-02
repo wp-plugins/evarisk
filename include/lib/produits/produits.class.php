@@ -14,17 +14,16 @@
 * @package Digirisk
 * @subpackage librairies
 */
-class digirisk_product
-{
+class digirisk_product {
+
 	/**
-	*	Build the product post box output
-	*
-	*	@param array $params The parameters added by wordpress for each displayed box
-	*
-	*	@return string The box content with the product to affect and the affected product
-	*/
-	function getProductPostBox($params)
-	{
+	 *	Build the product post box output
+	 *
+	 *	@param array $params The parameters added by wordpress for each displayed box
+	 *
+	 *	@return string The box content with the product to affect and the affected product
+	 */
+	function getProductPostBox($params) {
 		/*	Get the entire element list	*/
 		$categories = array();
 		/*	Get the list of categories to output. This list is defined by the options set by the administrator	*/
@@ -44,15 +43,15 @@ class digirisk_product
 	}
 
 	/**
-	*	Create the content of the affectation box
-	*
-	*	@param string $tableElement The element type we want to affect something to
-	*	@param string $idElement The element identifier we want to affect something to
-	*	@param boolean $showButton Allows to specify if the save button must be shown or not
-	*
-	*	@return string $output The html code that contains the box content to output
-	*/
-	function affectationPostBoxContent($tableElement, $idElement, $showButton = true, $categoryToDisplay = ''){
+	 *	Create the content of the affectation box
+	 *
+	 *	@param string $tableElement The element type we want to affect something to
+	 *	@param string $idElement The element identifier we want to affect something to
+	 *	@param boolean $showButton Allows to specify if the save button must be shown or not
+	 *
+	 *	@return string $output The html code that contains the box content to output
+	 */
+	function affectationPostBoxContent($tableElement, $idElement, $showButton = true, $categoryToDisplay = '') {
 		$output = '';
 		$alreadyLinked = $alreadyLinkedListOutput = '';
 		$idBoutonEnregistrer = 'affectation_' . $tableElement;
@@ -105,7 +104,7 @@ class digirisk_product
 		</div>
 		<div id="completeList' . $tableElement . '" class="completeList clear" >' . digirisk_product::elementListForAffectation($tableElement, $idElement, $categoryToDisplay) . '</div>
 	</div>
-	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
+	<div id="massActionProduct' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
 <div id="elementBlocContainer' . $tableElement . '" class="clear hide" ><div class="selectedelementOPContainer" ><span onclick="javascript:elementDeletion(digirisk(this).closest(\'div\').attr(\'id\'), \'' . $tableElement . '\', \'' . $idBoutonEnregistrer . '\');" class="selectedelementOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '">#ELEMENTNAME#</span><span class="ui-icon deleteElementFromList" >&nbsp;</span>&nbsp;<span class="affected_product_action" ><img src="' . PICTO_VIEW . '" alt="' . __('Voir la fiche', 'evarisk') . '" title="' . __('Voir la fiche', 'evarisk') . '" class="view_affected_product_sheet" onclick="javascript:alert(digirisk(this).closest(\'div\').attr(\'id\'));" />';
 if(current_user_can('wpshop_edit_product')){
@@ -116,16 +115,16 @@ if(current_user_can('wpshop_edit_product')){
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		/*	Mass action : check / uncheck all	*/
-		digirisk("#massAction' . $tableElement . ' .checkAll").unbind("click");
-		digirisk("#massAction' . $tableElement . ' .checkAll").click(function(){
+		digirisk("#massActionProduct' . $tableElement . ' .checkAll").unbind("click");
+		digirisk("#massActionProduct' . $tableElement . ' .checkAll").click(function(){
 			digirisk("#completeList' . $tableElement . ' .buttonActionElementLinkList' . $tableElement . '").each(function(){
 				if(digirisk(this).hasClass("elementIsNotLinked")){
 					digirisk(this).click();
 				}
 			});
 		});
-		digirisk("#massAction' . $tableElement . ' .uncheckAll").unbind("click");
-		digirisk("#massAction' . $tableElement . ' .uncheckAll").click(function(){
+		digirisk("#massActionProduct' . $tableElement . ' .uncheckAll").unbind("click");
+		digirisk("#massActionProduct' . $tableElement . ' .uncheckAll").click(function(){
 			digirisk("#completeList' . $tableElement . ' .buttonActionElementLinkList' . $tableElement . '").each(function(){
 				if(digirisk(this).hasClass("elementIsLinked")){
 					digirisk(this).click();
@@ -213,6 +212,7 @@ if(current_user_can('wpshop_edit_product')){
 
 		return $output;
 	}
+
 	/**
 	*	Build a html table with the existing element list, in order to show them for affectation
 	*
@@ -247,7 +247,7 @@ if(current_user_can('wpshop_edit_product')){
 		$productListing = array();
 		if(is_array($categories) && (count($categories) > 0)){/*	In case that there are categories to output	*/
 			/*	Retrieve product list for current configuration	*/
-			$productListing = digirisk_product::get_product_list($categories);
+			$productListing = digirisk_product::get_product_list($categories, $categoryToDisplay);
 
 			if(count($productListing) > 0){/*	Read the product listing	*/
 				foreach($productListing as $productID => $productInformations){/*	Product line content	*/
@@ -594,22 +594,20 @@ if(current_user_can('wpshop_edit_product')){
 	*
 	*	@return array $productListing The product list associated to selected categories
 	*/
-	function get_product_list($categories){
+	function get_product_list($categories, $categoryToDisplay){
 		$productListing=array();
-		$digiriskSelectedProductStatus = unserialize(digirisk_options::getOptionValue('product_status', 'digirisk_product_options'));
-		if(is_array($digiriskSelectedProductStatus) && (count($digiriskSelectedProductStatus) > 0)){
-			$product_status = implode(', ', $digiriskSelectedProductStatus);
-		}
-		else{
-			$product_status = null;
-		}
 
 		/*	Build the get_posts parameters	*/
-		$get_posts_parameters = array('numberposts' => '-1', 'post_type' => WPSHOP_NEWTYPE_IDENTIFIER_PRODUCT, 'post_status' =>  $product_status);
+		$get_posts_parameters = array('numberposts' => '-1', 'post_type' => WPSHOP_NEWTYPE_IDENTIFIER_PRODUCT);
+		$digiriskSelectedProductStatus = unserialize(digirisk_options::getOptionValue('product_status', 'digirisk_product_options'));
+		if(is_array($digiriskSelectedProductStatus) && (count($digiriskSelectedProductStatus) > 0)){
+			$get_posts_parameters['post_status'] = implode(', ', $digiriskSelectedProductStatus);
+		}
 
 		/*	Read the categories list for product listing building	*/
 		foreach($categories as $categoryId => $categoryDefinition){
 			$get_posts_parameters[WPSHOP_NEWTYPE_IDENTIFIER_CATEGORIES] = $categoryDefinition['slug'];
+
 			$products = get_posts($get_posts_parameters);
 			foreach($products as $product){
 				$product_meta = get_post_meta($product->ID, '_wpshop_product_metadata', true);
@@ -620,7 +618,7 @@ if(current_user_can('wpshop_edit_product')){
 		}
 		/*	Add uncategorized product	*/
 		$digiriskUncategorizedProductOutput = digirisk_options::getOptionValue('digi_product_uncategorized_field', 'digirisk_product_options');
-		if(($digiriskUncategorizedProductOutput == 'oui') && !empty($categoryToDisplay)){
+		if($digiriskUncategorizedProductOutput == 'oui'){
 			$get_posts_parameters_uncategorized = $get_posts_parameters;
 			$get_posts_parameters_uncategorized[WPSHOP_NEWTYPE_IDENTIFIER_CATEGORIES] = '';
 			$products = get_posts($get_posts_parameters_uncategorized);

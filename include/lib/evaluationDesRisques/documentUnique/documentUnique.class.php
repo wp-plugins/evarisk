@@ -103,7 +103,27 @@ class eva_documentUnique {
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->nomDanger, 'class' => '');
 
 				if ( empty($outputInterfaceType) || ($outputInterfaceType == 'export_risk_summary') ) {/*	If we want a "simple" output	*/
-					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->commentaire, 'class' => '');
+					$query = $wpdb->prepare("SELECT GROUP_CONCAT(id_evaluation) as risk_eval_list FROM " . TABLE_AVOIR_VALEUR . " WHERE id_risque = %d GROUP BY id_risque", $risque[0]->id);
+					$risk_eval_list = $wpdb->get_var($query);
+					$query = $wpdb->prepare(
+							"SELECT *
+			FROM " . TABLE_ACTIVITE_SUIVI . "
+			WHERE id_element IN (" . $risk_eval_list . ")
+				AND table_element = '%s'
+			ORDER BY date DESC",
+							TABLE_AVOIR_VALEUR
+					);
+					$risk_comment_list = $wpdb->get_results($query);
+					$risk_comment_export = '';
+					if ( !empty($risk_comment_list) ) {
+						foreach ( $risk_comment_list as $risk_comment ) {
+							$risk_comment_export .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $risk_comment->date_ajout, true ) . ' - ' . $risk_comment->commentaire) . "
+
+";
+						}
+					}
+					$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risk_comment_export, 'class' => '');
 				}
 
 				if ( !empty($outputInterfaceType) ) {/*	If the output must have specific content	*/
@@ -146,8 +166,27 @@ class eva_documentUnique {
 							if ( $racine->nom_exportable_plan_action == 'yes' ) {
 								$task_export_content.=$racine->nom;
 
-								if ( $racine->description_exportable_plan_action == 'yes' )
+								if ( $racine->description_exportable_plan_action == 'yes' ) {
 									$task_export_content .= ' : ' . $racine->description.' ';
+								}
+
+								$follow_up_list = suivi_activite::getSuiviActivite(TABLE_TACHE, $task->id);
+								if ( !empty($follow_up_list) ) {
+									$follow_up_content = '';
+									foreach ( $follow_up_list as $follow_up ) {
+										if ($follow_up->export == 'yes') {
+										$follow_up_content .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $follow_up->date_ajout, true ) . ' - ' . $follow_up->commentaire) . "
+
+";
+										}
+									}
+									if ( !empty($follow_up_content) ) {
+										$task_export_content .= "
+- " . __('Commentaires', 'evarisk') . " -
+" . $follow_up_content;
+									}
+								}
 							}
 
 							if ( !empty( $task_export_content ) ) {
@@ -183,6 +222,7 @@ class eva_documentUnique {
 					}
 					unset($listeValeurs);
 					foreach ($risque as $ligneRisque) {
+						$date_to_take = $risque[0]->date;
 						if (!empty($listeIdVariables) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
 							foreach ($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre) {
 								$var_infos = eva_Variable::getVariable($ligneRisque->id_variable);
@@ -235,8 +275,28 @@ class eva_documentUnique {
 			if ( $subElement->nom_exportable_plan_action == 'yes' ) {
 				$content.=$subElement->nom;
 
-				if ( $subElement->description_exportable_plan_action == 'yes' )
+				if ( $subElement->description_exportable_plan_action == 'yes' ) {
 					$content .= ' : ' . $subElement->description.' ';
+				}
+
+				$follow_up_list = suivi_activite::getSuiviActivite(TABLE_ACTIVITE, $subElement->id);
+				if ( !empty($follow_up_list) ) {
+					$follow_up_content = '';
+					foreach ( $follow_up_list as $follow_up ) {
+						if ($follow_up->export == 'yes') {
+							$follow_up_content .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $follow_up->date_ajout, true ) . ' - ' . $follow_up->commentaire) . "
+
+";
+						}
+					}
+					if ( !empty($follow_up_content) ) {
+						$content .= "
+- " . __('Commentaires', 'evarisk') . " -
+" . $follow_up_content;
+					}
+				}
+
 			}
 
 			if ( !empty( $content ) ) {
@@ -249,6 +309,23 @@ class eva_documentUnique {
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['etatAction'] = actionsCorrectives::check_progression_status_for_output($subElement->ProgressionStatus) . ' ('. (!empty($subElement->avancement) ? $subElement->avancement : 0) . '%)';
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['nomAction'] = $subElement->nom;
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['descriptionAction'] = $subElement->description;
+					$follow_up_list = suivi_activite::getSuiviActivite(TABLE_ACTIVITE, $subElement->id);
+					if ( !empty($follow_up_list) ) {
+						$follow_up_content = '';
+						foreach ( $follow_up_list as $follow_up ) {
+							if ($follow_up->export == 'yes') {
+								$follow_up_content .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $follow_up->date_ajout, true ) . ' - ' . $follow_up->commentaire) . "
+
+";
+							}
+						}
+						if ( !empty($follow_up_content) ) {
+							$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['descriptionAction'] .= "
+- " . __('Commentaires', 'evarisk') . " -
+" . $follow_up_content;
+						}
+					}
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['ajoutAction'] = mysql2date('d F Y', $subElement->firstInsert, true);
 					$responsable_infos = evaUser::getUserInformation($subElement->idResponsable);
 					$monCorpsSubElements[ELEMENT_IDENTIFIER_ST.$subElement->id]['responsableAction'] = (($subElement->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$subElement->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
@@ -275,8 +352,27 @@ class eva_documentUnique {
 						$exportable_element = true;
 						$content.=$element->nom;
 
-						if ( $element->description_exportable_plan_action == 'yes' )
+						if ( $element->description_exportable_plan_action == 'yes' ) {
 							$content .= ' : ' . $element->description.' ';
+						}
+
+						$follow_up_list = suivi_activite::getSuiviActivite(TABLE_TACHE, $element->id);
+						if ( !empty($follow_up_list) ) {
+							$follow_up_content = '';
+							foreach ( $follow_up_list as $follow_up ) {
+								if ($follow_up->export == 'yes') {
+									$follow_up_content .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $follow_up->date_ajout, true ) . ' - ' . $follow_up->commentaire) . "
+
+";
+								}
+							}
+							if ( !empty($follow_up_content) ) {
+								$content .= "
+- " . __('Commentaires', 'evarisk') . " -
+" . $follow_up_content;
+							}
+						}
 					}
 
 					if ( $exportable_element ) {
@@ -288,6 +384,25 @@ class eva_documentUnique {
 							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['idAction'] = $separator . DIGI_TASK_SEP.' '.ELEMENT_IDENTIFIER_T.$element->id;
 							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['nomAction'] = $element->nom;
 							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['descriptionAction'] = $element->description;
+
+							$follow_up_list = suivi_activite::getSuiviActivite(TABLE_TACHE, $element->id);
+							if ( !empty($follow_up_list) ) {
+								$follow_up_content = '';
+								foreach ( $follow_up_list as $follow_up ) {
+									if ($follow_up->export == 'yes') {
+										$follow_up_content .= str_replace('<br />', "
+", mysql2date('d-m-Y H:i', $follow_up->date_ajout, true ) . ' - ' . $follow_up->commentaire) . "
+
+";
+									}
+								}
+								if ( !empty($follow_up_content) ) {
+									$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['descriptionAction'] .= "
+- " . __('Commentaires', 'evarisk') . " -
+" . $follow_up_content;
+								}
+							}
+
 							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['ajoutAction'] = mysql2date('d F Y', $element->firstInsert, true);
 							$responsable_infos = evaUser::getUserInformation($element->idResponsable);
 							$monCorpsTable[ELEMENT_IDENTIFIER_T.$element->id]['responsableAction'] = (($element->idResponsable>0) ? ELEMENT_IDENTIFIER_U.$element->idResponsable.' - '.$responsable_infos['user_lastname'].' '.$responsable_infos['user_firstname'] : __('Pas de responsable d&eacute;fini', 'evarisk'));
@@ -622,7 +737,9 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			}
 			$formulaireDocumentUniqueParams['#REMARQUEIMPORTANT#'] = (isset($lastDocumentUnique->alerteDUER) && ($lastDocumentUnique->alerteDUER != '') && ($lastDocumentUnique->alerteDUER != 'undefined')) ? $lastDocumentUnique->alerteDUER : $alerte;
 
-			$lastDocumentUnique->id_model = (isset($lastDocumentUnique->id_model) && ($lastDocumentUnique->id_model != '')) ? $lastDocumentUnique->id_model : 0;
+			if ( empty($lastDocumentUnique->id_model) && !empty($lastDocumentUnique) ) {
+				$lastDocumentUnique->id_model = 0;
+			}
 
 			$output =
 			EvaDisplayDesign::feedTemplate(EvaDisplayDesign::getFormulaireGenerationDUER(), $formulaireDocumentUniqueParams) . '
@@ -663,8 +780,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 			digirisk("#divDocumentUnique").html(\'<img src="' . PICTO_LOADING . '" />\');
 		});';
 
-					if(($lastDocumentUnique->id_model != '') && ($lastDocumentUnique->id_model != '0') && ($lastDocumentUnique->id_model != eva_gestionDoc::getDefaultDocument('document_unique')))
-					{
+					if ( !empty($lastDocumentUnique->id_model) && ($lastDocumentUnique->id_model != eva_gestionDoc::getDefaultDocument('document_unique'))) {
 						$output .= '
 		setTimeout(function(){
 			digirisk("#modelDefaut").click();
@@ -678,7 +794,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				if(!digirisk("#modelDefaut").is(":checked")){
 					digirisk("#documentUniqueResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 					digirisk("#documentUniqueResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
-					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . $lastDocumentUnique->id_model . '"});
+					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"document_unique", "selection":"' . (!empty($lastDocumentUnique->id_model) ? $lastDocumentUnique->id_model : '') . '"});
 					digirisk("#modelListForGeneration").show();
 				}
 				else{
@@ -962,6 +1078,8 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 	*	@return mixed $output An html code with the generated output
 	*/
 	function getBoxBilan($tableElement, $idElement) {
+		/*
+	<div class="alignleft" id="generateFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div> */
 		$output = '
 <div class="clear" id="summaryDocumentGeneratorSlector" >
 	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
@@ -1023,6 +1141,20 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				"post":"true",
 				"table":"' . TABLE_DUER . '",
 				"act":"riskListingGeneration",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '"
+			});
+		});
+		digirisk("#generateFEP").click(function(){
+			digirisk("#summaryDocumentGeneratorSlector div").each(function(){
+				digirisk(this).removeClass("selected");
+			});
+			digirisk(this).addClass("selected");
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true",
+				"table":"' . TABLE_DUER . '",
+				"act":"ficheDePenibiliteGeneration",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '"
 			});
@@ -1111,6 +1243,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 
 		return $completeExport;
 	}
+
 	/**
 	*	Build output for a complete tree with associated values
 	*

@@ -231,7 +231,7 @@ class EvaActivity extends EvaBaseActivity
 			$task_asker_not_available_explanation = __('La demande d\'action est d&eacute;sactiv&eacute;e pour le moment. Vous pouvez contacter votre administrateur pour plus d\'informations', 'evarisk');
 		}
 
-		if($taks_asker_available){
+		if ($taks_asker_available) {
 			$ask_argument['tableProvenance'] = 'correctiv_action_ask';
 			$ask_argument['provenance'] = 'ask_correctiv_action';
 			$ask_argument['output_mode'] = 'return';
@@ -245,7 +245,7 @@ class EvaActivity extends EvaBaseActivity
 	<div class="digirisk_hide" id="ajax-response" >&nbsp;</div>';
 			}
 			else{
-				$task_asker = __('Pour demander la cr&eacute;ation d\'une nouvelle action corrective, vous devez &ecirc;tre connect&eacute; et l\'administrateur du site doit vous donner les droits', 'evarisk');
+				$task_asker = __('Pour demander la cr&eacute;ation d\'une nouvelle action corrective, vous devez &ecirc;tre connect&eacute; et l\'administrateur du site doit vous donner les droits', 'evarisk') . wp_login_form(array('echo' => false));
 			}
 		}
 		else{
@@ -348,13 +348,13 @@ class EvaActivity extends EvaBaseActivity
 			$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de l'action",'evarisk'))) . '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span> : ';
 			$exportable_option = '';
 			if ( !empty ( $parent_task ) ) {
-				if ( $parent_task->nom_exportable_plan_action == 'no' ) {
+				if ( ( $parent_task->name != __('Tache Racine', 'evarisk') ) && ( $parent_task->nom_exportable_plan_action == 'no' ) ) {
 					$labelInput .= '<input type="hidden" name="nom_exportable_plan_action" value="no" />';
 					$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
 					$nom_exportable_plan_action = 'no';
 				}
 			}
-			if ( ( $ProgressionStatus == 'Done' ) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ) {
+			if ( !empty($idElement) && ( $ProgressionStatus == 'Done' ) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ) {
 				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; car cette t&acirc;che est sold&eacute;e', 'evarisk') . '"';
 			}
 			$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($nom_exportable_plan_action) && ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';

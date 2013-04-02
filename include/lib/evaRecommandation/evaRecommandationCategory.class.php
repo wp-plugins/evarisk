@@ -1,14 +1,14 @@
 <?php
 /**
  * Recommandation category management file
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
- 
+
 /**
  * Recommandation category management class
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
@@ -84,7 +84,7 @@ class evaRecommandationCategory
 
 		$whatToUpdate = eva_database::prepareQuery($categoryRecommandationInformations, 'creation');
 		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . " 
+			"INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . "
 			(" . implode(', ', $whatToUpdate['fields']) . ")
 			VALUES
 			(" . implode(', ', $whatToUpdate['values']) . ") "
@@ -116,7 +116,7 @@ class evaRecommandationCategory
 
 		$whatToUpdate = eva_database::prepareQuery($categoryRecommandationInformations, 'update');
 		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_CATEGORIE_PRECONISATION . " 
+			"UPDATE " . TABLE_CATEGORIE_PRECONISATION . "
 			SET " . implode(', ', $whatToUpdate['values']) . "
 			WHERE id = '%s' ",
 			$id
@@ -151,6 +151,7 @@ class evaRecommandationCategory
 		$categoryList = evaRecommandationCategory::getCategoryRecommandationList();
 		if($outputMode == 'pictos')
 		{
+			$i = 0;
 			foreach($categoryList as $category)
 			{
 				$recommandationMainPicture = evaPhoto::checkIfPictureIsFile($category->photo, TABLE_CATEGORIE_PRECONISATION);

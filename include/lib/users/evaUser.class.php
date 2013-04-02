@@ -998,7 +998,7 @@ $user_additionnal_field .= '
 	/**
 	*
 	*/
-	function digi_user_profil(){
+	function digi_user_profil() {
 		global $current_user, $wpdb;
 
 		$user_profil_content = '';
@@ -1038,7 +1038,7 @@ $user_additionnal_field .= '
 				$query = $wpdb->prepare("SELECT * FROM " . $affectation_information_table_element . " WHERE Status = 'Valid' AND id = %d", $affectation_information->id_element);
 				$element = $wpdb->get_row($query);
 
-				if($element->Status == 'Valid'){
+				if( !empty($element) && ($element->Status == 'Valid')){
 					switch($affectation_information->table_element){
 						case TABLE_GROUPEMENT:{
 							/*	Read element ancestor	*/
@@ -1073,6 +1073,7 @@ $user_additionnal_field .= '
 								$sub_content .= '-&nbsp;' . sprintf(__('Arborescence descendante de l\'&eacute;l&eacute;ment : %s ', 'evarisk'), $miniFilAriane) . '<br/>';
 							}
 
+							$gpt_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['name'] = '<span class="alignleft" >' . ELEMENT_IDENTIFIER_GP . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span>';
 							$gpt_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_GP . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-node' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
 							$gpt_list[ELEMENT_IDENTIFIER_GP . $affectation_information->id_element]['detail'] = $sub_content;
 						}break;
@@ -1094,6 +1095,7 @@ $user_additionnal_field .= '
 							}
 
 							$ut_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['title'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_UT . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-leaf' . $affectation_information->id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>';
+							$ut_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['name'] = '<span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_UT . $affectation_information->id_element . '&nbsp;-&nbsp;' . $element->nom . '</span>';
 							$ut_list[ELEMENT_IDENTIFIER_UT . $affectation_information->id_element]['detail'] = $sub_content;
 						}break;
 
@@ -1304,6 +1306,57 @@ $user_additionnal_field .= '
 			$user_ac_affecation .= '</div></div>';
 		}
 
+		$digiPenibility = __('Cet utilisateur n\'est affect&eacute; a aucun &eacute;l&eacute;ment pour le moment', 'evarisk');
+		$user_affectations = evaUserLinkElement::get_user_affected_element($user_to_edit, '', "'valid', 'moderated', 'deleted'");
+		if ( !empty($user_affectations) ) {
+			$element_list = array();
+			foreach ( $user_affectations as $user_affectation ) {
+				$element_list[$user_affectation->table_element][$user_affectation->id_element] = $user_affectation->id_element;
+			}
+			$digiPenibility = '';
+
+			if ( !empty($element_list) ) {
+				$digiPenibility .= '
+							<div class="user_profil_generated_doc generatedDocContainer" id="generatedFEPContainer_for_all_-digi-_' . $user_to_edit . '" >
+								<div class="clear bold" >
+									' . __('G&eacute;n&eacute;rer les fiches de p&eacute;nibilit&eacute; pour toutes les affectations de l\'utilisateur', 'evarisk') . '
+								</div>
+								<br class="clear" /><button class="digi_generate_FEP" id="digi_generate_FEP_for_all_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
+								<div class="clear FEPContainer" id="digi_generate_FEP_for_all_-digi-_' . $user_to_edit . '_container" >' . eva_GroupSheet::getGroupSheetCollectionHistory('USER', $user_to_edit, 'fiches_de_penibilite', ELEMENT_IDENTIFIER_GFEP) . '</div>
+							</div>';
+
+				foreach ( $element_list as $table_element => $list_of_element ) {
+					foreach ( $list_of_element as $id_element ) {
+						$query = $wpdb->prepare("SELECT * FROM " . $table_element . " WHERE Status = 'Valid' AND id = %d", $id_element);
+						$element = $wpdb->get_row($query);
+						switch ( $table_element ) {
+							case TABLE_GROUPEMENT:
+								$digiPenibility .= '
+									<div class="user_profil_generated_doc generatedDocContainer" id="generatedFEPContainer_' . TABLE_GROUPEMENT . '_' . str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element) . '" >
+										<div class="clear bold" >
+											<img src="' . DEFAULT_GROUP_PICTO . '" alt="' . __('Groupements', 'evarisk') . '" class="alignleft middleAlign user_affectation_picto" /><span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_GP . $id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-node' . $id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>
+										</div>
+										<br class="clear" /><button class="digi_generate_FEP" id="digi_generate_FEP_' . TABLE_GROUPEMENT . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element) . '_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
+										<div class="clear FEPContainer" id="digi_generate_FEP_' . TABLE_GROUPEMENT . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element) . '_-digi-_' . $user_to_edit . '_container" >' . eva_gestionDoc::getGeneratedDocument(TABLE_GROUPEMENT, str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element), 'list', '', 'fiche_exposition_penibilite', $user_to_edit) . '</div>
+									</div>';
+								break;
+							case TABLE_UNITE_TRAVAIL:
+								$digiPenibility .= '
+									<div class="user_profil_generated_doc generatedDocContainer" id="generatedFEPContainer' . TABLE_UNITE_TRAVAIL . '_' . str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element) . '" >
+										<div class="clear bold" >
+											<img src="' . DEFAULT_WORKING_UNIT_PICTO . '" alt="' . __('Unit&eacute; de travail', 'evarisk') . '" class="alignleft middleAlign user_affectation_picto" /><span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_UT . $id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-leaf' . $id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>
+										</div>
+										<br class="clear" /><button class="digi_generate_FEP" id="digi_generate_FEP_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element) . '_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
+										<div class="clear FEPContainer" id="digi_generate_FEP_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element) . '_-digi-_' . $user_to_edit . '_container" >' . eva_gestionDoc::getGeneratedDocument(TABLE_UNITE_TRAVAIL, str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element), 'list', '', 'fiche_exposition_penibilite', $user_to_edit) . '</div>
+									</div>';
+								break;
+						}
+
+					}
+				}
+			}
+		}
+
 	/*	Start output building	*/
 		/*	Add a field allowing user to change user for edition	*/
 		$user_profil_content .= '
@@ -1321,11 +1374,13 @@ $user_additionnal_field .= '
 		<li><a href="#digirisk_user_risk_evaluation_affectation" title="digirisk_user_risk_evaluation_affectation" id="digirisk_user_risk_evaluation_affectation_tab" >' . __('&Eacute;valuation', 'evarisk') . '</a></li>
 		<li><a href="#digirisk_user_ca_affectation" title="digirisk_user_ca_affectation" id="digirisk_user_ca_affectation_tab" >' . __('Actions correctives', 'evarisk') . '</a></li>
 		<li><a href="#digirisk_user_rights" title="digirisk_user_rights" id="digirisk_user_rights_tab" >' . __('Droits', 'evarisk') . '</a></li>
+		<li><a href="#digirisk_user_penibility" title="digirisk_user_penibility" id="digirisk_user_penibility_tab" >' . __('P&eacute;nibilit&eacute;', 'evarisk') . '</a></li>
 	</ul>
 	<div id="digirisk_user_tree_affectation" >' . $user_tree_affecation . '</div>
 	<div id="digirisk_user_risk_evaluation_affectation" >' . $user_tree_eval_affecation . '</div>
 	<div id="digirisk_user_ca_affectation" >' . $user_ac_affecation . '</div>
 	<div id="digirisk_user_rights" >' . $digiPermissionForm . '</div>
+	<div id="digirisk_user_penibility" >' . $digiPenibility . '</div>
 </div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -1369,6 +1424,16 @@ $user_additionnal_field .= '
 				jQuery("#" + detail_to_open_id).parent().children("div").children("span:first").addClass("user_element_detail_opener");
 				jQuery("#" + detail_to_open_id).parent().children("div").children("span:first").removeClass("user_element_detail_closer");
 			}
+		});
+
+		jQuery(".digi_generate_FEP").click(function(){
+			digirisk("#" + jQuery(this).attr("id") + "_container").html(jQuery("#loadingImg").html());
+			digirisk("#" + jQuery(this).attr("id") + "_container").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true",
+				"table":"' . TABLE_GED_DOCUMENTS . '",
+				"act":"save_fiche_penibilite_specific_user",
+				"element_infos": jQuery(this).attr("id").replace("digi_generate_FEP_", ""),
+			});
 		});
 	});
 </script>';

@@ -1,7 +1,7 @@
 <?php
 /**
-* User notification management 
-* 
+* User notification management
+*
 * Define method to manage user notification in plugin
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.4.5
@@ -42,14 +42,14 @@ class digirisk_user_notification{
 
 		if(is_array($action_infos) && (count($action_infos) > 0)){
 			foreach($action_infos as $field_name => $field_infos){
-				$conditions .= " 
+				$conditions .= "
 	AND " . $field_name . " = " . $field_infos[0];
 				$conditions_value[] = $field_infos[1];
 			}
 		}
 
 		$query = $wpdb->prepare(
-"SELECT * 
+"SELECT *
 FROM " . self::dbTable . "
 WHERE 1" . $conditions, $conditions_value);
 		$actions = $wpdb->get_results($query);
@@ -65,7 +65,7 @@ WHERE 1" . $conditions, $conditions_value);
 		$element_identifier = $arguments['idElement'];
 		$element_type = $arguments['tableElement'];
 
-		/*	Ajout de la pop up d'édition pour les écrans plus petits	*/
+		/*	Ajout de la pop up d'ï¿½dition pour les ï¿½crans plus petits	*/
 		$utilisateursMetaBox = '
 <div id="userNotificationManager" class="hide" title="' . __('Notifications des utilisateurs', 'evarisk') . '" >
 	<div id="userNotificationDialogMessage" class="hide" >&nbsp;</div>
@@ -110,8 +110,8 @@ WHERE 1" . $conditions, $conditions_value);
 	<div id="saveButtonContainer_userNotification' . $element_type . '" ><input type="button" value="' . __('Enregistrer', 'evarisk') . '" id="save_user_notification_' . $element_type . '" name="save_user_notification_' . $element_type . '"" class="button-primary alignright" /></div>';
 	}
 	else{
-		$utilisateursMetaBox .= '<div class="alignright button-primary" id="TaskSaveButton" >' . 
-					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de commentaire', 'evarisk') . 
+		$utilisateursMetaBox .= '<div class="alignright button-primary" id="TaskSaveButton" >' .
+					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de commentaire', 'evarisk') .
 				'</div>';
 	}
 	$utilisateursMetaBox .= '
@@ -138,7 +138,7 @@ WHERE 1" . $conditions, $conditions_value);
 		close: function(){
 			digirisk("#userNotificationManagerForm").html("");
 			digirisk("#userNotificationContainerBox").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-				"post": "true", 
+				"post": "true",
 				"table": "' . self::dbTable . '",
 				"act": "reload_user_notification_box",
 				"tableElement": "' . $element_type . '",
@@ -236,7 +236,7 @@ WHERE LUN.status = 'valid'
 	function get_user_notification_table($table_element, $id_element){
 		$notification_box = '';
 
-		/*	on récupère les utilisateurs affectés à l'élément en cours.	*/
+		/*	on rï¿½cupï¿½re les utilisateurs affectï¿½s ï¿½ l'ï¿½lï¿½ment en cours.	*/
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($table_element, $id_element);
 		if(is_array($utilisateursLies) && (count($utilisateursLies) > 0)){
 			$notification_list = self::get_notification_list($table_element);
@@ -261,7 +261,7 @@ WHERE LUN.status = 'valid'
 			$script = '';
 			unset($lignesDeValeurs);
 
-			/*	Affichage de la ligne permettant de cocher un colonne entière 	*/
+			/*	Affichage de la ligne permettant de cocher un colonne entiï¿½re 	*/
 			unset($valeurs);
 			$valeurs[] = array('value' => '', 'class' => 'bottomBorder');
 			$valeurs[] = array('value' => '', 'class' => 'bottomBorder');
@@ -576,6 +576,9 @@ WHERE R.id = %d", $modification_datas[1]);
 				case 'follow_add':{
 					$modification_content .= sprintf(__('Nouveau commentaire ajout&eacute; : %s', 'evarisk'), $modification_datas);
 				}break;
+				case 'follow_update':{
+					$modification_content .= sprintf(__('Commentaire mis &agrave; jour : %s', 'evarisk'), $modification_datas);
+				}break;
 				case 'picture_as_before_add':{
 					$element_identifier = ELEMENT_IDENTIFIER_PIC . $modification_datas;
 					$query = $wpdb->prepare("SELECT photo FROM " . TABLE_PHOTO . " WHERE id = %d", $modification_datas);
@@ -605,7 +608,7 @@ WHERE R.id = %d", $modification_datas[1]);
 							$element_identifier = ELEMENT_IDENTIFIER_ST . $modification_datas[1];
 						break;
 					}
-					$modification_content .= sprintf(__('Nouvelle sous-t&acirc;che ajout&eacute;e : 
+					$modification_content .= sprintf(__('Nouvelle sous-t&acirc;che ajout&eacute;e :
 Identifiant: %s
 Nom: %s
 Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modification_datas[3]);
@@ -694,7 +697,7 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 			}
 
 			if(trim($modification_content) != ''){
-				$modification_content = __('Modification effectu&eacute;e', 'evarisk') . ": 
+				$modification_content = __('Modification effectu&eacute;e', 'evarisk') . ":
 " . $modification_content . "
 ";
 			}

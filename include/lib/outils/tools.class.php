@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin tools management
-* 
+*
 * Define the different tools available in the plugin
 * @author Evarisk <dev@evarisk.com>
 * @version 5.1.4.5
@@ -49,6 +49,27 @@ class digirisk_tools
 			jQuery("#digirisk_tools_tab_container").html(jQuery("#loadingImg").html());
 			jQuery("#digi_option_submit_button").hide();
 		});
+
+		jQuery(".digi_repair_db_version").live("click", function(){
+			jQuery(this).after(jQuery("#round_loading_img div").html());
+			var data = {
+				action: "digi_ajax_repair_db",
+				digi_ajax_nonce: '<?php echo wp_create_nonce("digi_repair_db_per_version"); ?>',
+				version_id: jQuery(this).attr("id").replace("digi_repair_db_version_", ""),
+			};
+			jQuery.post(ajaxurl, data, function(response){
+				if (response[0]) {
+					jQuery("#digirisk_tools_tab_container").load("<?php echo EVA_INC_PLUGIN_URL ?>ajax.php", {
+						"post": "true",
+						"nom": "tools",
+						"action": "db_manager",
+					});
+				}
+				else {
+					alert(digi_html_accent_for_js("<?php _e('Une erreur est survenue lors de la tentative de r&eacute;paration de la base de donn&eacute;s', 'evarisk'); ?>"));
+				}
+			}, 'json');
+		});
 	});
 </script>
 <?php
@@ -70,18 +91,18 @@ class digirisk_tools
 	  {
 		return '';
 	  }else{
-	  
+
 	   $text = preg_replace('/\s/', '+', $text);
 	   $text = trim($text);
-	  
+
 	  }
-	 
+
 	  return $text;
 	}
-	
+
 	function slugify($text)
 	{
-		$pattern = Array("é", "è", "ê", "ç", "à", "â", "î", "ï", "ù", "ô", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ö", "Ù", "Û", "Ü");
+		$pattern = Array("ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½");
 		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
 		if(!(empty($text)))
 		{
@@ -94,7 +115,7 @@ class digirisk_tools
 
 	function slugify_accent($text){
 		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/", "/&#146;/","/&#34;/");
-		$rep_pat = Array("é", "è", "ê", "ç", "à", "â", "î", "ï", "ù", "ô", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ö", "Ù", "Û", "Ü", "'",'"');
+		$rep_pat = Array("ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "ï¿½", "'",'"');
 		if ($text == '')
 		{
 			return '';
@@ -103,12 +124,12 @@ class digirisk_tools
 		{
 			$text = preg_replace($pattern, $rep_pat, utf8_decode($text));
 	  }
-	  
+
 	  return $text;
 	}
 
 	function slugify_noaccent($text){
-		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/");
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/");
 		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
 		if ($text == '')
 		{
@@ -118,12 +139,12 @@ class digirisk_tools
 		{
 			$text = preg_replace($pattern, $rep_pat, utf8_decode($text));
 	  }
-	  
+
 	  return $text;
 	}
 
 	function slugify_noaccent_no_utf8decode($text){
-		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/é/", "/è/", "/ê/", "/ç/", "/à/", "/â/", "/î/", "/ï/", "/ù/", "/ô/", "/È/", "/É/", "/Ê/", "/Ë/", "/Ì/", "/Í/", "/Î/", "/Ï/", "/Ö/", "/Ù/", "/Û/", "/Ü/");
+		$pattern  = Array("/&eacute;/", "/&egrave;/", "/&ecirc;/", "/&ccedil;/", "/&agrave;/", "/&acirc;/", "/&icirc;/", "/&iuml;/", "/&ucirc;/", "/&ocirc;/", "/&Egrave;/", "/&Eacute;/", "/&Ecirc;/", "/&Euml;/", "/&Igrave;/", "/&Iacute;/", "/&Icirc;/", "/&Iuml;/", "/&Ouml;/", "/&Ugrave;/", "/&Ucirc;/", "/&Uuml;/","/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/", "/ï¿½/");
 		$rep_pat = Array("e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U","e", "e", "e", "c", "a", "a", "i", "i", "u", "o", "E", "E", "E", "E", "I", "I", "I", "I", "O", "U", "U", "U");
 		if ($text == '')
 		{
@@ -133,30 +154,30 @@ class digirisk_tools
 		{
 			$text = preg_replace($pattern, $rep_pat, $text);
 	  }
-	  
+
 	  return $text;
 	}
 
 	function stripAccents($string)
 	{
-		$newString = str_replace(array('à', 'á', 'â', 'ã', 'ä'), 'a', $string);
-		$newString = str_replace(array('À', 'Á', 'Â', 'Ã', 'Ä'), 'A', $newString);
-		$newString = str_replace(array('é', 'è', 'ê', 'ë'), 'e', $newString);
-		$newString = str_replace(array('É', 'È', 'Ê', 'Ë'), 'E', $newString);
-		$newString = str_replace(array('ì', 'í', 'î', 'ï'), 'i', $newString);
-		$newString = str_replace(array('Ì', 'Í', 'Î', 'Ï'), 'I', $newString);
-		$newString = str_replace(array('ò', 'ó', 'ô', 'ö', 'õ'), 'o', $newString);
-		$newString = str_replace(array('Ò', 'Ó', 'Ô', 'Ö', 'Õ'), 'O', $newString);
-		$newString = str_replace(array('ù', 'ú', 'û', 'ü'), 'u', $newString);
-		$newString = str_replace(array('Ù', 'Ú', 'Û', 'Ü'), 'U', $newString);
-		$newString = str_replace(array('ý', 'ÿ'), 'y', $newString);
-		$newString = str_replace(array('Ý', 'Ÿ'), 'Y', $newString);
-		$newString = str_replace('ç', 'c', $newString);
-		$newString = str_replace('Ç', 'C', $newString);
-		$newString = str_replace('ñ', 'n', $newString);
-		$newString = str_replace('Ñ', 'N', $newString);
-		$newString = str_replace('n°', '', $newString);
-		$newString = str_replace('°', '_', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'a', $string);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'A', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'e', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'E', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'i', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'I', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'o', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'O', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'u', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½', 'ï¿½', 'ï¿½'), 'U', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½'), 'y', $newString);
+		$newString = str_replace(array('ï¿½', 'ï¿½'), 'Y', $newString);
+		$newString = str_replace('ï¿½', 'c', $newString);
+		$newString = str_replace('ï¿½', 'C', $newString);
+		$newString = str_replace('ï¿½', 'n', $newString);
+		$newString = str_replace('ï¿½', 'N', $newString);
+		$newString = str_replace('nï¿½', '', $newString);
+		$newString = str_replace('ï¿½', '_', $newString);
 		return $newString;
 	}
 
@@ -186,27 +207,27 @@ class digirisk_tools
 				elseif(is_file($sourceDirectory . '/' . $item))
 				{
 					copy($sourceDirectory . '/' . $item, $destinationDirectory . '/' . $item);
-				} 
+				}
 			}
 			closedir( $hdir );
 		}
 	}
 
-	//couleur aléatoire générée
+	//couleur alï¿½atoire gï¿½nï¿½rï¿½e
 	function getColor(){
 		$a = DecHex(mt_rand(0,15));
 		$b = DecHex(mt_rand(0,15));
 		$c = DecHex(mt_rand(0,15));
 		$d = DecHex(mt_rand(0,15));
 		$e = DecHex(mt_rand(0,15));
-		$f = DecHex(mt_rand(0,15)); 
+		$f = DecHex(mt_rand(0,15));
 
 		$hexa = $a . $b . $c . $d . $e . $f;
 
 		return $hexa;
 	}
 
-	//couleur du texte en fonction de la couleur générée
+	//couleur du texte en fonction de la couleur gï¿½nï¿½rï¿½e
 	function getContrastColor($color){
 		return (hexdec($color) > 0xffffff/2) ? '000000' : 'ffffff';
 	}
@@ -230,8 +251,8 @@ class digirisk_tools
 				jQuery("#digi_reinit_db").after(jQuery("#round_loading_img div").html());
 				jQuery("#digi_reinit_db").remove();
 				jQuery("#digirisk_tools_tab_container").load("<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php",{
-					"post":"true", 
-					"nom":"tools", 
+					"post":"true",
+					"nom":"tools",
 					"action":"db_reinit_launch",
 					"redirect":digi_redirect_to_install
 				});

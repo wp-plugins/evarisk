@@ -47,12 +47,15 @@ class digirisk_options
 			add_settings_field('digi_ac_allowed_ext', __('Liste des extensions autoris&eacute;es pour les documents', 'evarisk'), array('digirisk_options', 'digi_ac_allowed_ext'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_allow_front_ask', __('Autoriser la demande d\'actions correctives depuis la partie front du portail', 'evarisk'), array('digirisk_options', 'digi_ac_allow_front_ask'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_front_ask_parent_task_id', '', array('digirisk_options', 'digi_ac_front_ask_parent_task_id'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_front_ask_create_parent_task', '', array('digirisk_options', 'digi_ac_front_ask_create_parent_task'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_control_action_affectation', __('Affecter les actions de contr&ocirc;le &agrave; la t&acirc;che', 'evarisk'), array('digirisk_options', 'digi_ac_control_action_affectation'), 'digirisk_options_correctivaction', 'digi_options_ac');
 		}
 
 		{/*	Declare the different options for the risks	*/
 			add_settings_section('digi_risk_options', null, array('digirisk_options', 'options_output_risk'), 'digirisk_options_risk');
 			/*	Add the different field for current section	*/
 			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_risk', 'digi_risk_options');
+			add_settings_field('digi_risk_penibility_level', __('Seuil de p&eacute;nibilit&eacute;', 'evarisk'), array('digirisk_options', 'digi_risk_penibility_level'), 'digirisk_options_risk', 'digi_risk_options');
 		}
 
 		{/*	Declare the different options for the work unit sheet	*/
@@ -246,8 +249,11 @@ if(current_user_can('digi_edit_option')){
 		$newinput['digi_ac_allowed_ext'] = (!empty($input['digi_ac_allowed_ext'])?$input['digi_ac_allowed_ext']:'');
 		$newinput['digi_ac_allow_front_ask'] = (!empty($input['digi_ac_allow_front_ask'])?$input['digi_ac_allow_front_ask']:'');
 		$newinput['digi_ac_front_ask_parent_task_id'] = (!empty($input['digi_ac_front_ask_parent_task_id'])?$input['digi_ac_front_ask_parent_task_id']:'');
+		$newinput['digi_ac_front_ask_create_parent_task'] = (!empty($input['digi_ac_front_ask_create_parent_task'])?$input['digi_ac_front_ask_create_parent_task']:'');
+		$newinput['digi_ac_control_action_affectation'] = (!empty($input['digi_ac_control_action_affectation'])?$input['digi_ac_control_action_affectation']:'');
 
 		$newinput['risques_avances'] = (!empty($input['risques_avances'])?trim($input['risques_avances']):'');
+		$newinput['digi_risk_penibility_level'] = (!empty($input['digi_risk_penibility_level'])?trim($input['digi_risk_penibility_level']):'');
 
 		$newinput['taille_photo_poste_fiche_de_poste'] = (!empty($input['taille_photo_poste_fiche_de_poste'])?trim($input['taille_photo_poste_fiche_de_poste']):'');
 
@@ -466,7 +472,13 @@ if(current_user_can('digi_edit_option')){
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
-	function digi_ac_allow_front_ask(){
+	function digi_ac_front_ask_create_parent_task(){
+
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_allow_front_ask() {
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
 		$load_class = ' class="digirisk_hide" ';
@@ -474,7 +486,9 @@ if(current_user_can('digi_edit_option')){
 			$load_class = ' ';
 		}
 		if(current_user_can('digi_edit_option')){
-			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >&nbsp;&nbsp;&nbsp;' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;:[digirisk_correctiv_action]<br/>' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="text" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>
+			/* <br/><input type="checkbox" value="yes"' . (!empty($options['digi_ac_front_ask_create_parent_task']) && ($options['digi_ac_front_ask_create_parent_task'] == 'yes') ? ' checked="checked"' : '') . ' name="digirisk_options[digi_ac_front_ask_create_parent_task]" id="digi_ac_front_ask_create_parent_task" /> <label for="digi_ac_front_ask_create_parent_task" >' . __('Cr&eacute;er uniquement les sous-t&acirc;ches pour les demandes? (Si vous cochez cette case, les demandes seront stock&eacute;es directement dans la t&acirc;che indiqu&eacute;e ci-dessus)', 'evarisk') . '</label>  */
+			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="text" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" />
+			<div class="digi_ac_allow_front_ask_code_container" >' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;: [digirisk_correctiv_action]</div></div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		jQuery("#digi_ac_allow_front_ask").change(function(){
@@ -492,9 +506,23 @@ if(current_user_can('digi_edit_option')){
 			echo $options['digi_ac_allow_front_ask'] . '<div id="associated_task_container" ' . $load_class . ' >' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="hidden" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>';
 		}
 	}
+
 	/**
-	*	Define the output fot the field. Get the option value to put the good value by default
-	*/
+	 * Define the output for the field allowing to associate a control correctiv action
+	 */
+	function digi_ac_control_action_affectation(){
+		$options = get_option('digirisk_options');
+		if(current_user_can('digi_edit_option')){
+			echo '<input type="text" value="' . $options['digi_ac_control_action_affectation'] . '" name="digirisk_options[digi_ac_control_action_affectation]" id="digi_ac_control_action_affectation" />';
+		}
+		else{
+			echo $options['digi_ac_control_action_affectation'];
+		}
+	}
+
+	/**
+	 *	Define the output fot the field. Get the option value to put the good value by default
+	 */
 	function digi_ac_allowed_ext(){
 		$digi_ac_allowed_ext_out = '';
 		$digi_ac_allowed_ext = self::getOptionValue('digi_ac_allowed_ext', 'digirisk_options');
@@ -546,6 +574,22 @@ if(current_user_can('digi_edit_option')){
 		{
 			echo $options['risques_avances'];
 		}
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_risk_penibility_level() {
+		global $typeRisque;
+		$output = '';
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			$output = EvaDisplayInput::createComboBox('digi_risk_penibility_level', 'digirisk_options[digi_risk_penibility_level]', $typeRisque, $options['digi_risk_penibility_level']);
+		}
+		else {
+			$output = $options['digi_risk_penibility_level'];
+		}
+
+		echo $output;
 	}
 
 	/**

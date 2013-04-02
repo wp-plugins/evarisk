@@ -115,7 +115,6 @@ class categorieDangers {
 		$wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom'=>$nom, 'Status'=>'Valid', 'limiteGauche'=>$lim, 'limiteDroite'=>($lim+1)));
 		$new_category = $wpdb->insert_id;
 		$wpdb->update(TABLE_CATEGORIE_DANGER, array('limiteDroite'=>($lim + 2)), array('nom'=>'Categorie Racine'));
-		$wpdb->query($sql);
 
 		return $new_category;
 	}
@@ -177,14 +176,20 @@ class categorieDangers {
 
 	function getCategorieDangerForRiskEvaluation($risque, $formId = '') {
 		global $wpdb;
+
 		$categoryResult = array();
 		$categoryResult['list'] = '';
 		$categoryResult['script'] = '';
 		$categoryResult['selectionCategorie'] = '';
 
-		$nomRacine = 'Categorie Racine';
-		$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
-		$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine);
+		if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+			$nomRacine = 'Categorie Racine';
+			$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
+			$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine);
+		}
+		else {
+			$categoriesDangers[] = categorieDangers::getCategorieDanger($risque[0]->idCategorie);
+		}
 
 		if ( $risque[0] != null ) {// Si l'on �dite un risque, on s�lectionne la bonne cat�gorie de dangers
 			$selectionCategorie = $risque[0]->idCategorie;
@@ -198,20 +203,22 @@ class categorieDangers {
 			$query = $wpdb->prepare("SELECT id FROM " . TABLE_METHODE . " WHERE default_methode = 'yes'", "");
 			$default_methode = $wpdb->get_var($query);
 
-			$categoryResult['script'] .= '
+			if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+				$categoryResult['script'] .= '
 			jQuery(".default_methode").unbind("click");
 			jQuery(".default_methode").click( function() {
           		jQuery("#' . $formId . 'methodeFormRisque").val("'.$default_methode.'");
           		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque . '", "formId":"' . $formId . '"});
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque[0]->id . '", "formId":"' . $formId . '"});
 			});
 
 			jQuery(".case_penibilite").unbind("click");
 			jQuery(".case_penibilite").live("click", function(){
           		jQuery("#' . $formId . 'methodeFormRisque").val(jQuery(this).attr("id").replace("case_penibilite_", ""));
           		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque . '", "formId":"' . $formId . '"});
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque[0]->id . '", "formId":"' . $formId . '"});
 			});';
+			}
 
 			foreach ($categoriesDangers as $categorieDangers) {
 				if ($selectionCategorie == $categorieRacine->id) {
@@ -228,7 +235,6 @@ class categorieDangers {
 							$choix_danger = unserialize($danger->choix_danger);
 							if ( is_array($choix_danger) && in_array('penibilite', $choix_danger) ) {
 								$conteneur_penibilite = '<div class="case_penibilite" id="case_penibilite_'.$danger->methode_eva_defaut.'" >' . __('P', 'evarisk') . '</div>';
-
 							}
 						}
 					}
@@ -241,7 +247,9 @@ class categorieDangers {
 				$categoryResult['script'] .= '
 		digirisk("#' . $formId . 'divCategorieDangerFormRisque").hide();
 		digirisk("#' . $formId . 'cat' . $selectionCategorie . '").click();
-		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";
+		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";';
+				if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+					$categoryResult['script'] .= '
 		digirisk("' . $formIdSelector . '.categoriesDangers").click(function(){
 			var ' . $formId . 'newCatId = (digirisk(this).attr("id")).replace("' . $formId . 'cat","");
 			if (' . $formId . 'oldCatId != ' . $formId . 'newCatId) {
@@ -256,6 +264,7 @@ class categorieDangers {
 				' . $formId . 'oldCatId = ' . $formId . 'newCatId;
 			}
 		});';
+				}
 			}
 		}
 		$categoryResult['list'] .= '<input type="hidden" id="valeurPenibilite" value="0"/>

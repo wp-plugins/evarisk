@@ -23,10 +23,10 @@ class EvaDisplayInput {
 	  */
 	static function ouvrirForm($method, $id, $name, $action = '')
 	{
-		
+
 		return '<form method="' . strtolower($method) . '" id="' . $id . '" name="' . $name . '" enctype="multipart/form-data" action="' . $action . '" >';
 	}
-	
+
 	/**
 	  * Close a form.
 	  * @param int $id Id attribut of the form.
@@ -42,7 +42,7 @@ class EvaDisplayInput {
 			</script>';
 		return $script . '</form>';
 	}
-	
+
 	/**
 	  * Create the script needed by the input.
 	  * @param int $id Id attribut of the input.
@@ -72,7 +72,7 @@ class EvaDisplayInput {
 							digirisk(\'#' . $id . '\').removeClass(\'form-input-tip\');
 						}
 					});
-					
+
 					digirisk(\'#' . $id . '\').blur(function() {
 						if(digirisk(\'#' . $id . '\').val() == "")
 						{
@@ -80,7 +80,7 @@ class EvaDisplayInput {
 							digirisk(\'#' . $id . '\').val("' . $contenuAide . '");
 						}
 					});
-					
+
 					if(digirisk(\'#' . $id . '\').val() == "")
 					{
 						digirisk(\'#' . $id . '\').addClass(\'form-input-tip\');
@@ -123,15 +123,15 @@ class EvaDisplayInput {
 				break;
 		}
 		$script .= '
-          digirisk("#' . $id . '").val("' . str_replace('"', '\"', str_replace(" 
-", "\\n", $contenuInput)) . '"); 
+          digirisk("#' . $id . '").val("' . str_replace('"', '\"', str_replace("
+", "\\n", $contenuInput)) . '");
 				});
 			</script>';
 		return $script;
 	}
 
-	
-	
+
+
 	/**
 	* Create the script needed by the input.
 	* @see getScriptInput.
@@ -191,7 +191,7 @@ class EvaDisplayInput {
 
 		return $input;
 	}
-	
+
 	/**
 	  * Create an comboBox with indentation to simulate an tree
 	  * @see creerComboBoxArborescente.
@@ -227,7 +227,7 @@ class EvaDisplayInput {
 				if($element == $selection)
 				{
 					$comboBox = $comboBox . ' selected="selected"';
-				}   
+				}
 			}
 			if($tabDisplay != null)
 			{
@@ -290,7 +290,7 @@ class EvaDisplayInput {
 	static function afficherComboBoxArborescente($racine, $table, $idSelect, $labelSelect, $nameSelect, $valeurDefaut = "", $selection = -1)
 	{
 		$elements = Arborescence::getFils($table, $racine);
-		$trouveElement = count($elements);	
+		$trouveElement = count($elements);
 		$maListe = '';
 		if($trouveElement)
 		{
@@ -299,9 +299,9 @@ class EvaDisplayInput {
 		return '<label id="lbl_' . $idSelect . '" for="' . $idSelect . '">' . $labelSelect . '</label>
 						<select class="inputSelectArborescent" id="' . $idSelect . '" name="' . $nameSelect . '" >
 							<option value="' . $racine->id . '">' . $valeurDefaut . '</option>
-							' . $maListe . '</select>';							
+							' . $maListe . '</select>';
 	}
-	
+
 	/**
 	  * Fill the comboBox make by afficherComboBoxArborescente.
 	  * @see afficherComboBoxArborescente.
@@ -331,10 +331,10 @@ class EvaDisplayInput {
 			{
 				$supplementText = $element->code . '. ';
 			}
-			
+
 			$maListe = $maListe . '<option value="' . $element->id . '" ' . $selected . ' > ' . $space . $supplementText . $element->nom . '&nbsp;' . ' </option>';
 			$elements_fils = Arborescence::getFils($table, $element);
-			$trouveElement = count($elements_fils);			
+			$trouveElement = count($elements_fils);
 			if($trouveElement)
 			{
 				$maListe = $maListe . EvaDisplayInput::creerComboBoxArborescente($elements_fils, $table, $niveau+1, $selection);

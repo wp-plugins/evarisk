@@ -164,21 +164,25 @@ CREATE TABLE {$t} (
   KEY `idPhotoApres` (`idPhotoApres`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table containing the activity (for corrective actions)';";
 
-/* Structure de la table `wp_eva__actions_correctives_suivi`	*/
+/** Structure de la table wp_eva__actions_correctives_suivi	*/
 $t = TABLE_ACTIVITE_SUIVI;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
-  `date` datetime NOT NULL,
-  `id_user` bigint(20) NOT NULL,
-  `id_element` int(10) NOT NULL,
-  `table_element` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `commentaire` varchar(255) collate utf8_unicode_ci NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `status` (`status`),
-  KEY `id_user` (`id_user`),
-  KEY `id_element` (`id_element`)
+  id int(10) unsigned NOT NULL auto_increment,
+  status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+  date datetime NOT NULL,
+  date_ajout datetime NOT NULL,
+  date_modification datetime NOT NULL,
+  export enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
+  id_parent int(10) NOT NULL,
+  id_user bigint(20) NOT NULL,
+  id_element int(10) NOT NULL,
+  table_element varchar(255) collate utf8_unicode_ci NOT NULL,
+  commentaire varchar(255) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id),
+  KEY status (status),
+  KEY id_user (id_user),
+  KEY id_element (id_element)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Allows to follow an action progress';";
 
 /* Structure de la table `wp_eva__actions_correctives_tache`	*/
@@ -440,6 +444,7 @@ CREATE TABLE {$t} (
   `document_type` char(30) collate utf8_unicode_ci NOT NULL,
   `id_model` int(10) unsigned NOT NULL default '1' COMMENT 'The model used to generate the document',
   `revision` int(3) default NULL COMMENT 'Document version',
+  `affected_user` bigint(20) unsigned NOT NULL,
   `id_element` int(10) unsigned NOT NULL COMMENT 'The element''s id associated to the document',
   `table_element` char(255) collate utf8_unicode_ci NOT NULL COMMENT 'The element''s type associated to the document',
   `reference` varchar(64) collate utf8_unicode_ci NOT NULL default '',
@@ -449,6 +454,7 @@ CREATE TABLE {$t} (
   `telephone` varchar(255) collate utf8_unicode_ci default NULL,
   `defaultPicturePath` varchar(255) collate utf8_unicode_ci default NULL,
   `societyName` text collate utf8_unicode_ci,
+  `document_final_dir` text collate utf8_unicode_ci,
   `users` longtext collate utf8_unicode_ci COMMENT 'A serialised array containing the different users',
   `userGroups` longtext collate utf8_unicode_ci COMMENT 'A serialised array containing the different users group',
   `evaluators` longtext collate utf8_unicode_ci COMMENT 'A serialised array containing the different users who were present during evaluation',
@@ -513,7 +519,10 @@ CREATE TABLE {$t} (
   `id_preconisation` int(10) NOT NULL,
   `efficacite` int(3) NOT NULL,
   `id_element` int(10) NOT NULL,
+  `date_affectation` datetime NOT NULL,
+  `date_update_affectation` datetime NOT NULL,
   `table_element` char(255) collate utf8_unicode_ci NOT NULL,
+  `preconisation_type` char(255) collate utf8_unicode_ci NOT NULL,
   `commentaire` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `status` (`status`),
@@ -711,6 +720,7 @@ CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment,
   `status` enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   `id_categorie_preconisation` int(10) unsigned NOT NULL,
+  `preconisation_type` enum('organisationnelles','collectives','individuelles') collate utf8_unicode_ci NOT NULL default 'organisationnelles',
   `creation_date` datetime default NULL,
   `nom` varchar(128) collate utf8_unicode_ci default NULL,
   `description` text collate utf8_unicode_ci,
@@ -1619,7 +1629,7 @@ CREATE TABLE {$t} (
 
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][DIGI_DBT_ELEMENT_NOTIFICATION] = array('action_title');
 
-	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_ELEMENT_MODIFICATION);
+	$digirisk_db_table_list[$digirisk_db_version] = array(DIGI_DBT_ELEMENT_NOTIFICATION);
 }
 {/*	Version 68	*/
 	$digirisk_db_version = 68;
@@ -1670,8 +1680,9 @@ CREATE TABLE {$t} (
 
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_VARIABLE] = array('affichageVar', 'questionVar', 'questionTitre');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_DANGER] = array('choix_danger', 'methode_eva_defaut');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_CATEGORIE_DANGER] = array('methode_eva_defaut');
 
-	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_VARIABLE, TABLE_DANGER);
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_VARIABLE, TABLE_DANGER, TABLE_CATEGORIE_DANGER);
 }
 
 {/*	Version 74	*/
@@ -1711,4 +1722,34 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_LIAISON_USER_ELEMENT] = array('date_affectation_reelle', 'date_desaffectation_reelle');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_LIAISON_USER_ELEMENT);
+}
+
+{/*	Version 79	*/
+	$digirisk_db_version = 79;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_PRECONISATION] = array('preconisation_type');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_LIAISON_PRECONISATION_ELEMENT] = array('preconisation_type');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['TABLE_RENAME'][] = array('old_name' => EVA_TRASH_TABLE_ACTIVITE_SUIVI, 'name' => TABLE_ACTIVITE_SUIVI);
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('affected_user', 'document_final_dir');
+
+	/*	Special changes on table structure	*/
+	$i = 0;
+	$i++;
+	$digirisk_table_structure_change[$digirisk_db_version][EVA_TRASH_TABLE_ACTIVITE_SUIVI][$i]['MAIN_ACTION'] = 'RENAME';
+	$digirisk_table_structure_change[$digirisk_db_version][EVA_TRASH_TABLE_ACTIVITE_SUIVI][$i]['ACTION_CONTENT'] = TABLE_ACTIVITE_SUIVI;
+	$digirisk_table_structure_change[$digirisk_db_version][EVA_TRASH_TABLE_ACTIVITE_SUIVI][$i]['ACTION'] = 'TO';
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_PRECONISATION, TABLE_LIAISON_PRECONISATION_ELEMENT, TABLE_FP);
+}
+
+{/*	Version 80	*/
+	$digirisk_db_version = 80;
+	$digirisk_update_way[$digirisk_db_version] = 'structure';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_ACTIVITE_SUIVI] = array('date_ajout', 'export', 'date_modification', 'id_parent');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_LIAISON_PRECONISATION_ELEMENT] = array('date_affectation', 'date_update_affectation');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE_SUIVI, TABLE_FP, TABLE_LIAISON_PRECONISATION_ELEMENT);
 }

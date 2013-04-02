@@ -862,25 +862,57 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 				{
 					case 'save':
 					{
+						$idRisque = '';
 						$pictureId = isset($_REQUEST['pictureId']) ? (digirisk_tools::IsValid_Variable($_REQUEST['pictureId'])) : '';
 						$retourALaLigne = array("\r\n", "\n", "\r");
-						$_REQUEST['description'] = !empty($_REQUEST['description'])?str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']):'';
+						$_REQUEST['description'] = !empty($_REQUEST['description'])?str_replace($retourALaLigne, "[retourALaLigne]",$_REQUEST['description']):isset($_REQUEST['follow_up_content']) ? str_replace($retourALaLigne, "[retourALaLigne]",digirisk_tools::IsValid_Variable($_REQUEST['follow_up_content'])) : '';
 						$_REQUEST['description'] = str_replace("…", "...",$_REQUEST['description']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 
-						if($pictureId != '')
-						{
-							if($idRisque > 0)
-							{
+						/**	Save recommandation associated to this risk	*/
+						$recommandation_id = isset($_REQUEST['recommandation']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation'])) : '';
+						$recommandation_efficacite = isset($_REQUEST['recommandation_efficacite']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_efficacite'])) : '';
+						$recommandation_type = isset($_REQUEST['recommandation_type']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_type'])) : '';
+						$recommandation_commentaire = isset($_REQUEST['recommandation_commentaire']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_commentaire'])) : '';
+						$recommandationsinformations = array();
+						$recommandationsinformations['id_preconisation'] = $recommandation_id;
+						$recommandationsinformations['efficacite'] = $recommandation_efficacite;
+						$recommandationsinformations['commentaire'] = $recommandation_commentaire;
+						$recommandationsinformations['preconisation_type'] = $recommandation_type;
+						$recommandationsinformations['id_element'] = $idRisque;
+						$recommandationsinformations['table_element'] = TABLE_RISQUE;
+						$recommandationsinformations['status'] = 'valid';
+						$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
+						$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+
+						$follow_up_content = !empty($_REQUEST['follow_up_content']) ? (digirisk_tools::IsValid_Variable($_REQUEST['follow_up_content'])) : '';
+						$follow_up_export = isset($_REQUEST['follow_up_export']) ? (digirisk_tools::IsValid_Variable($_REQUEST['follow_up_export'])) : '';
+						$follow_up_date = isset($_REQUEST['follow_up_date']) ? (digirisk_tools::IsValid_Variable($_REQUEST['follow_up_date'])) : '';
+						if ( !empty($follow_up_content) ) {
+							$query =
+							$wpdb->prepare(
+								"SELECT id_evaluation
+								FROM " . TABLE_AVOIR_VALEUR . "
+								WHERE id_risque = '%d'
+									AND Status = 'Valid'
+								ORDER BY id DESC
+								LIMIT 1",
+								$idRisque
+							);
+							$evaluation = $wpdb->get_row($query);
+							suivi_activite::saveSuiviActivite(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $follow_up_content, $follow_up_date, $follow_up_export);
+						}
+
+						if ($pictureId != '') {
+							if ($idRisque > 0) {
 								$moreMessage = '
 		actionMessageShow("#' . $pictureId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque a bien &eacute;t&eacute; ajout&eacute;', 'evarisk') . '</strong></p>') . '");
 		setTimeout(\'digirisk("#' . $pictureId . 'content").html("");digirisk("#' . $pictureId . 'content").removeClass("updated");\',3000);
 		goTo("#' . $pictureId . '");';
 							}
-							else
-							{
+							else {
 								$moreMessage = '
 		actionMessageShow("#' . $pictureId . 'content", "' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le risque n\'a pas pu &ecirc;tre ajout&eacute;', 'evarisk') . '</strong></p>') . '");
 		setTimeout(\'digirisk("#' . $pictureId . 'content").html("");digirisk("#' . $pictureId . 'content").removeClass("updated");\',3000);';
@@ -892,8 +924,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 <script type="text/javascript" >
 	digirisk("#addRiskForPictureText' . $pictureId . '").html("' . __('Ajouter un risque pour cette photo', 'evarisk') . '");
 	digirisk("#divDangerContainerSwitchPic' . $pictureId . '").attr("src").replace("collapse", "expand");
-	digirisk("#riskAssociatedToPicture' . $pictureId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-	{
+	digirisk("#riskAssociatedToPicture' . $pictureId . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
 		"act":"reloadRiskAssociatedToPicture",
@@ -902,10 +933,11 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 	' . $moreMessage . '
 </script>';
 						}
-						else
-						{
-							require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
-							echo getFormulaireCreationRisque($tableElement, $idElement);
+						else {
+							echo '<script type="text/javascript" >digirisk(document).ready(function(){digirisk("#formRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true",	"table":"' . TABLE_RISQUE . '", "act":"load", "idRisque": "' . $idRisque . '", "idElement":"' . $idElement . '", "tableElement":"' . $tableElement . '"});})</script>';
+// 							require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
+// 							echo getFormulaireCreationRisque($tableElement, $idElement, $idRisque);
+							exit();
 						}
 					}
 					break;
@@ -1439,7 +1471,7 @@ echo $output;
 				</script>';
 						}
 						else{
-							$actionsCorrectives .= __('Aucune action n\'est associ&eacute;e &agrave; ce risque', 'evarisk');
+							//$actionsCorrectives .= __('Aucune action n\'est associ&eacute;e &agrave; ce risque', 'evarisk');
 						}
 
 						echo $actionsCorrectives;
@@ -1729,7 +1761,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				jQuery("#receiver_element").val(ui.item.value);
 
 				setTimeout(function(){
-					jQuery("#search_element").val("");
+					jQuery("#search_element").val(ui.item.label);
 					jQuery("#search_element").blur();
 				}, 2);
 			}
@@ -3122,11 +3154,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						global $current_user;
 						$provenance = digirisk_tools::IsValid_Variable($_POST['receiver_element']);
 						$token_for_element = digirisk_tools::IsValid_Variable($_POST['token_for_element']);
+						$main_options = get_option('digirisk_options');
 
 						$_POST['parentTaskId'] = evaTask::saveNewTask();
 						$asked_task = new EvaTask($_POST['parentTaskId']);
 						$asked_task->load();
-						$main_options = get_option('digirisk_options');
 						$asked_task->transfert($main_options['digi_ac_front_ask_parent_task_id']);
 						$actionSave = evaActivity::saveNewActivity();
 						$asked_action = new EvaActivity($actionSave['action_id']);
@@ -3163,11 +3195,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						evaUserLinkElement::setLinkUserElement(TABLE_ACTIVITE, $actionSave['action_id'], $current_user->ID);
 
 						$task_notif_list = digirisk_user_notification::get_notification_list(TABLE_TACHE);
-						foreach($task_notif_list as $notification){
+						foreach ($task_notif_list as $notification) {
 							$wpdb->insert(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'valid', 'date_affectation' => current_time('mysql', 0), 'id_attributeur' => $current_user->ID, 'id_user' => $current_user->ID, 'id_notification' => $notification->id, 'id_element' => $actionSave['task_id'],	'table_element' => TABLE_TACHE));
 						}
 						$action_notif_list = digirisk_user_notification::get_notification_list(TABLE_ACTIVITE);
-						foreach($action_notif_list as $notification){
+						foreach ($action_notif_list as $notification) {
 							$wpdb->insert(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'valid', 'date_affectation' => current_time('mysql', 0), 'id_attributeur' => $current_user->ID, 'id_user' => $current_user->ID, 'id_notification' => $notification->id, 'id_element' => $actionSave['action_id'],	'table_element' => TABLE_ACTIVITE));
 						}
 
@@ -3638,7 +3670,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								digirisk(document).ready(function(){
 									digirisk("#messageInfo' . $tableElement . $idElement . '").addClass("updated");';
 
-						$saveFollow = suivi_activite::saveSuiviActivite($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['commentaire']);
+						$saveFollow = suivi_activite::saveSuiviActivite($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['commentaire'], $_REQUEST['date_ajout'], $_REQUEST['export']);
 						if($saveFollow == 'ok'){
 							/*	Log modification on element and notify user if user subscribe	*/
 							digirisk_user_notification::log_element_modification($_REQUEST['tableElement'], $_REQUEST['idElement'], 'follow_add', '', $_REQUEST['commentaire']);
@@ -3657,7 +3689,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										digirisk("#messageInfo' . $tableElement . $idElement . '").hide();
 									},7500);
 
-									digirisk("#loadsaveActionFollow").html(\'\');
+									digirisk("#loadsaveActionFollow").html("");
 									digirisk("#bttnsaveActionFollow").show();
 									digirisk("#loadsaveActionFollow").hide();
 								});
@@ -3665,14 +3697,86 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo $messageInfo . suivi_activite::formulaireAjoutSuivi($tableElement, $idElement);
 					}
 					break;
+					case 'delete':
+						$follow_up_2_del = digirisk_tools::IsValid_Variable($_REQUEST['follow_up_2_del']);
+						$delete_follow_up = $wpdb->update(TABLE_ACTIVITE_SUIVI, array('status' => 'deleted'), array('id' => str_replace('digi_delete_follow_up_line_', '', $follow_up_2_del)));
+						if ( $delete_follow_up ) {
+							$messageInfo =
+							'<script type="text/javascript">
+								digirisk(document).ready(function(){
+									jQuery("#messageInfo' . $tableElement . $idElement . '").addClass("updated");
+									jQuery("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Commentaire supprim&eacute; avec succ&eacute;s', 'evarisk') . '</strong></p>') . '");
+									jQuery("#' . $follow_up_2_del . '").closest("tr").remove();
+								});
+							</script>';
+						}
+						else {
+							$messageInfo =
+							'<script type="text/javascript">
+								digirisk(document).ready(function(){
+									jQuery("#messageInfo' . $tableElement . $idElement . '").addClass("updated");
+									jQuery("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Une erreur est survenue lors de la suppression du commentaire', 'evarisk') . '</strong></p>') . '");
+								});
+							</script>';
+						}
+						echo $messageInfo;
+					break;
+					case 'load_follow_up_edition_form':
+						$follow_up_2_edit = digirisk_tools::IsValid_Variable($_REQUEST['follow_up_2_edit']);
+						$table_element = digirisk_tools::IsValid_Variable($_REQUEST['table_element']);
+						$id_element = digirisk_tools::IsValid_Variable($_REQUEST['id_element']);
+						echo suivi_activite::formulaireAjoutSuivi($table_element, $id_element, false, $follow_up_2_edit);
+					break;
+					case 'update':
+						$table_element = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
+						$id_element = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
+						$id_follow_up = digirisk_tools::IsValid_Variable($_REQUEST['id_follow_up']);
+						$query = $wpdb->prepare("SELECT * FROM " . TABLE_ACTIVITE_SUIVI . " WHERE id = %d", $id_follow_up);
+						$follow_up_previous_content = $wpdb->get_row($query, ARRAY_A);
+						unset( $follow_up_previous_content['id'] );
+						$follow_up_previous_content['date'] = current_time('mysql', 0);
+						$follow_up_previous_content['commentaire'] = digirisk_tools::IsValid_Variable($_REQUEST['commentaire']);
+						$follow_up_previous_content['export'] = digirisk_tools::IsValid_Variable($_REQUEST['export']);
+						$new_follow_up = $wpdb->insert( TABLE_ACTIVITE_SUIVI, $follow_up_previous_content );
+						$saveFollow = $wpdb->update( TABLE_ACTIVITE_SUIVI, array('date_modification' => current_time('mysql', 0), 'status' => 'moderated', 'id_parent' => $wpdb->insert_id), array('id' => $id_follow_up) );
+						$messageInfo =
+						'<script type="text/javascript">
+								digirisk(document).ready(function(){
+									digirisk("#messageInfo' . $tableElement . $idElement . '").addClass("updated");';
+						if( $saveFollow !== false ){
+							digirisk_user_notification::log_element_modification($table_element, $id_element, 'follow_update', '', $_REQUEST['commentaire']);
+							$messageInfo .= '
+									digirisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");';
+						}
+						else{
+							$messageInfo .= '
+									digirisk("#messageInfo' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");';
+						}
+
+						$messageInfo .= '
+									digirisk("#messageInfo' . $tableElement . $idElement . '").show();
+									setTimeout(function(){
+										digirisk("#messageInfo' . $tableElement . $idElement . '").removeClass("updated");
+										digirisk("#messageInfo' . $tableElement . $idElement . '").hide();
+									},7500);
+
+									digirisk("#loadsaveActionFollow").html("");
+									digirisk("#bttnsaveActionFollow").show();
+									digirisk("#loadsaveActionFollow").hide();
+								});
+							</script>';
+						echo $messageInfo . suivi_activite::formulaireAjoutSuivi($table_element, $id_element);
+					break;
 				}
 			break;
 			case TABLE_LIAISON_USER_ELEMENT:
 				require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php');
-				switch($_REQUEST['act'])
-				{
+				switch ( $_REQUEST['act'] ) {
 					case 'save':
-						evaUserLinkElement::setLinkUserElement($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['utilisateurs']);
+						evaUserLinkElement::setLinkUserElement($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['utilisateurs'], true, $_REQUEST['date_action_affection']);
+					break;
+					case 'reload_user_affectation_box':
+						echo evaUserLinkElement::afficheListeUtilisateur($_REQUEST['tableElement'], $_REQUEST['idElement']);
 					break;
 				}
 				break;
@@ -3691,6 +3795,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 
+						/* 	<div class="alignleft" id="generatedFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div> */
 						$output .= '
 <div class="clear" id="summaryGeneratedDocumentSlector" >
 	<div class="alignleft selected" id="generatedDUER" >' . __('Document unique', 'evarisk') . '</div>
@@ -3715,6 +3820,10 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						/*	Start risk listing summary part	*/
 						$output .= '<div class="hide generatedDocContainer" id="generatedRSContainer" ><div class="clear bold" >' . __('Fiches de synth&egrave;se des risques', 'evarisk') . '</div>
 						<div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'listing_des_risques') . '</div></div>';
+
+						/*	Start risk listing summary part	*/
+						$output .= '<div class="hide generatedDocContainer" id="generatedFEPContainer" ><div class="clear bold" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
+						<div class="FEPContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_exposition_penibilite') . '</div></div>';
 
 						$output .= '
 <div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
@@ -3759,6 +3868,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo eva_gestionDoc::getRiskListingGenerationForm($tableElement, $idElement);
+					break;
+					case 'ficheDePenibiliteGeneration':
+						$tableElement = $_REQUEST['tableElement'];
+						$idElement = $_REQUEST['idElement'];
+						echo eva_gestionDoc::get_form_penibilite_generation($tableElement, $idElement);
 					break;
 					case 'documentUniqueGenerationForm':
 					{
@@ -4037,6 +4151,112 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
 				switch ($_REQUEST['act']) {
+					case 'save_fiche_penibilite':
+						eva_gestionDoc::generate_fiche_penibilite($tableElement, $idElement);
+
+						$table_message_to_update = TABLE_DUER;
+						if( $table_element == TABLE_UNITE_TRAVAIL ){
+							$table_message_to_update = TABLE_FP;
+						}
+						$messageInfo = '
+			<script type="text/javascript">
+				digirisk(document).ready(function(){
+					digirisk("#subTabSelector").val("FEP");
+					digirisk("#ongletHistoriqueDocument").click();
+				});
+			</script>';
+
+						echo $messageInfo;
+					break;
+					case 'reload_fiche_penibilite_container':
+							$table_element = !empty($_REQUEST['table_element']) ? $_REQUEST['table_element'] : '';
+							$id_element = !empty($_REQUEST['id_element']) ? $_REQUEST['id_element'] : '';
+							$id_user = !empty($_REQUEST['id_user']) ? $_REQUEST['id_user'] : '';
+							echo eva_gestionDoc::getGeneratedDocument($table_element, $id_element, 'list', '', 'fiche_exposition_penibilite', $id_user);
+						break;
+					case 'save_fiche_penibilite_specific_user':
+						$element = !empty($_REQUEST['element_infos']) ? $_REQUEST['element_infos'] : '';
+						if ( !empty($element) ) {
+							$elements = explode('_-digi-_', $element);
+							if ( (count($elements) == 2) && ($elements[0] == 'for_all') ) {
+								$query = $wpdb->prepare(
+									"SELECT *
+									FROM " . TABLE_LIAISON_USER_ELEMENT . "
+									WHERE id_user = %d
+										AND table_element IN ('" . TABLE_GROUPEMENT . "','" . TABLE_UNITE_TRAVAIL . "')
+										AND status IN ('valid', 'moderated', 'deleted')"
+										, $elements[1]
+								);
+								$user_affected_elements = $wpdb->get_results($query);
+								if ( !empty($user_affected_elements) ) {
+									$file_to_zip = array();
+									$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeRisques/' . $elements[1] . '/';
+									$element_to_use = array();
+									$reload_script = '';
+									foreach ( $user_affected_elements as $element ) {
+										$element_to_use[$element->table_element][$element->id_element][] = $element;
+										$reload_script .= '
+												jQuery("#digi_generate_FEP_' . $element->table_element . '_-digi-_' . $element->id_element . '_-digi-_' . $elements[1] . '_container").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+													"post" : "true",
+													"table" : "' . TABLE_GED_DOCUMENTS . '",
+													"act" : "reload_fiche_penibilite_container",
+													"table_element" : "' . $element->table_element . '",
+													"id_element" : "' . $element->id_element . '",
+													"id_user" : "' . $elements[1] . '",
+												});';
+									}
+									if ( !empty($element_to_use) ) {
+										foreach ( $element_to_use as $table_element => $table_element_details) {
+											foreach ( $table_element_details as $id_element => $element_details) {
+												$last_file = eva_gestionDoc::generate_fiche_penibilite($table_element, $id_element, $element_details);
+
+												if ( is_file($last_file['path']) ) {
+													$file_to_zip[] = $last_file['path'];
+												}
+											}
+										}
+									}
+
+									$saveZipFileActionMessage = '';
+									digirisk_tools::make_recursiv_dir($pathToZip);
+									if ( !empty($file_to_zip) ) {
+										/*	ZIP THE FILE	*/
+										$zipFileName = date('YmdHis') . '_ficheDeRisques.zip';
+										$archive = new eva_Zip($zipFileName);
+										$archive->setFiles($file_to_zip);
+										$archive->compressToPath($pathToZip);
+										$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiches_de_penibilite', 'USER', $elements[1], str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
+										if ($saveWorkSheetUnitStatus == 'error') {
+											$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches de p&eacute;nibilit&eacute; pour ce groupement', 'evarisk');
+										}
+										else {
+											$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les fiches de p&eacute;nibilit&eacute; ont correctement &eacute;t&eacute; enregistr&eacute;es.', 'evarisk');
+										}
+									}
+								}
+
+								echo eva_GroupSheet::getGroupSheetCollectionHistory('USER', $elements[1], 'fiches_de_penibilite', ELEMENT_IDENTIFIER_GFEP);
+								if ( !empty($reload_script) ) {
+									echo '<script type="text/javascript" >digirisk(document).ready(function(){' . $reload_script . '});</script>';
+								}
+							}
+							else {
+								$query = $wpdb->prepare(
+									"SELECT *
+									FROM " . TABLE_LIAISON_USER_ELEMENT . "
+									WHERE id_element = '%s'
+										AND table_element = '%s'
+										AND status IN ('valid', 'moderated', 'deleted')
+										AND id_user = %d"
+									, $elements[1], $elements[0], $elements[2]
+								);
+								$users = $wpdb->get_results($query);
+								eva_gestionDoc::generate_fiche_penibilite($elements[0], $elements[1], $users);
+
+								echo eva_gestionDoc::getGeneratedDocument($elements[0], $elements[1], 'list', '', 'fiche_exposition_penibilite', $elements[2]);
+							}
+						}
+						break;
 					case 'save_list_risk':
 						$sheet_infos = array();
 						$sheet_infos['sheet_type'] = 'digi_risk_listing';
@@ -4180,12 +4400,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						$nom_preconisation = (isset($_REQUEST['nom_preconisation']) && ($_REQUEST['nom_preconisation'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['nom_preconisation']) : '';
 						$description_preconisation = (isset($_REQUEST['description_preconisation']) && ($_REQUEST['description_preconisation'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['description_preconisation']) : '';
+						$preconisation_type = (isset($_REQUEST['preconisation_type']) && ($_REQUEST['preconisation_type'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['preconisation_type']) : '';
 						$id_preconisation = (isset($_REQUEST['id_preconisation']) && ($_REQUEST['id_preconisation'] != '') && ($_REQUEST['id_preconisation'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_preconisation']) : '0';
 						$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '0';
 
 						$recommandations_informations = array();
 						$recommandations_informations['nom'] = $nom_preconisation;
 						$recommandations_informations['description'] = $description_preconisation;
+						$recommandations_informations['preconisation_type'] = $preconisation_type;
 
 						//Check the value of the recommandation identifier.
 						if(($id_preconisation <= 0) && current_user_can('digi_add_recommandation')){	//	If the value is equal or less than 0 we create a new recommandation
@@ -4296,6 +4518,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$recommandationComment = (isset($_REQUEST['recommandationComment']) && ($_REQUEST['recommandationComment'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandationComment']) : '';
 						$id_element = (isset($_REQUEST['id_element']) && ($_REQUEST['id_element'] != '') && ($_REQUEST['id_element'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_element']) : '';
 						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['table_element']) : '';
+						$preconisation_type = (isset($_REQUEST['preconisation_type']) && ($_REQUEST['preconisation_type'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['preconisation_type']) : '';
 
 						$recommandation_link_action = (isset($_REQUEST['recommandation_link_action']) && ($_REQUEST['recommandation_link_action'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandation_link_action']) : '';
 						$recommandation_link_id = (isset($_REQUEST['recommandation_link_id']) && ($_REQUEST['recommandation_link_id'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandation_link_id']) : '';
@@ -4304,9 +4527,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$recommandationsinformations['id_preconisation'] = $id;
 						$recommandationsinformations['efficacite'] = $recommandationEfficiency;
 						$recommandationsinformations['commentaire'] = $recommandationComment;
+						$recommandationsinformations['preconisation_type'] = $preconisation_type;
 
 						if($recommandation_link_action == 'update')
 						{
+							$recommandationsinformations['date_update_affectation'] = current_time('mysql', 0);
 							$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandationsinformations, $recommandation_link_id);
 						}
 						else
@@ -4314,6 +4539,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$recommandationsinformations['id_element'] = $id_element;
 							$recommandationsinformations['table_element'] = $table_element;
 							$recommandationsinformations['status'] = 'valid';
+							$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
 							$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
 						}
 
@@ -4344,6 +4570,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id']) : '';
 						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['table_element']) : '';
 						$recommandations_informations['status'] = 'deleted';
+						$recommandations_informations['date_update_affectation'] = current_time('mysql', 0);
 						$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandations_informations, $id);
 						$moreRecommandationScript = '';
 						if($recommandationActionResult == 'error')
@@ -4389,6 +4616,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$selectRecommandation['id_preconisation'] = $selectedRecommandation[0]->id_preconisation;
 							$selectRecommandation['commentaire_preconisation'] = $selectedRecommandation[0]->commentaire;
 							$selectRecommandation['efficacite_preconisation'] = $selectedRecommandation[0]->efficacite;
+							$selectRecommandation['preconisation_type'] = $selectedRecommandation[0]->preconisation_type;
 						}
 
 						echo evaRecommandation::recommandationAssociation($outputMode, $selectRecommandation);;
@@ -5256,9 +5484,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				}
 
 				/*
-				 * Execution des action sspecifiques pour certaines version
+				 * Execution des action specifiques pour certaines version
 				 */
-				$version_to_make = array(73);
+				$version_to_make = array(73, 81);
 				foreach($version_to_make as $version_number){
 					digirisk_install::make_specific_operation_on_update($version_number);
 				}
@@ -6527,13 +6755,18 @@ switch($tableProvenance)
 												$query = $wpdb->prepare("SHOW COLUMNS FROM " .$table_name . " WHERE Field = %s", $column_name);
 												$columns = $wpdb->get_row($query);
 												$sub_modif .= $column_name;
-												if($columns->Field == $column_name){
+												if( !empty($columns->Field) && ($columns->Field == $column_name) ){
 													$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Field has been created', 'evarisk') . '" title="' . __('Field has been created', 'evarisk') . '" class="db_added_field_check" />';
 												}
 												else{
 													$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />';
 													$error_nb++;
-													$error_list[$plugin_db_version] += 1;
+													if ( !empty($error_list[$plugin_db_version]) ) {
+														$error_list[$plugin_db_version] += 1;
+													}
+													else {
+														$error_list[$plugin_db_version] = 1;
+													}
 												}
 												$sub_modif .= ' / ';
 											}
@@ -6653,7 +6886,12 @@ switch($tableProvenance)
 											else{
 												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has not been created', 'evarisk') . '" title="' . __('Table has not been created', 'evarisk') . '" class="db_table_check" />';
 												$error_nb++;
-												$error_list[$plugin_db_version] += 1;
+												if ( !empty($error_list[$plugin_db_version]) ) {
+													$error_list[$plugin_db_version] += 1;
+												}
+												else {
+													$error_list[$plugin_db_version] = 1;
+												}
 											}
 											$sub_modif .= ' / ';
 										}
@@ -6670,7 +6908,12 @@ switch($tableProvenance)
 											if(($table_exists == 1) && ($old_table_exists == 1)){
 												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Les deux tables sont toujours pr&eacute;sentes', 'evarisk') . '" title="' . __('Les deux tables sont toujours pr&eacute;sentes', 'evarisk') . '" class="db_rename_table_check" />';
 												$error_nb++;
-												$error_list[$plugin_db_version] += 1;
+												if ( !empty($error_list[$plugin_db_version]) ) {
+													$error_list[$plugin_db_version] += 1;
+												}
+												else {
+													$error_list[$plugin_db_version] = 1;
+												}
 											}
 											elseif($table_exists == 1){
 												$sub_modif .= '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Table has been renamed', 'evarisk') . '" title="' . __('Table has been renamed', 'evarisk') . '" class="db_rename_table_check" />';
@@ -6678,7 +6921,12 @@ switch($tableProvenance)
 											else{
 												$sub_modif .= '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has not been renamed', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_rename_table_check" />';
 												$error_nb++;
-												$error_list[$plugin_db_version] += 1;
+												if ( !empty($error_list[$plugin_db_version]) ) {
+													$error_list[$plugin_db_version] += 1;
+												}
+												else {
+													$error_list[$plugin_db_version] = 1;
+												}
 											}
 											$sub_modif .= ' / ';
 										}
@@ -6696,12 +6944,22 @@ switch($tableProvenance)
 												if($old_table_exists == 1){
 													$deleted_table_result = '<img src="' . admin_url('images/no.png') . '" alt="' . __('Table has not been renamed', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_deleted_table_check" />';
 													$error_nb++;
-													$error_list[$plugin_db_version] += 1;
+													if ( !empty($error_list[$plugin_db_version]) ) {
+														$error_list[$plugin_db_version] += 1;
+													}
+													else {
+														$error_list[$plugin_db_version] = 1;
+													}
 												}
 												else{
 													$deleted_table_result = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Table has not been deleted', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_deleted_table_check" />';
 													$warning_nb++;
-													$warning_list[$plugin_db_version] += 1;
+													if ( !empty($warning_list[$plugin_db_version]) ) {
+														$warning_list[$plugin_db_version] += 1;
+													}
+													else {
+														$warning_list[$plugin_db_version] = 1;
+													}
 												}
 												$sub_modif .= $deleted_table_result;
 											}
@@ -6733,7 +6991,7 @@ switch($tableProvenance)
 										$field_name = str_replace("`", "", $line_element[0]);
 										$query = $wpdb->prepare("SHOW COLUMNS FROM " .$table_name . " WHERE Field = %s", $field_name);
 										$columns = $wpdb->get_row($query);
-										if($columns->Field != $field_name){
+										if ( !empty($columns->Field) && ($columns->Field != $field_name)) {
 											$sub_db_table_field_error .= $field_name . ', '/*  . ' : <img src="' . admin_url('images/no.png') . '" alt="' . __('Field does not exist', 'evarisk') . '" title="' . __('Field does not exist', 'evarisk') . '" class="db_added_field_check" />' */;
 											$error_nb++;
 										}
@@ -6752,11 +7010,13 @@ switch($tableProvenance)
 						/*	Start display	*/
 						$plugin_install_error = '<img src="' . admin_url('images/yes.png') . '" alt="' . __('Digirisk install is ok', 'evarisk') . '" title="' . __('Digirisk install is ok', 'evarisk') . '" />&nbsp;' . __('Votre installation du logiciel digirisk ne contient aucune erreur au niveau de la base de donn&eacute;es. Veuillez trouver le d&eacute;tail ci-dessous', 'evarisk') . '<hr/>';
 						if($error_nb > 0){
-							$plugin_install_error = '<img src="' . admin_url('images/no.png') . '" alt="' . __('Error in digirisk install', 'evarisk') . '" title="' . __('Error in digirisk install', 'evarisk') . '" />&nbsp;' . __('Il y a des erreurs dans votre installation du logiciel digirisk. Veuillez trouver le d&eacute;tail ci-dessous', 'evarisk') . '<br/>';
+							$plugin_install_error = '<img src="' . admin_url('images/no.png') . '" alt="' . __('Error in digirisk install', 'evarisk') . '" title="' . __('Error in digirisk install', 'evarisk') . '" />&nbsp;' . __('Il y a des erreurs dans votre installation du logiciel digirisk. Veuillez trouver le d&eacute;tail ci-dessous', 'evarisk') . '<br/>
+							<ul>';
 							foreach($error_list as $version => $element_nb){
-								$plugin_install_error .= '&nbsp;&nbsp;' . sprintf(__('Il y a %d erreur(s) &agrave; la version %s', 'evarisk'), $element_nb, '<a href="#digi_plugin_v_' . $version . '" >' . $version . '</a>') . ' - ';
+								$plugin_install_error .= '<li>' . sprintf(__('Il y a %d erreur(s) &agrave; la version %s', 'evarisk'), $element_nb, '<a href="#digi_plugin_v_' . $version . '" >' . $version . '</a>') . ' - <button id="digi_repair_db_version_' . $version  . '" class="digi_repair_db_version" >' . __('R&eacute;parer', 'evarisk') . '</button></li>';
 							}
-							$plugin_install_error = substr($plugin_install_error, 0, -3) . '<hr/>';
+							$plugin_install_error .= '
+							</ul>';
 						}
 						if($warning_nb > 0){
 							$plugin_install_error .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Warning in digirisk install', 'evarisk') . '" title="' . __('Warning in digirisk install', 'evarisk') . '" />&nbsp;' . __('Des &eacute;l&eacute;ments de votre installation m&eacute;rite votre attention, ceux-ci n\'affectent pas le bon fonctionnement du logiciel. Veuillez trouver le d&eacute;tail ci-apr&egrave;s', 'evarisk') . '<br/>';

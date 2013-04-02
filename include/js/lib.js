@@ -306,15 +306,15 @@ function userDeletion(userId, tableElement){
 	deleteUserIdFiedList(id, tableElement);
 	checkUserListModification(tableElement, "save_group" + tableElement);
 }
-function addUserIdFieldList(name, id, tableElement){
+function addUserIdFieldList(name, id, tableElement, selected_date){
 	digirisk("#noUserSelected" + tableElement).remove();
 	digirisk("#userListOutput" + tableElement).attr("scrollTop",0);
 
 	digirisk(digirisk("#userBlocContainer").html()).prependTo("#userListOutput" + tableElement);
 	digirisk("#userListOutput" + tableElement + " div:first").attr("id", "affectedUser" + tableElement + id);
-	digirisk("#affectedUser" + tableElement + id).html(digirisk("#affectedUser" + tableElement + id).html().replace("#USERNAME#", name));
+	digirisk("#affectedUser" + tableElement + id).html( digirisk("#affectedUser" + tableElement + id).html().replace("#USERDATEAFFECTATION#", digi_html_accent_for_js(DIGI_USER_AFFECTATION_DATE_TEXT_IN) . selected_date).replace("#USERNAME#", name) );
 }
-function checkUserListModification(tableElement, idButton){
+function checkUserListModification(tableElement, idButton) {
 	var actualUserList = digirisk("#actuallyAffectedUserIdList" + tableElement).val();
 	var userList = digirisk("#affectedUserIdList" + tableElement).val();
 
@@ -330,8 +330,6 @@ function checkUserListModification(tableElement, idButton){
 	}
 }
 function cleanUserIdFiedList(id, tableElement){
-	//jQuery("#digi_dialog_affect_user_" + tableElement).dialog("open");
-	
 	var actualAffectedUserList = digirisk("#affectedUserIdList" + tableElement).val().replace(" " + id + ", ", "");
 	digirisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList + id + ", ");
 

@@ -85,32 +85,43 @@ class evaUserLinkElement
 		digirisk("#' . $idTable . '").removeClass("dataTables_wrapper");
 		digirisk(".buttonActionUserLinkList").click(function(){
 			if(digirisk(this).hasClass("addUserToLinkList")){
-
-				var currentId = digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
-				cleanUserIdFiedList(currentId, "' . $tableElement . '");
-
+ 				var currentId = digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "");
 				var lastname = digirisk(this).parent("td").next().next().html();
 				var firstname = digirisk(this).parent("td").next().next().next().html();
-
-				addUserIdFieldList(' . ELEMENT_IDENTIFIER_U . 'currentId + " - " + lastname + " " + firstname, currentId, "' . $tableElement . '");
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+				jQuery("#user_name_info_for_affectation").val(' . ELEMENT_IDENTIFIER_U . 'currentId + " - " + lastname + " " + firstname);
+				jQuery("#user_id_for_affectation").val(currentId);
+				jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+				jQuery("#ui-datepicker-div").hide();
 			}
 			else if(digirisk(this).hasClass("deleteUserToLinkList")){
-				deleteUserIdFiedList(digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), "' . $tableElement . '");
+ 				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("open");
+				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+				jQuery("#user_id_for_affectation").val(digirisk(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""));
+				jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+				jQuery("#ui-datepicker-div").hide();
 			}
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
 		digirisk("#completeUserList' . $tableElement . ' .odd, #completeUserList' . $tableElement . ' .even").click(function(){
 			if(digirisk(this).children("td:first").children("span").hasClass("userIsNotLinked")){
-				var currentId = digirisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
-				cleanUserIdFiedList(currentId, "' . $tableElement . '");
-
+ 				var currentId = digirisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", "");
 				var lastname = digirisk(this).children("td:nth-child(3)").html();
 				var firstname = digirisk(this).children("td:nth-child(4)").html();
-
-				addUserIdFieldList("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname, currentId, "' . $tableElement . '");
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+				jQuery("#user_name_info_for_affectation").val("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname);
+				jQuery("#user_id_for_affectation").val(currentId);
+				jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+				jQuery("#ui-datepicker-div").hide();
 			}
 			else{
-				deleteUserIdFiedList(digirisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", ""), "' . $tableElement . '");
+ 				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("open");
+				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+				jQuery("#user_id_for_affectation").val(digirisk(this).attr("id").replace("' . $tableElement . $idElement . 'listeUtilisateurs", ""));
+				jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+				jQuery("#ui-datepicker-div").hide();
 			}
 			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
 		});
@@ -130,23 +141,27 @@ class evaUserLinkElement
 	*
 	*	@return mixed $utilisateursMetaBox The entire html code to output
 	*/
-	function afficheListeUtilisateur($tableElement, $idElement, $showButton = true){
+	function afficheListeUtilisateur($tableElement, $idElement, $showButton = true) {
 		$utilisateursMetaBox = '';
 		$alreadyLinkedUserId = $alreadyLinkedUser = '';
 		$idBoutonEnregistrer = 'save_group' . $tableElement;
 
 		//on r�cup�re les utilisateurs d�j� affect�s � l'�l�ment en cours.
 		$listeUtilisateursLies = array();
-		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		if(is_array($utilisateursLies ) && (count($utilisateursLies) > 0)){
+		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement, "'valid', 'deleted'");
+		if ( is_array($utilisateursLies ) && (count($utilisateursLies) > 0) ) {
 			foreach($utilisateursLies as $utilisateur){
-				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
-				$alreadyLinkedUserId .= $utilisateur->id_user . ', ';
+				if ( $utilisateur->status == 'valid' ) {
+					$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
+					$alreadyLinkedUserId .= $utilisateur->id_user . ', ';
+				}
 				$currentUser = evaUser::getUserInformation($utilisateur->id_user);
-				$alreadyLinkedUser .= '<div class="selecteduserOP" id="affectedUser' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_U . $utilisateur->id_user . '&nbsp;-&nbsp;' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . '<div class="ui-icon deleteUserFromList" >&nbsp;</div></div>';
+				$user_affectations_date = (!empty($utilisateur->date_affectation_reelle) && ($utilisateur->date_affectation_reelle != '0000-00-00 00:00:00')) ? __('Entr&eacute;e', 'evarisk') . ' : ' . mysql2date('d/m/Y H:i', $utilisateur->date_affectation_reelle, 'true') : '';
+				$user_affectations_date .= (!empty($utilisateur->date_desaffectation_reelle) && ($utilisateur->date_desaffectation_reelle != '0000-00-00 00:00:00')) ? '<br/>' . __('Sortie', 'evarisk') . ' : ' . mysql2date('d/m/Y H:i', $utilisateur->date_desaffectation_reelle, 'true') : '';
+				$alreadyLinkedUser .= '<div class="' . (( $utilisateur->status == 'valid' ) ? 'selecteduserOP' : 'deleteduserOP digirisk_hide') . '" id="' . (( $utilisateur->status == 'valid' ) ? 'affectedUser' : 'desaffectedUser') . '' . $tableElement . $utilisateur->id_user . '" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >' . ELEMENT_IDENTIFIER_U . $utilisateur->id_user . '&nbsp;-&nbsp;' . $currentUser[$utilisateur->id_user]['user_lastname'] . ' ' . $currentUser[$utilisateur->id_user]['user_firstname'] . (( $utilisateur->status == 'valid' ) ? '<div class="ui-icon deleteUserFromList" >&nbsp;</div>' : '') . '<div class="user_affectation_date" ><input type="hidden" name="digi_user_affectation_date_' . $utilisateur->id_user . '" id="digi_user_affectation_date_' . $utilisateur->id_user . '" value="' . ((!empty($utilisateur->date_affectation_reelle) && ($utilisateur->date_affectation_reelle != '0000-00-00 00:00:00')) ? substr($utilisateur->date_affectation_reelle, 0, -3) : 'none') . '" />' . $user_affectations_date . '</div></div>';
 			}
 		}
-		else{
+		else {
 			$alreadyLinkedUser = '<span id="noUserSelected' . $tableElement . '" style="margin:5px 10px;color:#646464;" >' . __('Aucun utilisateur affect&eacute;', 'evarisk') . '</span>';
 		}
 
@@ -154,15 +169,17 @@ class evaUserLinkElement
 <input type="hidden" name="actuallyAffectedUserIdList' . $tableElement . '" id="actuallyAffectedUserIdList' . $tableElement . '" value="' . $alreadyLinkedUserId . '" />
 <input type="hidden" name="affectedUserIdList' . $tableElement . '" id="affectedUserIdList' . $tableElement . '" value="' . $alreadyLinkedUserId . '" />
 
-<div class="alignleft" style="width:40%;" >
+<div class="alignleft" style="width:44%;" >
 	<div id="userListOutput' . $tableElement . '" class="userListOutput ui-widget-content clear" >' . $alreadyLinkedUser . '</div>
 </div>
 
 <div class="alignright" style="width:55%;" >';
-	if(current_user_can('add_users')){
-	$utilisateursMetaBox .= '
+
+	if ( current_user_can('add_users') ) {
+		$utilisateursMetaBox .= '
 	<span class="alignright" ><a href="' . get_option('siteurl') . '/wp-admin/user-new.php">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
 	}
+
 	$utilisateursMetaBox .= '
 	<div class="clear addLinkUserElement" >
 		<div class="clear" >
@@ -173,55 +190,244 @@ class evaUserLinkElement
 	</div>
 	<div id="massAction' . $tableElement . '" ><span class="checkAll" >' . __('cochez tout', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll" >' . __('d&eacute;cochez tout', 'evarisk') . '</span></div>
 </div>
-<div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span></div></div>
-<div title="' . __('Affectation d\'un utilisateur', 'evarisk') . '" class="digi_affect_user_to_element" id="digi_dialog_affect_user_' . $tableElement . '" >JD</div>
+
+<div class="clear digi_affected_user_list_options_container" id="digi_affected_user_list_options_container" >
+	<input type="checkbox" name="view_user_list[]" id="view_user_list_current' . $tableElement . '" value="current_affected" checked /> <label for="view_user_list_current' . $tableElement . '" >' . __('Voir les utilisateurs actuellement affect&eacute;s', 'evarisk') . '</label>
+	<br/><input type="checkbox" name="view_user_list[]" id="view_user_list_old' . $tableElement . '" value="old_affected" /> <label for="view_user_list_old' . $tableElement . '" >' . __('Voir les utilisateurs anciennement affect&eacute;s', 'evarisk') . '</label>
+	<br/><input type="checkbox" name="view_user_details" id="view_user_affectation_date' . $tableElement . '" value="yes" checked /> <label for="view_user_affectation_date' . $tableElement . '" >' . __('Afficher les dates d\'affectation', 'evarisk') . '</label>
+</div>
+
+<div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span><div class="user_affectation_date" >#USERDATEAFFECTATION#</div></div></div>
+<div title="' . __('Affectation d\'un utilisateur', 'evarisk') . '" class="digi_affect_user_to_element" id="digi_dialog_affect_user_' . $tableElement . '" >
+	<label for="date_ajout' . $tableElement . $idElement . '" >' . __('Date d\'entr&eacute;e', 'evarisk') . '</label> <input id="date_ajout' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_ajout" />
+</div>
+<div title="' . __('D&eacute;s-affectation d\'un utilisateur', 'evarisk') . '" class="digi_unaffect_user_to_element" id="digi_dialog_unaffect_user_' . $tableElement . '" >
+	<label for="date_suppression' . $tableElement . $idElement . '" >' . __('Date de sortie', 'evarisk') . '</label> <input id="date_suppression' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_suppression" />
+</div>
+<input type="hidden" name="user_date_of_affectation_action" id="user_date_of_affectation_action" value="" />
+<input type="hidden" name="user_name_info_for_affectation" id="user_name_info_for_affectation" value="" />
+<input type="hidden" name="table_element_user_affectation" id="table_element_user_affectation" value="" />
+<input type="hidden" name="user_id_for_affectation" id="user_id_for_affectation" value="" />
+<input type="hidden" name="affectation_type" id="affectation_type" value="single_user" />
 
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		/*	Mass action : check / uncheck all	*/
 		jQuery("#massAction' . $tableElement . ' .checkAll").unbind("click");
 		jQuery("#massAction' . $tableElement . ' .checkAll").click(function(){
-			jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function(){
-				if(jQuery(this).hasClass("userIsNotLinked")){
-					jQuery(this).click();
-				}
-			});
+			jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
+			jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+			jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+			jQuery("#ui-datepicker-div").hide();
+			jQuery("#affectation_type").val("select_all");
 		});
 		jQuery("#massAction' . $tableElement . ' .uncheckAll").unbind("click");
 		jQuery("#massAction' . $tableElement . ' .uncheckAll").click(function(){
-			jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function(){
-				if(jQuery(this).hasClass("userIsLinked")){
-					jQuery(this).click();
-				}
-			});
+			jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("open");
+			jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+			jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+			jQuery("#ui-datepicker-div").hide();
+			jQuery("#affectation_type").val("deselect_all");
+		});
+		jQuery.datepicker.regional["fr"] = {
+			monthNames: ["' . __('Janvier', 'evarisk') . '","' . __('F&eacute;vrier', 'evarisk') . '","' . __('Mars', 'evarisk') . '","' . __('Avril', 'evarisk') . '","' . __('Mai', 'evarisk') . '","' . __('Juin', 'evarisk') . '", "' . __('Juillet', 'evarisk') . '","' . __('Ao&ucirc;t', 'evarisk') . '","' . __('Septembre', 'evarisk') . '","' . __('Octobre', 'evarisk') . '","' . __('Novembre', 'evarisk') . '","' . __('D&eacute;cembre', 'evarisk') . '"],
+			monthNamesShort: ["Jan", "Fev", "Mar", "Avr", "Mai", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            dayNames: ["' . __('Dimanche', 'evarisk') . '", "' . __('Lundi', 'evarisk') . '", "' . __('Mardi', 'evarisk') . '", "' . __('Mercredi', 'evarisk') . '", "' . __('Jeudi', 'evarisk') . '", "' . __('Vendredi', 'evarisk') . '", "' . __('Samedi', 'evarisk') . '"],
+			dayNamesShort: ["' . __('Dim', 'evarisk') . '", "' . __('Lun', 'evarisk') . '", "' . __('Mar', 'evarisk') . '", "' . __('Mer', 'evarisk') . '", "' . __('Jeu', 'evarisk') . '", "' . __('Ven', 'evarisk') . '", "' . __('Sam', 'evarisk') . '"],
+			dayNamesMin: ["' . __('Di', 'evarisk') . '", "' . __('Lu', 'evarisk') . '", "' . __('Ma', 'evarisk') . '", "' . __('Me', 'evarisk') . '", "' . __('Je', 'evarisk') . '", "' . __('Ve', 'evarisk') . '", "' . __('Sa', 'evarisk') . '"],
+		}
+    	jQuery.datepicker.setDefaults(jQuery.datepicker.regional["fr"]);
+		jQuery.timepicker.regional["fr"] = {
+                timeText: "' . __('Heure', 'evarisk') . '",
+                hourText: "' . __('Heures', 'evarisk') . '",
+                minuteText: "' . __('Minutes', 'evarisk') . '",
+                amPmText: ["AM", "PM"],
+                currentText: "' . __('Maintenant', 'evarisk') . '",
+                closeText: "' . __('OK', 'evarisk') . '",
+                timeOnlyTitle: "' . __('Choisissez l\'heure', 'evarisk') . '",
+                closeButtonText: "' . __('Fermer', 'evarisk') . '",
+                nowButtonText: "' . __('Maintenant', 'evarisk') . '",
+                deselectButtonText: "' . __('D&eacute;s&eacute;lectionner', 'evarisk') . '",
+		}
+    	jQuery.timepicker.setDefaults(jQuery.timepicker.regional["fr"]);
+
+
+		jQuery("#date_ajout' . $tableElement . $idElement . '").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+		});
+		jQuery("#date_suppression' . $tableElement . $idElement . '").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
 		});
 
 		/*	Action when click on delete button	*/
-		jQuery(".selecteduserOP").click(function(){
-			userDivId = jQuery(this).attr("id").replace("affectedUser' . $tableElement . '", "");
-			deleteUserIdFiedList(userDivId, "' . $tableElement . '");
-			checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+		jQuery("#userList' . $tableElement . ' .selecteduserOP").click(function(){
+			if ( jQuery(this).attr("id") ) {
+				var current_table_element = jQuery(this).closest("div .userListOutput").attr("id").replace("userListOutput", "");
+				userDivId = jQuery(this).attr("id").replace("affectedUser" + current_table_element, "");
+ 				jQuery("#digi_dialog_unaffect_user_" + current_table_element).dialog("open");
+				jQuery("#digi_dialog_unaffect_user_" + current_table_element).dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList" + current_table_element) });
+				jQuery("#user_id_for_affectation").val(userDivId);
+				jQuery("#table_element_user_affectation").val(current_table_element);
+				jQuery("#ui-datepicker-div").hide();
+			}
 		});
 
 		/**	Transform a div into a dialog box	*/
 		jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog({
 			autoOpen: false,
 			modal: true,
-		}).parent().position({ my: "center", at: "center", of: ".inside" });
+			buttons: {
+				"' . __('Affecter', 'evarisk') . '": function(){
+					jQuery("#user_date_of_affectation_action").val( jQuery("#date_ajout' . $tableElement . $idElement . '").val() );
+					if ( jQuery("#affectation_type").val() == "single_user" ) {
+						cleanUserIdFiedList(jQuery("#user_id_for_affectation").val(), jQuery("#table_element_user_affectation").val());
+						addUserIdFieldList(jQuery("#user_name_info_for_affectation").val(), jQuery("#user_id_for_affectation").val(), jQuery("#table_element_user_affectation").val(), jQuery("#user_date_of_affectation_action").val());
+					}
+					else if ( jQuery("#affectation_type").val() == "select_all" ) {
+						jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function() {
+							if(jQuery(this).hasClass("userIsNotLinked")) {
+								var lastname = digirisk(this).parent("td").next().next().html();
+								var firstname = digirisk(this).parent("td").next().next().next().html();
+								jQuery("#user_name_info_for_affectation").val("' . ELEMENT_IDENTIFIER_U . '" + jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "") + " - " + lastname + " " + firstname);
+
+								cleanUserIdFiedList(jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), jQuery("#table_element_user_affectation").val());
+								addUserIdFieldList(jQuery("#user_name_info_for_affectation").val(), jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), jQuery("#table_element_user_affectation").val(), jQuery("#user_date_of_affectation_action").val());
+							}
+						});
+					}
+
+					checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+					jQuery("#' . $idBoutonEnregistrer . '").click();
+					jQuery(this).dialog("close");
+				},
+				"' . __('Annuler', 'evarisk') . '": function(){
+					jQuery(this).dialog("close");
+				},
+			},
+			close: function(){
+				jQuery("#user_name_info_for_affectation").val("");
+				jQuery("#table_element_user_affectation").val("");
+				jQuery("#user_id_for_affectation").val("");
+				jQuery("#affectation_type").val("single_user");
+			},
+			position: { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") },
+		});
+		jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				"' . __('Desaffecter', 'evarisk') . '": function() {
+					jQuery("#user_date_of_affectation_action").val( jQuery("#date_suppression' . $tableElement . $idElement . '").val() );
+					var launch_action = false;
+
+					if ( jQuery("#affectation_type").val() == "single_user" ) {
+						if ( (jQuery("#date_suppression' . $tableElement . $idElement . '").val() >= jQuery("#digi_user_affectation_date_" + jQuery("#user_id_for_affectation").val()).val()) || confirm( digi_html_accent_for_js(DIGI_USER_DESAFFECTATION_DATE_INCONSISTENCY) ) ) {
+							deleteUserIdFiedList(jQuery("#user_id_for_affectation").val(), jQuery("#table_element_user_affectation").val());
+							var launch_action = true;
+						}
+					}
+					else if ( jQuery("#affectation_type").val() == "deselect_all" ) {
+						var has_inconsistency_date = false;
+						var user_list_inconsistency = "";
+						jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function() {
+							if(jQuery(this).hasClass("userIsLinked") && (jQuery("#date_suppression' . $tableElement . $idElement . '").val() >= jQuery("#digi_user_affectation_date_" + jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "")).val())) {
+								has_inconsistency_date = true;
+								var lastname = digirisk(this).parent("td").next().next().html();
+								var firstname = digirisk(this).parent("td").next().next().next().html();
+								user_list_inconsistency += "' . ELEMENT_IDENTIFIER_U . '" + jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "") + " - " + lastname + " " + firstname + " / ";
+							}
+						});
+						if ( !has_inconsistency_date || confirm( digi_html_accent_for_js(DIGI_USER_LIST_DESAFFECTATION_DATE_INCONSISTENCY.replace("%s", user_list_inconsistency)) ) ) {
+							jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function() {
+								if(jQuery(this).hasClass("userIsLinked")) {
+									deleteUserIdFiedList(jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), jQuery("#table_element_user_affectation").val());
+								}
+							});
+							var launch_action = true;
+						}
+					}
+
+					if ( launch_action ) {
+						checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
+						jQuery("#' . $idBoutonEnregistrer . '").click();
+						jQuery(this).dialog("close");
+					}
+				},
+				"' . __('Annuler', 'evarisk') . '": function(){
+					jQuery(this).dialog("close");
+				},
+			},
+			close: function(){
+				jQuery("#user_name_info_for_affectation").val("");
+				jQuery("#table_element_user_affectation").val("");
+				jQuery("#user_id_for_affectation").val("");
+			},
+			position: { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") },
+		});
+
+		jQuery("#date_ajout' . $tableElement . $idElement . '").live("click", function(){
+			jQuery("#ui-datepicker-div").show();
+		});
+
+		jQuery("#date_suppression' . $tableElement . $idElement . '").live("click", function(){
+			jQuery("#ui-datepicker-div").show();
+		});
 
 		/*	Autocomplete search	*/
 		jQuery("#searchUser' . $tableElement . '").autocomplete({
 			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php",
-			select: function( event, ui ){
-				cleanUserIdFiedList(ui.item.value, "' . $tableElement . '");
-				addUserIdFieldList(ui.item.label, ui.item.value, "' . $tableElement . '");
-
-				checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-
+			select: function( event, ui ) {
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+				jQuery("#user_name_info_for_affectation").val(ui.item.label);
+				jQuery("#user_id_for_affectation").val(ui.item.value);
+				jQuery("#table_element_user_affectation").val("' . $tableElement . '");
+				jQuery("#ui-datepicker-div").hide();
 				setTimeout(function(){
 					jQuery("#searchUser' . $tableElement . '").val("");
 					jQuery("#searchUser' . $tableElement . '").blur();
 				}, 2);
+			}
+		});
+
+		jQuery("#view_user_list_current' . $tableElement . '").live("click", function(){
+			if ( jQuery(this).is(":checked") ) {
+				jQuery("#userListOutput' . $tableElement . ' .selecteduserOP").each(function(){
+					jQuery(this).show();
+				});
+			}
+			else {
+				jQuery("#userListOutput' . $tableElement . ' .selecteduserOP").each(function(){
+					jQuery(this).hide();
+				});
+			}
+		});
+
+		jQuery("#view_user_list_old' . $tableElement . '").live("click", function(){
+			if ( jQuery(this).is(":checked") ) {
+				jQuery("#userListOutput' . $tableElement . ' .deleteduserOP").each(function(){
+					jQuery(this).show();
+				});
+			}
+			else {
+				jQuery("#userListOutput' . $tableElement . ' .deleteduserOP").each(function(){
+					jQuery(this).hide();
+				});
+			}
+		});
+
+		jQuery("#view_user_affectation_date' . $tableElement . '").live("click", function(){
+			if ( jQuery(this).is(":checked") ) {
+				jQuery("#userListOutput' . $tableElement . ' .selecteduserOP .user_affectation_date, #userListOutput' . $tableElement . ' .deleteduserOP .user_affectation_date").each(function(){
+					jQuery(this).show();
+				});
+			}
+			else {
+				jQuery("#userListOutput' . $tableElement . ' .selecteduserOP .user_affectation_date, #userListOutput' . $tableElement . ' .deleteduserOP .user_affectation_date").each(function(){
+					jQuery(this).hide();
+				});
 			}
 		});
 	});
@@ -286,13 +492,14 @@ class evaUserLinkElement
 			$scriptEnregistrement = '<script type="text/javascript">
 				digirisk(document).ready(function() {
 					checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-					digirisk("#' . $idBoutonEnregistrer . '").click(function(){
+					digirisk("#' . $idBoutonEnregistrer . '").click( function(){
 						digirisk("#saveButtonLoading' . $tableElement . '").show();
 						digirisk("#saveButtonContainer' . $tableElement . '").hide();
 						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 							"table": "' . TABLE_LIAISON_USER_ELEMENT . '",
 							"act": "save",
 							"utilisateurs": digirisk("#affectedUserIdList' . $tableElement . '").val(),
+							"date_action_affection": jQuery("#user_date_of_affectation_action").val(),
 							"tableElement": "' . $tableElement . '",
 							"idElement": "' . $idElement . '"
 						});
@@ -319,20 +526,20 @@ class evaUserLinkElement
 	*
 	*	@return object A wordpress object with the user list affected to the given element
 	*/
-	function getAffectedUser($tableElement, $idElement)
+	function getAffectedUser($tableElement, $idElement, $link_status = "'valid'", $return_data_type = 'OBJECT')
 	{
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT id_user, id, date_affectation, id_attributeur
+			"SELECT *
 			FROM " . TABLE_LIAISON_USER_ELEMENT . "
 			WHERE id_element = '%s'
 				AND table_element = '%s'
-				AND status = 'valid' "
+				AND status IN (" . $link_status . ") "
 			, $idElement, $tableElement
 		);
 
-		return $wpdb->get_results($query);
+		return $wpdb->get_results($query, $return_data_type);
 	}
 
 	/**
@@ -343,7 +550,7 @@ class evaUserLinkElement
 	*
 	*	@return object A wordpress object with the user list affected to the given element
 	*/
-	function get_user_affected_element($user_id, $tableElement = ''){
+	function get_user_affected_element($user_id, $tableElement = '', $link_status = "'valid'"){
 		global $wpdb;
 
 		$condition = array();
@@ -358,7 +565,7 @@ class evaUserLinkElement
 			FROM " . TABLE_LIAISON_USER_ELEMENT . "
 			WHERE id_user = '%d'
 				" . $more_query . "
-				AND status = 'valid' "
+				AND status IN (" . $link_status . ") "
 			, $condition
 		);
 
@@ -374,7 +581,7 @@ class evaUserLinkElement
 	*
 	*	@return mixed $messageInfo An html output that contain the result message
 	*/
-	function setLinkUserElement($tableElement, $idElement, $userIdList, $outputMessage = true){
+	function setLinkUserElement($tableElement, $idElement, $userIdList, $outputMessage = true, $date = null) {
 		global $wpdb;
 		global $current_user;
 		$userToTreat = "  ";
@@ -401,13 +608,14 @@ class evaUserLinkElement
 				$query = $wpdb->prepare(
 "UPDATE " . TABLE_LIAISON_USER_ELEMENT . "
 SET status = 'deleted',
+	date_desaffectation_reelle = %s,
 	date_desAffectation = %s,
 	id_desAttributeur = %d
 WHERE id = %d",
-current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
+(!empty($date) ? $date : current_time('mysql', 0)), current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 				$done_element += $wpdb->query($query);
 				if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
-					$wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID), array('id_user' => $utilisateurs->id_user, 'id_element' => $idElement, 'table_element' => $tableElement));
+					$wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'date_desaffectation_reelle' => (!empty($date) ? $date : current_time('mysql', 0)), 'id_desAttributeur' => $current_user->ID), array('id_user' => $utilisateurs->id_user, 'id_element' => $idElement, 'table_element' => $tableElement));
 				}
 				$deleted_user_list[] = $utilisateurs->id;
 
@@ -422,7 +630,7 @@ current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 		if(is_array($newUserList) && (count($newUserList) > 0)){
 			foreach($newUserList as $userId){
 				if((trim($userId) != '') && !array_key_exists($userId, $listeUtilisateursLies)){
-					$userToTreat .= "('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $userId . "', '" . $idElement . "', '" . $tableElement . "'), ";
+					$userToTreat .= "('', 'valid', '" . current_time('mysql', 0) . "', '" . $current_user->ID . "', '0000-00-00 00:00:00', '', '" . $userId . "', '" . $idElement . "', '" . $tableElement . "', '" . (!empty($date) ? $date : current_time('mysql', 0)) . "', '0000-00-00 00:00:00'), ";
 				}
 			}
 		}
@@ -431,7 +639,7 @@ current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 		if($endOfQuery != ""){
 			$query = $wpdb->prepare(
 				"REPLACE INTO " . TABLE_LIAISON_USER_ELEMENT . "
-					(id, status ,date_affectation ,id_attributeur ,date_desAffectation ,id_desAttributeur ,id_user ,id_element ,table_element)
+					(id, status, date_affectation, id_attributeur, date_desAffectation, id_desAttributeur, id_user, id_element, table_element, date_affectation_reelle, date_desaffectation_reelle)
 				VALUES
 					" . $endOfQuery . "", ""
 			);
@@ -459,6 +667,15 @@ current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
 		jQuery("#saveButtonContainer' . $tableElement . '").show();
 		jQuery("#actuallyAffectedUserIdList' . $tableElement . '").val(jQuery("#affectedUserIdList' . $tableElement . '").val());
 		checkUserListModification("' . $tableElement . '", "save_group' . $tableElement . '");';
+			$script .= '
+		jQuery("#userList' . $tableElement . '").html(jQuery("#loadingImg").html());
+		jQuery("#userList' . $tableElement . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
+			post:"true",
+			"table": "' . TABLE_LIAISON_USER_ELEMENT . '",
+			"act": "reload_user_affectation_box",
+			"tableElement": "' . $tableElement . '",
+			"idElement": "' . $idElement . '"
+		});';
 		}
 		if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
 			$script .= '

@@ -1,7 +1,7 @@
 <?php
 /**
 * Recommandation management file
-* 
+*
 * @author Evarisk
 * @version v5.0
 */
@@ -10,7 +10,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'evaRecommandation/evaRecommandationCategory.c
 
 /**
 * Recommandation management class
-* 
+*
 * @author Evarisk
 * @version v5.0
 */
@@ -31,7 +31,7 @@ class evaRecommandation
 
 		return $informations;
 	}
-	
+
 	/**
 	*	Define the different element to load when user is located on correctiv action
 	*
@@ -127,7 +127,7 @@ class evaRecommandation
 
 		$query = $wpdb->prepare(
 			"SELECT RECOMMANDATION.*, PIC.photo
-			FROM " . TABLE_PRECONISATION . " AS RECOMMANDATION 
+			FROM " . TABLE_PRECONISATION . " AS RECOMMANDATION
 				LEFT JOIN " . TABLE_PHOTO_LIAISON . " AS LINK_ELT_PIC ON ((LINK_ELT_PIC.idElement = RECOMMANDATION.id) AND (tableElement = '" . TABLE_PRECONISATION . "') AND (LINK_ELT_PIC.isMainPicture = 'yes') AND (LINK_ELT_PIC.status = 'valid'))
 				LEFT JOIN " . TABLE_PHOTO . " AS PIC ON ((PIC.id = LINK_ELT_PIC.idPhoto) AND (PIC.status = 'valid'))
 			WHERE RECOMMANDATION.status = 'valid'
@@ -152,7 +152,7 @@ class evaRecommandation
 					if(!$recommandationMainPicture)
 					{
 						$recommandationMainPicture = '';
-						
+
 						$recommandationMainPicture = '<img class="recommandationDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_RECOMMANDATION_ICON . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->nom) . '" />';
 					}
 					else
@@ -172,7 +172,7 @@ class evaRecommandation
 							$selectedId = 'evarisk("#recommandation_id").val("' . $recommandation->id . '");
 		evarisk("#recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
-						$recommandationMainPicture = '<div class="alignleft recommandationBloc ' . $selectedClass . '" ><input class="recommandation" type="radio" ' . $checked . ' id="recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" /><label for="recommandation' . $recommandation->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($recommandation->nom)) . '" /></label></div>';
+						$recommandationMainPicture = '<div class="alignleft recommandationBloc ' . $selectedClass . '" ><input type="hidden" name="preconisation_type" class="preconisation_type" id="preconisation_type_' . $recommandation->id . '" value="' . $recommandation->preconisation_type . '" /><input class="recommandation" type="radio" ' . $checked . ' id="recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" /><label for="recommandation' . $recommandation->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($recommandation->nom)) . '" /></label></div>';
 					}
 					$recommandationListOutput .= $recommandationMainPicture;
 					$i++;
@@ -198,6 +198,7 @@ class evaRecommandation
 			evarisk(this).parent("div").addClass("recommandationSelected");
 			evarisk("#recommandation_id").val(evarisk(this).attr("id").replace("recommandation", ""));
 			evarisk("#recommandationNameIndication").html("' . __('pour ', 'evarisk') . '" + evarisk(this).parent("div").children("label").children("img").attr("title"));
+			evarisk("#preconisation_type").val(evarisk(this).parent("div").children("input[type=hidden].preconisation_type").val());
 		});
 	});
 </script>';
@@ -213,14 +214,12 @@ class evaRecommandation
 *
 *	@return mixed $recommandationListOutput The complete output
 */
-	function getRecommandationListForElement($table_element, $id_element, $recommandationLinkId = '')
-	{
+	function getRecommandationListForElement($table_element, $id_element, $recommandationLinkId = '') {
 		global $wpdb;
 
 		$moreQuery = "";
-		if($recommandationLinkId != '')
-		{
-			$moreQuery = " 
+		if ($recommandationLinkId != '') {
+			$moreQuery = "
 				AND LINK_RECO_ELMT.id = '" . $recommandationLinkId . "' ";
 		}
 
@@ -259,7 +258,7 @@ class evaRecommandation
 
 		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'creation');
 		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_LIAISON_PRECONISATION_ELEMENT . " 
+			"INSERT INTO " . TABLE_LIAISON_PRECONISATION_ELEMENT . "
 			(" . implode(', ', $whatToUpdate['fields']) . ")
 			VALUES
 			(" . implode(', ', $whatToUpdate['values']) . ") ", ""
@@ -291,7 +290,7 @@ class evaRecommandation
 
 		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'update');
 		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_LIAISON_PRECONISATION_ELEMENT . " 
+			"UPDATE " . TABLE_LIAISON_PRECONISATION_ELEMENT . "
 			SET " . implode(', ', $whatToUpdate['values']) . "
 			WHERE id = '%s' ",
 			$id
@@ -325,7 +324,7 @@ class evaRecommandation
 
 		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'creation');
 		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_PRECONISATION . " 
+			"INSERT INTO " . TABLE_PRECONISATION . "
 			(" . implode(', ', $whatToUpdate['fields']) . ")
 			VALUES
 			(" . implode(', ', $whatToUpdate['values']) . ") ", ""
@@ -354,7 +353,7 @@ class evaRecommandation
 
 		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'update');
 		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_PRECONISATION . " 
+			"UPDATE " . TABLE_PRECONISATION . "
 			SET " . implode(', ', $whatToUpdate['values']) . "
 			WHERE id = '%s' ",
 			$id
@@ -441,27 +440,25 @@ class evaRecommandation
 	/**
 	*	Get the different component for the recommandation adding
 	*/
-	function recommandationAssociation($outputMode, $selectedRecommandation = '', $arguments = '')
-	{
+	function recommandationAssociation($outputMode, $selectedRecommandation = '', $arguments = '') {
 		$recommandationAssociationOutput = $efficacite_preconisation_script = $efficatiteForm = '';
 		$recommandationContainer = '&nbsp;';
 		$recommandationContainerClass = 'hide';
 		$saveRecommandationAssociationButton = __('Enregistrer', 'evarisk');
 
-		if(is_array($selectedRecommandation))
-		{
+		if (is_array($selectedRecommandation)) {
 			$recommandationContainer = evaRecommandation::getRecommandationListByCategory($selectedRecommandation['id_categorie_preconisation'], $outputMode, $selectedRecommandation['id_preconisation']);
 			$recommandationContainerClass = '';
 			$saveRecommandationAssociationButton = __('Mettre &agrave; jour', 'evarisk') ;
 		}
 
-		$selectedRecommandationCategory = (is_array($selectedRecommandation) && (isset($selectedRecommandation['id_categorie_preconisation'])) && ($selectedRecommandation['id_categorie_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['id_categorie_preconisation']) : '';
-		$commentaire_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['commentaire_preconisation'])) && ($selectedRecommandation['commentaire_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['commentaire_preconisation']) : '';
-		$efficacite_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['efficacite_preconisation'])) && ($selectedRecommandation['efficacite_preconisation'] != '')) ? eva_tools::IsValid_Variable($selectedRecommandation['efficacite_preconisation']) : '0';
+		$selectedRecommandationCategory = (is_array($selectedRecommandation) && (isset($selectedRecommandation['id_categorie_preconisation'])) && ($selectedRecommandation['id_categorie_preconisation'] != '')) ? digirisk_tools::IsValid_Variable($selectedRecommandation['id_categorie_preconisation']) : '';
+		$commentaire_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['commentaire_preconisation'])) && ($selectedRecommandation['commentaire_preconisation'] != '')) ? digirisk_tools::IsValid_Variable($selectedRecommandation['commentaire_preconisation']) : '';
+		$efficacite_preconisation = (is_array($selectedRecommandation) && (isset($selectedRecommandation['efficacite_preconisation'])) && ($selectedRecommandation['efficacite_preconisation'] != '')) ? digirisk_tools::IsValid_Variable($selectedRecommandation['efficacite_preconisation']) : '0';
+		$preconisation_type = (is_array($selectedRecommandation) && (isset($selectedRecommandation['preconisation_type'])) && ($selectedRecommandation['preconisation_type'] != '')) ? digirisk_tools::IsValid_Variable($selectedRecommandation['preconisation_type']) : '';
 
-		if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
-		{
-			$efficatiteForm = 
+		if (digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui') {
+			$efficatiteForm =
 '<label for="efficacite_preconisation">' . __('Efficacit&eacute; (%)', 'evarisk') . '</label>
 <input type="text" class="sliderValue" disabled="disabled" id="efficacite_preconisation" name="efficacite_preconisation" value="' . $efficacite_preconisation . '" /><div id="slider-efficacite_preconisation" class="slider_variable"></div>
 <div class="clear" >&nbsp;</div>';
@@ -487,11 +484,12 @@ class evaRecommandation
 	<div class="clear" >&nbsp;</div>
 	<div id="recommandationFormContent" >
 		' . $efficatiteForm . '
+		<label for="preconisation_type" >' . __('Type de pr&eacute;vention', 'evarisk') . '</label><br/>
+		' . EvaDisplayInput::createComboBox('preconisation_type', 'preconisation_type', unserialize(DIGI_TYPE_PREVENTION), $preconisation_type) . '<br/>
 		<label for="commentaire_preconisation" >' . __('Commentaire', 'evarisk') . '&nbsp;<span id="recommandationNameIndication" >&nbsp;</span></label>
 		<textarea id="commentaire_preconisation" name="commentaire_preconisation" rows="3" cols="10" class="recommandationInput" >' . $commentaire_preconisation . '</textarea>
 		<div class="clear" >&nbsp;</div>';
-		if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
-		{
+		if ((current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement'])) && empty($arguments['hide_save_button'])) {
 			$recommandationAssociationOutput .= '
 		<input type="button" class="button-primary alignright" id="saveRecommandationLink" name="saveRecommandationLink" value="' . $saveRecommandationAssociationButton . '" />';
 		}
@@ -510,8 +508,7 @@ class evaRecommandation
 			});
 			evarisk(this).parent("div").addClass("recommandationCategorySelected");
 			evarisk("#recommandationContainer").html(evarisk("#loadingImg").html());
-			evarisk("#recommandationContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
-			{
+			evarisk("#recommandationContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true",
 				"table":"' . TABLE_PRECONISATION . '",
 				"act":"loadRecomandationOfCategory",
@@ -528,7 +525,7 @@ class evaRecommandation
 		});
 
 		evarisk("#saveRecommandationLink").click(function(){
-			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 			{
 				"post": "true",
 				"table": "' . TABLE_PRECONISATION . '",
@@ -538,6 +535,7 @@ class evaRecommandation
 				"recommandationId": evarisk("#recommandation_id").val(),
 				"recommandationEfficiency": ' . $efficacite_preconisation . ',
 				"recommandationComment": evarisk("#commentaire_preconisation").val(),
+				"preconisation_type": evarisk("#preconisation_type").val(),
 				"id_element": evarisk("#id_element_recommandation").val(),
 				"table_element": evarisk("#table_element_recommandation").val()
 			});
@@ -555,7 +553,7 @@ class evaRecommandation
 	*
 	*	@return mixed $recommandationListOutput The complete output
 	*/
-	function getRecommandationListForElementOutput($table_element, $id_element){
+	function getRecommandationListForElementOutput($table_element, $id_element, $display_button = true){
 		$recommandationList = evaRecommandation::getRecommandationListForElement($table_element, $id_element);
 		$outputMode = 'pictos';
 
@@ -602,19 +600,19 @@ class evaRecommandation
 						$recommandationCategoryMainPicture = '<img class="recommandationCategoryDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_GENERATED_DOC_URL . $mainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_category_name) . '" />';
 					}
 				}
-				$lignesDeValeurs[$i][] = array('value' => $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . ELEMENT_IDENTIFIER_CP . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_category_name), 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => $recommandationCategoryMainPicture . '&nbsp;&nbsp;' . /* ELEMENT_IDENTIFIER_CP . $recommandation->recommandation_category_id . '&nbsp;-&nbsp;' .  */ucfirst($recommandation->recommandation_category_name), 'class' => '');
 
 				$recommandationMainPicture = evaPhoto::checkIfPictureIsFile($recommandation->photo, TABLE_PRECONISATION);
 				$recommandationMainPicture = !$recommandationMainPicture ? '' : '<img class="recommandationDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . $recommandationMainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_name) . '" />';
 
-				$lignesDeValeurs[$i][] = array('value' => $recommandationMainPicture, 'class' => '');
-				$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >' . ELEMENT_IDENTIFIER_P . $recommandation->id_preconisation . '&nbsp;-&nbsp;' . ucfirst($recommandation->recommandation_name) . '</span>', 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => (!empty($recommandation->commentaire) ? ELEMENT_IDENTIFIER_PA . $recommandation->id . ' ' : '') . $recommandationMainPicture, 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >' . /* ELEMENT_IDENTIFIER_P . $recommandation->id_preconisation . '&nbsp;-&nbsp;' .  */ucfirst($recommandation->recommandation_name) . '</span>', 'class' => '');
 				$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->commentaire), 'class' => '');
 				if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
 				{
 					$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->efficacite), 'class' => '');
 				}
-				if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']))
+				if($display_button && (current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement'])))
 				{
 					$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationLink" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationLink" />', 'class' => '');
 				}
@@ -666,7 +664,7 @@ class evaRecommandation
 							}
 						}
 					},
-					"aoColumns": [ 
+					"aoColumns": [
 						{ "bVisible":    false },
 						null,
 						null,';
@@ -689,7 +687,7 @@ class evaRecommandation
 
 				evarisk(".deleteRecommandationLink").click(function(){
 					if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment?', 'evarisk') . '"))){
-						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+						evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 						{
 							"post":"true",
 							"table":"' . TABLE_PRECONISATION . '",
@@ -705,7 +703,7 @@ class evaRecommandation
 					evarisk("#recommandation_link_id").val(evarisk(this).parent("td").parent("tr").attr("id").replace("recommandationLink-id-", ""));
 					evarisk("#divAjoutPreconisation").html("");
 					evarisk("#divListePreconisation").html(evarisk("#loadingImg").html());
-					evarisk("#divListePreconisation").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+					evarisk("#divListePreconisation").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 					{
 						"post":"true",
 						"table":"' . TABLE_PRECONISATION . '",
@@ -734,11 +732,12 @@ class evaRecommandation
 	function recommandation_form($argument){
 		$id_preconisation = $argument['idElement'];
 
-		$nom_preconisation = $description_preconisation = '';
+		$nom_preconisation = $description_preconisation = $preconisation_type = '';
 		if(($id_preconisation != '') && ($id_preconisation > 0)){
 			$recommandationInfos = evaRecommandation::getRecommandation($id_preconisation);
 			$id_categorie_preconisation = $recommandationInfos->id_categorie_preconisation;
 			$nom_preconisation = html_entity_decode($recommandationInfos->nom, ENT_QUOTES, 'UTF-8');
+			$preconisation_type = $recommandationInfos->preconisation_type;
 			$description_preconisation = html_entity_decode($recommandationInfos->description, ENT_QUOTES, 'UTF-8');
 		}
 		else{
@@ -756,7 +755,9 @@ class evaRecommandation
 	<input type="hidden" name="id_preconisation" id="id_preconisation" class="recommandationInput" value="<?php _e($id_preconisation); ?>" />
 
 	<label for="nom_preconisation" ><?php _e('Nom', 'evarisk'); ?></label><br/>
-	<input type="text" name="nom_preconisation" id="nom_preconisation" class="recommandationInput" value="<?php _e($nom_preconisation); ?>" />
+	<input type="text" name="nom_preconisation" id="nom_preconisation" class="recommandationInput" value="<?php _e($nom_preconisation); ?>" /><br/>
+	<label for="preconisation_type" ><?php _e('Type de pr&eacute;vention', 'evarisk'); ?></label><br/>
+	<?php echo EvaDisplayInput::createComboBox('preconisation_type', 'preconisation_type', unserialize(DIGI_TYPE_PREVENTION), $preconisation_type); ?><br/>
 	<label for="description_preconisation" ><?php _e('Description', 'evarisk'); ?></label>
 	<textarea rows="3" cols="10" name="description_preconisation" id="description_preconisation" class="recommandationInput" ><?php _e($description_preconisation); ?></textarea>
 

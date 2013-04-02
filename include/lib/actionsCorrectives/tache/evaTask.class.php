@@ -1,6 +1,6 @@
 <?php
 /**
- * This class allows to work on single task (equivalent to single row in data base) 
+ * This class allows to work on single task (equivalent to single row in data base)
  *
  * @author Evarisk
  * @version v5.0
@@ -11,14 +11,14 @@ require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivity.class
 require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/activite/evaActivityTable.class.php');
 
 class EvaTask extends EvaBaseTask
-{	
+{
 	/**
 	* Save or update the Task in data base
 	*/
 	function save() {
 		global $wpdb;
 		global $current_user;
-		
+
 		{//Variables cleaning
 			$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 			$name = digirisk_tools::IsValid_Variable($this->getName());
@@ -47,44 +47,44 @@ class EvaTask extends EvaBaseTask
 			$is_readable_from_external = digirisk_tools::IsValid_Variable($this->get_external_readable());
 			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getdescription_exportable_plan_action());
 		}
-		
+
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
 			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::is_readable_from_external . ", " . self::firstInsert . ")
-				VALUES ('" . mysql_real_escape_string($name) . "', 
-								'" . mysql_real_escape_string($leftLimit) . "', 
-								'" . mysql_real_escape_string($rightLimit) . "', 
-								'" . mysql_real_escape_string($description) . "', 
-								'" . mysql_real_escape_string($startDate) . "', 
+				VALUES ('" . mysql_real_escape_string($name) . "',
+								'" . mysql_real_escape_string($leftLimit) . "',
+								'" . mysql_real_escape_string($rightLimit) . "',
+								'" . mysql_real_escape_string($description) . "',
+								'" . mysql_real_escape_string($startDate) . "',
 								'" . mysql_real_escape_string($finishDate) . "',
-								'" . mysql_real_escape_string($place) . "', 
-								'" . mysql_real_escape_string($progression) . "', 
-								'" . mysql_real_escape_string($cost) . "', 
-								'" . mysql_real_escape_string($idFrom) . "', 
-								'" . mysql_real_escape_string($tableFrom) . "', 
-								'" . mysql_real_escape_string($status) . "', 
-								'" . mysql_real_escape_string($idCreateur) . "', 
-								'" . mysql_real_escape_string($idResponsable) . "', 
+								'" . mysql_real_escape_string($place) . "',
+								'" . mysql_real_escape_string($progression) . "',
+								'" . mysql_real_escape_string($cost) . "',
+								'" . mysql_real_escape_string($idFrom) . "',
+								'" . mysql_real_escape_string($tableFrom) . "',
+								'" . mysql_real_escape_string($status) . "',
+								'" . mysql_real_escape_string($idCreateur) . "',
+								'" . mysql_real_escape_string($idResponsable) . "',
 								'" . mysql_real_escape_string($idSoldeur) . "',
 								'" . mysql_real_escape_string($idSoldeurChef) . "',
 								'" . mysql_real_escape_string($ProgressionStatus) . "',
 								'" . mysql_real_escape_string($dateSolde) . "',
 								'" . mysql_real_escape_string($hasPriority) . "',
 								'" . mysql_real_escape_string($efficacite) . "',
-								'" . mysql_real_escape_string($idPhotoAvant) . "', 
-								'" . mysql_real_escape_string($idPhotoApres) . "', 
-								'" . mysql_real_escape_string($nom_exportable_plan_action) . "', 
-								'" . mysql_real_escape_string($description_exportable_plan_action) . "', 
-								'" . mysql_real_escape_string($is_readable_from_external) . "', 
+								'" . mysql_real_escape_string($idPhotoAvant) . "',
+								'" . mysql_real_escape_string($idPhotoApres) . "',
+								'" . mysql_real_escape_string($nom_exportable_plan_action) . "',
+								'" . mysql_real_escape_string($description_exportable_plan_action) . "',
+								'" . mysql_real_escape_string($is_readable_from_external) . "',
 								'" . current_time('mysql', 0) . "')";
 		}
 		else
 		{//Update of the data base
-			$sql = "UPDATE " . TABLE_TACHE . " set 
-				" . self::name . " = '" . mysql_real_escape_string($name) . "', 
-				" . self::leftLimit . " = '" . mysql_real_escape_string($leftLimit) . "', 
-				" . self::rightLimit . " = '" . mysql_real_escape_string($rightLimit) . "', 
+			$sql = "UPDATE " . TABLE_TACHE . " set
+				" . self::name . " = '" . mysql_real_escape_string($name) . "',
+				" . self::leftLimit . " = '" . mysql_real_escape_string($leftLimit) . "',
+				" . self::rightLimit . " = '" . mysql_real_escape_string($rightLimit) . "',
 				" . self::description . " = '" . mysql_real_escape_string($description) . "',
 				" . self::startDate . " = '" . mysql_real_escape_string($startDate) . "',
 				" . self::finishDate . " = '" . mysql_real_escape_string($finishDate) . "',
@@ -105,7 +105,7 @@ class EvaTask extends EvaBaseTask
 				" . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "' ,
 				" . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "' ,
 				" . self::is_readable_from_external . " = '" . mysql_real_escape_string($is_readable_from_external) . "' ,
-				" . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "' 
+				" . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "'
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
 
@@ -133,7 +133,7 @@ class EvaTask extends EvaBaseTask
 	function load()
 	{
 		global $wpdb;
-		
+
 		$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 		if($id != 0)
 		{
@@ -155,7 +155,7 @@ class EvaTask extends EvaBaseTask
 	function getWPDBActivitiesDependOn()
 	{
 		global $wpdb;
-		
+
 		$query = $wpdb->prepare("
 			SELECT *
 			FROM " . TABLE_ACTIVITE . "
@@ -207,13 +207,13 @@ class EvaTask extends EvaBaseTask
 		$wpdbTasks = Arborescence::getDescendants(TABLE_TACHE, $wpdbTask, $where = 1, $order= "limiteGauche ASC");
 		$descendants = new EvaTaskTable();
 		$descendants->removeAllTasks();
-		
+
 		foreach ($wpdbTasks as $wpdbTask) {
 			$task = new EvaTask();
 			$task->convertWpdb($wpdbTask);
 			$descendants->addTask($task);
 		}
-		
+
 		return $descendants;
 	}
 
@@ -349,14 +349,14 @@ class EvaTask extends EvaBaseTask
 						$activityFinishMonth = $date[1];
 						$activityFinishDay = $date[2];
 
-						if(($activityStartYear < $startYear) 
-							OR ($activityStartYear == $startYear AND $activityStartMonth < $startMonth) 
+						if(($activityStartYear < $startYear)
+							OR ($activityStartYear == $startYear AND $activityStartMonth < $startMonth)
 							OR ($activityStartYear == $startYear AND $activityStartMonth == $startMonth AND $activityStartDay < $startDay))
 						{
 							$startDate = $activity->getStartDate();
 						}
-						if(($activityFinishYear > $finishYear) 
-							OR ($activityFinishYear == $finishYear AND $activityFinishMonth > $finishMonth) 
+						if(($activityFinishYear > $finishYear)
+							OR ($activityFinishYear == $finishYear AND $activityFinishMonth > $finishMonth)
 							OR ($activityFinishYear == $finishYear AND $activityFinishMonth == $finishMonth AND $activityFinishDay > $finishDay))
 						{
 							$finishDate = $activity->getFinishDate();
@@ -453,9 +453,9 @@ class EvaTask extends EvaBaseTask
 		$actionsList = trim(substr($actionsList, 0, -2));
 		if($actionsList != ''){
 			$query = $wpdb->prepare(
-				"REPLACE INTO " . TABLE_LIAISON_TACHE_ELEMENT . " 
-					(id, status, wasLinked, date, id_tache, id_element, table_element) 
-				VALUES 
+				"REPLACE INTO " . TABLE_LIAISON_TACHE_ELEMENT . "
+					(id, status, wasLinked, date, id_tache, id_element, table_element)
+				VALUES
 					 " . $actionsList . ";");
 			$wpdb->query($query);
 		}
@@ -472,7 +472,7 @@ class EvaTask extends EvaBaseTask
 		$links = '';
 
 		$query = $wpdb->prepare("
-			SELECT * 
+			SELECT *
 			FROM " . TABLE_LIAISON_TACHE_ELEMENT . "
 			WHERE id_tache = %d
 				AND status = 'valid' ", $task_id);
@@ -517,15 +517,14 @@ class EvaTask extends EvaBaseTask
 			$tache->setidSoldeur($current_user->ID);
 		}
 
-		$racine = new EvaTask(1);
-		$racine->load();
-		$tache->setLeftLimit($racine->getRightLimit());
-		$tache->setRightLimit($racine->getRightLimit() + 1);
-		$racine->setRightLimit($racine->getRightLimit() + 2);
-		$racine->save();
 		$tache->setStartDate($_POST['date_debut']);
 		$tache->setFinishDate($_POST['date_fin']);
 		$tache->save();
+
+		$options = get_option('digirisk_options');
+		$task_to_take = (isset($options['digi_ac_control_action_affectation']) && !empty($options['digi_ac_control_action_affectation'])) ? $options['digi_ac_control_action_affectation'] : 1;
+		$tache->load();
+		$tache->transfert( $task_to_take );
 
 		return $tache->getId();
 	}
@@ -549,10 +548,10 @@ class EvaTask extends EvaBaseTask
 			case 'passed':
 			{
 				$query = $wpdb->prepare(
-					"SELECT * 
-					FROM " . TABLE_TACHE . " 
-					WHERE Status = 'Valid' 
-						AND dateFin <= CURDATE() 
+					"SELECT *
+					FROM " . TABLE_TACHE . "
+					WHERE Status = 'Valid'
+						AND dateFin <= CURDATE()
 						AND dateFin != '0000-00-00'
 						AND ProgressionStatus IN ('inProgress', 'notStarted')
 					ORDER BY dateFin DESC", ""
@@ -597,8 +596,8 @@ class EvaTask extends EvaBaseTask
 				$query = $wpdb->prepare(
 					"SELECT TASK.*
 					FROM " . TABLE_TACHE . " AS TASK
-					WHERE TASK.Status = 'Valid' 
-						AND TASK.dateFin >= CURDATE() 
+					WHERE TASK.Status = 'Valid'
+						AND TASK.dateFin >= CURDATE()
 						AND TASK.dateFin != '0000-00-00'
 						AND TASK.ProgressionStatus = 'inProgress'
 						AND TASK.id != '1'
@@ -743,7 +742,7 @@ class EvaTask extends EvaBaseTask
 		}
 
 		if($outputDatas){
-			$script = 
+			$script =
 			'<script type="text/javascript">
 				digirisk(document).ready(function() {
 					digirisk("#' . $idTable . '").dataTable({
@@ -789,7 +788,7 @@ class EvaTask extends EvaBaseTask
 			"SELECT id
 			FROM " . TABLE_TACHE . "
 			WHERE tableProvenance = '%s'
-				AND idProvenance = '%d' 
+				AND idProvenance = '%d'
 				AND hasPriority = 'yes'
 				AND Status = 'Valid'",
 		$tableElement, $idElement);
@@ -797,7 +796,7 @@ class EvaTask extends EvaBaseTask
 		return $wpdb->get_results($query);
 	}
 
-	
+
 	/**
 	* Returns all working unit belonging to the group witch is identifier or belonging to his descendants
 	*

@@ -1,7 +1,7 @@
 <?php
 /**
 * Database table names
-* 
+*
 * Define the different name of database table
 * @author Evarisk <dev@evarisk.com>
 * @version 5.0
@@ -23,7 +23,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_EQUIVALENCE_ETALON', PREFIXE_EVARISK . "equivalence_etalon");
 }
 
-{/*	Méthode	*/
+{/*	Mï¿½thode	*/
 	DEFINE('TABLE_METHODE', PREFIXE_EVARISK . "methode");
 	DEFINE('TABLE_OPERATEUR', PREFIXE_EVARISK . "operateur");
 	DEFINE('TABLE_VARIABLE', PREFIXE_EVARISK . "variable");
@@ -78,13 +78,14 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 {/*	Actions correctives	*/
 	DEFINE('TABLE_TACHE', PREFIXE_EVARISK . "actions_correctives_tache");
 	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "actions_correctives_actions");
-	DEFINE('TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "actions_correctives_suivi");
+	DEFINE('EVA_TRASH_TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "actions_correctives_suivi");
+	DEFINE('TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "element_suivi");
 	DEFINE('TABLE_LIAISON_TACHE_ELEMENT', PREFIXE_EVARISK . "liaison_tache_element");
 }
-	
-{/*	Veille référencielle	*/
+
+{/*	Veille rï¿½fï¿½rencielle	*/
 	DEFINE('PREFIXE_VEILLE', PREFIXE_EVARISK . "veille_");
-	// Table veille référencielle
+	// Table veille rï¿½fï¿½rencielle
 	DEFINE('TABLE_TEXTE_REFERENCIEL', PREFIXE_VEILLE . "texte_referenciel");
 	DEFINE('TABLE_CORRESPOND_TEXTE_REFERENCIEL', PREFIXE_VEILLE . "correspond_texte_referenciel");
 	DEFINE('TABLE_GROUPE_QUESTION', PREFIXE_VEILLE . "groupe_question");
@@ -105,7 +106,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT', PREFIXE_EVARISK . "liaison_utilisateur_notification");
 }
 
-{/*	Préconisations	*/
+{/*	Prï¿½conisations	*/
 	DEFINE('TABLE_CATEGORIE_PRECONISATION', PREFIXE_EVARISK . "preconisation_categorie");
 	DEFINE('TABLE_PRECONISATION', PREFIXE_EVARISK . "preconisation");
 	DEFINE('TABLE_LIAISON_PRECONISATION_ELEMENT', PREFIXE_EVARISK . "liaison_preconisation_element");
@@ -141,8 +142,8 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	// Tables EPI
 	DEFINE('TABLE_EPI', PREFIXE_EVARISK . "ppe");
 	DEFINE('TRASH_DIGI_DBT_EPI', PREFIXE_EVARISK_TRASH . "ppe");
-	DEFINE('TABLE_UTILISE_EPI', PREFIXE_EVARISK . "use_ppe");	
-	DEFINE('TRASH_DIGI_DBT_UTILISE_EPI', PREFIXE_EVARISK_TRASH . "use_ppe");	
+	DEFINE('TABLE_UTILISE_EPI', PREFIXE_EVARISK . "use_ppe");
+	DEFINE('TRASH_DIGI_DBT_UTILISE_EPI', PREFIXE_EVARISK_TRASH . "use_ppe");
 
 	//	TABLES PLUS UTILISEES A PARTIR DE LA VERSION > 44
 	DEFINE('TABLE_EVA_USER_GROUP', PREFIXE_EVARISK . "users_group");
@@ -175,13 +176,13 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TRASH_DIGI_DBT_EVA_ROLES', PREFIXE_EVARISK_TRASH . "roles");
 	DEFINE('TABLE_EVA_USER_GROUP_ROLES_DETAILS', PREFIXE_EVARISK . "users_group_roles_details");
 	DEFINE('TRASH_DIGI_DBT_EVA_USER_GROUP_ROLES_DETAILS', PREFIXE_EVARISK_TRASH . "users_group_roles_details");
-	
+
 	// Modele EAV
 	DEFINE('PREFIXE_EAV', $wpdb->prefix . "eav__");
-	// Table entités
+	// Table entitï¿½s
 	DEFINE('TABLE_ENTITY', PREFIXE_EAV . "entity_type");
 	DEFINE('TRASH_DIGI_DBT_ENTITY', PREFIXE_EVARISK_TRASH . "eav__entity_type");
-	// Table liaison entités / attributs
+	// Table liaison entitï¿½s / attributs
 	DEFINE('TABLE_ENTITY_ATTRIBUTE_LINK', PREFIXE_EAV . "entity_attribute_link");
 	DEFINE('TRASH_DIGI_DBT_ENTITY_ATTRIBUTE_LINK', PREFIXE_EVARISK_TRASH . "eav__entity_attribute_link");
 	// Table attributes set

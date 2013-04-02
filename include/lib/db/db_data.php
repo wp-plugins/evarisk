@@ -416,3 +416,10 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 
 	$digirisk_db_content_add[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('status' => 'valid', 'parDefaut' => 'oui', 'dateCreation' => current_time('mysql', 0), 'idCreateur' => 1, 'dateSuppression' => null, 'idSuppresseur' => 0, 'id_element' => 0, 'table_element' => 'all', 'categorie' => 'listing_des_risques', 'nom' => 'modeleDefault_listing_risque.odt', 'chemin' => 'uploads/modeles/listingRisque/');
 }
+
+
+{/*	Version 79	*/
+	$digirisk_db_version = 79;
+
+	$digirisk_db_content_add[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('status' => 'valid', 'parDefaut' => 'oui', 'dateCreation' => current_time('mysql', 0), 'idCreateur' => 1, 'dateSuppression' => null, 'idSuppresseur' => 0, 'id_element' => 0, 'table_element' => 'all', 'categorie' => 'fiche_exposition_penibilite', 'nom' => 'modeleDefault_fiche_penibilite.odt', 'chemin' => 'uploads/modeles/ficheDeRisques/');
+}

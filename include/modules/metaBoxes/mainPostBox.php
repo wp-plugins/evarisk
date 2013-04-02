@@ -246,13 +246,36 @@ function getMainPostBoxBody($arguments)
 		</script>';
 		$mainPostBoxBody = EvaDisplayDesign::getTableArborescence($racine, $table, $nomTable, $enTeteTable);
 	}
-	if(isset($scriptEvaluationRisques))
-	{
+	if (isset($scriptEvaluationRisques)) {
 		echo $scriptEvaluationRisques;
 	}
-	echo $mainPostBoxBody;
-	if(isset($scriptAfterEvaluationRisques))
-	{
+
+	echo '<div style="float:right; " ><span class="digi_tree_complete_expander digi_tree_complete_expander_open pointer" >' . __('D&eacute;plier l\'arbre', 'evarisk') . '</span> / <span class="digi_tree_complete_expander digi_tree_complete_expander_close pointer" >' . __('Replier l\'arbre', 'evarisk') . '</span></div>
+		<script type="text/javascript" >
+			digirisk(document).ready(function(){
+				jQuery.fn.expandAll = function() {
+				    jQuery(this).find("tr").removeClass("collapsed").addClass("expanded").each(function(){
+				        jQuery(this).expand();
+				    });
+				};
+				jQuery(".digi_tree_complete_expander_open").live("click", function(){
+					jQuery("#mainTable").expandAll();
+				});
+
+				jQuery.fn.collapseAll = function() {
+				    jQuery(this).find("tr").addClass("collapsed").removeClass("expanded").each(function(){
+				        jQuery(this).collapse();
+				    });
+				};
+				jQuery(".digi_tree_complete_expander_close").live("click", function(){
+					jQuery("#mainTable").collapseAll();
+				    jQuery("#node-mainTable-1").expand();
+				});
+			});
+		</script>' . $mainPostBoxBody;
+
+	if (isset($scriptAfterEvaluationRisques)) {
 		echo $scriptAfterEvaluationRisques;
 	}
+
 }

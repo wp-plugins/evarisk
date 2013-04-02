@@ -226,18 +226,17 @@ class eva_GroupSheet
 	*
 	*	@return string The html code output with the list of document or a message saying there no document for this element
 	*/
-	function getGroupSheetCollectionHistory($tableElement, $idElement)
-	{
+	function getGroupSheetCollectionHistory($tableElement, $idElement, $doc_type = 'fiches_de_groupement', $element_identifier = ELEMENT_IDENTIFIER_GFGP) {
 		$output = '';
 
-		$list_FicheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, 'fiches_de_groupement', "dateCreation DESC");
+		$list_FicheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, $doc_type, "dateCreation DESC");
 		if(count($list_FicheDePoste_du_Groupement) > 0)
 		{
 			foreach($list_FicheDePoste_du_Groupement as $fdpGpt)
 			{
 				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
 				{
-					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: (%s) <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), ELEMENT_IDENTIFIER_GFGP . $fdpGpt->id, EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
+					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: (%s) <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), $element_identifier . $fdpGpt->id, EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
 				}
 			}
 		}

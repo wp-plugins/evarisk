@@ -134,21 +134,17 @@ class digirisk_init
 		wp_enqueue_script('jquery-ui-tabs');
 		wp_enqueue_script('jquery-form');
 		wp_enqueue_script('jquery-ui-dialog');
+		wp_enqueue_script('jquery-ui-autocomplete');
 		wp_enqueue_script('jquery-ui-slider');
 		wp_enqueue_script('jquery-ui-sortable');
 		wp_enqueue_script('jquery-ui-droppable');
 		wp_enqueue_script('jquery-ui-datepicker');
+		wp_enqueue_script('eva_timepicker', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-datetimepicker.js', '', EVA_PLUGIN_VERSION, true);
 
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
 
-		if ( $wp_version >= 3.5) {
-			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui-last.js', '', EVA_PLUGIN_VERSION);
-		}
-		else {
-			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
-		}
-
 		wp_enqueue_script('eva_jq_datatable', EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_chosen', EVA_INC_PLUGIN_URL . 'js/jquery-libs/chosen.jquery.min.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_treetable', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.treeTable.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_galleriffic', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.galleriffic.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
@@ -171,15 +167,29 @@ class digirisk_init
 			wp_enqueue_script('eva_jqplot_highlighter', EVA_INC_PLUGIN_URL . 'js/charts/jquery.highlighter.min.js', '', EVA_PLUGIN_VERSION);
 		}
 	}
+
 	/**
-	*
-	*/
+	 *
+	 */
 	function digirisk_add_admin_js(){
 		echo '<script type="text/javascript" >
 			var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";
+			var DIGI_CHOSEN_NO_RESULT = "' . __('Aucun r&eacute;sultat trouv&eacute;', 'evarisk') . '";
+			var DIGI_CHOSEN_SELECT_FROM_MULTI_LIST = "' . __('Choisissez une valeur dans la liste', 'evarisk') . '";
+			var DIGI_CHOSEN_SELECT_FROM_LIST = "' . __('Choisissez une valeur', 'evarisk') . '";
+			var DIGI_AJAX_CHOSEN_KEEP_TYPING = "' . __('Continuez &agrave; taper pour lancer la recherche', 'evarisk') . '";
+			var DIGI_AJAX_CHOSEN_SEARCHING = "' . __('La recherche est en cours pour', 'evarisk') . '";
+			var DIGI_USER_AFFECTATION_DATE_TEXT_IN = "' . __('Entr&eacute;e', 'evarisk') . ' : ";
+			var DIGI_USER_AFFECTATION_DATE_TEXT_OUT = "' . __('Sortie', 'evarisk') . ' : ";
+			var DIGI_DATETIMEPICKER_NOW = "' . __('Maintenant', 'evarisk') . '";
+			var DIGI_DATETIMEPICKER_DONE = "' . __('OK', 'evarisk') . '";
+			var DIGI_USER_DESAFFECTATION_DATE_INCONSISTENCY = "' . __('La date s&eacute;lectionn&eacute;e est inf&eacute;rieure &agrave; la date d\'affectation.\r\nSi vous confirmez cet enregistrement, une incoh&eacute;rence sera enregistr&eacute;e sur l\'affectation de cet utilisateur', 'evarisk') . '";
+			var DIGI_USER_LIST_DESAFFECTATION_DATE_INCONSISTENCY = "' . __('La date s&eacute;lectionn&eacute;e est inf&eacute;rieure &agrave; une ou plusieurs date(s) d\'affectation.\r\nSi vous confirmez cet enregistrement, une incoh&eacute;rence sera enregistr&eacute;e sur l\'affectation des utilisateurs %s', 'evarisk') . '";
+			var DIGI_CHOSEN_ATTRS = {disable_search_threshold: 5, no_results_text: DIGI_CHOSEN_NO_RESULT, placeholder_text_single : DIGI_CHOSEN_SELECT_FROM_LIST, placeholder_text_multiple : DIGI_CHOSEN_SELECT_FROM_MULTI_LIST};
 			jQuery.fn.highlight=function(b){function a(e,j){var l=0;if(e.nodeType==3){var k=e.data.toUpperCase().indexOf(j);if(k>=0){var h=document.createElement("span");h.className="highlight";var f=e.splitText(k);var c=f.splitText(j.length);var d=f.cloneNode(true);h.appendChild(d);f.parentNode.replaceChild(h,f);l=1}}else{if(e.nodeType==1&&e.childNodes&&!/(script|style)/i.test(e.tagName)){for(var g=0;g<e.childNodes.length;++g){g+=a(e.childNodes[g],j)}}}return l}return this.each(function(){a(this,b.toUpperCase())})};jQuery.fn.removeHighlight=function(){return this.find("span.highlight").each(function(){this.parentNode.firstChild.nodeName;with(this.parentNode){replaceChild(this.firstChild,this);normalize()}}).end()};
 		</script>';
 	}
+
 	/**
 	*	Admin javascript "frontend" part definition
 	*/
@@ -192,12 +202,6 @@ class digirisk_init
 		wp_enqueue_script('jquery-ui-slider');
 
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
-		if ( $wp_version >= 3.5) {
-			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui-last.js', '', EVA_PLUGIN_VERSION);
-		}
-		else {
-			wp_enqueue_script('eva_jq_min', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-ui.js', '', EVA_PLUGIN_VERSION);
-		}
 	}
 
 	/**
@@ -206,6 +210,9 @@ class digirisk_init
 	function digirisk_admin_css(){
 		wp_register_style('eva_jquery_ui', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery-ui.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_ui');
+
+		wp_register_style('eva_jquery_chosen', EVA_INC_PLUGIN_URL . 'css/jquery-libs/chosen.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_chosen');
 
 		wp_register_style('eva_jquery_datatable', EVA_INC_PLUGIN_URL . 'css/jquery-libs/datatable.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_datatable');
@@ -225,6 +232,7 @@ class digirisk_init
 		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_main_css');
 	}
+
 	/**
 	*	Admin javascript "file" part definition
 	*/

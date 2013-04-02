@@ -14,11 +14,11 @@
 * @package Digirisk
 * @subpackage librairies
 */
-class digirisk_install
-{
+class digirisk_install	{
+
 	/**
-	*	Define the main installation form
-	*/
+	 *	Define the main installation form
+	 */
 	function installation_form(){
 		global $evaluation_method_operator, $evaluation_main_vars;
 		$installation_form = '';
@@ -140,8 +140,8 @@ class digirisk_install
 	}
 
 	/**
-	*	Method called when plugin is loaded for database update. This method allows to update the database structure, insert default content.
-	*/
+	 *	Method called when plugin is loaded for database update. This method allows to update the database structure, insert default content.
+	 */
 	function update_digirisk($version_to_launch = -1){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_table_structure_change, $digirisk_db_update, $standard_message_subject_to_send, $standard_message_to_send, $digirisk_db_table_operation_list;
 
@@ -249,9 +249,56 @@ class digirisk_install
 		}
 	}
 
+	function repair_database( $version_number ) {
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_table_structure_change, $digirisk_db_update, $standard_message_subject_to_send, $standard_message_to_send, $digirisk_db_table_operation_list;
+
+		if(isset($digirisk_update_way[$version_number])){
+			$dependance_list = '';
+			$dependance_to_make = false;
+
+			/*	Check if there are modification to make on table	*/
+			if(isset($digirisk_db_table_list[$version_number])){
+				foreach($digirisk_db_table_list[$version_number] as $table_name){
+					if(!empty($digirisk_db_table[$table_name]))
+						$table_update_result = dbDelta($digirisk_db_table[$table_name]);
+				}
+				$do_changes = true;
+			}
+
+			/********************/
+			/*		Update		*/
+			/********************/
+			if(is_array($digirisk_db_update) && !empty($digirisk_db_update[$version_number]) && (count($digirisk_db_update[$version_number]) > 0)){
+				foreach($digirisk_db_update[$version_number] as $table_name => $def){
+					foreach($def as $version_numbernformation_index => $table_information){
+						$query = $wpdb->prepare($table_information, '');
+						$wpdb->query($table_information);
+						$do_changes = true;
+					}
+				}
+			}
+
+			/******************************************************/
+			/*		Make special operation on database structure		*/
+			/******************************************************/
+			if(is_array($digirisk_table_structure_change) && !empty($digirisk_table_structure_change[$version_number]) && (count($digirisk_table_structure_change[$version_number]) > 0)){
+				foreach($digirisk_table_structure_change[$version_number] as $table_name => $operations_to_make){
+					foreach($operations_to_make as $operation_index => $operation){
+						$query = $wpdb->prepare($operation['MAIN_ACTION'] . " TABLE " . $table_name . " " . $operation['ACTION'] . " " . $operation['ACTION_CONTENT']);
+						$wpdb->query($query);
+					}
+				}
+				$do_changes = true;
+			}
+		}
+
+		return $do_changes;
+	}
+
 	/**
-	*
-	*/
+	 *
+	 */
 	function insert_data_for_version($i, $do_changes = ''){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_db_options_update, $standard_message_subject_to_send, $standard_message_to_send;
 		$dependance_to_make = false;
@@ -342,8 +389,8 @@ class digirisk_install
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function get_parent_element_identifier($element_type, $parent_data){
 		$parent_infos = array();
 
@@ -359,8 +406,8 @@ class digirisk_install
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function make_specific_operation_on_update($version){
 		global $wpdb, $standard_message_subject_to_send, $standard_message_to_send;
 
@@ -878,8 +925,8 @@ class digirisk_install
 				}
 			break;
 
-			case 78:
-			/**	Agents chimiques */
+			case 79:
+				/**	Agents chimiques */
 				/**	Methode	*/
 				$wpdb->insert(TABLE_METHODE, array('nom' => __('Agents chimiques', 'evarisk'), 'Status' => 'Valid'));
 				$methode = $wpdb->insert_id;
@@ -911,7 +958,7 @@ class digirisk_install
 				}
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
 
-			/**	Travail de nuit	*/
+				/**	Travail de nuit	*/
 				$wpdb->insert(TABLE_METHODE, array('nom' => __('Travail de nuit', 'evarisk'), 'Status' => 'Valid'));
 				$methode = $wpdb->insert_id;
 
@@ -940,7 +987,7 @@ class digirisk_install
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
 
 
-			/**	Travail en équipe*/
+				/**	Travail en équipe*/
 				$wpdb->insert(TABLE_METHODE, array('nom' => __('Travail en équipe successives alternantes', 'evarisk'), 'Status' => 'Valid'));
 				$methode = $wpdb->insert_id;
 
@@ -969,7 +1016,7 @@ class digirisk_install
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('default','penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
 
 
-			/**	Travail répétitif	*/
+				/**	Travail répétitif	*/
 				$wpdb->insert(TABLE_METHODE, array('nom' => __('Travail répétitif', 'evarisk'), 'Status' => 'Valid'));
 				$methode = $wpdb->insert_id;
 
@@ -995,7 +1042,38 @@ class digirisk_install
 				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Activit&eacute; physique', 'evarisk')));
 				$risque_categorie = $wpdb->get_var($query);
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
-			break;
+				break;
+
+			case 80:
+				/**	Update real affectation date with affectation date defined by the click on the user	*/
+				$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET date_affectation_reelle = date_affectation WHERE date_affectation_reelle = '0000-00-00 00:00:00'");
+				$wpdb->query($query);
+				$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET date_desaffectation_reelle = date_desAffectation WHERE date_desaffectation_reelle = '0000-00-00 00:00:00'");
+				$wpdb->query($query);
+
+				/**	Set the penibility level by default	*/
+				$options = get_option('digirisk_options');
+				$options['digi_risk_penibility_level'] = risq51;
+				update_option('digirisk_options', $options);
+
+				/**	Update recommandation from EPI categoy to individual type	*/
+				$query = $wpdb->prepare("SELECT id FROM " . TABLE_CATEGORIE_PRECONISATION . " WHERE nom = %s", '&eacute;quipements de protection individuelle');
+				$epi_cat_id = $wpdb->get_var($query);
+				$wpdb->update(TABLE_PRECONISATION, array('preconisation_type' => 'individuelles'), array('id_categorie_preconisation' => $epi_cat_id));
+
+				/**	Add date of affectation to element follow information	*/
+				$wpdb->query( "UPDATE " . TABLE_ACTIVITE_SUIVI . " SET date_ajout = date WHERE date_ajout = '0000-00-00 00:00:00'" );
+
+				/**	Transfer all evaluation comment into follow up table	*/
+				$query = $wpdb->prepare( "SELECT id_evaluation, date, commentaire, idEvaluateur FROM " . TABLE_AVOIR_VALEUR . " GROUP BY id_evaluation " );
+				$evaluation_comments = $wpdb->get_results($query);
+				if ( !empty($evaluation_comments) ) {
+					foreach ( $evaluation_comments as $evaluation_infos) {
+						if ( !empty($evaluation_infos->commentaire) )
+							$wpdb->insert(TABLE_ACTIVITE_SUIVI, array('id' => null, 'status' => 'Valid', 'date' => current_time('mysql', 0), 'id_user' => $evaluation_infos->idEvaluateur, 'id_element' => $evaluation_infos->id_evaluation, 'table_element' => TABLE_AVOIR_VALEUR, 'commentaire' => $evaluation_infos->commentaire, 'date_ajout' => $evaluation_infos->date, 'export' => 'yes'));
+					}
+				}
+				break;
 		}
 	}
 

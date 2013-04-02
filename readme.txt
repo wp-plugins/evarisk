@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 3.3.2
-Stable tag: 5.1.6.5
+Stable tag: 5.1.6.6
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,24 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.6.6 =
+
+Am&eacute;liorations
+
+* ST382 - Ajout d'un type sur les pr&eacute;conisations en plus de la cat&eacute;gorie (Permet de ranger les pr&eacute;conisations dans les fiches de p&eacute;nibilit&eacute;)
+* ST385 - Possibilit&eacute; de corriger les erreurs de structure de la base de donn&eacute;es (Depuis le menu "Outils" -&gt; "Digirisk - Outils" onglet "V&eacute;rification de la base de donn&eacute;es")
+* ST386 - Suppression de la possibilit&eacute; de modifier la cat&eacute;gorie de risque affect&eacute;e a une &eacute;valuation
+* ST387 - Possibilit&eacute; de d&eacute;plier et replier les arbres en entier (Groupements/unit&eacute;s / Actions correctives)
+* ST388 - Possibilit&eacute; d'affecter les actions de controle a une action parente (dans les options onglet action correctives)
+* ST389 - Interface d'affectation des utilisateurs &agrave; un &eacute;l&eacute;ment (Afficher ou non les utilisateurs actuellement affect&eacute;s / Afficher ou non les utilisateurs affect&eacute;s pr&eacute;c&eacute;demment / Afficher ou non les dates d'affectations des utilisateurs / Affectation/D&eacute;saffectation en masse avec une date)
+
+Corrections
+
+* ST380 - Recherche autocomplete
+* ST381 - Affectation en masse des utilisateurs sur unit&eacute; et sous-groupes (Uniquement avec wpshop install&eacute; et activ&eacute;)
+* ST383 - Librairies Jquery mise &agrave; jour
+* ST384 - Listing des produits charg&eacute;s depuis wpshop
 
 = Version 5.1.6.5 = 
 

@@ -77,7 +77,17 @@ $typeRisquePlanAction['planDactionRisq80'] = SEUIL_BAS_INACCEPTABLE;
 $typeRisquePlanAction['planDactionRisq51'] = SEUIL_BAS_ATRAITER;
 $typeRisquePlanAction['planDactionRisq48'] = SEUIL_BAS_APLANIFIER;
 $typeRisquePlanAction['planDactionRisq'] = SEUIL_BAS_FAIBLE;
+
+$type_prevention = array();
+$type_prevention['organisationnelles'] = __('Organisationnelles', 'evarisk');
+$type_prevention['collectives'] = __('Collectives', 'evarisk');
+$type_prevention['individuelles'] = __('Individuelles', 'evarisk');
+DEFINE('DIGI_TYPE_PREVENTION', serialize($type_prevention));
+
+
 }
+
+DEFINE('DIGI_ALLOW_RISK_CATEGORY_CHANGE', false);
 
 {/*	Define url	*/
 DEFINE('DIGI_URL_SLUG_USER_GROUP', 'digirisk_users_group');
@@ -264,7 +274,7 @@ DEFINE('DIGI_SUBTASK_SEP', '+');
 /**
  *	Define the different existing element type
 */
-$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT', __('Documents', 'evarisk') => 'DOC', __('Photos', 'evarisk') => 'PIC', __('Variable des m&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'V', __('Synsth&egrave;se des risques du groupement', 'evarisk') => 'FSGP', __('Synsth&egrave;se des risques de l\'unit&eacute; de travail', 'evarisk') => 'FSUT');
+$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('&Eacute;valuation', 'evarisk') => 'E', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT', __('Documents', 'evarisk') => 'DOC', __('Photos', 'evarisk') => 'PIC', __('Variable des m&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'V', __('Synsth&egrave;se des risques du groupement', 'evarisk') => 'FSGP', __('Synsth&egrave;se des risques de l\'unit&eacute; de travail', 'evarisk') => 'FSUT', __('Pr&eacute;conisation affect&eaucte;e', 'evarisk') => 'PA', __('Fiche de p&eacute;nibilit&eacute;', 'evarisk') => 'FEP', __('Lots de fiches de p&eacute;nibilit&eacute;', 'evarisk') => 'GFEP');
 $digirisk_tree_options = get_option('digirisk_tree_options');
 $identifierList = (!empty($digirisk_tree_options['digi_tree_element_identifier']) ? unserialize($digirisk_tree_options['digi_tree_element_identifier']) : array());
 foreach ( $treeElementList as $elementName => $elementDefault ) {
