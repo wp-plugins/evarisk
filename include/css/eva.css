@@ -16,7 +16,7 @@ a{ cursor:pointer; }
 	text-align: center !important;
 }
 .digi_suivi_modif_action_col img {
-	width: 25% !important;
+	width: 25px;
 	cursor: pointer;
 }
 .digi_suivi_modif_date_ajout_unformated {
@@ -551,8 +551,9 @@ th.columnCommentaireRisque*/
 .risk_not_controlled_task_list{ width:100%;	}
 .risk_not_controlled_task_list_check{	width:3%;	}
 
-.qr_current_risk{	width:70%; margin:30px auto;	}
-.qr_risk{	 margin: -4px auto; text-align:center; float:right; padding:5px;	}
+.qr_current_risk{	width:70%; margin:30px auto; background-color: #CCCCCC;	}
+.qr_current_risk div:first-child{ padding: 2px 4px; }
+.qr_risk{	margin: 0px auto; text-align:center; float:right; padding: 2px 4px;	}
 
 .eval_method_var{ width:30%; float:left; /* min-height:250px; */	}
 .eval_method_explanation{	width:70%; float:right; text-align:center; padding:13px 0px;	}

@@ -37,7 +37,7 @@ class digirisk_install	{
 		$basic_vars_list = (trim(substr($basic_vars_list, 3, -3)) !=  '')  ? '  (' . trim(substr($basic_vars_list, 2, -2)) . ')' : '';
 		/*	Create an output with the defined danger categories	*/
 		$basic_danger_cat_list = '';
-		$inrs_danger_categories=unserialize(DIGI_INRS_DANGER_LIST);
+		$inrs_danger_categories = unserialize(DIGI_INRS_DANGER_LIST);
 		foreach($inrs_danger_categories as $version_number => $category){
 			if ( is_file(EVA_HOME_DIR . $category['picture']) ) {
 				$picture = EVA_HOME_URL . $category['picture'];
@@ -299,7 +299,7 @@ class digirisk_install	{
 	/**
 	 *
 	 */
-	function insert_data_for_version($i, $do_changes = ''){
+	function insert_data_for_version($i, $do_changes = '') {
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_db_options_update, $standard_message_subject_to_send, $standard_message_to_send;
 		$dependance_to_make = false;
 		$dependance_list=array();
@@ -408,7 +408,7 @@ class digirisk_install	{
 	/**
 	 *
 	 */
-	function make_specific_operation_on_update($version){
+	function make_specific_operation_on_update($version) {
 		global $wpdb, $standard_message_subject_to_send, $standard_message_to_send;
 
 		switch($version){/*	Check different version for specific action	*/
@@ -1026,7 +1026,7 @@ class digirisk_install	{
 				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 10% et 30% du temps de travail', 'evarisk'), 'seuil'=>48);
 				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 30% et 50% du temps de travail', 'evarisk'), 'seuil'=>51);
 				$question[] = array('question'=>__('Temps de cycle < à 30 secondes ou > à 40 actions/minute, plus de 50% du temps de travail', 'evarisk'), 'seuil'=>80);
-				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Travail répétitif', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir : temps de cycle < à 30 secondes ou > à 40 actions /minute, plus de 50 % du temps de travail\nRisque rouge : temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 30 % et 50 % du temps de travail\nRisque orange : temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 10 % et 30 % du temps de travail\nRisque blanc : temps de cycle < à 30 secondes ou > à 40 actions/minute, moins de 10 % du temps de travail', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question), 'questionTitre'=>__('Travail répétitif', 'evarisk')));
+				$wpdb->insert(TABLE_VARIABLE, array('nom' =>__('Travail en équipe successives alternantes', 'evarisk'), 'Status' => 'Valid', 'min'=>1, 'max'=>4, 'annotation'=>__('Risque noir : temps de cycle < à 30 secondes ou > à 40 actions /minute, plus de 50 % du temps de travail\nRisque rouge : temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 30 % et 50 % du temps de travail\nRisque orange : temps de cycle < à 30 secondes ou > à 40 actions/minute, entre 10 % et 30 % du temps de travail\nRisque blanc : temps de cycle < à 30 secondes ou > à 40 actions/minute, moins de 10 % du temps de travail', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question), 'questionTitre'=>__('Travail répétitif', 'evarisk')));
 				$variable = $wpdb->insert_id;
 
 				/** Liaison entre variable et methode */
@@ -1074,6 +1074,97 @@ class digirisk_install	{
 					}
 				}
 				break;
+			case 81:
+				/**	Add a position to the danger categories	*/
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 1), array( 'nom' => __('Accident de plain-pied', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 2), array( 'nom' => __('Chute de hauteur', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 3), array( 'nom' => __('Circulations internes', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 4), array( 'nom' => __('Circulation, d&eacute;placements', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 5), array( 'nom' => __('Activit&eacute; physique', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 6), array( 'nom' => __('Manutention m&eacute;canique', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 7), array( 'nom' => __('Produits, &eacute;missions et d&eacute;chets', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 8), array( 'nom' => __('Agents biologique', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 9), array( 'nom' => __('&Eacute;quipements de travail', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 10), array( 'nom' => __('Effondrements, chute d\'objet', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 11), array( 'nom' => __('Nuisances sonores', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 12), array( 'nom' => __('Ambiances climatiques', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 13), array( 'nom' => __('Incendie, explosion', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 14), array( 'nom' => __('Electricit&eacute;', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 15), array( 'nom' => __('Eclairage', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 16), array( 'nom' => __('Rayonnements', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 17), array( 'nom' => __('Risques psychosociaux', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 18), array( 'nom' => __('Autres', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 19), array( 'nom' => __('Manutention manuelle', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 20), array( 'nom' => __('Postures penibles', 'evarisk') ));
+				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 21), array( 'nom' => __('Vibrations', 'evarisk') ));
+
+				/**	Correction de l'affectation de la variable vibration ensemble du corps pour la methode vibration ensemble du corps	*/
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Port de charge (Homme)', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Manutention manuelle homme', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Port de charge (Femme)', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Manutention manuelle femme', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Postures p&eacute;nibles', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Posture p&eacute;nibles', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Vibration de l\'ensemble du corps', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Vibration m&eacute;canique ensemble du corps', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Vibrations des mains/bras', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Vibration m&eacute;canique mains/bras', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Exposition &agrave; des temp&eacute;ratures extr&ecirc;mes', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Temp&eacute;ratures extr&ecirc;mes', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Exposition au bruit', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Bruit', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Exposition aux agents chimiques', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Agents chimiques', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Travail de nuit', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Travail de nuit', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Travail r&eacute;p&eacute;tif', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Travail r&eacute;p&eacute;tif', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_VARIABLE . " WHERE nom = %s", __('Travail en &eacute;quipe successives alternantes', 'evarisk') );
+				$var_id = $wpdb->get_var( $query );
+					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Travail en &eacute;quipe successives alternantes', 'evarisk') );
+					$methode_id = $wpdb->get_var( $query );
+				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+			break;
 		}
 	}
 

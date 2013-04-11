@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
-Tested up to: 3.3.2
-Stable tag: 5.1.6.6
+Tested up to: 3.5.1
+Stable tag: 5.1.6.7
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,19 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.6.7 =
+
+Am&eacute;liorations
+
+* ST393 - Possibilit&eacute; de r&eacute;int&eacute;grer les donn&eacute;es manquantes (* M&eacute;thodes d'&eacute;valuation pour la p&eacute;nibilit&eacute; / * ATTENTION l'utilisation de cette fonctionnalit&eacute; peut entrainer des dysfonctionnement si elle est utilis&eacute;e alors qu'il n'y en a pas besoin)
+* ST395 - Meilleure visibilit&eacute; pour la cotation d'un risque
+* ST396 - Rangement des dangers dans l'ordre de l'ed840 (NB: Il est impossible pour le moment de modifier cet ordre depuis l'interface d'administration)
+
+Corrections
+
+* ST392 - Corrections diverses mineures (* Vidage des champs dates dans les affectations des utilisateurs / * Corrections orthographiques)
+* ST394 - R&eacute;affectation des variables de p&eacute;nibilit&eacute; aux bonnes m&eacute;thodes (Ce correctif s'appliquera si les m&eacute;thodes par d&eacute;faut n'ont pas &eacute;t&eacute; modifi&eacute;es)
 
 = Version 5.1.6.6 =
 

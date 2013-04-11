@@ -70,7 +70,7 @@ class categorieDangers {
 	{
 		global $wpdb;
 		$id = (int) $id;
-		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE 1 AND id = " . $id);
+		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE 1 AND id = " . $id . " ORDER BY position");
 		return $resultat;
 	}
 
@@ -185,7 +185,7 @@ class categorieDangers {
 		if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
 			$nomRacine = 'Categorie Racine';
 			$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
-			$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine);
+			$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine, '1', 'position');
 		}
 		else {
 			$categoriesDangers[] = categorieDangers::getCategorieDanger($risque[0]->idCategorie);

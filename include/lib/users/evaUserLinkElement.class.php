@@ -199,10 +199,10 @@ class evaUserLinkElement
 
 <div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span><div class="user_affectation_date" >#USERDATEAFFECTATION#</div></div></div>
 <div title="' . __('Affectation d\'un utilisateur', 'evarisk') . '" class="digi_affect_user_to_element" id="digi_dialog_affect_user_' . $tableElement . '" >
-	<label for="date_ajout' . $tableElement . $idElement . '" >' . __('Date d\'entr&eacute;e', 'evarisk') . '</label> <input id="date_ajout' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_ajout" />
+	<label for="date_ajout' . $tableElement . $idElement . '" >' . __('Date d\'affectation', 'evarisk') . '</label> <input id="date_ajout' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_ajout" />
 </div>
 <div title="' . __('D&eacute;s-affectation d\'un utilisateur', 'evarisk') . '" class="digi_unaffect_user_to_element" id="digi_dialog_unaffect_user_' . $tableElement . '" >
-	<label for="date_suppression' . $tableElement . $idElement . '" >' . __('Date de sortie', 'evarisk') . '</label> <input id="date_suppression' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_suppression" />
+	<label for="date_suppression' . $tableElement . $idElement . '" >' . __('Date de d&eacute;saffectation', 'evarisk') . '</label> <input id="date_suppression' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_suppression" />
 </div>
 <input type="hidden" name="user_date_of_affectation_action" id="user_date_of_affectation_action" value="" />
 <input type="hidden" name="user_name_info_for_affectation" id="user_name_info_for_affectation" value="" />
@@ -311,6 +311,7 @@ class evaUserLinkElement
 				jQuery("#table_element_user_affectation").val("");
 				jQuery("#user_id_for_affectation").val("");
 				jQuery("#affectation_type").val("single_user");
+				jQuery("#date_ajout' . $tableElement . $idElement . '").val("' . current_time('mysql', 0) . '");
 			},
 			position: { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") },
 		});
@@ -363,6 +364,7 @@ class evaUserLinkElement
 				jQuery("#user_name_info_for_affectation").val("");
 				jQuery("#table_element_user_affectation").val("");
 				jQuery("#user_id_for_affectation").val("");
+				jQuery("#date_suppression' . $tableElement . $idElement . '").val("' . current_time('mysql', 0) . '");
 			},
 			position: { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") },
 		});

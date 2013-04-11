@@ -652,8 +652,8 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		$correctiv_action_linked_to_risk = '';
 		if(current_user_can('digi_add_task')){//Preconisation (action prioritaire)
 			$contenuInput = '';
-			$labelInput = ucfirst(strtolower(__("Description de l'action corrective associée au risque", 'evarisk')));
-			$correctiv_action_linked_to_risk .= '<div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('text', $formId . 'preconisationRisqueTitle', $contenuInput, '', ucfirst(strtolower(__("Nom de l'action corrective associée au risque", 'evarisk'))) . ' : ', $formId . 'preconisationRisqueTitle', false, false, 255, '', '', '95%', '') . '' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
+			$labelInput = ucfirst(strtolower(__("Description de l'action corrective associ&eacute;e au risque", 'evarisk')));
+			$correctiv_action_linked_to_risk .= '<div id="divPreconisation" class="clear" >' . EvaDisplayInput::afficherInput('text', $formId . 'preconisationRisqueTitle', $contenuInput, '', ucfirst(strtolower(__("Nom de l'action corrective associ&eacute;e au risque", 'evarisk'))) . ' : ', $formId . 'preconisationRisqueTitle', false, false, 255, '', '', '95%', '') . '' . EvaDisplayInput::afficherInput('textarea', $formId . 'preconisationRisque', $contenuInput, '', $labelInput . ' : ', $formId . 'preconisationRisque', false, DESCRIPTION_RISQUE_OBLIGATOIRE, 3, '', '', '95%', '') . '</div>';
 		}
 		if(current_user_can('digi_view_correctiv_action') && ($risque[0] != null) && (($sub_action != 'control_asked_action') || ($task_to_associate <= 0))){
 			$correctiv_action_linked_to_risk .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';

@@ -70,6 +70,31 @@ class digirisk_tools
 				}
 			}, 'json');
 		});
+
+		jQuery(".digi_repair_db_datas_version").live("click", function(){
+			if ( confirm(digi_html_accent_for_js("<?php _e('Attention\r\nSi vous effectuez cette op&eacute;ration alors que vous n\'avez pas relev&eacute; de probl&egrave;me sur votre installation, vous risquez d\'endommager celle ci en y ins&eacute;rant des donn&eacute;es d&eacute;j&agrave; existante', 'evarisk'); ?>")) ) {
+				jQuery(this).after(jQuery("#round_loading_img div").html());
+				var data = {
+					action: "digi_ajax_repair_db_datas",
+					digi_ajax_nonce: '<?php echo wp_create_nonce("digi_repair_db_per_version"); ?>',
+					version_id: jQuery(this).attr("id").replace("digi_repair_db_datas_version_", ""),
+				};
+				jQuery.post(ajaxurl, data, function(response){
+					if (response[0]) {
+						jQuery("#digirisk_tools_tab_container").load("<?php echo EVA_INC_PLUGIN_URL ?>ajax.php", {
+							"post": "true",
+							"nom": "tools",
+							"action": "db_manager",
+						});
+						actionMessageShow("#message", digi_html_accent_for_js("<?php _e('La correction a dient &eacute;t&eacute; effectu&eacute;e', 'evarisk'); ?>"));
+						goTo("#message");
+					}
+					else {
+						alert(digi_html_accent_for_js("<?php _e('Une erreur est survenue lors de la tentative de r&eacute;paration de la base de donn&eacute;s', 'evarisk'); ?>"));
+					}
+				}, 'json');
+			}
+		});
 	});
 </script>
 <?php

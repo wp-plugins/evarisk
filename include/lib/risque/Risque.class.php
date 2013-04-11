@@ -48,7 +48,6 @@ class Risque {
 		$listeValeursSimples;
 		$listeOperateursSimple;
 
-
 		//r�solution des op�ration de forte priorit� (i.e. * et /)
 		$scoreRisque = $listeValeurs[0];
 		$numeroValeur = 0;

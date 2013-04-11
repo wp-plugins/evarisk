@@ -1340,7 +1340,7 @@ echo $output;
 				<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed">
 					<thead>
 						<tr class="white_background" >
-							<th >' . sprintf(__('Actions correctives associ&eacute;s au risque %s', 'evarisk'), ELEMENT_IDENTIFIER_R . $id_risque) . '</th>
+							<th >' . sprintf(__('Actions correctives associ&eacute;es au risque %s', 'evarisk'), ELEMENT_IDENTIFIER_R . $id_risque) . '</th>
 							<th >' . __('Informations', 'evarisk') . '</th>
 							<th class="CorrectivActionFollowStateActionColumn" >&nbsp;</th>
 						</tr>
@@ -1699,7 +1699,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$quotation = Risque::getEquivalenceEtalon($idMethode, $score);
 						}
 						$niveauSeuil = Risque::getSeuil($quotation);
-						$affichage .= '<input type="hidden" value="' . $niveauSeuil . '" id="niveau_seuil_courant" /><div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div></div>';
+						$affichage .= '<input type="hidden" value="' . $niveauSeuil . '" id="niveau_seuil_courant" /><div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div><div class="clear" ></div></div>';
 
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
@@ -5478,15 +5478,15 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				}
 
 				/*	Theme management	*/
-				digirisk_tools::copyEntireDirectory(EVA_HOME_DIR . 'evariskthemeplugin', WP_CONTENT_DIR . '/themes/Evarisk');
-				if(isset($_REQUEST['activate_evarisk_theme']) && ($_REQUEST['activate_evarisk_theme'] == 'yes')){
+				digirisk_tools::copyEntireDirectory( EVA_HOME_DIR . 'evariskthemeplugin', WP_CONTENT_DIR . '/themes/Evarisk' );
+				if ( isset($_REQUEST['activate_evarisk_theme']) && ($_REQUEST['activate_evarisk_theme'] == 'yes') ) {
 					switch_theme('Evarisk', 'Evarisk');
 				}
 
 				/*
 				 * Execution des action specifiques pour certaines version
 				 */
-				$version_to_make = array(73, 81);
+				$version_to_make = array(73, 79, 80, 81);
 				foreach($version_to_make as $version_number){
 					digirisk_install::make_specific_operation_on_update($version_number);
 				}
@@ -6970,6 +6970,12 @@ switch($tableProvenance)
 										}
 										$plugin_db_modification_content .= '<li class="renamed_table" >' . __('Liste des tables renomm&eacute;es pour suppression', 'evarisk') . '&nbsp;:&nbsp;' . substr($sub_modif, 0, -2);
 									}break;
+									case 'DATA_EXPLANATION':
+										foreach ( $modif_list as $table_name => $done_modif ) {
+											$sub_modif = implode(' / ', $done_modif);
+											$plugin_db_modification_content .= '<li class="data_changes" >' . sprintf( __('Modifications apport&eacute;es sur les donn&eacute;es de la table %s', 'evarisk'), $table_name) . '&nbsp;:&nbsp;' . $sub_modif . ' <button class="digi_repair_db_datas_version" id="digi_repair_db_datas_version_' . $plugin_db_version . '" >' . __('Relancer la modifications sur les donn&eacute;es', 'evarisk') . '</button></li>';
+										}
+										break;
 								}
 							}
 							$plugin_db_modification_content .= '

@@ -16,7 +16,7 @@ $digirisk_db_table_operation_list = array();
 $digirisk_table_structure_change = array();
 $digirisk_db_version = 0;
 
-{/*	Table structure definition	*/
+/*	Table structure definition	*/
 
 /* Structure de la table `wp_eva__accident`	*/
 $t = DIGI_DBT_ACCIDENT;
@@ -146,9 +146,9 @@ CREATE TABLE {$t} (
   `idPhotoAvant` int(10) unsigned NOT NULL,
   `idPhotoApres` int(10) unsigned NOT NULL,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Activity name',
-	`nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
+  `nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `description` text collate utf8_unicode_ci COMMENT 'Activity description',
-	`description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
+  `description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `dateDebut` date default NULL COMMENT 'Activity start date',
   `dateFin` date default NULL COMMENT 'Activity finish date',
   `avancement` int(10) default NULL COMMENT 'Activity progression',
@@ -278,6 +278,7 @@ CREATE TABLE {$t} (
   `limiteDroite` int(16) NOT NULL,
   `Status` varchar(255) NOT NULL default '',
   `methode_eva_defaut` int(11) NOT NULL default '0',
+  `position` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `nom` (`nom`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -1036,8 +1037,6 @@ CREATE TABLE {$t} (
   UNIQUE KEY `rubrique` (`rubrique`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
-}
-
 /*	Start the different creation and update plan	*/
 
 {/*	Version 0	*/
@@ -1734,6 +1733,10 @@ CREATE TABLE {$t} (
 
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_FP] = array('affected_user', 'document_final_dir');
 
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_PRECONISATION][] = __('Mise &agrave; jour des types de pr&eacute;conisations existante', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_VARIABLE][] = __('Ajout des variables manquantes pour l\'&eacute;valuation de la p&eacute;nibilit&eacute;', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_METHODE][] = __('Ajout des m&eacute;thodes manquantes pour l\'&eacute;valuation de la p&eacute;nibilit&eacute;', 'evarisk');
+
 	/*	Special changes on table structure	*/
 	$i = 0;
 	$i++;
@@ -1752,4 +1755,15 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_LIAISON_PRECONISATION_ELEMENT] = array('date_affectation', 'date_update_affectation');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE_SUIVI, TABLE_FP, TABLE_LIAISON_PRECONISATION_ELEMENT);
+}
+
+{/*	Version 80	*/
+	$digirisk_db_version = 81;
+	$digirisk_update_way[$digirisk_db_version] = 'structure';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_ADD'][TABLE_CATEGORIE_DANGER] = array('position');
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_CATEGORIE_DANGER][] = __('Mise &agrave; jour des positions des cat&eacute;gories de danger', 'evarisk');
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_CATEGORIE_DANGER);
 }

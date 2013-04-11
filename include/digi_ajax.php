@@ -26,3 +26,20 @@ function digi_ajax_repair_db() {
 	die();
 }
 add_action('wp_ajax_digi_ajax_repair_db', 'digi_ajax_repair_db');
+
+function digi_ajax_repair_db_datas() {
+	check_ajax_referer( 'digi_repair_db_per_version', 'digi_ajax_nonce' );
+	$bool = false;
+	$version_id = isset($_POST['version_id']) ? intval(digirisk_tools::IsValid_Variable($_POST['version_id'])) : null;
+
+	if ( !empty($version_id) ) {
+		digirisk_install::insert_data_for_version( $version_id );
+		digirisk_install::make_specific_operation_on_update( $version_id );
+
+		$bool = true;
+	}
+
+	echo json_encode(array($bool, $version_id));
+	die();
+}
+add_action('wp_ajax_digi_ajax_repair_db_datas', 'digi_ajax_repair_db_datas');

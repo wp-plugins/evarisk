@@ -287,7 +287,7 @@ class eva_gestionDoc {
 
 		if ( !empty($affected_user) ) {
 			$queryOrder .= "
-				AND associated_user = %s";
+				AND affected_user = %s";
 			$query_params[] = $affected_user;
 		}
 
@@ -342,10 +342,10 @@ class eva_gestionDoc {
 								$document->name = str_replace('-', '', $dateElement[0]) . '_' . $document_prefix . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $document->societyName)) . '_V' . $document->revisionDUER;
 							}
 							if ( $document_type == 'fiche_exposition_penibilite') {
-								$listeParDate[$dateElement[0]][$document->associated_user][$document->id]['name'] = $document->name;
-								$listeParDate[$dateElement[0]][$document->associated_user][$document->id]['user_info'] = unserialize($document->users);
-								$listeParDate[$dateElement[0]][$document->associated_user][$document->id]['fileName'] = $document->document_final_dir . $document->name . '_V' . $document->revision;
-								$listeParDate[$dateElement[0]][$document->associated_user][$document->id]['revision'] = 'V' . $document->revision;
+								$listeParDate[$dateElement[0]][$document->affected_user][$document->id]['name'] = $document->name;
+								$listeParDate[$dateElement[0]][$document->affected_user][$document->id]['user_info'] = unserialize($document->users);
+								$listeParDate[$dateElement[0]][$document->affected_user][$document->id]['fileName'] = $document->document_final_dir . $document->name . '_V' . $document->revision;
+								$listeParDate[$dateElement[0]][$document->affected_user][$document->id]['revision'] = 'V' . $document->revision;
 							}
 							else {
 								$listeParDate[$dateElement[0]][$document->id]['name'] = $document->name;
@@ -935,7 +935,7 @@ class eva_gestionDoc {
 			FROM " . TABLE_FP . "
 			WHERE table_element = %s
 				AND id_element = %d
-				AND associated_user = %d
+				AND affected_user = %d
 				AND document_type = %s
 				AND REPLACE( SUBSTRING( `creation_date` , 1, 10 ) , '-', '' ) = %s",
 						$tableElement, $idElement, $user_id, $model_shape, str_replace('-', '', substr(current_time('mysql', 0), 0, 10)));
@@ -971,7 +971,7 @@ class eva_gestionDoc {
 				$new_sheet_params['unitRisk'] 				= serialize($user_risk);
 				$new_sheet_params['recommandation'] 		= '';
 				$new_sheet_params['document_type'] 			= $model_shape;
-				$new_sheet_params['associated_user'] 		= $user_id;
+				$new_sheet_params['affected_user'] 		= $user_id;
 				$new_sheet_params['document_final_dir'] 	= $user_id . '/' . $tableElement . '/' . $idElement . '/';
 
 				$new_sheet = $wpdb->insert(TABLE_FP, $new_sheet_params);

@@ -239,37 +239,36 @@ $evaluation_method_evarisk__etalon[] = array('id_valeur_etalon' => 100, 'valeurM
 
 /**	Define the danger list	*/
 $inrs_danger_categories = array();
-$inrs_danger_categories[] = array('nom' => __('Accident de plain-pied', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chutePP_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Chute de hauteur', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chuteH_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Activit&eacute; physique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/activitePhysique.png', 'risks' => array(__('Travail sur &eacute;cran', 'evarisk')));
-$inrs_danger_categories[] = array('nom' => __('Manutention m&eacute;canique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manutentionMe_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Circulation, d&eacute;placements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/circulation_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Effondrements, chute d\'objet', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/effondrement_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('&Eacute;quipements de travail', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/machine_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Nuisances sonores', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/nuisances_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Produits, &eacute;missions et d&eacute;chets', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/produitsC_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Incendie, explosion', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/incendies_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Electricit&eacute;', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/electricite_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Eclairage', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/eclairage_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Ambiances climatiques', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/climat_PictoCategorie.png');
-$inrs_danger_categories[] = array('nom' => __('Agents biologique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manqueHygiene_PictoCategorie.png');
+$inrs_danger_categories[] = array('nom' => __('Accident de plain-pied', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chutePP_PictoCategorie.png', 'position' => 1);
+$inrs_danger_categories[] = array('nom' => __('Chute de hauteur', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/chuteH_PictoCategorie.png', 'position' => 2);
+$inrs_danger_categories[] = array('nom' => __('Activit&eacute; physique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/activitePhysique.png', 'risks' => array(__('Travail sur &eacute;cran', 'evarisk')), 'position' => 5);
+$inrs_danger_categories[] = array('nom' => __('Manutention m&eacute;canique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manutentionMe_PictoCategorie.png', 'position' => 6);
+$inrs_danger_categories[] = array('nom' => __('Circulation, d&eacute;placements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/circulation_PictoCategorie.png', 'position' => 4);
+$inrs_danger_categories[] = array('nom' => __('Effondrements, chute d\'objet', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/effondrement_PictoCategorie.png', 'position' => 10);
+$inrs_danger_categories[] = array('nom' => __('&Eacute;quipements de travail', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/machine_PictoCategorie.png', 'position' => 9);
+$inrs_danger_categories[] = array('nom' => __('Nuisances sonores', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/nuisances_PictoCategorie.png', 'position' => 11);
+$inrs_danger_categories[] = array('nom' => __('Produits, &eacute;missions et d&eacute;chets', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/produitsC_PictoCategorie.png', 'position' => 7);
+$inrs_danger_categories[] = array('nom' => __('Incendie, explosion', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/incendies_PictoCategorie.png', 'position' => 13);
+$inrs_danger_categories[] = array('nom' => __('Electricit&eacute;', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/electricite_PictoCategorie.png', 'position' => 14);
+$inrs_danger_categories[] = array('nom' => __('Eclairage', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/eclairage_PictoCategorie.png', 'position' => 15);
+$inrs_danger_categories[] = array('nom' => __('Ambiances climatiques', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/climat_PictoCategorie.png', 'position' => 12);
+$inrs_danger_categories[] = array('nom' => __('Agents biologique', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manqueHygiene_PictoCategorie.png', 'position' => 8);
 
-$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Circulations internes', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/circulation.png');
-$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Rayonnements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/rayonnement.png');
-$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Risques psychosociaux', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/rps.png');
+$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Circulations internes', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/circulation.png', 'position' => 3);
+$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Rayonnements', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/rayonnement.png', 'position' => 16);
+$inrs_danger_categories[] = array('version' => 71, 'nom' => __('Risques psychosociaux', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/rps.png', 'position' => 17);
 
-$inrs_danger_categories[] = array('version' => 73, 'nom' => __('Manutention manuelle', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manutentionMa_PictoCategorie.png');
-$inrs_danger_categories[] = array('version' => 73, 'nom' => __('Postures penibles', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/posturePenible.png');
-$inrs_danger_categories[] = array('version' => 73, 'nom' => __('Vibrations', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/vibrations.png');
+$inrs_danger_categories[] = array('version' => 73, 'nom' => __('Manutention manuelle', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/manutentionMa_PictoCategorie.png', 'position' => 19);
+$inrs_danger_categories[] = array('version' => 73, 'nom' => __('Postures penibles', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/posturePenible.png', 'position' => 20);
+$inrs_danger_categories[] = array('version' => 73, 'nom' => __('Vibrations', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/vibrations.png', 'position' => 21);
 
-$inrs_danger_categories[] = array('nom' => __('Autres', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png', 'risks' => array(__('Manque de formation', 'evarisk'), __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk')));
+$inrs_danger_categories[] = array('nom' => __('Autres', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png', 'risks' => array(__('Manque de formation', 'evarisk'), __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk')), 'position' => 18);
 
 DEFINE('DIGI_INRS_DANGER_LIST', serialize($inrs_danger_categories));
 
 /*	Define the char for correctiv actions into DUER 	*/
 DEFINE('DIGI_TASK_SEP', '_');
 DEFINE('DIGI_SUBTASK_SEP', '+');
-
 
 /**
  *	Define the different existing element type
