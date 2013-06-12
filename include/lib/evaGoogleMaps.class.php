@@ -25,7 +25,7 @@ class EvaGoogleMaps {
 		$geolocObligatoire = GEOLOC_OBLIGATOIRE?"true":"false";
 		return '
 			<script type="text/javascript">
-				digirisk(document).ready(function() {	
+				digirisk(document).ready(function() {
 					geolocPossible = true;
 					digirisk(\'#' . $idElementHover . '\').hover(function() {
 						geolocPossible = true;
@@ -60,11 +60,11 @@ class EvaGoogleMaps {
 								});
 							}
 						}
-					});	
-				});	
+					});
+				});
 			</script>';
 	}
-	
+
 	/**
 	* Returns the script and div for the google map
 	*
@@ -73,7 +73,7 @@ class EvaGoogleMaps {
 	*
 	* @return the script and div for the google map.
 	*/
-	static function getGoogleMap($idGoogleMapsDiv, $markers){
+	static function getGoogleMap($idGoogleMapsDiv, $markers, $table_element, $id_element) {
 		$google_map_marker_more_content = '';
 		$nbElements = count($markers);
 		$sudMax = 180;
@@ -124,7 +124,7 @@ class EvaGoogleMaps {
 				function getDraggedCoordonees(response){
 					if (!response || response.Status.code != 200){
 						alert("Status Code:" + response.Status.code);
-					} 
+					}
 					else {
 						place = response.Placemark[0];
 						alert(place.Point.coordinates[1]);
@@ -139,7 +139,7 @@ class EvaGoogleMaps {
 					est = ' . $estMax . ';
 					zoom = 5;
 					centerLat = 46.75;
-					centerLng = 2.5;				
+					centerLng = 2.5;
 					if (google.loader.ClientLocation){
 						centerLat = google.loader.ClientLocation.latitude;
 						centerLng = google.loader.ClientLocation.longitude;
@@ -205,7 +205,7 @@ class EvaGoogleMaps {
 							new_position += digirisk(this).attr("id") + "-val-" + digirisk(this).val() + "_pos_separator_";
 						});
 						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-							"post": "true", 
+							"post": "true",
 							"tableProvenance": "' . TABLE_ADRESSE . '",
 							"nom": "saveMarkerNewPosition",
 							"positions": new_position
@@ -214,7 +214,23 @@ class EvaGoogleMaps {
 				});
 			</script>
 			' . $google_map_marker_more_content . '
-			<div id="' . $idGoogleMapsDiv . '" style="width: 100%; height: 300px"></div><input type="button" value="' . __('Enregistrer les nouvelles coordonn&eacute;es', 'evarisk') . '" class="button-primary hide" id="saveNewPosition" name="saveNewPosition" />';
+			<div id="' . $idGoogleMapsDiv . '" style="width: 100%; height: 300px"></div>';
+			$save_button = true;
+			switch ( $table_element ) {
+				case TABLE_GROUPEMENT:
+					if (!current_user_can('digi_edit_groupement') && !current_user_can('digi_edit_groupement_' . $idElement)) {
+						$save_button = false;
+					}
+				break;
+				case TABLE_UNITE_TRAVAIL:
+					if (!current_user_can('digi_edit_unite') && !current_user_can('digi_edit_unite_' . $idElement)) {
+						$save_button = false;
+					}
+				break;
+			}
+			if ( $save_button ) {
+				$googleMap .= '<input type="button" value="' . __('Enregistrer les nouvelles coordonn&eacute;es', 'evarisk') . '" class="button-primary hide" id="saveNewPosition" name="saveNewPosition" />';
+			}
 		return $googleMap;
 	}
 

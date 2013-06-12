@@ -758,7 +758,7 @@ class digirisk_display
 								' . $tdEdit . '
 								' . $tdDelete;
 						}break;
-						case TABLE_TACHE:{
+						case TABLE_TACHE:
 							$sousTable = TABLE_ACTIVITE;
 							$tache = new EvaTask($element_direct_children_type->id);
 							$tache->load();
@@ -784,6 +784,7 @@ class digirisk_display
 								$tdAddMain = '<td class="noPadding" >&nbsp;';
 							}
 							$tdAddMain .= '</td>';
+
 							if(current_user_can('digi_add_action')){
 								$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" />';
 							}
@@ -792,18 +793,19 @@ class digirisk_display
 							}
 							$tdAddSecondary .= '</td>';
 
-							if(current_user_can('digi_edit_task')){
-								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
+							if(current_user_can('digi_edit_task') || current_user_can('digi_edit_task_' . $element_direct_children_type->id)){
+								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
 							}
-							elseif(current_user_can('digi_view_detail_task')){
-								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" />';
+							elseif(current_user_can('digi_view_detail_task') || current_user_can('digi_view_task_' . $element_direct_children_type->id)){
+								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
 							}
 							else{
 								$tdEdit = '<td class="noPadding" >&nbsp;';
 							}
 							$tdEdit .= '</td>';
-							if(current_user_can('digi_delete_task')){
-								$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
+
+							if(current_user_can('digi_delete_task') || current_user_can('digi_delete_task_' . $element_direct_children_type->id)){
+								$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
 							}
 							else{
 								$tdDelete = '<td class="noPadding" >&nbsp;';
@@ -813,7 +815,8 @@ class digirisk_display
 							if(!current_user_can('digi_move_task')){
 								$ddNoeudClass = '';
 							}
-							if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_edit_task')){
+
+							if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_view_task_' . $element_direct_children_type->id) && !current_user_can('digi_edit_task') && !current_user_can('digi_edit_task_' . $element_direct_children_type->id)){
 								$nomNoeudClass = 'userForbiddenActionCursor';
 							}
 
@@ -822,8 +825,8 @@ class digirisk_display
 								' . $tdAddSecondary . '
 								' . $tdEdit . '
 								' . $tdDelete;
-						}break;
-						case TABLE_GROUPE_QUESTION:{
+						break;
+						case TABLE_GROUPE_QUESTION:
 							$sousTable = TABLE_QUESTION;
 							$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($element_direct_children_type->id);
 							$affichage = '<span class="italic" >' . ELEMENT_IDENTIFIER_GQ . $element_direct_children_type->id . '</span> - ' . $element_direct_children_type->code . '-' . ucfirst($element_direct_children_type->nom);
@@ -831,7 +834,7 @@ class digirisk_display
 							$tdEdit = '<td class="noPadding edit-node" id="edit-node-' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="Modifier le titre" title="' . __('Modifier le titre', 'evarisk') . '" /></td>';
 							$tdDelete = '<td class="noPadding delete-node" id="delete-node-' . $element_direct_children_type->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('le titre', 'evarisk')) . '" />';
 							$actions = $tdAdd . $tdEdit . $tdDelete;
-						}break;
+						break;
 					}
 					$trouveElement = count($elements_fils) + count($subElements);
 
@@ -1031,6 +1034,10 @@ class digirisk_display
 				}
 				$info['value'] = $tache->getProgression() . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($tache->getProgressionStatus()) . ')' . $moreInfo;
 				$info['class'] = 'treeTableGroupInfoColumn taskInfoContainer-' . $elementId;
+				if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_view_detail_task_' . $elementId) && !current_user_can('digi_edit_task') && !current_user_can('digi_edit_task_' . $elementId)){
+
+					$info['class'] = 'userForbiddenActionCursor taskInfoContainer-' . $elementId;
+				}
 			break;
 			case TABLE_ACTIVITE :
 				$info['title'] = __('T&acirc;ches', 'evarisk');
@@ -1042,6 +1049,9 @@ class digirisk_display
 				}
 				$info['value'] = $action->getProgression() . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($action->getProgressionStatus()) . ')' . $moreInfo;
 				$info['class'] = 'treeTableInfoColumn activityInfoContainer-' . $elementId;
+				if(!current_user_can('digi_view_detail_action') && !current_user_can('digi_view_detail_action_' . $elementId) && !current_user_can('digi_edit_action') && !current_user_can('digi_edit_action_' . $elementId)){
+					$info['class'] = 'userForbiddenActionCursor activityInfoContainer-' . $elementId;
+				}
 			break;
 			case TABLE_GROUPEMENT :
 				$info['title'] = __('Groupements', 'evarisk');

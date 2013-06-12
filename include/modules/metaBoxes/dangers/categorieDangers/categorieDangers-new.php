@@ -2,14 +2,14 @@
 /*
  * @version v5.0
  */
- 
- 
+
+
 //Postbox definition
-$postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
+$postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 $postBoxId = 'postBoxGeneralInformation';
 $postBoxCallbackFunction = 'getCategorieDangersGeneralInformationPostBoxBody';
 add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_CATEGORIES_DANGERS, 'rightSide', 'default');
-require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' ); 
+require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 
@@ -33,21 +33,21 @@ function getCategorieDangersGeneralInformationPostBoxBody($arguments)
 		$grise = true;
 	}
 	$categorieDanger_new = EvaDisplayInput::ouvrirForm('POST', 'informationGeneralesCategorieDangers', 'informationGeneralesCategorieDangers');
-	{//Champs cachés
+	{//Champs cachï¿½s
 		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('hidden', 'act', '', '', null, 'act', false, false);
 		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('hidden', 'affichage', $arguments['affichage'], '', null, 'affichage', false, false);
 		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('hidden', 'table', TABLE_CATEGORIE_DANGER, '', null, 'table', false, false);
 		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('hidden', 'id', $postId, '', null, 'id', false, false);
 		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('hidden', 'idsFilAriane', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false);
 	}
-	{//Nom de la catégorie de dangers
+	{//Nom de la catï¿½gorie de dangers
 		$contenuAideTitre = "";
 		$labelInput = ucfirst(sprintf(__("nom %s", 'evarisk'), __("de la cat&eacute;gorie de dangers",'evarisk'))) . " :";
 		$nomChamps = "nom_categorie";
 		$idTitre = "nom_categorie";
 		$categorieDanger_new = $categorieDanger_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
-	{//Catégorie de dangers mère
+	{//Catï¿½gorie de dangers mï¿½re
 		$search = "`Status`='Valid' AND nom<>'Categorie Racine'";
 		$order = "nom ASC";
 		if((isset($categorie_danger)))
@@ -117,7 +117,7 @@ function getCategorieDangersGeneralInformationPostBoxBody($arguments)
 					else
 					{
 						'. $actionValue . '
-						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 							"table": "' . TABLE_CATEGORIE_DANGER . '",
 							"act": digirisk("#act").val(),
 							"id": digirisk("#id").val(),

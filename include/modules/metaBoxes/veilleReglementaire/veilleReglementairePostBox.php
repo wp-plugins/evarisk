@@ -1,11 +1,11 @@
 <?php
 	//Postbox definition
-	$postBoxTitle = __('Veille R&egrave;glementaire', 'evarisk');
+	$postBoxTitle = __('Veille R&egrave;glementaire', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxVeilleReglementaire';
 	$postBoxCallbackFunction = 'getReglementairyWatchBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
-	
+
 	function getReglementairyWatchBoxBody($element)
 	{
 		$idElement = $element['idElement'];

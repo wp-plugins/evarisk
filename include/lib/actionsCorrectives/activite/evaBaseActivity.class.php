@@ -33,6 +33,11 @@ class EvaBaseActivity
 	const idPhotoApres = 'idPhotoApres';
 	const nom_exportable_plan_action = 'nom_exportable_plan_action';
 	const description_exportable_plan_action = 'description_exportable_plan_action';
+	const cout_reel = 'cout_reel';
+	const planned_time = 'planned_time';
+	const elapsed_time = 'elapsed_time';
+	const real_start_date = 'real_start_date';
+	const real_end_date = 'real_end_date';
 
 /*
  * Class variable define
@@ -116,7 +121,12 @@ class EvaBaseActivity
 	var $idPhotoApres;
 	var $nom_exportable_plan_action;
 	var $description_exportable_plan_action;
-	
+	var $planned_time;
+	var $elapsed_time;
+	var $cout_reel;
+	var $real_start_date;
+	var $real_end_date;
+
 /*
  *	Constructeur et accesseurs
  */
@@ -141,8 +151,7 @@ class EvaBaseActivity
 	 * @param string $ProgressionStatus The progression status
 	 * @param date $dateSolde The date the action was mark as done
 	 */
-	function EvaBaseactivity($id = null, $relatedTaskId = null, $name = '',	$description = '', $startDate = '', $finishDate = '', $place = '', $cout = '', $progression = 0, $status = 'Valid', $firstInsert = '', $idCreateur ='', $idResponsable ='', $idSoldeur ='', $idSoldeurChef ='',  $idPhotoAvant ='',  $idPhotoApres ='', $ProgressionStatus ='', $nom_exportable_plan_action ='', $description_exportable_plan_action ='', $dateSolde ='')
-	{
+	function EvaBaseactivity($id = null, $relatedTaskId = null, $name = '',	$description = '', $startDate = '', $finishDate = '', $place = '', $cout = '', $progression = 0, $status = 'Valid', $firstInsert = '', $idCreateur ='', $idResponsable ='', $idSoldeur ='', $idSoldeurChef ='',  $idPhotoAvant ='',  $idPhotoApres ='', $ProgressionStatus ='', $nom_exportable_plan_action ='', $description_exportable_plan_action ='', $dateSolde ='', $planned_time ='', $elapsed_time = '', $cout_reel = '', $real_start_date = '', $real_end_date = '') {
 		$this->id = $id;
 		$this->relatedTaskId = $relatedTaskId;
 		$this->name = $name;
@@ -163,8 +172,13 @@ class EvaBaseActivity
 		$this->dateSolde = $dateSolde;
 		$this->nom_exportable_plan_action = $nom_exportable_plan_action;
 		$this->description_exportable_plan_action = $description_exportable_plan_action;
+		$this->planned_time = $planned_time;
+		$this->elapsed_time = $elapsed_time;
+		$this->cout_reel = $cout_reel;
+		$this->real_start_date = $real_start_date;
+		$this->real_end_date = $real_end_date;
 	}
-	
+
 	/**
 	 * Returns the activity identifier
 	 * @return int The identifier
@@ -173,7 +187,7 @@ class EvaBaseActivity
 	{
 		return $this->id;
 	}
-	
+
 	/**
 	 * Set the activity identifier
 	 * @param int $id The identifier to set
@@ -182,7 +196,7 @@ class EvaBaseActivity
 	{
 		$this->id = $id;
 	}
-	
+
 	/**
 	 * Returns the activity related task identifier
 	 * @return int The related task identifier
@@ -191,7 +205,7 @@ class EvaBaseActivity
 	{
 		return $this->relatedTaskId;
 	}
-	
+
 	/**
 	 * Set the activity related task identifier
 	 * @param int $id The related task identifier to set
@@ -200,7 +214,7 @@ class EvaBaseActivity
 	{
 		$this->relatedTaskId = $relatedTaskId;
 	}
-	
+
 	/**
 	 * Returns the activity name
 	 * @return string The name
@@ -380,7 +394,7 @@ class EvaBaseActivity
 	{
 		$this->idCreateur = $idCreateur;
 	}
-	
+
 	/**
 	 * Returns the action maker id
 	 * @return integer The action maker id
@@ -398,7 +412,7 @@ class EvaBaseActivity
 	{
 		$this->idSoldeur = $idSoldeur;
 	}
-	
+
 	/**
 	 * Returns the action maker id
 	 * @return integer The action maker id
@@ -470,7 +484,7 @@ class EvaBaseActivity
 	{
 		$this->dateSolde = $dateSolde;
 	}
-	
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -488,7 +502,7 @@ class EvaBaseActivity
 	{
 		$this->idPhotoAvant = $idPhotoAvant;
 	}
-	
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -506,7 +520,7 @@ class EvaBaseActivity
 	{
 		$this->idPhotoApres = $idPhotoApres;
 	}
-	
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -524,6 +538,7 @@ class EvaBaseActivity
 	{
 		$this->nom_exportable_plan_action = $nom_exportable_plan_action;
 	}
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -541,7 +556,60 @@ class EvaBaseActivity
 	{
 		$this->description_exportable_plan_action = $description_exportable_plan_action;
 	}
-	
+
+	/**
+	 *
+	 */
+	function getcout_reel()
+	{
+		return $this->cout_reel;
+	}
+
+	/**
+	 *
+	 */
+	function setcout_reel($cout_reel)
+	{
+		$this->cout_reel = $cout_reel;
+	}
+
+
+	function getplanned_time()
+	{
+		return $this->planned_time;
+	}
+	function setplanned_time($planned_time)
+	{
+		$this->planned_time = $planned_time;
+	}
+
+	function getelapsed_time()
+	{
+		return $this->elapsed_time;
+	}
+	function setelapsed_time($elapsed_time)
+	{
+		$this->elapsed_time = $elapsed_time;
+	}
+
+	function getreal_start_date()
+	{
+		return $this->real_start_date;
+	}
+	function setreal_start_date($real_start_date)
+	{
+		$this->real_start_date = $real_start_date;
+	}
+
+	function getreal_end_date()
+	{
+		return $this->real_end_date;
+	}
+	function setreal_end_date($real_end_date)
+	{
+		$this->real_end_date = $real_end_date;
+	}
+
 /*
  * Others methods
  */
@@ -572,6 +640,11 @@ class EvaBaseActivity
 		$this->setidPhotoApres($wpdbActivity->idPhotoApres);
 		$this->setnom_exportable_plan_action($wpdbActivity->nom_exportable_plan_action);
 		$this->setdescription_exportable_plan_action($wpdbActivity->description_exportable_plan_action);
+		$this->setcout_reel($wpdbActivity->cout_reel);
+		$this->setplanned_time($wpdbActivity->planned_time);
+		$this->setelapsed_time($wpdbActivity->elapsed_time);
+		$this->setreal_start_date($wpdbActivity->real_start_date);
+		$this->setreal_end_date($wpdbActivity->real_end_date);
 	}
 
 	/**
@@ -580,7 +653,7 @@ class EvaBaseActivity
 	 */
 	function convertToWpdb()
 	{
-		return 
+		return
 			(object)(
 				array(
 					self::id => $this->getId(),
@@ -602,7 +675,12 @@ class EvaBaseActivity
 					self::ProgressionStatus => $this->ProgressionStatus(),
 					self::nom_exportable_plan_action => $this->getnom_exportable_plan_action(),
 					self::description_exportable_plan_action => $this->getdescription_exportable_plan_action(),
-					self::dateSolde => $this->dateSolde()
+					self::dateSolde => $this->dateSolde(),
+					self::cout_reel => $this->cout_reel(),
+					self::planned_time => $this->planned_time(),
+					self::elapsed_time => $this->elapsed_time(),
+					self::real_start_date => $this->real_start_date(),
+					self::real_end_date => $this->real_end_date(),
 				)
 			);
 	}

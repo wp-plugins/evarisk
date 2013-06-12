@@ -9,7 +9,7 @@ if($_REQUEST['act'] == 'save'){
 
 	/*	Check if there are correctiv actions to link with this risk	*/
 	$actionsCorrectives = !empty($_REQUEST['actionsCorrectives'])?digirisk_tools::IsValid_Variable($_REQUEST['actionsCorrectives']):'';
-	if(($actionsCorrectives != '') && ($idRisque > 0)){
+	if (($actionsCorrectives != '') && ($idRisque > 0)) {
 		Risque::update_risk_rating_link_with_task($idRisque, $actionsCorrectives, array('before', 'after'));
 		$task = new EvaTask();
 		$task->setId($actionsCorrectives);
@@ -17,20 +17,20 @@ if($_REQUEST['act'] == 'save'){
 		$task->setEfficacite($_REQUEST['action_efficiency']);
 		$task->save();
 	}
-	else{
-		$idDanger = digirisk_tools::IsValid_Variable($_REQUEST['idDanger']);
-		$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode']);
-		$tableElement = digirisk_tools::IsValid_Variable($_REQUEST['tableElement']);
-		$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
+	else {
+		$idDanger = !empty($_REQUEST['idDanger']) ? digirisk_tools::IsValid_Variable($_REQUEST['idDanger']) : '';
+		$idMethode = !empty($_REQUEST['idMethode']) ? digirisk_tools::IsValid_Variable($_REQUEST['idMethode']) : '';
+		$tableElement = !empty($_REQUEST['tableElement']) ? digirisk_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
+		$idElement = !empty($_REQUEST['idElement']) ? digirisk_tools::IsValid_Variable($_REQUEST['idElement']) : '';
 		$variables = $_REQUEST['variables'];
-		$description = digirisk_tools::IsValid_Variable($_REQUEST['description_risque']);
+		$description = !empty($_REQUEST['description_risque']) ? digirisk_tools::IsValid_Variable($_REQUEST['description_risque']) : '';
 		$histo = digirisk_tools::IsValid_Variable($_REQUEST['histo']);
 		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
 	}
 
 	/*	Check if there are recommendation to link with this risk	*/
-	$preconisationRisqueTitle = !empty($_REQUEST['preconisationRisqueTitle'])?digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisqueTitle']):'';
-	$preconisationRisque = !empty($_REQUEST['preconisationRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisque']):'';
+	$preconisationRisqueTitle = !empty($_REQUEST['preconisationRisqueTitle']) ? digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisqueTitle']) : '';
+	$preconisationRisque = !empty($_REQUEST['preconisationRisque']) ? digirisk_tools::IsValid_Variable($_REQUEST['preconisationRisque']) : '';
 	if ( !empty($preconisationRisque) || !empty($preconisationRisqueTitle ) ) {
 		$infosDanger = EvaDanger::getDanger($idDanger);
 		$_POST['nom_activite'] = !empty($preconisationRisqueTitle) ? $preconisationRisqueTitle : substr(nl2br($preconisationRisque), 0, 255);
@@ -48,19 +48,19 @@ if($_REQUEST['act'] == 'save'){
 		$_POST['hasPriority'] = 'yes';
 
 		/*	Make the link between a corrective action and a risk evaluation	*/
-		$query =
-			$wpdb->prepare(
-				"SELECT id_evaluation
-				FROM " . TABLE_AVOIR_VALEUR . "
-				WHERE id_risque = '%d'
-					AND Status = 'Valid'
-				ORDER BY id DESC
-				LIMIT 1",
-				$idRisque
-			);
+		$query = $wpdb->prepare(
+			"SELECT id_evaluation
+			FROM " . TABLE_AVOIR_VALEUR . "
+			WHERE id_risque = '%d'
+				AND Status = 'Valid'
+			ORDER BY id DESC
+			LIMIT 1",
+			$idRisque
+		);
 		$evaluation = $wpdb->get_row($query);
 		$_POST['parentTaskId'] = evaTask::saveNewTask();
 		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $_POST['parentTaskId'], 'demand');
+
 		/*	Create automatically a sub-task for the priority task	*/
 		evaActivity::saveNewActivity();
 	}

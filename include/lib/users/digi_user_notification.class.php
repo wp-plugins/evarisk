@@ -24,7 +24,7 @@ class digirisk_user_notification{
 	*	Define the different hook that will called the user notification box and the good function to use for box creation
 	*/
 	function user_notification_box_caller(){
-		$postBoxTitle = __('Notifications des utilisateurs', 'evarisk');
+		$postBoxTitle = __('Notifications des utilisateurs', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 		$postBoxId = 'postBoxUserNotify';
 		add_meta_box($postBoxId, $postBoxTitle, array('digirisk_user_notification', 'user_notification_box'), PAGE_HOOK_EVARISK_TACHE, 'rightSide', 'default');
 		add_meta_box($postBoxId, $postBoxTitle, array('digirisk_user_notification', 'user_notification_box'), PAGE_HOOK_EVARISK_ACTIVITE, 'rightSide', 'default');
@@ -83,15 +83,20 @@ WHERE 1" . $conditions, $conditions_value);
 
 <!--	Save button -->
 <div class="clear" id="saveButtonBoxContainer" >';
-	$saveButtonOuput=false;
+	$saveButtonOuput = true;
+	$user_has_right = true;
 	switch($element_type){
 		case TABLE_TACHE:
 			$currentTask = new EvaTask($element_identifier);
 			$currentTask->load();
 			$ProgressionStatus = $currentTask->getProgressionStatus();
 
-			if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') ){
-				$saveButtonOuput = true;
+			if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') ){
+				$saveButtonOuput = false;
+			}
+			if (!current_user_can('digi_edit_task') && !current_user_can('digi_edit_task_' . $arguments['idElement'])) {
+				$saveButtonOuput = false;
+				$user_has_right = false;
 			}
 		break;
 		case TABLE_ACTIVITE:
@@ -99,17 +104,21 @@ WHERE 1" . $conditions, $conditions_value);
 			$current_action->load();
 			$ProgressionStatus = $current_action->getProgressionStatus();
 
-			if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee')== 'oui') ){
-				$saveButtonOuput = true;
+			if((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ){
+				$saveButtonOuput = false;
+			}
+			if (!current_user_can('digi_edit_action') && !current_user_can('digi_edit_action_' . $arguments['idElement'])) {
+				$saveButtonOuput = false;
+				$user_has_right = false;
 			}
 		break;
 	}
-	if($saveButtonOuput){
+	if ( $saveButtonOuput ) {
 		$utilisateursMetaBox .= '
 	<div id="saveButtonLoading_userNotification' . $element_type . '" style="display:none;" class="clear alignright" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading in progress" /></div>
 	<div id="saveButtonContainer_userNotification' . $element_type . '" ><input type="button" value="' . __('Enregistrer', 'evarisk') . '" id="save_user_notification_' . $element_type . '" name="save_user_notification_' . $element_type . '"" class="button-primary alignright" /></div>';
 	}
-	else{
+	else if ( $user_has_right ) {
 		$utilisateursMetaBox .= '<div class="alignright button-primary" id="TaskSaveButton" >' .
 					__('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de commentaire', 'evarisk') .
 				'</div>';
@@ -616,11 +625,11 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 				case 'update':{
 					switch($table_element){
 						case TABLE_TACHE:
-							$key_to_output = array('id', 'name', 'description', 'startDate', 'finishDate', 'ProgressionStatus', 'idResponsable', 'idSoldeur', 'dateSolde', 'efficacite');
+							$key_to_output = array('id', 'name', 'description', 'startDate', 'finishDate', 'ProgressionStatus', 'idResponsable', 'idSoldeur', 'dateSolde', 'efficacite', 'real_start_date', 'real_end_date', 'estimate_cost', 'real_cost', 'planned_time', 'elapsed_time');
 							$element_identifier = ELEMENT_IDENTIFIER_T;
 						break;
 						case TABLE_ACTIVITE:
-							$key_to_output = array('id', 'name', 'description', 'startDate', 'finishDate', 'ProgressionStatus', 'idResponsable', 'idSoldeur', 'dateSolde', 'avancement');
+							$key_to_output = array('id', 'name', 'description', 'startDate', 'finishDate', 'ProgressionStatus', 'idResponsable', 'idSoldeur', 'dateSolde', 'avancement', 'real_start_date', 'real_end_date', 'cout', 'cout_reel', 'planned_time', 'elapsed_time');
 							$element_identifier = ELEMENT_IDENTIFIER_ST;
 						break;
 					}
@@ -635,6 +644,26 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 								break;
 								case 'finishDate':
 									$content_to_output = __('Date de fin', 'evarisk') . ' : ' . mysql2date('d F Y', $content, true);
+								break;
+								case 'real_start_date':
+									$content_to_output = (!empty($content) && ($content != '0000-00-00')) ? __('Date de d&eacute;but r&eacute;elle', 'evarisk') . ' : ' . mysql2date('d F Y', $content, true) : '';
+								break;
+								case 'real_end_date':
+									$content_to_output = (!empty($content) && ($content != '0000-00-00')) ? __('Date de fin r&eacute;elle', 'evarisk') . ' : ' . mysql2date('d F Y', $content, true) : '';
+								break;
+								case 'estimate_cost':
+								case 'cout':
+									$content_to_output = !empty($content) ? __('Co&ucirc;t estim&eacute;', 'evarisk') . ' : ' . $content . ' &euro;' : '';
+								break;
+								case 'real_cost':
+								case 'cout_reel':
+									$content_to_output = !empty($content) ? __('Co&ucirc;t r&eacute;el', 'evarisk') . ' : ' . $content . ' &euro;' : '';
+								break;
+								case 'planned_time':
+									$content_to_output = !empty($content) ? __('Temps estim&eacute;', 'evarisk') . ' : ' . $content . ' &euro;' : '';
+								break;
+								case 'elapsed_time':
+									$content_to_output = !empty($content) ? __('Temps pass&eacute;', 'evarisk') . ' : ' . $content . ' &euro;' : '';
 								break;
 								case 'ProgressionStatus':
 									$content_to_output = __('Statut', 'evarisk') . ' : ' . actionsCorrectives::check_progression_status_for_output($content);
@@ -716,7 +745,7 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 		$action_detailled_information = self::get_action(array('action' => array('%s', $action), 'table_element' => array('%s', $table_element)));
 
 		/*	Insert the modification into database	*/
-		$wpdb->insert(DIGI_DBT_ELEMENT_MODIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_action' => (!empty($action_detailled_information)?$action_detailled_information[0]->id:0), 'id_element' => $id_element, 'table_element' => $table_element, 'old_content' => serialize($old_content)));
+		$wpdb->insert(DIGI_DBT_ELEMENT_MODIFICATION, array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_action' => (!empty($action_detailled_information) ? $action_detailled_information[0]->id : 0), 'id_element' => $id_element, 'table_element' => $table_element, 'old_content' => serialize($old_content)));
 
 		digirisk_user_notification::notify_affiliated_user($table_element, $id_element, $action, $old_content, $new_content);
 	}

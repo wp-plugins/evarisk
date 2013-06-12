@@ -8,19 +8,44 @@ a{ cursor:pointer; }
 	min-height: 135px !important;
 }
 .digi_suivi_modif_action_col {
-	width: 8% !important;
+	width: 10% !important;
 	text-align: center;
 }
+.digi_suivi_modif_elapsed_time_col {
+	text-align: center;
+}
+.digi_suivi_identifier_col {
+	width: 5% !important;
+}
+.digi_suivi_modif_cost_col {
+	width: 5% !important;
+}
 .digi_suivi_modif_export_col {
-	width: 20% !important;
+	width: 10% !important;
 	text-align: center !important;
 }
 .digi_suivi_modif_action_col img {
 	width: 25px;
 	cursor: pointer;
 }
+#follow_up_id_user_performer_chzn {
+	width: 80% !important;
+}
+#follow_up_id_user_performer_chzn .chzn-drop{
+	width: 99% !important;
+}
+#follow_up_id_user_performer_chzn .chzn-drop .chzn-search input{
+	width: 100% !important;
+}
 .digi_suivi_modif_date_ajout_unformated {
 	display: none;
+}
+.project_follow_up_container label {
+	text-decoration: underline;
+	cursor: auto;
+}
+.project_follow_up_container input:disabled {
+	border: 0px solid #000000;
 }
 
 .digi_normal_pointer{	cursor:default !important;	}
@@ -477,6 +502,9 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .columnQuotation{	width:10%; vertical-align : middle !important;	}
 .columnNomDanger,
 .columnEtat	{		width: 16%;		padding: 1px !important;		vertical-align : middle !important;	}
+.columnPhoto{
+	width: 8% !important;
+}
 
 .columnDescriptionDanger	{		width: 26%;		padding: 1px !important;		vertical-align : middle !important;	}
 
@@ -494,8 +522,15 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .massUpdaterChecbkoxAction{	font-size:11px; cursor:pointer;	}
 
 #risqMassUpdater .dataTables_wrapper{	min-height:50px;	}
-#risqMassUpdater{		}
-.massUpdaterListing{	overflow:auto !important; height:450px;	}
+#risqMassUpdater{
+	padding: 0px !important;
+	overflow: hidden;
+}
+#mass_update_button_pane_helper {
+	margin-right: 20px;
+}
+.no-close .ui-dialog-titlebar-close {display: none }
+.massUpdaterListing{	overflow:auto !important; height: 90%;	}
 
 #divVoirRisques{	padding:9px 0px 3px 4px;	}
 #formRisque{	margin:0px 0px 3px 4px;	}
@@ -658,7 +693,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 #correctionActionPictureTable{	width:100%;	}
 
 .ac_responsable{	width:99% !important;	}
-#responsible_name{	padding:0px 18px; float:left;	}
+#responsible_name{	padding:0px 18px;	}
 .change_ac_responsible, .delete_ac_responsible{	cursor:pointer; font-weight:bold; font-style:italic;	}
 
 #risk_priority_task{	width:90% !important; margin:3px 18px;	}
@@ -689,14 +724,58 @@ td.details table{	margin:0px 0px 24px !important;	}
 	float: left;
 	margin: 0px 15px;
 }
-.digi_ac_allow_front_ask_code_container {
+.digi_ac_allow_front_ask_code_container, .digi_ac_create_only_task {
 	margin: 0px -70px;
 }
-#digi_ac_front_ask_parent_task_id {
+#digi_ac_front_ask_parent_task_id_chooser {
 	width: 40%;
+	float: none;
 }
-#digi_ac_control_action_affectation {
+#digi_ac_control_action_affectation_chooser {
 	width: 60%;
+	float: none;
+}
+#digi_option_delete_associated_task_to_frontend_form, #digi_option_delete_associated_task_to_control_task {
+	color: red;
+	font-size: bold;
+	cursor: pointer
+}
+
+.digi_action_start_date, .digi_action_end_date, .digi_action_cost, .digi_action_planned_time {
+	width: 48%;
+	float: left;
+}
+
+.digi_action_start_date input, .digi_action_end_date input, .digi_action_cost input {
+	width: 60%;
+}
+.digi_action_responsible .ac_responsable {
+	margin: 0px 0px 12px;
+}
+.digi_action_created_by_infos {
+	float: right;
+}
+.digi_ac_project_elapsed_time_comment {
+	margin: 9px 0px 0px 0px;
+}
+#digi_ac_project_follow_up {
+	margin: 9px 0px 0px 0px;
+}
+#digi_action_follow_up_elapsed_time {
+	font-style: italic;
+}
+#digi_action_follow_up_elapsed_time input, #cout_reel {
+	border: 0px solid #000000;
+	background-color: transparent !important;	
+}
+
+label.digi_alert {
+	color: red;
+	font-weight: bold;
+}
+.digi_alert label {
+	color: red;
+	font-weight: bold;
 }
 /* -- END Actions correctives -- */
 

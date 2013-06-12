@@ -1,6 +1,7 @@
 <?php
+
 	//Postbox definition
-	$postBoxTitle = __('Bilan', 'evarisk');
+	$postBoxTitle = __('Bilan', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxDocumentUnique';
 	$postBoxCallbackFunction = 'getDocumentUniquePostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');

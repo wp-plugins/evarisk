@@ -1,12 +1,12 @@
 <?php
 /**
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
 include_once(EVA_CONFIG );
 class Arborescence {
-	
+
 	static function getIdsFilAriane($table, $element)
 	{
 		$elementsAncetres = Arborescence::getAncetre($table, $element, "limiteGauche ASC");
@@ -32,14 +32,14 @@ class Arborescence {
 		$element = $wpdb->get_row( "SELECT * FROM " . $table . " WHERE id=" . $id . " AND " . $where);
 		return $element;
 	}
-	
+
 	static function getRacine($table, $where='1')
 	{
 		global $wpdb;
 		$racine = $wpdb->get_row( "SELECT * FROM " . $table . " table1 WHERE NOT EXISTS(SELECT * FROM " . $table . " table2 WHERE table2.limiteGauche < table1.limiteGauche AND " . $where . ") AND " . $where);
 		return $racine;
 	}
-	
+
 	static function getMaxLimiteDroite($table, $where='1')
 	{
 		global $wpdb;
@@ -47,31 +47,30 @@ class Arborescence {
 		$resultat = $wpdb->get_row( "SELECT * FROM " . $table . " table1 WHERE NOT EXISTS (SELECT * FROM " . $table . " table2 WHERE table1.limiteDroite < table2.limiteDroite AND " . $where . ") AND " . $where);
 		if(!empty($resultat))
 			$right_limit=$resultat->limiteDroite;
-		
+
 		return $right_limit;
 	}
-	
+
 	static function getByLimites($table, $limiteGauche, $limiteDroite, $where='1')
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . "  AND Status = 'Valid' AND limiteGauche >= " . $limiteGauche . " AND limiteDroite <= " . $limiteDroite);
 		return $resultat;
 	}
-	
-	static function getAncetre($table, $element, $order= "limiteGauche ASC", $where='1', $status = "AND Status = 'Valid'")
-	{
+
+	static function getAncetre($table, $element, $order= "limiteGauche ASC", $where='1', $status = "AND Status = 'Valid'") {
 		global $wpdb;
-		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . "  " . $status . " AND limiteGauche < " . $element->limiteGauche . " AND limiteDroite > " . $element->limiteDroite . "	ORDER BY " . $order );
+		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . "  " . $status . " AND limiteGauche < " . (!empty($element->limiteGauche) ? $element->limiteGauche : 0) . " AND limiteDroite > " . (!empty($element->limiteDroite) ? $element->limiteDroite : 0) . "	ORDER BY " . $order );
 		return $resultat;
 	}
-	
+
 	static function getDescendants($table, $element, $where='1', $order="id ASC", $status = "AND Status = 'Valid'")
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . $table . " WHERE " . $where . " AND limiteGauche > " . $element->limiteGauche . " AND limiteDroite < " . $element->limiteDroite . " " . $status . " ORDER BY " . $order);
 		return $resultat;
 	}
-	
+
 	static function getPere($table, $element, $where="Status='Valid'")
 	{
 		global $wpdb;
@@ -93,9 +92,9 @@ class Arborescence {
 		$resultat = $wpdb->get_row($query);
 		return $resultat;
 	}
-	
+
 	static function getFils($table, $element, $order = "id ASC", $numeroPage = null, $nombreElementsParPage = null, $where = " Status='Valid' ")
-	{	
+	{
 		global $wpdb;
 		$limit = "";
 		if($nombreElementsParPage != null)
@@ -103,18 +102,18 @@ class Arborescence {
 			$limit = "
 		LIMIT " . ($numeroPage - 1) . ", " . $nombreElementsParPage;
 		}
-		$query = "SELECT * 
-		FROM " . $table . " AS table1 
+		$query = "SELECT *
+		FROM " . $table . " AS table1
 		WHERE " . $where . "
-			AND table1.limiteGauche > " . $element->limiteGauche . " 
-			AND table1.limiteDroite < " . $element->limiteDroite . " 
+			AND table1.limiteGauche > " . $element->limiteGauche . "
+			AND table1.limiteDroite < " . $element->limiteDroite . "
 			AND NOT EXISTS (
-				SELECT * 
-				FROM " . $table . " AS table2 
+				SELECT *
+				FROM " . $table . " AS table2
 				WHERE " . $where . "
-					AND table2.limiteGauche > " . $element->limiteGauche . " 
-					AND table2.limiteDroite < " . $element->limiteDroite . " 
-					AND table1.limiteGauche > table2.limiteGauche 
+					AND table2.limiteGauche > " . $element->limiteGauche . "
+					AND table2.limiteDroite < " . $element->limiteDroite . "
+					AND table1.limiteGauche > table2.limiteGauche
 					AND table1.limiteDroite < table2.limiteDroite
 			)
 		ORDER BY " . $order . $limit;
@@ -123,7 +122,7 @@ class Arborescence {
 
 		return $resultat;
 	}
-	
+
 	/**
 	  * Transfer an element in a tree
 	  * @param string $table Table name of the element to transfer
@@ -131,18 +130,17 @@ class Arborescence {
 	  * @param Element_of_a_tree $elementFils The element to transfer
 	  * @param Element_of_a_tree $elementDestination The element to transfer father-to-be
 	  */
-	static function deplacerElements($table, $racine, $elementFils, $elementDestination)
-	{
+	static function deplacerElements($table, $racine, $elementFils, $elementDestination) {
 		global $wpdb;
-		
+
 		unset($tableauElements);
 		$limiteGauche = $elementFils->limiteGauche;
 		$limiteDroite = $elementFils->limiteDroite;
 		$ecart = $limiteDroite - $limiteGauche + 1;
 		$limiteDroiteDestination;
-		$tableauElements;
-		
-		/*
+		$tableauElements = array();
+
+		/**
 		  * On extrait l'�l�ment fils et ses descendants de l'arbre :
 		  *	- On d�place l'�l�ment fils et ses descendants avant 0
 		  */
@@ -151,21 +149,19 @@ class Arborescence {
 		// Tout �l�ment dont les limites sont comprises entre $limiteGauche et $limiteDroite est soit  l'�l�ment fils, soit un de ses descendants
 		$elements = Arborescence::getByLimites($table, $limiteGauche,$limiteDroite);
 		// Pour chaque �l�ment, on d�duit le decrement de ses limites
-		foreach($elements as $element)
-		{
+		foreach($elements as $element) {
 			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche  - $decrement ) . "', `limiteDroite`= '" . ($element->limiteDroite - $decrement ) . "' WHERE`id` = '" . $element->id . "'";
 			$wpdb->query($sql);
 		}
 
-		/*
+		/**
 		  * On referme l'arbre :
 		  *	- On tri les limites des �l�ments de l'arbre par ordre croissant
 		  *	- On affecte les valeurs de 0 � 2*(nombre d'�l�ments de l'abre) -1 dans l'ordre
 		  */
 		// Tout �l�ment dont les limites sont comprises entre la  limite gauche et la limite droite de la racine est un �l�ment de l'arbre
 		$elements = Arborescence::getByLimites($table, $racine->limiteGauche, $racine->limiteDroite);
-		for($i=0; $i<count($elements); $i++)
-		{
+		for ($i=0; $i<count($elements); $i++) {
 			$tableauElements[$i*2][0] = $elements[$i]->limiteGauche;
 			$tableauElements[$i*2][1] = 'g';
 			$tableauElements[$i*2][2] = $elements[$i]->id;
@@ -175,81 +171,66 @@ class Arborescence {
 		}
 		// On tri le tableau $tableauElements � partir de l'�l�ment 0 de chaque indice
 		sort($tableauElements);
-		for($i=0; $i<count($tableauElements); $i++)
-		{
-			if($tableauElements[$i][1] == 'g')
-			{
+		for ($i=0; $i<count($tableauElements); $i++) {
+			if($tableauElements[$i][1] == 'g') {
 				$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . $i . "' WHERE `id` = '" . $tableauElements[$i][2] . "'";
 			}
-			else
-			{
-				if($tableauElements[$i][2] == $elementDestination->id)
-				{
+			else {
+				if($tableauElements[$i][2] == $elementDestination->id) {
 					$limiteDroiteDestination = $i;
 				}
 				$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . $i . "' WHERE `id` = '" . $tableauElements[$i][2] . "'";
 			}
 			$wpdb->query($sql);
 		}
-		
-		/*
+
+		/**
 		  * On r�int�gre l'�l�ment fils :
 		  *	- On ouvre l'abre � l'emplacement o� l'on veut inserer l'�l�ment fils et ses descendants
 		  *	- On ins�re l'�l�ment fils et ses descendants dans l'arbre
 		  */
 		// Tout �l�ment dont les limites sont comprises entre $limiteDroiteDestination et la limite droite de la racine est un �l�ment dont les deux limites doivent �tre d�plac� de $ecart
 		$elements = Arborescence::getByLimites($table, $limiteDroiteDestination, $racine->limiteDroite);
-		foreach($elements as $element)
-		{
+		foreach($elements as $element) {
 			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche + $ecart) . "', `limiteDroite`= '" . ($element->limiteDroite + $ecart) . "' WHERE`id` = '" . $element->id . "'";
 			$wpdb->query($sql);
 		}
 		// Tout �l�ment dont la limite droite est comprise entre $limiteDroiteDestination et la limite droite de la racine
 		// et la limite gauche est avant $limiteDroiteDestination est un �l�ment dont la limite droite doit �tre d�plac� de $ecart
-		foreach($elements as $element)
-		{
+		foreach($elements as $element) {
 			$elementsApres[] = $element->id;
 		}
 		$elements = Arborescence::getByLimites($table, $racine->limiteGauche, ($limiteDroiteDestination - 1));
-		foreach($elements as $element)
-		{
+		foreach($elements as $element) {
 			$elementsAvant[] = $element->id;
 		}
 		$elementsArbre = Arborescence::getByLimites($table, $racine->limiteGauche, $racine->limiteDroite);
-		foreach($elementsArbre as $elementArbre)
-		{
+		foreach($elementsArbre as $elementArbre) {
 			// Tout �l�ment qui n'est ni avant ni apr�s $limiteDroiteDestination la chevauche (donc un �l�m�nt � modifier)
-			if($elementsAvant != null && $elementsApres != null)
-			{
-				if((!(in_array($elementArbre->id, $elementsAvant))) && (!(in_array($elementArbre->id, $elementsApres))))
-				{
+			if (!empty($elementsAvant) && !empty($elementsApres)) {
+				if((!(in_array($elementArbre->id, $elementsAvant))) && (!(in_array($elementArbre->id, $elementsApres)))) {
 					$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
 					$wpdb->query($sql);
 				}
 			}
-			elseif($elementsAvant != null)
-			{
-				if(!(in_array($elementArbre->id, $elementsAvant)))
-				{
+			elseif( !empty($elementsAvant) ) {
+				if(!(in_array($elementArbre->id, $elementsAvant))) {
 					$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
 					$wpdb->query($sql);
 				}
 			}
-			elseif($elementsApres != null)
-			{
-				if(!(in_array($elementArbre->id, $elementsApres)))
-				{
+			elseif( !empty($elementsApres) ) {
+				if(!(in_array($elementArbre->id, $elementsApres))) {
 					$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
 					$wpdb->query($sql);
 				}
 			}
-			else
-			{
+			else {
 				$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
 				$wpdb->query($sql);
 			}
 		}
-		
+
 		// On r�cup�re l'�l�ment fils et ses descendants
 		$elements = Arborescence::getByLimites($table, ($limiteGauche - $decrement ), ($limiteDroite - $decrement ));
 		$ecartAuNouvelEmplacement = ($limiteDroiteDestination - ($limiteDroite - $decrement ) + $ecart - 1);
@@ -298,7 +279,7 @@ class Arborescence {
 
 	/**
 	*	Get recursively the risqs for an element. (NB: this method is called by bilanParUnite())
-	*	
+	*
 	*	@param mixed $elementsFils An object with the different children of the element we are looking for the risqs
 	*	@param mixed $elementPere An object with the parent of the element we are looking for the risqs
 	*	@param mixed $table The element type we want to get descendant and risqs
@@ -322,7 +303,7 @@ class Arborescence {
 
 				$elements_fils = Arborescence::getFils(TABLE_GROUPEMENT, $element, "nom ASC");
 				$subElements = EvaGroupement::getUnitesDuGroupement($element->id);
-				$trouveElement = count($elements_fils) + count($subElements);			
+				$trouveElement = count($elements_fils) + count($subElements);
 				if($trouveElement)
 				{
 					$sousElements[$idTable]['content'] = Arborescence::completeTreeRecursive($elements_fils, $element, $table, $idTable);
@@ -382,7 +363,7 @@ class Arborescence {
 				}
 			}
 		}
-		
+
 		return $unit;
 	}
 
@@ -440,4 +421,44 @@ class Arborescence {
 		return $group;
 	}
 
+	function display_element_main_infos( $table_element, $id_element ) {
+		$main_infos = '';
+
+		if ( !empty($table_element) && !empty($id_element) ) {
+			global $wpdb;
+			$query = $wpdb->prepare(" SELECT nom FROM " . $table_element . " WHERE id = %d", $id_element);
+			$element_name = $wpdb->get_var( $query );
+			switch ( $table_element ) {
+				case TABLE_TACHE:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_T . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_ACTIVITE:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_ST . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_GROUPEMENT:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_GP . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_UNITE_TRAVAIL:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_UT . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_CATEGORIE_DANGER:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_CD . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_DANGER:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_D . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_METHODE:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_ME . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_CATEGORIE_PRECONISATION:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_CP . $id_element . ' - ' . $element_name;
+					break;
+				case TABLE_PRECONISATION:
+					$main_infos = ' - ' . ELEMENT_IDENTIFIER_P . $id_element . ' - ' . $element_name;
+					break;
+			}
+		}
+
+		return $main_infos;
+	}
 }

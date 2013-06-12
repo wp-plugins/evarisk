@@ -5,9 +5,9 @@
  * @author Evarisk
  * @version v5.0
  */
-	
+
 	function includesEvaluationDesRisques($idElement, $chargement = 'tout')
-	{		
+	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'scriptPartieDroite.php');
 		require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/evaluationRisquesPostBox.php');
 		if($chargement == 'tout')
@@ -19,8 +19,7 @@
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonGroupesUtilisateursElement.php');
-				if(current_user_can('digi_manage_user_right'))
-				{
+				if (current_user_can('digi_manage_user_right')) {
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/droitsUtilisateurs.php');
 				}
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php' );

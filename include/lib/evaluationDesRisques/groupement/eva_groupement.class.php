@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
@@ -9,7 +9,7 @@ include_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 
 class EvaGroupement {
-	
+
 	/**
 	 * @var int The groupement  identifier
 	 */
@@ -18,11 +18,11 @@ class EvaGroupement {
 	 * @var string The groupement  name
 	 */
 	var $name;
-	
+
 /*
  *	Constructeur et accesseurs
  */
-	
+
 	/**
 	 * Constructor of the groupement  class
 	 * @param int $id The identifier to setI
@@ -32,7 +32,7 @@ class EvaGroupement {
 		$this->id = $id;
 		$this->name = $name;
 	}
-	
+
 	/**
 		* Returns the groupement  identifier
 	 * @return int The identifier
@@ -65,11 +65,11 @@ class EvaGroupement {
 	{
 		$this->name = $name;
 	}
-	
+
 /*
 * Autres methodes
 */
-	
+
 	/**
 	* Returns the group witch is the identifier
 	* @param int $id Group identifier search
@@ -101,27 +101,27 @@ class EvaGroupement {
 	* @param string $order SQL order condition
 	* @return The groups maching with the where condition and order by the order condition
 	*/
-	function getGroupements($where = "1", $order = "id ASC") 
+	function getGroupements($where = "1", $order = "id ASC")
 	{
 		global $wpdb;
 
 		$query = $wpdb->prepare("
-		SELECT * 
-		FROM " . TABLE_GROUPEMENT . " 
-		WHERE nom <> 'Groupement Racine' 
-			AND " . $where . " 
+		SELECT *
+		FROM " . TABLE_GROUPEMENT . "
+		WHERE nom <> 'Groupement Racine'
+			AND " . $where . "
 		ORDER BY " . $order, "");
 		$resultat = $wpdb->get_results($query);
 
 		return $resultat;
 	}
-	
+
 	/**
 	* Returns all group name whitout the specifie
 	* @param string $saufGroupement group name not consider
 	* @return All the  groups name whitout the specifie
 	*/
-	function getGroupementsName($saufGroupement = '', $groupementStatus = '')
+	function getGroupementsName($saufGroupement = '', $groupementStatus = "1")
 	{
 		$groupements = EvaGroupement::getGroupements($groupementStatus);
 		foreach($groupements as $groupement)
@@ -135,7 +135,7 @@ class EvaGroupement {
 			return $tab_groupements;
 		else return null;
 	}
-	
+
 	/**
 	* Returns all working unit belonging to the group witch is identifier
 	* @param string $where The SQL where condition
@@ -148,7 +148,7 @@ class EvaGroupement {
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id_Groupement =" . $idGroupement . " AND " . $where . " AND Status = 'Valid' ORDER BY ". $order);
 		return $resultat;
 	}
-	
+
 	/**
 	* Returns all working unit belonging to the group witch is identifier or belonging to his descendants
 	* @param int $idGroupement The group identifier
@@ -170,7 +170,7 @@ class EvaGroupement {
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id_Groupement in (" . implode(', ', $tabId) . ") AND " . $where . " " . $sub_status . " ORDER BY ". $order);
 		return $resultat;
 	}
-	
+
 	/**
 	* Returns all working unit and groups belonging to the group witch is identifier
 	* @param int $idGroupement The group identifier
@@ -208,7 +208,7 @@ class EvaGroupement {
 		}
 		return $resultats;
 	}
-	
+
 	/**
 	* @todo employ� �valu�
 	*/
@@ -220,7 +220,7 @@ class EvaGroupement {
 		$entitesDescendanteGroupement = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
 		$unitesGroupement = EvaGroupement::getUnitesDuGroupement($idGroupement);
 		$unitesDescendanteGroupement = EvaGroupement::getUnitesDescendantesDuGroupement($idGroupement);
-		
+
 		$info['nom'] = __('Niveau de risque', 'evarisk');
 		$scoreRisqueGroupement = EvaGroupement::getScoreRisque($idGroupement);
 		$info['valeur'] = EvaGroupement::getNiveauRisque($scoreRisqueGroupement);
@@ -240,7 +240,7 @@ class EvaGroupement {
 		$infos[] = $info;
 		return $infos;
 	}
-	
+
 	//@todo getScoreRisque
 	function getScoreRisque($id)
 	{
@@ -263,7 +263,7 @@ class EvaGroupement {
 		{
 			foreach($temp as $risque)
 			{
-				$risques['"' . $risque->id . "'"][] = $risque; 
+				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
 		if(isset($risques) && ($risques != null))
@@ -287,7 +287,7 @@ class EvaGroupement {
 			return 0;
 		}
 	}
-	
+
 	function getSommeRisque($id)
 	{
 		$scoreTotal = $nbRisque = 0;
@@ -307,7 +307,7 @@ class EvaGroupement {
 		{
 			foreach($temp as $risque)
 			{
-				$risques['"' . $risque->id . "'"][] = $risque; 
+				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
 		$nbRisque += count($temp);
@@ -325,7 +325,7 @@ class EvaGroupement {
 
 		return $risqueDuGroupement;
 	}
-	
+
 	function getNiveauRisque($quotation)
 	{
 		return Risque::getNiveauRisque(Risque::getSeuil($quotation));
@@ -339,7 +339,7 @@ class EvaGroupement {
 	function getMarkersGeoLoc($id){
 		global $wpdb;
 		$geoLoc = null;
-		
+
 		if(!empty($id) && is_int($id)){
 			$query = $wpdb->prepare("SELECT * FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $id);
 			$group = $wpdb->get_row($query);
@@ -350,8 +350,8 @@ class EvaGroupement {
 				$geoLoc = $address->getGeoLoc();
 				$scoreRisque = EvaGroupement::getScoreRisque($group->id);
 				$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_GROUPEMENT_ICON . '" alt="Groupement : "/><strong>' . $group->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . EvaGroupement::getNiveauRisque($scoreRisque) . '</span></em>';
-				$geoLoc['type'] = "groupement"; 
-				$geoLoc['adress'] = $group->id_adresse; 
+				$geoLoc['type'] = "groupement";
+				$geoLoc['adress'] = $group->id_adresse;
 				$geoLoc['image'] = GOOGLEMAPS_GROUPE;
 			}
 		}
@@ -369,21 +369,21 @@ class EvaGroupement {
 	function saveNewGroupement($nom)
 	{
 		global $wpdb;
-		
+
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_GROUPEMENT);
 		$wpdb->insert(TABLE_GROUPEMENT, array('nom' => $nom, 'Status' => 'Valid', 'limiteGauche' => $lim, 'limiteDroite' => ($lim+1), 'creation_date' => current_time('mysql', 0)), '%s');
 
 		$sql = "UPDATE " . TABLE_GROUPEMENT . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = 'Groupement Racine'";
 		$wpdb->query($sql);
 	}
-	
+
 	/**
 	* Update the group which is the identifier
 	* @param string $id_Groupement group identifier (not update)
-	* @param string $nom group name 
+	* @param string $nom group name
 	* @param string $description group description
 	* @param string $telephone group telephone
-	* @param string $effectif group effective 
+	* @param string $effectif group effective
 	* @param string $idAdresse Identifier of the address group name in the Adress Table
 	* @param string $idGroupementPere  father group id
 	*/
@@ -395,7 +395,7 @@ class EvaGroupement {
 		}
 		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => current_time('mysql', 0));
 		$wpdb->update(TABLE_GROUPEMENT, $groupementInformations, array( 'id' => $id_Groupement ), '%s', array('%d') );
-		
+
 		$groupementFils =  EvaGroupement::getGroupement($id_Groupement);
 		$groupementDestination =  EvaGroupement::getGroupement($idGroupementPere);
 		$groupementPere = Arborescence::getPere(TABLE_GROUPEMENT, $groupementFils);
@@ -416,10 +416,10 @@ class EvaGroupement {
 	function updateGroupementByField($id_Groupement, $whatToUpdate, $whatToSet)
 	{
 		global $wpdb;
-		
+
 		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_GROUPEMENT . " 
-				SET " . $whatToUpdate . " = '%s' 
+			"UPDATE " . TABLE_GROUPEMENT . "
+				SET " . $whatToUpdate . " = '%s'
 				, lastupdate_date = %s
 			WHERE id='" . $id_Groupement . "'",
 			 $whatToSet, current_time('mysql', 0)
@@ -427,9 +427,9 @@ class EvaGroupement {
 
 		return $wpdb->query($query);
 	}
-	
+
 	/**
-	* Set the status of the group wich is the identifier to Delete 
+	* Set the status of the group wich is the identifier to Delete
 	*/
 	function deleteGroupement($id){
 		global $wpdb;
@@ -457,7 +457,7 @@ class EvaGroupement {
 			$class = 'error';
 		}
 
-		echo 
+		echo
 			'<script type="text/javascript">
 				digirisk(document).ready(function(){
 					digirisk("#message").addClass("' . $class . '");

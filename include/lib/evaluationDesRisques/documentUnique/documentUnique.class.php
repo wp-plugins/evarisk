@@ -98,7 +98,7 @@ class eva_documentUnique {
 
 				/*	Build the output array we the result	*/
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $elementPrefix . $element->nom, 'class' => '');
-				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
+				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id . ' - ' . ELEMENT_IDENTIFIER_E . $risque[0]->id_evaluation, 'class' => '');
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
 				$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $risque[0]->nomDanger, 'class' => '');
 
@@ -106,12 +106,13 @@ class eva_documentUnique {
 					$query = $wpdb->prepare("SELECT GROUP_CONCAT(id_evaluation) as risk_eval_list FROM " . TABLE_AVOIR_VALEUR . " WHERE id_risque = %d GROUP BY id_risque", $risque[0]->id);
 					$risk_eval_list = $wpdb->get_var($query);
 					$query = $wpdb->prepare(
-							"SELECT *
-			FROM " . TABLE_ACTIVITE_SUIVI . "
-			WHERE id_element IN (" . $risk_eval_list . ")
-				AND table_element = '%s'
-			ORDER BY date DESC",
-							TABLE_AVOIR_VALEUR
+						"SELECT *
+						FROM " . TABLE_ACTIVITE_SUIVI . "
+						WHERE id_element IN (" . $risk_eval_list . ")
+							AND table_element = '%s'
+							AND status = 'valid'
+						ORDER BY date DESC",
+						TABLE_AVOIR_VALEUR
 					);
 					$risk_comment_list = $wpdb->get_results($query);
 					$risk_comment_export = '';
@@ -144,16 +145,26 @@ class eva_documentUnique {
 
 					if ($outputInterfaceType == 'massUpdater') {/*	In case we are on the mass updater interface	*/
 						/*	Add the risq comment input	*/
-						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqComment" id="risqComment_' . $risque[0]->id . '" name="risqComment_' . $risque[0]->id . '" >' . $risque[0]->commentaire . '</textarea>', 'class' => '');
+						$follow_up_list = suivi_activite::getSuiviActivite(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation);
+						$follow_up_content = '';
+						if ( !empty($follow_up_list) ) {
+							foreach ( $follow_up_list as $follow_up ) {
+								$follow_up_content .= suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation, false, $follow_up->id, "risqComment[" . $risque[0]->id . "][" . $follow_up->id . "]", 'inline');
+							}
+						}
+						else {
+							$follow_up_content .= suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation, false, 0, "risqComment[" . $risque[0]->id . "][0]", 'inline');
+						}
+						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $follow_up_content, 'class' => '');
 
 						/*	Add the prioritary action input	*/
 						if($contenuInput != '')
-							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqPrioritaryCA" id="risqPrioritaryCA_' . $preconisationActionID . '" name="risqPrioritaryCA_' . $risque[0]->id . '" >' . $contenuInput . '</textarea>', 'class' => '');
+							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqPrioritaryCA" id="risqPrioritaryCA_' . $preconisationActionID . '" name="risqPrioritaryCA[' . $risque[0]->id . '][' . $preconisationActionID . ']" >' . $contenuInput . '</textarea>', 'class' => '');
 						else
 							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => __('Aucune action pr&eacute;vue', 'evarisk'), 'class' => '');
 
 						/*	Add the checkbox to define if this entry must be updated or not	*/
-						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<input type="checkbox" id="checkboxRisqMassUpdater_' . $risque[0]->id . '" name="checkboxRisqMassUpdater_' . $risque[0]->id . '" value="" class="checkboxRisqMassUpdater" /><input type="hidden" id="prioritaryActionMassUpdater_' . $risque[0]->id . '" value="' . $preconisationActionID . '" />', 'class' => '');
+						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<input type="checkbox" id="checkboxRisqMassUpdater_' . $risque[0]->id . '" name="checkboxRisqMassUpdater[]" value="' . $risque[0]->id . '" class="checkboxRisqMassUpdater" /><input type="hidden" id="prioritaryActionMassUpdater_' . $risque[0]->id . '" value="' . $preconisationActionID . '" />', 'class' => '');
 					}
 					else if ( ($outputInterfaceType == 'exportActionPlan') || ($outputInterfaceType == 'export_risk_summary') ) {/*	In case we are creating a new DUER	*/
 						$query = $wpdb->prepare("SELECT TASK.id FROM ".TABLE_TACHE." AS TASK WHERE TASK.tableProvenance=%s AND idProvenance=%d", TABLE_RISQUE, $risque[0]->id);
@@ -164,7 +175,7 @@ class eva_documentUnique {
 
 							$task_export_content='';
 							if ( $racine->nom_exportable_plan_action == 'yes' ) {
-								$task_export_content.=$racine->nom;
+								$task_export_content .= $racine->nom;
 
 								if ( $racine->description_exportable_plan_action == 'yes' ) {
 									$task_export_content .= ' : ' . $racine->description.' ';
@@ -223,7 +234,7 @@ class eva_documentUnique {
 					unset($listeValeurs);
 					foreach ($risque as $ligneRisque) {
 						$date_to_take = $risque[0]->date;
-						if (!empty($listeIdVariables) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
+						if (!empty($listeIdVariables) && !empty($listeIdVariables['"' . $ligneRisque->id_variable . '"']) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
 							foreach ($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre) {
 								$var_infos = eva_Variable::getVariable($ligneRisque->id_variable);
 								$listeValeurs[$ordre] = '<br />' . ELEMENT_IDENTIFIER_V . $ligneRisque->id_variable . ' - ' . $var_infos->nom . ' : ' . Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
@@ -255,8 +266,8 @@ class eva_documentUnique {
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function output_correctiv_action_tree($elementsFils, $elementPere, $table, $output_type = '', $separator = '') {
 		global $wpdb;
 		$monCorpsTable = $monCorpsSubElements = $output = '';
@@ -443,15 +454,15 @@ class eva_documentUnique {
 	}
 
 	/**
-	*	Output the risqs summary for an element
-	*
-	*	@param mixed $tableElement The element type we want to show the summary for
-	*	@param integer $idElement The element identifier we want to show the summary for
-	*	@param mixed $typeBilan Define if the output must be the summary by risq or by work unit
-	*	@param mixed $outPut Define the ouptu type we want to get
-	*
-	*	@return mixed An html result with the different risqs or a link to print the work unit sheet
-	*/
+	 *	Output the risqs summary for an element
+	 *
+	 *	@param mixed $tableElement The element type we want to show the summary for
+	 *	@param integer $idElement The element identifier we want to show the summary for
+	 *	@param mixed $typeBilan Define if the output must be the summary by risq or by work unit
+	 *	@param mixed $outPut Define the ouptu type we want to get
+	 *
+	 *	@return mixed An html result with the different risqs or a link to print the work unit sheet
+	 */
 	function bilanRisque($tableElement, $idElement, $typeBilan = 'ligne', $outPut = 'html') {
 		unset($titres, $classes, $idLignes, $lignesDeValeurs);
 
@@ -459,26 +470,24 @@ class eva_documentUnique {
 			$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement, '');
 
 			if($outPut == 'html'){
-				/*	Si on veut le bilan par ligne	*/
-				if($typeBilan == 'ligne'){//Cr�ation de la table
-					{//Script de d&eacute;finition de la dataTable pour la somme des risques par ligne
-						$idTable = 'tableBilanRisqueUnitaire' . $tableElement . $idElement . $typeBilan;
-						$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
-						$titres[] = __("Id. risque", 'evarisk');
-						$titres[] = __("Quotation", 'evarisk');
-						$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
-						$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
-						$classes[] = 'columnQuotation';
-						$classes[] = 'columnRId';
-						$classes[] = 'columnQuotation';
-						$classes[] = 'columnNomDanger';
-						$classes[] = 'columnCommentaireRisque';
+				/**	Build output with datatable jquery plugin if requested result are by line	*/
+				if ($typeBilan == 'ligne') {
+					$idTable = 'tableBilanRisqueUnitaire' . $tableElement . $idElement . $typeBilan;
+					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
+					$titres[] = __("Id. risque", 'evarisk');
+					$titres[] = __("Quotation", 'evarisk');
+					$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
+					$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
+					$classes[] = 'columnQuotation';
+					$classes[] = 'columnRId';
+					$classes[] = 'columnQuotation';
+					$classes[] = 'columnNomDanger';
+					$classes[] = 'columnCommentaireRisque';
 
-						$scriptVoirRisque = $scriptRisque . '
-						<script type="text/javascript">
-						digirisk(document).ready(function() {
-							digirisk("#' . $idTable . '").dataTable(
-							{
+					$scriptVoirRisque = $scriptRisque . '
+					<script type="text/javascript">
+					digirisk(document).ready(function() {
+						digirisk("#' . $idTable . '").dataTable( {
 							"bPaginate": false,
 							"bLengthChange": false,
 							"bAutoWidth": false,
@@ -491,28 +500,27 @@ class eva_documentUnique {
 								{ "bSortable": false},
 								{ "bSortable": false},
 							],
-							"aaSorting": [[2,"desc"]]});
-							digirisk("#' . $idTable . ' tfoot").remove();
+							"aaSorting": [[2,"desc"]]
 						});
-						</script>';
+						digirisk("#' . $idTable . ' tfoot").remove();
+					});
+					</script>';
 
-						$real_line_to_show = array();
-						foreach ( $lignesDeValeurs as $line_key => $line_content ) {
-							$i = 0;
-							foreach ( $line_content as $line_content_details ) {
-								if ( $i <= 4) {
-									$real_line_to_show[$line_key][] = $line_content_details;
-								}
-								$i++;
+					$real_line_to_show = array();
+					foreach ( $lignesDeValeurs as $line_key => $line_content ) {
+						$i = 0;
+						foreach ( $line_content as $line_content_details ) {
+							if ( $i <= 4) {
+								$real_line_to_show[$line_key][] = $line_content_details;
 							}
+							$i++;
 						}
-
-						$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $real_line_to_show, $classes, $idLignes, $scriptVoirRisque);
 					}
+
+					$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $real_line_to_show, $classes, $idLignes, $scriptVoirRisque);
 
 					return $recapitulatifRisque;
 				}
-
 				/*	Si on veut le bilan par unit&eacute; de travail	*/
 				elseif($typeBilan == 'unite'){
 					$bilanParUnite = eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement');
@@ -537,11 +545,9 @@ class eva_documentUnique {
 					return $recapitulatifRisque;
 				}
 			}
-			elseif($outPut == 'massUpdater')
-			{
+			else if ($outPut == 'massUpdater') {
 				$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement, $outPut);
-				if($typeBilan == 'ligne')
-				{
+				if($typeBilan == 'ligne') {
 					foreach($lignesDeValeurs as $ligne_key => $ligne){$idLignes[$ligne_key] = $ligne[1]['value'];}
 
 					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;

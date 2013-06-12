@@ -95,10 +95,6 @@ class eva_gestionDoc {
 					digirisk(".qq-upload-drop-area").each(function(){
 						digirisk(this).html("<span>' . __("D&eacute;poser les fichiers ici pour les t&eacute;l&eacute;charger", "evarisk") . '</span>");
 					});
-					setTimeout(function(){
-						digirisk(".qq-upload-button").width("100%");
-					}
-					, "300");
 				});
 			</script>
 			<div id="' . $idUpload . '" class="divUpload">
@@ -558,7 +554,7 @@ class eva_gestionDoc {
 				break;
 			case TABLE_UNITE_TRAVAIL:
 			case TABLE_UNITE_TRAVAIL . '_RS':
-				$element = ELEMENT_IDENTIFIER_FUT;
+				$element = ELEMENT_IDENTIFIER_UT;
 				if ($informations['document_type'] == 'listing_des_risques') {
 					$element = ELEMENT_IDENTIFIER_FSUT;
 				}
@@ -803,6 +799,9 @@ class eva_gestionDoc {
 											$i++;
 										}
 									}
+									else if ( $chosen_var->affichageVar == 'slide' ) {
+										$penibility_risk[$risque_id][$id_evaluation]['chosen_method_var_value'] .= $chosen_var->nom . ' : ' . $evaluation_var->valeur . ' / ';
+									}
 								}
 							}
 							$penibility_risk[$risque_id][$id_evaluation]['chosen_method_var'] = substr($penibility_risk[$risque_id][$id_evaluation]['chosen_method_var'], 0, -3);
@@ -815,7 +814,9 @@ class eva_gestionDoc {
 
 		/**	Build risk for the user	*/
 		$user_risk = array();
+		$user_risk['riskPenibleSoumis'] = array();
 		$effectiv_risks = array();
+		$user_risk['riskPenibleSoumis'] = array();
 		if ( !empty($users) && !empty($penibility_risk) ) {
 			foreach ( $users as $user_id => $user_affectations ) {
 				foreach ( $user_affectations as $affectation_id => $affectation_detail ) {
@@ -824,7 +825,7 @@ class eva_gestionDoc {
 
 					foreach ( $penibility_risk as $risk_id => $risk_evaluations ) {
 						foreach ( $risk_evaluations as $risk_evaluation_id => $risk_evaluation_details) {
-							if ( ($affectation_date_to_take <= $risk_evaluation_details['date']) && (empty($unaffectation_date_to_take) || ($unaffectation_date_to_take) || ($risk_evaluation_details['date'] <= $unaffectation_date_to_take)) ) {
+							if ( ($affectation_date_to_take <= $risk_evaluation_details['date']) && (empty($unaffectation_date_to_take) || ($unaffectation_date_to_take == __('Actuellement affect&eacute;', 'evarisk')) || ($risk_evaluation_details['date'] <= $unaffectation_date_to_take)) ) {
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['idRisque'] = ELEMENT_IDENTIFIER_R . $risk_id;
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['idEvaluation'] = ELEMENT_IDENTIFIER_E . $risk_evaluation_id;
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['intituleRisque'] = ELEMENT_IDENTIFIER_D . $risk_evaluation_details['id_danger'] . ' - ' . $risk_evaluation_details['nom_danger'];
@@ -971,7 +972,7 @@ class eva_gestionDoc {
 				$new_sheet_params['unitRisk'] 				= serialize($user_risk);
 				$new_sheet_params['recommandation'] 		= '';
 				$new_sheet_params['document_type'] 			= $model_shape;
-				$new_sheet_params['affected_user'] 		= $user_id;
+				$new_sheet_params['affected_user'] 			= $user_id;
 				$new_sheet_params['document_final_dir'] 	= $user_id . '/' . $tableElement . '/' . $idElement . '/';
 
 				$new_sheet = $wpdb->insert(TABLE_FP, $new_sheet_params);
@@ -1980,7 +1981,7 @@ class eva_gestionDoc {
 	*	Allows to affect documents to corrective actions
 	*/
 	function document_box_caller(){
-		$postBoxTitle = __('Documents', 'evarisk');
+		$postBoxTitle = __('Documents', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 		$postBoxId = 'postBoxDocument';
 		add_meta_box($postBoxId, $postBoxTitle, array('eva_gestionDoc', 'correctiv_action_document_box'), PAGE_HOOK_EVARISK_TACHE, 'rightSide', 'default');
 		add_meta_box($postBoxId, $postBoxTitle, array('eva_gestionDoc', 'correctiv_action_document_box'), PAGE_HOOK_EVARISK_ACTIVITE, 'rightSide', 'default');
@@ -2004,7 +2005,7 @@ class eva_gestionDoc {
 
 			$display_button = true;
 			switch($arguments['tableElement']){
-				case TABLE_TACHE:{
+				case TABLE_TACHE:
 					$repertoireDestination = '';
 					$table = $arguments['tableElement'];
 
@@ -2019,8 +2020,11 @@ class eva_gestionDoc {
 				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
 			</div>';
 					}
-				}break;
-				case TABLE_ACTIVITE:{
+					if (!current_user_can('digi_edit_task') && !current_user_can('digi_edit_task_' . $arguments['idElement'])) {
+						$display_button = false;
+					}
+				break;
+				case TABLE_ACTIVITE:
 					$repertoireDestination = '';
 					$table = $arguments['tableElement'];
 
@@ -2035,7 +2039,10 @@ class eva_gestionDoc {
 				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
 			</div>';
 					}
-				}break;
+					if (!current_user_can('digi_edit_action') && !current_user_can('digi_edit_action_' . $arguments['idElement'])) {
+						$display_button = false;
+					}
+				break;
 			}
 
 			if($display_button){

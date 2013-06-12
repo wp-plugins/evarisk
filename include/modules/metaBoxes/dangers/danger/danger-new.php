@@ -2,31 +2,31 @@
 /*
  * @version v5.0
  */
- 
- 
+
+
 //Postbox definition
-$postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk');
+$postBoxTitle = __('Informations G&eacute;n&eacute;rales', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 $postBoxId = 'postBoxGeneralInformation';
 $postBoxCallbackFunction = 'getDangerGeneralInformationPostBoxBody';
 add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_DANGERS, 'rightSide', 'default');
- 
+
 function getDangerGeneralInformationPostBoxBody($arguments)
 {
-	require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' ); 
-	require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php' ); 
+	require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.class.php' );
+	require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php' );
 	require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php');
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php');
 
 	$postId = '';
 	if($arguments['idElement']!=null)
-	{	
+	{
 		$postId = $arguments['idElement'];
 		$danger = EvaDanger::getDanger($postId);
 		$contenuInputTitre = $danger->nom;
 		$contenuInputDescription = $danger->description;
 		$grise = false;
 		$catMere = categorieDangers::getCategorieDanger($danger->id_categorie);
-		
+
 		$tabParams = array();
 		if($danger->choix_danger != null)
 		{
@@ -35,7 +35,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$defaultMethode = $danger->methode_eva_defaut;
 	}
 	else
-	{	
+	{
 		$contenuInputTitre = '';
 		$contenuInputDescription = '';
 		$catMere = categorieDangers::getCategorieDanger($arguments['idPere']);
@@ -57,7 +57,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$idTitre = "nom_danger";
 		$danger_new = $danger_new . EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
 	}
-	{//Cat�gorie de dangers m�re		
+	{//Cat�gorie de dangers m�re
 		$selection = $catMere->id;
 		$nameSelect = "categorieMere";
 		$idSelect = "categorieMere";
@@ -99,7 +99,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		if(!empty($defaultMethode)){
 			$selected_method = MethodeEvaluation::getMethod($defaultMethode);
 		}
-		$script = '<script type="text/javascript">  
+		$script = '<script type="text/javascript">
 					 jQuery(document).ready(function(){
 						jQuery(".choixPenibilite").click(function(){
 							if (jQuery(this).is(":checked")) {
@@ -111,13 +111,13 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 						});
 					});
 					</script>';
-		$danger_new .= '<div id="digi_penibilite_method_selector"' . $digi_penibilite_method_selector_class . ' >' . EvaDisplayInput::afficherComboBox($elements, $idSelect, $labelSelect, $selectName, '', $selected_method).$script.'</div>';	
+		$danger_new .= '<div id="digi_penibilite_method_selector"' . $digi_penibilite_method_selector_class . ' >' . EvaDisplayInput::afficherComboBox($elements, $idSelect, $labelSelect, $selectName, '', $selected_method).$script.'</div>';
 	}
-	
+
 	{//Bouton Enregistrer
 		/*	We check if there are no danger with the same name	*/
 		$saufDanger = $listeDangersExistants = $actionValue = '';
-		if(isset($danger)) 
+		if(isset($danger))
 		{
 			$saufDanger = $danger->nom;
 			$actionValue = 'digirisk("#act").val("update")';
@@ -143,7 +143,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 		$idBouttonEnregistrer = 'save';
 		$scriptEnregistrement = '<script type="text/javascript">
 			function isSomeName()
-			{				
+			{
 				valeurActuelle = digirisk("#nom_danger").val();
 				if(valeurActuelle == "")
 				{
@@ -166,7 +166,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 							var choix_penibilite = jQuery("#choixPenible").val();
 						}
 						'. $actionValue . '
-						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true", 
+						digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
 							"table": "' . TABLE_DANGER . '",
 							"act": digirisk("#act").val(),
 							"id": digirisk("#id").val(),
@@ -176,13 +176,13 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 							"affichage": digirisk("#affichage").val(),
 							"idsFilAriane": digirisk("#idsFilAriane").val(),
 							"selectionMethode": digirisk("#SelectMethodeEva").val(),
-							"choix_danger": choix_danger, 
+							"choix_danger": choix_danger,
 							"choix_penibilite" : choix_penibilite
 						});
 					}
 				}
 			}
-			digirisk(document).ready(function() {				
+			digirisk(document).ready(function() {
 				digirisk(\'#' . $idBouttonEnregistrer . '\').click(function() {
 					if(digirisk(\'#' . $idTitre . '\').is(".form-input-tip"))
 					{
@@ -198,7 +198,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 			$danger_new .= EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'save', false, false, '', 'button-primary alignright', '', '', $scriptEnregistrement);
 		}
 	}
-	
+
 	$danger_new = $danger_new . EvaDisplayInput::fermerForm('informationGeneralesDanger');
 	echo $danger_new;
 }

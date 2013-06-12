@@ -3,25 +3,25 @@
  * @version v5.0
  */
 	//Postbox definition
-	$postBoxTitle = __('R&eacute;capitulatif', 'evarisk');
+	$postBoxTitle = __('R&eacute;capitulatif', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxHeaderGroupement';
 	$postBoxCallbackFunction = 'getHeaderGroupementPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS, 'rightSide', 'default');
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION, 'rightSide', 'default');
-	 
+
 	function getHeaderGroupementPostBoxBody($arguments)
 	{
 		$tableElement = $arguments['tableElement'];
 		$idElement = $arguments['idElement'];
-		
+
 		require_once(EVA_CONFIG);
 		require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaGoogleMaps.class.php' );
-		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
-		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
-		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 
 		if(((int)$idElement) == 0)
@@ -34,10 +34,10 @@
 			echo $script;
 		}
 		else
-		{//En-tête
+		{//En-tï¿½te
 			$responsables = null;
 			if($idElement!=null)
-			{	
+			{
 				$groupement = EvaGroupement::getGroupement($idElement);
 				$nomGroupement = $groupement->nom;
 				$groupementPere = Arborescence::getPere($tableElement, $groupement);
@@ -103,9 +103,9 @@
 						digirisk(document).ready(function(){
 							digirisk("#' . $idButton . '").hide();
 							digirisk("#' . $idButton . '").click(function(){
-								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 								{
-									"post": "true", 
+									"post": "true",
 									"table": "' . TABLE_GROUPEMENT . '",
 									"act": "updateByField",
 									"id": ' . $idElement . ',
@@ -136,7 +136,7 @@
 									digirisk("#nom_groupement").removeClass("form-input-tip");
 								}
 								else{
-									digirisk("#nom_groupement").addClass("form-input-tip");							
+									digirisk("#nom_groupement").addClass("form-input-tip");
 								}
 								if(' . $valeurActuelleIn . '){
 									digirisk("#' . $idButton . '").hide();

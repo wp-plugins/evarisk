@@ -1,6 +1,6 @@
 <?php
 /**
- * This class allows to work on many activities (equivalent to many rows in data base) 
+ * This class allows to work on many activities (equivalent to many rows in data base)
  *
  * @author Evarisk
  * @version v5.0
@@ -14,7 +14,7 @@ class EvaActivityTable extends evaBaseActivity
 	 * @var array Collection of EvaActivity object indexed by identifier.
 	 */
 	var $activities;
-	
+
 /*
  *	Constructeur et accesseurs
  */
@@ -22,8 +22,7 @@ class EvaActivityTable extends evaBaseActivity
 	 * Constructor of the EvaActivityTable class
 	 * @param array $activities Collection of EvaActivity object indexed by identifier.
 	 */
-	function EvaActivityTable($activities = null)
-	{
+	function EvaActivityTable($activities = null) {
 		$this->activities = $activities;
 		unset($this->id);
 		unset($this->relatedTaskId);
@@ -45,17 +44,21 @@ class EvaActivityTable extends evaBaseActivity
 		unset($this->idPhotoApres);
 		unset($this->nom_exportable_plan_action);
 		unset($this->description_exportable_plan_action);
+		unset($this->planned_time);
+		unset($this->cout_reel);
+		unset($this->elapsed_time);
+		unset($this->real_start_date);
+		unset($this->real_end_date);
 	}
-	
+
 	/**
 	 * Returns the collection of activities
 	 * @return array The collection of activities indexed by their identifier
 	 */
-	function getActivities()
-	{
+	function getActivities() {
 		return $this->activities;
 	}
-	
+
 	/**
 	 * Add a activity to the collection
 	 * @param EvaActivity Activity to add to the collection
@@ -64,7 +67,7 @@ class EvaActivityTable extends evaBaseActivity
 	{
 		$this->activities[$activity->getId()] = $activity;
 	}
-	
+
 	/**
 	 * Remove a activity from the collection
 	 * @param EvaActivity Activity to remove from the collection
@@ -76,7 +79,7 @@ class EvaActivityTable extends evaBaseActivity
 		unset($this->activities[$activityId]);
 		return $activity;
 	}
-	
+
 	/**
 	 * Remove all activities from the collection
 	 */
@@ -84,7 +87,7 @@ class EvaActivityTable extends evaBaseActivity
 	{
 		unset($this->activities);
 	}
-	
+
 	/**
 	 * Get the activities like the one use to call (id and left and right limit are non use because they are unique)
 	 * @param EvaActivity Activity use to compare
@@ -92,9 +95,9 @@ class EvaActivityTable extends evaBaseActivity
 	function getActivitiesLike($activity)
 	{
 		global $wpdb;
-		
+
 		$this->removeAllActivities();
-		
+
 		{//Variables cleaning
 			$name = digirisk_tools::IsValid_Variable($activity->getName());
 			$relatedTaskId = (int) digirisk_tools::IsValid_Variable($activity->getRelatedTaskId());
@@ -115,6 +118,11 @@ class EvaActivityTable extends evaBaseActivity
 			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($activity->getnom_exportable_plan_action());
 			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($activity->getdescription_exportable_plan_action());
 			$dateSolde = digirisk_tools::IsValid_Variable($activity->dateSolde());
+			$cout_reel = digirisk_tools::IsValid_Variable($activity->getcout_reel());
+			$planned_time = digirisk_tools::IsValid_Variable($activity->getplanned_time());
+			$elapsed_time = digirisk_tools::IsValid_Variable($activity->getelapsed_time());
+			$real_start_date = digirisk_tools::IsValid_Variable($activity->getreal_start_date());
+			$real_end_date = digirisk_tools::IsValid_Variable($activity->getreal_end_date());
 		}
 		{//Query creation
 			$sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -177,11 +185,11 @@ class EvaActivityTable extends evaBaseActivity
 			if($dateSolde != '')
       {
         $sql = $sql . " AND " . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'";
-      }			
+      }
 			if($idPhotoAvant != '')
       {
         $sql = $sql . " AND " . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "'";
-      }			
+      }
 			if($idPhotoApres != '')
       {
         $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
@@ -194,10 +202,31 @@ class EvaActivityTable extends evaBaseActivity
       {
         $sql = $sql . " AND " . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "'";
       }
+			if($cout_reel != '')
+		      {
+		        $sql = $sql . " AND " . self::cout_reel . " = '" . mysql_real_escape_string($cout_reel) . "'";
+		      }
+			if($planned_time != '')
+		      {
+		        $sql = $sql . " AND " . self::planned_time . " = '" . mysql_real_escape_string($planned_time) . "'";
+		      }
+			if($elapsed_time != '')
+		      {
+		        $sql = $sql . " AND " . self::elapsed_time . " = '" . mysql_real_escape_string($elapsed_time) . "'";
+		      }
+
+			if($real_start_date != '')
+		      {
+		        $sql = $sql . " AND " . self::real_start_date . " = '" . mysql_real_escape_string($real_start_date) . "'";
+		      }
+			if($real_end_date != '')
+		      {
+		        $sql = $sql . " AND " . self::real_end_date . " = '" . mysql_real_escape_string($real_end_date) . "'";
+		      }
 		}
-		
+
 		$wpdbActivities = $wpdb->get_results($sql);
-		
+
 		foreach($wpdbActivities as $wpdbActivity)
 		{
 			$activity = new EvaActivity();

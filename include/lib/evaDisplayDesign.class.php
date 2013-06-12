@@ -93,6 +93,7 @@ class EvaDisplayDesign {
 <a id="affichageTable" onclick="return false;"><img alt="' . __('Affichage en grille' , 'evarisk') . '" src="' . PICTO_GRILLE . '" title="' . __('Affichage en grille' , 'evarisk') . '"/> ' . __('Grille' , 'evarisk') . '</a> -
 <a id="affichageListe" onclick="return false;"><img alt="' . __('Affichage en liste' , 'evarisk') . '" src="' . PICTO_LISTE . '" title="' . __('Affichage en liste' , 'evarisk') . '"/> ' . __('Liste' , 'evarisk') . '</a>
 			</div> -->
+			<noscript><h3 style="color:red;" >' . __('Merci d\'activer le javascript pour pouvoir utiliser le logiciel digirisk', 'evarisk') . '</h3></noscript>
 			<div id="choseEnlarging" class="choseEnlarging" style="text-align: center">
 				<span style="" id="rightEnlarging" class="rightEnlarging"></span>
 				<div id="enlarging" class="enlarging"></div>
@@ -955,10 +956,11 @@ class EvaDisplayDesign {
 			close: function(){
 				digirisk(this).html("");
 			}';
-			if($table == TABLE_GROUPEMENT){
-			$trashScript .= ',
+			switch ( $table ) {
+				case TABLE_GROUPEMENT:
+					$trashScript .= ',
 			buttons:{
-				"' . __('Reinitialiser l\'arbre des groupements', 'evarisk') . '": function(){
+				"' . __('Reinitialiser l\'arbre des groupements', 'evarisk') . '": function() {
 					if(confirm(digi_html_accent_for_js("' . __('Si vous effectuez cette action, tous les groupements de l\'arbre seront replac&eacute;s &agrave; la racine de votre architecture', 'evarisk') . '"))){
 						jQuery.getJSON(EVA_AJAX_FILE_URL, { post: "true", nom: "initialize_groupement_tree" },
 							function(data){
@@ -973,7 +975,28 @@ class EvaDisplayDesign {
 					}
 				}
 			}';
+					break;
+				case TABLE_TACHE:
+					$trashScript .= ',
+			buttons:{
+				"' . __('Reinitialiser l\'arbre des taches', 'evarisk') . '" : function() {
+					if(confirm(digi_html_accent_for_js("' . __('Si vous effectuez cette action, toutes les t&acirc;ches de l\'arbre seront replac&eacute;se &agrave; la racine de votre architecture', 'evarisk') . '"))){
+						jQuery.getJSON(EVA_AJAX_FILE_URL, { post: "true", nom: "initialize_task_tree" },
+							function(data){
+								if(data[0]) {
+									changementPage("left", "' . $table . '", 1, 1, "affichageListe", "main");
+									digirisk("#trashContainer").dialog("close");
+								}
+								else {
+									alert(data[1]);
+								}
+							});
+					}
+				}
+			}';
+					break;
 			}
+
 			$trashScript .= '
 		});
 		digirisk(".trash img").click(function(){
@@ -1437,11 +1460,11 @@ class EvaDisplayDesign {
 				{
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>';
-					if(current_user_can('digi_edit_action')){
+					if(current_user_can('digi_edit_action') || current_user_can('digi_edit_action_' . $subElement->id)){
 						$tdSubEdit .= '
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 					}
-					elseif(current_user_can('digi_view_detail_action')){
+					elseif(current_user_can('digi_view_detail_action') || current_user_can('digi_view_detail_action_' . $subElement->id)){
 						$tdSubEdit .= '
 							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
 					}
@@ -1449,7 +1472,7 @@ class EvaDisplayDesign {
 						$tdSubEdit .= '<td class="noPadding" >&nbsp;</td>';
 					}
 
-					if(current_user_can('digi_delete_action')){
+					if(current_user_can('digi_delete_action') || current_user_can('digi_delete_action_' . $subElement->id)){
 						$tdSubDelete = '<td class="noPadding delete-leaf" id="delete-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . PICTO_DELETE . '" alt="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('Supprimer %s', 'evarisk'), __('l\'action', 'evarisk')) . '" />';
 					}
 					else{
@@ -1480,8 +1503,7 @@ class EvaDisplayDesign {
 			$monCorpsSubElements .= '
 				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddFeuilleClass . '">
 					<td id="leaf-' . $subElement->id . '-name" class="' . $nomFeuilleClass . '" >' . $subAffichage . '</td>';
-				if($titreInfo != null)
-				{
+				if($titreInfo != null) {
 					$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
 				}
 				$monCorpsSubElements .= $subActions . '
@@ -1703,14 +1725,14 @@ class EvaDisplayDesign {
 								$tdAddSecondaryStyle = '';
 							}
 
-							if(current_user_can('digi_add_task')){
+							if(current_user_can('digi_add_task') || current_user_can('digi_add_task_task_' . $element->id)){
 								$tdAddMain = '<td class="noPadding addMain" id="addMain' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddMainStyle . '" src="' .PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" />';//<td id="addMain' . $element->id . 'Alt" style="display:none;"></td>
 							}
 							else{
 								$tdAddMain = '<td class="noPadding" >&nbsp;';
 							}
 							$tdAddMain .= '</td>';
-							if(current_user_can('digi_add_action')){
+							if(current_user_can('digi_add_action') || current_user_can('digi_add_action_task_' . $element->id)){
 								$tdAddSecondary = '<td class="noPadding addSecondary" id="addSecondary' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';' . $tdAddSecondaryStyle . '" src="' .PICTO_LTL_ADD_ACTIVITE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '" />';//<td id="addSecondary' . $element->id . 'Alt" style="display:none;"></td>
 							}
 							else{
@@ -1718,17 +1740,17 @@ class EvaDisplayDesign {
 							}
 							$tdAddSecondary .= '</td>';
 
-							if(current_user_can('digi_edit_task')){
+							if(current_user_can('digi_edit_task') || current_user_can('digi_edit_task_' . $element->id)){
 								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
 							}
-							elseif(current_user_can('digi_view_detail_task')){
+							elseif(current_user_can('digi_view_detail_task') || current_user_can('digi_view_detail_task_' . $element->id)){
 								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" />';
 							}
 							else{
 								$tdEdit = '<td class="noPadding" >&nbsp;';
 							}
 							$tdEdit .= '</td>';
-							if(current_user_can('digi_delete_task')){
+							if(current_user_can('digi_delete_task') || current_user_can('digi_delete_task_' . $element->id)){
 								$tdDelete = '<td class="noPadding delete-node" id="delete-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="Effacer le titre" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
 							}
 							else{
@@ -1739,7 +1761,7 @@ class EvaDisplayDesign {
 							if(!current_user_can('digi_move_task')){
 								$ddNoeudClass = '';
 							}
-							if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_edit_task')){
+							if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_view_detail_task_' . $element->id) && !current_user_can('digi_edit_task') && !current_user_can('digi_edit_task_' . $element->id)){
 								$nomNoeudClass = 'userForbiddenActionCursor';
 							}
 
@@ -1958,6 +1980,11 @@ class EvaDisplayDesign {
 				}
 				$info['value'] = $tache->getProgression() . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($tache->getProgressionStatus()) . ')' . $moreInfo;
 				$info['class'] = 'treeTableGroupInfoColumn taskInfoContainer-' . $elementId;
+				if(!current_user_can('digi_view_detail_task') && !current_user_can('digi_view_detail_task_' . $elementId)
+						&& !current_user_can('digi_edit_task') && !current_user_can('digi_edit_task_' . $elementId))
+				{
+					$info['class'] = 'userForbiddenActionCursor taskInfoContainer-' . $elementId;
+				}
 				break;
 			case TABLE_ACTIVITE :
 				$action = new EvaActivity($elementId);
@@ -1968,6 +1995,11 @@ class EvaDisplayDesign {
 				}
 				$info['value'] = $action->getProgression() . '%&nbsp;(' . actionsCorrectives::check_progression_status_for_output($action->getProgressionStatus()) . ')' . $moreInfo;
 				$info['class'] = 'treeTableInfoColumn activityInfoContainer-' . $elementId;
+				if(!current_user_can('digi_view_detail_action') && !current_user_can('digi_view_detail_action_' . $elementId)
+						&& !current_user_can('digi_edit_action') && !current_user_can('digi_edit_action_' . $elementId))
+				{
+					$info['class'] = 'userForbiddenActionCursor activityInfoContainer-' . $elementId;
+				}
 				break;
 			case TABLE_GROUPEMENT :
 				$scoreRisqueGroupement = 0;

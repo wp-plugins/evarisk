@@ -119,7 +119,7 @@ class digirisk_init
 			add_management_page(__('Documentation pour le logiciel Digirisk', 'evarisk'), __('Digirisk - Doc', 'evarisk'), 'digi_documentation_management_menu', 'digirisk_doc', array('digirisk_doc', 'mydoc'));
 
 			// On cr�e le menu de cr�ation de veille r�glementaire
-			// add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), __( 'Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), 'digi_view_regulatory_monitoring_menu', 'digirisk_referentials', array('veilleReglementaire','veilleReglementaireMainPage'));
+// 			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), __( 'Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), 'digi_view_regulatory_monitoring_menu', 'digirisk_referentials', array('veilleReglementaire','veilleReglementaireMainPage'));
 		}
 	}
 
@@ -156,6 +156,9 @@ class digirisk_init
 		wp_enqueue_script('eva_google_jsapi', 'http://www.google.com/jsapi', '', EVA_PLUGIN_VERSION);
 		/*	Wordpress postbox	*/
 		wp_enqueue_script('eva_wp_postbox_js', admin_url() . 'js/postbox.js', '', EVA_PLUGIN_VERSION);
+
+		wp_enqueue_script('jquery_keypad_min', EVA_INC_PLUGIN_URL . 'js/keypad/jquery.keypad.min.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('jquery_keypad_fr', EVA_INC_PLUGIN_URL . 'js/keypad/jquery.keypad-fr.js', '', EVA_PLUGIN_VERSION);
 
 		/*	Jquery plot utilities	*/
 		if(!empty($_GET['page']) && ($_GET['page'] == 'digirisk_risk_evaluation')){
@@ -228,6 +231,9 @@ class digirisk_init
 			wp_register_style('eva_jqplot_css', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery.jqplot.css', '', EVA_PLUGIN_VERSION);
 			wp_enqueue_style('eva_jqplot_css');
 		}
+
+		wp_register_style('eva_jquery_keypad', EVA_INC_PLUGIN_URL . 'js/keypad/jquery.keypad.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_keypad');
 
 		wp_register_style('eva_main_css', EVA_INC_PLUGIN_URL . 'css/eva.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_main_css');

@@ -46,12 +46,19 @@ class EvaTask extends EvaBaseTask
 			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getnom_exportable_plan_action());
 			$is_readable_from_external = digirisk_tools::IsValid_Variable($this->get_external_readable());
 			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getdescription_exportable_plan_action());
+
+			$real_start_date = digirisk_tools::IsValid_Variable($this->getreal_start_date());
+			$real_end_date = digirisk_tools::IsValid_Variable($this->getreal_end_date());
+			$estimate_cost = digirisk_tools::IsValid_Variable($this->getestimate_cost());
+			$real_cost = digirisk_tools::IsValid_Variable($this->getreal_cost());
+			$planned_time = $this->getplanned_time();
+			$elapsed_time = $this->getelapsed_time();
 		}
 
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::is_readable_from_external . ", " . self::firstInsert . ")
+			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::is_readable_from_external . ", " . self::real_start_date . ", " . self::real_end_date . ", " . self::estimate_cost . ", " . self::real_cost . ", " . self::planned_time . ", " . self::elapsed_time . ", " . self::firstInsert . ")
 				VALUES ('" . mysql_real_escape_string($name) . "',
 								'" . mysql_real_escape_string($leftLimit) . "',
 								'" . mysql_real_escape_string($rightLimit) . "',
@@ -77,6 +84,12 @@ class EvaTask extends EvaBaseTask
 								'" . mysql_real_escape_string($nom_exportable_plan_action) . "',
 								'" . mysql_real_escape_string($description_exportable_plan_action) . "',
 								'" . mysql_real_escape_string($is_readable_from_external) . "',
+								'" . mysql_real_escape_string($real_start_date) . "',
+								'" . mysql_real_escape_string($real_end_date) . "',
+								'" . mysql_real_escape_string($estimate_cost) . "',
+								'" . mysql_real_escape_string($real_cost) . "',
+								'" . mysql_real_escape_string($planned_time) . "',
+								'" . mysql_real_escape_string($elapsed_time) . "',
 								'" . current_time('mysql', 0) . "')";
 		}
 		else
@@ -105,7 +118,13 @@ class EvaTask extends EvaBaseTask
 				" . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "' ,
 				" . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "' ,
 				" . self::is_readable_from_external . " = '" . mysql_real_escape_string($is_readable_from_external) . "' ,
-				" . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "'
+				" . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "',
+				" . self::real_start_date . " = '" . mysql_real_escape_string($real_start_date) . "',
+				" . self::real_end_date . " = '" . mysql_real_escape_string($real_end_date) . "',
+				" . self::estimate_cost . " = '" . mysql_real_escape_string($estimate_cost) . "',
+				" . self::real_cost . " = '" . mysql_real_escape_string($real_cost) . "',
+				" . self::planned_time . " = '" . mysql_real_escape_string($planned_time) . "',
+				" . self::elapsed_time . " = '" . mysql_real_escape_string($elapsed_time) . "'
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
 
@@ -186,16 +205,16 @@ class EvaTask extends EvaBaseTask
 	* Transfert a (sub-)task from one task to another.
 	* @param int $newMotherTaskId New mother task identifier
 	*/
-	function transfert($newMotherTaskId)
-	{
+	function transfert($newMotherTaskId) {
 		$rootTask = new EvaTask(1);
 		$rootTask->load();
 		$wpdbRootTask = $rootTask->convertToWpdb();
 		$wpdbDaughterTask = $this->convertToWpdb();
-		$motherTask = new EvaTask($newMotherTaskId);
-		$motherTask->load();
-		$wpdbMotherTask = $motherTask->convertToWpdb();
-		Arborescence::deplacerElements(TABLE_TACHE, $wpdbRootTask, $wpdbDaughterTask, $wpdbMotherTask);
+
+			$motherTask = new EvaTask( $newMotherTaskId );
+			$motherTask->load();
+			$wpdbMotherTask = $motherTask->convertToWpdb();
+			Arborescence::deplacerElements(TABLE_TACHE, $wpdbRootTask, $wpdbDaughterTask, $wpdbMotherTask);
 	}
 
 	/**
@@ -313,57 +332,58 @@ class EvaTask extends EvaBaseTask
 	/**
 	 * Compute and set the Task start and finish dates
 	 */
-	function getTimeWindow()
-	{
+	function getTimeWindow() {
 		$TasksAndSubTasks = $this->getDescendants();
 		$TasksAndSubTasks->addTask($this);
 		$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
-		if($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0)
-		{
+		if ($TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0) {
 			$startDate = $this->getStartDate();
 			$finishDate = $this->getFinishDate();
-			foreach($TasksAndSubTasks as $task)
-			{
+			$real_start_date = $this->getreal_start_date();
+			$real_end_date = $this->getreal_end_date();
+			foreach ($TasksAndSubTasks as $task) {
 				$activities = $task->getActivitiesDependOn();
 				$activities = $activities->getActivities();
-				if($activities != null AND count($activities) > 0)
-				{
-					foreach($activities as $activity)
-					{
-						$date = explode('-', $startDate);
-						$startYear = $date[0];
-						$startMonth = $date[1];
-						$startDay = $date[2];
-						$date = explode('-', $finishDate);
-						$finishYear = $date[0];
-						$finishMonth = $date[1];
-						$finishDay = $date[2];
-						$activityStartDate = $activity->getStartDate();
-						$date = explode('-', $activityStartDate);
-						$activityStartYear = $date[0];
-						$activityStartMonth = $date[1];
-						$activityStartDay = $date[2];
-						$activityFinishDate = $activity->getFinishDate();
-						$date = explode('-', $activityFinishDate);
-						$activityFinishYear = $date[0];
-						$activityFinishMonth = $date[1];
-						$activityFinishDay = $date[2];
+				if ($activities != null AND count($activities) > 0) {
+					foreach ($activities as $activity) {
+						if ( !is_null($activity->getreal_start_date()) && ($activity->getreal_start_date() != '0000-00-00') && !is_null($real_start_date) && ($real_start_date != '0000-00-00') ) {
+							$dates_to_compare = array($activity->getreal_start_date(), $real_start_date);
+							$real_start_date = min( $dates_to_compare ) ;
+						}
+						else if ( !is_null($activity->getreal_start_date()) && ($activity->getreal_start_date() != '0000-00-00') ) {
+							$real_start_date = $activity->getreal_start_date();
+						}
 
-						if(($activityStartYear < $startYear)
-							OR ($activityStartYear == $startYear AND $activityStartMonth < $startMonth)
-							OR ($activityStartYear == $startYear AND $activityStartMonth == $startMonth AND $activityStartDay < $startDay))
-						{
+						if ( !is_null($activity->getreal_end_date()) && ($activity->getreal_end_date() != '0000-00-00') && !is_null($real_end_date) && ($real_end_date != '0000-00-00') ) {
+							$dates_to_compare = array($activity->getreal_end_date(), $real_end_date);
+							$real_end_date = max( $dates_to_compare ) ;
+						}
+						else if ( !is_null($activity->getreal_end_date()) && ($activity->getreal_end_date() != '0000-00-00') ) {
+							$real_end_date = $activity->getreal_end_date();
+						}
+
+						if ( !is_null($activity->getStartDate()) && ($activity->getStartDate() != '0000-00-00') && !is_null($startDate) && ($startDate != '0000-00-00') ) {
+							$dates_to_compare = array($activity->getStartDate(), $startDate);
+							$startDate = min( $dates_to_compare ) ;
+						}
+						else if ( !is_null($activity->getStartDate()) && ($activity->getStartDate() != '0000-00-00') ) {
 							$startDate = $activity->getStartDate();
 						}
-						if(($activityFinishYear > $finishYear)
-							OR ($activityFinishYear == $finishYear AND $activityFinishMonth > $finishMonth)
-							OR ($activityFinishYear == $finishYear AND $activityFinishMonth == $finishMonth AND $activityFinishDay > $finishDay))
-						{
+
+						if ( !is_null($activity->getFinishDate()) && ($activity->getFinishDate() != '0000-00-00') && !is_null($finishDate) && ($finishDate != '0000-00-00') ) {
+							$dates_to_compare = array($activity->getFinishDate(), $finishDate);
+							$finishDate = max( $dates_to_compare ) ;
+						}
+						else if ( !is_null($activity->getFinishDate()) && ($activity->getFinishDate() != '0000-00-00') ) {
 							$finishDate = $activity->getFinishDate();
 						}
 					}
 				}
 			}
+
+			$this->setreal_start_date($real_start_date);
+			$this->setreal_end_date($real_end_date);
+
 			$this->setStartDate($startDate);
 			$this->setFinishDate($finishDate);
 		}
@@ -372,8 +392,7 @@ class EvaTask extends EvaBaseTask
 	/**
 	* Compute and set the Task progression regarding the sub tasks
 	*/
-	function computeProgression()
-	{
+	function computeProgression() {
 		global $current_user;
 
 		$TasksAndSubTasks = $this->getDescendants();
@@ -382,62 +401,64 @@ class EvaTask extends EvaBaseTask
 
 		$taskDuration = $taskCompleteDuration = 0;
 		$totalProgression = $totalSubTask = 0;
+		$totalPlannedTime= $totalEstimatedCost = $totalElapsedTime= $totalRealCost = 0;
 		$progressionStatusToSet = $this->getProgressionStatus();
-		if(($TasksAndSubTasks != null) && (count($TasksAndSubTasks) > 0))
-		{
-			foreach($TasksAndSubTasks as $task)
-			{
+		if (($TasksAndSubTasks != null) && (count($TasksAndSubTasks) > 0)) {
+			foreach($TasksAndSubTasks as $task) {
 				$activities = $task->getActivitiesDependOn();
 				$activities = $activities->getActivities();
-				if($activities != null AND count($activities) > 0)
-				{
-					foreach($activities as $activity)
-					{
-						if(($progressionStatusToSet != 'inProgress') && ($activity->getProgressionStatus() == 'inProgress'))
-						{
+				if ($activities != null AND count($activities) > 0) {
+					foreach ($activities as $activity) {
+						if (($progressionStatusToSet != 'inProgress') && ($activity->getProgressionStatus() == 'inProgress')) {
 							$progressionStatusToSet = 'inProgress';
 						}
 						$totalProgression += $activity->getProgression();
+
+						$totalPlannedTime += $activity->getplanned_time();
+						$totalElapsedTime += $activity->getelapsed_time();
+						$totalEstimatedCost += $activity->getcout();
+						$totalRealCost += $activity->getcout_reel();
+
 						$totalSubTask++;
 					}
 				}
-				else
-				{
+				else {
 					$this->setProgression(0);
 				}
 			}
 		}
 
-		if($totalProgression > 0)
-		{
+		$this->setplanned_time( $totalPlannedTime );
+		$this->setelapsed_time( $totalElapsedTime );
+		$this->setCost( $totalEstimatedCost );
+		$this->setreal_cost( $totalRealCost );
+
+		if ($totalProgression > 0) {
 			// $progressionToSet = round($taskCompleteDuration / $taskDuration * 100);
 			$progressionToSet = round($totalProgression / $totalSubTask);
 			$this->setProgression($progressionToSet);
-			if(($progressionToSet > 0))
-			{
+			if (($progressionToSet > 0)) {
 				$this->setProgressionStatus('inProgress');
 			}
-			if($progressionToSet >= 100)
-			{
+			if ($progressionToSet >= 100) {
 				$this->setProgressionStatus('Done');
 				$this->setidSoldeur($current_user->ID);
 				$this->setdateSolde(current_time('mysql', 0));
 			}
 		}
-		elseif($progressionStatusToSet == 'inProgress')
-		{
+		else if ($progressionStatusToSet == 'inProgress') {
 			$this->setProgressionStatus('inProgress');
 		}
 	}
 
 	/**
-	*	Make the link between a task and an element (risk/work unit/...)
-	*
-	*	@param mixed $table The element type we want to link
-	* @param integer $id The element identifier we want to link
-	* @param mixed $listeTaches A string composed by tasks id to link separeted by a delimiter
-	*	@param mixed $momentLiaison Defines if the link is made before or after, used for the risk evaluation to know risk level before and after an action
-	*/
+	 *	Make the link between a task and an element (risk/work unit/...)
+	 *
+	 *	@param mixed $table The element type we want to link
+	 * @param integer $id The element identifier we want to link
+ 	 * @param mixed $listeTaches A string composed by tasks id to link separeted by a delimiter
+	 *	@param mixed $momentLiaison Defines if the link is made before or after, used for the risk evaluation to know risk level before and after an action
+	 */
 	function liaisonTacheElement($table, $id, $listeTaches, $momentLiaison = 'before'){
 		global $wpdb;
 		$actionsList = "  ";
@@ -486,7 +507,7 @@ class EvaTask extends EvaBaseTask
 	*
 	*	@return integer The new task identifier
 	*/
-	function saveNewTask(){
+	function saveNewTask() {
 		$tache = new EvaTask();
 
 		$tache->setName($_POST['nom_activite']);
@@ -522,9 +543,10 @@ class EvaTask extends EvaBaseTask
 		$tache->save();
 
 		$options = get_option('digirisk_options');
-		$task_to_take = (isset($options['digi_ac_control_action_affectation']) && !empty($options['digi_ac_control_action_affectation'])) ? $options['digi_ac_control_action_affectation'] : 1;
+		$task_to_take = (!empty($options['digi_ac_control_action_affectation'])) ? $options['digi_ac_control_action_affectation'] : 1;
 		$tache->load();
-		$tache->transfert( $task_to_take );
+		$tache->transfert( (int)$task_to_take );
+		$tache->load();
 
 		return $tache->getId();
 	}

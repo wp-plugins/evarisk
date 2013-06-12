@@ -1,6 +1,6 @@
 <?php
 	//Postbox definition
-	$postBoxTitle = __('Galerie Photos', 'evarisk');
+	$postBoxTitle = __('Galerie Photos', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxGaleriePhotos';
 	$postBoxCallbackFunction = array('EvaPhoto', 'picture_gallery_box');
 	// $postBoxCallbackFunction = 'getGaleriePhotosPostBoxBody';

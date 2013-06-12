@@ -137,7 +137,7 @@ $t = TABLE_ACTIVITE;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Activity Identifier',
-	`is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
+  `is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `id_tache` int(10) NOT NULL COMMENT 'Task which the activity depends on',
   `idCreateur` bigint(20) NOT NULL COMMENT 'The identifier of the user who create the action',
   `idResponsable` bigint(20) NOT NULL COMMENT 'The identifier of the user who is in charge of the action',
@@ -145,14 +145,19 @@ CREATE TABLE {$t} (
   `idSoldeurChef` int(10) NOT NULL COMMENT 'The identifier of the user who close the action by closing parent task',
   `idPhotoAvant` int(10) unsigned NOT NULL,
   `idPhotoApres` int(10) unsigned NOT NULL,
+  `planned_time` int(10) collate utf8_unicode_ci default NULL,
+  `elapsed_time` int(10) collate utf8_unicode_ci default NULL,
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Activity name',
   `nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `description` text collate utf8_unicode_ci COMMENT 'Activity description',
   `description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `dateDebut` date default NULL COMMENT 'Activity start date',
   `dateFin` date default NULL COMMENT 'Activity finish date',
+  `real_start_date` date default NULL,
+  `real_end_date` date default NULL,
   `avancement` int(10) default NULL COMMENT 'Activity progression',
   `cout` float default NULL COMMENT 'Activity realisation cost',
+  `cout_reel` float default NULL COMMENT 'Activity realisation cost',
   `lieu` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'Activity place',
   `Status` enum('Valid','Moderated','Deleted','Aborded','Asked') collate utf8_unicode_ci NOT NULL default 'Valid' COMMENT 'Activity status',
   `firstInsert` datetime default NULL COMMENT 'Activity creation date',
@@ -169,6 +174,7 @@ $t = TABLE_ACTIVITE_SUIVI;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   id int(10) unsigned NOT NULL auto_increment,
+  follow_up_type enum('note','follow_up') collate utf8_unicode_ci NOT NULL default 'note',
   status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
   date datetime NOT NULL,
   date_ajout datetime NOT NULL,
@@ -176,29 +182,39 @@ CREATE TABLE {$t} (
   export enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   id_parent int(10) NOT NULL,
   id_user bigint(20) NOT NULL,
+  id_user_performer bigint(20) NOT NULL,
   id_element int(10) NOT NULL,
   table_element varchar(255) collate utf8_unicode_ci NOT NULL,
   commentaire varchar(255) collate utf8_unicode_ci NOT NULL,
+  elapsed_time int(10) collate utf8_unicode_ci NOT NULL,
+  cost float default NULL,
   PRIMARY KEY (id),
   KEY status (status),
   KEY id_user (id_user),
   KEY id_element (id_element)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Allows to follow an action progress';";
 
+
 /* Structure de la table `wp_eva__actions_correctives_tache`	*/
 $t = TABLE_TACHE;
 $digirisk_db_table[$t] = "
 CREATE TABLE {$t} (
   `id` int(10) NOT NULL auto_increment COMMENT 'Task Identifier',
-	`is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
+  `is_readable_from_external` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `nom` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'Task name',
-	`nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
+  `nom_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `limiteGauche` int(10) NOT NULL COMMENT 'Left limit to simulate the tree',
   `limiteDroite` int(10) NOT NULL COMMENT 'Right limit to simulate the tree',
   `description` text collate utf8_unicode_ci COMMENT 'Task description',
-	`description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
+  `description_exportable_plan_action` enum('yes', 'no') collate utf8_unicode_ci NOT NULL default 'no',
   `dateDebut` date default NULL COMMENT 'Task start date',
   `dateFin` date default NULL COMMENT 'Task finish date',
+  `real_start_date` date default NULL,
+  `real_end_date` date default NULL,
+  `estimate_cost` float default NULL,
+  `real_cost` float default NULL,
+  `planned_time` int(10) collate utf8_unicode_ci default NULL,
+  `elapsed_time` int(10) collate utf8_unicode_ci default NULL,
   `avancement` int(10) default NULL COMMENT 'Task progression',
   `cout` float default NULL COMMENT 'Task realisation cost',
   `idPhotoAvant` int(10) unsigned NOT NULL,
@@ -1757,7 +1773,7 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE_SUIVI, TABLE_FP, TABLE_LIAISON_PRECONISATION_ELEMENT);
 }
 
-{/*	Version 80	*/
+{/*	Version 81	*/
 	$digirisk_db_version = 81;
 	$digirisk_update_way[$digirisk_db_version] = 'structure';
 
@@ -1766,4 +1782,11 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_CATEGORIE_DANGER][] = __('Mise &agrave; jour des positions des cat&eacute;gories de danger', 'evarisk');
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_CATEGORIE_DANGER);
+}
+
+{/*	Version 82	*/
+	$digirisk_db_version = 82;
+	$digirisk_update_way[$digirisk_db_version] = 'structure';
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE_SUIVI, TABLE_ACTIVITE, TABLE_TACHE);
 }

@@ -81,7 +81,6 @@ class categorieDangers {
 		return $resultat;
 	}
 
-
 	function getCategoriesDanger($where = "1", $order = "id ASC") {
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_CATEGORIE_DANGER . " WHERE Status = 'Valid' AND " . $where . " ORDER BY " . $order);
@@ -182,16 +181,17 @@ class categorieDangers {
 		$categoryResult['script'] = '';
 		$categoryResult['selectionCategorie'] = '';
 
+		$nomRacine = 'Categorie Racine';
+		$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
+
 		if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
-			$nomRacine = 'Categorie Racine';
-			$categorieRacine = categorieDangers::getCategorieDangerByName($nomRacine);
 			$categoriesDangers = Arborescence::getDescendants(TABLE_CATEGORIE_DANGER, $categorieRacine, '1', 'position');
 		}
 		else {
 			$categoriesDangers[] = categorieDangers::getCategorieDanger($risque[0]->idCategorie);
 		}
 
-		if ( $risque[0] != null ) {// Si l'on �dite un risque, on s�lectionne la bonne cat�gorie de dangers
+		if ( !empty($risque) && ($risque[0] != null) ) {// Si l'on �dite un risque, on s�lectionne la bonne cat�gorie de dangers
 			$selectionCategorie = $risque[0]->idCategorie;
 		}
 		else {// Sinon on s�lectionne la racine
@@ -209,14 +209,14 @@ class categorieDangers {
 			jQuery(".default_methode").click( function() {
           		jQuery("#' . $formId . 'methodeFormRisque").val("'.$default_methode.'");
           		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque[0]->id . '", "formId":"' . $formId . '"});
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . (!empty($risque[0]) ? $risque[0]->id : 0) . '", "formId":"' . $formId . '"});
 			});
 
 			jQuery(".case_penibilite").unbind("click");
 			jQuery(".case_penibilite").live("click", function(){
           		jQuery("#' . $formId . 'methodeFormRisque").val(jQuery(this).attr("id").replace("case_penibilite_", ""));
           		jQuery("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . $risque[0]->id . '", "formId":"' . $formId . '"});
+				jQuery("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":digirisk("#' . $formId . 'methodeFormRisque").val(), "idRisque": "' . (!empty($risque[0]) ? $risque[0]->id : 0) . '", "formId":"' . $formId . '"});
 			});';
 			}
 

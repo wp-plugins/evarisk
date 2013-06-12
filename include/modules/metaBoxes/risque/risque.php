@@ -10,7 +10,7 @@
 	require_once(EVA_LIB_PLUGIN_DIR . 'photo/evaPhoto.class.php');
 
 
-	$postBoxTitle = __('Risques', 'evarisk');
+	$postBoxTitle = __('Risques', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	/*	If the postBoxId change don't forget to replace each iteration in this script	*/
 	$postBoxId = 'postBoxRisques';
 	$postBoxCallbackFunction = 'getRisquesPostBoxBody';
@@ -118,19 +118,68 @@
 						});
 
 						digirisk("#risqMassUpdater").dialog({
+							closeOnEscape: false,
 							autoOpen:false,
 							height:600,
 							width:800,
-							modal:true
+							modal:true,
+							dialogClass: "no-close",
+							buttons: [
+								{
+									text: "' . __('Fermer', 'evarisk') . '",
+									click: function() {
+										var hasModification = false;
+										digirisk(".checkboxRisqMassUpdater").each(function(){
+											if(digirisk(this).is(":checked")){
+												hasModification = true;
+											}
+										});
+										if(!hasModification || (confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous sur de vouloir annuler les modifications en cours?', 'evarisk') . '")))){
+											jQuery(this).dialog("close");
+										}
+									},
+								},';
+
+								$user_allowed_to_save_mass_modification = false;
+								switch ($tableElement) {
+									case TABLE_GROUPEMENT:
+										if (current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $idElement)) {
+											$user_allowed_to_save_mass_modification = true;
+										}
+										break;
+									case TABLE_UNITE_TRAVAIL:
+										if (current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $idElement)) {
+											$user_allowed_to_save_mass_modification = true;
+										}
+										break;
+								}
+
+								if ( $user_allowed_to_save_mass_modification ) {
+									$scriptRisque .= '{
+									text: "' . __('Enregister', 'evarisk') . '",
+									click: function() {
+										jQuery("#form_mass_updater").submit();
+									},
+								}';
+								}
+								$scriptRisque .= '
+							],
+
+							close: function() {
+								jQuery(".mass_update_button_pane_helper").remove();
+								jQuery("#risqMassUpdater").html("je le vide");
+							},
 						});
+
 						digirisk("#ongletMassUpdate' . TABLE_RISQUE . '").click(function(){
 							digirisk("#risqMassUpdater").html(digirisk("#loadingImg").html());
-							digirisk("#risqMassUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-								"post":"true",
-								"table":"' . TABLE_RISQUE . '",
-								"act":"loadRisqMassUpdater",
-								"tableElement":"' . $tableElement . '",
-								"idElement":"' . $idElement . '"
+							var data = {
+								action: "digi_ajax_load_mass_modification",
+								tableElement: "' . $tableElement . '",
+								idElement: "' . $idElement . '",
+							};
+							jQuery.post("' . admin_url('admin-ajax.php'). '", data, function(response){
+								jQuery("#risqMassUpdater").html(response);
 							});
 							digirisk("#risqMassUpdater").dialog("open");
 						});
@@ -146,7 +195,7 @@
 					<li id="ongletControlerActionDemandee" class="tabs" style="display:none"><label tabindex="2">' . ucfirst((sprintf(__('Contr&ocirc;le %s', 'evarisk'), __('d\'une action demand&eacute;e', 'evarisk')))) . '</label></li>';
 			$divEditionRisque = '
 <div id="divFormRisque" class="eva_tabs_panel hide" >';
-			if((digirisk_options::getOptionValue('risques_avances') == 'oui') && ($idRisque == '')){
+			if((digirisk_options::getOptionValue('risques_avances') == 'oui') && empty($idRisque)){
 				$divEditionRisque .= '
 <div class="clear" id="risqManagementselector" >
 	<div class="alignleft selected" id="addRisqNormalMode" >' . ucfirst(strtolower(__('Mode simple', 'evarisk'))) . '</div>
@@ -231,6 +280,9 @@
 	* Cr?ation de l'affichage global
 	*/
 	function getVoirRisque($tableElement, $idElement) {
+		global $wpdb;
+		$options = get_option('digirisk_options');
+
 		$temp = Risque::getRisques($tableElement, $idElement, "Valid");
 		if ($temp != null) {
 			foreach ($temp as $risque) {
@@ -244,11 +296,13 @@
 			$idTable = 'tableRisque' . $tableElement . $idElement;
 			$titres[] = __("Id.", 'evarisk');
 			$titres[] = __("Quotation", 'evarisk');
+			if ( !empty($options['digi_risk_display_picture_in_listing']) && ($options['digi_risk_display_picture_in_listing'] == 'yes')) $titres[] = __("Photo", 'evarisk');
 			$titres[] = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du danger", 'evarisk'))));
 			$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
 			$titres[] = __("Actions", 'evarisk');
 			$classes[] = 'columnRId';
 			$classes[] = 'columnQuotation';
+			if ( !empty($options['digi_risk_display_picture_in_listing']) && ($options['digi_risk_display_picture_in_listing'] == 'yes')) $classes[] = 'columnPhoto';
 			$classes[] = 'columnNomDanger';
 			$classes[] = 'columnCommentaireRisque';
 			$classes[] = 'columnAction';
@@ -290,16 +344,55 @@
 					$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 					$niveauSeuil = Risque::getSeuil($quotation);
 
+					$last_comment_output = '';
+					$query = $wpdb->prepare("SELECT date_ajout, commentaire FROM " . TABLE_ACTIVITE_SUIVI . " WHERE status = 'valid' AND table_element = %s AND id_element IN (SELECT id_evaluation FROM wp_eva__risque_evaluation WHERE id_risque = %d) ORDER BY date_ajout DESC", TABLE_AVOIR_VALEUR, $risque[0]->id);
+					$last_comments = $wpdb->get_results($query);
+					if ( !empty($last_comments) ) {
+						$first_comment = $other_comments = '';
+						$i = 1;
+						foreach ( $last_comments as $last_comment ) {
+							if ( $i == 1 ) {
+								$first_comment = '<span class="digi_risk_comment_date" >' . mysql2date('d F Y', $last_comment->date_ajout, true) . '</span> : ' . nl2br($last_comment->commentaire) . '<br/>';
+							}
+							else {
+								$other_comments .= '<span class="digi_risk_comment_date" >' . mysql2date('d F Y', $last_comment->date_ajout, true) . '</span> : ' . nl2br($last_comment->commentaire) . '<br/>';
+							}
+							$i++;
+						}
+						$last_comment_output = $first_comment .(!empty($other_comments) ? '<div class="other_comment_display" ><div class="alignright pointer" ><span class="ui-icon alignleft comment_display_state_icon" style="background-position: 0px -192px;" ></span>' . __('Voir les autres commentaires', 'evarisk') . '</div><div class="clear hide close other_comment_container">' . $other_comments . '</div></div>' : '');
+					}
+
+					$more_table_script = '';
+					if ( !empty($options['digi_risk_display_picture_in_listing']) && ($options['digi_risk_display_picture_in_listing'] == 'yes')) {
+						$more_table_script = '{ "bSortable": false},';
+						$risk_picture = '';
+						$status = 'error';
+						$query = $wpdb->prepare(
+								"SELECT PICTURE.photo
+					FROM " . TABLE_PHOTO . " AS PICTURE
+						INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
+					WHERE PICTURE_LINK.tableElement = '%s'
+							AND PICTURE_LINK.idElement = '%d'
+							AND PICTURE_LINK.status = 'valid' "
+								, TABLE_RISQUE, $risque[0]->id);
+						if ($mainPhotoInformation = $wpdb->get_row($query)) {
+							$risk_picture = $mainPhotoInformation->photo;
+						}
+						$risk_picture = evaPhoto::checkIfPictureIsFile($risk_picture, TABLE_RISQUE);
+					}
+
 					unset($ligneDeValeurs);
-					$ligneDeValeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id, 'class' => '');
+					$ligneDeValeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id . ' - ' . ELEMENT_IDENTIFIER_E . $risque[0]->id_evaluation, 'class' => '');
 					$ligneDeValeurs[] = array('value' => $quotation, 'class' => 'Seuil_' . $niveauSeuil);
+					if ( !empty($options['digi_risk_display_picture_in_listing']) && ($options['digi_risk_display_picture_in_listing'] == 'yes')) $ligneDeValeurs[] = array('value' => (!empty($risk_picture) ? '<img src="' . $risk_picture . '" style="height:50px;" />' : ''), 'class' => '');
 					$ligneDeValeurs[] = array('value' => $risque[0]->nomDanger, 'class' => '');
-					$ligneDeValeurs[] = array('value' => nl2br($risque[0]->commentaire), 'class' => '');
+					$ligneDeValeurs[] = array('value' => $last_comment_output, 'class' => '');
 					$more_action = '';
 					if(digirisk_options::getOptionValue('action_correctives_avancees') == 'oui'){
 						if(current_user_can('digi_add_task')){
 							$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-demandeAction" src="' . PICTO_LTL_ASK_ACTION . '" alt="' . _c('Demande AC|AC pour action corrective', 'evarisk') . '" title="' . __('Demande d\'action corrective', 'evarisk') . '"/>';
 						}
+
 						if(current_user_can('digi_follow_action')){
 							$more_action .= '<img style="width:' . TAILLE_PICTOS . ';" id="' . $idligne . '-suiviAction" src="' . PICTO_LTL_SUIVI_ACTION . '" alt="' . _c('Suivi AC|AC pour action corrective', 'evarisk') . '" title="' . __('Suivi des actions correctives', 'evarisk') . '"/>';
 						}
@@ -355,7 +448,22 @@
 			{//Script de d?finition de la dataTable
 				$scriptVoirRisque = $scriptRisque . '
 <script type="text/javascript">
-	digirisk(document).ready(function() {
+
+	jQuery(document).ready(function() {
+		jQuery(".other_comment_display").click(function(){
+			if ( jQuery(this).children(".other_comment_container").hasClass("close") ) {
+				jQuery(this).children(".other_comment_container").show();
+				jQuery(this).children(".other_comment_container").removeClass("close");
+				jQuery(this).children(".other_comment_container").addClass("open");
+				jQuery(this).children("div").children(".comment_display_state_icon").attr("style", "background-position: -16px -192px;");
+			}
+			else {
+				jQuery(this).children(".other_comment_container").hide();
+				jQuery(this).children(".other_comment_container").removeClass("open");
+				jQuery(this).children(".other_comment_container").addClass("close");
+				jQuery(this).children("div").children(".comment_display_state_icon").attr("style", "background-position: 0px -192px;");
+			}
+		});
 		jQuery(".edit-risk").click(function(){
 			jQuery("#formRisque").html(jQuery("#loadingImg").html());
 			jQuery("#ongletEditerRisque").show();
@@ -433,6 +541,7 @@
 			"aoColumns": [
 				{ "bSortable": false},
 				{ "bSortable": true, "sType": "numeric"},
+				' . $more_table_script . '
 				{ "bSortable": true},
 				{ "bSortable": false},
 				{ "bSortable": false }],
@@ -620,7 +729,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 			$current_id_evaluation = (!empty($risque[0]->id_evaluation) ? $risque[0]->id_evaluation : null);
 			$complete_interface = (!empty($current_id_evaluation) ? true : false);
-			$formRisque .= '<input type="hidden" name="random_eval" value="' . $current_id_evaluation . '" id="random_eval" /><input type="hidden" name="name_of_follow_up_inputs" value="' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '" id="name_of_follow_up_inputs" /><div class="digi_clear" ></div><div id="load' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '">' . suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $current_id_evaluation, $complete_interface) . '</div>';
+			$formRisque .= '<input type="hidden" name="random_eval" value="' . $current_id_evaluation . '" id="random_eval" /><input type="hidden" name="name_of_follow_up_inputs" value="' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '" id="name_of_follow_up_inputs" /><div class="digi_clear" ></div><div id="digi_content_note_' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '">' . suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $current_id_evaluation, $complete_interface) . '</div>';
 
 			/**	Read risk history if not empty	*/
 			if ( !empty($hito_risk) ) {
@@ -855,9 +964,9 @@ EvaDisplayInput::fermerForm($formId . 'formRisque-') . '
 	<div class="clear" >
 		<img id="addRiskByPictureId' . $currentId . '" class="alignleft riskPictureThumbs" src="' . EVA_GENERATED_DOC_URL . $picture->photo . '" alt="picture to associated to a risk ' . $picture->id . '" />
 		<div style="width:75%;" id="addRiskByPictureButtonId' . $currentId . '" class="alignleft pointer" >
+			<div class="riskAssociatedToPictureContainer" id="riskAssociatedToPicture' . $currentId . '" >' . $riskListForPicture . '</div>
 			<img id="divDangerContainerSwitchPic' . $currentId . '" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" class="expandablePics addRiskByPictureButton" />
 			<span style="vertical-align:middle;" class="addRiskByPictureButton" id="addRiskForPictureText' . $currentId . '" >' . __('Ajouter un risque pour cette photo', 'evarisk') . '</span>
-			<div class="riskAssociatedToPictureContainer" id="riskAssociatedToPicture' . $currentId . '" >' . $riskListForPicture . '</div>
 		</div>
 	</div>
 	<div id="' . $currentId . 'content" class="clear" style="padding:12px 0px;" >&nbsp;</div>

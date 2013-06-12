@@ -36,18 +36,32 @@ function saveRightForUsers(tableElement, idElement, dbTable, outputMessage, tabl
 			digirisk("#userRightDetail_edit").val( digirisk("#userRightDetail_edit").val() + digirisk(this).val() + "!#!" + digirisk(this).attr("id").replace("user_edit_", "") + "#!#" );
 		}
 	});
-
+	
 	digirisk("#userRightDetail_add_gpt").val("");
 	digirisk(".add_groupement").each(function(){
 		if(digirisk(this).is(":checked")){
 			digirisk("#userRightDetail_add_gpt").val( digirisk("#userRightDetail_add_gpt").val() + digirisk(this).val() + "!#!" + digirisk(this).attr("id").replace("user_add_gpt", "") + "#!#" );
 		}
 	});
-
+	
 	digirisk("#userRightDetail_add_unit").val("");
 	digirisk(".add_unite").each(function(){
 		if(digirisk(this).is(":checked")){
 			digirisk("#userRightDetail_add_unit").val( digirisk("#userRightDetail_add_unit").val() + digirisk(this).val() + "!#!" + digirisk(this).attr("id").replace("user_add_unit", "") + "#!#" );
+		}
+	});
+
+	digirisk("#userRightDetail_add_task").val("");
+	digirisk(".add_task").each(function(){
+		if(digirisk(this).is(":checked")){
+			digirisk("#userRightDetail_add_task").val( digirisk("#userRightDetail_add_task").val() + digirisk(this).val() + "!#!" + digirisk(this).attr("id").replace("user_add_task", "") + "#!#" );
+		}
+	});
+
+	digirisk("#userRightDetail_add_action").val("");
+	digirisk(".add_action").each(function(){
+		if(digirisk(this).is(":checked")){
+			digirisk("#userRightDetail_add_action").val( digirisk("#userRightDetail_add_action").val() + digirisk(this).val() + "!#!" + digirisk(this).attr("id").replace("user_add_action", "") + "#!#" );
 		}
 	});
 
@@ -66,12 +80,16 @@ function saveRightForUsers(tableElement, idElement, dbTable, outputMessage, tabl
 		"user_edit": digirisk("#userRightDetail_edit").val(),
 		"user_add_gpt": digirisk("#userRightDetail_add_gpt").val(),
 		"user_add_unit": digirisk("#userRightDetail_add_unit").val(),
+		"user_add_task": digirisk("#userRightDetail_add_task").val(),
+		"user_add_action": digirisk("#userRightDetail_add_action").val(),
 
 		"user_see_old": digirisk("#userRightDetail_see_old").val(),
 		"user_delete_old": digirisk("#userRightDetail_delete_old").val(),
 		"user_edit_old": digirisk("#userRightDetail_edit_old").val(),
 		"user_add_gpt_old": digirisk("#userRightDetail_add_gpt_old").val(),
 		"user_add_unit_old": digirisk("#userRightDetail_add_unit_old").val(),
+		"user_add_task_old": digirisk("#userRightDetail_add_task_old").val(),
+		"user_add_action_old": digirisk("#userRightDetail_add_action_old").val(),
 
 		"tableElement": tableElement,
 		"idElement": idElement

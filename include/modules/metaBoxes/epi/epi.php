@@ -6,11 +6,11 @@
  * @version v5.0
  */
 	//Postbox definition
-	$postBoxTitle = __('&Eacute;quipements de protection individuelle','evarisk');
+	$postBoxTitle = __('&Eacute;quipements de protection individuelle','evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxEPI';
 	$postBoxCallbackFunction = 'getEPIPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
-	
+
 	/**
 	 *
 	 */
@@ -18,7 +18,7 @@
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayInput.class.php' );
 		require_once(EVA_LIB_PLUGIN_DIR . 'epi/evaEPITable.class.php');
-		
+
 		$idElement = $arguments['idElement'];
 		$tableElement = $arguments['tableElement'];
 		$EPIPostBoxBody = '';
@@ -41,7 +41,7 @@
 		{
 			$EPIComparaison = new EvaEPITable();
 			$EPIs = $EPIComparaison->getEPIsAndUse($tableElement, $idElement);
-			
+
 			if(count($EPIs) > 0)
 			{// Their is some PPEs
 				$formName = 'EPIForm';
@@ -79,7 +79,7 @@
 									epis.push(digirisk(this).attr("id").replace(/epi_/,""));
 								}
 							});
-							
+
 							digirisk(\'#ajax-response\').load(\'' . EVA_INC_PLUGIN_URL . 'ajax.php\', {
 								"post": "true",
 								"table": "' . TABLE_UTILISE_EPI . '",

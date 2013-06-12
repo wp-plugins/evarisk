@@ -736,8 +736,8 @@ class digirisk_permission
 
 		/*	R�cup�ration des droits affect�s au role en cours d'�dition	*/
 		$digiPermissionForm = '';
-		if($currentElementId != '')
-		{
+		$form_button = self::getPageFormButton();
+		if($currentElementId != '') {
 			$roleInEdition = $digi_wp_role->get_role($currentElementId);
 			/*	R�cup�ration du code permettant d'afficher la liste des droits disponible pour le logiciel digirisk	*/
 			ob_start();
@@ -749,6 +749,10 @@ class digirisk_permission
 		<legend>' . __('Permissions du r&ocirc;le', 'evarisk') . '</legend>
 		' . $digiPermissionForm . '
 	</fieldset>';
+
+			if ( $currentElementId == 'administrator' ) {
+				$form_button = __('La modification du r&ocirc;le administrateur n\'est pas possible', 'evarisk');
+			}
 		}
 
 		$elementEditionOutput = '
@@ -757,7 +761,7 @@ class digirisk_permission
 	' . $the_form_content_hidden . '
 	' . $the_form_general_content . '
 	' . $digiPermissionForm . '
-	<div id="pageHeaderButtonContainer" class="pageHeaderButton" >' . self::getPageFormButton() . '</div>
+	<div id="pageHeaderButtonContainer" class="pageHeaderButton" >' . $form_button . '</div>
 </form>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
@@ -934,24 +938,20 @@ class digirisk_permission
 	*
 	*	@return mixed $outputTable The html output of the user list in a jquery dataTable
 	*/
-	function generateUserListForRightDatatable($tableElement, $idElement)
-	{
+	function generateUserListForRightDatatable($tableElement, $idElement) {
 		$outputTable = '';
-		$rightType = array('see', 'edit', 'delete', 'add_gpt', 'add_unit');
+		$rightType = array('see', 'edit', 'delete', 'add_gpt', 'add_unit', 'add_task', 'add_action');
 
 		/*	Initialisation des variables recevants les listes des droits des utilisateurs d�j� affect�s	*/
-		foreach($rightType as $rightName)
-		{
+		foreach ($rightType as $rightName) {
 			$userRightDetail[$rightName] = '';
 		}
 
 		/*	on r�cup�re les utilisateurs affect�s � l'�l�ment en cours.	*/
 		$listeUtilisateursLies = array();
 		$utilisateursLies = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
-		if(is_array($utilisateursLies) && (count($utilisateursLies) > 0))
-		{
-			foreach($utilisateursLies as $utilisateur)
-			{
+		if (is_array($utilisateursLies) && (count($utilisateursLies) > 0)) {
+			foreach ($utilisateursLies as $utilisateur) {
 				$listeUtilisateursLies[$utilisateur->id_user] = $utilisateur;
 			}
 		}
@@ -964,11 +964,15 @@ class digirisk_permission
 			$titres[] = __('Voir', 'evarisk');
 			$titres[] = __('&Eacute;diter', 'evarisk');
 			$titres[] = __('Supprimer', 'evarisk');
-			switch($tableElement)
-			{
+			switch ($tableElement) {
 				case TABLE_GROUPEMENT;
 					$titres[] = __('Ajouter un groupement', 'evarisk');
 					$titres[] = __('Ajouter une unit&eacute;', 'evarisk');
+					$titres[] = __('R&eacute;cursif', 'evarisk');
+				break;
+				case TABLE_TACHE;
+					$titres[] = __('Ajouter une t&acirc;che', 'evarisk');
+					$titres[] = __('Ajouter une sous-t&acirc;che', 'evarisk');
 					$titres[] = __('R&eacute;cursif', 'evarisk');
 				break;
 			}
@@ -976,45 +980,51 @@ class digirisk_permission
 			unset($valeurs);
 			$valeurs[] = array('value'=>'b');
 			$valeurs[] = array('value'=>__('Pour tous les utilisateurs', 'evarisk'), 'class'=>'middleAlign');
-			if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
-			{
+			if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN) {
 				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_see" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
 				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_edit" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
 				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_delete" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
 			}
-			else
-			{
+			else {
 				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="see" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_see" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
 				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
 				$valeurs[] = array('value'=>'<span class="checkAll_user_" id="delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
 			}
-			switch($tableElement)
-			{
+			switch($tableElement) {
 				case TABLE_GROUPEMENT;
-					if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
-					{
+					if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN) {
 						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
 						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
 						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
 					}
-					else
-					{
+					else {
 						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
 						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
 						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+					}
+				break;
+
+				case TABLE_TACHE;
+					if (!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN) {
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_task" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_task" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_action" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_add_action" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="task_recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_" id="not_task_recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell');
+					}
+					else {
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_task" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /><br/></span><span class="uncheckAll_user_" id="not_add_task" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="add_action" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_add_action" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
+						$valeurs[] = array('value'=>'<span class="checkAll_user_" id="task_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_" id="not_task_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell');
 					}
 				break;
 			}
 			$lignesDeValeurs[] = $valeurs;
 			$idLignes[] = $tableElement . $idElement . 'listeUtilisateursDroits';
 
-			if(count($listeUtilisateursLies) > 0)
-			{
+			if(count($listeUtilisateursLies) > 0) {
 				unset($valeurs);
 				$valeurs[] = array('value'=>'a');
 				$valeurs[] = array('value'=>__('Pour tous les utilisateurs affect&eacute;s', 'evarisk'), 'class'=>'userAffecte middleAlign');
-				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
-				{
+				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN) {
 					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_see" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_see" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
 					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_edit" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_edit" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
 					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_delete" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_delete" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
@@ -1025,20 +1035,30 @@ class digirisk_permission
 					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_edit" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
 					$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_delete" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
 				}
-				switch($tableElement)
-				{
+				switch ($tableElement) {
 					case TABLE_GROUPEMENT;
-						if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN)
-						{
+						if(!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN) {
 							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_groupement" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_groupement" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
 							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_unite" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_unite" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
 							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
 						}
-						else
-						{
+						else {
 							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /><br/></span><span class="uncheckAll_user_affected_" id="not_a_add_groupement" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
 							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_add_unite" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
 							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+						}
+					break;
+
+					case TABLE_TACHE;
+						if (!SHOW_PICTURE_FOR_RIGHT_HEADER_MASS_SELECTOR_COLUMN) {
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_task" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_task" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_action" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_add_action" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_task_recursif" >' . __('Tous', 'evarisk') . '</span>&nbsp;/&nbsp;<span class="uncheckAll_user_affected_" id="not_a_task_recursif" >' . __('Aucun', 'evarisk') . '</span>', 'class'=>'rightCell userAffecte');
+						}
+						else {
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_task" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /><br/></span><span class="uncheckAll_user_affected_" id="not_a_add_task" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_add_action" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_add_action" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
+							$valeurs[] = array('value'=>'<span class="checkAll_user_affected_" id="a_task_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_ALL) . '" alt="' . __('Tous', 'evarisk') . '" title="' . __('Tous', 'evarisk') . '" /></span><br/><span class="uncheckAll_user_affected_" id="not_a_task_recursif" ><img src="' . str_replace('.png', '_vs.png', DIGI_USER_SELECT_NOBODY) . '" alt="' . __('Aucun', 'evarisk') . '" title="' . __('Aucun', 'evarisk') . '" /></span>', 'class'=>'rightCell userAffecte');
 						}
 					break;
 				}
@@ -1105,6 +1125,15 @@ class digirisk_permission
 				$classes[] = 'rightColumn';
 				$classes[] = 'rightColumn';
 				break;
+				case TABLE_TACHE;
+				$script .= '
+				null,
+				null,
+				null,';
+				$classes[] = 'rightColumn';
+				$classes[] = 'rightColumn';
+				$classes[] = 'rightColumn';
+				break;
 			}
 				$script .= '
 				null
@@ -1129,32 +1158,41 @@ class digirisk_permission
 		$titres[] = ucfirst(strtolower(__('Id.', 'evarisk')));
 		$titres[] = ucfirst(strtolower(__('Nom', 'evarisk')));
 		$titres[] = ucfirst(strtolower(__('Pr&eacute;nom', 'evarisk')));
-		if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN)
-		{
+		if (!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN) {
 			$titres[] = __('Voir', 'evarisk');
 			$titres[] = __('&Eacute;diter', 'evarisk');
 			$titres[] = __('Supprimer', 'evarisk');
 		}
-		else
-		{
+		else {
 			$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_VIEW) . '" alt="' . __('Voir', 'evarisk') . '" title="' . __('Voir', 'evarisk') . '" />';
 			$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_EDIT) . '" alt="' . __('&Eacute;diter', 'evarisk') . '" title="' . __('&Eacute;diter', 'evarisk') . '" />';
 			$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_DELETE) . '" alt="' . __('Supprimer', 'evarisk') . '" title="' . __('Supprimer', 'evarisk') . '" />';
 		}
-		switch($tableElement)
-		{
+		switch($tableElement) {
 			case TABLE_GROUPEMENT;
 				/*	Add button for groupement or unit adding	*/
-				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN)
-				{
+				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN) {
 					$titres[] = __('Ajouter un groupement', 'evarisk');
 					$titres[] = __('Ajouter une unit&eacute;', 'evarisk');
 					$titres[] = ucfirst(strtolower(__('R&eacute;cursif', 'evarisk')));
 				}
-				else
-				{
+				else {
 					$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_LTL_ADD_GROUPEMENT) . '" alt="' . __('Ajouter un groupement', 'evarisk') . '" title="' . __('Ajouter un groupement', 'evarisk') . '" />';
 					$titres[] = '<img src="' . str_replace('.png', '_vs.png', PICTO_LTL_ADD_UNIT) . '" alt="' . __('Ajouter une unit&eacute;', 'evarisk') . '" title="' . __('Ajouter une unit&eacute;', 'evarisk') . '" />';
+					$titres[] = '<img src="' . str_replace('.png', '_vs.png', DIGI_RECURSE) . '" alt="' . __('R&eacute;cursif', 'evarisk') . '" title="' . __('R&eacute;cursif', 'evarisk') . '" />';
+				}
+			break;
+
+			case TABLE_TACHE;
+				/*	Add button for groupement or unit adding	*/
+				if(!SHOW_PICTURE_FOR_RIGHT_HEADER_COLUMN) {
+					$titres[] = __('Ajouter une t&acirc;che', 'evarisk');
+					$titres[] = __('Ajouter une sous-t&acirc;che', 'evarisk');
+					$titres[] = ucfirst(strtolower(__('R&eacute;cursif', 'evarisk')));
+				}
+				else {
+					$titres[] = '<img src="' . str_replace('_s.png', '_vs.png', PICTO_LTL_ADD_TACHE) . '" alt="' . __('Ajouter une t&acirc;che', 'evarisk') . '" title="' . __('Ajouter une t&acirc;che', 'evarisk') . '" />';
+					$titres[] = '<img src="' . str_replace('_s.png', '_vs.png', PICTO_LTL_ADD_ACTIVITE) . '" alt="' . __('Ajouter une sous-t&acirc;che', 'evarisk') . '" title="' . __('Ajouter une sous-t&acirc;che', 'evarisk') . '" />';
 					$titres[] = '<img src="' . str_replace('.png', '_vs.png', DIGI_RECURSE) . '" alt="' . __('R&eacute;cursif', 'evarisk') . '" title="' . __('R&eacute;cursif', 'evarisk') . '" />';
 				}
 			break;
@@ -1185,13 +1223,18 @@ class digirisk_permission
 				$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_U . $utilisateur['user_id'], 'class'=>$utilisateurAffecteClass);
 				$valeurs[] = array('value'=>$utilisateur['user_lastname'], 'class'=>$utilisateurAffecteClass);
 				$valeurs[] = array('value'=>$utilisateur['user_firstname'], 'class'=>$utilisateurAffecteClass);
-				switch($tableElement)
-				{
+				switch ($tableElement) {
 					case TABLE_GROUPEMENT;
 						$endPermission = 'groupement';
 					break;
 					case TABLE_UNITE_TRAVAIL;
 						$endPermission = 'unite';
+					break;
+					case TABLE_TACHE:
+						$endPermission = 'task';
+					break;
+					case TABLE_TACHE:
+						$endPermission = 'action';
 					break;
 					default:
 						$endPermission = '';
@@ -1258,6 +1301,29 @@ class digirisk_permission
 						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_add_unit[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_add_unite_' . $endPermission . '_' . $idElement . '" id="user_add_unit' . $utilisateur['user_id'] . '" class="add_unite" ' . $viewCheckBox . ' />');
 						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_recursif[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_recursif_' . $endPermission . '_' . $idElement . '" id="user_recursif' . $utilisateur['user_id'] . '" class="recursif" />');
 					break;
+
+					case TABLE_TACHE;
+						/*	Add button for groupement or unit adding	*/
+						$viewCheckBox = '';
+						if($user->has_cap('digi_add_task') || $user->has_cap('digi_add_task_' . $endPermission . '_' . $idElement)) {
+							$viewCheckBox = ' checked="checked" ';
+							if ($user->has_cap('digi_add_task')) {
+								$viewCheckBox .= ' disabled="disabled" ';
+							}
+							$userRightDetail['add_task'] .= 'digi_add_task_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+						}
+						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_add_task[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_add_task_' . $endPermission . '_' . $idElement . '" id="user_add_task' . $utilisateur['user_id'] . '" class="add_task" ' . $viewCheckBox . ' />');
+						$viewCheckBox = '';
+						if($user->has_cap('digi_add_action') || $user->has_cap('digi_add_action_' . $endPermission . '_' . $idElement)) {
+							$viewCheckBox = ' checked="checked" ';
+							if($user->has_cap('digi_add_action')) {
+								$viewCheckBox .= ' disabled="disabled" ';
+							}
+							$userRightDetail['add_action'] .= 'digi_add_action_' . $endPermission . '_' . $idElement . '!#!' . $utilisateur['user_id'] . '#!#';
+						}
+						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_add_action[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_add_action_' . $endPermission . '_' . $idElement . '" id="user_add_action' . $utilisateur['user_id'] . '" class="add_action" ' . $viewCheckBox . ' />');
+						$valeurs[] = array('class'=>'rightCell ' . $utilisateurAffecteClass, 'value'=>'<input type="checkbox" name="user_recursif[' . $tableElement . '_' . $idElement . '_' . $utilisateur['user_id'] . ']" value="digi_recursif_' . $endPermission . '_' . $idElement . '" id="user_recursif' . $utilisateur['user_id'] . '" class="recursif" />');
+					break;
 				}
 
 				$lignesDeValeurs[] = $valeurs;
@@ -1278,6 +1344,12 @@ class digirisk_permission
 			switch($tableElement)
 			{
 				case TABLE_GROUPEMENT;
+					$valeurs[] = array('value'=>'');
+					$valeurs[] = array('value'=>'');
+					$valeurs[] = array('value'=>'');
+				break;
+
+				case TABLE_TACHE;
 					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>'');
 					$valeurs[] = array('value'=>'');
@@ -1316,6 +1388,15 @@ class digirisk_permission
 				$classes[] = 'rightColumn';
 				$classes[] = 'rightColumn';
 				break;
+				case TABLE_TACHE;
+				$script .= '
+				{ "bSortable": false},
+				{ "bSortable": false},
+				{ "bSortable": false},';
+				$classes[] = 'rightColumn';
+				$classes[] = 'rightColumn';
+				$classes[] = 'rightColumn';
+				break;
 			}
 				$script .= '
 				{ "bSortable": false}
@@ -1332,8 +1413,7 @@ class digirisk_permission
 		}
 
 		/*	Ajout de la liste des droits d�j� affect�s aux utilisateurs et des nouveaux droits en cours d'affectation	*/
-		foreach($rightType as $rightName)
-		{
+		foreach($rightType as $rightName) {
 			$outputTable .= '
 <input type="hidden" name="userRightDetail_' . $rightName . '" id="userRightDetail_' . $rightName . '" value="" />';
 			$outputTable .= '
@@ -1632,7 +1712,7 @@ class digirisk_permission
 <?php
 		}
 
-		if($interface_provenance != 'digi_user_profile'){
+		if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
 ?>
 	<tr>
 		<td><?php _e('Raccourci d\'attribution', 'evarisk'); ?></td>
@@ -1655,7 +1735,7 @@ class digirisk_permission
 		<th>
 			<?php _e('permission_' . $module, 'evarisk'); ?>
 <?php
-				if($interface_provenance != 'digi_user_profile'){
+				if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
 ?>
 			<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
 <?php
@@ -1677,7 +1757,7 @@ class digirisk_permission
 				</div>
 				<div class="sub_module_content" >
 <?php
-				if($interface_provenance != 'digi_user_profile'){
+				if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
 ?>
 					<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module . '_' . $subModuleName; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module . '_' . $subModuleName; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
 <?php
@@ -1711,6 +1791,8 @@ class digirisk_permission
 						echo '<img src="' . $checked_picto . '" alt="user right affectation" class="middleAlign" />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
 					}
 					else{
+						if((!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name == 'administrator')) )
+							$checked .= ' disabled="disabled" ';
 						echo '<input type="checkbox" class="' . $module . ' ' . $subModuleName . ' ' . $module . '_' . $subModuleName . ' ' . $permissionCap[$permission]['type'] . ' ' . $permissionCap[$permission]['subtype'] . ' ' . $permissionCap[$permission]['type'] . '_' . $permissionCap[$permission]['subtype'] . '" name="digi_permission[' . $permission . ']" id="digi_permission_' . $permission . '" value="yes" ' . $checked . ' />&nbsp;<label for="digi_permission_' . $permission . '" class="' . $permissionNameClass . '" >' . __($permission, 'evarisk') . '</label><br/>';
 					}
 				}

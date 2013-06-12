@@ -191,10 +191,11 @@ class digirisk_install	{
 					$dependance_to_make = false;
 
 					/*	Check if there are modification to make on table	*/
-					if(isset($digirisk_db_table_list[$i])){
-						foreach($digirisk_db_table_list[$i] as $table_name){
-							if(!empty($digirisk_db_table[$table_name]))
-								$table_update_result = dbDelta($digirisk_db_table[$table_name]);
+					if ( !empty($digirisk_db_table_list[$i]) ) {
+						foreach ( $digirisk_db_table_list[$i] as $table_name ) {
+							if ( !empty($digirisk_db_table[$table_name]) ) {
+								$table_update_result = dbDelta( $digirisk_db_table[$table_name] );
+							}
 						}
 						$do_changes = true;
 					}
@@ -1053,7 +1054,8 @@ class digirisk_install	{
 
 				/**	Set the penibility level by default	*/
 				$options = get_option('digirisk_options');
-				$options['digi_risk_penibility_level'] = risq51;
+				global $typeRisque;
+				$options['digi_risk_penibility_level'] = $typeRisque['risq51'];
 				update_option('digirisk_options', $options);
 
 				/**	Update recommandation from EPI categoy to individual type	*/
@@ -1165,6 +1167,15 @@ class digirisk_install	{
 					$methode_id = $wpdb->get_var( $query );
 				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
 			break;
+
+			case 82:
+				/**	Set the penibility level by default	*/
+				$options = get_option('digirisk_options');
+				$options['digi_risk_display_picture_in_listing'] = 'oui';
+				$options['digi_ac_task_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
+				$options['digi_ac_activity_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
+				update_option('digirisk_options', $options);
+				break;
 		}
 	}
 

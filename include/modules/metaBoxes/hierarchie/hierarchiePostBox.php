@@ -1,19 +1,19 @@
 <?php
 
 	//Postbox definition
-	$postBoxTitle = __('Services, Unit&eacute;s de travail et risques', 'evarisk');
+	$postBoxTitle = __('Services, Unit&eacute;s de travail et risques', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxHierarchie';
 	$postBoxCallbackFunction = 'getHierarchiePostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_TACHE, 'rightSide', 'default');
 	require_once( EVA_LIB_PLUGIN_DIR . 'arborescence/arborescence_special.class.php');
-	
-	function getHierarchiePostBoxBody($arguments){
+
+	function getHierarchiePostBoxBody($arguments) {
 		$idElement = $arguments['idElement'];
 		$tableElement = $arguments['tableElement'];
 		$current_content = '&nbsp;';
 
-		switch($tableElement){
-			case TABLE_TACHE:{
+		switch ($tableElement) {
+			case TABLE_TACHE:
 				$currentTask = new EvaTask($idElement);
 				$currentTask->load();
 				$currentTaskAffectedTableId = $currentTask->getIdFrom();
@@ -25,16 +25,18 @@
 				$idBouttonEnregistrer = 'enregistrerProvenanceTache';
 				$scriptEnregistrement = '';
 
-				if( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') ){
-					$save_button = 
-						'<div id="saveLinkTaskElement" >' . EvaDisplayInput::afficherInput('submit', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-secondary alignright', '', '', $scriptEnregistrement) . '</div><div class="digirisk_hide alignright" id="savingLinkTaskElement" >&nbsp;</div>';
-				}
-				else{
-					$save_button = 
-						'<div class="alignright button-secondary" id="TaskSaveButton" >' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . '</div>';
+				if (current_user_can('digi_edit_task') || current_user_can('digi_edit_task_' . $idElement)) {
+					if ( ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee')== 'oui') ) {
+						$save_button =
+							'<div id="saveLinkTaskElement" >' . EvaDisplayInput::afficherInput('submit', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', 'saveTache', false, true, '', 'button-primary alignright', '', '', $scriptEnregistrement) . '</div><div class="digirisk_hide alignright" id="savingLinkTaskElement" >&nbsp;</div>';
+					}
+					else {
+						$save_button =
+							'<div class="alignright button-secondary" id="TaskSaveButton" >' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas la modifier', 'evarisk') . '</div>';
+					}
 				}
 				$current_content = arborescence_special::display_mini_hierarchy_for_element_affectation($currentTaskAffectedTable, $currentTaskAffectedTableId);
-			}break;
+			break;
 		}
 
 		$output = '

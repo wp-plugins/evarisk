@@ -8,7 +8,7 @@ $groupeQuestions = EvaGroupeQuestions::getGroupesQuestions($search);
 
 switch($_POST['act'])
 {
-		
+
 	case 'addExtrait' :
 		$id = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
 		$groupeQuestions = EvaGroupeQuestions::getGroupeQuestions($id);
@@ -16,7 +16,7 @@ switch($_POST['act'])
 		$extrait = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['extrait']));
 		EvaGroupeQuestions::updateExtraitGroupeQuestions($idGroupeQuestion, $extrait);
 		break;
-	
+
 	case 'save' :
 		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['nom']));
 		EvaGroupeQuestions::saveNewGroupeQuestions($nom);
@@ -27,8 +27,7 @@ switch($_POST['act'])
 		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['nom']));
 		$code = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['code']));
 		$idGroupeQuestionPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idPere']));
-		if($_POST['extrait'] != null)
-		{
+		if( !empty($_POST['extrait']) ) {
 			$extrait = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['extrait']));
 		}
 		EvaGroupeQuestions::updateGroupeQuestions($idGroupeQuestion, $nom, $code, $idGroupeQuestionPere, $extrait);

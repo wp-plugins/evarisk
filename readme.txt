@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 3.5.1
-Stable tag: 5.1.6.7
+Stable tag: 5.1.6.8
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -74,13 +74,38 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
 
+= Version 5.1.6.8 =
+
+Am&eacute;liorations
+
+* ST399 - Gestion des droits pour les actions correctives
+* ST401 - Ergonomie de s&eacute;lection des t&acirc;ches a associer aux demande dans le front et aux actions de controles (Utilisation de la librairie autocomplete de jquery permettant de s&eacute;lectionner une tache depuis son nom ou son id)
+* ST402 - Possibilit&eacute; de ne cr&eacute;er que la sous-t&acirc;che lors des demandes dans le frontend
+* ST404 - Possibilit&eacute; de suivre le temps pass&eacute; &agrave; la r&eacute;alisation d'une action
+* ST408 - Afficher la photo dans le risque &agrave; droite quand elle existe sinon pas de photo (Afficher la photo dans le risque &agrave; droite quand elle existe ou une icones pas de photo comme pour les autres endroit ou l'on peut mettre une photo)
+* ST414 - Mise en place de la possibilit&eacute; de  mettre &agrave; plat l'arbre des t&acirc;ches
+* ST415 - Affichage du num&eacute;ro de l'&eacute;valuation courant pour chaque risque dans le listing des risques
+
+Corrections
+
+* ST400 - Gestion des droits manquants sur certains &eacute;l&eacute;ments dans l'arborescence des groupements et unit&eacute;s de travail
+* ST403 - Incoh&eacute;rence entre les interfaces et la fonctionnalit&eacute; de gestion des droits utilisateurs (On pouvait modifier les droits du r&ocirc;le administrateur depuis l'interface alors que &agrave; chaque actualisation de page on r&eacute;affecte les droits automatiquement)
+* ST405 - Affichage du dernier commentaire ajout&eacute; sur un risque dans la liste des risques
+* ST406 - Gestion des utilisateurs dans les groupes (Impossible d'ajouter/supprimer des utilisateurs des groupes d'utilisateurs)
+* ST407 - Afficher les X commentaires dans l'affichages des risques
+* ST409 - Photo mal cal&eacute; pour les actions correctives lorsque l'on mets la photo en principale
+* ST410 - On ne fait pas la diff&eacute;rence entre les photos avant et apr&egrave;s l'action corrective
+* ST417 - Affectation des t&acirc;ches de controle si l'option n'est pas chang&eacute;e
+* ST412 - Finir le tableau de v&eacute;rification en masse et mettre les commentaires (avec la nouvelle version multicommentaires)
+* ST413 - Les noms des fiches de poste pour les fichiers ne sont pas unique on ne peux pas decompresser (Probl&egrave;me venant des accents dans les noms des unit&eacute;s de travail)
+* ST418 - Ligne parasite dans la fiche de p&eacute;nibilit&eacute; (Une ligne non format&eacute;e apparaissait dans le cas o&ugrave; l'utilisateur &eacute;tait affect&eacute; a un &eacute;l&eacute;ment avec une &eacute;valuation de p&eacute;nibilit&eacute; mais qu'il n'y est pas soumis lui m&ecirc;me)
+
 = Version 5.1.6.7 =
 
 Am&eacute;liorations
 
 * ST393 - Possibilit&eacute; de r&eacute;int&eacute;grer les donn&eacute;es manquantes (* M&eacute;thodes d'&eacute;valuation pour la p&eacute;nibilit&eacute; / * ATTENTION l'utilisation de cette fonctionnalit&eacute; peut entrainer des dysfonctionnement si elle est utilis&eacute;e alors qu'il n'y en a pas besoin)
 * ST395 - Meilleure visibilit&eacute; pour la cotation d'un risque
-* ST396 - Rangement des dangers dans l'ordre de l'ed840 (NB: Il est impossible pour le moment de modifier cet ordre depuis l'interface d'administration)
 
 Corrections
 

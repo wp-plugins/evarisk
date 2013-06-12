@@ -1,6 +1,6 @@
 <?php
 /**
- * This class allows to work on many tasks (equivalent to many rows in data base) 
+ * This class allows to work on many tasks (equivalent to many rows in data base)
  *
  * @author Evarisk
  * @version v5.0
@@ -14,7 +14,7 @@ class EvaTaskTable extends EvaBaseTask
 	 * @var array Collection of evaTask object indexed by identifier.
 	 */
 	var $tasks;
-  
+
 /*
  *	Constructeur et accesseurs
  */
@@ -50,8 +50,14 @@ class EvaTaskTable extends EvaBaseTask
 		unset($this->is_readable_from_external);
 		unset($this->nom_exportable_plan_action);
 		unset($this->description_exportable_plan_action);
+		unset($this->real_start_date);
+		unset($this->real_end_date);
+		unset($this->estimate_cost);
+		unset($this->real_cost);
+		unset($this->planned_time);
+		unset($this->elapsed_time);
 	}
-  
+
 	/**
 	 * Returns the collection of tasks
 	 * @return array The collection of tasks indexed by their identifier
@@ -60,7 +66,7 @@ class EvaTaskTable extends EvaBaseTask
 	{
 		return $this->tasks;
 	}
-  
+
 	/**
 	 * Add a task to the collection
 	 * @param EvaTask Task to add to the collection
@@ -69,7 +75,7 @@ class EvaTaskTable extends EvaBaseTask
 	{
 		$this->tasks[$task->getId()] = $task;
 	}
-  
+
 	/**
 	 * Remove a task from the collection
 	 * @param EvaTask Task to remove from the collection
@@ -81,7 +87,7 @@ class EvaTaskTable extends EvaBaseTask
 		unset($this->tasks[$taskId]);
 		return $task;
 	}
-  
+
 	/**
 	 * Remove all tasks from the collection
 	 */
@@ -101,9 +107,9 @@ class EvaTaskTable extends EvaBaseTask
 	function getTasksLike($task)
 	{
 		global $wpdb;
-    
+
 		$this->removeAllTasks();
-    
+
 		{//Variables cleaning
 			$name = digirisk_tools::IsValid_Variable($task->getName());
 			$description = digirisk_tools::IsValid_Variable($task->getDescription());
@@ -127,6 +133,12 @@ class EvaTaskTable extends EvaBaseTask
 			$is_readable_from_external = digirisk_tools::IsValid_Variable($task->get_external_readable());
 			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($task->getnom_exportable_plan_action());
 			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($task->getdescription_exportable_plan_action());
+			$real_start_date = digirisk_tools::IsValid_Variable($task->getreal_start_date());
+			$real_end_date = digirisk_tools::IsValid_Variable($task->getreal_end_date());
+			$estimate_cost = digirisk_tools::IsValid_Variable($task->getestimate_cost());
+			$real_cost = digirisk_tools::IsValid_Variable($task->getreal_cost());
+			$planned_time = digirisk_tools::IsValid_Variable($task->getplanned_time());
+			$elapsed_time = digirisk_tools::IsValid_Variable($task->getelapsed_time());
 		}
     {//Query creation
       $sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
@@ -166,62 +178,87 @@ class EvaTaskTable extends EvaBaseTask
       {
         $sql = $sql . " AND " . self::status . " = '" . mysql_real_escape_string($status) . "'";
       }
-			if($idCreateur != '')
+	  if($idCreateur != '')
       {
         $sql = $sql . " AND " . self::idCreateur . " = '" . mysql_real_escape_string($idCreateur) . "'";
       }
-			if($idSoldeur != '')
+	  if($idSoldeur != '')
       {
         $sql = $sql . " AND " . self::idSoldeur . " = '" . mysql_real_escape_string($idSoldeur) . "'";
       }
-			if($idSoldeurChef != '')
+	  if($idSoldeurChef != '')
       {
         $sql = $sql . " AND " . self::idSoldeurChef . " = '" . mysql_real_escape_string($idSoldeurChef) . "'";
       }
-			if($idResponsable != '')
+	  if($idResponsable != '')
       {
         $sql = $sql . " AND " . self::idResponsable . " = '" . mysql_real_escape_string($idResponsable) . "'";
       }
-			if($ProgressionStatus != '')
+	  if($ProgressionStatus != '')
       {
         $sql = $sql . " AND " . self::ProgressionStatus . " IN (" . ($ProgressionStatus) . ") ";
       }
-			if($dateSolde != '')
+	  if($dateSolde != '')
       {
         $sql = $sql . " AND " . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'";
       }
-			if($hasPriority != '')
+	  if($hasPriority != '')
       {
         $sql = $sql . " AND " . self::hasPriority . " = '" . mysql_real_escape_string($hasPriority) . "'";
       }
-			if($efficacite != '')
+	  if($efficacite != '')
       {
         $sql = $sql . " AND " . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "'";
-      }		
-			if($idPhotoAvant != '')
+      }
+	  if($idPhotoAvant != '')
       {
         $sql = $sql . " AND " . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "'";
-      }			
-			if($idPhotoApres != '')
+      }
+	  if($idPhotoApres != '')
       {
         $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
-      }	
-			if($is_readable_from_external != '')
+      }
+	  if($is_readable_from_external != '')
       {
         $sql = $sql . " AND " . self::is_readable_from_external . " = '" . mysql_real_escape_string($is_readable_from_external) . "'";
-      }	
-			if($nom_exportable_plan_action != '')
+      }
+	  if($nom_exportable_plan_action != '')
       {
         $sql = $sql . " AND " . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "'";
-      }	
-			if($description_exportable_plan_action != '')
+      }
+	  if($description_exportable_plan_action != '')
       {
         $sql = $sql . " AND " . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "'";
       }
+
+	  if($real_start_date != '')
+      {
+        $sql = $sql . " AND " . self::real_start_date . " = '" . mysql_real_escape_string($real_start_date) . "'";
+      }
+	  if($real_end_date != '')
+      {
+        $sql = $sql . " AND " . self::real_end_date . " = '" . mysql_real_escape_string($real_end_date) . "'";
+      }
+	  if($estimate_cost != '')
+      {
+        $sql = $sql . " AND " . self::estimate_cost . " = '" . mysql_real_escape_string($estimate_cost) . "'";
+      }
+	  if($real_cost != '')
+      {
+        $sql = $sql . " AND " . self::real_cost . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "'";
+      }
+	  if($planned_time != '')
+      {
+        $sql = $sql . " AND " . self::planned_time . " = '" . mysql_real_escape_string($planned_time) . "'";
+      }
+	  if($elapsed_time != '')
+      {
+        $sql = $sql . " AND " . self::elapsed_time . " = '" . mysql_real_escape_string($elapsed_time) . "'";
+      }
     }
-    
+
     $wpdbTasks = $wpdb->get_results($sql);
-    
+
     foreach($wpdbTasks as $wpdbTask)
     {
       $task = new EvaTask();

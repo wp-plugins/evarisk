@@ -3,24 +3,24 @@
  * @version v5.0
  */
 	//Postbox definition
-	$postBoxTitle = __('R&eacute;capitulatif', 'evarisk');
+	$postBoxTitle = __('R&eacute;capitulatif', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxHeaderUniteTravail';
 	$postBoxCallbackFunction = 'getHeaderUniteTravailPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
-	 
+
 	function getHeaderUniteTravailPostBoxBody($arguments)
 	{
 		$tableElement = $arguments['tableElement'];
 		$idElement = $arguments['idElement'];
-		
+
 		include_once(EVA_CONFIG);
 		require_once(EVA_LIB_PLUGIN_DIR . 'arborescence.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'evaDisplayDesign.class.php');
-		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
-		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
-		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php'); 
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
+		require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/documentUnique/documentUnique.class.php');
 		require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
-		
+
 		if(((int)$idElement) == 0)
 		{
 			$script = '<script type="text/javascript">
@@ -35,7 +35,7 @@
 			$nomUniteTravail = __('Nouvelle unit&eacute; de travail', 'evarisk');
 			$responsables = null;
 			if($idElement!=null)
-			{	
+			{
 				$uniteTravail = eva_UniteDeTravail::getWorkingUnit($idElement);
 				$nomUniteTravail = $uniteTravail->nom;
 				$groupementPere = EvaGroupement::getGroupement($uniteTravail->id_groupement);
@@ -81,14 +81,14 @@
 			$nomResponsables = substr($nomResponsables, 0, strlen($nomResponsables) - 2);
 			if($groupementPere->nom != "Groupement Racine")
 				$miniFilAriane = $miniFilAriane . $groupementPere->nom;
-			$renduPage = 
+			$renduPage =
 			'<div id="enTeteDroite">
 				<div id="Informations">
 					<div id="nomElement" class="titleDiv">';
 			$idTitreWU = 'titreWU' . $idElement;
 			$workingUnitsNames = eva_UniteDeTravail::getWorkingUnitsName();
 			$workingUnitsNames[] = "";
-			
+
 			$valeurActuelleIn = 'digirisk("#' . $idTitreWU . '").val ()in {';
 			foreach($workingUnitsNames as $workingUnitName)
 			{
@@ -101,9 +101,9 @@
 						digirisk(document).ready(function(){
 							digirisk("#' . $idButton . '").hide();
 							digirisk("#' . $idButton . '").click(function(){
-								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 								{
-									"post": "true", 
+									"post": "true",
 									"table": "' . TABLE_UNITE_TRAVAIL . '",
 									"act": "updateByField",
 									"id": ' . $idElement . ',
@@ -134,7 +134,7 @@
 									digirisk("#nom_unite_travail").removeClass("form-input-tip");
 								}
 								else{
-									digirisk("#nom_unite_travail").addClass("form-input-tip");							
+									digirisk("#nom_unite_travail").addClass("form-input-tip");
 								}
 								if(' . $valeurActuelleIn . '){
 									digirisk("#' . $idButton . '").hide();

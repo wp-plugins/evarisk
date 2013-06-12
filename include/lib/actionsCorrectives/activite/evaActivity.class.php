@@ -17,8 +17,7 @@ class EvaActivity extends EvaBaseActivity
 	/**
 	* Save or update the activity in data base
 	*/
-	function save()
-	{
+	function save() {
 		global $wpdb;
 		global $current_user;
 
@@ -43,12 +42,17 @@ class EvaActivity extends EvaBaseActivity
 			$idPhotoApres = digirisk_tools::IsValid_Variable($this->getidPhotoApres());
 			$nom_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getnom_exportable_plan_action());
 			$description_exportable_plan_action = digirisk_tools::IsValid_Variable($this->getdescription_exportable_plan_action());
+			$planned_time = digirisk_tools::IsValid_Variable($this->getplanned_time());
+			$elapsed_time = digirisk_tools::IsValid_Variable($this->getelapsed_time());
+			$cout_reel = digirisk_tools::IsValid_Variable($this->getcout_reel());
+			$real_start_date = digirisk_tools::IsValid_Variable($this->getreal_start_date());
+			$real_end_date = digirisk_tools::IsValid_Variable($this->getreal_end_date());
 		}
 
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_ACTIVITE . " (" . self::relatedTaskId . ", " . self::name . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::cout . ", " . self::progression . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",   " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ",  " . self::dateSolde . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::firstInsert . ")
+			$sql = "INSERT INTO " . TABLE_ACTIVITE . " (" . self::relatedTaskId . ", " . self::name . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::cout . ", " . self::progression . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",   " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ",  " . self::dateSolde . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::planned_time . ", " . self::elapsed_time . ", " . self::cout_reel . ", " . self::real_start_date . ", " . self::real_end_date . ", " . self::firstInsert . ")
 				VALUES ('" . mysql_real_escape_string($relatedTaskId) . "',
 								'" . mysql_real_escape_string($name) . "',
 								'" . mysql_real_escape_string($description) . "',
@@ -68,6 +72,11 @@ class EvaActivity extends EvaBaseActivity
 								'" . mysql_real_escape_string($idPhotoApres) . "',
 								'" . mysql_real_escape_string($nom_exportable_plan_action) . "',
 								'" . mysql_real_escape_string($description_exportable_plan_action) . "',
+								'" . mysql_real_escape_string($planned_time) . "',
+								'" . mysql_real_escape_string($elapsed_time) . "',
+								'" . mysql_real_escape_string($cout_reel) . "',
+								'" . mysql_real_escape_string($real_start_date) . "',
+								'" . mysql_real_escape_string($real_end_date) . "',
 								'" . current_time('mysql', 0) . "')";
 		}
 		else
@@ -90,7 +99,12 @@ class EvaActivity extends EvaBaseActivity
 				" . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "' ,
 				" . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "' ,
 				" . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "' ,
-				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'
+				" . self::planned_time . " = '" . mysql_real_escape_string($planned_time) . "',
+				" . self::elapsed_time . " = '" . mysql_real_escape_string($elapsed_time) . "',
+				" . self::cout_reel . " = '" . mysql_real_escape_string($cout_reel) . "',
+				" . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "',
+				" . self::real_start_date . " = '" . mysql_real_escape_string($real_start_date) . "',
+				" . self::real_end_date . " = '" . mysql_real_escape_string($real_end_date) . "'
 			WHERE " . self::id . " = " . mysql_real_escape_string($id);
 		}
 
@@ -269,19 +283,17 @@ class EvaActivity extends EvaBaseActivity
 	*
 	*	@return string $sub_task_creation_form An html output of the form
 	*/
-	function sub_task_creation_form($arguments){
+	function sub_task_creation_form($arguments) {
 		$idElement = $activite_new = $addPictureButton = '';
+		$options = get_option('digirisk_options');
 
 		/*	Check if an element has been passed as parameter => If there is an element, load the good activity	*/
-		if($arguments['idElement'] != null){
+		if ( !empty($arguments['idElement']) ) {
 			$idElement = $arguments['idElement'];
 			$activite = new EvaActivity($idElement);
 			$activite->load();
 			$contenuInputTitre = $activite->getName();
 			$contenuInputDescription = $activite->getDescription();
-			$contenuInputDateDebut = $activite->getStartDate();
-			$contenuInputDateFin = $activite->getFinishDate();
-			$contenuInputCout = $activite->getCout();
 			$contenuInputAvancement = $activite->getProgression();
 			$contenuInputResponsable = $activite->getidResponsable();
 			$contenuInputRealisateur = $activite->getidSoldeur();
@@ -298,15 +310,13 @@ class EvaActivity extends EvaBaseActivity
 				$contenuInputAvancement = 100;
 			}
 		}
-		else{
-			$contenuInputTitre = $contenuInputDescription = $contenuInputRealisateur = $contenuInputResponsable = $firstInsert = '';
-			$contenuInputDateDebut = date('Y-m-d');
-			$contenuInputDateFin = date('Y-m-d');
-			$ProgressionStatus = 'Done';
-			$nom_exportable_plan_action = $description_exportable_plan_action = '';
+		else {
+			$activite = null;
+			$contenuInputTitre = $contenuInputDescription = $contenuInputRealisateur = $contenuInputResponsable = $firstInsert = $nom_exportable_plan_action = $description_exportable_plan_action = '';
+			$ProgressionStatus = 'notStarted';
 			$idCreateur = 0;
 			$contenuInputAvancement = 0;
-			$idPere = $arguments['idPere'];
+			$idPere = !empty($arguments['idPere']) ? $arguments['idPere'] : '';
 			$grise = true;
 			$saveOrUpdate = (isset($arguments['requested_action']) && ($arguments['requested_action'] != '') && (!in_array($arguments['requested_action'], array('demandeAction', 'ficheAction')))) ? $arguments['requested_action'] : 'save';
 			if(isset($arguments['requested_action']) && ($arguments['requested_action'] == 'demandeAction'))
@@ -332,16 +342,16 @@ class EvaActivity extends EvaBaseActivity
 
 		{/*	Hidden field					*/
 			$activite_new .=
-	EvaDisplayInput::afficherInput('hidden', 'post', 'true', '', null, 'post', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'act', $saveOrUpdate, '', null, 'act', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'original_act', (!empty($arguments['requested_action'])?$arguments['requested_action']:''), '', null, 'original_act', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'affichage_activite', $arguments['affichage'], '', null, 'affichage', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'table', TABLE_ACTIVITE, '', null, 'table', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'id_activite', $idElement, '', null, 'id', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'idPere_activite', $idPere, '', null, 'idPere', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'idsFilAriane_activite', $arguments['idsFilAriane'], '', null, 'idsFilAriane', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'idProvenance_activite', (!empty($arguments['idProvenance'])?$arguments['idProvenance']:''), '', null, 'idProvenance', false, false) .
-	EvaDisplayInput::afficherInput('hidden', 'tableProvenance_activite', (!empty($arguments['tableProvenance'])?$arguments['tableProvenance']:''), '', null, 'tableProvenance', false, false);
+				EvaDisplayInput::afficherInput('hidden', 'post', 'true', '', null, 'post', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'act', $saveOrUpdate, '', null, 'act', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'original_act', (!empty($arguments['requested_action'])?$arguments['requested_action']:''), '', null, 'original_act', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'affichage_activite', (!empty($arguments['affichage']) ? $arguments['affichage'] : '' ), '', null, 'affichage', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'table', TABLE_ACTIVITE, '', null, 'table', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'id_activite', $idElement, '', null, 'id', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'idPere_activite', $idPere, '', null, 'idPere', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'idsFilAriane_activite', (!empty($arguments['idsFilAriane']) ? $arguments['idsFilAriane'] : ''), '', null, 'idsFilAriane', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'idProvenance_activite', (!empty($arguments['idProvenance'])?$arguments['idProvenance']:''), '', null, 'idProvenance', false, false) .
+				EvaDisplayInput::afficherInput('hidden', 'tableProvenance_activite', (!empty($arguments['tableProvenance'])?$arguments['tableProvenance']:''), '', null, 'tableProvenance', false, false);
 		}
 		{/*	Sub-Task name					*/
 			$contenuAideTitre = "";
@@ -357,10 +367,17 @@ class EvaActivity extends EvaBaseActivity
 			if ( !empty($idElement) && ( $ProgressionStatus == 'Done' ) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ) {
 				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; car cette t&acirc;che est sold&eacute;e', 'evarisk') . '"';
 			}
-			$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($nom_exportable_plan_action) && ($nom_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
+			$checked = '';
+			if ( (empty($nom_exportable_plan_action) || ($nom_exportable_plan_action=='yes') ) && ((empty($options['digi_ac_activity_default_exportable_plan_action']) && empty($options['digi_ac_activity_default_exportable_plan_action']['name'])) || ($options['digi_ac_activity_default_exportable_plan_action']['name'] == 'oui')) ) {
+				$checked = ' checked="checked" ';
+			}
+			else {
+				$nom_exportable_plan_action = 'no';
+			}
+			$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"' . $checked . ' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 			$nomChamps = "nom_activite";
 			$idTitre = "nom_activite";
-			$activite_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput', '', '99%') . '
+			$activite_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput', '', '99%', '', '', false, '1') . '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
 		jQuery("#nom_exportable_plan_action").click(function(){
@@ -370,13 +387,43 @@ class EvaActivity extends EvaBaseActivity
 			}
 			else{
 				jQuery("#description_exportable_plan_action").prop("disabled",false);
+				if ("' . (empty($options['digi_ac_activity_default_exportable_plan_action']) || empty($options['digi_ac_activity_default_exportable_plan_action']['description']) || !empty($options['digi_ac_activity_default_exportable_plan_action']['description']) ? $options['digi_ac_activity_default_exportable_plan_action']['description'] : '') . '" == "oui") {
+					jQuery("#description_exportable_plan_action").prop("checked", true);
+				}
 			}
 		});
 	});
 </script>';
 		}
+		{/*	Sub-Task Description	*/
+			$contenuAideDescription = "";
+			$labelInput = __("Description", 'evarisk') . ' : ';
+			$exportable_option = '';
+			if ( !empty ( $parent_task ) && ( $parent_task->nom_exportable_plan_action == 'no' ) || ( $nom_exportable_plan_action == 'no' ) ) {
+				$labelInput .= '<input type="hidden" name="description_exportable_plan_action" value="no" />';
+				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
+				$description_exportable_plan_action = 'no';
+			}
+			if ( ( $ProgressionStatus == 'Done' ) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ) {
+				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; car cette t&acirc;che est sold&eacute;e', 'evarisk') . '"';
+			}
+			$checked = '';
+			if ( (empty($description_exportable_plan_action) || ($description_exportable_plan_action=='yes') ) && ((empty($options['digi_ac_activity_default_exportable_plan_action']) && empty($options['digi_ac_activity_default_exportable_plan_action']['description'])) || ($options['digi_ac_activity_default_exportable_plan_action']['description'] == 'oui')) ) {
+				$checked = ' checked="checked" ';
+			}
+			else {
+				$description_exportable_plan_action = 'no';
+			}
+			$labelInput .= '<div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action"' . $exportable_option . ' value="yes"' . $checked . ' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
+			$id = "description_activite";
+			$nomChamps = "description";
+			$rows = 5;
+			$activite_new .= EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, $rows, '', '', '99%', '', '', false, '2');
+		}
+
 		{/*	Sub-Task creation informations		*/
 			if(($firstInsert != '') || ($idCreateur > 0)){
+				$activite_new .= '<div class="digi_action_created_by_infos" >';
 				if(($firstInsert != '') && ($idCreateur > 0)){
 					$subtask_creator_infos = evaUser::getUserInformation($idCreateur);
 					$activite_new .= sprintf(__('Ajout&eacute;e le %s par %s', 'evarisk'), mysql2date('d M Y', $firstInsert, true), $subtask_creator_infos[$idCreateur]['user_lastname'] . ' ' . $subtask_creator_infos[$idCreateur]['user_firstname']);
@@ -388,40 +435,95 @@ class EvaActivity extends EvaBaseActivity
 					$subtask_creator_infos = evaUser::getUserInformation($idCreateur);
 					$activite_new .= sprintf(__('Ajout&eacute;e par %s', 'evarisk'), $subtask_creator_infos[$idCreateur]['user_lastname'] . ' ' . $subtask_creator_infos[$idCreateur]['user_firstname']);
 				}
-				$activite_new .= '<br /><br class="clear" />';
+				$activite_new .= '</div>';
 			}
 		}
 
-		if(empty($arguments['provenance']) || (!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action'))){
-			/*	Sub-Task start date		*/
-			$contenuAideTitre = "";
-			$id = "date_debut_activite";
-			$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de d&eacute;but %s", 'evarisk'), __("de l'action",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionStart" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
-			$labelInput = '';
-			$nomChamps = "date_debut";
-			$activite_new .= $label . EvaDisplayInput::afficherInput('text', $id, $contenuInputDateDebut, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date', '99%') . '';
-
-			/*	Sub-Task end date			*/
-			$contenuAideTitre = "";
-			$id = "date_fin_activite";
-			$label = '<label for="' . $id . '" >' . ucfirst(sprintf(__("Date de fin %s", 'evarisk'), __("de l'action",'evarisk'))) . '</label> : <span class="fieldInfo pointer" id="putTodayActionEnd" >' . __('Aujourd\'hui', 'evarisk') . '</span>';
-			$labelInput = '';
-			$nomChamps = "date_fin";
-			$activite_new .= $label . EvaDisplayInput::afficherInput('text', $id, $contenuInputDateFin, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date', '99%') . '';
-
-			/*	Sub-Task cost					*/
+		if (empty($arguments['provenance']) || (!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action'))) {
+			/*	Sub-Task Responsible	*/
 			$contenuAideDescription = "";
-			$labelInput = __("Co&ucirc;t", 'evarisk') . ' : ';
-			$id = "cout_activite";
-			$nomChamps = "cout";
-			$activite_new .= EvaDisplayInput::afficherInput('text', $id, $contenuInputCout, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, 255, '', '', '99%');
+			$labelInput = __("Responsable", 'evarisk');
+			if(digirisk_options::getOptionValue('responsable_Action_Obligatoire') == 'oui'){
+				$labelInput .= '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span>';
+			}
+			$labelInput .= ' : <span class="fieldInfo" >' . sprintf(__('(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le menu %s du plugin)', 'evarisk'), '<a href="' . get_bloginfo('siteurl') . '/wp-admin/options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION . '#digirisk_options_correctivaction" target="optionPage" >' . __('Options', 'evarisk') . '</a>') . '</span>';
+			$id = "responsable_activite";
+			$nomChamps = "responsable_activite";
+
+			$activite_new .= '<div class="digi_action_responsible clear" ><label for="search_user_responsable_' . $arguments['tableElement'] . '" class="clear" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false);
+			$search_input_state = '';
+			$change_input_state = 'hide';
+			if($contenuInputResponsable > 0){
+				$search_input_state = 'hide';
+				$change_input_state = '';
+				$responsible = evaUser::getUserInformation($contenuInputResponsable);
+				$activite_new .= '<div id="responsible_name" >' . ELEMENT_IDENTIFIER_U . $contenuInputResponsable . '&nbsp;-&nbsp;' . $responsible[$contenuInputResponsable]['user_lastname'] . ' ' . $responsible[$contenuInputResponsable]['user_firstname'];
+			}
+			else
+				$activite_new .= '<div id="responsible_name" class="hide" >&nbsp;';
+
+			$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span>&nbsp;&nbsp;<span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span>
+
+	<input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" tabindex="3" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible' . (!empty($arguments['requested_action']) ? $arguments['requested_action']: '') . '" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+	<script type="text/javascript" >
+		digirisk(document).ready(function(){
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
+				jQuery(".completeUserListActionResponsible").show();
+			});
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
+				source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $arguments['tableElement'] . '&id_element=' . $arguments['idElement'] . '",
+				select: function( event, ui ){
+					jQuery("#responsable_activite").val(ui.item.value);
+					jQuery("#responsible_name").html(ui.item.label);
+					jQuery("#responsible_name").show();
+
+					jQuery(".completeUserListActionResponsible").hide();
+					jQuery(".searchUserToAffect").hide();
+					jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+					jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
+
+					setTimeout(function(){
+						jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val("");
+						jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur();
+					}, 2);
+				}
+			});
+
+
+
+			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+				jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
+				jQuery(this).hide();
+			});
+			jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+				jQuery("#responsable_activite").val("");
+				jQuery("#responsible_name").html("&nbsp;");
+				jQuery("#responsible_name").hide();
+				jQuery(this).hide();
+				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").hide();
+				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").hide();
+			});
+		});
+	</script></div><br/>';
 		}
+
+		if(empty($arguments['provenance']) || (!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action'))){
+			ob_start();
+			suivi_activite::digi_postbox_project( $arguments );
+			$activite_new .= '
+<div id="project_follow_up_summary_' . $arguments['tableElement'] . '_' . $arguments['idElement'] . '" >' . ob_get_contents() . '
+</div>';
+			ob_end_clean();
+		}
+
 		if(empty($arguments['provenance']) || ($arguments['provenance'] != 'ask_correctiv_action')){
 			/*	Sub-Task progression	*/
 			$id = "avancement_activite";
 			$nomChamps = "avancement";
-			$activite_new .= __("Avancement", 'evarisk') . ' :
-<input type="text" name="' . $nomChamps . '" id="' . $id . '" style="width:5%;" value="' . $contenuInputAvancement . '" />' . __('%', 'evarisk') . '<div id="sliderAvancement" >&nbsp;</div>
+			$activite_new .= '<br class="clear" /><br/>' . __("Avancement", 'evarisk') . ' :
+<input type="text" name="' . $nomChamps . '" id="' . $id . '" style="width:5%;" value="' . $contenuInputAvancement . '" tabindex="10"  />' . __('%', 'evarisk') . '<div id="sliderAvancement" >&nbsp;</div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		jQuery("#' . $id . '").prop("readonly", "readonly");
@@ -438,89 +540,8 @@ class EvaActivity extends EvaBaseActivity
 		jQuery("#' . $id . '").attr("style", jQuery( "#' . $id . '" ).attr("style") + "border:0px solid #000000;");
 	});
 </script>';
-
-			/*	Sub-Task Responsible	*/
-			$contenuAideDescription = "";
-			$labelInput = __("Responsable", 'evarisk');
-			if(digirisk_options::getOptionValue('responsable_Action_Obligatoire') == 'oui'){
-				$labelInput .= '&nbsp;<span class="fieldInfo required" >' . __('(obligatoire)', 'evarisk') . '</span>';
-			}
-			$labelInput .= ' : <span class="fieldInfo" >' . sprintf(__('(vous pouvez d&eacute;finir si ce champs est obligatoire ou non dans le menu %s du plugin)', 'evarisk'), '<a href="' . get_bloginfo('siteurl') . '/wp-admin/options-general.php?page=' . DIGI_URL_SLUG_MAIN_OPTION . '#digirisk_options_correctivaction" target="optionPage" >' . __('Options', 'evarisk') . '</a>') . '</span>';
-			$id = "responsable_activite";
-			$nomChamps = "responsable_activite";
-
-			$activite_new .= '<br/><label for="search_user_responsable_' . $arguments['tableElement'] . '" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false) . '<div id="responsible_name" >';
-			$search_input_state = '';
-			$change_input_state = 'hide';
-			if($contenuInputResponsable > 0){
-				$search_input_state = 'hide';
-				$change_input_state = '';
-				$responsible = evaUser::getUserInformation($contenuInputResponsable);
-				$activite_new .= ELEMENT_IDENTIFIER_U . $contenuInputResponsable . '&nbsp;-&nbsp;' . $responsible[$contenuInputResponsable]['user_lastname'] . ' ' . $responsible[$contenuInputResponsable]['user_firstname'];
-			}
-			else
-				$activite_new .= '&nbsp;';
-
-			$activite_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '</span>&nbsp;&nbsp;<span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible' . $arguments['requested_action'] . '" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
-	<script type="text/javascript" >
-		digirisk(document).ready(function(){
-			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
-				jQuery(".completeUserListActionResponsible").show();
-			});
-			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
-				source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $tableElement . '&id_element=' . $arguments['idElement'] . '",
-				select: function( event, ui ){
-					jQuery("#responsable_activite").val(ui.item.value);
-					jQuery("#responsible_name").html(ui.item.label);
-
-					jQuery(".completeUserListActionResponsible").hide();
-					jQuery(".searchUserToAffect").hide();
-					jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
-					jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
-
-					setTimeout(function(){
-						jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val("");
-						jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur();
-					}, 2);
-				}
-			});
-
-			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
-				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
-				jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
-				jQuery(this).hide();
-			});
-			jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
-				jQuery("#responsable_activite").val("");
-				jQuery("#responsible_name").html("&nbsp;");
-				jQuery(this).hide();
-				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").hide();
-				jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
-			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").hide();
-			});
-		});
-	</script><br class="clear" /><br/><br/><br/>';
 		}
-		{/*	Sub-Task Description	*/
-			$contenuAideDescription = "";
-			$labelInput = __("Description", 'evarisk') . ' : ';
-			$exportable_option = '';
-			if ( !empty ( $parent_task ) ) {
-				if ( ( $parent_task->nom_exportable_plan_action == 'no' ) || ( $nom_exportable_plan_action == 'no' ) ) {
-					$labelInput .= '<input type="hidden" name="description_exportable_plan_action" value="no" />';
-					$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; si la t&acirc;che parente n\'est pas exportable', 'evarisk') . '"';
-					$description_exportable_plan_action = 'no';
-				}
-			}
-			if ( ( $ProgressionStatus == 'Done' ) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ) {
-				$exportable_option = ' disabled="disabled" title="' . __('L\'export ne peut &ecirc;tre activ&eacute; car cette t&acirc;che est sold&eacute;e', 'evarisk') . '"';
-			}
-			$labelInput .= '<div class="alignright" ><input type="checkbox" name="description_exportable_plan_action" id="description_exportable_plan_action"' . $exportable_option . ' value="yes"'.(!empty($description_exportable_plan_action) && ($description_exportable_plan_action=='yes')?' checked="checked"':'').' />&nbsp;<label for="description_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
-			$id = "description_activite";
-			$nomChamps = "description";
-			$rows = 5;
-			$activite_new .= EvaDisplayInput::afficherInput('textarea', $id, $contenuInputDescription, $contenuAideDescription, $labelInput, $nomChamps, $grise, true, $rows, '', '', '99%');
-		}
+
 
 		if(!empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action')){/*	Add possibility for user to add a picture and to affect to an existing element for the asked tasks	*/
 			/*	Add a picture	*/
@@ -532,11 +553,11 @@ class EvaActivity extends EvaBaseActivity
 		}
 
 		if(isset($arguments['requested_action']) && (($arguments['requested_action'] == 'ficheAction') || ($arguments['requested_action'] == 'control_asked_action'))){/*	Risk new level cotation	*/
-			{/*	Task efficiency	*/
-				$activite_new .= sprintf(__('Efficacit&eacute; de la t&acirc;che %s', 'evarisk'), '<input type="text" name="correctiv_action_efficiency_control" id="correctiv_action_efficiency_control' . $idElement . '" value="0" class="correctiv_action_efficiency_control" readonly="readonly" />%') . '<div id="correctiv_action_efficiency_control_slider' . $idElement . '" class="correctiv_action_efficiency_control_slider" >&nbsp;</div>';
-			}
-			{/*	Load the different var for the risk associated method	*/
-				$activite_new .= '
+			/**	Task efficiency	*/
+			$activite_new .= sprintf(__('Efficacit&eacute; de la t&acirc;che %s', 'evarisk'), '<input type="text" name="correctiv_action_efficiency_control" id="correctiv_action_efficiency_control' . $idElement . '" value="0" class="correctiv_action_efficiency_control" readonly="readonly" />%') . '<div id="correctiv_action_efficiency_control_slider' . $idElement . '" class="correctiv_action_efficiency_control_slider" >&nbsp;</div>';
+
+			/**	Load the different var for the risk associated method	*/
+			$activite_new .= '
 				<fieldset id="divVariablesFormRisque-simpleFAC-fieldset" >
 					<legend class="bold" >' . __('Nouvelle &Eacute;valuation', 'evarisk') . ' :</legend>
 					<script type="text/javascript">
@@ -554,7 +575,7 @@ class EvaActivity extends EvaBaseActivity
 					</script>
 					<div id="divVariablesFormRisque-simpleFAC" ></div>
 				</fieldset>';
-			}
+
 			{/*	Current risk description	*/
 				$contenuInput = '';
 				if($arguments['idProvenance'] != ''){
@@ -588,21 +609,21 @@ class EvaActivity extends EvaBaseActivity
 
 		$sub_task_creation_form =
 '<form method="post" id="informationGeneralesActivite" action="' . EVA_INC_PLUGIN_URL . 'ajax.php" >' .
-$activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
+$activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite') . '<div class="clear" ></div><br/>';
 
 		if((!empty($arguments['output_mode']) && $arguments['output_mode'] == 'return') && !empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action')){/*	Add picture button			*/
 			$sub_task_creation_form .= '<div id="photosActionsCorrectives" >&nbsp;</div>';
 			$addPictureButton =
-				'<div id="add_picture_alert" class="hide" title="' . __('Modification de la cotation d\'un risque depuis une action corrective', 'evarisk') . '" >&nbsp;</div><input type="button" name="add_control_picture" id="add_control_picture" class="button-primary alignleft" value="' . __('Enregistrer puis ajouter des photos', 'evarisk') . '" />';
+				'<div id="add_picture_alert" class="hide" title="' . __('Modification de la cotation d\'un risque depuis une action corrective', 'evarisk') . '" >&nbsp;</div><input type="button" name="add_control_picture" id="add_control_picture" class="button-primary alignleft" value="' . __('Enregistrer puis ajouter des photos', 'evarisk') . '" />&nbsp;';
 		}
 		{/*	Add buttons to output		*/
 			$inProgressButton = '';
 			if(($saveOrUpdate == 'update') && ($ProgressionStatus != '') && ($ProgressionStatus != 'inProgress') && ($contenuInputAvancement != '100')){
-				$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-secondary', '', '', $scriptEnregistrementInProgress, 'left') . '</span>';
+				$inProgressButton = '<span id="inProgressButtonContainer" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonSetInProgress, __('Passer en cours', 'evarisk'), null, '', $idBouttonSetInProgress, false, true, '', 'button-secondary', '', '', $scriptEnregistrementInProgress, 'left', false, '11') . '</span> ';
 			}
 			if(($saveOrUpdate == 'add_control') || ($saveOrUpdate == 'ask_correctiv_action') || ($saveOrUpdate == 'addAction') || ($saveOrUpdate == 'save') || ($ProgressionStatus == '') || ($ProgressionStatus == 'inProgress') || ($ProgressionStatus == 'notStarted') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui')){
 				$sub_task_creation_form .=
-					'<div class="alignright" id="ActionSaveButton" >' . $inProgressButton;
+					' <div class="alignright" id="ActionSaveButton" >' . $inProgressButton;
 
 				if(($saveOrUpdate == 'update') && (($ProgressionStatus == '') || ($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress'))){
 					$sub_task_creation_form .=
@@ -620,7 +641,7 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 
 				$sub_task_creation_form .=
 					$addPictureButton .
-					'<div id="save_button_container"  >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left') .
+					'&nbsp;&nbsp;<div id="save_button_container" class="alignleft" >' . EvaDisplayInput::afficherInput('button', $idBouttonEnregistrer, __('Enregistrer', 'evarisk'), null, '', $idBouttonEnregistrer, false, true, '', 'button-primary', '', '', '', 'left', false, '12') .
 					'</div><div id="save_in_progress" class="alignright digirisk_hide" ><img src="' . admin_url('images/loading.gif') . '" alt="loading in progress" /></div></div>';
 			}
 			else{
@@ -634,6 +655,16 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 		$sub_task_creation_form .= '
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
+		jQuery("#cout_activite").keypad({
+			keypadOnly: false,
+		});
+		jQuery("#planned_time_hour").keypad({
+			keypadOnly: false,
+		});
+		jQuery("#planned_time_minutes").keypad({
+			keypadOnly: false,
+		});
+
 		jQuery("#ActionSaveButton").children("br").remove();
 		jQuery("#ActionSaveButton div").children("br").remove();
 
@@ -655,7 +686,7 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 			modal:true
 		});
 		jQuery("#add_control_picture").click(function(){';
-		if(isset($arguments['requested_action']) && ($arguments['requested_action'] != 'demandeAction')){
+		if (isset($arguments['requested_action']) && ($arguments['requested_action'] != 'demandeAction')) {
 			$sub_task_creation_form .= '
 			var variables = new Array;
 			jQuery("#divVariablesFormRisque-simpleFAC input").each(function(){
@@ -665,8 +696,8 @@ $activite_new . EvaDisplayInput::fermerForm('informationGeneralesActivite');
 				"post":"true",
 				"table":"' . TABLE_RISQUE . '",
 				"act":"load_quote_validation",
-				"idProvenance": "' . $_REQUEST['idProvenance'] . '",
-				"tableProvenance": "' . $_REQUEST['tableProvenance'] . '",
+				"idProvenance": "' . (!empty($_REQUEST['idProvenance']) ? $_REQUEST['idProvenance'] : ( !empty($arguments['idProvenance']) ? $arguments['idProvenance'] : '' )) . '",
+				"tableProvenance": "' . (!empty($_REQUEST['tableProvenance']) ? $_REQUEST['tableProvenance'] : ( !empty($arguments['tableProvenance']) ? $arguments['tableProvenance'] : '' )) . '",
 				"vars": variables,
 				"new_description" : jQuery("#descriptionFormRisque").val()
 			});

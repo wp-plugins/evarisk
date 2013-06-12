@@ -207,7 +207,7 @@ class EvaDanger {
 		if ($selection != null) {
 			$nombreDeDangers = count($dangers);
 			$afficheSelecteurDanger = '';
-			if ( ( ( $nombreDeDangers <= 1 ) || !empty($risque) ) && !DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+			if ( ( ( $nombreDeDangers <= 1 ) || !empty($risque) ) && !DIGI_ALLOW_RISK_CATEGORY_CHANGE && (is_object($selection)) ) {
 				$afficheSelecteurDanger = ' display:none; ';
 				$dangerResult['list'] .= '<div class="clear" >' . ELEMENT_IDENTIFIER_D . $selection->id . ' - ' . $selection->nom . '</div>';
 			}

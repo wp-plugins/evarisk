@@ -44,6 +44,8 @@ class digirisk_options
 			add_settings_field('digi_ac_displayonlysoldtaskinrisk_field', __('Affecter uniquement les t&acirc;ches sold&eacute;es aux risques', 'evarisk'), array('digirisk_options', 'digi_ac_displayonlysoldtaskinrisk_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_exportprioritytaskonly_field', __('Exporter uniquement les t&acirc;ches prioritaires', 'evarisk'), array('digirisk_options', 'digi_ac_exportprioritytaskonly_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_taskexport_field', __('Afficher le bouton d\'export des actions correctives au format texte', 'evarisk'), array('digirisk_options', 'digi_ac_taskexport_field'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_task_default_exportable_plan_action', __('Exporter les t&acirc;ches dans le plan d\'action par défaut', 'evarisk'), array('digirisk_options', 'digi_ac_task_default_exportable_plan_action'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_activity_default_exportable_plan_action', __('Exporter les sous-t&acirc;ches dans le plan d\'action par défaut', 'evarisk'), array('digirisk_options', 'digi_ac_activity_default_exportable_plan_action'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_allowed_ext', __('Liste des extensions autoris&eacute;es pour les documents', 'evarisk'), array('digirisk_options', 'digi_ac_allowed_ext'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_allow_front_ask', __('Autoriser la demande d\'actions correctives depuis la partie front du portail', 'evarisk'), array('digirisk_options', 'digi_ac_allow_front_ask'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_front_ask_parent_task_id', '', array('digirisk_options', 'digi_ac_front_ask_parent_task_id'), 'digirisk_options_correctivaction', 'digi_options_ac');
@@ -56,6 +58,7 @@ class digirisk_options
 			/*	Add the different field for current section	*/
 			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_risk', 'digi_risk_options');
 			add_settings_field('digi_risk_penibility_level', __('Seuil de p&eacute;nibilit&eacute;', 'evarisk'), array('digirisk_options', 'digi_risk_penibility_level'), 'digirisk_options_risk', 'digi_risk_options');
+			add_settings_field('digi_risk_display_picture_in_listing', __('Afficher la photo associ&eacute;e au risque si existante', 'evarisk'), array('digirisk_options', 'digi_risk_display_picture_in_listing'), 'digirisk_options_risk', 'digi_risk_options');
 		}
 
 		{/*	Declare the different options for the work unit sheet	*/
@@ -100,95 +103,6 @@ class digirisk_options
 		}
 	}
 
-	/**
-	*	Create the html ouput code for the options page
-	*
-	*	@return The html code to output for option page
-	*/
-	function optionMainPage(){
-		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel Digirisk', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false);
-?>
-<div class="digirisk_hide" id="loadingImg" ><div class="main_loading_pic_container" ><img src="<?php echo PICTO_LOADING; ?>" alt="loading..." /></div></div>
-<div id="digirisk_options_container" >
-	<form action="options.php" method="post" id="option_form" >
-	<div id="options_tabs" >
-		<ul>
-			<li><a href="#digirisk_options_general" title="optionsContent" id="tabOptions_General" ><?php _e('G&eacute;n&eacute;ral', 'evarisk'); ?></a></li>
-			<li><a href="#digirisk_options_user" title="optionsContent" id="tabOptions_User" ><?php _e('Utilisateurs', 'evarisk'); ?></a></li>
-			<li><a href="#digirisk_options_arbo" title="optionsContent" id="tabOptions_Arbo" ><?php _e('Arborescence', 'evarisk'); ?></a></li>
-			<li><a href="#digirisk_options_risk" title="optionsContent" id="tabOptions_Risk" ><?php _e('Risques', 'evarisk'); ?></a></li>
-			<li><a href="#digirisk_options_worksheet" title="optionsContent" id="tabOptions_WorkSheet" ><?php _e('Fiches de postes', 'evarisk'); ?></a></li>
-			<li><a href="#digirisk_options_correctivaction" title="optionsContent" id="tabOptions_CActions" ><?php _e('Actions correctives', 'evarisk'); ?></a></li>
-			<li><a href="#digirisk_options_recommandation" title="optionsContent" id="tabOptions_Recommandation" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
-<?php
-if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
-?>
-			<li><a href="#digirisk_options_product" title="optionsContent" id="tabOptions_Product" ><?php _e('Produits', 'evarisk'); ?></a></li>
-<?php
-endif;
-?>
-			<li class="loading_pic_on_select tabOptions_Recommandation" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=recommandation" title="digirisk_configurations_tab" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
-			<li class="loading_pic_on_select tabOptions_Evaluation_method" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=evaluation_method" title="digirisk_configurations_tab" ><?php _e('M&eacute;thodes d\'&eacute;valuation', 'evarisk'); ?></a></li>
-			<li class="loading_pic_on_select tabOptions_Danger" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=danger" title="digirisk_configurations_tab" ><?php _e('Dangers', 'evarisk'); ?></a></li>
-			<!-- <li class="loading_pic_on_select tabOptions_Menu" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=menu" title="digirisk_configurations_tab" ><?php _e('Menu', 'evarisk'); ?></a></li> -->
-		</ul>
-		<div id="digirisk_options_general" ><?php do_settings_sections('digirisk_options_general'); ?></div>
-		<div id="digirisk_options_user" ><?php do_settings_sections('digirisk_options_user'); ?></div>
-		<div id="digirisk_options_arbo" ><?php do_settings_sections('digirisk_options_arbo'); ?></div>
-		<div id="digirisk_options_risk" ><?php do_settings_sections('digirisk_options_risk'); ?></div>
-		<div id="digirisk_options_worksheet" ><?php do_settings_sections('digirisk_options_worksheet'); ?></div>
-		<div id="digirisk_options_correctivaction" ><?php do_settings_sections('digirisk_options_correctivaction'); ?></div>
-		<div id="digirisk_options_recommandation" ><?php do_settings_sections('digirisk_options_recommandation'); ?></div>
-<?php
-if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
-?>
-		<div id="digirisk_options_product" ><?php do_settings_sections('digirisk_options_product'); ?></div>
-<?php
-endif;
-?>
-		<div id="digirisk_configurations_tab" >&nbsp;</div>
-	</div>
-<?php
-		settings_fields('digirisk_options');
-if(current_user_can('digi_edit_option')){
-?>
-	<input class="button-primary alignright" name="Submit" type="submit" id="digi_option_submit_button" value="<?php esc_attr_e('Save Changes'); ?>" />
-<?php
-}
-?>
-	</form>
-</div>
-<script type="text/javascript" >
-	digirisk(document).ready(function(){
-		jQuery("#options_tabs").tabs();
-		jQuery("#options_tabs ul li a").click(function(){
-			jQuery("#option_form").attr("action", "options.php" + jQuery(this).attr("href"));
-			jQuery("#digi_option_submit_button").show();
-		});
-		jQuery(".loading_pic_on_select a").click(function(){
-			jQuery("#digirisk_configurations_tab").html(jQuery("#loadingImg").html());
-			jQuery("#digi_option_submit_button").hide();
-		});
-
-		/*	Add support for option allowed_extension for AC deletion	*/
-		jQuery(".delete_allowed_extension_for_ac_docs").live('click', function(){
-			jQuery(this).closest("div").remove();
-		});
-		/*	Add support for option allowed_extension for AC addition	*/
-		jQuery(".add_new_extension_to_allow").click(function(){
-			if(jQuery("#new_allowed_extension").val() != ""){
-				jQuery("#allowed_ext_list").append("<div><input type='text' value='" + jQuery("#new_allowed_extension").val() + "' name='digirisk_options[digi_ac_allowed_ext][]' /><img src='<?php echo EVA_IMG_ICONES_PLUGIN_URL; ?>delete_vs.png' alt='<?php _e('Supprimer cette extension de la liste', 'evarisk'); ?>' title='<?php _e('Supprimer cette extension de la liste', 'evarisk'); ?>' class='delete_allowed_extension_for_ac_docs' /></div>");
-				jQuery("#new_allowed_extension").val("");
-			}
-			else{
-				alert(digi_html_accent_for_js("<?php _e('Vous n\'avez pas entr&eacute; d\'extension', 'evarisk'); ?>"));
-			}
-		});
-	});
-</script>
-<?php
-		echo EvaDisplayDesign::afficherFinPage();
-	}
 
 	/**
 	*	Validate the different data sent for the option
@@ -249,11 +163,14 @@ if(current_user_can('digi_edit_option')){
 		$newinput['digi_ac_allowed_ext'] = (!empty($input['digi_ac_allowed_ext'])?$input['digi_ac_allowed_ext']:'');
 		$newinput['digi_ac_allow_front_ask'] = (!empty($input['digi_ac_allow_front_ask'])?$input['digi_ac_allow_front_ask']:'');
 		$newinput['digi_ac_front_ask_parent_task_id'] = (!empty($input['digi_ac_front_ask_parent_task_id'])?$input['digi_ac_front_ask_parent_task_id']:'');
-		$newinput['digi_ac_front_ask_create_parent_task'] = (!empty($input['digi_ac_front_ask_create_parent_task'])?$input['digi_ac_front_ask_create_parent_task']:'');
+		$newinput['digi_ac_front_ask_create_parent_task'] = (!empty($input['digi_ac_front_ask_create_parent_task']) ? $input['digi_ac_front_ask_create_parent_task'] : '');
 		$newinput['digi_ac_control_action_affectation'] = (!empty($input['digi_ac_control_action_affectation'])?$input['digi_ac_control_action_affectation']:'');
+		$newinput['digi_ac_task_default_exportable_plan_action'] = (!empty($input['digi_ac_task_default_exportable_plan_action']) ? $input['digi_ac_task_default_exportable_plan_action'] : '');
+		$newinput['digi_ac_activity_default_exportable_plan_action'] = (!empty($input['digi_ac_activity_default_exportable_plan_action']) ? $input['digi_ac_activity_default_exportable_plan_action'] : '');
 
 		$newinput['risques_avances'] = (!empty($input['risques_avances'])?trim($input['risques_avances']):'');
 		$newinput['digi_risk_penibility_level'] = (!empty($input['digi_risk_penibility_level'])?trim($input['digi_risk_penibility_level']):'');
+		$newinput['digi_risk_display_picture_in_listing'] = (!empty($input['digi_risk_display_picture_in_listing'])?trim($input['digi_risk_display_picture_in_listing']):'yes');
 
 		$newinput['taille_photo_poste_fiche_de_poste'] = (!empty($input['taille_photo_poste_fiche_de_poste'])?trim($input['taille_photo_poste_fiche_de_poste']):'');
 
@@ -462,6 +379,39 @@ if(current_user_can('digi_edit_option')){
 			echo $options['export_tasks'];
 		}
 	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_ac_task_default_exportable_plan_action() {
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if(current_user_can('digi_edit_option')) {
+			echo __('Nom', 'evarisk') . ' : ' . EvaDisplayInput::createComboBox('digi_ac_task_default_exportable_plan_action_name', 'digirisk_options[digi_ac_task_default_exportable_plan_action][name]', $optionYesNoList, (!empty($options['digi_ac_task_default_exportable_plan_action']) && !empty($options['digi_ac_task_default_exportable_plan_action']['name']) ? $options['digi_ac_task_default_exportable_plan_action']['name'] : 'oui'));
+			echo '<br/>' . __('Description', 'evarisk') . ' : ' . EvaDisplayInput::createComboBox('digi_ac_task_default_exportable_plan_action_description', 'digirisk_options[digi_ac_task_default_exportable_plan_action][description]', $optionYesNoList, (!empty($options['digi_ac_task_default_exportable_plan_action']) && !empty($options['digi_ac_task_default_exportable_plan_action']['description']) ? $options['digi_ac_task_default_exportable_plan_action']['description'] : 'oui'));
+		}
+		else if (!empty($options['digi_ac_task_default_exportable_plan_action']) ) {
+			if ( !empty($options['digi_ac_task_default_exportable_plan_action']['name']) )
+				echo __('Nom', 'evarisk') . ' : ' . $options['digi_ac_task_default_exportable_plan_action']['name'];
+
+			if ( !empty($options['digi_ac_task_default_exportable_plan_action']['description']) )
+				echo '<br/>' . __('Description', 'evarisk') . ' : ' . $options['digi_ac_task_default_exportable_plan_action']['description'];
+		}
+	}
+	function digi_ac_activity_default_exportable_plan_action() {
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if(current_user_can('digi_edit_option')) {
+			echo __('Nom', 'evarisk') . ' : ' . EvaDisplayInput::createComboBox('digi_ac_activity_default_exportable_plan_action_name', 'digirisk_options[digi_ac_activity_default_exportable_plan_action][name]', $optionYesNoList, (!empty($options['digi_ac_activity_default_exportable_plan_action']) && !empty($options['digi_ac_activity_default_exportable_plan_action']['name']) ? $options['digi_ac_activity_default_exportable_plan_action']['name'] : 'oui'));
+			echo '<br/>' . __('Description', 'evarisk') . ' : ' . EvaDisplayInput::createComboBox('digi_ac_activity_default_exportable_plan_action_description', 'digirisk_options[digi_ac_activity_default_exportable_plan_action][description]', $optionYesNoList, (!empty($options['digi_ac_activity_default_exportable_plan_action']) && !empty($options['digi_ac_activity_default_exportable_plan_action']['description']) ? $options['digi_ac_activity_default_exportable_plan_action']['description'] : 'oui'));
+		}
+		else if (!empty($options['digi_ac_activity_default_exportable_plan_action']) ) {
+			if ( !empty($options['digi_ac_activity_default_exportable_plan_action']['name']) )
+				echo __('Nom', 'evarisk') . ' : ' . $options['digi_ac_activity_default_exportable_plan_action']['name'];
+
+			if ( !empty($options['digi_ac_activity_default_exportable_plan_action']['description']) )
+				echo '<br/>' . __('Description', 'evarisk') . ' : ' . $options['digi_ac_activity_default_exportable_plan_action']['description'];
+		}
+	}
 
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
@@ -485,10 +435,18 @@ if(current_user_can('digi_edit_option')){
 		if($options['digi_ac_allow_front_ask'] == 'oui'){
 			$load_class = ' ';
 		}
+		$task_to_associate_label = '';
+		if ( !empty($options['digi_ac_front_ask_parent_task_id']) ) {
+			$task_to_associate = new EvaTask();
+			$task_to_associate->setId( $options['digi_ac_front_ask_parent_task_id'] );
+			$task_to_associate->load();
+			$task_to_associate_label = ELEMENT_IDENTIFIER_T . $task_to_associate->getId() . ' - ' . $task_to_associate->getName();
+		}
 		if(current_user_can('digi_edit_option')){
 			/* <br/><input type="checkbox" value="yes"' . (!empty($options['digi_ac_front_ask_create_parent_task']) && ($options['digi_ac_front_ask_create_parent_task'] == 'yes') ? ' checked="checked"' : '') . ' name="digirisk_options[digi_ac_front_ask_create_parent_task]" id="digi_ac_front_ask_create_parent_task" /> <label for="digi_ac_front_ask_create_parent_task" >' . __('Cr&eacute;er uniquement les sous-t&acirc;ches pour les demandes? (Si vous cochez cette case, les demandes seront stock&eacute;es directement dans la t&acirc;che indiqu&eacute;e ci-dessus)', 'evarisk') . '</label>  */
-			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="text" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" />
-			<div class="digi_ac_allow_front_ask_code_container" >' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;: [digirisk_correctiv_action]</div></div>
+			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >' . __('T&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="hidden" value="' . (!empty($options['digi_ac_front_ask_parent_task_id']) ? $options['digi_ac_front_ask_parent_task_id'] : '') . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /><input type="text" value="" placeholder="' . (!empty($task_to_associate_label) ? $task_to_associate_label : __('Rechercher une t&acirc;che pour affectation', 'evarisk')) . '" name="digirisk_options[digi_ac_front_ask_parent_task_id_chooser]" id="digi_ac_front_ask_parent_task_id_chooser" class="auto-search-input" placeholder="' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '" /><span title="' . __('D&eacute;saffecter la t&acirc;che aux demandes du frontend', 'evarisk') . '" id="digi_option_delete_associated_task_to_frontend_form" >X</span>
+			<div class="digi_ac_allow_front_ask_code_container" >' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;: [digirisk_correctiv_action]</div>
+			<div class="digi_ac_create_only_task" ><input type="checkbox" name="digirisk_options[digi_ac_front_ask_create_parent_task]"' . (!empty($options['digi_ac_front_ask_create_parent_task']) ? ' checked="checked"' : '') . ' value="yes" id="digi_ac_front_ask_create_parent_task" /> <label for="digi_ac_front_ask_create_parent_task">' . __('Cr&eacute;er uniquement une sous-t&acirc;che pour les demandes', 'evarisk') . '</label></div></div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		jQuery("#digi_ac_allow_front_ask").change(function(){
@@ -499,11 +457,36 @@ if(current_user_can('digi_edit_option')){
 				jQuery("#associated_task_container").hide();
 			}
 		});
+
+		/*	Tree-element Search autocompletion	*/
+		jQuery("#digi_ac_front_ask_parent_task_id_chooser").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchT_ST.php?element_type=' . TABLE_TACHE . '",
+			response: function( event, ui ) {
+				if ( !ui.content[0] ) {
+					jQuery("#digi_ac_front_ask_parent_task_id_chooser").val("");
+				}
+			},
+			select: function( event, ui ) {
+				jQuery("#digi_ac_front_ask_parent_task_id").val(ui.item.value);
+				setTimeout(function(){
+					jQuery("#digi_ac_front_ask_parent_task_id_chooser").val(ui.item.label);
+					jQuery("#digi_ac_front_ask_parent_task_id_chooser").blur();
+				}, 2);
+			}
+		});
+
+		jQuery("#digi_option_delete_associated_task_to_frontend_form").click(function(){
+			if ( confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir d&eacute;saffecter cette t&acirc;che aux demandes effectu&eacute;es sur la partie frontend du site?', 'evarisk') . '")) ) {
+				jQuery("#digi_ac_front_ask_parent_task_id").val("");
+				jQuery("#digi_ac_front_ask_parent_task_id_chooser").attr("placeholder", digi_html_accent_for_js("' . __('Rechercher dans la liste des t&acirc;ches', 'evarisk') . '"));
+			}
+		});
 	});
 </script>';
+
 		}
 		else{
-			echo $options['digi_ac_allow_front_ask'] . '<div id="associated_task_container" ' . $load_class . ' >' . __('Identifiant de la t&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="hidden" value="' . $options['digi_ac_front_ask_parent_task_id'] . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>';
+			echo $options['digi_ac_allow_front_ask'] . '<div id="associated_task_container" ' . $load_class . ' >' . __('T&acirc;che associ&eacute;e', 'evarisk') . '&nbsp;:&nbsp;<input type="hidden" value="' . $task_to_associate_label . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /></div>';
 		}
 	}
 
@@ -512,11 +495,45 @@ if(current_user_can('digi_edit_option')){
 	 */
 	function digi_ac_control_action_affectation(){
 		$options = get_option('digirisk_options');
-		if(current_user_can('digi_edit_option')){
-			echo '<input type="text" value="' . $options['digi_ac_control_action_affectation'] . '" name="digirisk_options[digi_ac_control_action_affectation]" id="digi_ac_control_action_affectation" />';
+		$task_to_associate_label = '';
+		if ( !empty($options['digi_ac_control_action_affectation']) ) {
+			$task_to_associate = new EvaTask();
+			$task_to_associate->setId( $options['digi_ac_control_action_affectation'] );
+			$task_to_associate->load();
+			$task_to_associate_label = ELEMENT_IDENTIFIER_T . $task_to_associate->getId() . ' - ' . $task_to_associate->getName();
 		}
-		else{
-			echo $options['digi_ac_control_action_affectation'];
+		if (current_user_can('digi_edit_option')) {
+			echo '<input type="hidden" value="' . (!empty($options['digi_ac_control_action_affectation']) ? $options['digi_ac_control_action_affectation'] : '') . '" name="digirisk_options[digi_ac_control_action_affectation]" id="digi_ac_control_action_affectation" /><input type="text" value="" name="digirisk_options[digi_ac_control_action_affectation_chooser]" id="digi_ac_control_action_affectation_chooser" class="auto-search-input" placeholder="' . (!empty($task_to_associate_label) ? $task_to_associate_label : __('Rechercher une t&acirc;che pour affectation', 'evarisk')) . '" /><span title="' . __('D&eacute;saffecter la t&acirc;che aux demandes du frontend', 'evarisk') . '" id="digi_option_delete_associated_task_to_control_task" >X</span>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		/*	Tree-element Search autocompletion	*/
+		jQuery("#digi_ac_control_action_affectation_chooser").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchT_ST.php?element_type=' . TABLE_TACHE . '",
+			response: function( event, ui ) {
+				if ( !ui.content[0] ) {
+					jQuery("#digi_ac_control_action_affectation_chooser").val("");
+				}
+			},
+			select: function( event, ui ) {
+				jQuery("#digi_ac_control_action_affectation").val(ui.item.value);
+				setTimeout(function(){
+					jQuery("#digi_ac_control_action_affectation_chooser").val(ui.item.label);
+					jQuery("#digi_ac_control_action_affectation_chooser").blur();
+				}, 2);
+			}
+		});
+
+		jQuery("#digi_option_delete_associated_task_to_control_task").click(function(){
+			if ( confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous s&ucirc;r de vouloir d&eacute;saffecter cette t&acirc;che des t&acirc;ches de contr&ocirc;le?', 'evarisk') . '")) ) {
+				jQuery("#digi_ac_control_action_affectation").val("");
+				jQuery("#digi_ac_control_action_affectation_chooser").attr("placeholder", digi_html_accent_for_js("' . __('Rechercher dans la liste des t&acirc;ches', 'evarisk') . '"));
+			}
+		});
+	});
+</script>';
+		}
+		else {
+			echo $task_to_associate_label;
 		}
 	}
 
@@ -591,6 +608,22 @@ if(current_user_can('digi_edit_option')){
 
 		echo $output;
 	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_risk_display_picture_in_listing() {
+		$output = '';
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			$output = EvaDisplayInput::createComboBox('digi_risk_display_picture_in_listing', 'digirisk_options[digi_risk_display_picture_in_listing]', $optionYesNoList, (!empty($options['digi_risk_display_picture_in_listing']) ? $options['digi_risk_display_picture_in_listing'] : 'yes'));
+		}
+		else {
+			$output = $options['digi_risk_display_picture_in_listing'];
+		}
+
+		echo $output;
+	}
 
 	/**
 	*	Function allowing to set a explication area for the settings section
@@ -652,7 +685,7 @@ if(current_user_can('digi_edit_option')){
 	function digi_users_emaildomain_field(){
 		$options = get_option('digirisk_options');
 		if(current_user_can('digi_edit_option')){
-			echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='{$options['emailDomain']}' />";
+			echo "<input id='emailDomain' name='digirisk_options[emailDomain]' size='40' type='text' value='" . (!empty($options['emailDomain']) ? $options['emailDomain'] : '') . "' />";
 		}
 		else{
 			echo $options['emailDomain'];
@@ -667,10 +700,10 @@ if(current_user_can('digi_edit_option')){
 		$digi_users_access_field = '';
 		if(current_user_can('digi_edit_option')){
 			$digi_users_access_field = "
-<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='hidden' value='{$options['digi_users_access_field']}' />
-	" . EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, $options['digi_users_access_field']) . "
-	<br/><label for='identifiant_htpasswd'>" . __('Idenfiant', 'evarisk') . "&nbsp;:</label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' type='text' value='{$options['identifiant_htpasswd']}' />
-	<br/><label for='password_htpasswd'>" . __('Mot de passe', 'evarisk') . "&nbsp;:</label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' type='text' value='{$options['password_htpasswd']}' />";
+<input id='last_value_of_user_access' name='last_value_of_user_access' size='20' type='hidden' value='" . (!empty($options['digi_users_access_field']) ? $options['digi_users_access_field'] : '') . "' />
+	" . EvaDisplayInput::createComboBox('digi_users_access_field', 'digirisk_options[digi_users_access_field]', $optionYesNoList, (!empty($options['digi_users_access_field']) ? $options['digi_users_access_field'] : '')) . "
+	<br/><label for='identifiant_htpasswd'>" . __('Idenfiant', 'evarisk') . "&nbsp;:</label><input id='identifiant_htpasswd' name='digirisk_options[identifiant_htpasswd]' type='text' value='" . (!empty($options['identifiant_htpasswd']) ? $options['identifiant_htpasswd'] : '') . "' />
+	<br/><label for='password_htpasswd'>" . __('Mot de passe', 'evarisk') . "&nbsp;:</label><input id='password_htpasswd' name='digirisk_options[password_htpasswd]' type='text' value='" . (!empty($options['password_htpasswd']) ? $options['password_htpasswd'] : '') . "' />";
 			echo $digi_users_access_field;
 		}
 		else{
@@ -1141,5 +1174,95 @@ Require valid-user';
 			Fclose($htpasswd_file_content);
 		}
 	}
+
+	/**
+	 *	Create the html ouput code for the options page
+	 *
+	 *	@return The html code to output for option page
+	 */
+	function optionMainPage(){
+		echo EvaDisplayDesign::afficherDebutPage(__('Options du logiciel Digirisk', 'evarisk'), EVA_OPTIONS_ICON, __('options du logiciel', 'evarisk'), __('options du logiciel', 'evarisk'), TABLE_OPTION, false, '', false);
+		?>
+	<div class="digirisk_hide" id="loadingImg" ><div class="main_loading_pic_container" ><img src="<?php echo PICTO_LOADING; ?>" alt="loading..." /></div></div>
+	<div id="digirisk_options_container" >
+		<form action="options.php" method="post" id="option_form" >
+		<div id="options_tabs" >
+			<ul>
+				<li><a href="#digirisk_options_general" title="optionsContent" id="tabOptions_General" ><?php _e('G&eacute;n&eacute;ral', 'evarisk'); ?></a></li>
+				<li><a href="#digirisk_options_user" title="optionsContent" id="tabOptions_User" ><?php _e('Utilisateurs', 'evarisk'); ?></a></li>
+				<li><a href="#digirisk_options_arbo" title="optionsContent" id="tabOptions_Arbo" ><?php _e('Arborescence', 'evarisk'); ?></a></li>
+				<li><a href="#digirisk_options_risk" title="optionsContent" id="tabOptions_Risk" ><?php _e('Risques', 'evarisk'); ?></a></li>
+				<li><a href="#digirisk_options_worksheet" title="optionsContent" id="tabOptions_WorkSheet" ><?php _e('Fiches de postes', 'evarisk'); ?></a></li>
+				<li><a href="#digirisk_options_correctivaction" title="optionsContent" id="tabOptions_CActions" ><?php _e('Actions correctives', 'evarisk'); ?></a></li>
+				<li><a href="#digirisk_options_recommandation" title="optionsContent" id="tabOptions_Recommandation" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
+	<?php
+	if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
+	?>
+				<li><a href="#digirisk_options_product" title="optionsContent" id="tabOptions_Product" ><?php _e('Produits', 'evarisk'); ?></a></li>
+	<?php
+	endif;
+	?>
+				<li class="loading_pic_on_select tabOptions_Recommandation" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=recommandation" title="digirisk_configurations_tab" ><?php _e('Pr&eacute;conisations', 'evarisk'); ?></a></li>
+				<li class="loading_pic_on_select tabOptions_Evaluation_method" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=evaluation_method" title="digirisk_configurations_tab" ><?php _e('M&eacute;thodes d\'&eacute;valuation', 'evarisk'); ?></a></li>
+				<li class="loading_pic_on_select tabOptions_Danger" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=danger" title="digirisk_configurations_tab" ><?php _e('Dangers', 'evarisk'); ?></a></li>
+				<!-- <li class="loading_pic_on_select tabOptions_Menu" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=menu" title="digirisk_configurations_tab" ><?php _e('Menu', 'evarisk'); ?></a></li> -->
+			</ul>
+			<div id="digirisk_options_general" ><?php do_settings_sections('digirisk_options_general'); ?></div>
+			<div id="digirisk_options_user" ><?php do_settings_sections('digirisk_options_user'); ?></div>
+			<div id="digirisk_options_arbo" ><?php do_settings_sections('digirisk_options_arbo'); ?></div>
+			<div id="digirisk_options_risk" ><?php do_settings_sections('digirisk_options_risk'); ?></div>
+			<div id="digirisk_options_worksheet" ><?php do_settings_sections('digirisk_options_worksheet'); ?></div>
+			<div id="digirisk_options_correctivaction" ><?php do_settings_sections('digirisk_options_correctivaction'); ?></div>
+			<div id="digirisk_options_recommandation" ><?php do_settings_sections('digirisk_options_recommandation'); ?></div>
+	<?php
+	if(is_plugin_active(DIGI_WPSHOP_PLUGIN_MAINFILE)):
+	?>
+			<div id="digirisk_options_product" ><?php do_settings_sections('digirisk_options_product'); ?></div>
+	<?php
+	endif;
+	?>
+			<div id="digirisk_configurations_tab" >&nbsp;</div>
+		</div>
+	<?php
+			settings_fields('digirisk_options');
+	if(current_user_can('digi_edit_option')){
+	?>
+		<input class="button-primary alignright" name="Submit" type="submit" id="digi_option_submit_button" value="<?php esc_attr_e('Save Changes'); ?>" />
+	<?php
+	}
+	?>
+		</form>
+	</div>
+	<script type="text/javascript" >
+		digirisk(document).ready(function(){
+			jQuery("#options_tabs").tabs();
+			jQuery("#options_tabs ul li a").click(function(){
+				jQuery("#option_form").attr("action", "options.php" + jQuery(this).attr("href"));
+				jQuery("#digi_option_submit_button").show();
+			});
+			jQuery(".loading_pic_on_select a").click(function(){
+				jQuery("#digirisk_configurations_tab").html(jQuery("#loadingImg").html());
+				jQuery("#digi_option_submit_button").hide();
+			});
+
+			/*	Add support for option allowed_extension for AC deletion	*/
+			jQuery(".delete_allowed_extension_for_ac_docs").live('click', function(){
+				jQuery(this).closest("div").remove();
+			});
+			/*	Add support for option allowed_extension for AC addition	*/
+			jQuery(".add_new_extension_to_allow").click(function(){
+				if(jQuery("#new_allowed_extension").val() != ""){
+					jQuery("#allowed_ext_list").append("<div><input type='text' value='" + jQuery("#new_allowed_extension").val() + "' name='digirisk_options[digi_ac_allowed_ext][]' /><img src='<?php echo EVA_IMG_ICONES_PLUGIN_URL; ?>delete_vs.png' alt='<?php _e('Supprimer cette extension de la liste', 'evarisk'); ?>' title='<?php _e('Supprimer cette extension de la liste', 'evarisk'); ?>' class='delete_allowed_extension_for_ac_docs' /></div>");
+					jQuery("#new_allowed_extension").val("");
+				}
+				else{
+					alert(digi_html_accent_for_js("<?php _e('Vous n\'avez pas entr&eacute; d\'extension', 'evarisk'); ?>"));
+				}
+			});
+		});
+	</script>
+	<?php
+			echo EvaDisplayDesign::afficherFinPage();
+		}
 
 }

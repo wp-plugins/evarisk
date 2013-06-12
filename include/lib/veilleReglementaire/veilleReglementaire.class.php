@@ -3,16 +3,14 @@
 class veilleReglementaire
 {
 
-	function veilleReglementaireMainPage()
-	{
+	function veilleReglementaireMainPage() {
 		global $wpdb;
 
-		if(!isset($_REQUEST['Rubrique']))
-		{
-			$rubrique = 'Rubrique 2220';
+		if(!isset($_REQUEST['Rubrique'])) {
+// 			$rubrique = 'Rubrique 2220';
+			$rubrique = 'Groupe Question Racine';
 		}
-		else
-		{
+		else {
 			$rubrique = $_REQUEST['Rubrique'];
 		}
 		$racine = $wpdb->get_row( 'SELECT * FROM ' . TABLE_GROUPE_QUESTION . ' where nom="' . $rubrique . '"');
@@ -24,13 +22,13 @@ class veilleReglementaire
 		$comboTitrePere = evaDisplayInput::afficherComboBoxArborescente($racine, TABLE_GROUPE_QUESTION, $idSelect, $labelSelect, $nameSelect, $valeurDefaut, $selection);
 	?>
 <script type="text/javascript">
-	
+
 	digirisk(document).ready(function(){
 		updateButton();
 		var formulaire = document.regulatoryWatchForm;
 		digirisk('#texteATraiter').keydown(update).keyup(update).mousedown(update).mouseup(update).mousemove(update);
 		digirisk('#titrePere').keydown(updateButton).keyup(updateButton).mousedown(updateButton).mouseup(updateButton);
-		
+
 		digirisk('#codeTitre').click(function(){
 			for (var i=0; i < formulaire.choixTitreOuQuestion.length; i++)
 			{
@@ -45,10 +43,11 @@ class veilleReglementaire
 			}
 			digirisk('#updateVeille').show(); digirisk('#img_edit_racine').hide(); updateButton();
 		});
-		
+
 		digirisk('#refreshCombo').click(function(){
 			var nomPere = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-			var nomRacine = 'Rubrique 2220';
+			//var nomRacine = 'Rubrique 2220';
+			var nomRacine = 'Groupe Question Racine';
 			var idSelect = 'titrePere';
 			var labelSelect = 'Se r&eacute;f&egrave;re au titre : ';
 			var nameSelect = 'titrePere';
@@ -56,52 +55,42 @@ class veilleReglementaire
 			digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
 			return false;
 		})
-		
+
 		digirisk('#traiter').click(function(){
 			var x = update();
 			var value_radio;
 			digirisk('#texteATraiter').replaceSelection("");
-			for (var i=0; i < formulaire.choixTitreOuQuestion.length; i++)
-			{
-				if (formulaire.choixTitreOuQuestion[i].checked)
-				{
-					value_radio = formulaire.choixTitreOuQuestion[i].value;
+
+			jQuery("input[name=choixTitreOuQuestion]").each(function(){
+				if ( jQuery(this).is(":checked") ) {
+					value_radio = jQuery(this).val();
 				}
-			}
-			switch(value_radio)
-			{
+			});
+			switch (value_radio) {
 				case 'titre' :
 					var code = formulaire.codeTitre.value;
-					if(code == "")
-					{
+					if (code == "") {
 						alert("Pas de code");
 					}
-					else
-					{
-						
+					else {
 						var idPere = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-						digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'save', 'nom': x, 'choix': value_radio, 'idPere': idPere, 'code': code}); 
+						digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'save', 'nom': x, 'choix': value_radio, 'idPere': idPere, 'code': code});
 						var idSelect;
 						var labelSelect;
 						var nameSelect;
 						nomRacine = '<?php echo $rubrique; ?>';
-						setTimeout
-						( 
-							function() 
-							{ 
+						setTimeout ( function() {
 								idSelect = 'titrePere';
 								labelSelect = 'Se r&eacute;f&egrave;re au titre : ';
 								nameSelect = 'titrePere';
-								digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere}); 
+								digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere});
 								digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
-							}, 
-							4000
-						);
+							}, 4000);
 						formulaire.codeTitre.value = "";
 						digirisk('#partieTraitementVeille').slideUp('fast');;
 					}
 					break;
-					
+
 				case 'extraitTexte' :
 					var idGroupeQuestion = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
 					digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'choix': value_radio, 'act': 'addExtrait', 'extrait': x, 'idGroupeQuestion': idGroupeQuestion});
@@ -109,7 +98,7 @@ class veilleReglementaire
 					digirisk('#partieTraitementVeille').slideUp('fast');;
 
 					break;
-					
+
 				case 'question' :
 					var idGroupeQuestion = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
 					digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_QUESTION; ?>', 'act': 'save', 'enonce': x, 'idGroupeQuestion': idGroupeQuestion});
@@ -120,7 +109,7 @@ class veilleReglementaire
 			}
 			return false;
 		});
-		
+
 		digirisk('#choixQuestion').click(function(){digirisk('#updateVeille').hide(); digirisk('#img_edit_racine').show(); updateButton();});
 		digirisk('#choixExtraitTexte').click(function(){digirisk('#updateVeille').show(); digirisk('#img_edit_racine').show(); updateButton();});
 		digirisk('#choixTitre').click(function(){digirisk('#updateVeille').show(); digirisk('#img_edit_racine').hide(); updateButton();digirisk("#codeTitre").focus();});
@@ -145,30 +134,30 @@ class veilleReglementaire
 					}
 					else
 					{
-						
+
 						var idPere = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
-						digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'update', 'id': idPere, 'nom': x, 'choix': value_radio, 'code': code}); 
+						digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'update', 'id': idPere, 'nom': x, 'choix': value_radio, 'code': code});
 						var idSelect;
 						var labelSelect;
 						var nameSelect;
 						nomRacine = 'Rubrique 2220';
 						setTimeout
-						( 
-							function() 
-							{ 
+						(
+							function()
+							{
 								idSelect = 'titrePere';
 								labelSelect = 'Se r&eacute;f&egrave;re au titre : ';
 								nameSelect = 'titrePere';
 								digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': idPere});
 								digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
-							}, 
+							},
 							4000
 						);
 						formulaire.codeTitre.value = "";
 						digirisk('#partieTraitementVeille').slideUp('fast');;
 					}
 					break;
-					
+
 				case 'extraitTexte' :
 					var idGroupeQuestion = formulaire.titrePere.options[formulaire.titrePere.options.selectedIndex].value;
 					digirisk('#ajax-response').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'choix': value_radio, 'act': 'replaceExtrait', 'extrait': x, 'idGroupeQuestion': idGroupeQuestion});
@@ -176,13 +165,13 @@ class veilleReglementaire
 					digirisk('#partieTraitementVeille').slideUp('fast');;
 
 					break;
-					
+
 				case 'question' :
 					break;
 			}
 			return false;
 		});
-		
+
 		digirisk('#texteATraiter').focus(function() {
 			if(digirisk('#texteATraiter').is(".form-input-tip"))
 			{
@@ -190,12 +179,12 @@ class veilleReglementaire
 				digirisk('#texteATraiter').removeClass('form-input-tip');
 			}
 		});
-		
+
 		digirisk('#texteATraiter').blur(function() {
 			if(document.getElementById('texteATraiter').value == "")
 			{
 				digirisk('#texteATraiter').addClass('form-input-tip');
-				document.getElementById('texteATraiter').value="Copier le texte Règlementaire ici.";
+				document.getElementById('texteATraiter').value="Copier le texte Rï¿½glementaire ici.";
 			}
 		});
 	});
@@ -204,17 +193,15 @@ class veilleReglementaire
 		var range = digirisk('#texteATraiter').getSelection();
 		var text=(range.text);
 		document.getElementById('texteVeilleSelectione').innerHTML = text.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br />$2');
-		if(range.text == '')
-		{
+		if (range.text == '') {
 			digirisk('#partieTraitementVeille').slideUp('fast');
 		}
-		else
-		{
+		else {
 			digirisk('#partieTraitementVeille').slideDown('normal');
 		}
 		return range.text;
 	}
-	
+
 	function updateButton() {
 		var formulaire = document.regulatoryWatchForm;
 		var value_radio;
@@ -237,13 +224,13 @@ class veilleReglementaire
 		}
 		if(value_radio == 'titre')
 		{
-			var changer = "le titre et la numérotation de " + titreReferent;
+			var changer = "le titre et la numï¿½rotation de " + titreReferent;
 			var ajouter = "le titre sous le titre " + titreReferent;
 		}
 		else if(value_radio == 'extraitTexte')
 		{
 			var changer = "l'extrait de texte de " + titreReferent;
-			var ajouter = "à l'extrait de texte du titre " + titreReferent;
+			var ajouter = "ï¿½ l'extrait de texte du titre " + titreReferent;
 		}
 		else if(value_radio == 'question')
 		{
@@ -262,7 +249,7 @@ class veilleReglementaire
 	<form id="regulatoryWatchAdd" method="POST" name="regulatoryWatchForm">
 		<div id="partieTexteVeille">
 			<p> S&eacute;l&eacute;ctionnez la partie de texte &agrave; traiter </p>
-			<textarea id="texteATraiter" class="form-input-tip" rows=12 style="width: 100%;" aria-required="true" name="texteATraiter">Copier le texte Règlementaire ici.</textarea>
+			<textarea id="texteATraiter" class="form-input-tip" rows=12 style="width: 100%;" aria-required="true" name="texteATraiter">Copier le texte R&eacute;glementaire ici.</textarea>
 		</div>
 		<div id="partieTraitementVeille" style="display: none">
 			<div>
@@ -273,17 +260,17 @@ class veilleReglementaire
 			<br />
 			<div>
 				<span style="display:none;" id="comboTitrePere">
-				<?php 
+				<?php
 					echo $comboTitrePere;
 				?>
 				</span>
-			</div>			
-			
+			</div>
+
 			<ul class="listeCreationVeille">
 				<li>
 					<input type="radio" checked="checked" name="choixTitreOuQuestion" value="titre" id="choixTitre"/>
 					<label for="choixTitre"> Titre </label>
-					<label for="codeTitre"> dont la numérotation hierachique est : </label>
+					<label for="codeTitre"> dont la num&eacute;rotation hierachique est : </label>
 					<input type="text" name="codeTitre" id="codeTitre"/>
 				</li>
 				<li>
@@ -295,7 +282,7 @@ class veilleReglementaire
 					<label for="choixQuestion"> Question </label>
 				</li>
 				<span>
-					<a href=# class="button" id="refreshCombo"><img src="<?php echo PICTO_REFRECH;?>" alt="Rafraich&icirc;r" title="Rafraich&icirc;r la liste"></img></a>
+					<a href=# class="button" id="refreshCombo"><img src="<?php echo PICTO_REFRECH;?>" alt="Rafra&icirc;chir" title="Rafra&icirc;chir la liste"></img></a>
 				</span>
 			</ul>
 			<br />

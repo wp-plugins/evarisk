@@ -121,7 +121,8 @@ class Risque {
 				AND tableEquivalenceEtalon2.date > tableEquivalenceEtalon1.date
 				AND tableEquivalenceEtalon2.id_valeur_etalon < tableEquivalenceEtalon1.id_valeur_etalon
 			)");
-		return $resultat->equivalenceEtalon;
+
+		return !empty($resultat->equivalenceEtalon) ? $resultat->equivalenceEtalon : '';
 	}
 
 	function getSeuil($quotation){
@@ -690,7 +691,7 @@ class Risque {
 				$risque = Risque::getRisque($risk->id);
 				$score = Risque::getEquivalenceEtalon($risk->id_methode, Risque::getScoreRisque($risque), $risk->date);
 
-				$output .= '<div class="clear riskAssociatedToPicture" id="loadRiskId' . $risk->id . '" >-&nbsp;' . evaDanger::getDanger($risk->id_danger)->nom . '&nbsp;(' . $score . ')&nbsp;:&nbsp;' . $risk->commentaire . '</div>';
+				$output .= '<div class="clear riskAssociatedToPicture" id="loadRiskId' . $risk->id . '" style="cursor:move;" ><span class="ui-icon alignleft" style="background-position: 0 -80px;" ></span>&nbsp;' . evaDanger::getDanger($risk->id_danger)->nom . '&nbsp;(' . $score . ')&nbsp;:&nbsp;' . $risk->commentaire . '</div>';
 			}
 
 			$script = '
@@ -703,15 +704,9 @@ class Risque {
 	});
 </script>';
 			$output = '
-<fieldset class="clear pointer" style="white-space:normal;margin:3px 12px;width:100%;" >
-	<legend >
-		<div id="seeRiskToAssociate" class="alignleft pointer" >
-			<img id="seeRiskToAssociatePic" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" />
-			<span style="vertical-align:middle;" id="addRiskForPictureText' . $currentId . '" >' . __('Risques non associ&eacute;s &agrave; une photo', 'evarisk') . '</span>
-		</div>
-	</legend>
-	<div id="riskToAssociate" style="display:none;" >
-		<div class="clear bold" id="riskToAssociateExplanation" >-&nbsp;' . __('Nom danger(Score) : Commentaire', 'evarisk') . '</div>
+<fieldset class="clear" style="white-space:normal; padding:0px 0px 9px 6px; margin:3px 12px; width:250%; border: 2px solid #DDDDDD;" >
+	<legend >' . __('Risques non associ&eacute;s &agrave; une photo', 'evarisk') . '</span></legend>
+	<div id="riskToAssociate">
 		' . $output . '
 	</div>
 </fieldset>' . $script;

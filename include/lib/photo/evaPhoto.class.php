@@ -187,38 +187,35 @@ class EvaPhoto {
 			}
 			$img_nb = 0;
 			if($is_File){
-				$gallery .= '
-							<li class="alignleft" >
-								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" >
-									<div>' . ELEMENT_IDENTIFIER_PIC . $photo->id . '</div><img src="' . $pathToMediasDir . $photo->photo . '" />
-								</a>
-								<div class="caption">';
+				$current_picture_state = ($photo->isMainPicture == 'yes') ? '&nbsp;-&nbsp;<img style="vertical-align:middle; " src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/picture_as_main_add_s.png" title="' . __('Photo par d&eacute;faut', 'evarisk') . '" />' : '';
 
+				$more_gallery = '';
 				$add_button_action = true;
 				switch($tableElement){
 					case TABLE_TACHE:
-					{
 						$current_task = new EvaTask($idElement);
 						$current_task->load();
 						$ProgressionStatus = $current_task->getProgressionStatus();
 						if(($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress') || (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'oui') ){
 							if($current_task->getidPhotoAvant() == $photo->id){
-								$gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('N\'est plus la photo avant la t&acirc;che', 'evarisk') . '
 											</div>';
+								$current_picture_state .= '&nbsp;-&nbsp;<img style="vertical-align:middle; " src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/picture_as_before_add_s.png" title="' . __('Photo avant', 'evarisk') . '" />';
 							}
 							else{
-								$gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('D&eacute;finir comme photo avant la t&acirc;che', 'evarisk') . '
 											</div>';
 							}
 							if($current_task->getidPhotoApres() == $photo->id){
-								$gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('N\'est plus la photo apr&egrave;s la t&acirc;che', 'evarisk') . '
 											</div>';
+								$current_picture_state .= '&nbsp;-&nbsp;<img style="vertical-align:middle; " src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/picture_as_after_add_s.png" title="' . __('Photo apr&eacute;s', 'evarisk') . '" />';
 							}
 							else{
-								$gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('D&eacute;finir comme photo apr&egrave;s la t&acirc;che', 'evarisk') . '
 											</div>';
 							}
@@ -226,31 +223,31 @@ class EvaPhoto {
 						elseif((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Tache_Soldee') == 'non') ){
 							$add_button_action = false;
 						}
-					}
-					break;
+						break;
 					case TABLE_ACTIVITE:
-					{
 						$activite = new EvaActivity($idElement);
 						$activite->load();
 						$ProgressionStatus = $activite->getProgressionStatus();
 						if(($ProgressionStatus == 'notStarted') || ($ProgressionStatus == 'inProgress') || (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'oui') ){
 							if($activite->getidPhotoAvant() == $photo->id){
-								$gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="beforePictureSelection" onclick="javascript:unsetAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('N\'est plus la photo avant l\'action', 'evarisk') . '
 											</div>';
+								$current_picture_state .= '&nbsp;-&nbsp;<img style="vertical-align:middle; " src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/picture_as_before_add_s.png" title="' . __('Photo avant', 'evarisk') . '" />';
 							}
 							else{
-								$gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="beforePictureDeselection" onclick="javascript:setAsBeforePicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('D&eacute;finir comme photo avant l\'action', 'evarisk') . '
 											</div>';
 							}
 							if($activite->getidPhotoApres() == $photo->id){
-								$gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="afterPictureSelection" onclick="javascript:unsetAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('N\'est plus la photo apr&egrave;s l\'action', 'evarisk') . '
 											</div>';
+								$current_picture_state .= '&nbsp;-&nbsp;<img style="vertical-align:middle; " src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/picture_as_after_add_s.png" title="' . __('Photo apr&eacute;s', 'evarisk') . '" />';
 							}
 							else{
-								$gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
+								$more_gallery .= '<div class="afterPictureDeselection" onclick="javascript:setAsAfterPicture(\'' . $tableElement . '\',\'' . $idElement . '\',\'' . $photo->id . '\');" >
 												-&nbsp;' . __('D&eacute;finir comme photo apr&egrave;s l\'action', 'evarisk') . '
 											</div>';
 							}
@@ -258,9 +255,17 @@ class EvaPhoto {
 						elseif((($ProgressionStatus == 'Done') || ($ProgressionStatus == 'DoneByChief')) && (digirisk_options::getOptionValue('possibilite_Modifier_Action_Soldee') == 'non') ){
 							$add_button_action = false;
 						}
-					}
-					break;
+						break;
 				}
+
+				$gallery .= '
+							<li class="alignleft" >
+								<a class="thumb" target="picture' . $tableElement . $idElement .'" name="leaf" href="' . $pathToMediasDir . $photo->photo . '" >
+									<div>' . ELEMENT_IDENTIFIER_PIC . $photo->id . $current_picture_state . '</div><img src="' . $pathToMediasDir . $photo->photo . '" />
+								</a>
+								<div class="caption">' . $more_gallery;
+
+
 
 				if($add_button_action){
 					if($photo->isMainPicture == 'yes'){
@@ -897,14 +902,15 @@ class EvaPhoto {
 		$galleryOutput =
 '<div id="message' . $tableElement . '_' . $idElement . '" ></div>';
 
-		$upload_button =
-'<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>';
+		$upload_button = '';
 
-		if($userCanUploadPhoto){
-			switch($tableElement)
-			{
+		if ($userCanUploadPhoto) {
+
+			$upload_button =
+			'<div id="pictureUploadForm' . $tableElement . '_' . $idElement . '" >' . evaPhoto::getUploadForm($tableElement, $idElement) . '</div>';
+
+			switch ($tableElement) {
 				case TABLE_TACHE:
-				{
 					$currentTask = new EvaTask($idElement);
 					$currentTask->load();
 					$ProgressionStatus = $currentTask->getProgressionStatus();
@@ -916,10 +922,9 @@ class EvaPhoto {
 				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
 			</div>';
 					}
-				}
 				break;
+
 				case TABLE_ACTIVITE:
-				{
 					$current_action = new EvaActivity($idElement);
 					$current_action->load();
 					$ProgressionStatus = $current_action->getProgressionStatus();
@@ -931,7 +936,6 @@ class EvaPhoto {
 				' . __('Cette t&acirc;che est sold&eacute;e, vous ne pouvez pas ajouter de photos', 'evarisk') . '
 			</div>';
 					}
-				}
 				break;
 			}
 		}
@@ -1011,10 +1015,10 @@ class EvaPhoto {
 				}
 			break;
 			case TABLE_TACHE:
-				$userCanUploadPicture = current_user_can('digi_edit_task');
+				$userCanUploadPicture = (current_user_can('digi_edit_task') || current_user_can('digi_edit_task_' . $idElement));
 			break;
 			case TABLE_ACTIVITE:
-				$userCanUploadPicture = current_user_can('digi_edit_action');
+				$userCanUploadPicture = (current_user_can('digi_edit_action') || current_user_can('digi_edit_action_' . $idElement));
 			break;
 			case TABLE_CATEGORIE_PRECONISATION:
 				$userCanUploadPicture = current_user_can('digi_edit_recommandation_cat');
@@ -1032,6 +1036,7 @@ class EvaPhoto {
 				$userCanUploadPicture = true;
 			break;
 		}
+
 
 		$output = evaPhoto::galleryContent($tableElement, $idElement, $userCanUploadPicture);
 

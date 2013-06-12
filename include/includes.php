@@ -76,6 +76,8 @@ require_once(EVA_LIB_PLUGIN_DIR . 'actionsCorrectives/suivi_activite.class.php')
 
 require_once(EVA_LIB_PLUGIN_DIR . 'risque/Risque.class.php');
 
+require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php');
+
 require_once(EVA_LIB_PLUGIN_DIR . 'Zip/Zip.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'evaNotes.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php');

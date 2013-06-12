@@ -12,6 +12,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'danger/categorieDangers/categorieDangers.clas
 require_once(EVA_LIB_PLUGIN_DIR . 'danger/danger/evaDanger.class.php' );
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaQuestion.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'veilleReglementaire/evaGroupeQuestion.class.php');
+
 class EvaDisplayInput {
 
 	/**
@@ -130,8 +131,6 @@ class EvaDisplayInput {
 		return $script;
 	}
 
-
-
 	/**
 	* Create the script needed by the input.
 	* @see getScriptInput.
@@ -150,41 +149,43 @@ class EvaDisplayInput {
 	* @param string $float Where must float the div : right or left.
 	* @return string The input.
 	*/
-	function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false){
+	function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false, $tabindex = '100', $field_option = ""){
 		$input = '';
-		if($obligatoire)
-		{
+		if ($obligatoire) {
 			$classe = 'input_required ' . $classe;
 		}
+
 		$float = ($float != '') ? 'class="align' . $float . '" ' : '';
-		$input .= '<div ' . $float . ' >';
+		if ($type != 'hidden') {
+			$input .= '<div ' . $float . ' >';
+		}
+
 		$width = ($width != '') ? 'width:' . $width . ';' : '';
 		$id_content = ($id != '') ? 'id="' . $id . '"' : '';
-		switch($type)
-		{
+		switch($type) {
 			case 'textarea':
 				$theInput = '
-						<textarea style="clear: both;' . $width . '" ' . $id_content . ' rows="' . $taille . '" cols="' . $taille . '"  name="' . $nomChamps . '" tabindex="1" >' . $contenuInput . '</textarea>';
+						<textarea style="clear: both;' . $width . '" ' . $id_content . ' rows="' . $taille . '" cols="' . $taille . '"  name="' . $nomChamps . '" tabindex="' . $tabindex . '" >' . $contenuInput . '</textarea>';
 				break;
 			default:
 				$input .= ($id != '') ? EvaDisplayInput::getScriptInput($id, $contenuInput, $contenuAide, $labelInput, $grise, $classe, $limitation) . $script : '';
 				$theInput = '
-						<input style="clear: both;' . $width . '" maxlength="' . $taille . '" type="' . $type . '" ' . $id_content . ' value="' . $contenuInput . '" tabindex="1" name="' . $nomChamps . '"/>';
+						<input style="clear: both;' . $width . '" maxlength="' . $taille . '" type="' . $type . '" ' . $id_content . ' value="' . $contenuInput . '" tabindex="' . $tabindex . '" name="' . $nomChamps . '"' . (!empty($field_option) ? $field_option : '') . '/>';
 				break;
 		}
-		if($labelInput != null)
-		{
+
+		if($labelInput != null) {
 			$input .= '<label for="' . $id . '">' . $labelInput . '</label>';
 		}
-		if(($type == 'button') && in_array('button-primary', explode(' ', $classe)))
-		{
+
+		if(($type == 'button') && in_array('button-primary', explode(' ', $classe))) {
 			$input .= '<br />';
 		}
-		$input .= $theInput . '</div>';
-		if($type != 'hidden')
-		{
-			if(!$withoutClear)
-			{
+
+		$input .= $theInput;
+		if ($type != 'hidden') {
+			$input .= '</div>';
+			if(!$withoutClear) {
 				$input .= '<br class="clear" />';
 			}
 		}
@@ -251,10 +252,10 @@ class EvaDisplayInput {
 	*
 	*	@return mixed $output The combo box output
 	*/
-	function createComboBox($identifier, $name, $content, $selectedValue, $class = '')
+	function createComboBox($identifier, $name, $content, $selectedValue, $class = '', $options = '')
 	{
 		$class = ($class != '') ? 'class="' . $class . '" ' : '';
-		$output = '<select id="' . $identifier . '" name="' . $name . '" ' . $class . ' >';
+		$output = '<select id="' . $identifier . '" name="' . $name . '" ' . $class . '' . $options . ' >';
 
 		foreach($content as $index => $datas)
 		{

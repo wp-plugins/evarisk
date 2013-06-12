@@ -80,6 +80,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_ACTIVITE', PREFIXE_EVARISK . "actions_correctives_actions");
 	DEFINE('EVA_TRASH_TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "actions_correctives_suivi");
 	DEFINE('TABLE_ACTIVITE_SUIVI', PREFIXE_EVARISK . "element_suivi");
+	DEFINE('TABLE_ACTIVITE_SUIVI_META', PREFIXE_EVARISK . "element_suivi_meta");
 	DEFINE('TABLE_LIAISON_TACHE_ELEMENT', PREFIXE_EVARISK . "liaison_tache_element");
 }
 

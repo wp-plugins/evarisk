@@ -40,11 +40,16 @@ class EvaBaseTask
 	const is_readable_from_external = 'is_readable_from_external';
 	const nom_exportable_plan_action = 'nom_exportable_plan_action';
 	const description_exportable_plan_action = 'description_exportable_plan_action';
-
+	const real_start_date = 'real_start_date';
+	const real_end_date = 'real_end_date';
+	const estimate_cost = 'estimate_cost';
+	const real_cost = 'real_cost';
+	const planned_time = 'planned_time';
+	const elapsed_time = 'elapsed_time';
 /*
  * Class variable define
  */
-	
+
 	/**
 	 * @var int The task identifier
 	 */
@@ -144,11 +149,18 @@ class EvaBaseTask
 	var $is_readable_from_external;
 	var $nom_exportable_plan_action;
 	var $description_exportable_plan_action;
-	
+
+	var $real_start_date;
+	var $real_end_date;
+	var $estimate_cost;
+	var $real_cost;
+	var $planned_time;
+	var $elapsed_time;
+
 /*
  *	Constructor, getters and setters
  */
- 
+
 	/**
 	 * Constructor of the Task class
 	 * @param int $id The identifier to set
@@ -173,7 +185,7 @@ class EvaBaseTask
 	 * @param string $hasPriority
 	 * @param string $efficacite
 	 */
-	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idPhotoAvant = 0, $idPhotoApres = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='', $efficacite ='', $is_readable_from_external ='')
+	function EvaBaseTask($id = null, $name = '',	$leftLimit = 0,	$rightLimit = 1, $description = '', $startDate = '', $finishDate = '', $place = '', $progression = '', $cost = 0, $idPhotoAvant = 0, $idPhotoApres = 0, $idFrom = 0, $tableFrom = '', $status = 'Valid', $firstInsert ='', $idCreateur ='', $idResponsable ='', $idSoldeur ='',  $idSoldeurChef ='', $ProgressionStatus ='', $dateSolde ='', $hasPriority ='', $efficacite ='', $is_readable_from_external ='', $real_start_date ='', $real_end_date ='', $estimate_cost ='', $real_cost ='', $planned_time ='', $elapsed_time ='')
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -200,8 +212,15 @@ class EvaBaseTask
 		$this->dateSolde = $dateSolde;
 		$this->hasPriority = $hasPriority;
 		$this->efficacite = $efficacite;
+
+		$this->real_start_date = $real_start_date;
+		$this->real_end_date = $real_end_date;
+		$this->estimate_cost = $estimate_cost;
+		$this->real_cost = $real_cost;
+		$this->planned_time = $planned_time;
+		$this->elapsed_time = $elapsed_time;
 	}
-	
+
 	/**
 	 * Returns the Task identifier
 	 * @return int The identifier
@@ -210,7 +229,7 @@ class EvaBaseTask
 	{
 		return $this->id;
 	}
-	
+
 	/**
 	 * Set the Task identifier
 	 * @param int $id The identifier to set
@@ -219,7 +238,7 @@ class EvaBaseTask
 	{
 		$this->id = $id;
 	}
-	
+
 	/**
 	 * Returns the Task name
 	 * @return string The name
@@ -237,7 +256,7 @@ class EvaBaseTask
 	{
 		$this->name = $name;
 	}
-	
+
 	/**
 	 * Returns the Task left limit
 	 * @return string The left limit
@@ -255,7 +274,7 @@ class EvaBaseTask
 	{
 		$this->leftLimit = $leftLimit;
 	}
-	
+
 	/**
 	 * Returns the Task right limit
 	 * @return string The right limit
@@ -471,7 +490,7 @@ class EvaBaseTask
 	{
 		$this->idCreateur = $idCreateur;
 	}
-	
+
 	/**
 	 * Returns the task maker id
 	 * @return integer The task maker id
@@ -489,7 +508,7 @@ class EvaBaseTask
 	{
 		$this->idSoldeur = $idSoldeur;
 	}
-	
+
 	/**
 	 * Returns the task maker id
 	 * @return integer The task maker id
@@ -617,7 +636,6 @@ class EvaBaseTask
 	}
 
 
-
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -635,7 +653,7 @@ class EvaBaseTask
 	{
 		$this->idPhotoAvant = $idPhotoAvant;
 	}
-	
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -653,7 +671,7 @@ class EvaBaseTask
 	{
 		$this->idPhotoApres = $idPhotoApres;
 	}
-	
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -671,7 +689,7 @@ class EvaBaseTask
 	{
 		$this->description_exportable_plan_action = $description_exportable_plan_action;
 	}
-	
+
 	/**
 	 * Returns The date that the action was mark as done
 	 * @return date the date
@@ -688,6 +706,48 @@ class EvaBaseTask
 	function setnom_exportable_plan_action($nom_exportable_plan_action)
 	{
 		$this->nom_exportable_plan_action = $nom_exportable_plan_action;
+	}
+
+	function getreal_start_date() {
+		return $this->real_start_date;
+	}
+	function setreal_start_date($real_start_date) {
+		$this->real_start_date = $real_start_date;
+	}
+
+	function getreal_end_date() {
+		return $this->real_end_date;
+	}
+	function setreal_end_date($real_end_date) {
+		$this->real_end_date = $real_end_date;
+	}
+
+	function getestimate_cost() {
+		return $this->estimate_cost;
+	}
+	function setestimate_cost($estimate_cost) {
+		$this->estimate_cost = $estimate_cost;
+	}
+
+	function getreal_cost() {
+		return $this->real_cost;
+	}
+	function setreal_cost($real_cost) {
+		$this->real_cost = $real_cost;
+	}
+
+	function getplanned_time() {
+		return $this->planned_time;
+	}
+	function setplanned_time($planned_time) {
+		$this->planned_time = $planned_time;
+	}
+
+	function getelapsed_time() {
+		return $this->elapsed_time;
+	}
+	function setelapsed_time($elapsed_time) {
+		$this->elapsed_time = $elapsed_time;
 	}
 
 
@@ -725,6 +785,13 @@ class EvaBaseTask
 		$this->set_external_readable($wpdbTask->is_readable_from_external);
 		$this->setnom_exportable_plan_action($wpdbTask->nom_exportable_plan_action);
 		$this->setdescription_exportable_plan_action($wpdbTask->description_exportable_plan_action);
+
+		$this->setreal_start_date($wpdbTask->real_start_date);
+		$this->setreal_end_date($wpdbTask->real_end_date);
+		$this->setestimate_cost($wpdbTask->estimate_cost);
+		$this->setreal_cost($wpdbTask->real_cost);
+		$this->setplanned_time($wpdbTask->planned_time);
+		$this->setelapsed_time($wpdbTask->elapsed_time);
 	}
 
 	/**
@@ -732,7 +799,7 @@ class EvaBaseTask
 	 * @return object The converted object
 	 */
 	function convertToWpdb(){
-		return 
+		return
 			(object)(
 				array(
 					self::id => $this->getId(),
@@ -760,8 +827,16 @@ class EvaBaseTask
 					self::efficacite => $this->getEfficacite(),
 					self::is_readable_from_external => $this->get_external_readable(),
 					self::nom_exportable_plan_action => $this->getnom_exportable_plan_action(),
-					self::description_exportable_plan_action => $this->getdescription_exportable_plan_action()
+					self::description_exportable_plan_action => $this->getdescription_exportable_plan_action(),
+
+					self::real_start_date => $this->getreal_start_date(),
+					self::real_end_date => $this->getreal_end_date(),
+					self::estimate_cost => $this->getestimate_cost(),
+					self::real_cost => $this->getreal_cost(),
+					self::planned_time => $this->getplanned_time(),
+					self::elapsed_time => $this->getelapsed_time(),
 				)
 			);
 	}
+
 }

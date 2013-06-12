@@ -11,15 +11,13 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 $search = "Status='Valid' AND nom<>'Groupement Racine'";
 $groupement = EvaGroupement::getGroupements($search);
 
-if($_REQUEST['act'] == 'save')
-{
+if ($_REQUEST['act'] == 'save') {
 	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
 	EvaGroupement::saveNewGroupement($nom);
 	$_REQUEST['id'] = $wpdb->insert_id;
 	$_REQUEST['act'] = 'update';
 }
-if($_REQUEST['act'] == 'update')
-{
+if ($_REQUEST['act'] == 'update') {
 	$id_groupement = $_REQUEST['id'];
 	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
 
@@ -57,7 +55,6 @@ if($_REQUEST['act'] == 'update')
 	}
 	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number);
 }
-if($_REQUEST['act'] == 'delete')
-{
+if ($_REQUEST['act'] == 'delete') {
 	EvaGroupement::deleteGroupement($_REQUEST['id']);
 }

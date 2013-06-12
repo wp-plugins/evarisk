@@ -446,6 +446,7 @@ $user_additionnal_field .= '
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
 				jQuery("#responsible_name").html("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname);
+				jQuery("#responsible_name").show();
 				jQuery("#change_responsible_' . $tableElement . '").show();
 				jQuery("#delete_responsible_' . $tableElement . '").show();';
 			}
@@ -464,6 +465,7 @@ $user_additionnal_field .= '
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
 				jQuery("#responsible_name").html("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname);
+				jQuery("#responsible_name").show();
 				jQuery("#change_responsible_' . $tableElement . '").show();
 				jQuery("#delete_responsible_' . $tableElement . '").show();';
 			}
@@ -1224,6 +1226,7 @@ $user_additionnal_field .= '
 						<div class="affected_element_line clear" >
 							<div class="line_title" id="gpt_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
 							<div class="clear detail_line digirisk_hide" id="gpt_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+							<div class="clear" ></div>
 						</div>';
 				}
 			}
@@ -1238,6 +1241,7 @@ $user_additionnal_field .= '
 						<div class="affected_element_line clear" >
 							<div class="line_title" id="ut_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
 							<div class="clear detail_line digirisk_hide" id="ut_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+							<div class="clear" ></div>
 						</div>';
 				}
 			}
@@ -1253,6 +1257,7 @@ $user_additionnal_field .= '
 						<div class="affected_element_line clear" >
 							<div class="line_title" id="gpt_eval_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
 							<div class="clear detail_line digirisk_hide" id="gpt_eval_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+							<div class="clear" ></div>
 						</div>';
 				}
 			}
@@ -1267,6 +1272,7 @@ $user_additionnal_field .= '
 						<div class="affected_element_line clear" >
 							<div class="line_title" id="ut_eval_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
 							<div class="clear detail_line digirisk_hide" id="ut_eval_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+							<div class="clear" ></div>
 						</div>';
 				}
 			}
@@ -1283,6 +1289,7 @@ $user_additionnal_field .= '
 						<div class="affected_element_line clear" >
 							<div class="line_title" id="t_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
 							<div class="clear detail_line digirisk_hide" id="t_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+							<div class="clear" ></div>
 						</div>';
 				}
 			}
@@ -1297,6 +1304,7 @@ $user_additionnal_field .= '
 						<div class="affected_element_line clear" >
 							<div class="line_title" id="st_title_' . $elt_id . '"  ><span class="user_element_detail_opener ui-icon alignleft digi_opener" >&nbsp;</span>' . $elt_detail['title'] . '</div>
 							<div class="clear detail_line digirisk_hide" id="st_detail_' . $elt_id . '" >' . $elt_detail['detail'] . '</div>
+							<div class="clear" ></div>
 						</div>';
 				}
 			}

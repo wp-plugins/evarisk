@@ -1,21 +1,20 @@
 <?php
 /**
-* Different users' group management
-*
-* Define the different method to manage the different users' group type (evaluators, employees)
-* @author Evarisk <dev@evarisk.com>
-* @version 5.1.2.9
-* @package Digirisk
-* @subpackage librairies
-*/
+ * Different users' group management
+ *
+ * Define the different method to manage the different users' group type (evaluators, employees)
+ * @author Evarisk <dev@evarisk.com>
+ * @version 5.1.2.9
+ * @package Digirisk
+ * @subpackage librairies
+ */
 
 /**
-* Define the different method to manage the different users' group type (evaluators, employees)
-* @package Digirisk
-* @subpackage librairies
-*/
-class digirisk_groups
-{
+ * Define the different method to manage the different users' group type (evaluators, employees)
+ * @package Digirisk
+ * @subpackage librairies
+ */
+class digirisk_groups {
 	/**
 	*	Define the database table to ue un the entire script
 	*/
@@ -996,7 +995,6 @@ digirisk(document).ready(function(){
 	}
 
 
-
 	/**
 	*	Prepare the output of all the existing user groups
 	*
@@ -1067,6 +1065,5 @@ digirisk(document).ready(function(){
 
 		return $outputContent;
 	}
-
 
 }
