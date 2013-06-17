@@ -623,14 +623,12 @@ class evaRecommandation
 				$i++;
 			}
 		}
-		else
-		{
+		else {
 			$idLignes[] = 'recommandationEmpty';
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => __('Aucune pr&eacute;conisation n\'a &eacute;t&eacute; affect&eacute;e &agrave; cet &eacute;l&eacute;ment', 'evarisk'), 'class' => '');
-			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
-			{
+			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui') {
 				$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			}
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
@@ -668,8 +666,7 @@ class evaRecommandation
 						{ "bVisible":    false },
 						null,
 						null,';
-			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
-			{
+			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui') {
 				$script .= '
 						null,';
 			}

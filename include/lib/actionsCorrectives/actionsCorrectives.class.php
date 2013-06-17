@@ -89,16 +89,16 @@ class actionsCorrectives
 	*
 	*	@return string A table with the risks list
 	*/
-	function output_correctiv_action_by_risk($risques, $dataTableOptions = ''){
-		if(count($risques) > 0){
+	function output_correctiv_action_by_risk($risques, $dataTableOptions = '') {
+		if ( count($risques) > 0 ) {
 			$idTable = 'suiviActionsCorrectiveElement';
 			$titres = array('', __('Id.', 'evarisk'), __('Quotation', 'evarisk'), __('Danger', 'evarisk'), __('Commentaire', 'evarisk'));
 			$classes = array('columnCollapser', 'columnRId', 'columnQuotation', 'columnNomDanger', 'columnCommentaireRisque');
-			foreach($risques as $idRisque => $infosRisque){
+			foreach ( $risques as $idRisque => $infosRisque ) {
 				$tachesActionsCorrectives = actionsCorrectives::get_activity_associated_to_risk('', '', array($idRisque => ''), '');
 
 				unset($valeurs);
-				if((count($tachesActionsCorrectives[0]) > 0) || (count($risques) == 1)){
+				if ( (count($tachesActionsCorrectives[0]) > 0) || (count($risques) == 1) ) {
 					$valeurs[] = array('value' => '<img id="pic_line' . ELEMENT_IDENTIFIER_R . $idRisque . '" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'details_open.png" alt="open_close_row" class="open_close_row" />', 'class' => '');
 					$valeurs[] = array('value' => ELEMENT_IDENTIFIER_R . $idRisque, 'class' => '');
 						$idMethode = $infosRisque[0]->id_methode;
@@ -148,7 +148,7 @@ digirisk("#' . $idTable . ' tfoot").remove();
 
 digirisk(".open_close_row").click(function(){
 	var nTr = this.parentNode.parentNode;
-	if ( this.src.match("details_close") ){
+	if ( this.src.match("details_close") ) {
 		/* This row is already open - close it */
 		this.src = "' . EVA_IMG_ICONES_PLUGIN_URL . 'details_open.png";
 		oTable.fnClose( nTr );
@@ -170,10 +170,12 @@ digirisk(".open_close_row").click(function(){
 });
 });
 </script>';
+
 			return evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptTableauSuiviModification);
 		}
-		else
+		else {
 			return __('Il n\'y a aucun risque pour cet &eacute;l&eacute;ment', 'evarisk');
+		}
 	}
 
 	/**

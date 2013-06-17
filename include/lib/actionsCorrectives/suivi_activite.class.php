@@ -266,6 +266,33 @@ class suivi_activite {
 		if ( $saveButtonOuput ) {
 			$idBouttonEnregistrer = 'saveActionFollow';
 			$scriptEnregistrement = '';
+			if ( ($tableElement == TABLE_AVOIR_VALEUR) && $complete_interface) {
+				$scriptEnregistrement = '
+<script type="text/javascript" >
+	digirisk(document).ready(function() {
+		jQuery("#' . $idBouttonEnregistrer . '").click(function() {
+			var export_is_checked = "no";
+			if ( jQuery("#digi_print_comment_in_doc_note' . $tableElement . $idElement . '_' . $specific_follow_up . '").is(":checked") ) {
+				export_is_checked = "yes";
+			}
+			var data = {
+				action: "digi_ajax_save_activite_follow",
+				tableElement: "' . $tableElement . '",
+				idElement: "' . $idElement . '",
+				digi_ajax_nonce: "' . wp_create_nonce("digi_ajax_save_activite_follow") . '",
+				specific_follow_up: "' . $specific_follow_up . '",
+				' . TABLE_ACTIVITE_SUIVI . '_follow_up_type: "note",
+				' . TABLE_ACTIVITE_SUIVI . '_date_ajout: jQuery("#date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '").val(),
+				' . TABLE_ACTIVITE_SUIVI . '_commentaire: jQuery("#commentaire' . $tableElement . $idElement . '_' . $specific_follow_up . '").val(),
+				' . TABLE_ACTIVITE_SUIVI . '_export: export_is_checked,
+			};
+			jQuery.post("' . admin_url('admin-ajax.php') . '", data, function(response) {
+				after_save_follow_up_action(response) ;
+			}, "json");
+		});
+	});
+</script>';
+			}
 
 			$selected_date = current_time('mysql', 0);
 			$export_state = '';
@@ -286,14 +313,18 @@ class suivi_activite {
 				$output .= $date_input . '<br/>' . $export_input . $comment_input;
 			}
 			else {
-				$output .= '
+				if ( !empty($output_type) && ( $output_type != 'no_form' ) ) {
+					$output .= '
 <form action="' . admin_url('admin-ajax.php') . '" method="post" id="digi_projet_follow_form' . $tableElement . $idElement . '_' . $specific_follow_up . '" >
 	<input type="hidden" name="action" value="digi_ajax_save_activite_follow" />
 	<input type="hidden" name="specific_follow_up" value="' . $specific_follow_up . '" />
 	<input type="hidden" name="' . TABLE_ACTIVITE_SUIVI . '[follow_up_type]" value="note" />
 	<input type="hidden" name="tableElement" value="' . $tableElement . '" />
 	<input type="hidden" name="idElement" value="' . $idElement . '" />
-	<input type="hidden" name="digi_ajax_nonce" value="' . wp_create_nonce("digi_ajax_save_activite_follow") . '" />
+	<input type="hidden" name="digi_ajax_nonce" value="' . wp_create_nonce("digi_ajax_save_activite_follow") . '" />';
+				}
+
+				$output .= '
 	<table summary="" cellpadding="0" cellspacing="0" style="width:100%;" >
 		<tr>
 			<td style="width:10%;" >&nbsp;</td>
@@ -319,8 +350,12 @@ class suivi_activite {
 				$output .=
 			'</td>
 		</tr>
-	</table>
+	</table>';
+
+				if ( !empty($output_type) && ( $output_type != 'no_form' ) ) {
+					$output .= '
 <form>';
+				}
 			}
 
 			$output .= '
@@ -371,32 +406,35 @@ class suivi_activite {
 					}
 				},
 				success: function(response){
-					if ( response[0] == "ok" ) {
-						jQuery("#digi_msg_note_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");
-
-						if ( jQuery("#digi_content_note_' . $tableElement . $idElement . '") && (response[1] != "") ) {
-							jQuery("#digi_content_note_' . $tableElement . $idElement . '").html(response[1]);
-						}
-					}
-					else {
-						jQuery("#digi_msg_note_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");
-					}
-
-					jQuery("#digi_msg_note_' . $tableElement . $idElement . '").show();
-					jQuery("#digi_msg_note_' . $tableElement . $idElement . '").addClass("updated");
-					setTimeout(function(){
-						jQuery("#digi_msg_note_' . $tableElement . $idElement . '").removeClass("updated");
-						jQuery("#digi_msg_note_' . $tableElement . $idElement . '").hide();
-					},7500);
-
-					jQuery("#bttn' . $idBouttonEnregistrer . '").show();
-					jQuery("#load' . $idBouttonEnregistrer . '").hide();
+					after_save_follow_up_action(response) ;
 				},
 			});
 			return false;
 		});
-
 	});
+
+	function after_save_follow_up_action(response) {
+		if ( response[0] == "ok" ) {
+			jQuery("#digi_msg_note_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications ont correctement &eacute;t&eacute enregistr&eacute;es', 'evarisk') . '</strong></p>') . '");
+
+			if ( jQuery("#digi_content_note_' . $tableElement . $idElement . '") && (response[1] != "") ) {
+				jQuery("#digi_content_note_' . $tableElement . $idElement . '").html(response[1]);
+			}
+		}
+		else {
+			jQuery("#digi_msg_note_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Les modifications n\'ont pas toutes &eacute;t&eacute correctement enregistr&eacute;es', 'evarisk') . '</strong></p>"') . '");
+		}
+
+		jQuery("#digi_msg_note_' . $tableElement . $idElement . '").show();
+		jQuery("#digi_msg_note_' . $tableElement . $idElement . '").addClass("updated");
+		setTimeout(function(){
+			jQuery("#digi_msg_note_' . $tableElement . $idElement . '").removeClass("updated");
+			jQuery("#digi_msg_note_' . $tableElement . $idElement . '").hide();
+		},7500);
+
+		jQuery("#bttn' . $idBouttonEnregistrer . '").show();
+		jQuery("#load' . $idBouttonEnregistrer . '").hide();
+	}
 </script>';
 		}
 		else {

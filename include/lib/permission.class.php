@@ -1781,7 +1781,7 @@ class digirisk_permission
 						$permissionNameClass = 'permissionGranted';
 						if(isset($elementToManage->roles) && (count($elementToManage->caps) >= count($elementToManage->roles)) && apply_filters('additional_capabilities_display', true, $elementToManage)){
 							$roleDetails = $digi_wp_role->get_role(implode('', $elementToManage->roles));
-							if($roleDetails->has_cap($permission)){
+							if(!empty($roleDetails) && $roleDetails->has_cap($permission)){
 								$permissionNameClass = 'permissionGrantedFromParent';
 								$checked .= ' disabled="disabled" ';
 							}

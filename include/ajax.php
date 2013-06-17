@@ -949,13 +949,11 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$idPhoto = isset($_REQUEST['idPicture']) ? (digirisk_tools::IsValid_Variable($_REQUEST['idPicture'])) : '';
 
 						/*	Unassociate the risk to the picture	*/
-						if($oldidPicture != '')
-						{
+						if ($oldidPicture != '') {
 							evaPhoto::unAssociatePicture($tableElement, $idElement, str_replace('picture', '', str_replace('_', '', $oldidPicture)));
 							echo '
 <script type="text/javascript" >
-	digirisk("#riskAssociatedToPicture' . $oldidPicture . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-	{
+	digirisk("#riskAssociatedToPicture' . $oldidPicture . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
 		"act":"reloadRiskAssociatedToPicture",
@@ -967,37 +965,40 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$associateResult = evaPhoto::associatePicture($tableElement, $idElement, str_replace('picture', '', str_replace('_', '', $idPhoto)));
 						echo '
 <script type="text/javascript" >
-	digirisk("#riskAssociatedToPicture' . $idPhoto . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-	{
+	digirisk("#riskAssociatedToPicture' . $idPhoto . '").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 		"post":"true",
 		"table":"' . TABLE_RISQUE . '",
 		"act":"reloadRiskAssociatedToPicture",
 		"idPicture":"' . str_replace('picture', '', str_replace('_', '', $idPhoto)) . '"
 	});
+	jQuery.post("' . admin_url( 'admin-ajax.php' ) . '", {action: "digi_ajax_reload_unassociated_risk_to_pics", tableElement: "' . $_REQUEST['table_element_parent'] . '", idElement: "' . $_REQUEST['id_element_parent'] . '",}, function (response) { jQuery("#digi_unassociated_risk_container").html(response); } );
 </script>';
 					}
 					break;
-					case 'unAssociatePicture':
-					{
+					case 'unAssociatePicture': {
 						$tableElement = isset($_REQUEST['tableElement']) ? (digirisk_tools::IsValid_Variable($_REQUEST['tableElement'])) : '';
 						$idElement = isset($_REQUEST['idElement']) ? (digirisk_tools::IsValid_Variable($_REQUEST['idElement'])) : '';
 						$idPhoto = isset($_REQUEST['idPicture']) ? (digirisk_tools::IsValid_Variable($_REQUEST['idPicture'])) : '';
 
 						/*	Unassociate the risk to the picture	*/
-						if($idPhoto != '')
-						{
+						if($idPhoto != '') {
 							evaPhoto::unAssociatePicture($tableElement, $idElement, $idPhoto);
+
+							/**	Get the parent element of current risk	*/
+							$query = $wpdb->prepare( "SELECT id_element, nomTableElement FROM " . TABLE_RISQUE . " WHERE id = %d", $idElement);
+							$parent_infos = $wpdb->get_row( $query );
+
 							echo '
 <script type="text/javascript" >
 	if(digirisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_")){
-		digirisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-		{
+		digirisk("#riskAssociatedToPicturepicture_' . $idPhoto . '_").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 			"post":"true",
 			"table":"' . TABLE_RISQUE . '",
 			"act":"reloadRiskAssociatedToPicture",
 			"idPicture":"' . str_replace('picture', '', str_replace('_', '', $idPhoto)) . '"
 		});
 	}
+	jQuery.post("' . admin_url( 'admin-ajax.php' ) . '", {action: "digi_ajax_reload_unassociated_risk_to_pics", tableElement: "' . $parent_infos->nomTableElement . '", idElement: "' . $parent_infos->id_element . '",}, function (response) { jQuery("#digi_unassociated_risk_container").html(response); } );
 	if(digirisk("#associatedPictureContainer")){
 		digirisk("#associatedPictureContainer").html("");
 	}
@@ -3341,7 +3342,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					}
 					break;
 				}
-				break;
+			break;
+
 			case TABLE_ACTIVITE_SUIVI:
 				$tableElement = (!empty($_REQUEST['table_element']) ? $_REQUEST['table_element'] : (!empty($_REQUEST['tableElement']) ? $_REQUEST['tableElement'] : ''));
 				$idElement = (!empty($_REQUEST['id_element']) ? $_REQUEST['id_element'] :  (!empty($_REQUEST['idElement']) ? $_REQUEST['idElement'] : ''));
@@ -3361,6 +3363,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					break;
 				}
 			break;
+
 			case TABLE_LIAISON_USER_ELEMENT:
 				require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUserLinkElement.class.php');
 				switch ( $_REQUEST['act'] ) {
@@ -6253,8 +6256,8 @@ switch($tableProvenance)
 					}
 				}
 			break;
+
 			case "suiviFicheAction" :
-			{
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
 				$risques = array();
@@ -6265,8 +6268,8 @@ switch($tableProvenance)
 					}
 				}
 				echo actionsCorrectives::output_correctiv_action_by_risk($risques);
-			}
 			break;
+
 			case "reload_new_activity_button_container":
 			{
 				//Bouton Enregistrer

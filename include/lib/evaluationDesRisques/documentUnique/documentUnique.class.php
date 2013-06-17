@@ -1084,14 +1084,13 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 	*	@return mixed $output An html code with the generated output
 	*/
 	function getBoxBilan($tableElement, $idElement) {
-		/*
-	<div class="alignleft" id="generateFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div> */
 		$output = '
 <div class="clear" id="summaryDocumentGeneratorSlector" >
 	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
 	<div class="alignleft" id="generateFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
 	<div class="alignleft" id="generateFP" >' . __('Fiches de poste', 'evarisk') . '</div>
 	<div class="alignleft" id="generateRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
+	<div class="alignleft" id="generateFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
 </div>
 <div class="clear" id="bilanBoxContainer" >' . eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement) . '</div>
 <script type="text/javascript" >

@@ -71,6 +71,14 @@ function digi_ajax_save_activite_follow() {
 		digirisk_user_notification::log_element_modification($_POST['tableElement'], $_POST['idElement'], 'delete_follow_up', $_POST['specific_follow_up'], '');
 	}
 	else {
+		if ( empty( $_POST[TABLE_ACTIVITE_SUIVI] ) ) {
+			foreach ( $_POST as $key => $value ) {
+				if ( substr($key, 0, strlen( TABLE_ACTIVITE_SUIVI) ) == TABLE_ACTIVITE_SUIVI ) {
+					$_POST[TABLE_ACTIVITE_SUIVI][substr($key, strlen( TABLE_ACTIVITE_SUIVI) + 1 )] = $value;
+				}
+			}
+		}
+
 		$save_activite_result = suivi_activite::save_suivi_activite( $_POST['specific_follow_up'], $_POST['tableElement'], $_POST['idElement'], $_POST[TABLE_ACTIVITE_SUIVI] );
 
 		if ( !empty( $_POST['specific_follow_up']) ) {
@@ -414,3 +422,19 @@ function digi_ajax_save_correctiv_actions_task() {
 	die();
 }
 add_action('wp_ajax_digi_ajax_save_correctiv_actions_task', 'digi_ajax_save_correctiv_actions_task');
+
+
+/**
+ *
+ *
+ * Risks
+ *
+ *
+ */
+function digi_ajax_reload_unassociated_risk_to_pics() {
+	echo Risque::getRisqueNonAssociePhoto($_POST['tableElement'], $_POST['idElement']);
+	die();
+}
+add_action('wp_ajax_digi_ajax_reload_unassociated_risk_to_pics', 'digi_ajax_reload_unassociated_risk_to_pics');
+
+

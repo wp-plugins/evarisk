@@ -729,7 +729,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 			$current_id_evaluation = (!empty($risque[0]->id_evaluation) ? $risque[0]->id_evaluation : null);
 			$complete_interface = (!empty($current_id_evaluation) ? true : false);
-			$formRisque .= '<input type="hidden" name="random_eval" value="' . $current_id_evaluation . '" id="random_eval" /><input type="hidden" name="name_of_follow_up_inputs" value="' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '" id="name_of_follow_up_inputs" /><div class="digi_clear" ></div><div id="digi_content_note_' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '">' . suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $current_id_evaluation, $complete_interface) . '</div>';
+			$formRisque .= '<input type="hidden" name="random_eval" value="' . $current_id_evaluation . '" id="random_eval" /><input type="hidden" name="name_of_follow_up_inputs" value="' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '" id="name_of_follow_up_inputs" /><div class="digi_clear" ></div><div id="digi_content_note_' . TABLE_AVOIR_VALEUR . $current_id_evaluation . '">' . suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $current_id_evaluation, $complete_interface, '', 'no_form') . '</div>';
 
 			/**	Read risk history if not empty	*/
 			if ( !empty($hito_risk) ) {
@@ -858,7 +858,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 				var follow_up_date = "";
 				if ( jQuery("#commentaire" + jQuery("#name_of_follow_up_inputs").val() + "_").val() != "" ) {
 					follow_up_content = jQuery("#commentaire" + jQuery("#name_of_follow_up_inputs").val() + "_").val();
-					if ( jQuery("#digi_print_comment_in_doc" + jQuery("#name_of_follow_up_inputs").val() + "_").is(":checked") ) {
+					if ( jQuery("#digi_print_comment_in_doc_note" + jQuery("#name_of_follow_up_inputs").val() + "_").is(":checked") ) {
 						follow_up_export = "yes";
 					}
 					follow_up_date = jQuery("#date_ajout" + jQuery("#name_of_follow_up_inputs").val() + "_").val();
@@ -938,13 +938,12 @@ EvaDisplayInput::fermerForm($formId . 'formRisque-') . '
 	*
 	*	@return mixed $advancedForm The complete html output for the form
 	*/
-	function getAvancedFormulaireCreationRisque($tableElement, $idElement)
-	{
+	function getAvancedFormulaireCreationRisque($tableElement, $idElement) {
 		$advancedForm = '';
 		$script = '';
 
 		/*	Add The form button to add a new picture	*/
-		$advancedForm = '<div style="display:table;width:95%;margin:0px 0px 12px 0px;" ><div class="alignleft" >' . Risque::getRisqueNonAssociePhoto($tableElement, $idElement) . '</div><div id="sendNewPictureForm" class="alignright" style="margin:12px 0px;" >' . evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/'), 'pictureToAssociateToRisk', "['jpeg','jpg','png','gif']", true, '', '', __('Envoyer des photos', 'evarisk'), 'digirisk("#addRisqAdvancedMode").click();') . '</div></div>';
+		$advancedForm = '<div style="display:table;width:95%;margin:0px 0px 12px 0px;" ><div class="alignleft" id="digi_unassociated_risk_container" >' . Risque::getRisqueNonAssociePhoto($tableElement, $idElement) . '</div><div id="sendNewPictureForm" class="alignright" style="margin:12px 0px;" >' . evaPhoto::getFormulaireUploadPhoto($tableElement, $idElement, str_replace('\\', '/', EVA_UPLOADS_PLUGIN_DIR . $tableElement . '/' . $idElement . '/'), 'pictureToAssociateToRisk', "['jpeg','jpg','png','gif']", true, '', '', __('Envoyer des photos', 'evarisk'), 'digirisk("#addRisqAdvancedMode").click();') . '</div></div>';
 
 		/*	Get the picture list associated to the current element	*/
 		$pictureList = evaPhoto::getPhotos($tableElement, $idElement);
@@ -1002,17 +1001,19 @@ EvaDisplayInput::fermerForm($formId . 'formRisque-') . '
 				}
 			},
 			drop: function(event, ui){
-				digirisk(ui.draggable).remove();
-				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-				{
+				jQuery(this).html( jQuery("#loading_round_pic div").html() );
+				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post":"true",
 					"table":"' . TABLE_RISQUE . '",
 					"act":"associateRiskToPicture",
 					"tableElement":"' . TABLE_RISQUE . '",
 					"idElement":digirisk(ui.draggable).attr("id").replace("loadRiskId", ""),
 					"idPicture":digirisk(this).attr("id").replace("riskAssociatedToPicture",""),
-					"oldidPicture":draggedObjectFather
+					"oldidPicture":draggedObjectFather,
+					"table_element_parent": "' . $tableElement . '",
+					"id_element_parent": "' . $idElement . '",
 				});
+				digirisk(ui.draggable).remove();
 			}
 		});
 		digirisk("#seeRiskToAssociate").click(function(){

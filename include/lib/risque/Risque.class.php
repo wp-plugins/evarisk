@@ -632,14 +632,15 @@ class Risque {
 		digirisk(".deleteLinkBetweenRiskAndPicture").unbind("click");
 		digirisk(".deleteLinkBetweenRiskAndPicture").click(function(){
 			if(confirm(digi_html_accent_for_js("' . __('&Ecirc;tes vous sur de vouloir supprimer cette liaison?', 'evarisk') . '"))){
-				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-				{
+				var curent_pict_id = jQuery(this).closest(".riskAssociatedToPictureContainer").attr("id").replace("riskAssociatedToPicturepicture_", "").replace("_", "");
+				jQuery(this).closest(".riskAssociatedToPictureContainer").html( digirisk("#loading_round_pic div").html() );
+				digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 					"post":"true",
 					"table":"' . TABLE_RISQUE . '",
 					"tableElement":"' . TABLE_RISQUE . '",
 					"idElement":digirisk(this).attr("id").replace("deleteRiskId", ""),
 					"act":"unAssociatePicture",
-					"idPicture":digirisk(this).parent().parent().closest("div").attr("id").replace("riskAssociatedToPicturepicture_", "").replace("_", "")
+					"idPicture":curent_pict_id
 				});
 			}
 		});
@@ -663,7 +664,7 @@ class Risque {
 	/**
 	*
 	*/
-	function getRisqueNonAssociePhoto($tableElement, $idElement){
+	function getRisqueNonAssociePhoto($tableElement, $idElement) {
 		global $wpdb;
 		$output = '';
 
@@ -681,13 +682,11 @@ class Risque {
 				)",
 			$idElement, $tableElement, TABLE_RISQUE
 		);
-		$queryResult = $wpdb->get_results($query);
-		if(count($queryResult) > 0)
-		{
+		$unaffected_risks = $wpdb->get_results( $query );
+		if ( !empty($unaffected_risks) ) {
 			$riskArray = array();
 			$i = 0;
-			foreach($queryResult as $risk)
-			{
+			foreach ($unaffected_risks as $risk) {
 				$risque = Risque::getRisque($risk->id);
 				$score = Risque::getEquivalenceEtalon($risk->id_methode, Risque::getScoreRisque($risque), $risk->date);
 
@@ -697,9 +696,14 @@ class Risque {
 			$script = '
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
-		digirisk("#seeRiskToAssociate").click(function(){
-			digirisk(".riskAssociatedToPicture").draggable();
-			digirisk("#riskToAssociate").toggle();
+		jQuery(".riskAssociatedToPicture").draggable({
+			revert : function(event, ui) {
+				jQuery(this).data("uiDraggable").originalPosition = {
+					top : 0,
+					left : 0
+				};
+				return !event;
+            }
 		});
 	});
 </script>';
