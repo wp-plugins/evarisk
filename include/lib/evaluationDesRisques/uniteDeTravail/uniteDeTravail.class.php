@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
@@ -10,7 +10,7 @@ require_once(EVA_LIB_PLUGIN_DIR . 'adresse/evaAddress.class.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'users/evaUser.class.php');
 
 class eva_UniteDeTravail {
-	
+
 	/**
 	* @var int The working unit identifier
 	*/
@@ -23,7 +23,7 @@ class eva_UniteDeTravail {
 	* @var string The working unit picture path
 	*/
 	var $picture;
-	
+
 /*
 *	Constructeur et accesseurs
 */
@@ -38,7 +38,7 @@ class eva_UniteDeTravail {
 		$this->name = $name;
 		$this->picture = $picture;
 	}
-	
+
 	/**
 	* Returns the working unit identifier
 	* @return int The identifier
@@ -87,11 +87,11 @@ class eva_UniteDeTravail {
 	{
 		$this->picture = $picture;
 	}
-	
+
 /*
 * Autres Methodes
 */
-	
+
 	/**
 	* Returns the working unit witch is the identifier
 	* @param int $id Working unit identifier search
@@ -103,11 +103,11 @@ class eva_UniteDeTravail {
 		$id = (int) $id;
 		return $wpdb->get_row( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = " . $id);
 	}
-	
+
 	/**
 	* Returns the working unit witch is the name
 	* @param string $nom Working unit name search
-	* @return The working unit 
+	* @return The working unit
 	*/
 	function getWorkingUnitByName($nom)
 	{
@@ -115,7 +115,7 @@ class eva_UniteDeTravail {
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE nom='" . $nom . "'");
 		return $resultat;
 	}
-	
+
 	/**
 	* Returns all working units maching with the where condition and order by the order condition
 	* @param string $where SQL where condition
@@ -127,15 +127,15 @@ class eva_UniteDeTravail {
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
 	}
-	
+
 	/**
 	* Returns all working units name whitout the specifie
 	* @param string $saufUnite Working unit name not consider
 	* @return All the  working unit name whitout the specifie
 	*/
 	function getWorkingUnitsName($saufUnite = '', $workingUnitStatus = '')
-	{	
-		$unites = eva_UniteDeTravail::getWorkingUnits($workingUnitStatus);
+	{
+		$unites = eva_UniteDeTravail::getWorkingUnits( $workingUnitStatus );
 		foreach($unites as $unite)
 		{
 			if($unite->nom != $saufUnite)
@@ -147,7 +147,7 @@ class eva_UniteDeTravail {
 			return $tab_unites;
 		else return null;
 	}
-	
+
 	/**
 	* @todo
 	*/
@@ -155,7 +155,7 @@ class eva_UniteDeTravail {
 	{
 		unset($infos, $info);
 		$uniteDeTravail = eva_UniteDeTravail::getWorkingUnit($idWorkingUnit);
-		
+
 		$info['nom'] = __('Niveau de risque', 'evarisk');
 		$scoreRisqueUniteTravail = eva_UniteDeTravail::getScoreRisque($idWorkingUnit);
 		$info['valeur'] = eva_UniteDeTravail::getNiveauRisque($scoreRisqueUniteTravail);
@@ -167,7 +167,7 @@ class eva_UniteDeTravail {
 		$infos[] = $info;
 		return $infos;
 	}
-	
+
 	function getScoreRisque($id)
 	{
 		$temp = Risque::getRisques(TABLE_UNITE_TRAVAIL, $id, "Valid");
@@ -175,7 +175,7 @@ class eva_UniteDeTravail {
 		{
 			foreach($temp as $risque)
 			{
-				$risques['"' . $risque->id . "'"][] = $risque; 
+				$risques['"' . $risque->id . "'"][] = $risque;
 			}
 		}
 		$scoreTotal = 0;
@@ -200,17 +200,17 @@ class eva_UniteDeTravail {
 
 		return $scoreToReturn;
 	}
-	
+
 	function getNiveauRisque($quotation)
 	{
 		return Risque::getNiveauRisque(Risque::getSeuil($quotation));
 	}
-	
+
 	function getNombreRisques($id)
 	{
 		return Risque::getNombreRisques(TABLE_UNITE_TRAVAIL, $id, "Valid");
 	}
-	
+
 	//@todo getResponsables
 	function getResponsables($id)
 	{
@@ -237,16 +237,16 @@ class eva_UniteDeTravail {
 			$geoLoc = $address->getGeoLoc();
 			$scoreRisque = eva_UniteDeTravail::getScoreRisque($workingUnit->id);
 			$geoLoc['info'] = '<img class="alignleft" style="margin-right:0.5em;" src="' . EVA_WORKING_UNIT_ICON . '" alt="Unit&eacute; de travail : "/><strong>' . $workingUnit->nom . '</strong><br /><em>' . __('Risque', 'evarisk') . ' : <span class="valeurInfoElement risque' . Risque::getSeuil($scoreRisque) . 'Text">' . eva_UniteDeTravail::getNiveauRisque($scoreRisque) . '</span></em>';
-			$geoLoc['type'] = "unit&eacute; de travail"; 
-			$geoLoc['adress'] = $workingUnit->id_adresse; 
+			$geoLoc['type'] = "unit&eacute; de travail";
+			$geoLoc['adress'] = $workingUnit->id_adresse;
 			$geoLoc['image'] = GOOGLEMAPS_UNITE;
 		}
 		return $geoLoc;
 	}
-	
+
 /*
 * Persistance
-*/ 
+*/
 	/**
 	* Save a new working unit.
 	* @param string $nom Working unit name.
@@ -255,11 +255,11 @@ class eva_UniteDeTravail {
   function saveNewWorkingUnit($nom, $idGroupementPere)
 	{
 		global $wpdb;
-		
+
 		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`, creation_date) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid', '" . current_time('mysql', 0) . "')";
 		return $wpdb->query($sql);
 	}
-	
+
 	/**
 	* Update the working unit which is the identifier.
 	* @param int $id_unite Working unit identifier (not update).
@@ -273,7 +273,7 @@ class eva_UniteDeTravail {
 	function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
 	{
 		global $wpdb;
-		
+
 		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`='" . $id_unite . "'";
 		return $wpdb->query($sql);
 	}
@@ -288,10 +288,10 @@ class eva_UniteDeTravail {
 	function updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet)
 	{
 		global $wpdb;
-		
+
 		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_UNITE_TRAVAIL . " 
-				SET " . $whatToUpdate . " = '%s', 
+			"UPDATE " . TABLE_UNITE_TRAVAIL . "
+				SET " . $whatToUpdate . " = '%s',
 					lastupdate_date = %s
 			WHERE id='" . $id_unite . "'",
 			 $whatToSet, current_time('mysql', 0)
@@ -307,22 +307,22 @@ class eva_UniteDeTravail {
 	function transfertUnit($idUnite, $idGroupementPere)
 	{
 		global $wpdb;
-		
+
 		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `id_groupement`='" . $idGroupementPere . "', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`=" . $idUnite;
 		$wpdb->query($sql);
 	}
 	/**
-	* Set the status of the  working unit wich is the identifier to Delete 
+	* Set the status of the  working unit wich is the identifier to Delete
 	* @param int $id Working unit identifier
 	*/
 	function deleteWorkingUnit($id)
 	{
 		global $wpdb;
-		
+
 		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `Status`='Deleted', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`=" . $id;
 		if($wpdb->query($sql))
 		{
-			echo 
+			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
 						digirisk("#message").addClass("updated");
@@ -337,7 +337,7 @@ class eva_UniteDeTravail {
 		}
 		else
 		{
-			echo 
+			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
 						digirisk("#message").addClass("updated");

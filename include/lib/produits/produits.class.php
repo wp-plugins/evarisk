@@ -285,6 +285,7 @@ if(current_user_can('wpshop_edit_product')){
 			}
 		}
 		else{/*	In case that no categories was selected into options	*/
+				$idLigne = $tableElement . $idElement . '_elementList_no_category_and_no_product';
 			/*	Overwrite the datatable titles and class	*/
 			$titres = array(ucfirst(strtolower(__('Aucune cat&eacute;gorie s&eacute;lectionn&eacute;e.', 'evarisk'))));
 			$classes = array('addElementButtonDTable');

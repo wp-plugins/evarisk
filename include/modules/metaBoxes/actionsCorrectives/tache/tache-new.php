@@ -102,6 +102,16 @@ function getTaskGeneralInformationPostBoxBody($arguments) {
 		$labelInput .= '<div class="alignright" ><input type="checkbox" name="nom_exportable_plan_action" id="nom_exportable_plan_action"' . $exportable_option . ' value="yes"' . $checked . ' />&nbsp;<label for="nom_exportable_plan_action" >'.__('Exporter dans le plan d\'action', 'evarisk').'</label></div>';
 		$nomChamps = "nom_tache";
 		$idTitre = "nom_tache";
+
+
+		$export_task_description = 'non';
+		if ( empty($options['digi_ac_task_default_exportable_plan_action']) ) {
+			$export_task_description = 'oui';
+		}
+		else if ( empty($options['digi_ac_task_default_exportable_plan_action']['description']) || !empty($options['digi_ac_task_default_exportable_plan_action']['description']) ) {
+			$export_task_description = 'oui';
+		}
+		//$export_task_description = (empty($options['digi_ac_task_default_exportable_plan_action']) || (!empty($options['digi_ac_task_default_exportable_plan_action']) && empty($options['digi_ac_task_default_exportable_plan_action']['description'])) || !empty($options['digi_ac_task_default_exportable_plan_action']['description']) ? $options['digi_ac_task_default_exportable_plan_action']['description'] : '');
 		$tache_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, 'titleInput', '', '100%', '', '', false, '1') . '
 <script type="text/javascript" >
 	evarisk(document).ready(function(){
@@ -112,7 +122,7 @@ function getTaskGeneralInformationPostBoxBody($arguments) {
 			}
 			else{
 				jQuery("#description_exportable_plan_action").prop("disabled",false);
-				if ("' . (empty($options['digi_ac_task_default_exportable_plan_action']) || empty($options['digi_ac_task_default_exportable_plan_action']['description']) || !empty($options['digi_ac_task_default_exportable_plan_action']['description']) ? $options['digi_ac_task_default_exportable_plan_action']['description'] : '') . '" == "oui") {
+				if ("' . $export_task_description . '" == "oui") {
 					jQuery("#description_exportable_plan_action").prop("checked", true);
 				}
 			}

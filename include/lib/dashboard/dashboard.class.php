@@ -135,26 +135,21 @@ class dashboard {
 	*	Return the meta-box with the different actions that are already done but the associed risk have not been reevaluated
 	*	@see actionCorrectivesTermineesAReEvaluer_Check
 	*/
-	function vracStats_Box()
-	{
+	function vracStats_Box() {
 		add_meta_box("evaDashboard_vracStats", __("Statistiques", "evarisk"), array("dashboard", "vracStats_Check"), "evaDashboard", "rightSide");
 	}
 	/**
 	*	Return the content of the meta-box of done task but risk to reevaluate
 	*/
-	function vracStats_Check()
-	{
-		$output = 
+	function vracStats_Check() {
+		$output =
 			'<div class="hide" id="loadingPicContainer" ><img src="' . PICTO_LOADING_ROUND . '" alt="loading ..." /></div>
 			<div id="vracStatsTabs" >
 				<ul>
-					<li><a href="' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=dashboardStats&amp;tab=user" title="vracStatsContent" >' . __('Personnel', 'evarisk') . '</a></li>
-					<li><a href="' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=dashboardStats&amp;tab=risk" title="vracStatsContent" >' . __('Risques', 'evarisk') . '</a></li>
-					<!-- <li><a href="' . EVA_INC_PLUGIN_URL . 'ajax.php?nom=dashboardStats&amp;tab=danger" title="vracStatsContent" >' . __('Dangers', 'evarisk') . '</a></li> -->
+					<li><a href="' . admin_url( 'admin-ajax.php' ) . '?action=digi_ajax_stats_user" title="vracStatsContent" >' . __('Personnel', 'evarisk') . '</a></li>
+					<li><a href="' . admin_url( 'admin-ajax.php' ) . '?action=digi_ajax_risk_stats" title="vracStatsContent" >' . __('Risques', 'evarisk') . '</a></li>
 				</ul>
-				<div id="vracStatsContent" title="' . __('Afficher les noms', 'evarisk') . '" ></div>
-				
-				<div id="namesUpdater" title="' . __('Liste des utilisateurs', 'evarisk') . '" ></div>
+				<div id="vracStatsContent"><img src="' . PICTO_LOADING_ROUND . '" /></div>
 			</div>
 			<script type="text/javascript" >
 				digirisk(document).ready(function(){

@@ -7,10 +7,8 @@
 
 	require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/ficheDePoste/ficheDePoste.class.php' );
 
-	function getWorkUnitSheetPostBoxBody($arguments)
-	{
-		if(((int)$arguments['idElement']) == 0)
-		{
+	function getWorkUnitSheetPostBoxBody($arguments) {
+		if (((int)$arguments['idElement']) == 0) {
 			$script = '<script type="text/javascript">
 					digirisk(document).ready(function() {
 						digirisk("#' . $postBoxId . '").hide();
@@ -18,8 +16,7 @@
 				</script>';
 			echo $script;
 		}
-		else
-		{
+		else {
 			$idElement = $arguments['idElement'];
 			$tableElement = $arguments['tableElement'];
 
@@ -31,7 +28,8 @@
 		$userNotAllowed = '';
 		$corpsPostBoxRisque .= '
 	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>
-	<li id="ongletImpressionListingRisque" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Synth&eacute;se des risques', 'evarisk'))) . '</label></li>';
+	<li id="ongletImpressionListingRisque" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Synth&eacute;se des risques', 'evarisk'))) . '</label></li>
+	<li id="ongletImpressionFichesPenibilite" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de p&eacute;nibilit&eacute;', 'evarisk'))) . '</label></li>';
 	}
 	else {
 		$userNotAllowed = 'digirisk("#ongletHistoriqueDocument").click();';
@@ -41,6 +39,7 @@
 </ul>
 <div id="divImpressionFicheDePoste" class="eva_tabs_panel">' . eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '</div>
 <div id="divImpressionListingRisque" class="eva_tabs_panel" style="display:none"></div>
+<div id="divImpressionFichesPenibilite" class="eva_tabs_panel" style="display:none"></div>
 <div id="divHistoriqueFicheDePoste" class="eva_tabs_panel" style="display:none"></div>
 <script type="text/javascript" >
 	function loadBilanBoxContent_FP(boxId, action, table) {
@@ -63,6 +62,11 @@
 		digirisk("#ongletImpressionListingRisque").click(function(){
 			commonTabChange("postBoxFicheDePoste", "#divImpressionListingRisque", "#ongletImpressionListingRisque");
 			loadBilanBoxContent_FP("#divImpressionListingRisque", "riskListingGeneration", "' . TABLE_DUER . '");
+		});
+
+		digirisk("#ongletImpressionFichesPenibilite").click(function(){
+			commonTabChange("postBoxFicheDePoste", "#divImpressionFichesPenibilite", "#ongletImpressionFichesPenibilite");
+			loadBilanBoxContent_FP("#divImpressionFichesPenibilite", "ficheDePenibiliteGeneration", "' . TABLE_DUER . '");
 		});
 
 		digirisk("#ongletHistoriqueDocument").click(function(){

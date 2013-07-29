@@ -211,10 +211,10 @@ class EvaTask extends EvaBaseTask
 		$wpdbRootTask = $rootTask->convertToWpdb();
 		$wpdbDaughterTask = $this->convertToWpdb();
 
-			$motherTask = new EvaTask( $newMotherTaskId );
-			$motherTask->load();
-			$wpdbMotherTask = $motherTask->convertToWpdb();
-			Arborescence::deplacerElements(TABLE_TACHE, $wpdbRootTask, $wpdbDaughterTask, $wpdbMotherTask);
+		$motherTask = new EvaTask( $newMotherTaskId );
+		$motherTask->load();
+		$wpdbMotherTask = $motherTask->convertToWpdb();
+		Arborescence::deplacerElements(TABLE_TACHE, $wpdbRootTask, $wpdbDaughterTask, $wpdbMotherTask);
 	}
 
 	/**
@@ -847,6 +847,41 @@ class EvaTask extends EvaBaseTask
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_ACTIVITE . " WHERE id_tache in (" . implode(', ', $tabId) . ") AND " . $where . " ORDER BY ". $order);
 
 		return $resultat;
+	}
+
+
+	function save_task_from_risk_form($preconisationRisqueTitle, $preconisationRisque, $idRisque) {
+		global $wpdb;
+		$_POST['nom_activite'] = !empty($preconisationRisqueTitle) ? $preconisationRisqueTitle : substr(nl2br($preconisationRisque), 0, 255);
+		$_POST['description'] = $preconisationRisque;
+		$_POST['print_action_description_in_duer'] = $preconisationRisque;
+		$_POST['cout'] = '';
+		$_POST['idProvenance'] = $idRisque;
+		$_POST['tableProvenance'] = TABLE_RISQUE;
+		$_POST['responsable_activite'] = '';
+		$_POST['date_debut'] = date('Y-m-d');
+		$_POST['date_fin'] = date('Y-m-d', mktime(0, 0, 0, date("m")+1, date("d"), date("Y")));
+		$_POST['avancement'] = '0';
+		$_POST['nom_exportable_plan_action'] = 'yes';
+		$_POST['description_exportable_plan_action'] = 'yes';
+		$_POST['hasPriority'] = 'yes';
+
+		/*	Make the link between a corrective action and a risk evaluation	*/
+		$query = $wpdb->prepare(
+				"SELECT id_evaluation
+			FROM " . TABLE_AVOIR_VALEUR . "
+			WHERE id_risque = '%d'
+				AND Status = 'Valid'
+			ORDER BY id DESC
+			LIMIT 1",
+				$idRisque
+		);
+		$evaluation = $wpdb->get_row($query);
+		$_POST['parentTaskId'] = evaTask::saveNewTask();
+		evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $evaluation->id_evaluation, $_POST['parentTaskId'], 'demand');
+
+		/*	Create automatically a sub-task for the priority task	*/
+		evaActivity::saveNewActivity();
 	}
 
 }

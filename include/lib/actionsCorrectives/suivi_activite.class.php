@@ -73,12 +73,12 @@ class suivi_activite {
 			foreach ( $listeUtilisateurs as $user_infos) {
 				$user_list[$user_infos['user_id']] = $user_infos['user_lastname'] . ' ' . $user_infos['user_firstname'];
 			}
-			$user_doing_task = EvaDisplayInput::createComboBox('follow_up_id_user_performer', TABLE_ACTIVITE_SUIVI . '[id_user_performer]', $user_list, $id_user_performer, '', ' tabindex="16" ');
+			$user_doing_task = EvaDisplayInput::createComboBox('follow_up_id_user_performer', TABLE_ACTIVITE_SUIVI . '[id_user_performer]', $user_list, (!empty($id_user_performer) ? $id_user_performer : get_current_user_id()), '', ' tabindex="16" ');
 		}
 
 		/**	Sub-Task elapsed time					*/
-		$input_hour = '<input type="text" name="' . TABLE_ACTIVITE_SUIVI . '[elapsed_time][hour]" value="' . $elapsed_time_hour . '" id="project_elapsed_time_hour" maxlength="255" tabindex="17" style="width:25%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#project_elapsed_time_hour").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
-		$input_minute = '<input type="text" name="' . TABLE_ACTIVITE_SUIVI . '[elapsed_time][minutes]" value="' . $elapsed_time_minutes . '" id="project_elapsed_time_minutes" maxlength="255" tabindex="18" style="width:25%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#planned_time_minutes").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
+		$input_hour = '<input type="text" name="' . TABLE_ACTIVITE_SUIVI . '[elapsed_time][hour]" value="' . $elapsed_time_hour . '" id="project_elapsed_time_hour" maxlength="255" tabindex="17" style="width:30%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#project_elapsed_time_hour").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
+		$input_minute = '<input type="text" name="' . TABLE_ACTIVITE_SUIVI . '[elapsed_time][minutes]" value="' . $elapsed_time_minutes . '" id="project_elapsed_time_minutes" maxlength="255" tabindex="18" style="width:30%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#planned_time_minutes").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
 		$input_cost = '<input type="text" name="' . TABLE_ACTIVITE_SUIVI . '[cost]" value="' . $cost . '" id="cost" maxlength="255" tabindex="18" style="width:50%;" /> &euro;<script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#cost").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8 && event.which != 46) { event.preventDefault(); } }); });</script>';
 
 		$output .= '
@@ -93,8 +93,8 @@ class suivi_activite {
 		<tr>
 			<td style="width:5%;" ><label for="date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '" >' . __('Date', 'evarisk') . '</label></td>
 			<td style="width:20%;" ><label for="follow_up_id_user_performer" >' . __('Ressources humaine', 'evarisk') . '</label></td>
-			<td style="width:10%;" ><label for="project_elapsed_time_hour" >' . __('Temps pass&eacute;', 'evarisk') . '</label></td>
-			<td style="width:5%;" ><label for="project_cost" >' . __('Co&ucirc;t', 'evarisk') . '</label></td>
+			<td style="width:15%;" ><label for="project_elapsed_time_hour" >' . __('Temps pass&eacute;', 'evarisk') . '</label></td>
+			<td ><label for="project_cost" >' . __('Co&ucirc;t', 'evarisk') . '</label></td>
 		</tr>
 		<tr>
 			<td style="width:5%;" ><input id="project_date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '" type="text" value="' . $selected_date . '" name="' . TABLE_ACTIVITE_SUIVI . '[date_ajout]" tabindex="15" ></td>
@@ -259,7 +259,7 @@ class suivi_activite {
 					$saveButtonOuput = false;
 				}
 				$document_type_to_print = __('DUER', 'evarisk');
-				break;
+			break;
 		}
 
 		$output = '';
@@ -267,31 +267,7 @@ class suivi_activite {
 			$idBouttonEnregistrer = 'saveActionFollow';
 			$scriptEnregistrement = '';
 			if ( ($tableElement == TABLE_AVOIR_VALEUR) && $complete_interface) {
-				$scriptEnregistrement = '
-<script type="text/javascript" >
-	digirisk(document).ready(function() {
-		jQuery("#' . $idBouttonEnregistrer . '").click(function() {
-			var export_is_checked = "no";
-			if ( jQuery("#digi_print_comment_in_doc_note' . $tableElement . $idElement . '_' . $specific_follow_up . '").is(":checked") ) {
-				export_is_checked = "yes";
-			}
-			var data = {
-				action: "digi_ajax_save_activite_follow",
-				tableElement: "' . $tableElement . '",
-				idElement: "' . $idElement . '",
-				digi_ajax_nonce: "' . wp_create_nonce("digi_ajax_save_activite_follow") . '",
-				specific_follow_up: "' . $specific_follow_up . '",
-				' . TABLE_ACTIVITE_SUIVI . '_follow_up_type: "note",
-				' . TABLE_ACTIVITE_SUIVI . '_date_ajout: jQuery("#date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '").val(),
-				' . TABLE_ACTIVITE_SUIVI . '_commentaire: jQuery("#commentaire' . $tableElement . $idElement . '_' . $specific_follow_up . '").val(),
-				' . TABLE_ACTIVITE_SUIVI . '_export: export_is_checked,
-			};
-			jQuery.post("' . admin_url('admin-ajax.php') . '", data, function(response) {
-				after_save_follow_up_action(response) ;
-			}, "json");
-		});
-	});
-</script>';
+				$scriptEnregistrement = '';
 			}
 
 			$selected_date = current_time('mysql', 0);
@@ -410,6 +386,28 @@ class suivi_activite {
 				},
 			});
 			return false;
+		});
+
+		jQuery("#' . $idBouttonEnregistrer . '").unbind("click");
+		jQuery("#' . $idBouttonEnregistrer . '").click(function() {
+			var export_is_checked = "no";
+			if ( jQuery("#digi_print_comment_in_doc_note' . $tableElement . $idElement . '_' . $specific_follow_up . '").is(":checked") ) {
+				export_is_checked = "yes";
+			}
+			var data = {
+				action: "digi_ajax_save_activite_follow",
+				tableElement: "' . $tableElement . '",
+				idElement: "' . $idElement . '",
+				digi_ajax_nonce: "' . wp_create_nonce("digi_ajax_save_activite_follow") . '",
+				specific_follow_up: "' . $specific_follow_up . '",
+				' . TABLE_ACTIVITE_SUIVI . '_follow_up_type: "note",
+				' . TABLE_ACTIVITE_SUIVI . '_date_ajout: jQuery("#date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '").val(),
+				' . TABLE_ACTIVITE_SUIVI . '_commentaire: jQuery("#commentaire' . $tableElement . $idElement . '_' . $specific_follow_up . '").val(),
+				' . TABLE_ACTIVITE_SUIVI . '_export: export_is_checked,
+			};
+			jQuery.post("' . admin_url('admin-ajax.php') . '", data, function(response) {
+				after_save_follow_up_action(response) ;
+			}, "json");
 		});
 	});
 
@@ -849,6 +847,13 @@ class suivi_activite {
 			$contenuInputRealEndDate = '';
 			$contenuInputPlannedTime = '';
 			$contenuInputElapsedTime = '';
+
+			$estimate_start_date = $estimate_end_date = $planned_time = $estimate_cost = '';
+			$start_date_status = $end_date_status = $time_status = $cost_status = '';
+			$start_date_class_status = $end_date_class_status = $time_class_status = $cost_class_status = '';
+
+			$start_date_label_status = $end_date_label_status = $time_label_status = $cost_label_status = '';
+			$start_date_label_class_status = $end_date_label_class_status = $time_label_class_status = $cost_label_class_status = '';
 		}
 
 		switch ($tableElement) {
@@ -950,13 +955,13 @@ class suivi_activite {
 		}
 		switch ( $tableElement ) {
 			case TABLE_TACHE:
-				$input_hour = '<input type="text" name="planned_time[hour]" value="' . ($planned_time_hour < 10 ? '0' . $planned_time_hour : $planned_time_hour) . '" id="planned_time_hour" maxlength="255" tabindex="13" style="width:10%;" disabled="disabled" />';
-				$input_minute = '<input type="text" name="planned_time[minutes]" value="' . ($planned_time_minutes < 10 ? '0' . $planned_time_minutes : $planned_time_minutes) . '" id="planned_time_minutes" maxlength="255" tabindex="14" style="width:10%;" disabled="disabled" />';
+				$input_hour = '<input type="text" name="planned_time[hour]" value="' . ($planned_time_hour < 10 ? '0' . $planned_time_hour : $planned_time_hour) . '" id="planned_time_hour" maxlength="255" tabindex="13" style="width:15%;" disabled="disabled" />';
+				$input_minute = '<input type="text" name="planned_time[minutes]" value="' . ($planned_time_minutes < 10 ? '0' . $planned_time_minutes : $planned_time_minutes) . '" id="planned_time_minutes" maxlength="255" tabindex="14" style="width:15%;" disabled="disabled" />';
 				$planned_time = $label . (!empty($contenuInputPlannedTime) ? '<div>' . $input_hour . ' ' . __('H', 'evarisk') . ' ' . $input_minute . ' ' . __('Minutes', 'evarisk') . '</div>' : '<br/><span style="font-style: italic; margin-left: 10px;" >' . __('En attente d\'informations des sous-t&acirc;ches', 'evarisk') . '</span>');
 				break;
 			case TABLE_ACTIVITE:
-				$input_hour = '<input type="text" name="planned_time[hour]" value="' . ($planned_time_hour < 10 ? '0' . $planned_time_hour : $planned_time_hour) . '" id="planned_time_hour" maxlength="255" tabindex="8" style="width:10%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#planned_time_hour").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
-				$input_minute = '<input type="text" name="planned_time[minutes]" value="' . ($planned_time_minutes < 10 ? '0' . $planned_time_minutes : $planned_time_minutes) . '" id="planned_time_minutes" maxlength="255" tabindex="9" style="width:10%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#planned_time_minutes").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
+				$input_hour = '<input type="text" name="planned_time[hour]" value="' . ($planned_time_hour < 10 ? '0' . $planned_time_hour : $planned_time_hour) . '" id="planned_time_hour" maxlength="255" tabindex="8" style="width:15%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#planned_time_hour").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
+				$input_minute = '<input type="text" name="planned_time[minutes]" value="' . ($planned_time_minutes < 10 ? '0' . $planned_time_minutes : $planned_time_minutes) . '" id="planned_time_minutes" maxlength="255" tabindex="9" style="width:15%;" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#planned_time_minutes").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
 				$planned_time = $label . '<div class="clear" ></div>' . $input_hour . ' ' . __('H', 'evarisk') . ' ' . $input_minute . ' ' . __('Minutes', 'evarisk');
 				break;
 		}
@@ -972,8 +977,8 @@ class suivi_activite {
 			$elapsed_time_hour = floor($contenuInputElapsedTime / 60);
 			$elapsed_time_minutes = ($contenuInputElapsedTime % 60);
 		}
-		$input_hour = '<input type="text" name="elapsed_time[hour]" value="' . ($elapsed_time_hour < 10 ? '0' . $elapsed_time_hour : $elapsed_time_hour) . '" id="elapsed_time_hour" maxlength="255" tabindex="25" style="width:10%;" disabled="disabled" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#elapsed_time_hour").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
-		$input_minute = '<input type="text" name="elapsed_time[minutes]" value="' . ($elapsed_time_minutes < 10 ? '0' . $elapsed_time_minutes : $elapsed_time_minutes) . '" id="elapsed_time_minutes" maxlength="255" tabindex="26" style="width:10%;" disabled="disabled" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#elapsed_time_minutes").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
+		$input_hour = '<input type="text" name="elapsed_time[hour]" value="' . ($elapsed_time_hour < 10 ? '0' . $elapsed_time_hour : $elapsed_time_hour) . '" id="elapsed_time_hour" maxlength="255" tabindex="25" style="width:15%;" disabled="disabled" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#elapsed_time_hour").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
+		$input_minute = '<input type="text" name="elapsed_time[minutes]" value="' . ($elapsed_time_minutes < 10 ? '0' . $elapsed_time_minutes : $elapsed_time_minutes) . '" id="elapsed_time_minutes" maxlength="255" tabindex="26" style="width:15%;" disabled="disabled" /><script type="text/javascript" >digirisk(document).ready(function(){ jQuery("#elapsed_time_minutes").keypress(function(event) { if (event.which && (event.which < 48 || event.which >57) && event.which != 8) { event.preventDefault(); } }); });</script>';
 		$elapsed_time = $label . (!empty($contenuInputElapsedTime) ? '<div>' . $input_hour . ' ' . __('H', 'evarisk') . ' ' . $input_minute . ' ' . __('Minutes', 'evarisk') . '</div>' : '<br/><span style="font-style: italic; margin-left: 10px;" >' . $waiting_for_worker_txt . '</span>');
 
 		echo '

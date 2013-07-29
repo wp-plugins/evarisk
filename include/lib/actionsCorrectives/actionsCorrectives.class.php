@@ -109,9 +109,9 @@ class actionsCorrectives
 					$valeurs[] = array('value' => $infosRisque[0]->nomDanger, 'class' => '');
 					$valeurs[] = array('value' => $infosRisque[0]->commentaire, 'class' => '');
 
-					foreach($infosRisque as $variable){
+					foreach ( $infosRisque as $variable ) {
 						$var = eva_Variable::getVariable($variable->id_variable);
-						if(!isset($t[$var->nom])){
+						if ( !isset($t[$var->nom]) ) {
 							$titres[] = substr($var->nom, 0, 3) . '.';
 							$classes[] = 'columnVariableRisque';
 							$t[$var->nom] = 1;

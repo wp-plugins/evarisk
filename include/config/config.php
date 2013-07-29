@@ -87,7 +87,7 @@ DEFINE('DIGI_TYPE_PREVENTION', serialize($type_prevention));
 
 }
 
-DEFINE('DIGI_DEBUG_MODE', false);
+DEFINE('DIGI_DEBUG_MODE', true);
 DEFINE('DIGI_DEBUG_MODE_ALLOWED_IP', serialize( array('127.0.0.1') ));
 
 DEFINE('DIGI_ALLOW_RISK_CATEGORY_CHANGE', false);
@@ -182,7 +182,7 @@ for($i=0;$i<60;$i++){
 /**
  *	Define the different mandatory field for user to ve valid for work accident
  */
-$userWorkAccidentMandatoryFields = array('user_imatriculation', 'user_imatriculation_key', 'user_birthday', 'user_gender', 'user_nationnality', 'user_adress', /* 'user_adress_2', */ 'user_hiring_date', 'user_profession', 'user_professional_qualification');
+$userWorkAccidentMandatoryFields = array('user_imatriculation', 'user_imatriculation_key', 'user_birthday', 'user_gender', 'user_nationnality', 'user_adress', /* 'user_adress_2', */ 'digi_hiring_date', 'digi_unhiring_date', 'user_profession', 'user_professional_qualification');
 
 /**
  *	Define the different element available for evaluation method
@@ -273,10 +273,19 @@ DEFINE('DIGI_INRS_DANGER_LIST', serialize($inrs_danger_categories));
 DEFINE('DIGI_TASK_SEP', '_');
 DEFINE('DIGI_SUBTASK_SEP', '+');
 
+$available_fields_for_csv_export = array(
+		'user_lastname' => __('Nom utilisateur', 'evarisk'), 'user_firstname' => __('Pr&eacute;nom utilisateur', 'evarisk'),
+		'ref_elt' => __('R&eacute;f. &eacute;l&eacute;ment', 'evarisk'), 'name_elt' => __('Nom &eacute;l&eacute;ment', 'evarisk'),
+		'affectation_date' => __('Date affectation &agrave; l\'&eacute;l&eacute;ment', 'evarisk'), 'unaffectation_date' => __('Date de d&eacute;saffectation &agrave; l\'&eacute;l&eacute;ment', 'evarisk'),
+		//'ref_danger' => __('R&eacute;f. danger', 'evarisk'), 'name_danger' => __('Intitul&eacute; danger', 'evarisk'),
+		'ref_risk' => __('R&eacute;f. risque', 'evarisk'), 'risk_cotation' => __('Cotation du risque', 'evarisk'), 'risk_comment' => __('Commentaire risque', 'evarisk'), 'risk_status' => __('P&eacute;nible (oui/non)', 'evarisk'),
+);
+DEFINE('DIGI_AVAILABLE_FIELDS_FOR_EXPORT', serialize( $available_fields_for_csv_export ));
+
 /**
  *	Define the different existing element type
 */
-$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('&Eacute;valuation', 'evarisk') => 'E', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT', __('Documents', 'evarisk') => 'DOC', __('Photos', 'evarisk') => 'PIC', __('Variable des m&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'V', __('Synsth&egrave;se des risques du groupement', 'evarisk') => 'FSGP', __('Synsth&egrave;se des risques de l\'unit&eacute; de travail', 'evarisk') => 'FSUT', __('Pr&eacute;conisation affect&eaucte;e', 'evarisk') => 'PA', __('Fiche de p&eacute;nibilit&eacute;', 'evarisk') => 'FEP', __('Lots de fiches de p&eacute;nibilit&eacute;', 'evarisk') => 'GFEP', __('Commentaires et notes', 'evarisk') => 'C',);
+$treeElementList = array(__('Cat&eacute;gories de pr&eacute;conisations', 'evarisk') => 'CP', __('Pr&eacute;conisations', 'evarisk') => 'P', __('M&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'ME', __('Cat&eacute;gories de dangers', 'evarisk') => 'CD', __('Dangers', 'evarisk') => 'D', __('Groupements', 'evarisk') => 'GP', __('Unit&eacute;s de travail', 'evarisk') => 'UT', __('Actions correctives', 'evarisk') => 'T', __('Sous-actions correctives', 'evarisk') => 'ST', __('Risques', 'evarisk') => 'R', __('&Eacute;valuation', 'evarisk') => 'E', __('Utilisateurs', 'evarisk') => 'U', __('Groupes d\'utilisateurs', 'evarisk') => 'GPU', __('R&ocirc;les des utilisateurs', 'evarisk') => 'UR', __('Groupes de questions', 'evarisk') => 'GQ', __('Questions', 'evarisk') => 'Q', __('Produits', 'evarisk') => 'PDT', __('Cat&eacute;gorie de produits', 'evarisk') => 'CPDT', __('Documents unique', 'evarisk') => 'DU', __('Fiches de groupement', 'evarisk') => 'FGP', __('Groupes de fiches de groupement', 'evarisk') => 'GFGP', __('Fiches de poste', 'evarisk') => 'FP', __('Groupes de fiches de poste', 'evarisk') => 'GFP', __('Accident de travail', 'evarisk') => 'AT', __('Documents', 'evarisk') => 'DOC', __('Photos', 'evarisk') => 'PIC', __('Variable des m&eacute;thodes d\'&eacute;valuation', 'evarisk') => 'V', __('Synsth&egrave;se des risques du groupement', 'evarisk') => 'FSGP', __('Synsth&egrave;se des risques de l\'unit&eacute; de travail', 'evarisk') => 'FSUT', __('Pr&eacute;conisation affect&eaucte;e', 'evarisk') => 'PA', __('Fiche de p&eacute;nibilit&eacute;', 'evarisk') => 'FEP', __('Groupement de fiche de p&eacute;nibilit&eacute;', 'evarisk') => 'ZFEP', __('Lots de fiches de p&eacute;nibilit&eacute;', 'evarisk') => 'GFEP', __('Commentaires et notes', 'evarisk') => 'C', __('R&eacute;sum&eacute; pour les utilisateurs', 'evarisk') => 'US', __('Regroupement de r&eacute;sum&eacute; pour les utilisateurs', 'evarisk') => 'GUS');
 $digirisk_tree_options = get_option('digirisk_tree_options');
 $identifierList = (!empty($digirisk_tree_options['digi_tree_element_identifier']) ? unserialize($digirisk_tree_options['digi_tree_element_identifier']) : array());
 foreach ( $treeElementList as $elementName => $elementDefault ) {

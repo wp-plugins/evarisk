@@ -205,6 +205,9 @@ class digirisk_init
 		wp_enqueue_script('jquery-ui-slider');
 
 		wp_enqueue_script('eva_main_js', EVA_INC_PLUGIN_URL . 'js/lib.js', '', EVA_PLUGIN_VERSION);
+
+		wp_enqueue_script('jquery_keypad_min', EVA_INC_PLUGIN_URL . 'js/keypad/jquery.keypad.min.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('jquery_keypad_fr', EVA_INC_PLUGIN_URL . 'js/keypad/jquery.keypad-fr.js', '', EVA_PLUGIN_VERSION);
 	}
 
 	/**
@@ -247,6 +250,8 @@ class digirisk_init
 		wp_enqueue_style('eva_main_css');
 		wp_register_style('eva_jquery_ui', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery-ui.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_ui');
+		wp_register_style('eva_jquery_keypad', EVA_INC_PLUGIN_URL . 'js/keypad/jquery.keypad.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('eva_jquery_keypad');
 	}
 
 	/**

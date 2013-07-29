@@ -668,14 +668,11 @@ class digirisk_permission
 							$currentFieldValue = $requestFormValue;
 						}
 
-						if(array_key_exists($currentElementId, $digi_role))
-						{
-							if($input_def['name'] == 'id')
-							{
+						if(array_key_exists($currentElementId, $digi_role)) {
+							if($input_def['name'] == 'id') {
 								$currentFieldValue = $currentElementId;
 							}
-							elseif($input_def['name'] == 'role_name')
-							{
+							elseif($input_def['name'] == 'role_name') {
 
 							}
 						}
@@ -810,8 +807,7 @@ class digirisk_permission
 	*	Update user right's. Check if there is a user id send by post method, if it is the case so we launch user rights' update process
 	*
 	*/
-	function user_permission_set()
-	{
+	function user_permission_set() {
 		/*	V�rification qu'il existe bien un utilisateur � mettre � jour avant d'effectuer une action	*/
 		if ( empty($_POST['user_id']) ) return;
 		/*	R�cup�ration des informations concernant l'utilisateur en cours d'�dition	*/
@@ -822,19 +818,15 @@ class digirisk_permission
 
 		/*	R�cup�ration des permissions existantes	*/
 		$existingPermission = self::permission_list();
-		foreach($existingPermission as $permission => $permission_definition)
-		{
+		foreach ($existingPermission as $permission => $permission_definition) {
 			/*	V�rification de la permission actuelle au cas ou elle serait nulle	*/
-			if($permission != '')
-			{
+			if ($permission != '') {
 				/*	Si l'utilisateur poss�de une permission mais que celle ci n'est plus coch�e => Suppression de la permission	*/
-				if( $user->has_cap($permission) && ((!array_key_exists($permission, $userCapsList)) || (isset($userCapsList[$permission]) && ($userCapsList[$permission] != 'yes'))) )
-				{
+				if ( $user->has_cap($permission) && ((!array_key_exists($permission, $userCapsList)) || (isset($userCapsList[$permission]) && ($userCapsList[$permission] != 'yes'))) ) {
 					$user->remove_cap($permission);
 				}
 				/*	Si l'utilisateur ne poss�de pas la permission mais que celle ci est coch�e  => Ajout de la permission	*/
-				elseif( !$user->has_cap($permission) && ($userCapsList[$permission] == 'yes'))
-				{
+				else if ( !$user->has_cap($permission) && ($userCapsList[$permission] == 'yes')) {
 					$user->add_cap($permission);
 				}
 			}
@@ -930,14 +922,15 @@ class digirisk_permission
 		echo $utilisateursMetaBox;
 	}
 
+
 	/**
-	*	Create the output for the user list with the different right to affect to the user
-	*
-	*	@param string $tableElement The element type we are editing the right for
-	*	@param integer $idElement The element identifier we are editing the right for
-	*
-	*	@return mixed $outputTable The html output of the user list in a jquery dataTable
-	*/
+	 *	Create the output for the user list with the different right to affect to the user
+	 *
+	 *	@param string $tableElement The element type we are editing the right for
+	 *	@param integer $idElement The element identifier we are editing the right for
+	 *
+	 *	@return mixed $outputTable The html output of the user list in a jquery dataTable
+	 */
 	function generateUserListForRightDatatable($tableElement, $idElement) {
 		$outputTable = '';
 		$rightType = array('see', 'edit', 'delete', 'add_gpt', 'add_unit', 'add_task', 'add_action');
@@ -1444,12 +1437,13 @@ class digirisk_permission
 	}
 
 
+
 	/**
-	*	Define the permission that was create at the plugin beginning. From version 5.1.3.1 is used for delete existing right
-	*	@deprecated deprecated since version 5.1.3.1
-	*
-	*	@return array The different right previously added by the plugin (before version 5.1.3.1)
-	*/
+	 *	Define the permission that was create at the plugin beginning. From version 5.1.3.1 is used for delete existing right
+	 *	@deprecated deprecated since version 5.1.3.1
+	 *
+	 *	@return array The different right previously added by the plugin (before version 5.1.3.1)
+	 */
 	function getDroitdigirisk()
 	{
 		return array(
@@ -1480,9 +1474,10 @@ class digirisk_permission
 		);
 	}
 
+
 	/**
-	*
-	*/
+	 *
+	 */
 	function addRecursivRight($tableElement, $idElement, $userToAssociateRight, $rightToAssociate, $associationType)
 	{
 		$completeTree = Arborescence::completeTree($tableElement, $idElement);
@@ -1552,9 +1547,10 @@ class digirisk_permission
 		return $completeTree;
 	}
 
+
 	/**
-	*	Output an html table with the specific permission for the user into the element tree
-	*/
+	 *	Output an html table with the specific permission for the user into the element tree
+	 */
 	function digiSpecificPermission($user)
 	{
 		global $digi_wp_role;

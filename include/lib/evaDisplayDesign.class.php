@@ -2038,12 +2038,11 @@ class EvaDisplayDesign {
 	/*
 	*
 	*/
-	static function getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script = '', $display_footer = true)
-	{
+	static function getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script = '', $display_footer = true) {
 		$barreTitre = '';
 		$corpsTable = '';
 		for($i=0; $i<count($titres); $i++){
-			$barreTitre .= '<th class="' . $classes[$i] . '" scope="col">' . $titres[$i] . '</th>';
+			$barreTitre .= '<th class="' . (!empty($classes[$i]) ? $classes[$i] : '') . '" scope="col">' . $titres[$i] . '</th>';
 		}
 		if($barreTitre != '')
 			$barreTitre = '<tr valign="top">' . $barreTitre . '</tr>';
@@ -2054,7 +2053,7 @@ class EvaDisplayDesign {
 				$corpsTable .= '<tr id="' . $idLignes[$numeroLigne] . '" valign="top" class="tr_' . $idTable . '" >';
 				for($i=0; $i<count($ligneDeValeurs); $i++){
 					$corpsTable .= '
-						<td class="' . $classes[$i] . ' ' . (!empty($ligneDeValeurs[$i]['class']) ? $ligneDeValeurs[$i]['class'] : '') . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
+						<td class="' . (!empty($classes[$i]) ? $classes[$i] : '') . ' ' . (!empty($ligneDeValeurs[$i]['class']) ? $ligneDeValeurs[$i]['class'] : '') . '">' . $ligneDeValeurs[$i]['value'] . '</td>';
 				}
 				$corpsTable .= '</tr>';
 			}
@@ -2949,36 +2948,49 @@ class EvaDisplayDesign {
 	*	Return the form template to upload a new DUER model
 	*	@return string HTML code of the form
 	*/
-	static function getNewModelUploadForm($tableElement, $idElement)
-	{
+	static function getNewModelUploadForm( $tableElement, $idElement ) {
 		$idUpload = 'model' . $tableElement;
 		$allowedExtensions = "['odt']";
 		$multiple = false;
 		$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "gestionDocumentaire/uploadFile.php");
 		switch ($tableElement) {
+
 			case TABLE_GROUPEMENT:
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt';
 				$table = TABLE_DUER;
 			break;
+
 			case TABLE_GROUPEMENT . '_FP' :
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDePoste/modeleDefaut.odt';
 				$table = TABLE_FP;
 			break;
+
 			case TABLE_GROUPEMENT . '_FGP' :
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDeGroupement/modeleDefaut_groupement.odt';
 				$table = TABLE_FP;
 			break;
+
 			case TABLE_UNITE_TRAVAIL:
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDePoste/modeleDefaut.odt';
 				$table = TABLE_FP;
 			break;
+
+			case TABLE_GROUPEMENT . '_FEP':
+			case TABLE_UNITE_TRAVAIL . '_FEP':
+			case DIGI_DBT_USER . '_FEP':
+				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'ficheDeRisques/');
+				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'ficheDeRisques/modeleDefault_fiche_penibilite.odt';
+				$table = TABLE_FP;
+			break;
+
 			default:
 				sprintf(__('Le cas % n\'a pas &eacute;t&eacute; pr&eacute;vu dans %s &agrave; la ligne %s', 'evarisk'), $tableElement, __FILE__, __LINE__);
 			break;
+
 		}
 
 		$newModelForm =
@@ -3008,29 +3020,30 @@ class EvaDisplayDesign {
 	}
 
 	/**
-	*	Return the combo box with the different existing model
-	*	@return string $moreModelChoice HTML code containing the different existing model
-	*/
-	function getExistingModelList($tableElement, $idElement)
-	{
-		switch($tableElement)
-		{
+	 *	Return the combo box with the different existing model
+	 *	@return string $moreModelChoice HTML code containing the different existing model
+	 */
+	function getExistingModelList($tableElement, $idElement) {
+
+		$element_container_for_model_list = '';
+		switch($tableElement) {
 			case TABLE_GROUPEMENT:
-			{
 				$documentType = 'document_unique';
-			}
 			break;
 			case TABLE_GROUPEMENT . '_FP':
-			{
 				$documentType = 'fiche_de_poste';
-			}
 			break;
 			case TABLE_UNITE_TRAVAIL:
-			{
 				$documentType = 'fiche_de_poste';
-			}
+			break;
+			case TABLE_UNITE_TRAVAIL . '_FEP':
+			case TABLE_GROUPEMENT . '_FEP':
+			case DIGI_DBT_USER . '_FEP':
+				$documentType = 'fiche_exposition_penibilite';
+				$element_container_for_model_list = '_' . $tableElement . '_-digi-_' .$idElement;
 			break;
 		}
+
 		$moreModelChoice = '';
 		$documentList = eva_gestionDoc::getCompleteDocumentList($documentType,
 		"	AND SUBSTRING(chemin FROM 1 FOR 8) != 'results/'
@@ -3045,27 +3058,43 @@ class EvaDisplayDesign {
 				FROM " . TABLE_GED_DOCUMENTS . "
 				WHERE id_element = '" . $idElement . "'
 					AND table_element = '" . $tableElement . "'
-			)			", "dateCreation DESC");
-		if(count($documentList) > 0)
-		{
+			)			", "dateCreation DESC", $tableElement, $idElement);
+
+		if ( !empty($documentList) ) {
 			$moreModelChoice =
 				'<div style="margin:6px 0px;" class="bold" >' . __('Affecter un mod&egrave;le existant', 'evarisk') . '&nbsp:</div>
 				<ol>
 					<li>
 						' . __('S&eacute;lectionner un mod&eacute;le', 'evarisk') . '
 						<div style="margin:3px 24px;" class="bold" >
-							' . evaDisplayInput::afficherComboBox($documentList, 'modelToDuplicate', '', 'modelToDuplicate', '', '') . '
-							<input type="button" value="' . __('Affecter', 'evarisk') . '" class="button-primary" id="duplicateModel" name="duplicateModel" />
+							' . evaDisplayInput::afficherComboBox($documentList, 'modelToDuplicate' . $tableElement . '_' . $idElement, '', 'modelToDuplicate' . $tableElement . '_' . $idElement, '', '') . '
+							<input type="button" value="' . __('Affecter', 'evarisk') . '" class="button-primary" id="duplicateModel' . $tableElement . '_' . $idElement . '" name="duplicateModel" />
 							<script type="text/javascript" >
-								digirisk("#duplicateModel").click(function(){
-									digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-										"post": "true",
-										"table": "' . TABLE_GED_DOCUMENTS . '",
-										"act": "duplicateDocument",
-										"tableElement": "' . $tableElement . '",
-										"idElement": "' . $idElement . '",
-										"idDocument": digirisk("#modelToDuplicate").val()
-									});
+								digirisk("#duplicateModel' . $tableElement . '_' . $idElement . '").click(function(){
+									var data = {
+										action: "digi_ajax_duplicate_document",
+										element_type: "' . $tableElement . '",
+										element_id: "' . $idElement . '",
+										document_to_duplicate: jQuery("#modelToDuplicate' . $tableElement . '_' . $idElement . '").val(),
+										document_type: "' . $documentType . '",
+									};
+									jQuery.post(ajaxurl, data, function(response) {
+										jQuery("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+											"post":"true",
+											"table":"' . TABLE_GED_DOCUMENTS . '",
+											"act":"load_model_combobox",
+											"tableElement": response[0],
+											"idElement": response[1],
+											"category": response[2],
+										});
+										jQuery("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+											"post":"true",
+											"table":"' . TABLE_GED_DOCUMENTS . '",
+											"act":"loadExistingDocument",
+											"tableElement": response[0],
+											"idElement": response[1],
+										});
+									}, "json");
 								});
 							</script>
 						</div>
@@ -3073,6 +3102,7 @@ class EvaDisplayDesign {
 				</ol>
 				<div style="display:table;width:70%;margin:12px auto;" ><hr style="width:35%;" class="alignleft" /><span class="alignleft" style="text-align:center;width:15%;margin:0px 12px;" >' . __('ou', 'evarisk') . '</span><hr style="width:35%;" class="alignleft" /></div>';
 		}
+
 		return $moreModelChoice;
 	}
 

@@ -631,7 +631,10 @@ ul.eva_tabs_button li label	{		padding-bottom:3px;	}
 .tabs{	display:inline; margin-left:0.4em;	}
 .ui-tabs{	padding:0px !important; }
 .ui-tabs .ui-tabs-nav{	padding:0px !important;	}
-#evaDashboard_vracStats .inside{		padding:0px !important;	}
+#evaDashboard_vracStats .inside {
+	padding: 0px !important;
+	margin: 0px !important;
+}
 /* -- END Tabs -- */
 
 
@@ -938,8 +941,8 @@ label.digi_alert {
 
 
 /* -- Document unique -- */
-#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP, #generateRS, #generatedRS, #generateFEP, #generatedFEP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
-#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected, #generatedRS.selected, #generateFEP.selected, #generatedFEP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
+#generateDUER, #generateFP, #generateFGP, #generatedDUER, #generatedFP, #generatedFGP, #generateRS, #generatedRS, #generateFEP, #generateCSV, #generatedFEP{ margin:3px 9px; padding:3px 9px; border:1px solid #DDDDDD; background-color:#E6E6E6; cursor:pointer; }
+#generateDUER.selected, #generateFP.selected, #generateFGP.selected, #generatedDUER.selected, #generatedFP.selected, #generatedFGP.selected, #generatedRS.selected, #generateFEP.selected, #generateCSV.selected, #generatedFEP.selected{ text-decoration:underline; background-color:#FFFFFF; font-weight:bold; }
 #saveWorkUnitSheetForGroupement{	margin:6px auto;	}
 #workUnitSheetCollectionModelSelector{	margin:6px;	}
 #documentModelContainer{	width:40%;	}
@@ -950,7 +953,7 @@ label.digi_alert {
 .FGPContainer{ height:100px; overflow:auto; }
 .FPContainer{ height:200px; overflow:auto; }
 .RSContainer{ height:200px; overflow:auto; }
-.FEPContainer{ height:200px; overflow:auto; }
+.FEPContainer{ height:300px; overflow:auto; }
 #divHistoriqueDocument{	height:410px !important; overflow:hidden !important;	}
 .duerDeleteContainer{	width:20px !important;	}
 .duerDeleteContainer img{	width:15px !important;	}
@@ -1033,8 +1036,26 @@ label.digi_alert {
 .ui-timepicker-div td { font-size: 90%; }
 
 /*	Tableau de bord	*/
-.digi_all_user_list{	margin:0px 25px;	}
-.digi_all_user_list li{	list-style-type:square !important;	}
+.digi_stats_user_list {
+	margin: 0px 25px;
+}
+.digi_stats_user_list li{	
+	list-style-type:square !important;
+	float: left;
+	width: 25%;
+}
+#digi_user_summary_zipfile_container {
+	height: 250px;
+	overflow: auto;
+	clear: both;
+}
+#digi_field_list_for_export {
+	float: left;
+	width: 80%;
+}
+#digi_export_csv_file {
+	margin: 15% 0;
+}
 
 /*	Documents	*/
 .associated_document_list{	width:100%; border-collapse:collapse; }
@@ -1168,3 +1189,11 @@ label.digi_alert {
 .numeroPageSousTitreSommaireDU{font-size:14px;font-weight:bold;text-align:right;width:30px;}
 .numeroPageTitreParagrapheSommaireDU{font-size:12px;font-weight:bold;text-align:right;width:30px;}
 /*	Fin du sommaire	*/
+
+
+#vracStatsContent {
+	padding: 0px !important;
+}
+
+
+

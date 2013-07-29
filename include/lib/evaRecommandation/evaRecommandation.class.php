@@ -121,7 +121,7 @@ class evaRecommandation
 	*
 	*	@return mixed $recommandationListOutput The complete output
 	*/
-	function getRecommandationListByCategory($recommandationCategoryId, $outputMode = 'pictos', $selectedRecommandation = ''){
+	function getRecommandationListByCategory($recommandationCategoryId, $outputMode = 'pictos', $selectedRecommandation = '') {
 		global $wpdb;
 		$recommandationListOutput = '';
 
@@ -493,6 +493,10 @@ class evaRecommandation
 			$recommandationAssociationOutput .= '
 		<input type="button" class="button-primary alignright" id="saveRecommandationLink" name="saveRecommandationLink" value="' . $saveRecommandationAssociationButton . '" />';
 		}
+		else if( !empty($arguments['idElement']) ) {
+			$recommandationAssociationOutput .= '
+		<button class="button-primary alignright" id="save_recommandation_for_risk" name="save_recommandation_for_risk" >' . __('Enregistrer la recommandation', 'evarisk') . '</button>';
+		}
 		$recommandationAssociationOutput .= '
 		<input type="hidden" id="recommandation_id" name="recommandation_id" value="1" />
 	</div>
@@ -524,21 +528,41 @@ class evaRecommandation
 			evarisk("#saveRecommandationLink").val("' . __('Enregistrer', 'evarisk') . '");
 		});
 
-		evarisk("#saveRecommandationLink").click(function(){
-			evarisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-			{
-				"post": "true",
-				"table": "' . TABLE_PRECONISATION . '",
-				"act": "saveRecommandationLink",
-				"recommandation_link_action": evarisk("#recommandation_link_action").val(),
-				"recommandation_link_id": evarisk("#recommandation_link_id").val(),
-				"recommandationId": evarisk("#recommandation_id").val(),
-				"recommandationEfficiency": ' . $efficacite_preconisation . ',
-				"recommandationComment": evarisk("#commentaire_preconisation").val(),
-				"preconisation_type": evarisk("#preconisation_type").val(),
-				"id_element": evarisk("#id_element_recommandation").val(),
-				"table_element": evarisk("#table_element_recommandation").val()
-			});
+		jQuery("#saveRecommandationLink, #save_recommandation_for_risk").click(function(){
+			var id_element = jQuery("#id_element_recommandation").val();
+			var table_element = jQuery("#table_element_recommandation").val();
+			if ( jQuery(this).attr("id") == "save_recommandation_for_risk" ) {
+				var id_element = jQuery("#idRisque").val();
+				var table_element = "' . TABLE_RISQUE . '";
+			}
+			var data = {
+				action: "digi_ajax_save_single_recommandation",
+				recommandation_id: jQuery("input[name=recommandation]").val(),
+				recommandation_type: jQuery("#preconisation_type").val(),
+				recommandation_comment: jQuery("#commentaire_preconisation").val(),
+				id_element: id_element,
+				table_element: table_element,
+				recommandation_efficiency: ' . $efficacite_preconisation . ',
+				recommandation_action: jQuery("#recommandation_link_action").val(),
+				recommandation_to_update: jQuery("#recommandation_link_id").val(),
+			};
+			jQuery.post(ajaxurl, data, function(response){
+				actionMessageShow(response[0], response[2]);
+				setTimeout("actionMessageHide(response[0])", "7000");
+				if ( response[1] ) {
+					if ( response[4] == "' . TABLE_RISQUE . '" ) {
+						jQuery.post(ajaxurl, {action:"digi_ajax_load_recommandation_form", id_element:response[3] , table_element:response[4]}, function(sub_response){
+							jQuery("#digi_risk_eval_" + sub_response[0] + "_" + sub_response[1] + "_reco_container").html( sub_response[2] );
+						}, "json");
+					}
+					else {
+						jQuery("#ongletAjoutPreconisation").click();
+						jQuery("#recommandation_link_action").val("add");
+						jQuery("#recommandation_link_id").val("");
+					}
+				}
+			}, "json");
+			return false;
 		});
 	});
 </script>';

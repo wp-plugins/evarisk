@@ -7,8 +7,7 @@
 * @author			Evarisk <dev@evarisk.com>
 */
 
-class evaUser
-{
+class evaUser {
 	/**
 	*	Set the current attribute group regarding the
 	*/
@@ -39,8 +38,7 @@ class evaUser
 	*
 	*	@return array $userlist An object containing the different subscriber
 	*/
-	function getCompleteUserList()
-	{
+	function getCompleteUserList() {
 		$listeComplete = array();
 
 		$listeUtilisateurs = evaUser::getUserList();
@@ -75,8 +73,7 @@ class evaUser
 	*
 	*	@return array $userlist An object containing the different subscriber
 	*/
-	function getUserInformation($userId)
-	{
+	function getUserInformation($userId) {
 		$listeComplete = array();
 
 		$user_info = get_userdata($userId);
@@ -93,6 +90,21 @@ class evaUser
 		else
 			$valeurs['user_firstname'] = '';
 
+		/**	Get user meta informations	*/
+		$user_metas = (!empty($userId) ? get_user_meta($userId) : array());
+		if ( !empty($user_metas) ) {
+			foreach ( $user_metas as $meta_key => $meta_value ) {
+				if ( $meta_key == 'digirisk_information' ) {
+					$valeurs['digirisk_information'] = unserialize( $meta_value[0] );
+				}
+				else if ( substr($meta_key, 0, 5) == 'digi_' ) {
+					$valeurs[$meta_key] = $meta_value[0];
+				}
+				else {
+					$valeurs[$meta_key] = $meta_value;
+				}
+			}
+		}
 		$listeComplete[$userId] = $valeurs;
 
 		return $listeComplete;
@@ -110,26 +122,34 @@ class evaUser
 			}
 		}
 		$_REQUEST['digirisk_user_information']['user_is_valid_for_accident'] = $user_is_valid_for_accident;
-		update_usermeta($user_id, 'digirisk_information', $_REQUEST['digirisk_user_information']);
+		update_user_meta($user_id, 'digirisk_information', $_REQUEST['digirisk_user_information']);
+
+		if ( !empty($_REQUEST['digirisk_user_information_meta']) ) {
+			foreach ( $_REQUEST['digirisk_user_information_meta'] as $meta_key => $meta_value ) {
+				update_user_meta($user_id, $meta_key, $meta_value);
+			}
+		}
 	}
+
 	/**
-	*	Add the different mandatory fields for the user in case of accident
-	*/
-	function user_additionnal_field($user, $output_type = 'normal'){
+	 *	Add the different mandatory fields for the user in case of accident
+	 */
+	function user_additionnal_field($user, $output_type = 'normal') {
 		global $optionUserGender, $optionUserNationality, $userWorkAccidentMandatoryFields;
 		$user_additionnal_field = $user_additionnal_field_alert = '';
 		$required_class = array();
 
 		/*	Get the current user meta	*/
 		$user_meta = (!empty($user)?get_user_meta($user->ID, 'digirisk_information', false):array());
+		$user_metas = (!empty($user) ? get_user_meta($user->ID) : array());
 		$user_additionnal_field_alert = '<span class="required" >' . __('L\'ensemble des champs ci-dessous sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
-		$required_class['user_imatriculation'] = $required_class['user_birthday'] = $required_class['user_gender'] = $required_class['user_nationnality'] = $required_class['user_adress'] =  $required_class['user_hiring_date'] = $required_class['user_profession'] = $required_class['user_professional_qualification'] = ' class="required" ';
+		$required_class['user_imatriculation'] = $required_class['user_birthday'] = $required_class['user_gender'] = $required_class['user_nationnality'] = $required_class['user_adress'] = $required_class['digi_hiring_date'] = $required_class['digi_unhiring_date'] = $required_class['user_profession'] = $required_class['user_professional_qualification'] = ' class="required" ';
 		$required_class['user_adress_2']=$required_class['user_insurance_ste']=' ';
+		$required_filed_empty = 0;
 		if(!empty($user_meta[0])){
-			$required_filed_empty = 0;
 			foreach($user_meta[0] as $field_identifier => $field_content){
 				$required_class[$field_identifier] = '';
-				if((trim($field_content) == '') && (in_array($field_identifier, $userWorkAccidentMandatoryFields))){
+				if ( (trim($field_content) == '') && (in_array($field_identifier, $userWorkAccidentMandatoryFields))	) {
 					if($field_identifier == 'user_imatriculation_key')
 						$field_identifier = 'user_imatriculation';
 					elseif($field_identifier == 'user_adress_2')
@@ -139,18 +159,28 @@ class evaUser
 					$required_filed_empty++;
 				}
 			}
-			if($required_filed_empty > 0)
-				$user_additionnal_field_alert = '<span class="required" >' . __('Les champs marqu&eacute;s en rouge sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
-
 		}
-		if($output_type == 'normal'){
+		if( !empty($user_metas) ) {
+			foreach( $user_metas as $meta_key => $meta_content ){
+				$required_class[$meta_key] = '';
+				if ( ( empty($meta_content) || empty($meta_content[0]) ) && in_array($meta_key, $userWorkAccidentMandatoryFields)) {
+					$required_class[$meta_key] = ' class="required" ';
+					$required_filed_empty++;
+				}
+			}
+		}
+		if ( $required_filed_empty > 0 ) {
+			$user_additionnal_field_alert = '<span class="required" >' . __('Les champs marqu&eacute;s en rouge sont obligatoire pour que l\'utilisateur soit &eacute;ligible &agrave; la d&eacute;claration d\'accident du travail', 'evarisk') . '</span>';
+		}
+
+		if ( $output_type == 'normal' ) {
 			$user_additionnal_field .= '
 <h3 id="digi_user_informations" >' . __('Informations compl&eacute;mentaires pour le logiciel Digirisk', 'digirisk') . '</h3>
 ' . $user_additionnal_field_alert;
-			if(!empty($user_meta[0]) && ($user_meta[0]['user_is_valid_for_accident'] == 'yes')){
+			if ( !empty($user_meta[0]) && ($user_meta[0]['user_is_valid_for_accident'] == 'yes')) {
 				$user_additionnal_field .= '<span class="user_is_valid_for_accident" >' . __('L\'utilisateur est &eacute;ligible &agrave; la d&eacute;claration d\'un accident du travail', 'evarisk') . '</span>';
 			}
-			elseif(!empty($user_meta[0]) && ($user_meta[0]['user_is_valid_for_accident'] == 'no')){
+			elseif ( !empty($user_meta[0]) && ($user_meta[0]['user_is_valid_for_accident'] == 'no') ) {
 				$user_additionnal_field .= '<span class="user_is_not_valid_for_accident" >' . __('L\'utilisateur n\'est pas &eacute;ligible &agrave; la d&eacute;claration d\'un accident du travail', 'evarisk') . '</span>';
 			}
 		}
@@ -189,7 +219,7 @@ $user_additionnal_field .= '
 			' .	EvaDisplayInput::createComboBox('user_nationnality', 'digirisk_user_information[user_nationnality]', $optionUserNationality, (!empty($user_meta[0])?$user_meta[0]['user_nationnality']:''), 'user_combo') . '
 		</td>
 	</tr>';
-	if($output_type == 'normal'){
+	if ( $output_type == 'normal' ) {
 		$user_additionnal_field .=
 	'<tr>
 		<th>
@@ -237,10 +267,18 @@ $user_additionnal_field .= '
 	</tr>
 	<tr>
 		<th>
-			<label for="user_hiring_date" ' . $required_class['user_hiring_date'] . ' >' . __('Date d\'embauche', 'evarisk') . '</label>
+			<label for="digi_hiring_date" ' . $required_class['digi_hiring_date'] . ' >' . __('Date d\'embauche', 'evarisk') . '</label>
 		</th>
 		<td>
-			' .	EvaDisplayInput::afficherInput('text', 'user_hiring_date', (!empty($user_meta[0])?$user_meta[0]['user_hiring_date']:''), '', null, 'digirisk_user_information[user_hiring_date]', false, false, 10, 'regular-text', 'date', '') . '
+			' .	EvaDisplayInput::afficherInput('text', 'digi_hiring_date', (!empty($user_metas) && !empty($user_metas['digi_hiring_date']) ? $user_metas['digi_hiring_date'][0] : ''), '', null, 'digirisk_user_information_meta[digi_hiring_date]', false, false, 10, 'regular-text', 'date', '') . '
+		</td>
+	</tr>
+	<tr>
+		<th>
+			<label for="digi_unhiring_date" ' . $required_class['digi_unhiring_date'] . ' >' . __('Date de sortie de la soci&eacute;t&eacute;', 'evarisk') . '</label>
+		</th>
+		<td>
+			' .	EvaDisplayInput::afficherInput('text', 'digi_unhiring_date', (!empty($user_metas) && !empty($user_metas['digi_unhiring_date']) ? $user_metas['digi_unhiring_date'][0] : ''), '', null, 'digirisk_user_information_meta[digi_unhiring_date]', false, false, 10, 'regular-text', 'date', '') . '
 		</td>
 	</tr>
 	<tr>
@@ -278,8 +316,8 @@ $user_additionnal_field .= '
 
 	$options = get_option('digirisk_options');
 	$user_extra_fields = (!empty($options['digi_users_digirisk_extra_field'])?unserialize($options['digi_users_digirisk_extra_field']):array());
-	if(is_array($user_extra_fields) && (count($user_extra_fields) > 0)){
-		foreach($user_extra_fields as $field){
+	if (is_array($user_extra_fields) && (count($user_extra_fields) > 0)) {
+		foreach ( $user_extra_fields as $field ) {
 			$user_additionnal_field .=
 	'<tr>
 		<th>
@@ -518,33 +556,420 @@ $user_additionnal_field .= '
 
 
 	/**
-	*	Return different informations about users
-	*/
-	function dashBoardStats()
-	{
+	 *	Return different informations about users
+	 */
+	function stats_builder() {
 		global $wpdb;
 
+// 		1 AS EXPORT_USER,
 		$query = $wpdb->prepare(
-			"SELECT
+				"SELECT
+
 				(
-					SELECT count(USERS.ID)
-					FROM " . $wpdb->prefix . "users AS USERS
-					WHERE USERS.ID != 1
+					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
+					FROM " . $wpdb->prefix . "users AS U
+					WHERE U.ID != 1
 				) AS TOTAL_USER,
+
 				(
-					SELECT COUNT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
+					SELECT GROUP_CONCAT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
 					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
-					WHERE ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						OR ((USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (USER_LINK_EVALUATION.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group
-							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
-							WHERE USER_LINK_GROUP.status = 'valid')))
-						AND USER_LINK_EVALUATION.status = 'valid'
-				) AS EVALUATED_USER
+					WHERE ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') OR (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
+						OR (
+							(USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "')
+							AND (USER_LINK_EVALUATION.id_element IN (
+								SELECT DISTINCT USER_LINK_GROUP.id_group
+								FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
+								WHERE USER_LINK_GROUP.status = 'valid'
+							))
+						   )
+				) AS EVALUATED_USER,
+
+				1 AS NOT_EVALUATED_USER,
+
+				(
+					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
+					FROM {$wpdb->users} AS U
+					WHERE U.ID != 1
+						AND U.ID NOT IN (
+							SELECT id_user
+							FROM " . TABLE_LIAISON_USER_ELEMENT . "
+							WHERE status = 'valid'
+						)
+				) AS NOT_AFFECTED_USER,
+
+				(
+					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
+					FROM {$wpdb->users} AS U
+						INNER JOIN {$wpdb->usermeta} AS UM ON (UM.user_id = U.ID)
+					WHERE UM.meta_key = 'digi_hiring_date'
+						AND UM.meta_value != ''
+				) AS USERS_OUT_OF_SOCIETY,
+
+				(
+					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
+					FROM {$wpdb->users} AS U
+						INNER JOIN {$wpdb->usermeta} AS UM ON (UM.user_id = U.ID)
+					WHERE UM.meta_key = 'digi_hiring_date'
+						AND UM.meta_value != ''
+						AND U.ID != 1
+						AND U.ID NOT IN (
+							SELECT id_user
+							FROM " . TABLE_LIAISON_USER_ELEMENT . "
+						)
+				) AS USERS_OUT_OF_SOCIETY_NEVER_AFFECTED,
+
+				1 AS USERS_MOUVEMENT
+
 			LIMIT 1", ""
 		);
+		$user_stats = $wpdb->get_row($query);
 
-		return $wpdb->get_row($query);
+		return $user_stats;
 	}
+	/**
+	 *
+	 */
+	function digi_ajax_stats_user() {
+		$userDashboardStats = evaUser::stats_builder();
+
+		$idTable = 'userDashBordStats';
+		$titres = array( __('Stat index', 'evarisk'), __('Statistique', 'evarisk'), __('Valeur', 'evarisk'), '');
+		if (count($userDashboardStats) > 0) {
+			$stats_counter = 1;
+			foreach ($userDashboardStats as $statName => $statValue) {
+				$action = '';
+				$id = 'undefined';
+				$number = 0;
+				switch($statName) {
+					case 'TOTAL_USER':
+						$statName = __('Nombre d\'utilisateurs total', 'evarisk');
+						$id = 'full_user_list';
+					break;
+					case 'EVALUATED_USER':
+						$statName = __('Utilisateur ayant particip&eacute; &agrave; l\'audit', 'evarisk');
+						$id = 'user_affected_to_evaluation';
+					break;
+					case 'NOT_EVALUATED_USER':
+						$statName = __('Utilisateur absent lors de l\'audit', 'evarisk');
+						$id = 'user_not_affected_to_evaluation';
+						$statValue = implode( ',',  array_diff( explode(',', $userDashboardStats->TOTAL_USER), explode(',', $userDashboardStats->EVALUATED_USER) ) );
+					break;
+					case 'NOT_AFFECTED_USER':
+						$statName = __('Utilisateur non affect&eacute;s actuellement', 'evarisk');
+						$id = 'user_not_affected_to_element';
+					break;
+					case 'USERS_OUT_OF_SOCIETY':
+						$statName = __('Personnel ayant quitt&eacute; la soci&eacute;t&eacute;', 'evarisk');
+						$id = 'user_out_of_society';
+					break;
+					case 'USERS_OUT_OF_SOCIETY_NEVER_AFFECTED':
+						$statName = __('Personnel ayant quitt&eacute; la soci&eacute;t&eacute; sans avoir &eacute;t&eacute; affect&eacute;', 'evarisk');
+						$id = 'user_out_of_society_without_affectation';
+					break;
+					case 'USERS_MOUVEMENT':
+						$statName = __('Mouvement de personnel', 'evarisk');
+						$id = 'users_mouvement';
+						$statValue = 'none';
+					break;
+
+					case 'EXPORT_USER':
+						$statName = __('Export du personnel au format csv', 'evarisk');
+						$id = 'users_export';
+						$statValue = 'none';
+					break;
+				}
+
+				if ( !empty($statValue) ) {
+					$action = '<span class="digi_stats_action_button pointer" id="' . $id . '" >' . (($id == 'users_export') ? __('Exporter la liste', 'evarisk') : __('Voir la liste', 'evarisk')) . '</span>';
+					$number = ($statValue != 'none') ? count( explode(',', $statValue) ) . '<input type="hidden" id="list2display_' . $id . '" value="' . $statValue . '" />' : '';
+				}
+
+				unset($valeurs);
+				$valeurs[] = array('value' => $stats_counter);
+				$valeurs[] = array('value' => $statName);
+				$valeurs[] = array('value' => $number);
+				$valeurs[] = array('value' => $action);
+				$lignesDeValeurs[] = $valeurs;
+				$idLignes[] = 'userDashboardStat' . $stats_counter;
+				$outputDatas = true;
+				$stats_counter++;
+			}
+		}
+		else {
+			unset($valeurs);
+			$valeurs[] = array('value'=>'');
+			$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
+			$valeurs[] = array('value'=>'');
+			$valeurs[] = array('value'=>'');
+			$lignesDeValeurs[] = $valeurs;
+			$idLignes[] = 'userDashboardStatEmpty';
+			$outputDatas = false;
+		}
+
+		$classes = array('','','', '');
+		$tableOptions = '';
+
+		if ( $outputDatas ) {
+			$script = '
+<script type="text/javascript">
+	digirisk(document).ready(function() {
+		digirisk("#' . $idTable . '").dataTable({
+			"bInfo": false,
+			"bPaginate": false,
+	        "bLengthChange": false,
+	        "bFilter": false,
+	        "bSort": false,
+			"aoColumns":	[
+				{"bVisible": false},
+				null,
+				null,
+				null,
+			]
+			' . $tableOptions . '
+		});
+		digirisk("#' . $idTable . '").children("thead").remove();
+		digirisk("#' . $idTable . '").children("tfoot").remove();
+		digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+		digirisk("#vracStatsTabs").tabs();
+
+		jQuery("#digi_stats_user_dialog").dialog({
+			autoOpen: false,
+			width: 800,
+			height: 600,
+		});
+
+		jQuery(".digi_stats_action_button").click(function(){
+			jQuery("#digi_stats_user_dialog").attr("title", "");
+			jQuery("#digi_stats_user_dialog").html( digirisk("#loadingPicContainer").html() );
+			if ( jQuery(this).attr("id") == "users_export" ) {
+				jQuery.post("' . admin_url('admin-ajax.php') . '", {action: "digi_ajax_load_field_for_export", export_type: "user",}, function(response){
+					jQuery("#digi_stats_user_dialog").html( response );
+				});
+			}
+			else {
+				var data = {
+					action: "digi_ajax_load_user_stat",
+					type: jQuery(this).attr("id"),
+					list_to_display: jQuery("#list2display_" + jQuery(this).attr("id")).val(),
+				};
+				jQuery.post("' . admin_url('admin-ajax.php') . '", data, function( response ){
+					jQuery("#digi_stats_user_dialog").dialog("option", "title", response[0]);
+					jQuery("#digi_stats_user_dialog").html( response[1] );
+				}, "json");
+			}
+			digirisk("#digi_stats_user_dialog").dialog("open");
+		});
+	});
+</script>';
+			echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script) . '<div id="digi_stats_user_dialog" title="' . __('Utilisateurs du logiciel digirisk', 'evarisk') . '" ></div>';
+		}
+		die();
+	}
+	/**
+	 *
+	 */
+	function digi_ajax_load_user_stat() {
+		global $wpdb;
+		$output = '';
+		$title = '';
+		$user_list_to_output = null;
+		$output_from_another_way = false;
+		$empty_list_message = '';
+
+		switch ( $_POST['type'] ) {
+			case 'full_user_list' :
+				$title = __('Liste des utilisateurs inscrit dans le logiciel', 'evarisk');
+				$empty_list_message = __("Il n'y a aucun utilisateur enregistr&eacute;", 'evarisk');
+			break;
+
+			case 'user_not_affected_to_evaluation' :
+				$title = __("Les utilisateurs absent lors de l'audit", 'evarisk');
+				$empty_list_message = __("Tous les utilisateurs inscrits ont particip&eacute; &agrave; l'audit", 'evarisk');
+			break;
+
+			case 'user_affected_to_evaluation' :
+				$title = __("Les utilisateurs pr&eacutesents lors de l'audit", 'evarisk');
+				$empty_list_message = __("Aucun utilisateur inscrit n'a particip&eacute; &agrave; l'audit pour le moment", 'evarisk');
+			break;
+
+			case 'user_not_affected_to_element' :
+				$title = __('Liste des utilisateurs non affect&eacute;s &agrave; un &eacute;l&eacute;ment (Groupement / unit&eacute;)', 'evarisk');
+				$empty_list_message = __("Tous les utilisateurs sont actuellement affect&eacute;s &agrave; au moins un &eacute;l&eacute;ment", 'evarisk');
+			break;
+
+			case 'user_out_of_society' :
+				$title = __('Liste des personnels ne faisant plus partie de la soci&eacute;t&eacute;', 'evarisk');
+				$empty_list_message = __("Aucun personnel n'a quitt&eacute; la soci&eacute;t&eacute; pour le moment", 'evarisk');
+			break;
+
+			case 'user_out_of_society_without_affectation' :
+				$title = __('Liste des personnels ne faisant plus partie de la soci&eacute;t&eacute; et n\'ayant jamais &eacute;t&eacute; affect&eacute; &agrave; un &eacute;l&eacute;ment', 'evarisk');
+				$empty_list_message = __("Aucun personnel n'a quitt&eacute; la soci&eacute;t&eacute; sans avoir &eacute;t&eacute; affect&eacute;", 'evarisk');
+			break;
+
+			case 'users_mouvement':
+				$title = __('Voir les mouvements du personnel entre des dates', 'wpshop');
+				$_POST['list_to_display'] = '';
+			break;
+			case 'users_export':
+				$title = __('Export de la liste du personnel au format csv', 'wpshop');
+				$_POST['list_to_display'] = '';
+			break;
+		}
+
+		/**	Display user list asked for the current interface	*/
+		$user_list_2_display = explode( ',', $_POST['list_to_display'] );
+		if ( !empty( $user_list_2_display ) && (count($user_list_2_display ) != 1) && !empty($user_list_2_display[0]) ) {
+			$output .= self::display_user_list( $user_list_2_display );
+		}
+		else if ( $_POST['type'] == 'users_mouvement' ) {
+			$from_date = '<input type="text" id="users_mouvement_between_from" name="users_mouvement_between_from" class="digi_user_mouvment_datepicker" value="" />';
+			$to_date = '<input type="text" id="users_mouvement_between_to" name="users_mouvement_between_to" class="digi_user_mouvment_datepicker" value="" />';
+			$get_mouvement_button = '<button id="view_users_mouvement_list" >' . __('Voir', 'evarisk') . '</button>';
+			$output .= sprintf( __('Mouvements des personnels entre les dates du %s au %s %s', 'evarisk'), $from_date, $to_date, $get_mouvement_button ) . '
+<div id="digi_users_mouvment_betwwen_dates" ></div>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery(".digi_user_mouvment_datepicker").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: "yy-mm-dd",
+		});
+		jQuery("#view_users_mouvement_list").click(function(){
+			var data = {
+				action: "digi_ajax_load_user_stat_mouvement_between_dates",
+				date_from: jQuery("#users_mouvement_between_from").val(),
+				date_to: jQuery("#users_mouvement_between_to").val(),
+			};
+			jQuery.post("' . admin_url( 'admin-ajax.php' ) . '", data, function(response) {
+				jQuery("#digi_users_mouvment_betwwen_dates").html( response);
+			});
+		});
+	});
+</script>';
+		}
+		else if ( $_POST['type'] == 'users_export' ) {
+
+		}
+		else if ( !$output_from_another_way ) {
+			$output = $empty_list_message;
+		}
+
+		echo json_encode( array($title, $output) );
+		die();
+	}
+
+	function display_user_list( $user_list_2_display ) {
+		$done_users = array();
+		$output =  '
+<ul class="digi_stats_user_list" >';
+		foreach ( $user_list_2_display as $user_id ) {
+			if ( !in_array( $user_id, $done_users ) ) {
+				$user_info = evaUser::getUserInformation( $user_id );
+				$output .= '
+	<li><a href="' . admin_url('users.php?page=digirisk_users_profil&amp;user_to_edit=' . $user_id) . '" target="digi_user_profil" >' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_firstname'] . '</a></li>';
+				$done_users[] = $user_id;
+			}
+		}
+		$output .= '
+</ul>';
+
+		return $output;
+	}
+
+	function digi_ajax_mouvement_between_dates() {
+		global $wpdb;
+		$output = '';
+
+		$query = $wpdb->prepare("
+			SELECT user_id
+			FROM " . $wpdb->usermeta . '
+			WHERE
+				meta_key = "%1$s"
+				AND (meta_value BETWEEN "%2$s" AND "%3$s")
+				AND user_id NOT IN (
+					SELECT user_id
+					FROM wp_usermeta
+					WHERE
+						meta_key = "%4$s"
+						AND (meta_value BETWEEN "%2$s" AND "%3$s")
+				)'
+			, 'digi_hiring_date', $_POST['date_from'], $_POST['date_to'], 'digi_unhiring_date');
+		$user_list = $wpdb->get_results( $query );
+		$output .= '<fieldset style="margin:36px 0 0 0;" ><legend>' . __('Personnel entrant', 'evarisk') . '</legend>';
+		if ( !empty($user_list) ) {
+			$user_list_2_display = array();
+			foreach ( $user_list as $user ) {
+				$user_list_2_display[] = $user->user_id;
+			}
+			$output .= self::display_user_list( $user_list_2_display );
+		}
+		else {
+			$output .= __("Aucun utilisateur entrant uniquement sur cette p&eacute;riode", 'evarisk');
+		}
+		$output .= '</fieldset>';
+
+		$query = $wpdb->prepare("
+			SELECT user_id
+			FROM " . $wpdb->usermeta . '
+			WHERE
+				meta_key = "%1$s"
+				AND (meta_value BETWEEN "%2$s" AND "%3$s")
+				AND user_id NOT IN (
+					SELECT user_id
+					FROM wp_usermeta
+					WHERE
+						meta_key = "%4$s"
+						AND (meta_value BETWEEN "%2$s" AND "%3$s")
+				)'
+			, 'digi_unhiring_date', $_POST['date_from'], $_POST['date_to'], 'digi_hiring_date');
+		$user_list = $wpdb->get_results( $query );
+		$output .= '<fieldset style="margin:36px 0 0 0;" ><legend>' . __('Personnel entrant', 'evarisk') . '</legend>';
+		if ( !empty($user_list) ) {
+			$user_list_2_display = array();
+			foreach ( $user_list as $user ) {
+				$user_list_2_display[] = $user->user_id;
+			}
+			$output .= self::display_user_list( $user_list_2_display );
+		}
+		else {
+			$output .= __("Aucun utilisateur sortant uniquement sur cette p&eacute;riode", 'evarisk');
+		}
+		$output .= '</fieldset>';
+
+		$query = $wpdb->prepare("
+			SELECT user_id
+			FROM " . $wpdb->usermeta . '
+			WHERE
+				meta_key = "%1$s"
+				AND (meta_value BETWEEN "%2$s" AND "%3$s")
+				AND user_id IN (
+					SELECT user_id
+					FROM wp_usermeta
+					WHERE
+						meta_key = "%4$s"
+						AND (meta_value BETWEEN "%2$s" AND "%3$s")
+				)'
+				, 'digi_unhiring_date', $_POST['date_from'], $_POST['date_to'], 'digi_hiring_date');
+		$user_list = $wpdb->get_results( $query );
+		$output .= '<fieldset style="margin:36px 0 0 0;" ><legend>' . __('Personnel entrant et sortant sur la p&eacute;riode', 'evarisk') . '</legend>';
+		if ( !empty($user_list) ) {
+			$user_list_2_display = array();
+			foreach ( $user_list as $user ) {
+				$user_list_2_display[] = $user->user_id;
+			}
+			$output .= self::display_user_list( $user_list_2_display );
+		}
+		else {
+			$output .= __("Aucun utilisateur entrant et sortant sur cette p&eacute;riode", 'evarisk');
+		}
+		$output .= '</fieldset>';
+
+		echo $output;
+		die();
+	}
+
 
 	/**
 	*
@@ -667,10 +1092,11 @@ $user_additionnal_field .= '
 								$user_import['user_adress_2'] = $userInfosComponent[12];
 								$user_import['user_adress_postal_code'] = $userInfosComponent[13];
 								$user_import['user_adress_city'] = $userInfosComponent[14];
-								$user_import['user_hiring_date'] = $userInfosComponent[15];
+// 								$user_import['digi_hiring_date'] = $userInfosComponent[15];
 								$user_import['user_profession'] = $userInfosComponent[16];
 								$user_import['user_professional_qualification'] = $userInfosComponent[17];
 								$user_import['user_insurance_ste'] = $userInfosComponent[18];
+// 								$user_import['digi_unhiring_date'] = $userInfosComponent[19];
 
 								global $userWorkAccidentMandatoryFields;
 								$user_is_valid_for_accident = 'yes';
@@ -680,7 +1106,9 @@ $user_additionnal_field .= '
 								}
 								$user_import['user_is_valid_for_accident'] = $user_is_valid_for_accident;
 
-								update_usermeta($newUserID, 'digirisk_information', $user_import);
+								update_user_meta($newUserID, 'digirisk_information', $user_import);
+								update_user_meta($newUserID, 'digi_hiring_date', $userInfosComponent[15]);
+								update_user_meta($newUserID, 'digi_unhiring_date', $userInfosComponent[19]);
 
 								if($sendUserMail != '')
 									wp_new_user_notification($newUserID, $userInfosComponent[3]);
@@ -796,14 +1224,15 @@ $user_additionnal_field .= '
 				user_adress_2 = digirisk('#user_adress_2').val();
 				user_adress_postal_code = digirisk('#user_adress_postal_code').val();
 				user_adress_city = digirisk('#user_adress_city').val();
-				user_hiring_date = digirisk('#user_hiring_date').val();
+				digi_hiring_date = digirisk('#digi_hiring_date').val();
+				digi_unhiring_date = digirisk('#digi_unhiring_date').val();
 				user_profession = digirisk('#user_profession').val();
 				user_professional_qualification = digirisk('#user_professional_qualification').val();
 				user_insurance_ste = digirisk('#user_insurance_ste').val();
 
 				newline = identifiant + digirisk('#fieldSeparator').val() + prenom + digirisk('#fieldSeparator').val() + nom + digirisk('#fieldSeparator').val() + motDePasse + digirisk('#fieldSeparator').val() + emailUtilisateur + digirisk('#fieldSeparator').val() + roleUtilisateur;
 
-				newline += digirisk('#fieldSeparator').val() + user_imatriculation + digirisk('#fieldSeparator').val() + user_imatriculation_key + digirisk('#fieldSeparator').val() + user_birthday + digirisk('#fieldSeparator').val() + user_gender + digirisk('#fieldSeparator').val() + user_nationnality + digirisk('#fieldSeparator').val() + user_adress_1 + digirisk('#fieldSeparator').val() + user_adress_2 + digirisk('#fieldSeparator').val() + user_adress_postal_code + digirisk('#fieldSeparator').val() + user_adress_city + digirisk('#fieldSeparator').val() + user_hiring_date + digirisk('#fieldSeparator').val() + user_profession + digirisk('#fieldSeparator').val() + user_professional_qualification + digirisk('#fieldSeparator').val() + user_insurance_ste;
+				newline += digirisk('#fieldSeparator').val() + user_imatriculation + digirisk('#fieldSeparator').val() + user_imatriculation_key + digirisk('#fieldSeparator').val() + user_birthday + digirisk('#fieldSeparator').val() + user_gender + digirisk('#fieldSeparator').val() + user_nationnality + digirisk('#fieldSeparator').val() + user_adress_1 + digirisk('#fieldSeparator').val() + user_adress_2 + digirisk('#fieldSeparator').val() + user_adress_postal_code + digirisk('#fieldSeparator').val() + user_adress_city + digirisk('#fieldSeparator').val() + digi_hiring_date + digirisk('#fieldSeparator').val() + user_profession + digirisk('#fieldSeparator').val() + user_professional_qualification + digirisk('#fieldSeparator').val() + user_insurance_ste + digirisk('#fieldSeparator').val() + digi_unhiring_date;
 
 				if(digirisk('#userLinesToCreate').val() != ''){
 					newline = '\r\n' + newline;
@@ -823,7 +1252,8 @@ $user_additionnal_field .= '
 				digirisk('#user_adress_2').val("");
 				digirisk('#user_adress_postal_code').val("");
 				digirisk('#user_adress_city').val("");
-				digirisk('#user_hiring_date').val("");
+				digirisk('#digi_hiring_date').val("");
+				digirisk('#digi_unhiring_date').val("");
 				digirisk('#user_profession').val("");
 				digirisk('#user_professional_qualification').val("");
 				digirisk('#user_insurance_ste').val("");
@@ -1329,8 +1759,16 @@ $user_additionnal_field .= '
 								<div class="clear bold" >
 									' . __('G&eacute;n&eacute;rer les fiches de p&eacute;nibilit&eacute; pour toutes les affectations de l\'utilisateur', 'evarisk') . '
 								</div>
-								<br class="clear" /><button class="digi_generate_FEP" id="digi_generate_FEP_for_all_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
-								<div class="clear FEPContainer" id="digi_generate_FEP_for_all_-digi-_' . $user_to_edit . '_container" >' . eva_GroupSheet::getGroupSheetCollectionHistory('USER', $user_to_edit, 'fiches_de_penibilite', ELEMENT_IDENTIFIER_GFEP) . '</div>
+								<br class="clear" />
+								<div>
+									<input type="checkbox" id="modelDefaut_' . DIGI_DBT_USER . '_-digi-_all" checked="checked" name="modelUse" class="choose_model" value="modeleDefaut" />
+									<label for="modelDefaut_' . DIGI_DBT_USER . '_-digi-_all" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+								</div>
+								<div id="modelListForGeneration_' . DIGI_DBT_USER . '_-digi-_all" class="digirisk_hide alignleft" ></div>
+								<div id="documentUniqueResultContainer_' . DIGI_DBT_USER . '_-digi-_all" class="alignleft" ></div>
+								<br class="clear" />
+								<button class="digi_generate_FEP" id="digi_generate_FEP_' . DIGI_DBT_USER . '_-digi-_all_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
+								<div class="clear FEPContainer" id="digi_generate_FEP_' . DIGI_DBT_USER . '_-digi-_all_-digi-_' . $user_to_edit . '_container" >' . eva_GroupSheet::getGroupSheetCollectionHistory('USER', $user_to_edit, 'fiche_exposition_penibilite', ELEMENT_IDENTIFIER_GFEP) . '</div>
 							</div>';
 
 				foreach ( $element_list as $table_element => $list_of_element ) {
@@ -1344,7 +1782,15 @@ $user_additionnal_field .= '
 										<div class="clear bold" >
 											<img src="' . DEFAULT_GROUP_PICTO . '" alt="' . __('Groupements', 'evarisk') . '" class="alignleft middleAlign user_affectation_picto" /><span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_GP . $id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-node' . $id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>
 										</div>
-										<br class="clear" /><button class="digi_generate_FEP" id="digi_generate_FEP_' . TABLE_GROUPEMENT . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element) . '_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
+										<br class="clear" />
+										<div>
+											<input type="checkbox" id="modelDefaut_' . TABLE_GROUPEMENT . '_-digi-_' . $id_element . '" checked="checked" name="modelUse" class="choose_model" value="modeleDefaut" />
+											<label for="modelDefaut_' . TABLE_GROUPEMENT . '_-digi-_' . $id_element . '" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+										</div>
+										<div id="modelListForGeneration_' . TABLE_GROUPEMENT . '_-digi-_' . $id_element . '" class="digirisk_hide alignleft" ></div>
+										<div id="documentUniqueResultContainer_' . TABLE_GROUPEMENT . '_-digi-_' . $id_element . '" class="alignleft" ></div>
+										<br class="clear" />
+										<button class="digi_generate_FEP" id="digi_generate_FEP_' . TABLE_GROUPEMENT . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element) . '_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
 										<div class="clear FEPContainer" id="digi_generate_FEP_' . TABLE_GROUPEMENT . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element) . '_-digi-_' . $user_to_edit . '_container" >' . eva_gestionDoc::getGeneratedDocument(TABLE_GROUPEMENT, str_replace(ELEMENT_IDENTIFIER_GP, '', $id_element), 'list', '', 'fiche_exposition_penibilite', $user_to_edit) . '</div>
 									</div>';
 								break;
@@ -1354,19 +1800,26 @@ $user_additionnal_field .= '
 										<div class="clear bold" >
 											<img src="' . DEFAULT_WORKING_UNIT_PICTO . '" alt="' . __('Unit&eacute; de travail', 'evarisk') . '" class="alignleft middleAlign user_affectation_picto" /><span class="alignleft digi_opener" >' . ELEMENT_IDENTIFIER_UT . $id_element . '&nbsp;-&nbsp;' . $element->nom . '</span><span class="user_element_view_container" ><a href="' . admin_url('admin.php?page=digirisk_risk_evaluation&elt=edit-leaf' . $id_element) . '" target="view_user_associated_element" class="ui-icon user_element_view" title="' . __('Voir l\'&eacute;l&eacute;ment', 'evarisk') . '" >&nbsp;</a></span>
 										</div>
-										<br class="clear" /><button class="digi_generate_FEP" id="digi_generate_FEP_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element) . '_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
+										<br class="clear" />
+										<div>
+											<input type="checkbox" id="modelDefaut_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . $id_element . '" checked="checked" name="modelUse" class="choose_model" value="modeleDefaut" />
+											<label for="modelDefaut_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . $id_element . '" style="vertical-align:middle;" >' . __('Utiliser le mod&egrave;le par d&eacute;faut', 'evarisk') . '</label>
+										</div>
+										<div id="modelListForGeneration_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . $id_element . '" class="digirisk_hide alignleft" ></div>
+										<div id="documentUniqueResultContainer_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . $id_element . '" class="alignleft" ></div>
+										<br class="clear" />
+										<button class="digi_generate_FEP" id="digi_generate_FEP_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element) . '_-digi-_' . $user_to_edit . '" >' . __('G&eacute;n&eacute;rer', 'evarisk') . '</button>
 										<div class="clear FEPContainer" id="digi_generate_FEP_' . TABLE_UNITE_TRAVAIL . '_-digi-_' . str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element) . '_-digi-_' . $user_to_edit . '_container" >' . eva_gestionDoc::getGeneratedDocument(TABLE_UNITE_TRAVAIL, str_replace(ELEMENT_IDENTIFIER_UT, '', $id_element), 'list', '', 'fiche_exposition_penibilite', $user_to_edit) . '</div>
 									</div>';
 								break;
 						}
-
 					}
 				}
 			}
 		}
 
-	/*	Start output building	*/
-		/*	Add a field allowing user to change user for edition	*/
+	/**	Start output building	*/
+		/**	Add a field allowing user to change user for edition	*/
 		$user_profil_content .= '
 <div class="clear user_selector" >
 	<span class="searchUserInput ui-icon" >&nbsp;</span>
@@ -1374,7 +1827,7 @@ $user_additionnal_field .= '
 	<div id="complete_user_list" class="digirisk_hide completeUserList clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection(DIGI_DBT_USER, $user_to_edit) . '</div>
 </div>';
 
-		/*	Add the different component of output	*/
+		/**	Add the different component of output	*/
 		$user_profil_content .= '
 <div id="user_profil_edition_tabs" class="eva_tabs clear" >
 	<ul >
@@ -1392,6 +1845,24 @@ $user_additionnal_field .= '
 </div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
+		jQuery(".choose_model").click(function(){
+			var current_element = jQuery(this).attr("id").replace("modelDefaut_", "");
+			var current_element_spec = current_element.split("_-digi-_");
+			setTimeout(function(){
+				if(!jQuery("#modelDefaut_" + current_element).is(":checked")){
+					jQuery("#documentUniqueResultContainer_" + current_element).html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
+					jQuery("#documentUniqueResultContainer_" + current_element).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement": current_element_spec[0] + "_FEP", "idElement": current_element_spec[1]});
+					jQuery("#modelListForGeneration_" + current_element).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement": current_element_spec[0] + "_FEP", "idElement": current_element_spec[1], "category":"fiche_exposition_penibilite", "selection":""});
+					jQuery("#modelListForGeneration_" + current_element).show();
+				}
+				else{
+					jQuery("#documentUniqueResultContainer_" + current_element).html("");
+					jQuery("#modelListForGeneration_" + current_element).html("");
+					jQuery("#modelListForGeneration_" + current_element).hide();
+				}
+			},600);
+		});
+
 		/*	Create tabs for different profil element	*/
 		jQuery("#user_profil_edition_tabs").tabs();
 
@@ -1435,12 +1906,14 @@ $user_additionnal_field .= '
 		});
 
 		jQuery(".digi_generate_FEP").click(function(){
+			var current_element_specs = jQuery(this).attr("id").replace("digi_generate_FEP_", "").split("_-digi-_");
 			digirisk("#" + jQuery(this).attr("id") + "_container").html(jQuery("#loadingImg").html());
 			digirisk("#" + jQuery(this).attr("id") + "_container").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true",
 				"table":"' . TABLE_GED_DOCUMENTS . '",
 				"act":"save_fiche_penibilite_specific_user",
 				"element_infos": jQuery(this).attr("id").replace("digi_generate_FEP_", ""),
+				"id_model": jQuery("#modelListForGeneration_" + current_element_specs[0] + "_-digi-_" + current_element_specs[1] + " #modelToUse" + current_element_specs[0] + "_FEP").val(),
 			});
 		});
 	});

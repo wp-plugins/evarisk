@@ -96,7 +96,7 @@ class Risque {
 		return $scoreRisque;
 	}
 
-	function getEquivalenceEtalon($idMethode, $score, $date=null){
+	function getEquivalenceEtalon($idMethode, $score, $date=null) {
 		global $wpdb;
 
 		if($date==null){
@@ -122,10 +122,10 @@ class Risque {
 				AND tableEquivalenceEtalon2.id_valeur_etalon < tableEquivalenceEtalon1.id_valeur_etalon
 			)");
 
-		return !empty($resultat->equivalenceEtalon) ? $resultat->equivalenceEtalon : '';
+		return !empty($resultat->equivalenceEtalon) ? $resultat->equivalenceEtalon : '0';
 	}
 
-	function getSeuil($quotation){
+	function getSeuil($quotation) {
 		global $wpdb;
 
 		$quotation = digirisk_tools::IsValid_Variable($quotation);
@@ -147,7 +147,7 @@ class Risque {
 			ORDER BY tableValeurEtalon1.niveauSeuil DESC
 			LIMIT 1"
 		);
-		$niveauSeuil=(!empty($resultat->niveauSeuil)?(int)$resultat->niveauSeuil:0);
+		$niveauSeuil = !empty($resultat->niveauSeuil) ? (int)$resultat->niveauSeuil : 0;
 		return $niveauSeuil;
 	}
 
@@ -195,7 +195,7 @@ class Risque {
 		return $resultat;
 	}
 
-	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC', $evaluation_status = "'Valid'"){
+	function getRisques($nomTableElement = 'all', $idTableElement = 'all', $status='all', $where = '1', $order='tableRisque.id ASC', $evaluation_status = "'Valid'") {
 		global $wpdb;
 		$where = digirisk_tools::IsValid_Variable($where);
 		$order = digirisk_tools::IsValid_Variable($order);
@@ -393,8 +393,8 @@ class Risque {
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function getTableQuotationRisque($tableElement, $idElement, $unique_id = '', $option = ''){
 		switch($tableElement)
 		{
@@ -482,16 +482,16 @@ class Risque {
 	}
 
 	/**
-	*	Get a table with information about a given risk level
-	*
-	*	@param string $tableElement The element tye we want to get information about
-	*	@param integer $idElement The element identifier we want to get information about
-	*	@param object $actionCorrective The correctiv action we want to output for the given element
-	*	@param mixed $idDiv An unique id allowing to spot the good container for action
-	*	@param array $association_time An array containing the different moment we want to get correctiv action information
-	*
-	*	@return string The html output with information about risk level
-	*/
+	 *	Get a table with information about a given risk level
+	 *
+	 *	@param string $tableElement The element tye we want to get information about
+	 *	@param integer $idElement The element identifier we want to get information about
+	 *	@param object $actionCorrective The correctiv action we want to output for the given element
+	 *	@param mixed $idDiv An unique id allowing to spot the good container for action
+	 *	@param array $association_time An array containing the different moment we want to get correctiv action information
+	 *
+	 *	@return string The html output with information about risk level
+	 */
 	function get_risk_level_summary_by_moment($tableElement, $idElement, $actionCorrective, $idDiv, $association_time = array()){
 		unset($titres, $classes, $idLignes, $lignesDeValeurs);
 		$idLignes = null;
@@ -594,8 +594,8 @@ class Risque {
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function getRisqueAssociePhoto($idPicture){
 		global $wpdb;
 		$output = '';
@@ -662,8 +662,8 @@ class Risque {
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function getRisqueNonAssociePhoto($tableElement, $idElement) {
 		global $wpdb;
 		$output = '';
@@ -768,6 +768,77 @@ class Risque {
 		);
 
 		return $wpdb->get_row($query);
+	}
+
+	function digi_ajax_risk_stats() {
+		$userDashboardStats = (array) Risque::dashBoardStats();
+		$userDashboardStats = array_merge($userDashboardStats, Risque::getRiskRange('higher'));
+
+		$idTable = 'riskDashBordStats';
+		$titres = array( __('Stat index', 'evarisk'), __('Statistique', 'evarisk'), __('Valeur', 'evarisk') );
+		if ( count($userDashboardStats) > 0 ) {
+			foreach($userDashboardStats as $statName => $statValue) {
+				switch($statName) {
+					case 'TOTAL_RISK_NUMBER':
+						$statId = 1;
+						$statName = __('Nombre total de risque', 'evarisk');
+					break;
+					case 'HIGHER_RISK':
+						$statId = 2;
+						$statName = __('Quotation la plus &eacute;lev&eacute;e', 'evarisk');
+					break;
+					case 'LOWER_RISK':
+						$statId = 3;
+						$statName = __('Quotation la plus basse', 'evarisk');
+					break;
+				}
+				unset($valeurs);
+				$valeurs[] = array('value' => $statId);
+				$valeurs[] = array('value' => $statName);
+				$valeurs[] = array('value' => $statValue);
+				$lignesDeValeurs[] = $valeurs;
+				$idLignes[] = 'riskDashboardStat' . $statId;
+				$outputDatas = true;
+			}
+		}
+		else {
+			unset($valeurs);
+			$valeurs[] = array('value'=>'');
+			$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
+			$valeurs[] = array('value'=>'');
+			$lignesDeValeurs[] = $valeurs;
+			$idLignes[] = 'riskDashboardStatEmpty';
+			$outputDatas = false;
+		}
+
+		$classes = array('','','');
+		$tableOptions = '';
+
+		if ( $outputDatas ) {
+			$script =
+'<script type="text/javascript">
+	digirisk(document).ready(function() {
+		digirisk("#' . $idTable . '").dataTable({
+			"bInfo": false,
+			"bPaginate": false,
+	        "bLengthChange": false,
+	        "bFilter": false,
+	        "bSort": false,
+			"aoColumns":	[
+				{"bVisible": false},
+				null,
+				null
+			]
+			' . $tableOptions . '
+		});
+		digirisk("#' . $idTable . '").children("thead").remove();
+		digirisk("#' . $idTable . '").children("tfoot").remove();
+		digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
+	});
+</script>';
+			echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
+		}
+		die();
 	}
 /*	END OF RISK STAT	*/
 

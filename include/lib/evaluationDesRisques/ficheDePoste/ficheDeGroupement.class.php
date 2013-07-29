@@ -73,7 +73,7 @@ class eva_GroupSheet
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
 		$groupInformations = EvaGroupement::getGroupement($idElement);
-		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $groupInformations->nom));
+		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . sanitize_title(str_replace(' ', '_', $groupInformations->nom));
 		$groupementPere = EvaGroupement::getGroupement($groupInformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
@@ -230,18 +230,14 @@ class eva_GroupSheet
 		$output = '';
 
 		$list_FicheDePoste_du_Groupement = eva_gestionDoc::getDocumentList($tableElement, $idElement, $doc_type, "dateCreation DESC");
-		if(count($list_FicheDePoste_du_Groupement) > 0)
-		{
-			foreach($list_FicheDePoste_du_Groupement as $fdpGpt)
-			{
-				if(is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom))
-				{
+		if (count($list_FicheDePoste_du_Groupement) > 0) {
+			foreach($list_FicheDePoste_du_Groupement as $fdpGpt) {
+				if (is_file(EVA_GENERATED_DOC_DIR . $fdpGpt->chemin . $fdpGpt->nom)) {
 					$output .= '-&nbsp;' . sprintf(__('G&eacute;n&eacute;r&eacute; le %s: (%s) <a href="%s" >%s</a>', 'evarisk'), mysql2date('d M Y', $fdpGpt->dateCreation, true), $element_identifier . $fdpGpt->id, EVA_GENERATED_DOC_URL . $fdpGpt->chemin . $fdpGpt->nom, $fdpGpt->nom) . '<br/>';
 				}
 			}
 		}
-		else
-		{
+		else {
 			$output .= __('Aucune fiche n\'a &eacute;t&eacute; cr&eacute;e pour le moment', 'evarisk');
 		}
 

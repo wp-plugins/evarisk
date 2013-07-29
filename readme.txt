@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 3.5.1
-Stable tag: 5.1.6.9
+Stable tag: 5.1.7.0
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,22 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.7.0 =
+
+Am&eacute;liorations
+
+* ST421 - Impression des fiches de p&eacute;nibilit&eacute; pour tout un groupement ou une unit&eacute; de travail (G&eacute;n&eacute;ration d'un fichier zip)
+* ST422 - Gestion des mod&egrave;les de fiches de p&eacute;nibilit&eacute;
+* ST423 - Possibilit&eacute;s d'ajouter une action corrective, une pr&eacute;conisation sur un risque sans avoir a enregistrer tout le risque (Cette op&eacute;ration est possible uniquement &agrave; l'&eacute;dition d'un risque pas &agrave; la cr&eacute;ation)
+
+Corrections
+
+* ST424 - Impression du poste occup&eacute; dans la fiche de p&eacute;nibilit&eacute;
+* ST425 - Affichage des cotations &eacute;gales &agrave; 0
+* ST426 - Affichage des dates dans les commentaires
+* ST429 - R&eacute;initialisation de l'arbre des t&acirc;ches (Lors de la r&eacute;initialisation la "tache racine" n'&eacute;tait pas recalcul&eacute;e et l'arbre ne s'affichait pas correctement)
+* ST430 - Mauvaise affectation des t&acirc;ches lors de l'ajout d'une actions correctives depuis un risque
 
 = Version 5.1.6.9 =
 

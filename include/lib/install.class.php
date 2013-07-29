@@ -10,10 +10,10 @@
 */
 
 /**
-* Define the different methods to install digirisk plugin
-* @package Digirisk
-* @subpackage librairies
-*/
+ * Define the different methods to install digirisk plugin
+ * @package Digirisk
+ * @subpackage librairies
+ */
 class digirisk_install	{
 
 	/**
@@ -1175,7 +1175,37 @@ class digirisk_install	{
 				$options['digi_ac_task_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
 				$options['digi_ac_activity_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
 				update_option('digirisk_options', $options);
-				break;
+			break;
+
+			case 83:
+				/**	Store Hiring and unHirring date for users in other way to get fast request	*/
+				$query = $wpdb->prepare( "SELECT U.ID FROM " . $wpdb->users . " AS U" );
+				$users = $wpdb->get_results( $query );
+				if ( !empty($users) ) {
+					foreach ( $users as $user) {
+						$do_update = false;
+						$user_meta = get_user_meta( $user->ID, 'digirisk_information', true);
+						if ( !empty($user_meta) && !empty($user_meta['digi_hiring_date']) ) {
+							update_user_meta( $user->ID, 'digi_hiring_date', $user_meta['digi_hiring_date']);
+							unset( $user_meta['digi_hiring_date'] );
+							$do_update = true;
+						}
+						if ( !empty($user_meta) && !empty($user_meta['digi_unhiring_date']) ) {
+							update_user_meta( $user->ID, 'digi_unhiring_date', $user_meta['digi_unhiring_date']);
+							unset( $user_meta['digi_unhiring_date'] );
+							$do_update = true;
+						}
+						if ( $do_update ) {
+							update_user_meta( $user->ID, 'digirisk_information', $user_meta);
+						}
+					}
+				}
+			break;
+
+			case 84:
+				$wpdb->update( TABLE_GED_DOCUMENTS, array('categorie' => 'fiche_exposition_penibilite'), array('categorie' => 'fiches_de_penibilite') );
+				$wpdb->update( TABLE_FP, array('document_type' => 'fiche_exposition_penibilite'), array('document_type' => 'fiches_de_penibilite') );
+			break;
 		}
 	}
 

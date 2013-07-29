@@ -3,7 +3,7 @@
 Plugin Name: Evarisk
 Plugin URI: http://www.evarisk.com/document-unique-logiciel
 Description: Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises et g&eacute;rer toutes les donn&eacute;es li&eacute;es &agrave; la s&eacute;curit&eacute; de votre personnel.
-Version: 5.1.6.9
+Version: 5.1.7.0
 Author: Evarisk
 Author URI: http://www.evarisk.com
 */
@@ -17,9 +17,8 @@ Author URI: http://www.evarisk.com
 * @version 5.0
 * @package Digirisk
 */
-ini_set('display_errors', true);
 
-DEFINE('EVA_PLUGIN_VERSION', '5.1.6.9');
+DEFINE('EVA_PLUGIN_VERSION', '5.1.7.0');
 
 /**
 *	First thing we define the main directory for our plugin in a super global var

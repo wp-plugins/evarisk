@@ -132,7 +132,6 @@ class Arborescence {
 	  */
 	static function deplacerElements($table, $racine, $elementFils, $elementDestination) {
 		global $wpdb;
-
 		unset($tableauElements);
 		$limiteGauche = $elementFils->limiteGauche;
 		$limiteDroite = $elementFils->limiteDroite;
@@ -147,10 +146,10 @@ class Arborescence {
 		// $limiteDroite majore les limites de l'�l�ment fils et de ses descendants
 		$decrement = $limiteDroite + 1;
 		// Tout �l�ment dont les limites sont comprises entre $limiteGauche et $limiteDroite est soit  l'�l�ment fils, soit un de ses descendants
-		$elements = Arborescence::getByLimites($table, $limiteGauche,$limiteDroite);
+		$elements = Arborescence::getByLimites($table, $limiteGauche, $limiteDroite);
 		// Pour chaque �l�ment, on d�duit le decrement de ses limites
 		foreach($elements as $element) {
-			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche  - $decrement ) . "', `limiteDroite`= '" . ($element->limiteDroite - $decrement ) . "' WHERE`id` = '" . $element->id . "'";
+			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche  - $decrement ) . "', `limiteDroite`= '" . ($element->limiteDroite - $decrement ) . "' WHERE `id` = '" . $element->id . "' AND nom != 'Tache Racine'";
 			$wpdb->query($sql);
 		}
 
@@ -234,8 +233,7 @@ class Arborescence {
 		// On r�cup�re l'�l�ment fils et ses descendants
 		$elements = Arborescence::getByLimites($table, ($limiteGauche - $decrement ), ($limiteDroite - $decrement ));
 		$ecartAuNouvelEmplacement = ($limiteDroiteDestination - ($limiteDroite - $decrement ) + $ecart - 1);
-		foreach($elements as $element)
-		{
+		foreach ($elements as $element) {
 			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche + $ecartAuNouvelEmplacement) . "', `limiteDroite`= '" . ($element->limiteDroite + $ecartAuNouvelEmplacement) . "' WHERE`id` = '" . $element->id . "'";
 			$wpdb->query($sql);
 		}

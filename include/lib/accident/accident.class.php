@@ -955,6 +955,7 @@ class digirisk_accident
 	function get_victim_accident_informations($id_user, $accident = null){
 		global $optionYesNoList;
 		$user_meta = get_user_meta($id_user, 'digirisk_information', false);
+		$user_metas = get_user_meta($id_user);
 		if(is_array($user_meta[0]) && (count($user_meta[0]) > 0) && ($user_meta[0]['user_is_valid_for_accident'] == 'yes')){
 			$user_main_info = evaUser::getUserInformation($id_user);
 			foreach($user_meta[0] as $field_identifier => $field_content){
@@ -995,7 +996,7 @@ class digirisk_accident
 		<td class="bold" colspan="4" >&nbsp;</td>
 	</tr>
 	<tr>
-		<td class="bold" colspan="2" >' . __('Date d\'embauche', 'evarisk') . '</td><td colspan="2" >' . mysql2date('d M Y', $user_meta[0]['user_hiring_date'], true) . '</td>
+		<td class="bold" colspan="2" >' . __('Date d\'embauche', 'evarisk') . '</td><td colspan="2" >' . (!empty($user_metas) && (!empty($user_metas['digi_hiring_date'][0])) ? mysql2date('d M Y', $user_metas['digi_hiring_date'][0], true) : '' ) . '</td>
 	</tr>
 	<tr>
 		<td class="bold" colspan="2" >' . __('Profession', 'evarisk') . '</td><td colspan="2" >' . $user_meta[0]['user_profession'] . '</td>

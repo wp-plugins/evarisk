@@ -7,9 +7,7 @@
 * @author			Evarisk <contact@evarisk.com>
 */
 
-class evaUserLinkElement
-{
-
+class evaUserLinkElement {
 	/**
 	*	Output a table with the different users binded to an element
 	*

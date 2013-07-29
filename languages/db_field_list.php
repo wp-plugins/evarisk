@@ -235,7 +235,7 @@ __('user_gender', 'evarisk');
 __('user_nationnality', 'evarisk');
 __('user_adress', 'evarisk');
 __('user_adress_2', 'evarisk');
-__('user_hiring_date', 'evarisk');
+__('digi_hiring_date', 'evarisk');
 __('user_profession', 'evarisk');
 __('user_professional_qualification', 'evarisk');
 }

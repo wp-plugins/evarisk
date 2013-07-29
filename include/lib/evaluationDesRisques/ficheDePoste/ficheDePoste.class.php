@@ -5,8 +5,7 @@
  * @version v5.0
  */
 
-class eva_WorkUnitSheet
-{
+class eva_WorkUnitSheet {
 
 	/**
 	*	Return the form template for generating a work unit sheet
@@ -59,7 +58,7 @@ class eva_WorkUnitSheet
 		$formulaireDocumentUniqueParams['#DATEFORM1#'] = date('Y-m-d');
 
 		$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
-		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $idElement . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $workUnitinformations->nom));
+		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $idElement . '_' . sanitize_title(str_replace(' ', '_', $workUnitinformations->nom));
 		$groupementPere = EvaGroupement::getGroupement($workUnitinformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
@@ -78,8 +77,9 @@ class eva_WorkUnitSheet
 
 		$modelChoice = '';
 		$lastWorkUnitSheet = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_poste');
-		if(($lastWorkUnitSheet->id_model != '') && ($lastWorkUnitSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_poste')))
-		{
+		$model_id = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
+		if(!empty($lastWorkUnitSheet) && is_object($lastWorkUnitSheet) && !empty($lastWorkUnitSheet->id_model) && ($lastWorkUnitSheet->id_model != $default_model_id)) {
+			$model_id = $lastWorkUnitSheet->id_model;
 			$modelChoice = '
 			setTimeout(function(){
 				digirisk("#FPmodelDefaut").click();
@@ -90,8 +90,7 @@ class eva_WorkUnitSheet
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		digirisk("#genererFP").click(function(){
-			digirisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
-			{
+			digirisk("#divImpressionFicheDePoste").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 				"post":"true",
 				"table":"' . TABLE_FP . '",
 				"act":"saveFichePoste",
@@ -109,7 +108,7 @@ class eva_WorkUnitSheet
 				if(!digirisk("#FPmodelDefaut").is(":checked")){
 					digirisk("#workUnitSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 					digirisk("#workUnitSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '"});
-					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":"' . $lastWorkUnitSheet->id_model . '"});
+					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":"' . $idElement . '", "category":"fiche_de_poste", "selection":"' . $model_id . '"});
 					digirisk("#modelListForGeneration").show();
 				}
 				else{

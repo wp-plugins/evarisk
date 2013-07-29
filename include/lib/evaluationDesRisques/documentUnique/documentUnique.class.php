@@ -548,7 +548,10 @@ class eva_documentUnique {
 			else if ($outPut == 'massUpdater') {
 				$lignesDeValeurs = eva_documentUnique::listRisk($tableElement, $idElement, $outPut);
 				if($typeBilan == 'ligne') {
-					foreach($lignesDeValeurs as $ligne_key => $ligne){$idLignes[$ligne_key] = $ligne[1]['value'];}
+					$idLignes = array();
+					foreach($lignesDeValeurs as $ligne_key => $ligne){
+						$idLignes[$ligne_key] = $ligne[1]['value'];
+					}
 
 					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;
 					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
@@ -1084,6 +1087,9 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 	*	@return mixed $output An html code with the generated output
 	*/
 	function getBoxBilan($tableElement, $idElement) {
+
+// 		<div class="alignleft" id="generateCSV" >' . __('Exporter un r&eacute;sum&eacute; en csv', 'evarisk') . '</div>
+
 		$output = '
 <div class="clear" id="summaryDocumentGeneratorSlector" >
 	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
@@ -1162,6 +1168,19 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 				"act":"ficheDePenibiliteGeneration",
 				"tableElement":"' . $tableElement . '",
 				"idElement":"' . $idElement . '"
+			});
+		});
+		digirisk("#generateCSV").click(function(){
+			digirisk("#summaryDocumentGeneratorSlector div").each(function(){
+				digirisk(this).removeClass("selected");
+			});
+			digirisk(this).addClass("selected");
+			digirisk("#bilanBoxContainer").html(digirisk("#loadingImg").html());
+			digirisk("#bilanBoxContainer").load("' . admin_url('admin-ajax.php') . '", {
+				"action": "digi_ajax_load_field_for_export",
+				"export_type": "tree_element",
+				"tableElement":"' . $tableElement . '",
+				"idElement":"' . $idElement . '",
 			});
 		});
 </script>';

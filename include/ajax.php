@@ -1055,99 +1055,6 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					}
 					break;
 
-					case 'loadNames':{
-						$output = '';
-						$complete_user_list = evaUser::getCompleteUserList();
-						if(count($complete_user_list) > 0){
-							$output .=  sprintf(__('Tous les utilisateurs (%s) :', 'evarisk'), count($complete_user_list)) . '
-<ul class="digi_all_user_list" >';
-							foreach($complete_user_list as $user_id => $user_info){
-								$output .= '
-	<li>' . $user_info['user_lastname'] . ' ' . $user_info['user_firstname'] . '</li>';
-							}
-							$output .= '
-</ul>';
-
-							//Requete n�2 : Tous les participants � l'audit
-							$query = $wpdb->prepare("
-SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
-FROM " . $wpdb->usermeta . " AS META_1
-	INNER JOIN " . $wpdb->usermeta . " AS META_2 ON (META_2.user_id = META_1.user_id)
-	INNER JOIN " . TABLE_LIAISON_USER_ELEMENT . " AS LINK ON ((LINK.id_user = META_1.user_id) AND (((LINK.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group
-							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
-							WHERE USER_LINK_GROUP.status = 'valid')))))
-WHERE META_1.meta_key = 'last_name'
-	AND META_2.meta_key = 'first_name'
-	AND META_1.user_id <> 1
-	AND LINK.status = 'valid'
-GROUP BY META_1.user_id , NOM ,  PRENOM", "");
-							$users = $wpdb->get_results($query);
-							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute pr&eacutesents &agrave l\'audit (%s) :', 'evarisk'), count($users));
-							if(count($users) > 0){
-								$output .= '
-<ul class="digi_all_user_list" >';
-								foreach($users as $user ){
-									$output .=  '
-	<li>' . $user->NOM . ' ' . $user->PRENOM . '</li>';
-								}
-								$output .= '
-</ul>';
-							}
-							else{
-								$output .= '<br/>' . __('Aucun utilisateur inscrit n\'a particip&eacute; &agrave; l\'audit pour le moment', 'evarisk');
-							}
-
-							//Requete n�3 : Tous les absents � l'audit
-							$query = $wpdb->prepare("
-SELECT META_1.meta_value AS NOM, META_2.meta_value AS PRENOM
-FROM " . $wpdb->prefix . "usermeta AS META_1
-	INNER JOIN " . $wpdb->prefix . "usermeta AS META_2 ON (META_2.user_id = META_1.user_id)
-WHERE META_1.meta_key = 'last_name'
-	AND META_2.meta_key = 'first_name'
-	AND META_1.user_id <> 1
-	AND META_1.user_id NOT IN (
-		SELECT LINK.id_user
-		FROM " . TABLE_LIAISON_USER_ELEMENT . " AS LINK
-		WHERE ((LINK.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') || (LINK.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
-						OR ((LINK.table_element = '" . DIGI_DBT_USER_GROUP . "') &&  (LINK.id_element IN (SELECT DISTINCT USER_LINK_GROUP.id_group
-							FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
-							WHERE USER_LINK_GROUP.status = 'valid'))) AND LINK.status = 'valid'
-	)
-GROUP BY META_1.user_id , NOM ,  PRENOM", "");
-							$users = $wpdb->get_results($query);
-							$output .= '<br><br>' . sprintf(__('Les utilisateurs ayant &eacutet&eacute absents &agrave l\'audit (%s) :', 'evarisk'), count($users));
-							if(count($users) > 0){
-								$output .= '
-<ul class="digi_all_user_list" >';
-								foreach($users as $user){
-									$output .=  '
-	<li>' . $user->NOM . ' ' . $user->PRENOM . '</li>';
-								}
-								$output .= '
-</ul>';
-							}
-							else{
-								$output .= '<br/>' . __('Tous les utilisateurs ont particip&eacute;s &agrave; l\'audit', 'evarisk');
-							}
-						}
-						else{
-							$output .= __('Il n\'y a aucun utilisateur enregistr&eacute;', 'evarisk');
-						}
-
-						$output .= '<br><br><input id="returnStats" name="returnStats" type="button" value="' . __('Retour aux statistiques', 'evarisk') . '" />
-<script type="text/javascript">
-	digirisk(document).ready(function(){
-		digirisk("#returnStats").click(function(){
-			digirisk("#namesUpdater").dialog("close");
-		});
-	});
-</script>';
-
-					echo $output;
-				}
-				break;
-
 					case 'loadAssociatedTask':
 					{
 						$id_risque = (!empty($_REQUEST['idRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['idRisque']):'');
@@ -1304,20 +1211,18 @@ GROUP BY META_1.user_id , NOM ,  PRENOM", "");
 					}
 					break;
 
-					case 'reload_risk_cotation': {
+					case 'reload_risk_cotation':
 						$score_risque = digirisk_tools::IsValid_Variable($_POST['score_risque']);
 						$date = digirisk_tools::IsValid_Variable($_REQUEST['date']);
 						$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode']);
 						$niveauSeuil = digirisk_tools::IsValid_Variable($_REQUEST['niveauSeuil']);
 
 						$quotation = Risque::getEquivalenceEtalon($idMethode, $score_risque, $date);
-						$seuil = Risque::getSeuil($quotation);
+						$seuil = (int)Risque::getSeuil($quotation);
 						echo $quotation . '<script type="text/javascript" >digirisk(document).ready(function(){	jQuery("#niveau_seuil_courant").val("' . $seuil . '"); jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '"); jQuery(".qr_risk").addClass("Seuil_' . $seuil . '");	});</script>';
-					}
 					break;
 
 					case 'load_quote_validation':
-					{
 						$risque = Risque::getRisque($_REQUEST['idProvenance']);
 						$vars = array();
 						foreach($_REQUEST['vars'] as $var){
@@ -1349,7 +1254,6 @@ GROUP BY META_1.user_id , NOM ,  PRENOM", "");
 </script>';
 
 						echo $output;
-					}
 					break;
 
 					case 'copy_risk':{
@@ -3379,8 +3283,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				$output='';
 				$tableElement = $_REQUEST['tableElement'];
 				$idElement = $_REQUEST['idElement'];
-				switch($_REQUEST['act'])
-				{
+				switch ($_REQUEST['act']) {
 					case 'generateSummary' :
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
@@ -3390,13 +3293,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 
-						/* 	<div class="alignleft" id="generatedFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div> */
 						$output .= '
 <div class="clear" id="summaryGeneratedDocumentSlector" >
 	<div class="alignleft selected" id="generatedDUER" >' . __('Document unique', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
 </div>';
 
 						/*	Start "document unique" part	*/
@@ -3453,11 +3356,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo evaDisplayDesign::getNewModelUploadForm($tableElement, $idElement);
 					break;
 					case 'workSheetUnitCollectionGenerationForm':
-					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo eva_WorkUnitSheet::getWorkUnitSheetCollectionGenerationForm($tableElement, $idElement);
-					}
 					break;
 					case 'riskListingGeneration':
 						$tableElement = $_REQUEST['tableElement'];
@@ -3470,14 +3371,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo eva_gestionDoc::get_form_penibilite_generation($tableElement, $idElement);
 					break;
 					case 'documentUniqueGenerationForm':
-					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo eva_documentUnique::formulaireGenerationDocumentUnique($tableElement, $idElement);
-					}
 					break;
 					case 'reGenerateDUER':
-					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						$idDocument = $_REQUEST['idDocument'];
@@ -3493,10 +3391,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	})(digirisk)
 </script>';
 						}
-					}
 					break;
 					case 'deleteDUER':
-					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						$idDocument = $_REQUEST['idDocument'];
@@ -3513,14 +3409,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	})(digirisk)
 </script>';
 						}
-					}
 					break;
 					case 'groupementSheetGeneration':
-					{
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						echo eva_GroupSheet::getGroupSheetGenerationForm($tableElement, $idElement);
-					}
 					break;
 				}
 				break;
@@ -3550,14 +3443,15 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 
-						$output .= '
+						$output = '
 <div class="clear" id="summaryGeneratedDocumentSlector" >
 	<div class="alignleft selected" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
 </div>
 <div id="generatedFPContainer" class="generatedDocContainer" ><div class="clear bold" >' . __('Fiches de poste', 'evarisk') . '</div><div class="DUERContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_de_poste') . '</div></div>
-<div class="hide generatedDocContainer" id="generatedRSContainer" ><div class="clear bold" >' . __('Fiches de synth&egrave;se des risques', 'evarisk') . '</div>
-<div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'listing_des_risques') . '</div></div>
+<div class="hide generatedDocContainer" id="generatedRSContainer" ><div class="clear bold" >' . __('Fiches de synth&egrave;se des risques', 'evarisk') . '</div><div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'listing_des_risques') . '</div></div>
+<div class="hide generatedDocContainer" id="generatedFEPContainer" ><div class="clear bold" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div><div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_exposition_penibilite') . '</div></div>
 <div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
 <script type="text/javascript" >
 	digirisk("#summaryGeneratedDocumentSlector div").click(function(){
@@ -3600,7 +3494,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 							$_POST['tableElement'] = $workUnit['table'];
 							$_POST['idElement'] = $workUnit['id'];
-							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $workUnit['id'] . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', str_replace('/', '_', sanitize_title($workUnit['nom']))));
+							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_UT . $workUnit['id'] . '_' . sanitize_title(str_replace(' ', '_', str_replace('/', '_', sanitize_title($workUnit['nom']))));
 							$_POST['nomEntreprise'] = $groupementParent->nom;
 
 							include(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
@@ -3687,7 +3581,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$_POST['tableElement'] = $group['table'];
 							$_POST['idElement'] = $group['id'];
-							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $group['id'] . '_' . digirisk_tools::slugify_noaccent(str_replace(' ', '_', $group['nom']));
+							$_POST['nomDuDocument'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $group['id'] . '_' . sanitize_title(str_replace(' ', '_', $group['nom']));
 							$_POST['nomEntreprise'] = $groupementParent->nom;
 
 							$_POST['description'] = $groupementParent->description;
@@ -3743,26 +3637,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				}
 			break;
 			case TABLE_GED_DOCUMENTS:
-				$tableElement = $_REQUEST['tableElement'];
-				$idElement = $_REQUEST['idElement'];
+				$tableElement = !empty($_REQUEST['tableElement']) ? $_REQUEST['tableElement'] : '';
+				$idElement = !empty($_REQUEST['idElement']) ? $_REQUEST['idElement'] : '';
 				switch ($_REQUEST['act']) {
-					case 'save_fiche_penibilite':
-						eva_gestionDoc::generate_fiche_penibilite($tableElement, $idElement);
-
-						$table_message_to_update = TABLE_DUER;
-						if( $table_element == TABLE_UNITE_TRAVAIL ){
-							$table_message_to_update = TABLE_FP;
-						}
-						$messageInfo = '
-			<script type="text/javascript">
-				digirisk(document).ready(function(){
-					digirisk("#subTabSelector").val("FEP");
-					digirisk("#ongletHistoriqueDocument").click();
-				});
-			</script>';
-
-						echo $messageInfo;
-					break;
 					case 'reload_fiche_penibilite_container':
 							$table_element = !empty($_REQUEST['table_element']) ? $_REQUEST['table_element'] : '';
 							$id_element = !empty($_REQUEST['id_element']) ? $_REQUEST['id_element'] : '';
@@ -3773,31 +3650,31 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$element = !empty($_REQUEST['element_infos']) ? $_REQUEST['element_infos'] : '';
 						if ( !empty($element) ) {
 							$elements = explode('_-digi-_', $element);
-							if ( (count($elements) == 2) && ($elements[0] == 'for_all') ) {
+							if ( (count($elements) == 3) && ($elements[0] == DIGI_DBT_USER) && ($elements[1] == 'all') ) {
 								$query = $wpdb->prepare(
 									"SELECT *
 									FROM " . TABLE_LIAISON_USER_ELEMENT . "
 									WHERE id_user = %d
 										AND table_element IN ('" . TABLE_GROUPEMENT . "','" . TABLE_UNITE_TRAVAIL . "')
 										AND status IN ('valid', 'moderated', 'deleted')"
-										, $elements[1]
+										, $elements[2]
 								);
 								$user_affected_elements = $wpdb->get_results($query);
 								if ( !empty($user_affected_elements) ) {
 									$file_to_zip = array();
-									$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeRisques/' . $elements[1] . '/';
+									$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeRisques/' . $elements[2] . '/';
 									$element_to_use = array();
 									$reload_script = '';
 									foreach ( $user_affected_elements as $element ) {
 										$element_to_use[$element->table_element][$element->id_element][] = $element;
 										$reload_script .= '
-												jQuery("#digi_generate_FEP_' . $element->table_element . '_-digi-_' . $element->id_element . '_-digi-_' . $elements[1] . '_container").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+												jQuery("#digi_generate_FEP_' . $element->table_element . '_-digi-_' . $element->id_element . '_-digi-_' . $elements[2] . '_container").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
 													"post" : "true",
 													"table" : "' . TABLE_GED_DOCUMENTS . '",
 													"act" : "reload_fiche_penibilite_container",
 													"table_element" : "' . $element->table_element . '",
 													"id_element" : "' . $element->id_element . '",
-													"id_user" : "' . $elements[1] . '",
+													"id_user" : "' . $elements[2] . '",
 												});';
 									}
 									if ( !empty($element_to_use) ) {
@@ -3805,7 +3682,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											foreach ( $table_element_details as $id_element => $element_details) {
 												$last_file = eva_gestionDoc::generate_fiche_penibilite($table_element, $id_element, $element_details);
 
-												if ( is_file($last_file['path']) ) {
+												if ( !empty($last_file['path']) && is_file($last_file['path']) ) {
 													$file_to_zip[] = $last_file['path'];
 												}
 											}
@@ -3820,7 +3697,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										$archive = new eva_Zip($zipFileName);
 										$archive->setFiles($file_to_zip);
 										$archive->compressToPath($pathToZip);
-										$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiches_de_penibilite', 'USER', $elements[1], str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
+										$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiche_exposition_penibilite', 'USER', $elements[2], str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
 										if ($saveWorkSheetUnitStatus == 'error') {
 											$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches de p&eacute;nibilit&eacute; pour ce groupement', 'evarisk');
 										}
@@ -3830,7 +3707,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									}
 								}
 
-								echo eva_GroupSheet::getGroupSheetCollectionHistory('USER', $elements[1], 'fiches_de_penibilite', ELEMENT_IDENTIFIER_GFEP);
+								echo eva_GroupSheet::getGroupSheetCollectionHistory('USER', $elements[2], 'fiche_exposition_penibilite', ELEMENT_IDENTIFIER_GFEP);
 								if ( !empty($reload_script) ) {
 									echo '<script type="text/javascript" >digirisk(document).ready(function(){' . $reload_script . '});</script>';
 								}
@@ -3886,7 +3763,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			</script>';
 
 						echo $messageInfo;
-						break;
+					break;
 					case 'delete_document':
 						global $current_user;
 						$delete_result = $wpdb->update(TABLE_GED_DOCUMENTS, array('status' => 'deleted', 'dateSuppression' => current_time('mysql', 0), 'idSuppresseur' => $current_user->ID), array('id' => $_REQUEST['idDocument']));
@@ -3923,26 +3800,20 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						echo $document_list;
 					break;
 					case 'load_model_combobox':
+						$script = '';
 						$category = $_REQUEST['category'];
 						$selection = (isset($_REQUEST['selection']) && ($_REQUEST['selection'] != '') && ($_REQUEST['selection'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['selection']) : '';
 						$documentList = eva_gestionDoc::getDocumentList($tableElement, $idElement, $category, "dateCreation DESC");
-						if(count($documentList) > 0)
-						{
+						if (count($documentList) > 0) {
 							$modelList = evaDisplayInput::afficherComboBox($documentList, 'modelToUse' . $tableElement . '', '', 'modelToUse' . $tableElement . '', '', $selection);
-							if($selection != '')
-							{
+							if ( $selection != '' ) {
 								$script = '<script type="text/javascript" >digirisk("#modelToUse' . $tableElement . '").val("' . $selection . '")</script>';
 							}
 						}
-						else
-						{
+						else {
 							$modelList = '<span style="color:#FF0000;" >' . __('Aucun mod&eacute;le &agrave; pr&eacute;senter', 'evarisk') . '</span>';
 						}
 						echo '<div style="margin:12px 24px;" class="bold" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="modelToUse" style="width:15px;" />' . __('Mod&egrave;le &agrave; utiliser', 'evarisk') . '<br/>' . $modelList . $script . '</div>';
-					break;
-					case 'duplicateDocument':
-						$idDocument = $_REQUEST['idDocument'];
-						eva_gestionDoc::duplicateDocument($tableElement, $idElement, $idDocument);
 					break;
 					case 'loadExistingDocument':
 						echo EvaDisplayDesign::getExistingModelList($tableElement, $idElement);
@@ -4098,68 +3969,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 </script>';
 					}
 					break;
+
 					case 'loadRecomandationOfCategory':
-					{
 						$outputMode = (isset($_REQUEST['outputMode']) && ($_REQUEST['outputMode'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['outputMode']) : 'pictos';
 						$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '';
 						echo evaRecommandation::getRecommandationListByCategory($id_categorie_preconisation, $outputMode);
-					}
 					break;
 
-					case 'saveRecommandationLink':
-					{
-						$id = (isset($_REQUEST['recommandationId']) && ($_REQUEST['recommandationId'] != '') && ($_REQUEST['recommandationId'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandationId']) : '';
-						$recommandationEfficiency = (isset($_REQUEST['recommandationEfficiency']) && ($_REQUEST['recommandationEfficiency'] != '') && ($_REQUEST['recommandationEfficiency'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandationEfficiency']) : '0';
-						$recommandationComment = (isset($_REQUEST['recommandationComment']) && ($_REQUEST['recommandationComment'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandationComment']) : '';
-						$id_element = (isset($_REQUEST['id_element']) && ($_REQUEST['id_element'] != '') && ($_REQUEST['id_element'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_element']) : '';
-						$table_element = (isset($_REQUEST['table_element']) && ($_REQUEST['table_element'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['table_element']) : '';
-						$preconisation_type = (isset($_REQUEST['preconisation_type']) && ($_REQUEST['preconisation_type'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['preconisation_type']) : '';
-
-						$recommandation_link_action = (isset($_REQUEST['recommandation_link_action']) && ($_REQUEST['recommandation_link_action'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandation_link_action']) : '';
-						$recommandation_link_id = (isset($_REQUEST['recommandation_link_id']) && ($_REQUEST['recommandation_link_id'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandation_link_id']) : '';
-
-						$recommandationsinformations = array();
-						$recommandationsinformations['id_preconisation'] = $id;
-						$recommandationsinformations['efficacite'] = $recommandationEfficiency;
-						$recommandationsinformations['commentaire'] = $recommandationComment;
-						$recommandationsinformations['preconisation_type'] = $preconisation_type;
-
-						if($recommandation_link_action == 'update')
-						{
-							$recommandationsinformations['date_update_affectation'] = current_time('mysql', 0);
-							$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandationsinformations, $recommandation_link_id);
-						}
-						else
-						{
-							$recommandationsinformations['id_element'] = $id_element;
-							$recommandationsinformations['table_element'] = $table_element;
-							$recommandationsinformations['status'] = 'valid';
-							$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
-							$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
-						}
-
-						$moreRecommandationScript = '';
-						if($recommandationActionResult == 'error')
-						{
-							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
-						}
-						else
-						{
-							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
-							$moreRecommandationScript = '
-	digirisk("#ongletAjoutPreconisation").click();
-	digirisk("#recommandation_link_action").val("add");
-	digirisk("#recommandation_link_id").val("");';
-						}
-
-						echo '
-<script type="text/javascript" >
-	actionMessageShow("#message' . TABLE_PRECONISATION . '-' . $table_element . '", "' . $recommandationActionMessage . '");
-	setTimeout(\'actionMessageHide("#message' . TABLE_PRECONISATION . '-' . $table_element . '")\', \'7000\');
-' . $moreRecommandationScript . '
-</script>';
-					}
-					break;
 					case 'deleteRecommandationLink':
 					{
 						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id']) : '';
@@ -6053,19 +5869,18 @@ switch($tableProvenance)
 				$groupements = $wpdb->get_results($query);
 				$limiteGauche = 1;
 				$limiteDroite = 2;
-				foreach($groupements as $groupement){
+				foreach ($groupements as $groupement) {
 					$wpdb->update(TABLE_TACHE, array('limiteGauche' => $limiteGauche, 'limiteDroite' => $limiteDroite), array('id' => $groupement->id));
-					$limiteGauche=$limiteDroite+1;
-					$limiteDroite=$limiteGauche+1;
+					$limiteGauche = $limiteDroite+1;
+					$limiteDroite = $limiteGauche+1;
 				}
-				$wpdb->update(TABLE_TACHE, array('limiteDroite' => $limiteDroite), array('nom' => 'Groupement Racine'));
+				$wpdb->update(TABLE_TACHE, array('limiteDroite' => $limiteGauche), array('nom' => 'Tache Racine'));
 				echo json_encode(array(true,''));
 			break;
 
 			case "ficheAction" :
 			case "demandeAction" :
 			case "control_asked_action" :
-			{
 				$idElement = ($_REQUEST['nom'] == 'control_asked_action') ? $_REQUEST['idElement'] : null;
 				$output = '
 <div id="current_risk_summary" class="current_risk_summary_task" >
@@ -6081,7 +5896,6 @@ switch($tableProvenance)
 </script>';
 
 				echo $output;
-			}
 			break;
 
 			case 'histo-risk':
@@ -6210,11 +6024,10 @@ switch($tableProvenance)
 			break;
 
 			case "suiviAction" :
-			{
 				$risques = array();
 				$riskList = Risque::getRisque($_REQUEST['idProvenance']);
-				if($riskList != null){
-					foreach($riskList as $risque){
+				if ( $riskList != null ) {
+					foreach ( $riskList as $risque ) {
 						$risques[$risque->id][] = $risque;
 					}
 				}
@@ -6225,7 +6038,6 @@ switch($tableProvenance)
 	<script type="text/javascript">
 		digirisk("#pic_line' . ELEMENT_IDENTIFIER_R . $_REQUEST['idProvenance'] . '").click();
 	</script>';
-			}
 			break;
 			case "loadPictureAC":
 			{
@@ -6807,9 +6619,6 @@ else{
 							break;
 					}
 					break;
-				case 'reloadScriptDD':
-					echo EvaDisplayDesign::getScriptDragAndDrop($_REQUEST['idTable'], $_REQUEST['nom'], $_REQUEST['divDeChargement']);
-					break;
 			}
 			break;
 		case TABLE_TACHE:
@@ -6826,9 +6635,6 @@ else{
 							break;
 					}
 					break;
-				case 'reloadScriptDD':
-					echo EvaDisplayDesign::getScriptDragAndDrop($_REQUEST['idTable'], $_REQUEST['nom'], $_REQUEST['divDeChargement']);
-					break;
 			}
 			break;
 		case TABLE_GROUPE_QUESTION:
@@ -6838,216 +6644,18 @@ else{
 					$_REQUEST['idGroupeQuestion'] = $_REQUEST['id'];
 					$_REQUEST['act'] = $_REQUEST['act'];
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/groupeQuestionPersistance.php');
+				break;
 			}
 			break;
 		case TABLE_QUESTION:
-			switch($_REQUEST['act'])
-			{
+			switch($_REQUEST['act']) {
 				case 'delete':
 					$_REQUEST['idQuestion'] = $_REQUEST['id'];
 					$_REQUEST['idGroupeQuestions'] = $_REQUEST['idPere'];
 					$_REQUEST['act'] = $_REQUEST['act'];
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'veilleReglementaire/questionPersistance.php');
+				break;
 			}
 			break;
-		case 'dashboardStats':
-		{
-			switch($_REQUEST['tab'])
-			{
-				case 'user':
-				{
-					$userDashboardStats = evaUser::dashBoardStats();
-
-					$idTable = 'userDashBordStats';
-					$titres = array( __('Stat index', 'evarisk'), __('Statistique', 'evarisk'), __('Valeur', 'evarisk') );
-					if(count($userDashboardStats) > 0)
-					{
-						foreach($userDashboardStats as $statName => $statValue)
-						{
-							switch($statName)
-							{
-								case 'TOTAL_USER':
-								{
-									$statId = 1;
-									$statName = __('Nombre d\'utilisateurs total', 'evarisk');
-								}
-								break;
-								case 'EVALUATED_USER':
-								{
-									$statId = 2;
-									$statName = __('Utilisateur ayant particip&eacute; &agrave; l\'audit', 'evarisk');
-								}
-								break;
-							}
-							unset($valeurs);
-							$valeurs[] = array('value' => $statId);
-							$valeurs[] = array('value' => $statName);
-							$valeurs[] = array('value' => $statValue);
-							$lignesDeValeurs[] = $valeurs;
-							$idLignes[] = 'userDashboardStat' . $statId;
-							$outputDatas = true;
-						}
-					}
-					else
-					{
-						unset($valeurs);
-						$valeurs[] = array('value'=>'');
-						$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
-						$valeurs[] = array('value'=>'');
-						$lignesDeValeurs[] = $valeurs;
-						$idLignes[] = 'userDashboardStatEmpty';
-						$outputDatas = false;
-					}
-
-					$classes = array('','','');
-					$tableOptions = '';
-
-					if($outputDatas)
-					{
-						$script =
-						'<script type="text/javascript">
-							digirisk(document).ready(function() {
-								digirisk("#' . $idTable . '").dataTable({
-									"bInfo": false,
-									"oLanguage": {
-										"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
-										"sEmptyTable": "' . __('Aucune statistique trouv&eacute;e', 'evarisk') . '",
-										"sLengthMenu": "' . __('Afficher _MENU_ statistiques', 'evarisk') . '",
-										"sInfoEmpty": "' . __('Aucune statistique', 'evarisk') . '",
-										"sZeroRecords": "' . __('Aucune statistique trouv&eacute;e', 'evarisk') . '",
-										"oPaginate": {
-											"sFirst": "' . __('Premi&eacute;re', 'evarisk') . '",
-											"sLast": "' . __('Derni&egrave;re', 'evarisk') . '",
-											"sNext": "' . __('Suivante', 'evarisk') . '",
-											"sPrevious": "' . __('Pr&eacute;c&eacute;dente', 'evarisk') . '"
-										}
-									},
-									"aoColumns":	[
-										{"bVisible": false},
-										null,
-										null
-									]
-									' . $tableOptions . '
-								});
-								digirisk("#' . $idTable . '").children("tfoot").remove();
-								digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
-								digirisk("#vracStatsTabs").tabs();
-								digirisk("#vracStatsTabs input").click(function(){
-									digirisk("#namesUpdater").html(digirisk("#loadingPicContainer").html());
-										digirisk("#namesUpdater").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-											"post":"true",
-											"table":"' . TABLE_RISQUE . '",
-											"act":"loadNames"
-										});
-									digirisk("#namesUpdater").dialog({
-										height:400,
-										width:400
-									});
-								});
-							});
-						</script>';
-						echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
-						echo '<br><input id="showNames" name="showNames" type="button" value=" ' . __('Liste des utilisateurs', 'evarisk') . ' "/>';
-					}
-				}
-				break;
-				case 'risk':
-				{
-					$userDashboardStats = (array) Risque::dashBoardStats();
-					$userDashboardStats = array_merge($userDashboardStats, Risque::getRiskRange('higher'));
-
-					$idTable = 'riskDashBordStats';
-					$titres = array( __('Stat index', 'evarisk'), __('Statistique', 'evarisk'), __('Valeur', 'evarisk') );
-					if(count($userDashboardStats) > 0)
-					{
-						foreach($userDashboardStats as $statName => $statValue)
-						{
-							switch($statName)
-							{
-								case 'TOTAL_RISK_NUMBER':
-								{
-									$statId = 1;
-									$statName = __('Nombre total de risque', 'evarisk');
-								}
-								break;
-								case 'HIGHER_RISK':
-								{
-									$statId = 2;
-									$statName = __('Quotation la plus &eacute;lev&eacute;e', 'evarisk');
-								}
-								break;
-								case 'LOWER_RISK':
-								{
-									$statId = 3;
-									$statName = __('Quotation la plus basse', 'evarisk');
-								}
-								break;
-							}
-							unset($valeurs);
-							$valeurs[] = array('value' => $statId);
-							$valeurs[] = array('value' => $statName);
-							$valeurs[] = array('value' => $statValue);
-							$lignesDeValeurs[] = $valeurs;
-							$idLignes[] = 'riskDashboardStat' . $statId;
-							$outputDatas = true;
-						}
-					}
-					else
-					{
-						unset($valeurs);
-						$valeurs[] = array('value'=>'');
-						$valeurs[] = array('value'=>__('Aucun r&eacute;sultat trouv&eacute;', 'evarisk'));
-						$valeurs[] = array('value'=>'');
-						$lignesDeValeurs[] = $valeurs;
-						$idLignes[] = 'riskDashboardStatEmpty';
-						$outputDatas = false;
-					}
-
-					$classes = array('','','');
-					$tableOptions = '';
-
-					if($outputDatas)
-					{
-						$script =
-						'<script type="text/javascript">
-							digirisk(document).ready(function() {
-								digirisk("#' . $idTable . '").dataTable({
-									"bInfo": false,
-									"oLanguage": {
-										"sSearch": "<span class=\'ui-icon searchDataTableIcon\' >&nbsp;</span>",
-										"sEmptyTable": "' . __('Aucun risque trouv&eacute;e', 'evarisk') . '",
-										"sLengthMenu": "' . __('Afficher _MENU_ risques', 'evarisk') . '",
-										"sInfoEmpty": "' . __('Aucune risque', 'evarisk') . '",
-										"sZeroRecords": "' . __('Aucune risque trouv&eacute;e', 'evarisk') . '",
-										"oPaginate": {
-											"sFirst": "' . __('Premi&eacute;re', 'evarisk') . '",
-											"sLast": "' . __('Derni&egrave;re', 'evarisk') . '",
-											"sNext": "' . __('Suivante', 'evarisk') . '",
-											"sPrevious": "' . __('Pr&eacute;c&eacute;dente', 'evarisk') . '"
-										}
-									},
-									"aoColumns":	[
-										{"bVisible": false},
-										null,
-										null
-									]
-									' . $tableOptions . '
-								});
-								digirisk("#' . $idTable . '").children("tfoot").remove();
-								digirisk("#' . $idTable . '_wrapper").removeClass("dataTables_wrapper");
-							});
-						</script>';
-						echo evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $script);
-					}
-				}
-				break;
-				case 'danger':
-				{
-					echo __('Disponible prochainement', 'evarisk');
-				}
-				break;
-			}
-		}
-		break;
 	}
 }

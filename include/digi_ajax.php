@@ -90,6 +90,7 @@ function digi_ajax_save_activite_follow() {
 	}
 
 	$text_response = '';
+	$activity_current_progression_status = $activite_status_output = '';
 	switch ( $_POST['tableElement'] ) {
 		case TABLE_ACTIVITE :
 			$activity_follow_up_list = suivi_activite::getSuiviActivite($_POST['tableElement'], $_POST['idElement'], 'follow_up');
@@ -423,7 +424,6 @@ function digi_ajax_save_correctiv_actions_task() {
 }
 add_action('wp_ajax_digi_ajax_save_correctiv_actions_task', 'digi_ajax_save_correctiv_actions_task');
 
-
 /**
  *
  *
@@ -437,4 +437,187 @@ function digi_ajax_reload_unassociated_risk_to_pics() {
 }
 add_action('wp_ajax_digi_ajax_reload_unassociated_risk_to_pics', 'digi_ajax_reload_unassociated_risk_to_pics');
 
+/**
+ *
+ *	Dashboard Stats
+ *
+ */
+function digi_ajax_load_field_for_export() {
+	$output = '';
+	$available_fields = unserialize( DIGI_AVAILABLE_FIELDS_FOR_EXPORT );
 
+	$export_type = digirisk_tools::IsValid_Variable( $_POST['export_type'] );
+	$more_output = '';
+	$selected['user'] = $selected['tree_element'] = $selected['global'] = '';
+	switch ( $export_type ) {
+		case 'user':
+			unset($available_fields['user_lastname']);
+			unset($available_fields['user_firstname']);
+			$more_output = '
+	<div id="digi_user_summary_zipfile_container" >
+		' . eva_GroupSheet::getGroupSheetCollectionHistory('all', 0, 'user_summary_file', ELEMENT_IDENTIFIER_GUS) . '
+	</div>';
+			$selected['user'] = ' checked="checked"';
+		break;
+		case 'tree_element':
+			unset($available_fields['ref_elt']);
+			unset($available_fields['name_elt']);
+			$selected['tree_element'] = ' checked="checked"';
+		break;
+		case 'global':
+			$selected['global'] = ' checked="checked"';
+		break;
+	}
+
+	$output .= '<div id="digi_export_csv_file_result" ></div>' . __('S&eacute;lectionnez les colonnes que vous souhaitez avoir dans le fichier export&eacute;.', 'evarisk') . '<br/>' . __('Vous pouvez &eacute;galement ordonner les colonnes en glissant/d&eacute;posant les diff&eacute;rents &eacute;l&eacute;ments.', 'evarisk') . '
+			<div style="width:70%; margin:0 auto;" >
+				<input type="radio"' . $selected['user'] . ' class="export_csv_file_type_choice" id="export_csv_file_per_user" name="export_csv_file" value="user" /> <label style="vertical-align: baseline;" for="export_csv_file_per_user" >' . __('Un fichier par personne', 'evarisk') . '</label>
+				<input type="radio"' . $selected['global'] . ' class="export_csv_file_type_choice" id="export_csv_file_global" name="export_csv_file" value="global" /> <label style="vertical-align: baseline;" for="export_csv_file_global" >' . __('Un fichier global', 'evarisk') . '</label>
+			</div>
+			<ul id="digi_field_list_for_export" >';
+	foreach ( $available_fields as $field_key => $field_title ) {
+		$output .= '<li><input type="checkbox" value="' . $field_key . '" id="' . $field_key . '" name="digi_column_to_export[]" class="digi_column_to_export_input" > <label for="' . $field_key . '" >' . $field_title . '</label></li>';
+	}
+	$output .= '</ul>
+	<button id="digi_export_csv_file" class="alignright button-primary" >' . __('Exporter le fichier', 'evarisk') . '</button>' . $more_output . '
+<style type="text/css" >
+#digi_field_list_for_export li {
+	background-color: #CCCCCC;
+    border: 1px solid #000000;
+    border-radius: 13px 13px 13px 13px;
+    padding: 0 12px;
+	cursor: move;
+	margin: 3px auto;
+    width: 40%;
+}
+#digi_field_list_for_export li label {
+	padding: 5px 0 0;
+}
+#digi_field_list_for_export li input[type=checkbox] {
+	margin: 5px 0;
+}
+</style>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery(".export_csv_file_type_choice").click(function(){
+			jQuery("#digi_stats_user_dialog").html( jQuery("#loadingPicContainer").html() );
+			jQuery.post("' . admin_url('admin-ajax.php') . '", {action: "digi_ajax_load_field_for_export", export_type: jQuery(this).val(),}, function(response){
+				jQuery("#digi_stats_user_dialog").html( response );
+			});
+		});
+
+		jQuery("#digi_field_list_for_export").sortable({});
+		jQuery("#digi_export_csv_file").click(function(){
+			var column_to_export = new Array;
+			jQuery(".digi_column_to_export_input").each(function(){
+				if ( jQuery(this).is(":checked") ) {
+					column_to_export.push( jQuery(this).val() );
+				}
+			});
+
+			var data = {
+				action: "digi_ajax_export_csv_file",
+				export_type: "' . $export_type . '",
+				column_to_export: column_to_export,
+			};
+			jQuery.post("' . admin_url( 'admin-ajax.php' ) . '", data, function (response) {
+				jQuery("#digi_export_csv_file_result").html( digi_html_accent_for_js(response[0]) );
+				jQuery("#digi_user_summary_zipfile_container").html( digi_html_accent_for_js(response[1]) );
+			}, "json");
+		});
+	});
+</script>';
+
+	echo $output;
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_load_field_for_export', 'digi_ajax_load_field_for_export' );
+add_action( 'wp_ajax_digi_ajax_export_csv_file', array('eva_gestionDoc', 'digi_ajax_export_csv_file') );
+
+/**	User stats tab on dashboard	*/
+add_action( 'wp_ajax_digi_ajax_stats_user', array('evaUser', 'digi_ajax_stats_user') );
+add_action( 'wp_ajax_digi_ajax_load_user_stat', array('evaUser', 'digi_ajax_load_user_stat') );
+add_action( 'wp_ajax_digi_ajax_load_user_stat_mouvement_between_dates', array('evaUser', 'digi_ajax_mouvement_between_dates') );
+/**	Risk stats tab on dashboard*/
+add_action( 'wp_ajax_digi_ajax_risk_stats', array('Risque', 'digi_ajax_risk_stats') );
+
+/**	Penibility file export*/
+add_action( 'wp_ajax_digi_ajax_save_document', array('eva_gestionDoc', 'digi_ajax_save_document') );
+add_action( 'wp_ajax_digi_ajax_duplicate_document', array('eva_gestionDoc', 'duplicate_document') );
+
+function digi_ajax_save_task_for_risk() {
+	/**	Check if there are recommendation to link with this risk	*/
+	$preconisationRisqueTitle = !empty($_POST['title']) ? digirisk_tools::IsValid_Variable($_POST['title']) : '';
+	$preconisationRisque = !empty($_POST['description']) ? digirisk_tools::IsValid_Variable($_POST['description']) : '';
+	if ( !empty($preconisationRisque) || !empty($preconisationRisqueTitle ) ) {
+		EvaTask::save_task_from_risk_form($preconisationRisqueTitle, $preconisationRisque, $_POST['id_risque']);
+	}
+
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_save_task_for_risk', 'digi_ajax_save_task_for_risk' );
+/**
+ * Affect a recommandation to an element
+ */
+function digi_ajax_save_single_recommandation() {
+	$response = '';
+
+	$id = (isset($_POST['recommandation_id']) && ($_POST['recommandation_id'] != '') && ($_POST['recommandation_id'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_id']) : '';
+	$recommandationEfficiency = (isset($_POST['recommandation_efficiency']) && ($_POST['recommandation_efficiency'] != '') && ($_POST['recommandation_efficiency'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_efficiency']) : '0';
+	$recommandationComment = (isset($_POST['recommandation_comment']) && ($_POST['recommandation_comment'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_comment']) : '';
+	$id_element = (isset($_POST['id_element']) && ($_POST['id_element'] != '') && ($_POST['id_element'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['id_element']) : '';
+	$table_element = (isset($_POST['table_element']) && ($_POST['table_element'] != '')) ? digirisk_tools::IsValid_Variable($_POST['table_element']) : '';
+	$preconisation_type = (isset($_POST['recommandation_type']) && ($_POST['recommandation_type'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_type']) : '';
+
+	$recommandation_link_action = (isset($_POST['recommandation_action']) && ($_POST['recommandation_action'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_action']) : '';
+	$recommandation_link_id = (isset($_POST['recommandation_to_update']) && ($_POST['recommandation_to_update'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_to_update']) : '';
+
+	$recommandationsinformations = array();
+	$recommandationsinformations['id_preconisation'] = $id;
+	$recommandationsinformations['efficacite'] = $recommandationEfficiency;
+	$recommandationsinformations['commentaire'] = $recommandationComment;
+	$recommandationsinformations['preconisation_type'] = $preconisation_type;
+
+	if ( $recommandation_link_action == 'update' ) {
+		$recommandationsinformations['date_update_affectation'] = current_time('mysql', 0);
+		$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandationsinformations, $recommandation_link_id);
+	}
+	else {
+		$recommandationsinformations['id_element'] = $id_element;
+		$recommandationsinformations['table_element'] = $table_element;
+		$recommandationsinformations['status'] = 'valid';
+		$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
+		$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+	}
+
+	$response[] = '#message' . TABLE_PRECONISATION . '-' . $table_element;
+	if ( $recommandationActionResult == 'error' ) {
+		$response[] = false;
+		$response[] ='<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" class="messageIcone" alt="error" />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+	}
+	else {
+		$response[] = true;
+		$response[] =  '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" class="messageIcone" alt="success" />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
+	}
+	$response[] = $id_element;
+	$response[] = $table_element;
+
+	echo json_encode( $response );
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_save_single_recommandation', 'digi_ajax_save_single_recommandation' );
+
+function digi_ajax_load_recommandation_form() {
+	$response = '';
+
+	$id_element = !empty( $_POST['id_element'] ) ? $_POST['id_element'] : 0;
+	$table_element = !empty( $_POST['table_element'] ) ? $_POST['table_element'] : '';
+
+	$response[] = $table_element;
+	$response[] = $id_element;
+	$response[] = evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $id_element, 'table_element' => $table_element, 'hide_save_button' => true)) . evaRecommandation::getRecommandationListForElementOutput($table_element, $id_element, false);
+
+	echo json_encode( $response );
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_load_recommandation_form', 'digi_ajax_load_recommandation_form' );

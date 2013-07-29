@@ -1790,3 +1790,13 @@ CREATE TABLE {$t} (
 
 	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_ACTIVITE_SUIVI, TABLE_ACTIVITE, TABLE_TACHE);
 }
+
+{/*	Version 83	*/
+	$digirisk_db_version = 83;
+	$digirisk_update_way[$digirisk_db_version] = 'data';
+}
+
+{/*	Version 84	*/
+	$digirisk_db_version = 84;
+	$digirisk_update_way[$digirisk_db_version] = 'data';
+}
