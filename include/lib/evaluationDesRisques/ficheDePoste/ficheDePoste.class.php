@@ -62,15 +62,12 @@ class eva_WorkUnitSheet {
 		$groupementPere = EvaGroupement::getGroupement($workUnitinformations->id_groupement);
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
-		foreach($ancetres as $ancetre)
-		{
-			if($ancetre->nom != "Groupement Racine")
-			{
+		foreach ( $ancetres as $ancetre ) {
+			if ( $ancetre->nom != "Groupement Racine" ) {
 				$arborescence .= $ancetre->nom . ' - ';
 			}
 		}
-		if($groupementPere->nom != "Groupement Racine")
-		{
+		if ( $groupementPere->nom != "Groupement Racine" ) {
 			$arborescence .= $groupementPere->nom . ' - ';
 		}
 		$formulaireDocumentUniqueParams['#NOMENTREPRISE#'] = digirisk_tools::slugify_noaccent($arborescence) . digirisk_tools::slugify_noaccent($workUnitinformations->nom);
@@ -78,7 +75,7 @@ class eva_WorkUnitSheet {
 		$modelChoice = '';
 		$lastWorkUnitSheet = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_poste');
 		$model_id = eva_gestionDoc::getDefaultDocument('fiche_de_poste');
-		if(!empty($lastWorkUnitSheet) && is_object($lastWorkUnitSheet) && !empty($lastWorkUnitSheet->id_model) && ($lastWorkUnitSheet->id_model != $default_model_id)) {
+		if ( !empty($lastWorkUnitSheet) && is_object($lastWorkUnitSheet) && !empty($lastWorkUnitSheet->id_model) && ($lastWorkUnitSheet->id_model != $model_id) ) {
 			$model_id = $lastWorkUnitSheet->id_model;
 			$modelChoice = '
 			setTimeout(function(){

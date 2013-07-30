@@ -49,7 +49,7 @@ class Risque {
 		$listeOperateursSimple;
 
 		//r�solution des op�ration de forte priorit� (i.e. * et /)
-		$scoreRisque = $listeValeurs[0];
+		$scoreRisque = !empty($listeValeurs[0]) ? $listeValeurs[0] : 0;
 		$numeroValeur = 0;
 		if($listeOperateurs != null){
 			// invariant de boucle : la valeur $listeValeurs[$numeroValeur] est trait�

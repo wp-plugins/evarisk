@@ -111,12 +111,12 @@ class actionsCorrectives
 
 					foreach ( $infosRisque as $variable ) {
 						$var = eva_Variable::getVariable($variable->id_variable);
-						if ( !isset($t[$var->nom]) ) {
+						if ( !empty($var->nom) && !isset($t[$var->nom]) ) {
 							$titres[] = substr($var->nom, 0, 3) . '.';
 							$classes[] = 'columnVariableRisque';
 							$t[$var->nom] = 1;
-						}
 						$valeurs[] = array('value' => $variable->valeur, 'class' => '');
+						}
 					}
 
 					$idLignes[] = ELEMENT_IDENTIFIER_R . $idRisque . '_suiviActionCorrectives';
