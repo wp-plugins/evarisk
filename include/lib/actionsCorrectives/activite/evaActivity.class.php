@@ -509,7 +509,7 @@ class EvaActivity extends EvaBaseActivity
 	</script></div><br/>';
 		}
 
-		if (empty($arguments['requested_action']) || (!empty($arguments['requested_action']) && ($arguments['requested_action'] != 'ficheAction'))) {
+		if (empty($arguments['requested_action']) || (!empty($arguments['requested_action']) && ($arguments['requested_action'] != 'ficheAction') && ($arguments['provenance'] != 'ask_correctiv_action'))) {
 			ob_start();
 			suivi_activite::digi_postbox_project( $arguments );
 			$activite_new .= '

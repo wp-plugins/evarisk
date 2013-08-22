@@ -673,10 +673,10 @@ class eva_documentUnique {
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
 				}
 			}
-			if(is_array($listeRisque[SEUIL_BAS_FAIBLE]))krsort($listeRisque[SEUIL_BAS_FAIBLE]);
-			if(is_array($listeRisque[SEUIL_BAS_APLANIFIER]))krsort($listeRisque[SEUIL_BAS_APLANIFIER]);
-			if(is_array($listeRisque[SEUIL_BAS_ATRAITER]))krsort($listeRisque[SEUIL_BAS_ATRAITER]);
-			if(is_array($listeRisque[SEUIL_BAS_INACCEPTABLE]))krsort($listeRisque[SEUIL_BAS_INACCEPTABLE]);
+			if(!empty($listeRisque[SEUIL_BAS_FAIBLE]) && is_array($listeRisque[SEUIL_BAS_FAIBLE]))krsort($listeRisque[SEUIL_BAS_FAIBLE]);
+			if(!empty($listeRisque[SEUIL_BAS_APLANIFIER]) && is_array($listeRisque[SEUIL_BAS_APLANIFIER]))krsort($listeRisque[SEUIL_BAS_APLANIFIER]);
+			if(!empty($listeRisque[SEUIL_BAS_ATRAITER]) && is_array($listeRisque[SEUIL_BAS_ATRAITER]))krsort($listeRisque[SEUIL_BAS_ATRAITER]);
+			if(!empty($listeRisque[SEUIL_BAS_INACCEPTABLE]) && is_array($listeRisque[SEUIL_BAS_INACCEPTABLE]))krsort($listeRisque[SEUIL_BAS_INACCEPTABLE]);
 		}
 
 		return $listeRisque;

@@ -564,7 +564,7 @@ $user_additionnal_field .= '
 // 		1 AS EXPORT_USER,
 		$query = $wpdb->prepare(
 				"SELECT
-
+				1 AS EXPORT_USER,
 				(
 					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
 					FROM " . $wpdb->prefix . "users AS U
@@ -743,7 +743,7 @@ $user_additionnal_field .= '
 			jQuery("#digi_stats_user_dialog").attr("title", "");
 			jQuery("#digi_stats_user_dialog").html( digirisk("#loadingPicContainer").html() );
 			if ( jQuery(this).attr("id") == "users_export" ) {
-				jQuery.post("' . admin_url('admin-ajax.php') . '", {action: "digi_ajax_load_field_for_export", export_type: "user",}, function(response){
+				jQuery.post("' . admin_url('admin-ajax.php') . '", {action: "digi_ajax_load_field_for_export", export_type: "global",}, function(response){
 					jQuery("#digi_stats_user_dialog").html( response );
 				});
 			}

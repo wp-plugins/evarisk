@@ -186,39 +186,39 @@ class evaUserLinkElement {
 
 <div class="alignright" style="width:55%;" >';
 
-	if ( current_user_can('add_users') ) {
-		$utilisateursMetaBox .= '
+		if ( current_user_can('add_users') ) {
+			$utilisateursMetaBox .= '
 	<span class="alignright" ><a target="_blank" href="' . admin_url('users.php?page=digirisk_import_users') . '">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
-	}
+		}
 
 
-	switch ( $tableElement ) {
-		case digirisk_groups::dbTable:
-			$more_script_affect = '
+		switch ( $tableElement ) {
+			case digirisk_groups::dbTable:
+				$more_script_affect = '
 				jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function(){
 					if(jQuery(this).hasClass("userIsNotLinked")){
 						jQuery(this).click();
 					}
 				});';
-			$more_script_unaffect = '
+				$more_script_unaffect = '
 				jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function(){
 					if(jQuery(this).hasClass("userIsLinked")){
 						jQuery(this).click();
 					}
 				});';
 			break;
-		default:
-			$more_script_affect = '
+			default:
+				$more_script_affect = '
 				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
 				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });';
 
-			$more_script_unaffect = '
+				$more_script_unaffect = '
  				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("open");
 				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });';
 			break;
-	}
+		}
 
-	$utilisateursMetaBox .= '
+		$utilisateursMetaBox .= '
 	<div class="clear addLinkUserElement" >
 		<div class="clear" >
 			<span class="searchUserInput ui-icon" >&nbsp;</span>
@@ -307,6 +307,13 @@ class evaUserLinkElement {
 				jQuery("#user_id_for_affectation").val(userDivId);
 				jQuery("#table_element_user_affectation").val(current_table_element);
 				jQuery("#ui-datepicker-div").hide();
+			}
+		});
+		jQuery("#userListOutput' . $tableElement . ' .selecteduserOP").click(function(){
+			if ( jQuery(this).attr("id") ) {
+				var current_table_element = jQuery(this).closest("div .userListOutput").attr("id").replace("userListOutput", "");
+				userDivId = jQuery(this).attr("id").replace("affectedUser" + current_table_element, "");
+				deleteUserIdFiedList(userDivId, current_table_element);
 			}
 		});
 
@@ -417,11 +424,14 @@ class evaUserLinkElement {
 		jQuery("#searchUser' . $tableElement . '").autocomplete({
 			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php",
 			select: function( event, ui ) {
-				' . $more_script_affect . '
+				if(jQuery("#completeUserList' . $tableElement . ' #actionButtonwp_eva__utilisateurs_groupesUserLink" + ui.item.value).hasClass("userIsNotLinked")){
+					jQuery("#completeUserList' . $tableElement . ' #actionButtonwp_eva__utilisateurs_groupesUserLink" + ui.item.value).click();
+				}
 				jQuery("#user_name_info_for_affectation").val(ui.item.label);
 				jQuery("#user_id_for_affectation").val(ui.item.value);
 				jQuery("#table_element_user_affectation").val("' . $tableElement . '");
 				jQuery("#ui-datepicker-div").hide();
+
 				setTimeout(function(){
 					jQuery("#searchUser' . $tableElement . '").val("");
 					jQuery("#searchUser' . $tableElement . '").blur();

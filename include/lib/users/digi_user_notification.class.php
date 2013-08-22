@@ -217,8 +217,7 @@ WHERE status = 'valid'
 
 		if($action != ''){
 			$more_query .= "
-	AND NOTI.action = %s
-	LIMIT 1";
+	AND NOTI.action = %s";
 			$query_condition[] = $action;
 		}
 
@@ -448,7 +447,7 @@ WHERE LUN.status = 'valid'
 
 			/*	Check if the user email is a real email	*/
 			if(is_email($user_info->user_email) && !in_array($user_info->user_email, $done_user)){
-				@mail($user_info->user_email, html_entity_decode(utf8_decode($mail_subject)), html_entity_decode(utf8_decode($mail_content)), $headers);
+				$is_sent = wp_mail($user_info->user_email, html_entity_decode(utf8_decode($mail_subject)), html_entity_decode(utf8_decode($mail_content)), $headers);
 				$done_user[] = $user_info->user_email;
 			}
 		}

@@ -2796,7 +2796,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						if(($actionSave['task_status'] != 'error') && ($actionSave['action_status'] != 'error')){
 							if($_REQUEST['tableProvenance'] == 'correctiv_action_ask'){
 								$messageInfo .= '
-									jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Votre demande d\'action corrective a bien &eacute;t&eacute; envoy&eacute;e', 'evarisk') . '</strong></p>') . '");';
+									jQuery("#message' . $_REQUEST['tableProvenance'] . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . sprintf( __('Votre demande d\'action corrective a bien &eacute;t&eacute; envoy&eacute;e, vous pourrez la retrouver sous le num&eacute;ro %s', 'evarisk'), ELEMENT_IDENTIFIER_ST . $actionSave['action_id'] ) . '</strong></p>') . '");';
 							}
 							else{
 								$messageInfo .= '
@@ -3454,6 +3454,26 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 <div class="hide generatedDocContainer" id="generatedFEPContainer" ><div class="clear bold" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div><div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_exposition_penibilite') . '</div></div>
 <div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
 <script type="text/javascript" >
+	digirisk(".digi_regenerate_file").unbind("click");
+	digirisk(".digi_regenerate_file").click(function(){
+		var doc_id = jQuery(this).attr("id");
+		var data = {
+			action: "digi_ajax_regenerate_file",
+			doc_id: doc_id.replace("digi_file_to_regenerate_", ""),
+			table_element: jQuery("#" + doc_id + "_table_element" ).val(),
+			id_element: jQuery("#" + doc_id + "_id_element" ).val(),
+			document_type: jQuery("#" + doc_id + "_document_type" ).val(),
+		};
+		jQuery.post(ajaxurl, data, function(response){
+			if ( response[0] ) {
+				jQuery("#" + response[1]).html( response[2] );
+			}
+			else {
+				jQuery("#" + response[1]).append( response[2] );
+			}
+		}, "json");
+	});
+
 	digirisk("#summaryGeneratedDocumentSlector div").click(function(){
 		digirisk("#summaryGeneratedDocumentSlector div").each(function(){
 			digirisk(this).removeClass("selected");

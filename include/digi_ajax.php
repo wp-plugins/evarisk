@@ -449,8 +449,11 @@ function digi_ajax_load_field_for_export() {
 	$export_type = digirisk_tools::IsValid_Variable( $_POST['export_type'] );
 	$more_output = '';
 	$selected['user'] = $selected['tree_element'] = $selected['global'] = '';
+	$input_display_state = '';
+	$required_fields = array();
 	switch ( $export_type ) {
 		case 'user':
+			unset($available_fields['user_identifier']);
 			unset($available_fields['user_lastname']);
 			unset($available_fields['user_firstname']);
 			$more_output = '
@@ -466,17 +469,24 @@ function digi_ajax_load_field_for_export() {
 		break;
 		case 'global':
 			$selected['global'] = ' checked="checked"';
+			$required_fields = array('user_identifier', 'user_lastname', 'user_firstname');
+			$more_output = '
+	<div id="digi_user_summary_zipfile_container" >
+		' . eva_gestionDoc::getGeneratedDocument('all', 0, 'list', '', 'user_global_export', '0') . '
+	</div>';
+// 			$input_display_state = ' digirisk_hide';
 		break;
 	}
 
 	$output .= '<div id="digi_export_csv_file_result" ></div>' . __('S&eacute;lectionnez les colonnes que vous souhaitez avoir dans le fichier export&eacute;.', 'evarisk') . '<br/>' . __('Vous pouvez &eacute;galement ordonner les colonnes en glissant/d&eacute;posant les diff&eacute;rents &eacute;l&eacute;ments.', 'evarisk') . '
 			<div style="width:70%; margin:0 auto;" >
-				<input type="radio"' . $selected['user'] . ' class="export_csv_file_type_choice" id="export_csv_file_per_user" name="export_csv_file" value="user" /> <label style="vertical-align: baseline;" for="export_csv_file_per_user" >' . __('Un fichier par personne', 'evarisk') . '</label>
 				<input type="radio"' . $selected['global'] . ' class="export_csv_file_type_choice" id="export_csv_file_global" name="export_csv_file" value="global" /> <label style="vertical-align: baseline;" for="export_csv_file_global" >' . __('Un fichier global', 'evarisk') . '</label>
+				<input type="radio"' . $selected['user'] . ' class="export_csv_file_type_choice" id="export_csv_file_per_user" name="export_csv_file" value="user" /> <label style="vertical-align: baseline;" for="export_csv_file_per_user" >' . __('Un fichier par personne', 'evarisk') . '</label>
 			</div>
 			<ul id="digi_field_list_for_export" >';
 	foreach ( $available_fields as $field_key => $field_title ) {
-		$output .= '<li><input type="checkbox" value="' . $field_key . '" id="' . $field_key . '" name="digi_column_to_export[]" class="digi_column_to_export_input" > <label for="' . $field_key . '" >' . $field_title . '</label></li>';
+		$options = (!empty($required_fields) && in_array($field_key, $required_fields)) ? ' disabled="disabled"' : '';
+		$output .= '<li><input type="checkbox" value="' . $field_key . '" id="' . $field_key . '" name="digi_column_to_export[]" class="digi_column_to_export_input' . $input_display_state . '" checked="checked"' . $options . ' > <label for="' . $field_key . '" >' . $field_title . '</label></li>';
 	}
 	$output .= '</ul>
 	<button id="digi_export_csv_file" class="alignright button-primary" >' . __('Exporter le fichier', 'evarisk') . '</button>' . $more_output . '
@@ -486,7 +496,7 @@ function digi_ajax_load_field_for_export() {
     border: 1px solid #000000;
     border-radius: 13px 13px 13px 13px;
     padding: 0 12px;
-	cursor: move;
+// 	cursor: move;
 	margin: 3px auto;
     width: 40%;
 }
@@ -506,7 +516,7 @@ function digi_ajax_load_field_for_export() {
 			});
 		});
 
-		jQuery("#digi_field_list_for_export").sortable({});
+		//jQuery("#digi_field_list_for_export").sortable({});
 		jQuery("#digi_export_csv_file").click(function(){
 			var column_to_export = new Array;
 			jQuery(".digi_column_to_export_input").each(function(){
@@ -621,3 +631,25 @@ function digi_ajax_load_recommandation_form() {
 	die();
 }
 add_action( 'wp_ajax_digi_ajax_load_recommandation_form', 'digi_ajax_load_recommandation_form' );
+
+
+function digi_ajax_regenerate_file() {
+	$tableElement = $_POST['table_element'];
+	$idElement = $_POST['id_element'];
+	$idDocument = $_POST['doc_id'];
+	$document_type = $_POST['document_type'];
+
+	$result = array(false, $tableElement . '_' . $idElement . '_' . $idDocument, '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('warning', 'evarisk') . '" />' . __('Une erreur est survenue lors de la génération', 'evarisk'));
+
+	/**	Generate the document	*/
+	$last_file = eva_gestionDoc::generateSummaryDocument($tableElement, $idElement, 'odt', $idDocument);
+
+	/**	Check if document now exists	*/
+	if ( is_file($last_file) ) {
+		$result = array(true, $tableElement . '_' . $idElement . '_' . $idDocument, '<a href="' . str_replace(EVA_RESULTATS_PLUGIN_DIR, EVA_RESULTATS_PLUGIN_URL, $last_file) . '" target="evaFPOdt" >' . __('Odt', 'evarisk') . '</a>');
+	}
+
+	echo json_encode( $result );
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_regenerate_file', 'digi_ajax_regenerate_file' );
