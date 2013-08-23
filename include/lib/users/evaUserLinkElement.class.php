@@ -424,8 +424,8 @@ class evaUserLinkElement {
 		jQuery("#searchUser' . $tableElement . '").autocomplete({
 			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php",
 			select: function( event, ui ) {
-				if(jQuery("#completeUserList' . $tableElement . ' #actionButtonwp_eva__utilisateurs_groupesUserLink" + ui.item.value).hasClass("userIsNotLinked")){
-					jQuery("#completeUserList' . $tableElement . ' #actionButtonwp_eva__utilisateurs_groupesUserLink" + ui.item.value).click();
+				if(jQuery("#completeUserList' . $tableElement . ' #actionButton' . $tableElement . 'UserLink" + ui.item.value).hasClass("userIsNotLinked")){
+					jQuery("#completeUserList' . $tableElement . ' #actionButton' . $tableElement . 'UserLink" + ui.item.value).click();
 				}
 				jQuery("#user_name_info_for_affectation").val(ui.item.label);
 				jQuery("#user_id_for_affectation").val(ui.item.value);
