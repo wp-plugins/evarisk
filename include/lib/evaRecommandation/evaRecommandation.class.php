@@ -121,9 +121,10 @@ class evaRecommandation
 	*
 	*	@return mixed $recommandationListOutput The complete output
 	*/
-	function getRecommandationListByCategory($recommandationCategoryId, $outputMode = 'pictos', $selectedRecommandation = '') {
+	function getRecommandationListByCategory($recommandationCategoryId, $outputMode = 'pictos', $selectedRecommandation = '', $arguments = array()) {
 		global $wpdb;
 		$recommandationListOutput = '';
+		$specific_container = !empty($arguments) && !empty($arguments['form_container']) ? $arguments['form_container'] . '_' : '';
 
 		$query = $wpdb->prepare(
 			"SELECT RECOMMANDATION.*, PIC.photo
@@ -135,53 +136,54 @@ class evaRecommandation
 
 		$recommandationList = $wpdb->get_results($query);
 
-		if(count($recommandationList) <= 0){
+		if (count($recommandationList) <= 0) {
 			if($outputMode == 'list'){
 				return $recommandationList;
 			}
 			$recommandationListOutput = __('Il n\'y a aucune pr&eacute;conisation pour cette cat&eacute;gorie', 'evarisk');
 		}
-		else
-		{
-			if($outputMode == 'pictos'){
+		else {
+			if ($outputMode == 'pictos') {
 				$i = 0;
 				$selectedId = '';
-				foreach($recommandationList as $recommandation)
-				{
+				foreach ($recommandationList as $recommandation) {
 					$recommandationMainPicture = evaPhoto::checkIfPictureIsFile($recommandation->photo, TABLE_PRECONISATION);
-					if(!$recommandationMainPicture)
-					{
+					if ( !$recommandationMainPicture ) {
 						$recommandationMainPicture = '';
 
 						$recommandationMainPicture = '<img class="recommandationDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_RECOMMANDATION_ICON . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->nom) . '" />';
 					}
-					else
-					{
+					else {
 						$checked = $selectedClass = '';
-						if(($selectedRecommandation != '') && ($selectedRecommandation == $recommandation->id))
-						{
+						if ( ($selectedRecommandation != '') && ($selectedRecommandation == $recommandation->id) ) {
 							$checked =  ' checked="checked" ';
 							$selectedClass = 'recommandationSelected';
-							$selectedId = 'evarisk("#recommandation_id").val("' . $recommandation->id . '");
-		evarisk("#recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
+							$selectedId = 'evarisk("#' . $specific_container . 'recommandation_id").val("' . $recommandation->id . '");
+		evarisk("#' . $specific_container . 'recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
-						elseif($i == 0)
-						{
+						else if ($i == 0) {
 							$checked =  ' checked="checked" ';
 							$selectedClass = 'recommandationSelected default';
-							$selectedId = 'evarisk("#recommandation_id").val("' . $recommandation->id . '");
-		evarisk("#recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
+							$selectedId = 'evarisk("#' . $specific_container . 'recommandation_id").val("' . $recommandation->id . '");
+		evarisk("#' . $specific_container . 'recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
-						$recommandationMainPicture = '<div class="alignleft recommandationBloc ' . $selectedClass . '" ><input type="hidden" name="preconisation_type" class="preconisation_type" id="preconisation_type_' . $recommandation->id . '" value="' . $recommandation->preconisation_type . '" /><input class="recommandation" type="radio" ' . $checked . ' id="recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" /><label for="recommandation' . $recommandation->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($recommandation->nom)) . '" /></label></div>';
+						$recommandationMainPicture = '
+<div class="alignleft ' . $specific_container . 'recommandationBloc recommandationBloc ' . $selectedClass . '" >
+	<input type="hidden" name="preconisation_type" class="preconisation_type" id="' . $specific_container . 'preconisation_type_' . $recommandation->id . '" value="' . $recommandation->preconisation_type . '" />
+	<input class="' . $specific_container . 'recommandation" type="radio" ' . $checked . ' id="' . $specific_container . 'recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" />
+	<label for="' . $specific_container . 'recommandation' . $recommandation->id . '" >
+		<img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($recommandation->nom)) . '" />
+	</label>
+</div>';
 					}
 					$recommandationListOutput .= $recommandationMainPicture;
 					$i++;
 				}
 			}
-			elseif($outputMode == 'selectablelist'){
+			else if ( $outputMode == 'selectablelist' ) {
 				$recommandationListOutput = EvaDisplayInput::afficherComboBox($recommandationList, 'recommandation', __('Pr&eacute;conisations', 'evarisk'), 'recommandation', "", "");
 			}
-			elseif($outputMode == 'list'){
+			else if ( $outputMode == 'list' ) {
 				return $recommandationList;
 			}
 		}
@@ -191,14 +193,14 @@ class evaRecommandation
 	digirisk(document).ready(function(){
 		' . $selectedId . '
 
-		evarisk(".recommandation").click(function(){
-			evarisk(".recommandationBloc").each(function(){
-				evarisk(this).removeClass("recommandationSelected");
+		jQuery(".' . $specific_container . 'recommandation").click(function(){
+			jQuery(".' . $specific_container . 'recommandationBloc").each(function(){
+				jQuery(this).removeClass("recommandationSelected");
 			});
-			evarisk(this).parent("div").addClass("recommandationSelected");
-			evarisk("#recommandation_id").val(evarisk(this).attr("id").replace("recommandation", ""));
-			evarisk("#recommandationNameIndication").html("' . __('pour ', 'evarisk') . '" + evarisk(this).parent("div").children("label").children("img").attr("title"));
-			evarisk("#preconisation_type").val(evarisk(this).parent("div").children("input[type=hidden].preconisation_type").val());
+			jQuery(this).parent("div").addClass("recommandationSelected");
+			jQuery("#' . $specific_container . 'recommandation_id").val( jQuery(this).attr("id").replace("' . $specific_container . 'recommandation", "") );
+			jQuery("#' . $specific_container . 'recommandationNameIndication").html("' . __('pour ', 'evarisk') . '" + jQuery(this).parent("div").children("label").children("img").attr("title"));
+			jQuery("#' . $specific_container . 'preconisation_type").val(jQuery(this).parent("div").children("input[type=hidden].preconisation_type").val());
 		});
 	});
 </script>';
@@ -388,6 +390,7 @@ class evaRecommandation
 	function getRecommandationsPostBoxBody($arguments){
 		$idElement = $arguments['idElement'];
 		$tableElement = $arguments['tableElement'];
+		$arguments['form_container'] = 'single_preco';
 
 		$outputMode = 'pictos';
 
@@ -445,9 +448,10 @@ class evaRecommandation
 		$recommandationContainer = '&nbsp;';
 		$recommandationContainerClass = 'hide';
 		$saveRecommandationAssociationButton = __('Enregistrer', 'evarisk');
+		$specific_container = !empty($arguments) && !empty($arguments['form_container']) ? $arguments['form_container'] . '_' : '';
 
 		if (is_array($selectedRecommandation)) {
-			$recommandationContainer = evaRecommandation::getRecommandationListByCategory($selectedRecommandation['id_categorie_preconisation'], $outputMode, $selectedRecommandation['id_preconisation']);
+			$recommandationContainer = evaRecommandation::getRecommandationListByCategory($selectedRecommandation['id_categorie_preconisation'], $outputMode, $selectedRecommandation['id_preconisation'], $arguments);
 			$recommandationContainerClass = '';
 			$saveRecommandationAssociationButton = __('Mettre &agrave; jour', 'evarisk') ;
 		}
@@ -459,111 +463,109 @@ class evaRecommandation
 
 		if (digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui') {
 			$efficatiteForm =
-'<label for="efficacite_preconisation">' . __('Efficacit&eacute; (%)', 'evarisk') . '</label>
-<input type="text" class="sliderValue" disabled="disabled" id="efficacite_preconisation" name="efficacite_preconisation" value="' . $efficacite_preconisation . '" /><div id="slider-efficacite_preconisation" class="slider_variable"></div>
+'<label for="' . $specific_container . 'efficacite_preconisation">' . __('Efficacit&eacute; (%)', 'evarisk') . '</label>
+<input type="text" class="sliderValue" disabled="disabled" id="' . $specific_container . 'efficacite_preconisation" name="efficacite_preconisation" value="' . $efficacite_preconisation . '" /><div id="' . $specific_container . 'slider-efficacite_preconisation" class="slider_variable"></div>
 <div class="clear" >&nbsp;</div>';
-			$efficacite_preconisation = 'evarisk("#efficacite_preconisation").val()';
+			$efficacite_preconisation = 'evarisk("#' . $specific_container . 'efficacite_preconisation").val()';
 			$efficacite_preconisation_script = '
-		evarisk("#slider-efficacite_preconisation").slider({
+		evarisk("#' . $specific_container . 'slider-efficacite_preconisation").slider({
 			range:"min",
 			value:' . $efficacite_preconisation . ',
 			min:0,
 			max:100,
 			slide:function(event, ui){
-				evarisk("#efficacite_preconisation").val(ui.value);
+				evarisk("#' . $specific_container . 'efficacite_preconisation").val(ui.value);
 			}
 		});
-		evarisk("#efficacite_preconisation").val(evarisk("#slider-efficacite_preconisation").slider("value"));';
+		evarisk("#' . $specific_container . 'efficacite_preconisation").val(evarisk("#' . $specific_container . 'slider-efficacite_preconisation").slider("value"));';
 		}
 
 		$recommandationAssociationOutput = '
 <div class="recommandationCategoryExplanation" >' . __('Choisissez une famille de pr&eacute;conisation', 'evarisk') . '</div>
-' . evaRecommandationCategory::getCategoryRecommandationListOutput($outputMode, $selectedRecommandationCategory) . '
-<div class="clear ' . $recommandationContainerClass . '" id="associationFormContainer" >
-	<div id="recommandationContainer" >' . $recommandationContainer . '</div>
+' . evaRecommandationCategory::getCategoryRecommandationListOutput($outputMode, $selectedRecommandationCategory, $arguments) . '
+<div class="clear ' . $recommandationContainerClass . '" id="' . $specific_container . 'associationFormContainer" >
+	<div id="' . $specific_container . 'recommandationContainer" >' . $recommandationContainer . '</div>
 	<div class="clear" >&nbsp;</div>
 	<div id="recommandationFormContent" >
 		' . $efficatiteForm . '
-		<label for="preconisation_type" >' . __('Type de pr&eacute;vention', 'evarisk') . '</label><br/>
-		' . EvaDisplayInput::createComboBox('preconisation_type', 'preconisation_type', unserialize(DIGI_TYPE_PREVENTION), $preconisation_type) . '<br/>
-		<label for="commentaire_preconisation" >' . __('Commentaire', 'evarisk') . '&nbsp;<span id="recommandationNameIndication" >&nbsp;</span></label>
-		<textarea id="commentaire_preconisation" name="commentaire_preconisation" rows="3" cols="10" class="recommandationInput" >' . $commentaire_preconisation . '</textarea>
+		<label for="' . $specific_container . 'preconisation_type" >' . __('Type de pr&eacute;vention', 'evarisk') . '</label><br/>
+		' . EvaDisplayInput::createComboBox($specific_container . 'preconisation_type', 'preconisation_type', unserialize(DIGI_TYPE_PREVENTION), $preconisation_type) . '<br/>
+		<label for="' . $specific_container . 'commentaire_preconisation" >' . __('Commentaire', 'evarisk') . '&nbsp;<span id="' . $specific_container . 'recommandationNameIndication" >&nbsp;</span></label>
+		<textarea id="' . $specific_container . 'commentaire_preconisation" name="commentaire_preconisation" rows="3" cols="10" class="recommandationInput" >' . $commentaire_preconisation . '</textarea>
 		<div class="clear" >&nbsp;</div>';
+
 		if ((current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement'])) && empty($arguments['hide_save_button'])) {
 			$recommandationAssociationOutput .= '
-		<input type="button" class="button-primary alignright" id="saveRecommandationLink" name="saveRecommandationLink" value="' . $saveRecommandationAssociationButton . '" />';
+		<input type="button" class="button-primary alignright" id="' . $specific_container . 'saveRecommandationLink" name="saveRecommandationLink" value="' . $saveRecommandationAssociationButton . '" />';
 		}
 		else if( !empty($arguments['idElement']) ) {
 			$recommandationAssociationOutput .= '
-		<button class="button-primary alignright" id="save_recommandation_for_risk" name="save_recommandation_for_risk" >' . __('Enregistrer la recommandation', 'evarisk') . '</button>';
+		<button class="button-primary alignright" id="' . $specific_container . 'save_recommandation_for_risk" name="save_recommandation_for_risk" >' . __('Enregistrer la recommandation', 'evarisk') . '</button>';
 		}
+
 		$recommandationAssociationOutput .= '
-		<input type="hidden" id="recommandation_id" name="recommandation_id" value="1" />
+		<input type="hidden" id="' . $specific_container . 'recommandation_id" name="recommandation_id" value="1" />
 	</div>
 </div>';
 
 		$recommandationAssociationOutput .= '
 <script type="text/javascript" >
-	digirisk(document).ready(function(){
 ' . $efficacite_preconisation_script . '
-		evarisk(".recommandationCategory").click(function(){
-			evarisk(".recommandationCategoryBloc").each(function(){
-				evarisk(this).removeClass("recommandationCategorySelected");
-			});
-			evarisk(this).parent("div").addClass("recommandationCategorySelected");
-			evarisk("#recommandationContainer").html(evarisk("#loadingImg").html());
-			evarisk("#recommandationContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-				"post":"true",
-				"table":"' . TABLE_PRECONISATION . '",
-				"act":"loadRecomandationOfCategory",
-				"outputMode":"' . $outputMode . '",
-				"id_categorie_preconisation": evarisk(this).val()
-			});
-			evarisk("#associationFormContainer").show();
-			evarisk("#commentaire_preconisation").val("");
-			evarisk("#efficacite_preconisation").val("");
-			evarisk("#recommandation_link_action").val("save");
-			evarisk("#recommandation_link_id").val("");
-			evarisk("#recommandationNameIndication").html("&nbsp;");
-			evarisk("#saveRecommandationLink").val("' . __('Enregistrer', 'evarisk') . '");
+	jQuery(".' . $specific_container . 'recommandationCategory").click(function(){
+		jQuery(".recommandationCategoryBloc").each(function(){
+			jQuery(this).removeClass("recommandationCategorySelected");
 		});
+		jQuery(this).parent("div").addClass("recommandationCategorySelected");
 
-		jQuery("#saveRecommandationLink, #save_recommandation_for_risk").click(function(){
-			var id_element = jQuery("#id_element_recommandation").val();
-			var table_element = jQuery("#table_element_recommandation").val();
-			if ( jQuery(this).attr("id") == "save_recommandation_for_risk" ) {
-				var id_element = jQuery("#idRisque").val();
-				var table_element = "' . TABLE_RISQUE . '";
-			}
-			var data = {
-				action: "digi_ajax_save_single_recommandation",
-				recommandation_id: jQuery("input[name=recommandation]").val(),
-				recommandation_type: jQuery("#preconisation_type").val(),
-				recommandation_comment: jQuery("#commentaire_preconisation").val(),
-				id_element: id_element,
-				table_element: table_element,
-				recommandation_efficiency: ' . $efficacite_preconisation . ',
-				recommandation_action: jQuery("#recommandation_link_action").val(),
-				recommandation_to_update: jQuery("#recommandation_link_id").val(),
-			};
-			jQuery.post(ajaxurl, data, function(response){
-				actionMessageShow(response[0], response[2]);
-				setTimeout("actionMessageHide(response[0])", "7000");
-				if ( response[1] ) {
-					if ( response[4] == "' . TABLE_RISQUE . '" ) {
-						jQuery.post(ajaxurl, {action:"digi_ajax_load_recommandation_form", id_element:response[3] , table_element:response[4]}, function(sub_response){
-							jQuery("#digi_risk_eval_" + sub_response[0] + "_" + sub_response[1] + "_reco_container").html( sub_response[2] );
-						}, "json");
-					}
-					else {
-						jQuery("#ongletAjoutPreconisation").click();
-						jQuery("#recommandation_link_action").val("add");
-						jQuery("#recommandation_link_id").val("");
-					}
+		jQuery("#' . $specific_container . 'recommandationContainer").html(evarisk("#loadingImg").html());
+		jQuery.post(ajaxurl, {action: "digi_ajax_load_recommandation_from_category", outputMode :"' . $outputMode . '", id_categorie_preconisation: evarisk(this).val(), specific_container: "' . $arguments['form_container'] . '"}, function(response) {
+			jQuery("#' . $specific_container . 'recommandationContainer").html( response[0] );
+		}, "json");
+
+		jQuery("#' . $specific_container . 'associationFormContainer").show();
+		jQuery("#' . $specific_container . 'commentaire_preconisation").val("");
+		jQuery("#' . $specific_container . 'efficacite_preconisation").val("");
+		jQuery("#' . $specific_container . 'recommandation_link_action").val("save");
+		jQuery("#' . $specific_container . 'recommandation_link_id").val("");
+		jQuery("#' . $specific_container . 'recommandationNameIndication").html("&nbsp;");
+		jQuery("#' . $specific_container . 'saveRecommandationLink").val("' . __('Enregistrer', 'evarisk') . '");
+	});
+
+	jQuery("#' . $specific_container . 'saveRecommandationLink, #' . $specific_container . 'save_recommandation_for_risk").click(function(){
+		var id_element = jQuery("#id_element_recommandation").val();
+		var table_element = jQuery("#table_element_recommandation").val();
+		if ( jQuery(this).attr("id") == "' . $specific_container . 'save_recommandation_for_risk" ) {
+			var id_element = jQuery("#idRisque").val();
+			var table_element = "' . TABLE_RISQUE . '";
+		}
+		var data = {
+			action: "digi_ajax_save_single_recommandation",
+			recommandation_id: jQuery("#' . $specific_container . 'recommandationContainer input[name=recommandation]:checked").val(),
+			recommandation_type: jQuery("#' . $specific_container . 'preconisation_type").val(),
+			recommandation_comment: jQuery("#' . $specific_container . 'commentaire_preconisation").val(),
+			id_element: id_element,
+			table_element: table_element,
+			recommandation_efficiency: ' . $efficacite_preconisation . ',
+			recommandation_action: jQuery("#recommandation_link_action").val(),
+			recommandation_to_update: jQuery("#recommandation_link_id").val(),
+		};
+		jQuery.post(ajaxurl, data, function(response){
+			actionMessageShow(response[0], response[2]);
+			setTimeout("actionMessageHide(response[0])", "7000");
+			if ( response[1] ) {
+				if ( response[4] == "' . TABLE_RISQUE . '" ) {
+					jQuery.post(ajaxurl, {action:"digi_ajax_load_recommandation_form", id_element:response[3] , table_element:response[4]}, function(sub_response){
+						jQuery("#digi_risk_eval_" + sub_response[0] + "_" + sub_response[1] + "_reco_container").html( sub_response[2] );
+					}, "json");
 				}
-			}, "json");
-			return false;
-		});
+				else {
+					jQuery("#ongletAjoutPreconisation").click();
+					jQuery("#recommandation_link_action").val("add");
+					jQuery("#recommandation_link_id").val("");
+				}
+			}
+		}, "json");
+		return false;
 	});
 </script>';
 		return $recommandationAssociationOutput;

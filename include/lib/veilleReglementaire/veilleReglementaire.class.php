@@ -54,11 +54,11 @@ class veilleReglementaire
 			digirisk('#comboTitrePere').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadCombo', 'nomRacine' : nomRacine, 'idSelect': idSelect, 'labelSelect': labelSelect, 'nameSelect': nameSelect, 'selection': nomPere});
 			digirisk('#divTableGroupeQuestion').load('<?php echo EVA_INC_PLUGIN_URL; ?>ajax.php', {'post': 'true', 'table': '<?php echo TABLE_GROUPE_QUESTION; ?>', 'act': 'reloadTableArborescente', 'idTable':'<?php echo 'tableGroupeQuestion';?>', 'idRacine' : <?php echo $racine->id; ?>, 'nomRacine': '<?php echo $racine->nom; ?>'});
 			return false;
-		})
+		});
 
 		digirisk('#traiter').click(function(){
 			var x = update();
-			var value_radio;
+			var value_radio = null;
 			digirisk('#texteATraiter').replaceSelection("");
 
 			jQuery("input[name=choixTitreOuQuestion]").each(function(){
@@ -281,14 +281,14 @@ class veilleReglementaire
 					<input type="radio" name="choixTitreOuQuestion" value="question" id="choixQuestion"/>
 					<label for="choixQuestion"> Question </label>
 				</li>
-				<span>
-					<a href=# class="button" id="refreshCombo"><img src="<?php echo PICTO_REFRECH;?>" alt="Rafra&icirc;chir" title="Rafra&icirc;chir la liste"></img></a>
-				</span>
+				<li>
+					<a href=# class="button" id="refreshCombo"><img src="<?php echo PICTO_REFRECH;?>" alt="Rafra&icirc;chir" title="Rafra&icirc;chir la liste" /></a>
+				</li>
 			</ul>
 			<br />
 			<div style="text-align: center; display:none;">
-				<a href='#' class="button" id="updateVeille" style="display:none;"/></a>
-				<a href='#' class="button" id="traiter"/>Ajouter &agrave; la <? echo $rubrique; ?></a>
+				<a href='#' class="button" id="updateVeille" style="display:none;" ></a>
+				<a href='#' class="button" id="traiter" >Ajouter &agrave; la <?php echo $rubrique; ?></a>
 			</div>
 		</div>
 		<br />

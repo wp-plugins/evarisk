@@ -252,7 +252,7 @@ function getMainPostBoxBody($arguments)
 
 	echo '<div style="float:right; " ><span class="digi_tree_complete_expander digi_tree_complete_expander_open pointer" >' . __('D&eacute;plier l\'arbre', 'evarisk') . '</span> / <span class="digi_tree_complete_expander digi_tree_complete_expander_close pointer" >' . __('Replier l\'arbre', 'evarisk') . '</span></div>
 		<script type="text/javascript" >
-			digirisk(document).ready(function(){
+			digirisk(document).ready(function() {
 				jQuery.fn.expandAll = function() {
 				    jQuery(this).find("tr").removeClass("collapsed").addClass("expanded").each(function(){
 				        jQuery(this).expand();

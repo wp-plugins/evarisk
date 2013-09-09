@@ -138,43 +138,43 @@ class evaRecommandationCategory
 		return $reponseRequete;
 	}
 
-/**
-*	Get the output for the recommandation categories list for a category
-*
-*	@param string $outputMode Define the output type we want to get for the recommandation categories list
-*
-*	@return mixed $categoryListOutput The complete output
-*/
-	function getCategoryRecommandationListOutput($outputMode = 'pictos', $selectedRecommandationCategory = '')
-	{
+	/**
+	 *	Get the output for the recommandation categories list for a category
+	 *
+	 *	@param string $outputMode Define the output type we want to get for the recommandation categories list
+	 *
+	 *	@return mixed $categoryListOutput The complete output
+	 */
+	function getCategoryRecommandationListOutput($outputMode = 'pictos', $selectedRecommandationCategory = '', $arguments = array()) {
 		$categoryListOutput = '';
 		$categoryList = evaRecommandationCategory::getCategoryRecommandationList();
-		if($outputMode == 'pictos')
-		{
+		$specific_container = !empty($arguments) && !empty($arguments['form_container']) ? $arguments['form_container'] . '_' : '';
+		if ($outputMode == 'pictos') {
 			$i = 0;
-			foreach($categoryList as $category)
-			{
+			foreach($categoryList as $category) {
 				$recommandationMainPicture = evaPhoto::checkIfPictureIsFile($category->photo, TABLE_CATEGORIE_PRECONISATION);
-				if(!$recommandationMainPicture)
-				{
+				if (!$recommandationMainPicture) {
 					$recommandationMainPicture = '';
 				}
-				else
-				{
+				else {
 					$checked =  $selectedClass =  '';
-					if(($selectedRecommandationCategory != '') && ($selectedRecommandationCategory == $category->id))
-					{
+					if (($selectedRecommandationCategory != '') && ($selectedRecommandationCategory == $category->id)) {
 						$checked =  ' checked="checked" ';
 						$selectedClass = 'recommandationCategorySelected';
 					}
-					$recommandationMainPicture = '<div class="alignleft recommandationCategoryBloc ' . $selectedClass . '" ><label for="recommandationCategory' . $category->id . '" ><img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($category->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $category->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($category->nom)) . '" /></label><input class="hide recommandationCategory" type="radio" ' . $checked . ' id="recommandationCategory' . $category->id . '" name="recommandationCategory" value="' . $category->id . '" /></div>';
+					$recommandationMainPicture = '
+<div class="alignleft recommandationCategoryBloc ' . $selectedClass . '" >
+	<label for="' . $specific_container . 'recommandationCategory' . $category->id . '" >
+		<img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($category->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $category->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($category->nom)) . '" />
+	</label>
+	<input class="hide ' . $specific_container . 'recommandationCategory" type="radio" ' . $checked . ' id="' . $specific_container . 'recommandationCategory' . $category->id . '" name="recommandationCategory" value="' . $category->id . '" />
+</div>';
 				}
 				$categoryListOutput .= $recommandationMainPicture;
 				$i++;
 			}
 		}
-		elseif($outputMode == 'selectablelist')
-		{
+		else if ($outputMode == 'selectablelist') {
 			$categoryListOutput = EvaDisplayInput::afficherComboBox($categoryList, 'recommandationCategory', __('Cat&eacute;gorie', 'evarisk'), 'recommandationCategory', "", "");
 		}
 

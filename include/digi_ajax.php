@@ -625,12 +625,22 @@ function digi_ajax_load_recommandation_form() {
 
 	$response[] = $table_element;
 	$response[] = $id_element;
-	$response[] = evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $id_element, 'table_element' => $table_element, 'hide_save_button' => true)) . evaRecommandation::getRecommandationListForElementOutput($table_element, $id_element, false);
+	$response[] = evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $id_element, 'table_element' => $table_element, 'hide_save_button' => true, 'form_container' => (!empty($table_element) && !empty($id_element) ? 'digi_risk_eval_' . $table_element . '_' . $id_element . '_reco_container' : 'single_preco'))) . evaRecommandation::getRecommandationListForElementOutput($table_element, $id_element, false);
 
 	echo json_encode( $response );
 	die();
 }
 add_action( 'wp_ajax_digi_ajax_load_recommandation_form', 'digi_ajax_load_recommandation_form' );
+
+function digi_ajax_load_recommandation_from_category() {
+	$outputMode = (isset($_POST['outputMode']) && ($_POST['outputMode'] != '')) ? digirisk_tools::IsValid_Variable($_POST['outputMode']) : 'pictos';
+	$id_categorie_preconisation = (isset($_POST['id_categorie_preconisation']) && ($_POST['id_categorie_preconisation'] != '') && ($_POST['id_categorie_preconisation'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['id_categorie_preconisation']) : '';
+	$arguments['form_container'] = !empty($_POST['specific_container']) ? digirisk_tools::IsValid_Variable( $_POST['specific_container'] ) : '';
+
+	echo json_encode( array(evaRecommandation::getRecommandationListByCategory($id_categorie_preconisation, $outputMode, '', $arguments)) );
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_load_recommandation_from_category', 'digi_ajax_load_recommandation_from_category' );
 
 
 function digi_ajax_regenerate_file() {

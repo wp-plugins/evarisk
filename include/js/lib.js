@@ -804,7 +804,7 @@ function main_tree_action_node(table_identifier, element_type, delete_message){
 				"id": nodeId
 			});
 		}
-	});
+	});alert(table_identifier);
 	/*	A click is detected on edit button	*/
 	jQuery("#" + table_identifier + " .edit-node").click(function(){
 		var nodeId = jQuery(this).parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");

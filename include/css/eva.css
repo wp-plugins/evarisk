@@ -1191,7 +1191,7 @@ label.digi_alert {
 /*	Fin du sommaire	*/
 
 
-#vracStatsContent {
+#vracStatsTabs div.ui-tabs-panel {
 	padding: 0px !important;
 }
 

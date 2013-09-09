@@ -814,7 +814,7 @@ class digirisk_permission
 		$user = new WP_User($_POST['user_id']);
 
 		/*	R�cup�ration des permissions envoy�es	*/
-		$userCapsList = $_POST['digi_permission'];
+		$userCapsList = !empty($_POST['digi_permission']) ? $_POST['digi_permission'] : array();
 
 		/*	R�cup�ration des permissions existantes	*/
 		$existingPermission = self::permission_list();

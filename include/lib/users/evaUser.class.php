@@ -22,13 +22,12 @@ class evaUser {
 	*
 	*	@return array $userlist An object containing the different subscriber
 	*/
-	function getUserList()
-	{
+	function getUserList() {
 		global $wpdb;
 
-		$query =
-			"SELECT USERS.ID
-			FROM " . $wpdb->users . " AS USERS";
+		$query = $wpdb->prepare(
+			"SELECT U.ID
+			FROM {$wpdb->users} AS U", '');
 		$userList = $wpdb->get_results($query);
 
 		return $userList;
@@ -43,26 +42,30 @@ class evaUser {
 
 		$listeUtilisateurs = evaUser::getUserList();
 		foreach($listeUtilisateurs as $utilisateurs){
-			if($utilisateurs->ID != 1){
-				$user_info = get_userdata($utilisateurs->ID);
+			if( $utilisateurs->ID != 1 ){
+				$user_unhiring_date = get_user_meta( $utilisateurs->ID, 'digi_unhiring_date', true );
 
-				unset($valeurs);
-				$valeurs['user_id'] = $user_info->ID;
-				$valeurs['user_registered'] = $user_info->user_registered;
-				if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) ){
-					$valeurs['user_lastname'] = $user_info->user_lastname;
-				}
-				else{
-					$valeurs['user_lastname'] = '';
-				}
-				if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) ){
-					$valeurs['user_firstname'] = $user_info->user_firstname;
-				}
-				else{
-					$valeurs['user_firstname'] = $user_info->user_nicename;
-				}
+				if ( empty($user_unhiring_date) ) {
+					$user_info = get_userdata($utilisateurs->ID);
 
-				$listeComplete[$user_info->ID] = $valeurs;
+					unset($valeurs);
+					$valeurs['user_id'] = $user_info->ID;
+					$valeurs['user_registered'] = $user_info->user_registered;
+					if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) ){
+						$valeurs['user_lastname'] = $user_info->user_lastname;
+					}
+					else{
+						$valeurs['user_lastname'] = '';
+					}
+					if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) ){
+						$valeurs['user_firstname'] = $user_info->user_firstname;
+					}
+					else{
+						$valeurs['user_firstname'] = $user_info->user_nicename;
+					}
+
+					$listeComplete[$user_info->ID] = $valeurs;
+				}
 			}
 		}
 
@@ -114,7 +117,7 @@ class evaUser {
 	*	Add the different mandatory fields for the user in case of accident
 	*/
 	function user_additionnal_field_save($user_id){
-		global $userWorkAccidentMandatoryFields;
+		global $userWorkAccidentMandatoryFields, $wpdb;
 		$user_is_valid_for_accident = 'yes';
 		foreach($userWorkAccidentMandatoryFields as $field_identifier){
 			if(isset($_REQUEST['digirisk_user_information'][$field_identifier]) && (trim($_REQUEST['digirisk_user_information'][$field_identifier]) == '')){
@@ -127,6 +130,10 @@ class evaUser {
 		if ( !empty($_REQUEST['digirisk_user_information_meta']) ) {
 			foreach ( $_REQUEST['digirisk_user_information_meta'] as $meta_key => $meta_value ) {
 				update_user_meta($user_id, $meta_key, $meta_value);
+
+				if ( ($meta_key == 'digi_unhiring_date') && !empty($meta_value) ) {
+					$update_user = $wpdb->update( TABLE_LIAISON_USER_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'date_desaffectation_reelle' => $meta_value, 'id_desAttributeur' => get_current_user_id()), array('id_user' => $user_id, 'status' => 'valid') );
+				}
 			}
 		}
 	}
@@ -561,10 +568,11 @@ $user_additionnal_field .= '
 	function stats_builder() {
 		global $wpdb;
 
-// 		1 AS EXPORT_USER,
 		$query = $wpdb->prepare(
 				"SELECT
+
 				1 AS EXPORT_USER,
+
 				(
 					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
 					FROM " . $wpdb->prefix . "users AS U
@@ -574,6 +582,7 @@ $user_additionnal_field .= '
 				(
 					SELECT GROUP_CONCAT( DISTINCT( USER_LINK_EVALUATION.id_user ) )
 					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
+						INNER JOIN {$wpdb->users} AS U ON (U.ID = USER_LINK_EVALUATION.id_user)
 					WHERE ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') OR (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
 						OR (
 							(USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "')
@@ -627,6 +636,7 @@ $user_additionnal_field .= '
 
 		return $user_stats;
 	}
+
 	/**
 	 *
 	 */
@@ -754,7 +764,7 @@ $user_additionnal_field .= '
 					list_to_display: jQuery("#list2display_" + jQuery(this).attr("id")).val(),
 				};
 				jQuery.post("' . admin_url('admin-ajax.php') . '", data, function( response ){
-					jQuery("#digi_stats_user_dialog").dialog("option", "title", response[0]);
+					jQuery("#digi_stats_user_dialog").dialog("option", "title", digi_html_accent_for_js( response[0] ) );
 					jQuery("#digi_stats_user_dialog").html( response[1] );
 				}, "json");
 			}
@@ -820,7 +830,7 @@ $user_additionnal_field .= '
 
 		/**	Display user list asked for the current interface	*/
 		$user_list_2_display = explode( ',', $_POST['list_to_display'] );
-		if ( !empty( $user_list_2_display ) && (count($user_list_2_display ) != 1) && !empty($user_list_2_display[0]) ) {
+		if ( !empty( $user_list_2_display ) && (count($user_list_2_display ) >= 1) && !empty($user_list_2_display[0]) ) {
 			$output .= self::display_user_list( $user_list_2_display );
 		}
 		else if ( $_POST['type'] == 'users_mouvement' ) {
@@ -1848,14 +1858,14 @@ $user_additionnal_field .= '
 		jQuery(".choose_model").click(function(){
 			var current_element = jQuery(this).attr("id").replace("modelDefaut_", "");
 			var current_element_spec = current_element.split("_-digi-_");
-			setTimeout(function(){
-				if(!jQuery("#modelDefaut_" + current_element).is(":checked")){
+			setTimeout( function() {
+				if ( !jQuery("#modelDefaut_" + current_element).is(":checked") ) {
 					jQuery("#documentUniqueResultContainer_" + current_element).html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 					jQuery("#documentUniqueResultContainer_" + current_element).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement": current_element_spec[0] + "_FEP", "idElement": current_element_spec[1]});
 					jQuery("#modelListForGeneration_" + current_element).load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement": current_element_spec[0] + "_FEP", "idElement": current_element_spec[1], "category":"fiche_exposition_penibilite", "selection":""});
 					jQuery("#modelListForGeneration_" + current_element).show();
 				}
-				else{
+				else {
 					jQuery("#documentUniqueResultContainer_" + current_element).html("");
 					jQuery("#modelListForGeneration_" + current_element).html("");
 					jQuery("#modelListForGeneration_" + current_element).hide();

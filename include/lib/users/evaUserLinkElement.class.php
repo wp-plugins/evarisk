@@ -8,14 +8,15 @@
 */
 
 class evaUserLinkElement {
+
 	/**
-	*	Output a table with the different users binded to an element
-	*
-	*	@param mixed $tableElement The element type we want to get the user list for
-	*	@param integer $idElement The element identifier we want to get the user list for
-	*
-	*	@return mixed $utilisateursMetaBox The entire html code to output
-	*/
+	 *	Output a table with the different users binded to an element
+	 *
+	 *	@param mixed $tableElement The element type we want to get the user list for
+	 *	@param integer $idElement The element identifier we want to get the user list for
+	 *
+	 *	@return mixed $utilisateursMetaBox The entire html code to output
+	 */
 	function afficheListeUtilisateurTable($tableElement, $idElement) {
 		$utilisateursMetaBox = '';
 		$idBoutonEnregistrer = 'save_group' . $tableElement;
@@ -313,7 +314,7 @@ class evaUserLinkElement {
 			if ( jQuery(this).attr("id") ) {
 				var current_table_element = jQuery(this).closest("div .userListOutput").attr("id").replace("userListOutput", "");
 				userDivId = jQuery(this).attr("id").replace("affectedUser" + current_table_element, "");
-				deleteUserIdFiedList(userDivId, current_table_element);
+				//deleteUserIdFiedList(userDivId, current_table_element);
 			}
 		});
 

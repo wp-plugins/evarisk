@@ -749,7 +749,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 		/**	Add recommandation on the risk	*/
 		$recommandation_linked_to_risk = '';
-		$recommandation_linked_to_risk .= evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $idRisque, 'table_element' => TABLE_RISQUE, 'hide_save_button' => true));
+		$recommandation_linked_to_risk .= evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $idRisque, 'table_element' => TABLE_RISQUE, 'hide_save_button' => true, 'form_container' => 'digi_risk_eval_' . TABLE_RISQUE . '_' . $idRisque . '_reco_container'));
 		if ( !empty($recommandation_linked_to_risk) ) {
 			$formRisque .= '<div class="digi_clear" ></div><fieldset><legend>' . __('Pr&eacute;conisations', 'evarisk') . '</legend><div id="digi_risk_eval_' . TABLE_RISQUE . '_' . $idRisque . '_reco_container" >' . $recommandation_linked_to_risk . evaRecommandation::getRecommandationListForElementOutput(TABLE_RISQUE, $idRisque, false) . '</div></fieldset>';
 		}

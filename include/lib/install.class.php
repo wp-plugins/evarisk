@@ -1179,7 +1179,7 @@ class digirisk_install	{
 
 			case 83:
 				/**	Store Hiring and unHirring date for users in other way to get fast request	*/
-				$query = $wpdb->prepare( "SELECT U.ID FROM " . $wpdb->users . " AS U" );
+				$query = $wpdb->prepare( "SELECT U.ID FROM " . $wpdb->users . " AS U", '' );
 				$users = $wpdb->get_results( $query );
 				if ( !empty($users) ) {
 					foreach ( $users as $user) {
@@ -1205,6 +1205,14 @@ class digirisk_install	{
 			case 84:
 				$wpdb->update( TABLE_GED_DOCUMENTS, array('categorie' => 'fiche_exposition_penibilite'), array('categorie' => 'fiches_de_penibilite') );
 				$wpdb->update( TABLE_FP, array('document_type' => 'fiche_exposition_penibilite'), array('document_type' => 'fiches_de_penibilite') );
+			break;
+
+			case 85:
+				$query = $wpdb->prepare( "SELECT user_id, meta_value FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value != NULL", 'digi_unhiring_date' );
+				$user_to_unassociate = $wpdb->get_results( $query );
+				foreach ( $user_to_unassociate as $user_meta ) {
+					$update_user = $wpdb->update( TABLE_LIAISON_USER_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'date_desaffectation_reelle' => $user_meta->meta_value, 'id_desAttributeur' => get_current_user_id()), array('id_user' => $user_meta->user_id, 'status' => 'valid') );
+				}
 			break;
 		}
 	}

@@ -3990,12 +3990,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					}
 					break;
 
-					case 'loadRecomandationOfCategory':
-						$outputMode = (isset($_REQUEST['outputMode']) && ($_REQUEST['outputMode'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['outputMode']) : 'pictos';
-						$id_categorie_preconisation = (isset($_REQUEST['id_categorie_preconisation']) && ($_REQUEST['id_categorie_preconisation'] != '') && ($_REQUEST['id_categorie_preconisation'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_categorie_preconisation']) : '';
-						echo evaRecommandation::getRecommandationListByCategory($id_categorie_preconisation, $outputMode);
-					break;
-
 					case 'deleteRecommandationLink':
 					{
 						$id = (isset($_REQUEST['id']) && ($_REQUEST['id'] != '') && ($_REQUEST['id'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id']) : '';
@@ -4050,7 +4044,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$selectRecommandation['preconisation_type'] = $selectedRecommandation[0]->preconisation_type;
 						}
 
-						echo evaRecommandation::recommandationAssociation($outputMode, $selectRecommandation);;
+						echo evaRecommandation::recommandationAssociation($outputMode, $selectRecommandation, array('form_container' => 'single_preco') );
 					}
 					break;
 				}

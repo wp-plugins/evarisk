@@ -93,12 +93,10 @@ class Arborescence {
 		return $resultat;
 	}
 
-	static function getFils($table, $element, $order = "id ASC", $numeroPage = null, $nombreElementsParPage = null, $where = " Status='Valid' ")
-	{
+	static function getFils($table, $element, $order = "id ASC", $numeroPage = null, $nombreElementsParPage = null, $where = " Status='Valid' ") {
 		global $wpdb;
 		$limit = "";
-		if($nombreElementsParPage != null)
-		{
+		if ($nombreElementsParPage != null) {
 			$limit = "
 		LIMIT " . ($numeroPage - 1) . ", " . $nombreElementsParPage;
 		}

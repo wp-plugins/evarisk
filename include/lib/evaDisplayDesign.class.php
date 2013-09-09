@@ -648,10 +648,8 @@ class EvaDisplayDesign {
 	{
 		$elements = $monCorpsTable = $class = $infoRacine = $tableArborescente = '';
 		$showTrashUtilities = false;
-		switch($table)
-		{
+		switch ($table) {
 			case TABLE_GROUPEMENT:
-			{
 				$elements = Arborescence::getFils($table, $racine, "nom ASC");
 				$sousTable = TABLE_UNITE_TRAVAIL;
 				$subElements = EvaGroupement::getUnitesDuGroupement($racine->id);
@@ -680,10 +678,8 @@ class EvaDisplayDesign {
 							<td colspan="' . ($actionSize - 3) . '" >&nbsp;</td>
 							<td class="noPadding trash" id="trash' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . EVA_IMG_ICONES_PLUGIN_URL . 'trash.png" alt="Trash" title="' . __('Acc&eacute;der &agrave; la corbeille', 'evarisk') . '" /></td>';
 				}
-			}
 			break;
 			case TABLE_CATEGORIE_DANGER:
-			{
 				$elements = Arborescence::getFils($table, $racine, "nom ASC");
 				$sousTable = TABLE_DANGER;
 				$subElements = categorieDangers::getDangersDeLaCategorie($racine->id);
@@ -713,26 +709,24 @@ class EvaDisplayDesign {
 							<td colspan="' . ($actionSize - 2) . '" >&nbsp;</td>
 							<td class="noPadding trash" id="trash' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . EVA_IMG_ICONES_PLUGIN_URL . 'trash.png" alt="Trash" title="' . __('Acc&eacute;der &agrave; la corbeille', 'evarisk') . '" /></td>';
 				}
-			}
 			break;
 			case TABLE_TACHE:
-			{
-				$elements = Arborescence::getFils($table, $racine, "nom ASC");
+				$elements = Arborescence::getFils( $table, $racine, "nom ASC" );
 				$sousTable = TABLE_ACTIVITE;
-        $tacheRacine = new EvaTask($racine->id);
-        $tacheRacine->load();
-				$subElements = $tacheRacine->getWPDBActivitiesDependOn();
+		        $tacheRacine = new EvaTask( $racine->id );
+		        $tacheRacine->load( );
+				$subElements = $tacheRacine->getWPDBActivitiesDependOn( );
 				$divDeChargement = 'message';
-				$titreInfo = __("Avancement", 'evarisk');
-				$nomRacine = __('T&acirc;ches', 'evarisk');
+				$titreInfo = __( 'Avancement', 'evarisk' );
+				$nomRacine = __( 'T&acirc;ches', 'evarisk' );
 				$actionSize = 4;
 				$actions = '
 						<td class="noPadding addMain" id="addMain' . $racine->id . '">';
-				if(current_user_can('digi_add_task')){
+				if ( current_user_can('digi_add_task') ) {
 					$actions .=
 							'<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_ADD_TACHE . '" alt="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" title="' . sprintf(__('Ajouter %s', 'evarisk'), __('une t&acirc;che', 'evarisk')) . '" />';
 				}
-				else{
+				else {
 					$actions .= '&nbsp;';
 				}
 				$actions .= '
@@ -741,16 +735,14 @@ class EvaDisplayDesign {
 				$addSecondaryPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_LTL_ADD_ACTIVITE . '\' alt=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' title=\'' . sprintf(__('Ajouter %s', 'evarisk'), __('une action', 'evarisk')) . '\' />';
 				/*	Add trash	*/
 				$main_option = get_option('digirisk_options');
-				if(($main_option['digi_activ_trash'] == 'oui') && (current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash'))){
+				if ( ( $main_option['digi_activ_trash'] == 'oui' ) && ( current_user_can('digi_view_groupement_trash') || current_user_can('digi_view_unite_trash') ) ) {
 					$showTrashUtilities = true;
 					$actions .= '
 							<td colspan="' . ($actionSize - 2) . '" >&nbsp;</td>
 							<td class="noPadding trash" id="trash' . $racine->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"  src="' . EVA_IMG_ICONES_PLUGIN_URL . 'trash.png" alt="Trash" title="' . __('Acc&eacute;der &agrave; la corbeille', 'evarisk') . '" /></td>';
 				}
-			}
 			break;
 			case TABLE_GROUPE_QUESTION:
-			{
 				$elements = Arborescence::getFils($table, $racine, "code ASC");
 				$sousTable = TABLE_QUESTION;
 				$subElements = EvaGroupeQuestions::getQuestionsDuGroupeQuestions($racine->id);
@@ -763,12 +755,11 @@ class EvaDisplayDesign {
 							<td></td>';
 				$addMainPicture = '<img style=\'width:' . TAILLE_PICTOS_ARBRE . ';\' src=\'' .PICTO_INSERT . '\' alt=\'' . __('Inserer sous le titre', 'evarisk') . '\' title=\'' . __('Inserer sous le titre', 'evarisk') . '\' />';
 				$addSecondaryPicture = '';
-			}
 			break;
 		}
+
 		$trouveElement = count($elements);
-		if($trouveElement)
-		{
+		if ( $trouveElement ) {
 			$monCorpsTable = EvaDisplayDesign::getCorpsTableArborescence($elements, $racine, $table, $titreInfo, $idTable);
 		}
 		$monCorpsSubElements = '';
@@ -910,7 +901,7 @@ class EvaDisplayDesign {
 		}
 
 		$tableArborescente .= '
-				<table id="' . $idTable . '" cellspacing="0" class="widefat post fixed">
+				<table id="' . $idTable . '" style="border-spacing: 0px; border-collapse: collapse;" class="widefat post fixed">
 					<thead>
 						<tr>
 							<th >' . $nomRacine . '</th>';
@@ -1510,20 +1501,17 @@ class EvaDisplayDesign {
 				</tr>';
 		}
 
-		if(count($elementsFils) != 0)
-		{
-			foreach ($elementsFils as $element )
-			{
+		if (count($elementsFils) != 0) {
+			foreach ($elementsFils as $element ) {
 				$elements_fils = '';
 				$elements_fils = Arborescence::getFils($table, $element, "nom ASC");
 				$elements_pere = Arborescence::getPere($table, $element, " Status = 'Deleted' ");
+				$elements_pere_valid = Arborescence::getPere($table, $element, " Status = 'Valid' ");
 				$ddNoeudClass = 'noeudArbre';
 				$nomNoeudClass = 'nomNoeudArbre';
 
-				if(count($elements_pere) <= 0)
-				{
-					switch($table)
-					{
+				if (count($elements_pere) <= 0) {
+					switch ($table) {
 						case TABLE_CATEGORIE_DANGER :
 							$sousTable = TABLE_DANGER;
 							$subElements = categorieDangers::getDangersDeLaCategorie($element->id);

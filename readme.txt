@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
-Tested up to: 3.5.2
-Stable tag: 5.1.7.3
+Tested up to: 3.6.0
+Stable tag: 5.1.7.4
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,21 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.7.4 = 
+
+Am&eacute;liorations
+
+* ST445 - D&eacute;saffectation automatique des utilisateurs ayant quitt&eacute; la soci&eacute;t&eacute; (Lors de l'enregistrement de la date de sortie de la personne, toutes ses affectations sont supprim&eacute;es)
+
+Corrections
+
+* ST441 - Liste des personnes ayant quitt&eacute;s la soci&eacute;t&eacute; dans les statistiques du tableau de bord
+* ST442 - Affichage du bloc statistiques sur le tableau de bord
+* ST443 - Affectation des pr&eacute;conisations (Lors de l'affectation de pr&eacute;conisation sur un &eacute;l&eacute;ment de l'arborescence, la pr&eacute;conisation par d&eacute;faut de la famille &eacute;tait prise et non celle choisie)
+* ST444 - Ne reprendre que les utilisateurs n'ayant pas quitt&eacute; la soci&eacute;t&eacute; dans les listes des utilisateurs
+* ST446 - Conflit de formulaire pour l'affectation des pr&eacute;conisations (Lors de l'&eacute;dition d'un risque, si on souhaitait affecter une pr&eacute;conisation en m&ecirc;me temps suivant l'ordre d'affichage les pr&eacute;conisations ne s'affichait pas au bon endroit)
+* ST447 - Affichage d'un message d'erreur lors de la d&eacute;saffectation d'un utilisateur concernant la date
 
 = Version 5.1.7.3 = 
 

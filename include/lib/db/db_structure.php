@@ -1800,3 +1800,8 @@ CREATE TABLE {$t} (
 	$digirisk_db_version = 84;
 	$digirisk_update_way[$digirisk_db_version] = 'data';
 }
+
+{/*	Version 85	*/
+	$digirisk_db_version = 85;
+	$digirisk_update_way[$digirisk_db_version] = 'data';
+}

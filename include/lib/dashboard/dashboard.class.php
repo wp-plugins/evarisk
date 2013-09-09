@@ -149,14 +149,10 @@ class dashboard {
 					<li><a href="' . admin_url( 'admin-ajax.php' ) . '?action=digi_ajax_stats_user" title="vracStatsContent" >' . __('Personnel', 'evarisk') . '</a></li>
 					<li><a href="' . admin_url( 'admin-ajax.php' ) . '?action=digi_ajax_risk_stats" title="vracStatsContent" >' . __('Risques', 'evarisk') . '</a></li>
 				</ul>
-				<div id="vracStatsContent"><img src="' . PICTO_LOADING_ROUND . '" /></div>
 			</div>
 			<script type="text/javascript" >
 				digirisk(document).ready(function(){
 					digirisk("#vracStatsTabs").tabs();
-					digirisk("#vracStatsTabs ul li a").click(function(){
-						digirisk("#vracStatsContent").html(digirisk("#loadingPicContainer").html());
-					});
 				});
 			</script>';
 
