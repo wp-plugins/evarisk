@@ -347,8 +347,7 @@ WHERE R.id = %d", $id_element);
 		return $outputContent;
 	}
 
-	function taskContent($id)
-	{
+	function taskContent($id) {
 		$tache = new EvaTask($id);
 		$tache->load();
 		$TasksAndSubTasks = $tache->getDescendants();

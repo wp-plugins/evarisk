@@ -730,37 +730,30 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					}
 					break;
 					case 'reloadComboDangers':
-					{
 						$formId = digirisk_tools::IsValid_Variable($_REQUEST['formId']);
 						$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
 						$dangers = categorieDangers::getDangersDeLaCategorie($idElement, 'Status="Valid"');
 						$script = '';
-						if($dangers[0]->id != null)
-						{
+						if ( $dangers[0]->id != null ) {
 							$script .= '
 								<script type="text/javascript">
 									evarisk(document).ready(function(){
 										evarisk("#needDangerCategory").show();';
-										if(count($dangers) > 1)
-										{
-											$script .=
-										'
+							if ( count($dangers) > 1 ) {
+								$script .= '
 										evarisk("#' . $formId . 'divDangerFormRisque").show();
 										evarisk("#boutonAvanceRisque").children("span:first").html("-");';
-										}
-										else
-										{
-											$script .=
-										'
+							}
+							else {
+								$script .= '
 										evarisk("#' . $formId . 'divDangerFormRisque").hide();
 										evarisk("#boutonAvanceRisque").children("span:first").html("+");';
-										}
+							}
 							$script .=
 									'})
 								</script>';
 						}
-						else
-						{
+						else {
 							$script .= '
 <script type="text/javascript">
 	evarisk(document).ready(function(){
@@ -768,44 +761,34 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 	})
 </script>';
 						}
-                                                // V�rification s'il s'agit d'un danger par d�faut
-                                                $nomDangerDefaut = '';
+						$nomDangerDefaut = '';
+						foreach($dangers as $danger) {
+                            $methode = 1;
+                            if ( $danger->choix_danger != "" ) {
+                                $tableau = unserialize($danger->choix_danger);
+                                if(in_array("defaut", $tableau)) {
+                                    $nomDangerDefaut = $danger;
+								}
+                                if ( in_array("penibilite", $tableau) ) {
+                                    $methode = $danger->methode_eva_defaut;
+                                }
+							}
+                            $script .= '<input type="hidden" value="'.$methode.'" id="methode_danger_'.$danger->id.'" />';
+                        }
 
-                                                foreach($dangers as $danger)
-                                                {
-                                                    $methode = 1;
-                                                    if($danger->choix_danger != "")
-                                                    {
-                                                        $tableau = unserialize($danger->choix_danger);
-                                                        if(in_array("defaut", $tableau))
-                                                        {
-                                                            $nomDangerDefaut = $danger;
-					}
-                                                        if(in_array("penibilite", $tableau))
-                                                        {
-                                                            $methode = $danger->methode_eva_defaut;
-                                                        }
-                                                      }
-                                                      $script .= '<input type="hidden" value="'.$methode.'" id="methode_danger_'.$danger->id.'" />';
-                                                }
+                       $script .= '
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery("#dangerFormRisque").change(function(){
+		jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery(this).val()).val() );
 
-                                                        $script .= '<script type="text/javascript">
-                                                                 jQuery(document).ready(function(){
-                                                                    jQuery("#dangerFormRisque").change(function()
-                                                                    {
-                                                                        jQuery("#methodeFormRisque option[value="+jQuery(this).val()+"]").attr("selected", "selected");
-
-                                                                     	digirisk("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-                                                                        digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_"+jQuery(this).val()).val(), "idRisque": "' . $idElement . '"});
-
-                                                                    });
-                                                                 })
-                                                                </script>';
+		digirisk("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
+		digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery(this).val()).val(), "idRisque": "0"});
+	});
+})
+</script>';
 
 						echo $script . EvaDisplayInput::afficherComboBox($dangers, $formId . 'dangerFormRisque', __('Dangers de la cat&eacute;gorie', 'evarisk') . ' : ', 'danger', '', $nomDangerDefaut);
-
-
-                                        }
 					break;
 				}
 			break;
@@ -872,20 +855,24 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risquePersistance.php');
 
 						/**	Save recommandation associated to this risk	*/
-						$recommandation_id = isset($_REQUEST['recommandation']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation'])) : '';
-						$recommandation_efficacite = isset($_REQUEST['recommandation_efficacite']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_efficacite'])) : '';
-						$recommandation_type = isset($_REQUEST['recommandation_type']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_type'])) : '';
-						$recommandation_commentaire = isset($_REQUEST['recommandation_commentaire']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_commentaire'])) : '';
-						$recommandationsinformations = array();
-						$recommandationsinformations['id_preconisation'] = $recommandation_id;
-						$recommandationsinformations['efficacite'] = $recommandation_efficacite;
-						$recommandationsinformations['commentaire'] = $recommandation_commentaire;
-						$recommandationsinformations['preconisation_type'] = $recommandation_type;
-						$recommandationsinformations['id_element'] = $idRisque;
-						$recommandationsinformations['table_element'] = TABLE_RISQUE;
-						$recommandationsinformations['status'] = 'valid';
-						$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
-						$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+						$recommandation_ids = isset($_REQUEST['recommandation']) ? $_REQUEST['recommandation'] : '';
+						if ( is_array($recommandation_ids) && !empty($recommandation_ids) ) {
+							foreach ( $recommandation_ids as $recommandation_id ) {
+								$recommandation_efficacite = isset($_REQUEST['recommandation_efficacite']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_efficacite'])) : '';
+								$recommandation_type = isset($_REQUEST['recommandation_type']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_type'])) : '';
+								$recommandation_commentaire = isset($_REQUEST['recommandation_commentaire']) ? (digirisk_tools::IsValid_Variable($_REQUEST['recommandation_commentaire'])) : '';
+								$recommandationsinformations = array();
+								$recommandationsinformations['id_preconisation'] = $recommandation_id;
+								$recommandationsinformations['efficacite'] = $recommandation_efficacite;
+								$recommandationsinformations['commentaire'] = $recommandation_commentaire;
+								$recommandationsinformations['preconisation_type'] = $recommandation_type;
+								$recommandationsinformations['id_element'] = $idRisque;
+								$recommandationsinformations['table_element'] = TABLE_RISQUE;
+								$recommandationsinformations['status'] = 'valid';
+								$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
+								$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+							}
+						}
 
 						$follow_up_content = !empty($_REQUEST['follow_up_content']) ? (digirisk_tools::IsValid_Variable($_REQUEST['follow_up_content'])) : '';
 						$follow_up_export = isset($_REQUEST['follow_up_export']) ? (digirisk_tools::IsValid_Variable($_REQUEST['follow_up_export'])) : '';
@@ -1055,8 +1042,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					}
 					break;
 
-					case 'loadAssociatedTask':
-					{
+					case 'loadAssociatedTask': {
 						$id_risque = (!empty($_REQUEST['idRisque'])?digirisk_tools::IsValid_Variable($_REQUEST['idRisque']):'');
 						$extra = (!empty($_REQUEST['extra'])?digirisk_tools::IsValid_Variable($_REQUEST['extra']):'');
 						$idElement = (!empty($_REQUEST['idElement'])?digirisk_tools::IsValid_Variable($_REQUEST['idElement']):'');
@@ -1064,7 +1050,8 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						$idTable = 'loadAssociatedTask_' . $extra . '_' . $id_risque;
 						/*	Get the different corrective actions for the actual risk	*/
 						$actionsCorrectives = '';
-						$tachesActionsCorrectives = actionsCorrectives::get_activity_associated_to_risk('', '', array($id_risque => ''), array('hasPriority' => "yes"));
+						$risk_list = array($id_risque => $id_risque, );
+						$tachesActionsCorrectives = actionsCorrectives::get_activity_associated_to_risk('', '', $risk_list, array('hasPriority' => "yes"));
 						if(count($tachesActionsCorrectives[0]) > 0){
 							$hasActions = true;
 							$spacer = '';
@@ -1204,22 +1191,11 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 				</script>';
 						}
 						else{
-							//$actionsCorrectives .= __('Aucune action n\'est associ&eacute;e &agrave; ce risque', 'evarisk');
+							$actionsCorrectives .= __('Aucune action n\'est associ&eacute;e &agrave; ce risque', 'evarisk');
 						}
 
 						echo $actionsCorrectives;
 					}
-					break;
-
-					case 'reload_risk_cotation':
-						$score_risque = digirisk_tools::IsValid_Variable($_POST['score_risque']);
-						$date = digirisk_tools::IsValid_Variable($_REQUEST['date']);
-						$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode']);
-						$niveauSeuil = digirisk_tools::IsValid_Variable($_REQUEST['niveauSeuil']);
-
-						$quotation = Risque::getEquivalenceEtalon($idMethode, $score_risque, $date);
-						$seuil = (int)Risque::getSeuil($quotation);
-						echo $quotation . '<script type="text/javascript" >digirisk(document).ready(function(){	jQuery("#niveau_seuil_courant").val("' . $seuil . '"); jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '"); jQuery(".qr_risk").addClass("Seuil_' . $seuil . '");	});</script>';
 					break;
 
 					case 'load_quote_validation':
@@ -1256,11 +1232,11 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 						echo $output;
 					break;
 
-					case 'copy_risk':{
+					case 'copy_risk':
 						$new_element = explode('-_-', $_REQUEST['new_element']);
 						/*	Get risk last evaluation	*/
 						$query = $wpdb->prepare(
-"SELECT R.id_danger, R.id_methode, R.id_element, R.nomTableElement, R.commentaire, R.date,
+"SELECT R.*,
 	R_EVAL.id_variable, R_EVAL.valeur, R_EVAL.idEvaluateur, R_EVAL.date, R_EVAL.Status
 FROM " . TABLE_RISQUE . " AS R
 	INNER JOIN " . TABLE_AVOIR_VALEUR . " AS R_EVAL ON ((R_EVAL.id_risque = R.id) AND (R_EVAL.Status = 'Valid'))
@@ -1275,9 +1251,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$idMethode = $risq_info[0]->id_methode;
 						$tableElement = $new_element[0];
 						$idElement = $new_element[1];
-						$description = $risq_info[0]->commentaire;
+						$description = '';//$risq_info[0]->commentaire;
+						$date_debut = '';//$risq_info[0]->dateDebutRisque;
+						$date_fin = '';//$risq_info[0]->dateFinRisque;
 						$histo = false;
-						$new_risk = Risque::saveNewRisk('', $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+						$new_risk = Risque::saveNewRisk('', $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo, $date_debut, $date_fin);
 
 						$message = '';
 						$more_action = '';
@@ -1300,7 +1278,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	jQuery("#loading_picto_risk_mover_container").hide();
 	jQuery("#button_risk_mover_container").show();' . $more_action . '
 </script>';
-					}break;
+					break;
 					case 'move_risk':{
 						$new_element = explode('-_-', $_REQUEST['new_element']);
 						$update_result = $wpdb->update(TABLE_RISQUE, array('last_moved_date' => current_time('mysql', 0), 'id_element' => $new_element[1], 'nomTableElement' => $new_element[0]), array('id' => $_REQUEST['id_risque']));
@@ -1342,11 +1320,15 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tableElement = (!empty($_REQUEST['tableElement'])?digirisk_tools::IsValid_Variable($_REQUEST['tableElement']):'');
 						$formId = (isset($_REQUEST['formId'])) ? digirisk_tools::IsValid_Variable($_REQUEST['formId']) : '';
 						unset($valeurInitialVariables);
+						$is_closed = false;
 						if($idRisque != ''){
 							$risque = Risque::getRisque($idRisque);
 							foreach($risque as $ligneRisque){
 								$idMethode = ($idMethode == '') ? $ligneRisque->id_methode : $idMethode;
 								$valeurInitialVariables[$ligneRisque->id_variable] = $ligneRisque->valeur;
+							}
+							if ( $risque[0]->risk_status == 'closed' ) {
+								$is_closed = true;
 							}
 						}
 						$variables = MethodeEvaluation::getDistinctVariablesMethode($idMethode);
@@ -1361,7 +1343,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								$valeurInitialVariable = $variable->min;
 							}
 
-
 							{//Affichage de la variable
 								$query = $wpdb->prepare("SELECT * FROM " . TABLE_VALEUR_ALTERNATIVE . " WHERE id_variable = %d and Status = %s", $variable->id, 'Valid');
 								$existing_alternativ_vars = $wpdb->get_results($query);
@@ -1370,8 +1351,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										$affichage .= '<input type="hidden" value="' . $alternativ->valeurAlternative . '" id="' . $formId . 'slider-range-min' . $variable->id . '_alternativ_' . $alternativ->valeur . '" name="' . $formId . 'slider-range-min' . $variable->id . '_alternativ_' . $alternativ->valeur . '" />';
 									}
 								}
-								if ($variable->affichageVar == "slide") {
-									$vars_scripts .= '
+								if ( $variable->affichageVar == "slide" ) {
+									if ( !$is_closed ) {
+										$vars_scripts .= '
 										jQuery("#' . $formId . 'slider-range-min' . $variable->id . '").slider({
 											range: "min",
 											value: ' . $valeurInitialVariable . ',
@@ -1390,7 +1372,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 											}
 										});
 										jQuery("#' . $formId . 'var' . $variable->id . 'FormRisque").val(jQuery("#' . $formId . 'slider-range-min' . $variable->id . '").slider("value"));';
-
+									}
 									$affichage .= '
 									<label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '">' . ELEMENT_IDENTIFIER_V . $variable->id . ' - ' . $variable->nom . ' :</label>
 									<input value="' . $valeurInitialVariable . '" type="text" class="sliderValue digi_method_var_value" readonly="readonly" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '" name="' . $formId . 'variables[' . $variable->id . ']" />
@@ -1402,8 +1384,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
                                  	$tableau = unserialize($variable->questionVar);
                                  	$i = $variable->min;
                                  	foreach ($tableau as $t) {
-                                 		$checked = ($i == $valeurInitialVariable) ? ' checked="checked"' : '';
-                                 		$affichage.= '<input type="radio" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="digi_method_var_value score_risque_checkbox" value="'.$i.'" /><label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '" >'.(strpos($t['question'], '%s') ? sprintf($t['question'], $t['seuil']) : $t['question']).'</label><br/>';
+                                 		if ( !$is_closed ) {
+                                 			$checked = ($i == $valeurInitialVariable) ? ' checked="checked"' : '';
+                                 			$affichage.= '<input type="radio" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '"'.$checked.' name="' . $formId . 'variables[' . $variable->id . ']" class="digi_method_var_value score_risque_checkbox" value="'.$i.'" /><label for="' . $formId . '_digi_eval_method_var_' . $variable->id . '-x-' . $i . '" >'.(strpos($t['question'], '%s') ? sprintf($t['question'], $t['seuil']) : $t['question']).'</label><br/>';
+                                 		}
+                                 		else if ( $i == $valeurInitialVariable ) {
+                                 			$affichage.=(strpos($t['question'], '%s') ? sprintf($t['question'], $t['seuil']) : $t['question']);
+                                 		}
                                  		$i++;
                                  	}
 			                    	$affichage .='<input type="hidden" id="' . $formId . '_digi_eval_method_var_' . $variable->id . '" value="" />
@@ -1424,12 +1411,67 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									});
 								</script>';
 						$quotation = 0;
-						if(!empty($risque)){
+						if ( !empty($risque) ) {
 							$score = Risque::getScoreRisque($risque);
 							$quotation = Risque::getEquivalenceEtalon($idMethode, $score);
 						}
 						$niveauSeuil = Risque::getSeuil($quotation);
-						$affichage .= '<input type="hidden" value="' . $niveauSeuil . '" id="niveau_seuil_courant" /><div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div><div class="clear" ></div></div>';
+						$affichage .= '<input type="hidden" value="' . $niveauSeuil . '" id="niveau_seuil_courant" /><input type="hidden" value="' . $quotation . '" id="current_qr" /><div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div><div class="clear" ></div></div>';
+
+						/**	Add possibility to define a date for risk evaluation	*/
+						$date_shortcode = '';
+						$employer_date = null;
+						switch ( $tableElement ) {
+							case TABLE_GROUPEMENT:
+								$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $idElement );
+								$current_groupement_infos = $wpdb->get_row( $query );
+								if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
+									$employer_date = $current_groupement_infos->creation_date_of_society;
+								}
+								else {
+									$employer_date = EvaGroupement::get_closest_employer( $idElement );
+								}
+							break;
+							case TABLE_UNITE_TRAVAIL:
+								$query = $wpdb->prepare("SELECT id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $idElement);
+								$current_work_unit_parent = $wpdb->get_var( $query );
+								$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $current_work_unit_parent );
+								$current_groupement_infos = $wpdb->get_row( $query );
+								if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
+									$employer_date = $current_groupement_infos->creation_date_of_society;
+								}
+								else {
+									$employer_date = EvaGroupement::get_closest_employer( $current_work_unit_parent );
+								}
+							break;
+						}
+						if ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') ) {
+							$date_shortcode = ' / <input type="hidden" value="' . substr( $employer_date, 0, -3 ) . '" id="digi_parent_creation_date" /><span id="digi_use_parent_date_for_risk" style="font-style: italic;cursor: pointer;" >' . __('Date de cr&eacute;ation du groupement employeur', 'evarisk') . '</span>';
+						}
+						$affichage .= '
+<div class="risk_date_change" >
+	' . __('Date de début du risque', 'evarisk') . '
+	<div>
+		<input type="text" name="digi_risk_date_start" id="digi_risk_date_start" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
+		' . ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateDebutRisque) && ( $risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateDebutRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_date_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' . $date_shortcode : '') . '
+	</div>
+</div>
+				<!--
+<div class="risk_date_change" >
+	' . __('Date d\'&eacute;valuation du risque', 'evarisk') . '
+	<div>
+		<input type="text" name="digi_risk_evaluation_date" id="digi_risk_evaluation_date" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
+		' . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_evaluation_date" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
+	</div>
+</div>
+				-->
+<div class="risk_date_change" >
+	' . __('Date de fin du risque', 'evarisk') . '
+	<div>
+		<input type="text" name="digi_risk_end_start" id="digi_risk_end_start" value=""' . ($is_closed ? ' disabled="disabled"' : '' ) . ' />
+		' . ( !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $risque[0]->dateDebutRisque )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" />' : ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_end_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
+	</div>
+</div>';
 
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
@@ -1457,7 +1499,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						echo '
 <div class="eval_method_var" >' . $affichage . '</div><div class="eval_method_explanation" >' . $methodExplanationPicture . '</div>';
-						if(!empty($risque)){
+						if(!empty($risque) ) {
 							echo '
 <div class="clear risq_mover_container" >
 	<div id="risq_mover_title" class="alignright" >' . __('D&eacute;placer ce risque', 'evarisk') . '</div>
@@ -1469,19 +1511,147 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 			<span class="auto-search-ui-icon ui-icon" >&nbsp;</span>
 		</div>
 		<div class="clear hide alignright" id="loading_picto_risk_mover_container" >&nbsp;</div>
-		<div class="clear" id="button_risk_mover_container" >
-			<input type="buttton" name="move_risk" id="move_risk" value="' . __('D&eacute;placer', 'evarisk') . '" class="button-secondary clear alignright" />
-			<input type="buttton" name="copy_risk" id="copy_risk" value="' . __('Copier', 'evarisk') . '" class="button-secondary alignright" />
+		<div class="clear" id="button_risk_mover_container" >';
+			if ( !$is_closed ) {
+				echo '<input type="buttton" name="move_risk" id="move_risk" value="' . __('D&eacute;placer', 'evarisk') . '" class="button-secondary clear alignright" />';
+			}
+			echo '<input type="buttton" name="copy_risk" id="copy_risk" value="' . __('Copier', 'evarisk') . '" class="button-secondary alignright" />
 		</div>
 	</div>
 </div>';
 						}
+						$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
+						$locale = ($locale == 'en') ? '' : $locale;
+
+						$risk_start_date_to_use = substr( current_time( 'mysql', 0), 0, -3 );
+						$options = get_option('digirisk_options');
+						if ( !empty($options['digi_risk_start_date']) && ($options['digi_risk_start_date'] == 'employerCreationDate') && !empty($employer_date) ) {
+							$risk_start_date_to_use = $employer_date;
+						}
+						$start_date_min_date = '';
+						if ( !empty($employer_date) ) {
+							$start_date_min_date = '
+		minDate: "' . $employer_date . '",';
+						}
+						$end_date_min_date = '';
+						if ( !empty($employer_date) ) {
+							$end_date_min_date = '
+		minDate: "' . $employer_date . '",';
+						}
+						else if ( !empty($risque[0]) && !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') ) {
+							$end_date_min_date = '
+		minDate: "' . $risque[0]->dateDebutRisque . '",';
+						}
+						$current_date = substr( current_time('mysql', 0), 0, -3 );
+
 						echo '
 <script type="text/javascript" >
+	var text = "' . __('&#77;aintenant', 'evarisk') . '";
 	digirisk(document).ready(function(){
 		jQuery("#risq_mover_title").click(function(){
 			jQuery("#risq_mover").toggle();
 		});
+
+		jQuery(".digi_use_current_date_for_risk").click(function(){
+			var put_date = true;
+			if ( jQuery("#digi_parent_creation_date").val() != undefined ) {
+				if ( jQuery("#digi_parent_creation_date").val() + ":00" > "' . $current_date . ':00" ) {
+					if ( jQuery( this ).attr( "id" ) == "date_for_digi_risk_date_start" ) {
+						alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de d&eacute;but de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					}
+					else if ( jQuery( this ).attr( "id" ) == "date_for_digi_risk_end_start" ) {
+						alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					}
+					put_date = false;
+				}
+			}
+
+			if ( (jQuery( this ).attr( "id" ) == "date_for_digi_risk_end_start") && ( jQuery("#digi_risk_date_start").val() + ":00" > "' . $current_date . ':00" ) ) {
+				alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" ) );
+				put_date = false;
+			}
+
+			if ( put_date ) {
+				jQuery("#" + jQuery(this).attr("id").replace("date_for_", "") ).val( "' . $current_date . '" );
+			}
+		});
+
+		jQuery("#digi_use_parent_date_for_risk").click(function(){
+			jQuery("#digi_risk_date_start").val( jQuery("#digi_parent_creation_date").val() );
+		});
+
+		jQuery.datepicker.regional["fr"] = {
+			monthNames: ["' . __('Janvier', 'evarisk') . '","' . __('F&eacute;vrier', 'evarisk') . '","' . __('Mars', 'evarisk') . '","' . __('Avril', 'evarisk') . '","' . __('Mai', 'evarisk') . '","' . __('Juin', 'evarisk') . '", "' . __('Juillet', 'evarisk') . '","' . __('Ao&ucirc;t', 'evarisk') . '","' . __('Septembre', 'evarisk') . '","' . __('Octobre', 'evarisk') . '","' . __('Novembre', 'evarisk') . '","' . __('D&eacute;cembre', 'evarisk') . '"],
+			monthNamesShort: ["Jan", "Fev", "Mar", "Avr", "Mai", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            dayNames: ["' . __('Dimanche', 'evarisk') . '", "' . __('Lundi', 'evarisk') . '", "' . __('Mardi', 'evarisk') . '", "' . __('Mercredi', 'evarisk') . '", "' . __('Jeudi', 'evarisk') . '", "' . __('Vendredi', 'evarisk') . '", "' . __('Samedi', 'evarisk') . '"],
+			dayNamesShort: ["' . __('Dim', 'evarisk') . '", "' . __('Lun', 'evarisk') . '", "' . __('Mar', 'evarisk') . '", "' . __('Mer', 'evarisk') . '", "' . __('Jeu', 'evarisk') . '", "' . __('Ven', 'evarisk') . '", "' . __('Sam', 'evarisk') . '"],
+			dayNamesMin: ["' . __('Di', 'evarisk') . '", "' . __('Lu', 'evarisk') . '", "' . __('Ma', 'evarisk') . '", "' . __('Me', 'evarisk') . '", "' . __('Je', 'evarisk') . '", "' . __('Ve', 'evarisk') . '", "' . __('Sa', 'evarisk') . '"],
+		}
+    	jQuery.datepicker.setDefaults(jQuery.datepicker.regional["fr"]);
+		jQuery.timepicker.regional["fr"] = {
+                timeText: "' . __('Heure', 'evarisk') . '",
+                hourText: "' . __('Heures', 'evarisk') . '",
+                minuteText: "' . __('Minutes', 'evarisk') . '",
+                amPmText: ["AM", "PM"],
+                currentText: text,
+                closeText: "' . __('OK', 'evarisk') . '",
+                timeOnlyTitle: "' . __('Choisissez l\'heure', 'evarisk') . '",
+                closeButtonText: "' . __('Fermer', 'evarisk') . '",
+                nowButtonText: text,
+                deselectButtonText: "' . __('D&eacute;s&eacute;lectionner', 'evarisk') . '",
+		}
+    	jQuery.timepicker.setDefaults(jQuery.timepicker.regional["fr"]);
+
+		jQuery("#digi_risk_date_start").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+			showButtonPanel: false,' . $start_date_min_date . '
+			onClose: function(selectedDate, input) {
+				if ( (jQuery(this).val() != "") && (jQuery("#digi_parent_creation_date").val() != undefined) && (jQuery("#digi_parent_creation_date").val() + ":00" > jQuery(this).val() + ":00" ) ) {
+				alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de d&eacute;but de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+				jQuery(this).val( jQuery("#digi_parent_creation_date").val() );
+				}
+				if ( (jQuery(this).val() != "") && ( jQuery(this).val() != undefined ) ) {
+					var current_end_date = jQuery("#digi_risk_end_start").val();
+					jQuery("#digi_risk_end_start").datepicker("option", "minDate", jQuery(this).val());
+					jQuery("#digi_risk_end_start").val( current_end_date );
+				}
+			}
+		});
+		jQuery("#digi_risk_date_start").val("' . (!empty($risque[0]) && !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') ? substr( $risque[0]->dateDebutRisque, 0, -3 ) : $risk_start_date_to_use) . '");
+
+		jQuery("#digi_risk_end_start").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+			showButtonPanel: false,' . $end_date_min_date . '
+			onClose: function(selectedDate, input) {
+				if ( (jQuery(this).val() != "") && (jQuery("#digi_parent_creation_date").val() != undefined) && ( jQuery("#digi_parent_creation_date").val() + ":00" > jQuery(this).val() + ":00" ) ) {
+					alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					jQuery(this).val( jQuery("#digi_parent_creation_date").val() );
+				}
+
+				if ( (jQuery(this).val() != "") && (jQuery(this).val() < jQuery("#digi_risk_date_start").val()) ) {
+					alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" ) );
+					jQuery(this).val( "" );
+				}
+			},
+		});
+		jQuery("#digi_risk_end_start").val("' . (!empty($risque[0]) && !empty($risque[0]->dateFinRisque) && ($risque[0]->dateFinRisque != '0000-00-00 00:00:00') ? substr( $risque[0]->dateFinRisque, 0, -3 ) : '') . '");
+
+		jQuery("#digi_risk_evaluation_date").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+		});
+		jQuery("#digi_risk_evaluation_date").val("' . substr( current_time('mysql', 0), 0, -3 ) . '");
 
 
 		/*	Autocomplete search	*/
@@ -1527,15 +1697,18 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 		var QR = ' . $formule . ';
 		jQuery(".qr_risk").removeClass("Seuil_' . $niveauSeuil . '");
 		jQuery(".qr_risk").html("<img src=\'' . PICTO_LOADING_ROUND . '\' alt=\'' . __('loading', 'evarisk') . '\' />");
-		jQuery(".qr_risk").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-			"post": "true",
-			"table": "' . TABLE_RISQUE . '",
-			"act": "reload_risk_cotation",
-			"score_risque": QR,
-			"date": "' . $method_operator_date . '",
-			"idMethode": "' . $idMethode . '",
-			"niveauSeuil": jQuery("#niveau_seuil_courant").val()
-		});
+		jQuery.post(ajaxurl, {
+			action: "digi_ajax_reload_current_risk_cotation",
+			score_risque: QR,
+			date: "' . $method_operator_date . '",
+			idMethode: "' . $idMethode . '",
+		}, function( response ){
+			jQuery(".qr_risk").html( response["cotation"] );
+			jQuery("#current_qr").val( response["cotation"] );
+			jQuery(".qr_risk").removeClass("Seuil_" + jQuery("#niveau_seuil_courant").val());
+			jQuery("#niveau_seuil_courant").val( response["seuil"] );
+			jQuery(".qr_risk").addClass("Seuil_" + response["seuil"]);
+		}, "json");
 	}
 
 </script>';
@@ -3819,13 +3992,14 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$document_list = eva_gestionDoc::get_associated_document_list($_REQUEST['tableElement'], $_REQUEST['idElement'], $category, "dateCreation DESC");
 						echo $document_list;
 					break;
+
 					case 'load_model_combobox':
 						$script = '';
 						$category = $_REQUEST['category'];
 						$selection = (isset($_REQUEST['selection']) && ($_REQUEST['selection'] != '') && ($_REQUEST['selection'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['selection']) : '';
 						$documentList = eva_gestionDoc::getDocumentList($tableElement, $idElement, $category, "dateCreation DESC");
 						if (count($documentList) > 0) {
-							$modelList = evaDisplayInput::afficherComboBox($documentList, 'modelToUse' . $tableElement . '', '', 'modelToUse' . $tableElement . '', '', $selection);
+							$modelList = evaDisplayInput::afficherComboBox($documentList, 'modelToUse' . $tableElement, '', 'modelToUse' . $tableElement, '', $selection);
 							if ( $selection != '' ) {
 								$script = '<script type="text/javascript" >digirisk("#modelToUse' . $tableElement . '").val("' . $selection . '")</script>';
 							}
@@ -3833,8 +4007,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						else {
 							$modelList = '<span style="color:#FF0000;" >' . __('Aucun mod&eacute;le &agrave; pr&eacute;senter', 'evarisk') . '</span>';
 						}
-						echo '<div style="margin:12px 24px;" class="bold" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="modelToUse" style="width:15px;" />' . __('Mod&egrave;le &agrave; utiliser', 'evarisk') . '<br/>' . $modelList . $script . '</div>';
+						echo '<div style="margin:12px 24px;" class="bold" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="modelToUse" style="width: 15px;" />' . __('Mod&egrave;le &agrave; utiliser', 'evarisk') . '<br/>' . $modelList . $script . '</div>';
 					break;
+
 					case 'loadExistingDocument':
 						echo EvaDisplayDesign::getExistingModelList($tableElement, $idElement);
 					break;
@@ -5943,7 +6118,8 @@ switch($tableProvenance)
 							$score = Risque::getScoreRisque($risque);
 							$riskLevel = Risque::getEquivalenceEtalon($idMethode, $score, $risque[0]->date);
 							$evaluation_status = ($risque[0]->evaluation_status == 'Deleted') ? '"' . $riskLevel . ' - (' . __('Erreur', 'evarisk') . ')"' : $riskLevel;
-							$line .= '["' . $risque[0]->evaluation_date . '",' . $riskLevel . ', "' . $risque[0]->histo_com . '"], ';
+							$line .= '["' . $risque[0]->evaluation_date . '",' . $riskLevel . ', "' . str_replace( "
+", "", $risque[0]->histo_com ) . '"], ';
 						}
 
 						$line = trim(substr($line, 0, -2));

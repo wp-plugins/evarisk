@@ -293,10 +293,12 @@ class evaUserLinkElement {
 			dateFormat: "yy-mm-dd",
 			timeFormat: "hh:mm",
 		});
+		jQuery("#date_ajout' . $tableElement . $idElement . '").val( "' . substr(current_time('mysql', 0), 0, -3) . '" );
 		jQuery("#date_suppression' . $tableElement . $idElement . '").datetimepicker({
 			dateFormat: "yy-mm-dd",
 			timeFormat: "hh:mm",
 		});
+		jQuery("#date_suppression' . $tableElement . $idElement . '").val( "' . substr(current_time('mysql', 0), 0, -3) . '" );
 
 		/*	Action when click on delete button	*/
 		jQuery("#userList' . $tableElement . ' .selecteduserOP").click(function(){

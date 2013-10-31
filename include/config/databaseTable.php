@@ -34,6 +34,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 
 {/*	Risque	*/
 	DEFINE('TABLE_RISQUE', PREFIXE_EVARISK . "risque");
+	DEFINE('TABLE_RISQUE_HISTO', PREFIXE_EVARISK . "risque_histo");
 	DEFINE('TABLE_AVOIR_VALEUR', PREFIXE_EVARISK . "risque_evaluation");
 }
 
@@ -47,6 +48,7 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 
 {/*	Ged	*/
 	DEFINE('TABLE_GED_DOCUMENTS', PREFIXE_EVARISK . "ged_documents");
+	DEFINE('TABLE_GED_DOCUMENTS_META', PREFIXE_EVARISK . "ged_documents_meta");
 	DEFINE('TABLE_FP', PREFIXE_EVARISK . "ged_documents_fiches");
 	DEFINE('TABLE_DUER', PREFIXE_EVARISK . "ged_documents_document_unique");
 }

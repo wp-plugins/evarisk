@@ -37,6 +37,7 @@ if ($_REQUEST['act'] == 'update') {
 	$siren = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['siren']));
 	$siret = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['siret']));
 	$social_activity_number = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['social_activity_number']));
+	$creation_date_of_society = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['creation_date_of_society']));
 
 	$effectif = !empty($_REQUEST['effectif']) ? mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['effectif'])): '';
 	if($effectif == '')
@@ -53,7 +54,7 @@ if ($_REQUEST['act'] == 'update') {
 	{
 		$telephone = null;
 	}
-	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number);
+	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number, $creation_date_of_society);
 }
 if ($_REQUEST['act'] == 'delete') {
 	EvaGroupement::deleteGroupement($_REQUEST['id']);

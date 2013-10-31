@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
-Tested up to: 3.6.0
-Stable tag: 5.1.7.4
+Tested up to: 3.7.1
+Stable tag: 5.1.7.5
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,21 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.7.5 =
+
+Am&eacute;liorations
+
+* ST448 - Possibilit&eacute; d'imprimer les fiches d'actions correctives
+* ST449 - Gestion des dates de d&eacute;but et de fin de risque (Permet de g&eacute;rer au mieux les impressions des fiches de p&eacute;nibilit&eacute;)
+* ST452 - Affichage du suivi des actions correctives par m&eacute;thode dans l'&eacute;valuation des risques
+* ST454 - Possibilit&eacute; d'ajouter plusieurs pr&eacute;conisations en m&ecirc;me temps avec le m&ecirc;me commentaire et la m&ecirc;me efficacit&eacute;
+
+Corrections
+
+* ST450 - Accents et caract&egrave;res sp&eacute;ciaux dans les documents imprim&eacute;s
+* ST451 - Probl&egrave;mes d'affichage de l'onglet Suivi des actions correctives dans la partie &eacute;valuation des risques (Si plusieurs m&eacute;thodes &eacute;taient choisies la liste des variables &eacute;tait mal affich&eacute;es et provoquait une erreur)
+* ST453 - Certains dangers &eacute;taient pr&eacute; remplis par erreur lors de l'ajout d'un risque sur un &eacute;l&eacute;ment
 
 = Version 5.1.7.4 = 
 

@@ -58,9 +58,18 @@ class eva_gestionDoc {
 		switch ( $table ) {
 			case TABLE_ACTIVITE:
 			case TABLE_TACHE:
-				$formulaireUpload .= '
+				if ( ( $tableElement == TABLE_ACTIVITE . '_FA' ) || ( $tableElement == TABLE_TACHE . '_FA' ) ) {
+					$category = 'fiche_action';
+					$formulaireUpload .= '
+							digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});
+							digirisk("#moreModelChoice").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"loadExistingDocument", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . '});';
+				}
+				else {
+					$category = $tableElement;
+					$formulaireUpload .= '
 							jQuery(".digi_correctiv_action_document_list").html(jQuery("#loadingImg").html());
-							jQuery(".digi_correctiv_action_document_list").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_associated_document_list", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $tableElement . '"});';
+							jQuery(".digi_correctiv_action_document_list").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_associated_document_list", "tableElement":"' . $tableElement . '", "idElement":' . $idElement . ', "category":"' . $category . '"});';
+				}
 			break;
 
 			case TABLE_DUER:
@@ -122,8 +131,8 @@ class eva_gestionDoc {
 	*	@return string $result The result of the saving
 	*/
 	function saveNewDoc($table, $tableElement, $idElement, $fichier) {
-		global $wpdb;
-		global $current_user;
+		global $wpdb,
+			   $current_user;
 		$result = 'error';
 
 		/*	Determination of the file category	*/
@@ -131,6 +140,7 @@ class eva_gestionDoc {
 			case TABLE_DUER:
 				$categorie = 'document_unique';
 			break;
+
 			case TABLE_FP:
 				$categorie = 'fiche_de_poste';
 				if($tableElement == TABLE_GROUPEMENT . '_FGP') {
@@ -140,6 +150,14 @@ class eva_gestionDoc {
 					$categorie = 'fiche_exposition_penibilite';
 				}
 			break;
+
+			case TABLE_ACTIVITE:
+				$categorie = $table;
+				if($tableElement == TABLE_ACTIVITE . '_FA') {
+					$categorie = 'fiche_action';
+				}
+			break;
+
 			default:
 				$categorie = $table;
 			break;
@@ -157,14 +175,13 @@ class eva_gestionDoc {
 			$result = 'error';
 		}
 		else {
-			switch($tableElement){
+			switch ( $tableElement ) {
 				case TABLE_ACTIVITE:
 				case TABLE_TACHE:
 					/*	Log modification on element and notify user if user subscribe	*/
 					digirisk_user_notification::log_element_modification($tableElement, $idElement, 'doc_add', '', $new_sheet);
-					break;
+				break;
 			}
-
 			$result = 'ok';
 		}
 
@@ -231,7 +248,7 @@ class eva_gestionDoc {
 	*
 	*	@return array|object $documentList Return the document list for the selected element in case that there are document associated
 	*/
-	function getDocumentList($tableElement, $idElement, $category = "", $order = "nom ASC"){
+	function getDocumentList($tableElement, $idElement, $category = "", $order = "nom ASC") {
 		global $wpdb;
 		$documentList = array();
 
@@ -251,6 +268,7 @@ class eva_gestionDoc {
 				" . $morequery . "
 			ORDER BY " . $order,
 			$tableElement, $idElement);
+
 		$documentList = $wpdb->get_results($query);
 
 		return $documentList;
@@ -797,16 +815,23 @@ class eva_gestionDoc {
 		/** Retrieve informations about users and groups associated to an element	*/
 		$affectedUserList = !empty($user_to_generate_doc_for) ? $user_to_generate_doc_for : evaUserLinkElement::getAffectedUser($tableElement, $idElement, "'valid', 'moderated', 'deleted'");
 		$users = array();
+
+		$start_affecations = $end_affectation = array();
 		foreach ($affectedUserList as $user) {
 			$users[$user->id_user][$user->id]['affectation_status'] = $user->status;
 			$users[$user->id_user][$user->id]['affectation_date_in'] = $user->date_affectation;
 			$users[$user->id_user][$user->id]['affectation_date_out'] = $user->date_desAffectation;
 			$users[$user->id_user][$user->id]['affectation_date_in_real'] = $user->date_affectation_reelle;
 			$users[$user->id_user][$user->id]['affectation_date_out_real'] = $user->date_desaffectation_reelle;
+			$users[$user->id_user][$user->id]['dateDebutAffectation'] = mysql2date('d/m/Y H:i', $user->date_affectation_reelle, true);
+			$users[$user->id_user][$user->id]['dateFinAffectation'] = !empty($users[$user->id_user][$user->id]['affectation_date_out_real']) && ($users[$user->id_user][$user->id]['affectation_date_out_real'] != '0000-00-00 00:00:00') ? mysql2date('d/m/Y H:i', $users[$user->id_user][$user->id]['affectation_date_out_real'], true) : (!empty($users[$user->id_user][$user->id]['affectation_date_out']) && ($users[$user->id_user][$user->id]['affectation_date_out'] != '0000-00-00 00:00:00') ? mysql2date('d/m/Y H:i', $users[$user->id_user][$user->id]['affectation_date_out'], true) : __('Actuellement affect&eacute;', 'evarisk'));
+
+			$start_affecations[] = $user->date_affectation_reelle;
+			$end_affectation[] = $user->date_desaffectation_reelle;
 
 			$user_information = evaUser::getUserInformation($user->id_user);
 			$user_infos = (array)$user_information;
-			$users[$user->id_user][$user->id] = array_merge($users[$user->id_user][$user->id], $user_infos[$user->id_user]);
+			$users[$user->id_user]['user_informations'] = $user_infos[$user->id_user];
 		}
 
 		/**	Retrieve existing risks marked to be in penibility cat	*/
@@ -817,16 +842,18 @@ class eva_gestionDoc {
 			foreach ( $risk_penible as $risk_infos ) {
 				$complete_risk_list_with_evaluation = Risque::getRisques($tableElement, $idElement, "all", "tableRisque.id_danger = '" . $risk_infos->id . "'", 'tableRisque.id ASC', "'Valid', 'Moderated'");
 				if ( !empty($complete_risk_list_with_evaluation) ) {
+
 					foreach ($complete_risk_list_with_evaluation as $risque) {
 						$risques[$risque->id][$risque->id_evaluation][] = $risque;
 					}
+
 					foreach ( $risques as $risque_id => $evaluation ) {
 						foreach ( $evaluation as $id_evaluation => $risk_evaluation ) {
 							$methode = MethodeEvaluation::getMethod($risk_evaluation[0]->id_methode);
 							$listeVariables = MethodeEvaluation::getVariablesMethode($methode->id, $risk_evaluation[0]->unformatted_evaluation_date);
 							unset($listeIdVariables);
 							$listeIdVariables = array();
-							foreach($listeVariables as $variable){
+							foreach ( $listeVariables as $variable ) {
 								$listeIdVariables[$variable->id][] = $variable->ordre;
 							}
 
@@ -839,6 +866,8 @@ class eva_gestionDoc {
 
 							$penibility_risk[$risque_id][$id_evaluation]['status'] = $risk_evaluation[0]->evaluation_status;
 							$penibility_risk[$risque_id][$id_evaluation]['date'] = $risk_evaluation[0]->unformatted_evaluation_date;
+							$penibility_risk[$risque_id][$id_evaluation]['dateDebutRisque'] = $risk_evaluation[0]->dateDebutRisque;
+							$penibility_risk[$risque_id][$id_evaluation]['dateFinRisque'] = $risk_evaluation[0]->dateFinRisque;
 							$penibility_risk[$risque_id][$id_evaluation]['quotation'] = $quotation;
 							$penibility_risk[$risque_id][$id_evaluation]['chosen_method_var'] = '   ';
 							$penibility_risk[$risque_id][$id_evaluation]['chosen_method_var_value'] = '   ';
@@ -879,21 +908,47 @@ class eva_gestionDoc {
 				$user_risk['riskPenibleSoumis'] = array();
 				$effectiv_risks = array();
 				$user_risk['riskPenibleSoumis'] = array();
-				foreach ( $user_affectations as $affectation_id => $affectation_detail ) {
-					$affectation_date_to_take = !empty($affectation_detail['affectation_date_in_real']) && ($affectation_detail['affectation_date_in_real'] != '0000-00-00 00:00:00')  ? $affectation_detail['affectation_date_in_real'] : (!empty($affectation_detail['affectation_date_in']) ? $affectation_detail['affectation_date_in'] : '2012-01-01 00:00:00');
-					$unaffectation_date_to_take = !empty($affectation_detail['affectation_date_out_real']) && ($affectation_detail['affectation_date_out_real'] != '0000-00-00 00:00:00') ? $affectation_detail['affectation_date_out_real'] : (!empty($affectation_detail['affectation_date_out']) && ($affectation_detail['affectation_date_out'] != '0000-00-00 00:00:00') ? $affectation_detail['affectation_date_out'] : __('Actuellement affect&eacute;', 'evarisk'));
+
+				$users_affectation_list = $user_affectations;
+				unset( $users_affectation_list['user_informations'] );
 
 					foreach ( $penibility_risk as $risk_id => $risk_evaluations ) {
 						foreach ( $risk_evaluations as $risk_evaluation_id => $risk_evaluation_details) {
-							if ( ($affectation_date_to_take <= $risk_evaluation_details['date']) && (empty($unaffectation_date_to_take) || ($unaffectation_date_to_take == __('Actuellement affect&eacute;', 'evarisk')) || ($risk_evaluation_details['date'] <= $unaffectation_date_to_take)) ) {
+
+							/**	Check user exposition	*/
+							$user_is_exposed = false;
+							foreach ( $users_affectation_list as $affectation_id => $affectation_detail ) {
+								$affectation_date_to_take = !empty($affectation_detail['affectation_date_in_real']) && ($affectation_detail['affectation_date_in_real'] != '0000-00-00 00:00:00')  ? $affectation_detail['affectation_date_in_real'] : (!empty($affectation_detail['affectation_date_in']) ? $affectation_detail['affectation_date_in'] : '2012-01-01 00:00:00');
+								$unaffectation_date_to_take = !empty($affectation_detail['affectation_date_out_real']) && ($affectation_detail['affectation_date_out_real'] != '0000-00-00 00:00:00') ? $affectation_detail['affectation_date_out_real'] : (!empty($affectation_detail['affectation_date_out']) && ($affectation_detail['affectation_date_out'] != '0000-00-00 00:00:00') ? $affectation_detail['affectation_date_out'] : '0000-00-00 00:00:00');
+
+								$date_debut_exposition = $risk_evaluation_details['date'];
+								if ( $affectation_date_to_take >= $date_debut_exposition ) {
+									$date_debut_exposition = $affectation_date_to_take;
+								}
+								$date_fin_exposition = $unaffectation_date_to_take;
+								if ( ($risk_evaluation_details['dateFinRisque'] != '0000-00-00 00:00:00') && (($date_fin_exposition == '0000-00-00 00:00:00') || ( $risk_evaluation_details['dateFinRisque'] < $date_fin_exposition)) ) {
+									$date_fin_exposition = $risk_evaluation_details['dateFinRisque'];
+								}
+
+								if ( ($date_debut_exposition <= $date_fin_exposition) || ($date_fin_exposition == '0000-00-00 00:00:00') ) {
+									$user_is_exposed = true;
+
+									$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['datesAffectationEvaluation'][$affectation_id]['dateAffectation'] = $date_debut_exposition;
+									$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['datesAffectationEvaluation'][$affectation_id]['dateDesAffectation'] = $date_fin_exposition != '0000-00-00 00:00:00' ? $date_fin_exposition : __('Actuellement expos&eacute;', 'evarisk');
+
+								}
+							}
+
+							if ( $user_is_exposed ) {
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['idRisque'] = ELEMENT_IDENTIFIER_R . $risk_id;
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['idEvaluation'] = ELEMENT_IDENTIFIER_E . $risk_evaluation_id;
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['intituleRisque'] = ELEMENT_IDENTIFIER_D . $risk_evaluation_details['id_danger'] . ' - ' . $risk_evaluation_details['nom_danger'];
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['descriptionRisque'] = $risk_evaluation_details['description_danger'];
 
-								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['dateAffectation'] = $affectation_date_to_take;
-								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['dateDesAffectation'] = $unaffectation_date_to_take;
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['dateEvaluation'] = $risk_evaluation_details['date'];
+								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['dateDebutRisque'] = $risk_evaluation_details['dateDebutRisque'];
+								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['dateFinRisque'] = !empty($risk_evaluation_details['dateFinRisque']) && ($risk_evaluation_details['dateFinRisque'] != '0000-00-00 00:00:00') ? $risk_evaluation_details['dateFinRisque'] : __('Risque toujours pr&eacute;sent', 'evarisk');
+
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['evaluationCotation'] = $risk_evaluation_details['quotation'];
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['levelCotation'] = $penibility_level;
 								$user_risk['riskPenibleSoumis'][$risk_evaluation_id]['details']['chosenMethodVar'] = str_replace('<br/>', "
@@ -968,9 +1023,13 @@ class eva_gestionDoc {
 
 								$effectiv_risks[] = $risk_evaluation_details['id_danger'];
 							}
+							else {
+								unset($user_risk['riskPenibleSoumis'][$risk_evaluation_id]);
+							}
 						}
 					}
-				}
+// 	exit;
+					krsort($user_risk['riskPenibleSoumis']);
 
 				/**	Risque nons soumis	*/
 				if ( !empty($risk_penible) ) {
@@ -1006,7 +1065,7 @@ class eva_gestionDoc {
 				/** Generate document name from given parameters	*/
 				$dateElement = (!empty($informations) && !empty($informations['dateCreation']) ? $informations['dateCreation'] : current_time('mysql', 0));
 				$ExplodedDateElement = explode(' ', $dateElement);
-				$documentName = str_replace('-', '', $ExplodedDateElement[0]) . $document_final_name . str_replace('-', '', sanitize_title( $nom_element ) ) . '_' . ELEMENT_IDENTIFIER_U . $user_id . str_replace('-', '', sanitize_title( $affectation_detail['user_lastname'] . $affectation_detail['user_firstname'] ) );
+				$documentName = str_replace('-', '', $ExplodedDateElement[0]) . $document_final_name . str_replace('-', '', sanitize_title( $nom_element ) ) . '_' . ELEMENT_IDENTIFIER_U . $user_id . '_' . str_replace('-', '', sanitize_title( $user_affectations['user_informations']['user_lastname'] . $user_affectations['user_informations']['user_firstname'] ) );
 				$informations['nomDuDocument'] = $documentName;
 				$referenceDocument = str_replace('-', '', str_replace(':', '', str_replace(' ', '', $dateElement))) . '-' . ELEMENT_IDENTIFIER_U . $user_id . '-' . $element . $idElement . '-V' . $revisionDocument;
 
@@ -1025,7 +1084,7 @@ class eva_gestionDoc {
 				$new_sheet_params['telephone'] 				= $telephone_element;
 				$new_sheet_params['defaultPicturePath'] 	= '';
 				$new_sheet_params['societyName'] 			= digirisk_tools::slugify_noaccent($nom_element);
-				$new_sheet_params['users'] 					= serialize($affectation_detail);
+				$new_sheet_params['users'] 					= serialize( $users[ $user_id ] );
 				$new_sheet_params['userGroups'] 			= '';
 				$new_sheet_params['evaluators'] 			= '';
 				$new_sheet_params['evaluatorsGroups'] 		= '';
@@ -1064,6 +1123,117 @@ class eva_gestionDoc {
 		}
 
 		return $status;
+	}
+
+	function generate_task_odt($tableElement, $idElement, $idDocument) {
+		global $wpdb;
+		require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
+		ini_set("memory_limit","256M");
+
+		/**	Get the document to create	*/
+		$query = $wpdb->prepare(
+			"SELECT *
+			FROM " . TABLE_GED_DOCUMENTS . " AS D
+			WHERE table_element = %s
+				AND id_element = %d
+				AND status = 'valid'
+				AND id = %d",
+			array(
+				$tableElement,
+				$idElement,
+				$idDocument,
+			));
+		$last_document = $wpdb->get_row($query);
+
+		$query = $wpdb->prepare("
+			SELECT meta_key, meta_value
+			FROM " . TABLE_GED_DOCUMENTS_META . " AS DM
+			WHERE document_id = %d",
+			array(
+				$idDocument,
+			));
+		$document_meta = $wpdb->get_results( $query );
+		$document_infos = array();
+		foreach ( $document_meta as $infos ) {
+			$document_infos[ $infos->meta_key ] = substr( $infos->meta_value , 0, 2 ) == 'a:' ?unserialize( $infos->meta_value ) : $infos->meta_value;
+		}
+
+		switch ($tableElement) {
+			case TABLE_ACTIVITE:
+			case TABLE_TACHE:
+				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'planDActions/modele_default_fiche_action.odt';
+			break;
+		}
+
+		$config = array(
+			'PATH_TO_TMP' => EVA_RESULTATS_PLUGIN_DIR . 'tmp'
+		);
+		/**	Get the default model regarding on the element type we are on	*/
+		$odf = new odf($odfModelFile, $config);
+		/**	Get the last used model	*/
+		if( !empty($last_document) && !empty($document_infos) && !empty($document_infos[ '_digi_doc_model' ]) && ( $document_infos[ '_digi_doc_model' ] != 'default' ) ) {
+			$pathToModelFile = eva_gestionDoc::getDocumentPath( $document_infos[ '_digi_doc_model' ] );
+			$odf = new odf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
+		}
+
+		foreach ( $document_infos as $main_key => $content ) {
+			if ( is_array( $content ) ) {
+				foreach ( $content as $key => $value ) {
+					if ( $key == 'photoPrincipale' ) {
+						if( $value != 'noDefaultPicture' && is_file(EVA_GENERATED_DOC_DIR . $value)){
+							$odf->setImage('photoPrincipale', EVA_GENERATED_DOC_DIR . $value, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
+						}
+						else{
+							$odf->setVars('photoPrincipale', html_entity_decode( __('Aucun photo d&eacute;finie', 'evarisk')) );
+						}
+					}
+					else if ( $key == 'photoAssocieeAction' ) {
+						$segment_content = $odf->setSegment( $key );
+						if ( is_object($segment_content) ) {
+							foreach ( $value as $the_segment_content ) {
+								foreach ( $the_segment_content as $info_key => $info ) {
+									if( $info_key == 'photo' ) {
+										if ( is_file(EVA_GENERATED_DOC_DIR . $info) ){
+											$segment_content->setImage($info_key, EVA_GENERATED_DOC_DIR . $info, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
+										}
+										else{
+											$segment_content->setVars($info_key, html_entity_decode( __('Impossible de trouver l\'image', 'evarisk')) );
+										}
+									}
+									else{
+										$segment_content->setVars($info_key, html_entity_decode( stripslashes( $info ) ) );
+									}
+								}
+								$segment_content->merge();
+							}
+							$odf->mergeSegment( $segment_content );
+						}
+					}
+					else if ( is_array( $value ) ) {
+						$segment_content = $odf->setSegment( $key );
+						if ( is_object($segment_content) ) {
+							foreach ( $value as $index_test => $the_segment_content ) {
+								if ( is_array( $the_segment_content ) ) {
+									foreach ( $the_segment_content as $info_key => $info ) {
+										$segment_content->setVars( $info_key, html_entity_decode( stripslashes( $info )) );
+									}
+								}
+								$segment_content->merge();
+							}
+							$odf->mergeSegment( $segment_content );
+						}
+					}
+					else {
+						$odf->setVars( $key , html_entity_decode( stripslashes( $value ) ) );
+					}
+				}
+			}
+		}
+
+		if ( !is_dir(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin) ) {
+			mkdir( EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin, 0755, true);
+		}
+		$odf->saveToDisk(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin . $last_document->nom);
 	}
 
 	/**
@@ -1710,7 +1880,7 @@ class eva_gestionDoc {
 								if(($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textandpicture') || ($recommandationCategory[0]['impressionRecommandationCategorie'] == 'textonly'))
 								{
 									$recommandationCategoryName = str_replace('<br />', "
-	", digirisk_tools::slugify_noaccent($recommandationCategory[0]['recommandation_category_name']));
+	", digirisk_tools::slugify_noaccent( html_entity_decode( $recommandationCategory[0]['recommandation_category_name'] )));
 								}
 								else
 								{
@@ -1744,9 +1914,9 @@ class eva_gestionDoc {
 									}
 									$afffectedRecommandation->recommandations->setVars('identifiantRecommandation', digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_P . $recommandation['id_preconisation']));
 									$afffectedRecommandation->recommandations->setVars('recommandationName', str_replace('<br />', "
-	", digirisk_tools::slugify_noaccent($recommandation['recommandation_name'])));
+	", digirisk_tools::slugify_noaccent( html_entity_decode( $recommandation['recommandation_name'] ))));
 									$afffectedRecommandation->recommandations->setVars('recommandationComment', str_replace('<br />', "
-	", digirisk_tools::slugify_noaccent($recommandation['commentaire'])));
+	", digirisk_tools::slugify_noaccent( html_entity_decode( $recommandation['commentaire'] ))));
 
 									if (($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly') || ($recommandationCategory[0]['impressionRecommandation'] == 'textandpicture')) {
 										$recommandationIcon = evaPhoto::checkIfPictureIsFile($recommandation['photo'], TABLE_PRECONISATION);
@@ -1811,12 +1981,33 @@ class eva_gestionDoc {
 
 				case TABLE_GROUPEMENT . '_FEP' :
 				case TABLE_UNITE_TRAVAIL . '_FEP' :
-					$user_info = unserialize($lastDocument->users);
-					$odf->setVars('identifiantIndividu', ELEMENT_IDENTIFIER_U  . $user_info['user_id']);
+					$doc_user = unserialize( $lastDocument->users );
+
+					$odf->setVars('identifiantIndividu', ELEMENT_IDENTIFIER_U  . $doc_user['user_informations']['user_id']);
 					$odf->setVars('nomIndividu', str_replace('<br />', "
-", remove_accents($user_info['user_lastname'])));
+", remove_accents($doc_user['user_informations']['user_lastname'])));
 					$odf->setVars('prenomIndividu', str_replace('<br />', "
-", remove_accents($user_info['user_firstname'])));
+", remove_accents($doc_user['user_informations']['user_firstname'])));
+					$odf->setVars('posteOccupeIndividu', str_replace('<br />', "
+", !empty($doc_user['user_informations']['digirisk_information']) && !empty($doc_user['user_informations']['digirisk_information']['user_profession']) ? remove_accents( html_entity_decode($doc_user['user_informations']['digirisk_information']['user_profession'])) : ''));
+
+					$affectations = $doc_user;
+					unset( $affectations['user_informations'] );
+
+					if ( !empty($affectations) ) {
+						$affectation_list = $odf->setSegment( 'listAffectationUtilisateur' );
+						krsort($affectations);
+						foreach ( $affectations as $affectation_id => $affectation_infos) {
+							foreach ( $affectation_infos as $key => $value) {
+								$value = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent( html_entity_decode($value)));
+								$affectation_list->setVars($key, $value, true, 'UTF-8');
+							}
+							$affectation_list->merge();
+						}
+						$odf->mergeSegment($affectation_list);
+					}
+
 					$idUniteDeTravailIndividu = $lastDocument->id_element;
 					switch ($lastDocument->table_element) {
 						case TABLE_GROUPEMENT;
@@ -1829,9 +2020,7 @@ class eva_gestionDoc {
 					$odf->setVars('identifiantUniteDeTravail', str_replace('<br />', "
 ", remove_accents($idUniteDeTravailIndividu)));
 					$odf->setVars('uniteDeTravailIndividu', str_replace('<br />', "
-", remove_accents($lastDocument->societyName)));
-					$odf->setVars('posteOccupeIndividu', str_replace('<br />', "
-", remove_accents($user_info['digirisk_information']['user_profession'])));
+", remove_accents( html_entity_decode($lastDocument->societyName))));
 
 					$risk_list = unserialize($lastDocument->unitRisk);
 					foreach ( $risk_list as $risk_type_line => $risk_detail ) {
@@ -1846,12 +2035,30 @@ class eva_gestionDoc {
 									}
 									else if( !empty($info_content) ) {
 										foreach ( $info_content as $info_content_key => $info_content_value ) {
-											if ( substr($info_content_key, 0, 14) != "recommandation" ) {
+											if ( $info_content_key == 'datesAffectationEvaluation' ) {
+												$debutExpositionDate = $finExpositionDate = '';
+												krsort( $info_content_value );
+
+												foreach ( $info_content_value as $affectation_key => $exposition_date) {
+													if ( $exposition_date[ 'dateAffectation' ] <= $info_content['dateFinRisque'] ) {
+														$debutExpositionDate .= mysql2date('d/m/Y H:i', $exposition_date[ 'dateAffectation' ], true) . "
+
+";
+														$finExpositionDate .= ($exposition_date['dateDesAffectation'] != __('Actuellement expos&eacute;', 'evarisk') ? mysql2date('d/m/Y H:i', $exposition_date[ 'dateDesAffectation' ], true) : $exposition_date['dateDesAffectation']) . "
+
+";
+													}
+												}
+												$risque_line->setVars( 'listeDateDebutExpositionUtilisateur' , html_entity_decode($debutExpositionDate) );
+												$risque_line->setVars( 'listeDateFinExpositionUtilisateur' , html_entity_decode($finExpositionDate) );
+											}
+											else if ( substr($info_content_key, 0, 14) != "recommandation" ) {
 												$info_content_value = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($info_content_value));
+", digirisk_tools::slugify_noaccent_no_utf8decode( stripslashes($info_content_value)));
 												$risque_line->setVars($info_content_key, $info_content_value, true, 'UTF-8');
 											}
 											else {
+													$current_preco_type_list = '';
 												if ( !empty($info_content_value) && is_array($info_content_value) ) {
 													foreach ( $info_content_value as $preco ) {
 														if ($info_content_value['impressionRecommandation'] == 'pictureonly') {
@@ -1860,33 +2067,28 @@ class eva_gestionDoc {
 														}
 
 														if ($preco['commentaire'] != '') {
-															$preco['commentaire'] = " : " . $preco['commentaire'] . "
-";
+															$preco['commentaire'] = " : " . $preco['commentaire'];
 														}
-														$risque_line->$info_content_key->setVars('identifiantRecommandation', digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_P . $preco['id_preconisation']) . ' - ');
-														$risque_line->$info_content_key->setVars('recommandationName', str_replace('<br />', "
-", digirisk_tools::slugify_noaccent($preco['recommandation_name'])));
-														$risque_line->$info_content_key->setVars('recommandationComment', str_replace('<br />', "
-// ", digirisk_tools::slugify_noaccent($preco['commentaire'])));
 
-														if (($preco['impressionRecommandation'] == 'pictureonly') || ($preco['impressionRecommandation'] == 'textandpicture')) {
-															$recommandationIcon = evaPhoto::checkIfPictureIsFile($preco['photo'], TABLE_PRECONISATION);
-															$recommandationIcon = str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $recommandationIcon);
-															$recommandationIcon = str_replace(EVA_HOME_URL, EVA_HOME_DIR, $recommandationIcon);
-															$risque_line->$info_content_key->setImage('recommandationIcon', $recommandationIcon , $preco['tailleimpressionRecommandation']);
-														}
-														else {
-															$risque_line->$info_content_key->setVars('recommandationIcon', '');
-														}
+// 														if (($preco['impressionRecommandation'] == 'pictureonly') || ($preco['impressionRecommandation'] == 'textandpicture')) {
+// 															$recommandationIcon = evaPhoto::checkIfPictureIsFile($preco['photo'], TABLE_PRECONISATION);
+// 															$recommandationIcon = str_replace(EVA_GENERATED_DOC_URL, EVA_GENERATED_DOC_DIR, $recommandationIcon);
+// 															$recommandationIcon = str_replace(EVA_HOME_URL, EVA_HOME_DIR, $recommandationIcon);
+// 															$risque_line->$info_content_key->setImage('recommandationIcon', $recommandationIcon , $preco['tailleimpressionRecommandation']);
+// 														}
+// 														else {
+// 															$risque_line->$info_content_key->setVars('recommandationIcon', '');
+// 														}
+
+														$current_preco_type_list .= str_replace('<br />', "
+", digirisk_tools::slugify_noaccent( html_entity_decode(ELEMENT_IDENTIFIER_P . $preco['id_preconisation'] . ' - ' . $preco['recommandation_name'] . $preco['commentaire'] ) ) ) . "
+
+";
 													}
+													$risque_line->setVars('toutes' . $info_content_key, $current_preco_type_list);
 												}
-												else {
-													$risque_line->$info_content_key->setVars('identifiantRecommandation', '');
-													$risque_line->$info_content_key->setVars('recommandationName', '');
-													$risque_line->$info_content_key->setVars('recommandationComment', '');
-													$risque_line->$info_content_key->setVars('recommandationIcon', '');
-													$risque_line->$info_content_key->merge();
-												}
+
+												$risque_line->setVars('toutes' . $info_content_key, $current_preco_type_list);
 											}
 										}
 									}
@@ -2084,7 +2286,7 @@ class eva_gestionDoc {
 		$box_content .= '<hr/>';
 
 		/*	Get document already associated to current element	*/
-		$correctiv_action_associated_doc = eva_gestionDoc::get_associated_document_list($arguments['tableElement'], $arguments['idElement']);
+		$correctiv_action_associated_doc = eva_gestionDoc::get_associated_document_list($arguments['tableElement'], $arguments['idElement'], $arguments['tableElement']);
 		$box_content .= '
 <div >
 	<div class="hide digi_' . $arguments['tableElement'] . '_associated_document" >&nbsp;</div>
@@ -2097,8 +2299,14 @@ class eva_gestionDoc {
 	/**
 	*	Function allowing to display the complete list of asscoiated coument for a given element
 	*/
-	function get_associated_document_list($tableElement, $idElement, $document_category = "", $document_order = "dateCreation DESC"){
+	function get_associated_document_list($tableElement, $idElement, $document_category = "", $document_order = "dateCreation DESC", $path = '') {
 		$document_list_output = '';
+		$test_dir = EVA_GENERATED_DOC_DIR;
+		$dir_url = EVA_GENERATED_DOC_URL;
+		if ( !empty( $path ) && ( $path == EVA_RESULTATS_PLUGIN_DIR ) ) {
+			$test_dir = EVA_RESULTATS_PLUGIN_DIR;
+			$dir_url = EVA_RESULTATS_PLUGIN_URL;
+		}
 
 		$associated_document_list = eva_gestionDoc::getDocumentList($tableElement, $idElement, $document_category, $document_order);
 		if(count($associated_document_list) > 0){
@@ -2112,10 +2320,10 @@ class eva_gestionDoc {
 			&nbsp;&nbsp;&nbsp;- (' . ELEMENT_IDENTIFIER_DOC . $doc->id . ')&nbsp;&nbsp;' . $doc->nom . '
 		</td>
 		<td class="associated_document_list_download_link" >';
-				if(is_file(EVA_GENERATED_DOC_DIR . $doc->chemin . $doc->nom)){
+				if(is_file($test_dir . $doc->chemin . $doc->nom)){
 					$document_list_output .= '
 			<div class="alignright delete_document_button_container" ><img id="delete_document_' . $doc->id . '" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer ce document', 'evarisk') . '" title="' . __('Supprimer ce document', 'evarisk') . '" class="alignright delete_associated_document" /></div>
-			<span class="ui-icon alignright element_associated_document_info" id="infos_element_associated_document' . $doc->id . '" >&nbsp;</span><a href="' . EVA_GENERATED_DOC_URL . $doc->chemin . $doc->nom . '" target="associated_document_dl_file" >' . __('T&eacute;l&eacute;charger ce fichier', 'evarisk') . '</a>
+			<span class="ui-icon alignright element_associated_document_info" id="infos_element_associated_document' . $doc->id . '" >&nbsp;</span><a href="' . $dir_url . $doc->chemin . $doc->nom . '" target="associated_document_dl_file" >' . __('T&eacute;l&eacute;charger ce fichier', 'evarisk') . '</a>
 			<div class="clear hide associated_document_infos_container alignright" id="element_associated_document' . $doc->id . '" >' . sprintf(__('Ajout&eacute; le %s &agrave; %s par %s', 'evarisk'), mysql2date('d F Y', $doc->dateCreation, true), mysql2date('H:i', $doc->dateCreation, true), $doc_creator[$doc->idCreateur]['user_lastname'] . '&nbsp;' . $doc_creator[$doc->idCreateur]['user_firstname']) . '</div>';
 				}
 				else{
@@ -2407,7 +2615,7 @@ class eva_gestionDoc {
 										}
 										if ( in_array( 'risk_comment', $column_to_export ) ) {
 											$last_comment_output = '';
-											$query = $wpdb->prepare("SELECT date_ajout, commentaire, date FROM " . TABLE_ACTIVITE_SUIVI . " WHERE status = 'valid' AND table_element = %s AND id_element IN (SELECT id_evaluation FROM wp_eva__risque_evaluation WHERE id_risque = %d) ORDER BY date_ajout DESC", TABLE_AVOIR_VALEUR, $risque_id);
+											$query = $wpdb->prepare("SELECT date_ajout, commentaire, date FROM " . TABLE_ACTIVITE_SUIVI . " WHERE status = 'valid' AND table_element = %s AND id_element IN (SELECT id_evaluation FROM " . TABLE_AVOIR_VALEUR . " WHERE id_risque = %d) ORDER BY date_ajout DESC", TABLE_AVOIR_VALEUR, $risque_id);
 											$last_comments = $wpdb->get_results($query);
 											if ( !empty($last_comments) ) {
 												foreach ( $last_comments as $last_comment ) {
@@ -2710,4 +2918,5 @@ class eva_gestionDoc {
 		echo json_encode( array($status, $output) );
 		die();
 	}
+
 }

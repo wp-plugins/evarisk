@@ -359,6 +359,20 @@ class EvaGroupement {
 		return $geoLoc;
 	}
 
+
+	function get_closest_employer( $id_groupement ) {
+		$the_date = null;
+		$founded = false;
+		$current_groupement_arborescence = Arborescence::getAncetre(TABLE_GROUPEMENT, EvaGroupement::getGroupement($id_groupement), "limiteGauche DESC", '1', "AND Status = 'Valid'");
+		foreach ( $current_groupement_arborescence as $ancestor ) {
+			if ( ($ancestor->typeGroupement == 'employer') && !empty($ancestor->creation_date_of_society) && ($ancestor->creation_date_of_society != '0000-00-00 00:00:00' ) ) {
+				$the_date = $ancestor->creation_date_of_society;
+			}
+		}
+
+		return $the_date;
+	}
+
 /*
 * Persistance
 */
@@ -387,13 +401,13 @@ class EvaGroupement {
 	* @param string $idAdresse Identifier of the address group name in the Adress Table
 	* @param string $idGroupementPere  father group id
 	*/
-	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number)
+	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number, $creation_date_of_society)
 	{
 		global $wpdb;
 		if($typeGroupement == ''){
 			$typeGroupement = 'none';
 		}
-		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => current_time('mysql', 0));
+		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => current_time('mysql', 0), 'creation_date_of_society' => $creation_date_of_society);
 		$wpdb->update(TABLE_GROUPEMENT, $groupementInformations, array( 'id' => $id_Groupement ), '%s', array('%d') );
 
 		$groupementFils =  EvaGroupement::getGroupement($id_Groupement);

@@ -22,10 +22,14 @@ if($_REQUEST['act'] == 'save'){
 		$idMethode = !empty($_REQUEST['idMethode']) ? digirisk_tools::IsValid_Variable($_REQUEST['idMethode']) : '';
 		$tableElement = !empty($_REQUEST['tableElement']) ? digirisk_tools::IsValid_Variable($_REQUEST['tableElement']) : '';
 		$idElement = !empty($_REQUEST['idElement']) ? digirisk_tools::IsValid_Variable($_REQUEST['idElement']) : '';
+		$date_debut = !empty($_REQUEST['risk_start_date']) ? digirisk_tools::IsValid_Variable($_REQUEST['risk_start_date']) : '';
+		$date_fin = !empty($_REQUEST['risk_end_date']) ? digirisk_tools::IsValid_Variable($_REQUEST['risk_end_date']) : '';
+		$risk_eval_date = !empty($_REQUEST['risk_eval_date']) ? digirisk_tools::IsValid_Variable($_REQUEST['risk_eval_date']) : '';
+		$risk_status = !empty($_REQUEST['force_status']) ? digirisk_tools::IsValid_Variable($_REQUEST['force_status']) : '';
 		$variables = $_REQUEST['variables'];
 		$description = !empty($_REQUEST['description_risque']) ? digirisk_tools::IsValid_Variable($_REQUEST['description_risque']) : '';
 		$histo = digirisk_tools::IsValid_Variable($_REQUEST['histo']);
-		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo, $date_debut, $date_fin, $risk_eval_date, $risk_status);
 	}
 
 	/*	Check if there are recommendation to link with this risk	*/

@@ -9,9 +9,9 @@
 	$element = $script = '';
 	$v_nb = 0;
 
-	require_once(EVA_CONFIG);
+	require_once( EVA_CONFIG );
 
-	switch($tableElement){
+	switch ( $tableElement ) {
 		case TABLE_METHODE:
 			$pageHook = PAGE_HOOK_EVARISK_EVALUATION_METHODE;
 			MethodeEvaluation::includes_evaluation_method_boxes($idElement, $partition);
@@ -63,56 +63,54 @@
 		break;
 
 		default:
-			switch($menu){
+			switch ( $menu ) {
 				case 'gestiongrptut':
-					switch($tableElement)
-					{
+					switch ( $tableElement ) {
 						case TABLE_GROUPEMENT:
 							require_once(EVA_MODULES_PLUGIN_DIR . 'gestionGroupementUniteTravail/includesGestionGroupementUniteTravail.php');
-							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
+							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
 							$pageHook = PAGE_HOOK_EVARISK_GROUPEMENTS_GESTION;
 							$markers = array(EvaGroupement::getMarkersGeoLoc($idElement));
 							includesGestionGroupementUniteTravail($idElement, $partition);
-							break;
+						break;
 						case TABLE_UNITE_TRAVAIL:
 							require_once(EVA_MODULES_PLUGIN_DIR . 'gestionGroupementUniteTravail/includesGestionGroupementUniteTravail.php');
-							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
+							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
 							$pageHook = PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL;
 							$markers = array(eva_UniteDeTravail::getMarkersGeoLoc($idElement));
 							includesGestionGroupementUniteTravail($idElement, $partition);
-							break;
+						break;
 					}
 				break;
 
 				default:
-					switch($tableElement)
-					{
+					switch ( $tableElement ) {
 						case TABLE_GROUPEMENT:
 							require_once(EVA_MODULES_PLUGIN_DIR . 'evaluationDesRisques/includesEvaluationDesRisques.php');
-							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php'); 
+							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/groupement/eva_groupement.class.php');
 							$pageHook = PAGE_HOOK_EVARISK_GROUPEMENTS;
 							$markers = array(EvaGroupement::getMarkersGeoLoc($idElement));
 							includesEvaluationDesRisques($idElement, $partition);
-							break;
+						break;
 						case TABLE_UNITE_TRAVAIL:
 							require_once(EVA_MODULES_PLUGIN_DIR . 'evaluationDesRisques/includesEvaluationDesRisques.php');
-							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php'); 
+							require_once(EVA_LIB_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteDeTravail.class.php');
 							$pageHook = PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL;
 							$markers = array(eva_UniteDeTravail::getMarkersGeoLoc($idElement));
 							includesEvaluationDesRisques($idElement, $partition);
-							break;
+						break;
 						case TABLE_TACHE:
 							require_once(EVA_MODULES_PLUGIN_DIR . 'actionsCorrectives/includesActionsCorrectives.php');
 							$pageHook = PAGE_HOOK_EVARISK_TACHE;
 							includesActionsCorrectives($idElement, $partition);
 							$markers = '';
-							break;
+						break;
 						case TABLE_ACTIVITE:
 							require_once(EVA_MODULES_PLUGIN_DIR . 'actionsCorrectives/includesActionsCorrectives.php');
 							$pageHook = PAGE_HOOK_EVARISK_ACTIVITE;
 							includesActionsCorrectives($idElement, $partition);
 							$markers = '';
-							break;
+						break;
 					}
 				break;
 			}
@@ -141,6 +139,8 @@
 
 			postboxes.save_state("' . $pageHook . '");
 			postboxes.save_order("' . $pageHook . '");
+
+			jQuery( "#mainPostBox.hide-if-js" ).removeClass( "hide-if-js" );
 		});
 	</script>
 	<div class="metabox-holder digirisk_meta_box_holder clear">';

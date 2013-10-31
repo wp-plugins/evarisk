@@ -210,11 +210,11 @@ class EvaTaskTable extends EvaBaseTask
       {
         $sql = $sql . " AND " . self::efficacite . " = '" . mysql_real_escape_string($efficacite) . "'";
       }
-	  if($idPhotoAvant != '')
+	  if( !empty($idPhotoAvant) )
       {
         $sql = $sql . " AND " . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "'";
       }
-	  if($idPhotoApres != '')
+	  if( !empty($idPhotoAvant) )
       {
         $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
       }

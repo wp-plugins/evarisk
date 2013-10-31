@@ -215,7 +215,7 @@ class Risque {
 		}
 
 		$query = $wpdb->prepare(
-			"SELECT tableRisque.id id, tableRisque.id_danger id_danger, tableRisque.id_methode id_methode, tableRisque.commentaire commentaire, tableRisque.date date,
+			"SELECT tableRisque.*,
 				tableAvoirValeur.id_risque id_risque, tableAvoirValeur.id_variable id_variable, tableAvoirValeur.valeur valeur, tableAvoirValeur.id_evaluation, tableAvoirValeur.Status AS evaluation_status, DATE_FORMAT(tableAvoirValeur.date, %s) AS evaluation_date, tableAvoirValeur.commentaire AS histo_com, tableAvoirValeur.date AS unformatted_evaluation_date,
 				tableDanger.nom nomDanger, tableDanger.id idDanger, tableDanger.description descriptionDanger, tableDanger.id_categorie idCategorie
 			FROM " . TABLE_RISQUE . " tableRisque
@@ -265,9 +265,9 @@ class Risque {
 		return $resultat->nombreRisques;
 	}
 
-	function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo){
-		global $wpdb;
-		global $current_user;
+	function saveNewRisk ($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo, $date_debut, $date_fin, $date_evaluation = '', $risk_status = '') {
+		global $wpdb,
+			   $current_user;
 
 		$idDanger = digirisk_tools::IsValid_Variable($idDanger);
 		$idMethode = digirisk_tools::IsValid_Variable($idMethode);
@@ -279,7 +279,7 @@ class Risque {
 		$histoStatus = 'Valid';
 
 		if ($idRisque == '') { /**	Add a new risk	*/
-			$new_risque = $wpdb->insert(TABLE_RISQUE, array('id_danger' => $idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid'));
+			$new_risque = $wpdb->insert(TABLE_RISQUE, array('id_danger' => $idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid', 'dateDebutRisque' => $date_debut, 'dateFinRisque' => $date_fin));
 			$idRisque = $wpdb->insert_id;
 			if ($new_risque && !empty($idRisque) && is_int($idRisque)) {
 				echo '
@@ -297,7 +297,14 @@ class Risque {
 			}
 		}
 		else {/**	Update an existing risk	*/
-			$wpdb->update(TABLE_RISQUE, array('id_danger'=>$idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid'), array('id' => $idRisque));
+			$query = $wpdb->prepare( "SELECT dateDebutRisque, dateFinRisque FROM " . TABLE_RISQUE . " WHERE id = %d", $idRisque );
+			$current_date = $wpdb->get_row( $query );
+			$wpdb->insert( TABLE_RISQUE_HISTO, array('id_risque' => $idRisque, 'date' => current_time( 'mysql', 0), 'field' => 'dateDebutRisque', 'value' => $current_date->dateDebutRisque) );
+			if ( !empty($current_date->dateFinRisque) && ($current_date->dateFinRisque != '0000-00-00 00:00:00') ) {
+				$wpdb->insert( TABLE_RISQUE_HISTO, array('id_risque' => $idRisque, 'date' => current_time( 'mysql', 0), 'field' => 'dateFinRisque', 'value' => $current_date->dateFinRisque) );
+			}
+
+			$wpdb->update(TABLE_RISQUE, array('id_danger'=>$idDanger, 'id_methode' => $idMethode, 'id_element' => $idElement, 'nomTableElement' => $tableElement, 'commentaire' => $description, 'date' => current_time('mysql', 0), 'Status' => 'Valid', 'dateDebutRisque' => $date_debut, 'dateFinRisque' => $date_fin), array('id' => $idRisque));
 
 			if ($histo != 'false') {
 				$wpdb->update(TABLE_AVOIR_VALEUR, array('Status'=>'Moderated'), array('id_risque'=>$idRisque, 'Status'=>'Valid'));
@@ -327,23 +334,32 @@ class Risque {
 		if((INT)$newId->newId <= 0)$newId->newId = 1;
 		$r_nb = 1;
 		foreach($variables as $idVariable => $valeurVariable){
-			if($valeurVariable != 'undefined'){
+			if( !empty($idVariable) && ($valeurVariable != 'undefined') ) {
 				$comment = null;
 				if ( $r_nb == 1 ) {
 					$comment = $description;
 				}
 				$idVariable = digirisk_tools::IsValid_Variable($idVariable);
 				$valeurVariable = digirisk_tools::IsValid_Variable($valeurVariable);
-				$wpdb->insert(TABLE_AVOIR_VALEUR, array('id_risque'=>$idRisque, 'id_evaluation'=>$newId->newId, 'id_variable'=>$idVariable, 'valeur'=>$valeurVariable, 'idEvaluateur'=>$current_user->ID, 'date'=>current_time('mysql', 0), 'Status'=>$histoStatus, 'commentaire'=>$comment));
+				$wpdb->insert(TABLE_AVOIR_VALEUR, array('id_risque'=>$idRisque, 'id_evaluation'=>$newId->newId, 'id_variable'=>$idVariable, 'valeur'=>$valeurVariable, 'idEvaluateur'=>$current_user->ID, 'date' => /* (!empty($date_evaluation) ? $date_evaluation :  */current_time('mysql', 0)/* ) */, 'Status'=>$histoStatus, 'commentaire'=>$comment));
 				$r_nb++;
 			}
 		}
 
-		if ( !empty($description) ) {
-			$wpdb->insert(TABLE_ACTIVITE_SUIVI, array('id' => null, 'status' => 'Valid', 'date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_element' => $newId->newId, 'table_element' => TABLE_AVOIR_VALEUR, 'commentaire' => $description, 'date_ajout' => $evaluation_infos->date, 'export' => 'yes'));
+		$options = get_option('digirisk_options');
+		$current_risk = Risque::getRisque( $idRisque );
+		$idMethode = $current_risk[0]->id_methode;
+		$score = Risque::getScoreRisque( $current_risk );
+		$quotation = Risque::getEquivalenceEtalon($idMethode, $score, $current_risk[0]->date);
+		if ( (!empty($risk_status) && ($risk_status == 'true')) || (!empty($date_fin) && ($date_fin != '0000-00-00 00:00') && (strtolower($options['digi_risk_close_state_end_date_filled']) == strtolower(__('Oui', 'evarisk')))) || (($quotation == 0) && (strtolower($options['digi_risk_close_state_cotation_null']) == strtolower(__('Oui', 'evarisk')))) ) {
+			$wpdb->update(TABLE_RISQUE, array('risk_status' => 'closed', 'dateFinRisque' => (!empty($date_fin) && ($date_fin != '0000-00-00 00:00')) ? $date_fin : substr( current_time('mysql', 0), 0, -3 )), array('id' => $idRisque));
 		}
 
-		if(($histo == 'false') && (is_object($task_link))){/*	Check if the last evaluation is linked to a task. That means that we don't have the choice to show or not risk evaluation into statistics	*/
+		if ( !empty($description) ) {
+			$wpdb->insert(TABLE_ACTIVITE_SUIVI, array('id' => null, 'status' => 'Valid', 'date' => current_time('mysql', 0), 'id_user' => $current_user->ID, 'id_element' => $newId->newId, 'table_element' => TABLE_AVOIR_VALEUR, 'commentaire' => $description, 'date_ajout' => current_time('mysql', 0), 'export' => 'yes'));
+		}
+
+		if(($histo == 'false') && (is_object($task_link))){/**	Check if the last evaluation is linked to a task. That means that we don't have the choice to show or not risk evaluation into statistics	*/
 			evaTask::liaisonTacheElement(TABLE_AVOIR_VALEUR, $newId->newId, $task_link->task_id, 'after');
 		}
 
@@ -878,8 +894,11 @@ class Risque {
 		$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement'], $risque[0]->id_element);
 		$variables = $_REQUEST['variables'];
 		$description = digirisk_tools::IsValid_Variable($_REQUEST['description_risque'], $risque[0]->commentaire);
+		$date_debut = digirisk_tools::IsValid_Variable($_REQUEST['risk_start_date'], $risque[0]->dateDebutRisque);
+		$date_fin = digirisk_tools::IsValid_Variable($_REQUEST['risk_end_date'], $risque[0]->dateFinRisque);
+		$date_evaluation = digirisk_tools::IsValid_Variable($_REQUEST['risk_end_date'], $risque[0]->date);
 		$histo = 'true';
-		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo);
+		$idRisque = Risque::saveNewRisk($idRisque, $idDanger, $idMethode, $tableElement, $idElement, $variables, $description, $histo, $date_debut, $date_fin, $date_evaluation);
 
 		if(is_array($rating) && in_array('after', $rating)){	/*	Make the link between a corrective action and a risk evaluation	*/
 			$query =

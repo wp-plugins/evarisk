@@ -387,7 +387,7 @@ class EvaActivity extends EvaBaseActivity
 			}
 			else{
 				jQuery("#description_exportable_plan_action").prop("disabled",false);
-				if ("' . (empty($options['digi_ac_activity_default_exportable_plan_action']) || empty($options['digi_ac_activity_default_exportable_plan_action']['description']) || !empty($options['digi_ac_activity_default_exportable_plan_action']['description']) ? $options['digi_ac_activity_default_exportable_plan_action']['description'] : '') . '" == "oui") {
+				if ("' . (empty($options) && (empty($options['digi_ac_activity_default_exportable_plan_action']) || empty($options['digi_ac_activity_default_exportable_plan_action']['description'])) || (!empty($options) && !empty($options['digi_ac_activity_default_exportable_plan_action']['description'])) ? $options['digi_ac_activity_default_exportable_plan_action']['description'] : '') . '" == "oui") {
 					jQuery("#description_exportable_plan_action").prop("checked", true);
 				}
 			}
@@ -509,7 +509,7 @@ class EvaActivity extends EvaBaseActivity
 	</script></div><br/>';
 		}
 
-		if (empty($arguments['requested_action']) || (!empty($arguments['requested_action']) && ($arguments['requested_action'] != 'ficheAction') && ($arguments['provenance'] != 'ask_correctiv_action'))) {
+		if (empty($arguments['requested_action']) || (!empty($arguments['requested_action']) && ($arguments['requested_action'] != 'ficheAction') && !empty($arguments['provenance']) && ($arguments['provenance'] != 'ask_correctiv_action'))) {
 			ob_start();
 			suivi_activite::digi_postbox_project( $arguments );
 			$activite_new .= '

@@ -52,7 +52,7 @@ if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0)){
 $output_search = '';
 $found_result = false;
 if(!empty($items)){
-	$output_search = '[';
+	$output_search = '';
 	foreach ($items as $key=>$value){
 		if (strpos(strtolower($key), $q) !== false){
 			$found_result = true;
@@ -60,7 +60,7 @@ if(!empty($items)){
 			$output_search .= '{"id": "' . $value . '", "label": "' . $key . '", "value": "' . $value . '"}, ';
 		}
 	}
-	$output_search = substr($output_search, 0, -2) . ']';
+	$output_search = '[' . substr($output_search, 0, -2) . ']';
 }
 
 echo $output_search;

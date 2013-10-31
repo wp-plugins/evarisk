@@ -477,7 +477,7 @@ class EvaTask extends EvaBaseTask
 				"REPLACE INTO " . TABLE_LIAISON_TACHE_ELEMENT . "
 					(id, status, wasLinked, date, id_tache, id_element, table_element)
 				VALUES
-					 " . $actionsList . ";");
+					 " . $actionsList, array() );
 			$wpdb->query($query);
 		}
 	}

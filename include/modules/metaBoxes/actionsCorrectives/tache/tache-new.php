@@ -342,9 +342,10 @@ function getTaskGeneralInformationPostBoxBody($arguments) {
 									var markAllSubElementAsDone = false;
 								}
 								digirisk("#taskDone").html(\'<img src="' . PICTO_LOADING_ROUND . '" alt="loading" />\');
-								digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+								var data = {
 									"post": "true",
 									"table": "' . TABLE_TACHE . '",
+									"action": "digi_ajax_save_correctiv_actions_task",
 									"act": "taskDone",
 									"id": digirisk("#idTache").val(),
 									"nom_tache": digirisk("#' . $idTitre . '").val(),
@@ -361,7 +362,39 @@ function getTaskGeneralInformationPostBoxBody($arguments) {
 									"markAllSubElementAsDone": markAllSubElementAsDone,
 									"nom_exportable_plan_action": digirisk("#nom_exportable_plan_action").val(),
 									"description_exportable_plan_action": digirisk("#description_exportable_plan_action").val()
-								})
+								};
+								jQuery.post("' . admin_url( 'admin-ajax.php' ) . '", data, function(response){
+									var response_message = "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s a correctement &eacute;t&eacute; %s', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "{DIGI_TASK_NAME}"', $saveOrUpdate)) . '";
+									if ( response[0] == "error" ) {
+										response_message = "' . addslashes(sprintf('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="no-response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La fiche %s n\'a pas &eacute;t&eacute; %s.', 'evarisk') . '</strong></p>', __('de la t&acirc;che', 'evarisk') . ' "{DIGI_TASK_NAME}"', $saveOrUpdate)) . '";
+									}
+									actionMessageShow("#message", response_message.replace("{DIGI_TASK_NAME}", response[1]));
+									setTimeout(\'actionMessageHide("#message")\',7500);
+
+									digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+									var expanded = new Array();
+									digirisk(".expanded").each(function(){expanded.push(digirisk(this).attr("id"));});
+									digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										"post": "true",
+										"table": "' . TABLE_TACHE . '",
+										"act": "edit",
+										"id": response[2],
+										"partie": "right",
+										"menu": digirisk("#menu").val(),
+										"affichage": "affichageListe",
+										"expanded": expanded
+									});
+									digirisk("#partieGauche").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										"post": "true",
+										"table": "' . TABLE_TACHE . '",
+										"act": "edit",
+										"id": response[2],
+										"partie": "left",
+										"menu": digirisk("#menu").val(),
+										"affichage": "affichageListe",
+										"expanded": expanded
+									});
+								}, "json");
 								digirisk(this).dialog("close");
 							}
 						},

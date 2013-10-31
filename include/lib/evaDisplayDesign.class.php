@@ -2941,8 +2941,8 @@ class EvaDisplayDesign {
 		$allowedExtensions = "['odt']";
 		$multiple = false;
 		$actionUpload = str_replace('\\', '/', EVA_LIB_PLUGIN_URL . "gestionDocumentaire/uploadFile.php");
-		switch ($tableElement) {
 
+		switch ( $tableElement ) {
 			case TABLE_GROUPEMENT:
 				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'documentUnique/');
 				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'documentUnique/modeleDefaut.odt';
@@ -2975,10 +2975,16 @@ class EvaDisplayDesign {
 				$table = TABLE_FP;
 			break;
 
+			case TABLE_ACTIVITE . '_FA':
+			case TABLE_TACHE . '_FA':
+				$repertoireDestination = str_replace('\\', '/', EVA_MODELES_PLUGIN_DIR . 'planDActions/');
+				$defaultModelLink = EVA_MODELES_PLUGIN_URL . 'planDActions/modele_default_fiche_action.odt';
+				$table = TABLE_ACTIVITE;
+			break;
+
 			default:
 				sprintf(__('Le cas % n\'a pas &eacute;t&eacute; pr&eacute;vu dans %s &agrave; la ligne %s', 'evarisk'), $tableElement, __FILE__, __LINE__);
 			break;
-
 		}
 
 		$newModelForm =
@@ -3029,6 +3035,10 @@ class EvaDisplayDesign {
 			case DIGI_DBT_USER . '_FEP':
 				$documentType = 'fiche_exposition_penibilite';
 				$element_container_for_model_list = '_' . $tableElement . '_-digi-_' .$idElement;
+			break;
+			case TABLE_TACHE . '_FA':
+			case TABLE_ACTIVITE . '_FA':
+				$documentType = 'fiche_action';
 			break;
 		}
 

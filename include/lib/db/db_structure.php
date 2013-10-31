@@ -416,6 +416,20 @@ CREATE TABLE {$t} (
   KEY `parDefaut` (`parDefaut`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Document management';";
 
+/* Structure de la table `wp_eva__ged_documents`	*/
+$t = TABLE_GED_DOCUMENTS_META;
+$digirisk_db_table[$t] = "
+CREATE TABLE {$t} (
+	id int(10) unsigned NOT NULL auto_increment,
+	status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+	document_id int(10) unsigned NOT NULL COMMENT 'The related document identifier',
+	meta_key varchar(255) collate utf8_unicode_ci NOT NULL,
+	meta_value longtext,
+	PRIMARY KEY (id),
+  	KEY status (status),
+  	KEY document_id (document_id)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Document content';";
+
 /* Structure de la table `wp_eva__ged_documents_document_unique`	*/
 $t = TABLE_DUER;
 $digirisk_db_table[$t] = "
@@ -504,6 +518,7 @@ CREATE TABLE {$t} (
   `siren` char(15) collate utf8_unicode_ci NOT NULL,
   `siret` char(15) collate utf8_unicode_ci NOT NULL,
   `social_activity_number` char(15) collate utf8_unicode_ci NOT NULL,
+  creation_date_of_society datetime default NULL,
   PRIMARY KEY  (`id`),
   KEY `id_adresse` (`id_adresse`),
   KEY `id_responsable` (`id_responsable`)
@@ -816,8 +831,11 @@ CREATE TABLE {$t} (
   `nomTableElement` varchar(255) collate utf8_unicode_ci NOT NULL,
   `commentaire` text collate utf8_unicode_ci,
   `date` datetime NOT NULL,
+  `dateDebutRisque` datetime NOT NULL,
+  `dateFinRisque` datetime NOT NULL,
   `last_moved_date` datetime NOT NULL,
   `Status` enum('Valid','Moderated','Deleted') collate utf8_unicode_ci NOT NULL default 'Valid',
+  `risk_status` enum('open','closed') collate utf8_unicode_ci NOT NULL default 'open',
   PRIMARY KEY  (`id`),
   KEY `id_danger` (`id_danger`),
   KEY `id_methode` (`id_methode`),
@@ -843,6 +861,19 @@ CREATE TABLE {$t} (
   KEY `idEvaluateur` (`idEvaluateur`),
   KEY `id` (`id`),
   KEY `id_evaluation` (`id_evaluation`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+/* Structure de la table `wp_eva__risque_histo`	*/
+$t = TABLE_RISQUE_HISTO;
+$digirisk_db_table[$t] = "
+CREATE TABLE {$t} (
+  id int(10) NOT NULL auto_increment,
+  id_risque int(10) NOT NULL,
+  date datetime NOT NULL,
+  field varchar(255) collate utf8_unicode_ci NOT NULL,
+  value longtext,
+  PRIMARY KEY (id),
+  KEY id_risque (id_risque)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
 /* Structure de la table `wp_eva__unite_travail`	*/
@@ -1804,4 +1835,17 @@ CREATE TABLE {$t} (
 {/*	Version 85	*/
 	$digirisk_db_version = 85;
 	$digirisk_update_way[$digirisk_db_version] = 'data';
+}
+
+{/*	Version 86	*/
+	$digirisk_db_version = 86;
+	$digirisk_update_way[$digirisk_db_version] = 'multiple';
+
+	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_RISQUE, TABLE_GED_DOCUMENTS_META, TABLE_GROUPEMENT, TABLE_RISQUE_HISTO);
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_GROUPEMENT][] = __('Ajout d\'un champs pour la date de la cr&eacute;ation de la soci&eacute;t&eacute;', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_RISQUE][] = __('Ajout des champs permettant de gérer les dates de début et de fin des risques', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_GED_DOCUMENTS_META][] = __('Table permettant de stocker les informations concernant les informations associ&eacute;es &agrave; un document', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_RISQUE_HISTO][] = __('Table permettant d\'enregistrer un historique pour les informations concernant un risque', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array( TABLE_GED_DOCUMENTS_META, TABLE_RISQUE_HISTO );
 }

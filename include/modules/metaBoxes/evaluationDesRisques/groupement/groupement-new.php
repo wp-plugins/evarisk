@@ -29,6 +29,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$contenuInputSiren = $groupement->siren;
 		$contenuInputSiret = $groupement->siret;
 		$contenuInputsocial_activity_number = $groupement->social_activity_number;
+		$contenuInputcreation_date_of_society = !empty( $groupement->creation_date_of_society ) && ( $groupement->creation_date_of_society != '0000-00-00') ? $groupement->creation_date_of_society : '';
 		if($groupement->id_adresse != 0 AND $groupement->id_adresse != null)
 		{
 			$address = new EvaAddress($groupement->id_adresse);
@@ -70,6 +71,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$contenuInputType = '';
 		$contenuInputSiret = '';
 		$contenuInputsocial_activity_number = '';
+		$contenuInputcreation_date_of_society = '';
 		$saveOrUpdate = 'save';
 		$saufGroupement = '';
 		$grise = true;
@@ -123,7 +125,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$groupement_new .= ELEMENT_IDENTIFIER_GP . $postId . '<br/>';
 	}
 
-	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = $contenuAideSiret = $contenuAideSiren = $social_activity_number = $contenuAideType = $contenuInputSiren = $contenuAidesocial_activity_number = "";
+	$contenuAideTitre = $contenuAideDescription = $contenuAideLigne1 = $contenuAideLigne2 = $contenuAideCodePostal = $contenuAideVille = $contenuAideTelephone = $contenuAideEffectif = $contenuAideSiret = $contenuAideSiren = $social_activity_number = $contenuAideType = $contenuInputSiren = $contenuAidesocial_activity_number = $contenuAidecreation_date_of_society = "";
 	{//Nom du groupement
 		$labelInput = ucfirst(strtolower(sprintf(__("nom %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';
 		$labelInput[1] = ($labelInput[0] == "&")?ucfirst($labelInput[1]):$labelInput[1];
@@ -138,6 +140,49 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$idChamps = "typeGroupement";
 		$type_input_possible_value = array('' => __('Choisir', 'evarisk'), 'employer' => __('Employeur', 'evarisk'));
 		$groupement_new .= '<label for="' . $idChamps . '" >' . __('Type de groupement', 'evarisk') . '</label><br/>' . EvaDisplayInput::createComboBox($idChamps, $nomChamps, $type_input_possible_value, $contenuInputType);
+	}
+	{//Date de création du groupement
+		$nomChamps = "creation_date_of_society";
+		$idChamps = "creation_date_of_society";
+		$groupement_new .= EvaDisplayInput::afficherInput('text', $idChamps, substr( $contenuInputcreation_date_of_society, 0, -3 ), '', __('Date de cr&eacute;ation', 'evarisk'), $nomChamps, $grise, true, 255, 'titleInput', '', '100%', '', '', true) . '
+<span style="font-style: italic;cursor: pointer;" id="date_for_' . $idChamps . '" class="digi_use_current_date_for_gptk" >' . __('Maintenant', 'evarisk') . '</span>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery.datepicker.regional["fr"] = {
+			monthNames: ["' . __('Janvier', 'evarisk') . '","' . __('F&eacute;vrier', 'evarisk') . '","' . __('Mars', 'evarisk') . '","' . __('Avril', 'evarisk') . '","' . __('Mai', 'evarisk') . '","' . __('Juin', 'evarisk') . '", "' . __('Juillet', 'evarisk') . '","' . __('Ao&ucirc;t', 'evarisk') . '","' . __('Septembre', 'evarisk') . '","' . __('Octobre', 'evarisk') . '","' . __('Novembre', 'evarisk') . '","' . __('D&eacute;cembre', 'evarisk') . '"],
+			monthNamesShort: ["Jan", "Fev", "Mar", "Avr", "Mai", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            dayNames: ["' . __('Dimanche', 'evarisk') . '", "' . __('Lundi', 'evarisk') . '", "' . __('Mardi', 'evarisk') . '", "' . __('Mercredi', 'evarisk') . '", "' . __('Jeudi', 'evarisk') . '", "' . __('Vendredi', 'evarisk') . '", "' . __('Samedi', 'evarisk') . '"],
+			dayNamesShort: ["' . __('Dim', 'evarisk') . '", "' . __('Lun', 'evarisk') . '", "' . __('Mar', 'evarisk') . '", "' . __('Mer', 'evarisk') . '", "' . __('Jeu', 'evarisk') . '", "' . __('Ven', 'evarisk') . '", "' . __('Sam', 'evarisk') . '"],
+			dayNamesMin: ["' . __('Di', 'evarisk') . '", "' . __('Lu', 'evarisk') . '", "' . __('Ma', 'evarisk') . '", "' . __('Me', 'evarisk') . '", "' . __('Je', 'evarisk') . '", "' . __('Ve', 'evarisk') . '", "' . __('Sa', 'evarisk') . '"],
+		}
+    	jQuery.datepicker.setDefaults( jQuery.datepicker.regional["fr"] );
+		jQuery.timepicker.regional["fr"] = {
+                timeText: "' . __('Heure', 'evarisk') . '",
+                hourText: "' . __('Heures', 'evarisk') . '",
+                minuteText: "' . __('Minutes', 'evarisk') . '",
+                amPmText: ["AM", "PM"],
+                closeText: "' . __('OK', 'evarisk') . '",
+                timeOnlyTitle: "' . __('Choisissez l\'heure', 'evarisk') . '",
+                closeButtonText: "' . __('Fermer', 'evarisk') . '",
+                deselectButtonText: "' . __('D&eacute;s&eacute;lectionner', 'evarisk') . '",
+		}
+    	jQuery.timepicker.setDefaults(jQuery.timepicker.regional["fr"]);
+
+		jQuery("#' . $idChamps . '").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+		});
+		jQuery("#digi_risk_date_start").val("' . (!empty($contenuInputcreation_date_of_society) && ($contenuInputcreation_date_of_society != '0000-00-00 00:00:00') ? substr( $contenuInputcreation_date_of_society, 0, -3 ) : '') . '");
+
+		jQuery("#date_for_' . $idChamps . '").click(function(){
+			jQuery("#' . $idChamps . '" ).val( "' . substr( current_time('mysql', 0), 0, -3 ) . '" );
+		});
+
+	});
+</script><br/>';
 	}
 	{//Groupement p�re
 		$search = "`Status`='Valid' AND nom<>'Groupement Racine'";

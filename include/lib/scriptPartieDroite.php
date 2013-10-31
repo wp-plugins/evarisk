@@ -11,6 +11,8 @@
 					postboxes.init("' . $pageHook . '");
 					postboxes.save_state("' . $pageHook . '");
 					postboxes.save_order("' . $pageHook . '");
+
+					jQuery( "#mainPostBox" ).removeClass( "hide-if-js" );
 				});
 			</script>';
 	}

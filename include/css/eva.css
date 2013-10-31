@@ -487,15 +487,16 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 
 /* -- Risques -- */
 .risqueInfo	{		-webkit-border-radius:12px;		-moz-border-radius:12px;		border-radius:12px;	}
-.risque2Info, .Seuil_2	{		color: white;		background-color: orange;	}
-.risque3Info, .Seuil_3	{		color: white;		background-color: red;	}
-.risque4Info, .Seuil_4	{		color: white;		background-color: black;	}
-.risque5Info, .Seuil_5	{		color: white;		background-color: red;	}
-.risque6Info, .Seuil_6	{		color: white;		background-color: black;	}
-.risque2Text	{		color: orange;	}
-.risque3Text	{		color: red;	}
-.risque4Text	{		color: black;	}
-.risque5Text	{		color: red;	}
+.risque1Info, .Seuil_1	{		color: black !important;		background-color: white !important;	}
+.risque2Info, .Seuil_2	{		color: white !important;		background-color: orange !important;	}
+.risque3Info, .Seuil_3	{		color: white !important;		background-color: red !important;	}
+.risque4Info, .Seuil_4	{		color: white !important;		background-color: black !important;	}
+.risque5Info, .Seuil_5	{		color: white !important;		background-color: red !important;	}
+.risque6Info, .Seuil_6	{		color: white !important;		background-color: black !important;	}
+.risque2Text	{		color: orange !important;	}
+.risque3Text	{		color: red !important;	}
+.risque4Text	{		color: black !important;	}
+.risque5Text	{		color: red !important;	}
 .risque6Text	{		font-size : 1.7em;		font-weight : bolder;		color: black;	}
 
 .columnRId{	width:5% !important; vertical-align : middle !important;	}
@@ -514,10 +515,12 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 .columnQuotationMassUpdater	{	width:10%; font-size:11px; text-align:center;	}
 .columnRIdMassUpdater	{	width:8%; font-size:11px; text-align:center;	}
 .columnNomDangerMassUpdater	{	width:10%; font-size:10px;	}
-.columnCommentaireRisqueMassUpdater	{		}
+.columnCommentaireRisqueMassUpdater	{	width: 40%;	}
 .columnCommentaireRisqueMassUpdater textarea, .columnActionPrioritaireRisqueMassUpdater textarea{		width: 98%;	}
 .columnActionPrioritaireRisqueMassUpdater{	text-align:center; vertical-align:middle;	}
 .columnCBRisqueMassUpdater{	width:2%; vertical-align:middle !important;	}
+.columnDatesMassUpdater{	width:18%;	}
+.cellDatesMassUpdater { padding:0px !important; }
 .risqMassUpdaterChooserExplanation{	margin:6px 0px 0px 0px; font-size:11px; font-style:italic;	}
 .massUpdaterChecbkoxAction{	font-size:11px; cursor:pointer;	}
 
@@ -558,6 +561,7 @@ div.slideshow img	{		max-width: 100%;		margin-bottom: 3px;	}
 
 .risk_line_action img{	margin:0px 2px;	}
 .columnAction {	text-align:center !important;	}
+.columnAction.risk_line_action {	text-align: right !important;	}
 
 .risk_line_action img{	cursor:pointer;	}
 .columnQuotation, .columnRId	{		text-align: center !important;	}
@@ -585,6 +589,10 @@ th.columnCommentaireRisque*/
 .risk_controlled_task_list_check{	width:3%;	}
 .risk_not_controlled_task_list{ width:100%;	}
 .risk_not_controlled_task_list_check{	width:3%;	}
+
+.risk_date_change {
+	margin: 30px 0;	
+}
 
 .qr_current_risk{	width:70%; margin:30px auto; background-color: #CCCCCC;	}
 .qr_current_risk div:first-child{ padding: 2px 4px; }
@@ -954,6 +962,7 @@ label.digi_alert {
 .FPContainer{ height:200px; overflow:auto; }
 .RSContainer{ height:200px; overflow:auto; }
 .FEPContainer{ height:300px; overflow:auto; }
+#divHistoriqueFicheDAction{ height:300px; overflow:auto; }
 #divHistoriqueDocument{	height:410px !important; overflow:hidden !important;	}
 .duerDeleteContainer{	width:20px !important;	}
 .duerDeleteContainer img{	width:15px !important;	}
@@ -1195,5 +1204,14 @@ label.digi_alert {
 	padding: 0px !important;
 }
 
+.ui-datepicker-current {
+	display: none;
+}
+input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.risq_date_debut:disabled, input.risq_fin_debut:disabled {
+	border: 1px solid #F7F7F7 !important;
+	background-color: #F7F7F7;
+}
 
-
+.digi_recommandationNameIndication {
+	margin: 0 32px;
+}

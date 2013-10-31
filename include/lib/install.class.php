@@ -145,24 +145,16 @@ class digirisk_install	{
 	function update_digirisk($version_to_launch = -1){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_table_structure_change, $digirisk_db_update, $standard_message_subject_to_send, $standard_message_to_send, $digirisk_db_table_operation_list;
 
-		/*
-		 * 	Initialisation des permissions (Lancement a chaque chargement du plugin)
-		 */
+		/** 	Initialisation des permissions (Lancement a chaque chargement du plugin) */
 		digirisk_permission::digirisk_init_permission();
 
-		/*
-		 * Copie du dossier contenant les fichiers de modeles/images (Lancement a chaque chargement du plugin)
-		 */
+		/** Copie du dossier contenant les fichiers de modeles/images (Lancement a chaque chargement du plugin) */
 		digirisk_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
 
-		/*
-		 * Copie/creation du dossier devant contenir les fichiers crees par le biais du logiciel DUER/Fiches de poste/... (Lancement a chaque chargement du plugin)
-		 */
+		/** Copie/creation du dossier devant contenir les fichiers crees par le biais du logiciel DUER/Fiches de poste/... (Lancement a chaque chargement du plugin) */
 		digirisk_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 
-		/*
-		 *	Creation du dossier temporatire permettant de creer les documents au format odt (Lancement a chaque chargement du plugin)
-		 */
+		/**	Creation du dossier temporatire permettant de creer les documents au format odt (Lancement a chaque chargement du plugin) */
 		if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp')){
 			digirisk_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
 		}
@@ -229,7 +221,7 @@ class digirisk_install	{
 					if(is_array($digirisk_table_structure_change) && !empty($digirisk_table_structure_change[$i]) && (count($digirisk_table_structure_change[$i]) > 0)){
 						foreach($digirisk_table_structure_change[$i] as $table_name => $operations_to_make){
 							foreach($operations_to_make as $operation_index => $operation){
-								$query = $wpdb->prepare($operation['MAIN_ACTION'] . " TABLE " . $table_name . " " . $operation['ACTION'] . " " . $operation['ACTION_CONTENT']);
+								$query = $wpdb->prepare($operation['MAIN_ACTION'] . " TABLE " . $table_name . " " . $operation['ACTION'] . " " . $operation['ACTION_CONTENT'], "");
 								$wpdb->query($query);
 							}
 						}
@@ -1047,9 +1039,9 @@ class digirisk_install	{
 
 			case 80:
 				/**	Update real affectation date with affectation date defined by the click on the user	*/
-				$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET date_affectation_reelle = date_affectation WHERE date_affectation_reelle = '0000-00-00 00:00:00'");
+				$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET date_affectation_reelle = date_affectation WHERE date_affectation_reelle = '0000-00-00 00:00:00'", array());
 				$wpdb->query($query);
-				$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET date_desaffectation_reelle = date_desAffectation WHERE date_desaffectation_reelle = '0000-00-00 00:00:00'");
+				$query = $wpdb->prepare("UPDATE " . TABLE_LIAISON_USER_ELEMENT . " SET date_desaffectation_reelle = date_desAffectation WHERE date_desaffectation_reelle = '0000-00-00 00:00:00'", array());
 				$wpdb->query($query);
 
 				/**	Set the penibility level by default	*/
@@ -1067,7 +1059,7 @@ class digirisk_install	{
 				$wpdb->query( "UPDATE " . TABLE_ACTIVITE_SUIVI . " SET date_ajout = date WHERE date_ajout = '0000-00-00 00:00:00'" );
 
 				/**	Transfer all evaluation comment into follow up table	*/
-				$query = $wpdb->prepare( "SELECT id_evaluation, date, commentaire, idEvaluateur FROM " . TABLE_AVOIR_VALEUR . " GROUP BY id_evaluation " );
+				$query = $wpdb->prepare( "SELECT id_evaluation, date, commentaire, idEvaluateur FROM " . TABLE_AVOIR_VALEUR . " GROUP BY id_evaluation ", array());
 				$evaluation_comments = $wpdb->get_results($query);
 				if ( !empty($evaluation_comments) ) {
 					foreach ( $evaluation_comments as $evaluation_infos) {
@@ -1172,6 +1164,7 @@ class digirisk_install	{
 				/**	Set the penibility level by default	*/
 				$options = get_option('digirisk_options');
 				$options['digi_risk_display_picture_in_listing'] = 'oui';
+				$options['digi_risk_display_picture_in_listing'] = 'employerCreationDate';
 				$options['digi_ac_task_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
 				$options['digi_ac_activity_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
 				update_option('digirisk_options', $options);
@@ -1185,12 +1178,12 @@ class digirisk_install	{
 					foreach ( $users as $user) {
 						$do_update = false;
 						$user_meta = get_user_meta( $user->ID, 'digirisk_information', true);
-						if ( !empty($user_meta) && !empty($user_meta['digi_hiring_date']) ) {
+						if ( !empty($user_meta) && is_array( $user_meta ) && !empty($user_meta['digi_hiring_date']) ) {
 							update_user_meta( $user->ID, 'digi_hiring_date', $user_meta['digi_hiring_date']);
 							unset( $user_meta['digi_hiring_date'] );
 							$do_update = true;
 						}
-						if ( !empty($user_meta) && !empty($user_meta['digi_unhiring_date']) ) {
+						if ( !empty($user_meta) && is_array( $user_meta ) && !empty($user_meta['digi_unhiring_date']) ) {
 							update_user_meta( $user->ID, 'digi_unhiring_date', $user_meta['digi_unhiring_date']);
 							unset( $user_meta['digi_unhiring_date'] );
 							$do_update = true;
@@ -1213,6 +1206,29 @@ class digirisk_install	{
 				foreach ( $user_to_unassociate as $user_meta ) {
 					$update_user = $wpdb->update( TABLE_LIAISON_USER_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'date_desaffectation_reelle' => $user_meta->meta_value, 'id_desAttributeur' => get_current_user_id()), array('id_user' => $user_meta->user_id, 'status' => 'valid') );
 				}
+			break;
+
+			case 86:
+				$query = $wpdb->prepare( "SELECT R.id, MIN(E.date) AS EVAL_DATE FROM " . TABLE_RISQUE . " AS R INNER JOIN " . TABLE_AVOIR_VALEUR . " AS E ON (E.id_risque = R.id) GROUP BY R.id", array() );
+				$risk_list = $wpdb->get_results( $query );
+
+				foreach ( $risk_list as $risk ) {
+					$risk_new_params = array(
+						'dateDebutRisque' => $risk->EVAL_DATE,
+						'risk_status' => 'open',
+					);
+					$wpdb->update( TABLE_RISQUE, $risk_new_params, array( 'id' => $risk->id ) );
+				}
+
+				/**	Set option defining the default date to take in care for risk start date	*/
+				$options = get_option('digirisk_options');
+				$options['digi_risk_start_date'] = 'employerCreationDate';
+				$options['digi_risk_close_state_cotation_null'] = __('Non', 'evarisk');
+				$options['digi_risk_close_state_end_date_filled'] = __('Non', 'evarisk');
+				$options['digi_popin_size']['width'] = '800';
+				$options['digi_popin_size']['height'] = '600';
+				$options['digi_export_comment_in_doc'] = 'oui';
+				update_option('digirisk_options', $options);
 			break;
 		}
 	}

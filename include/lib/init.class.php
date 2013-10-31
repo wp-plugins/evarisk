@@ -261,4 +261,27 @@ class digirisk_init
 		echo '<script type="text/javascript">var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";</script>';
 	}
 
+	/**
+	 * Allows to associate a survey to an element of digirisk
+	 *
+	 * @param string $current_possible_association_list The current html output for survey association with existing custom types
+	 *
+	 * @return string The new list of element available for association
+	 */
+	function digi_survey_association( $current_possible_association_list, $current_association ) {
+		$display = new wpes_display();
+
+		/**	Add Society to available list	*/
+		$current_possible_association_list .= $display->display( 'wpes_survey_post_type_association_item', array( 'SURVEY_ASSOCIATION_POST_TYPE' => TABLE_GROUPEMENT, 'SURVEY_ASSOCIATION_POST_TYPE_NAME' => __('Groupements evarisk', 'evarisk'), 'SURVEY_ASSOCAITION_CHECKBOX_STATE' => (!empty($current_association) && is_array($current_association) && in_array(TABLE_GROUPEMENT, $current_association) ? ' checked="checked"' : '')) );
+
+		/**	Add Work unit to available list	*/
+		$current_possible_association_list .= $display->display( 'wpes_survey_post_type_association_item', array( 'SURVEY_ASSOCIATION_POST_TYPE' => TABLE_UNITE_TRAVAIL, 'SURVEY_ASSOCIATION_POST_TYPE_NAME' => __('Unités de travail evarisk', 'evarisk'), 'SURVEY_ASSOCAITION_CHECKBOX_STATE' => (!empty($current_association) && is_array($current_association) && in_array(TABLE_UNITE_TRAVAIL, $current_association) ? ' checked="checked"' : '')) );
+
+		$current_possible_association_list .= $display->display( 'wpes_survey_post_type_association_item', array( 'SURVEY_ASSOCIATION_POST_TYPE' => TABLE_TACHE, 'SURVEY_ASSOCIATION_POST_TYPE_NAME' => __('Tâches evarisk', 'evarisk'), 'SURVEY_ASSOCAITION_CHECKBOX_STATE' => (!empty($current_association) && is_array($current_association) && in_array(TABLE_TACHE, $current_association) ? ' checked="checked"' : '')) );
+
+		$current_possible_association_list .= $display->display( 'wpes_survey_post_type_association_item', array( 'SURVEY_ASSOCIATION_POST_TYPE' => TABLE_ACTIVITE, 'SURVEY_ASSOCIATION_POST_TYPE_NAME' => __('Sous-Tâches evarisk', 'evarisk'), 'SURVEY_ASSOCAITION_CHECKBOX_STATE' => (!empty($current_association) && is_array($current_association) && in_array(TABLE_ACTIVITE, $current_association) ? ' checked="checked"' : '')) );
+
+		return $current_possible_association_list;
+	}
+
 }

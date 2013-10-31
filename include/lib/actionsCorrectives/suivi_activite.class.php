@@ -56,7 +56,7 @@ class suivi_activite {
 			$follow_up_infos = $wpdb->get_row($query);
 			$selected_date = $follow_up_infos->date_ajout;
 			$export_state = (!empty($follow_up_infos->export) && ($follow_up_infos->export == 'yes')) ? ' checked="checked"' : '';
-			$comment =  $follow_up_infos->commentaire;
+			$comment = stripslashes( $follow_up_infos->commentaire );
 			$id_user_performer =  $follow_up_infos->id_user_performer;
 			$elapsed_time = $follow_up_infos->elapsed_time;
 			$elapsed_time_hour = floor( $elapsed_time / 60 );
@@ -276,10 +276,13 @@ class suivi_activite {
 			if ( !empty($specific_follow_up) ) {
 				$query = $wpdb->prepare("SELECT * FROM " . TABLE_ACTIVITE_SUIVI . " WHERE id = %d", $specific_follow_up);
 				$follow_up_infos = $wpdb->get_row($query);
-				$selected_date = $follow_up_infos->date_ajout;
+				$selected_date = substr( $follow_up_infos->date_ajout, 0, -3 );
 				$export_state = (!empty($follow_up_infos->export) && ($follow_up_infos->export == 'yes')) ? ' checked="checked"' : '';
-				$comment =  $follow_up_infos->commentaire;
+				$comment = stripslashes( $follow_up_infos->commentaire );
 			}
+
+			$options = get_option('digirisk_options');
+			$export_state = !empty($options['digi_export_comment_in_doc']) && (strtolower( $options['digi_export_comment_in_doc'] ) == strtolower( __('Oui', 'evarisk') )) && empty( $export_state ) ? ' checked="checked"' : ( !empty( $export_state ) ? $export_state : '' );
 
 			$date_input = '<input id="date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '" type="text" value="' . $selected_date . '" name="' . (!empty($specific_name_for_input) ? $specific_name_for_input . '[date_ajout]' : 'date_ajout') . '">';
 			$export_input = '<input' . $export_state . ' type="checkbox" name="' . (!empty($specific_name_for_input) ? $specific_name_for_input . '[export]' : 'export') . '" value="yes" id="digi_print_comment_in_doc_note' . $tableElement . $idElement .'_' . $specific_follow_up .  '" /> <label for="digi_print_comment_in_doc_note' . $tableElement . $idElement .'_' . $specific_follow_up .  '" >' . sprintf( __('Imprimer dans %s', 'evarisk'), $document_type_to_print ) . '</label>';
@@ -582,7 +585,7 @@ class suivi_activite {
 		return array($elapsed_time_output, $class);
 	}
 
-	function tableauSuiviActivite($tableElement, $idElement, $follow_up_type = 'note') {
+	function tableauSuiviActivite($tableElement, $idElement, $follow_up_type = 'note', $edition_button = true) {
 		$listSuivi = suivi_activite::getSuiviActivite($tableElement, $idElement, $follow_up_type);
 		$outputSuivi = '';
 
@@ -616,7 +619,9 @@ class suivi_activite {
 				$titres[] = __('Suivi modifications', 'evarisk');
 			}
 			$titres[] = __('Impression', 'evarisk'); // sprintf( __('Publier dans %s', 'evarisk'), $document_type_to_print );
-			$titres[] = __('Actions', 'evarisk');
+			if ( $edition_button ) {
+				$titres[] = __('Actions', 'evarisk');
+			}
 
 			$classes = array( 'digi_suivi_modif_date_ajout_unformated', 'digi_suivi_identifier_col', );
 			if ( $follow_up_type == 'follow_up' ) {
@@ -629,7 +634,9 @@ class suivi_activite {
 				$classes[] = '';
 			}
 			$classes[] = 'digi_suivi_modif_export_col';
-			$classes[] = 'digi_suivi_modif_action_col';
+			if ( $edition_button ) {
+				$classes[] = 'digi_suivi_modif_action_col';
+			}
 
 			unset($lignesDeValeurs);
 			foreach ($listSuivi as $suivi) {
@@ -655,14 +662,16 @@ class suivi_activite {
 					$elapsed_time_minutes = ($elapsed_time_minutes < 10) ? '0' . $elapsed_time_minutes : $elapsed_time_minutes;
 					$valeurs[] = array('value' => sprintf(__('Le <b>%s</b> <br/>%s', 'evarisk'), mysql2date('d M Y (H:i:s)', $suivi->date_ajout, true), ((!empty($elapsed_time_hour) || !empty($elapsed_time_minutes)) ? sprintf(__('Dur&eacute;e %s H %s Minutes', 'evarisk'), (!empty($elapsed_time_hour) ? $elapsed_time_hour : 0), (!empty($elapsed_time_minutes) ? $elapsed_time_minutes : 0)) : '')));
 					$valeurs[] = array('value' => $user_lastname . ' ' . $user_firstname);
-					$valeurs[] = array('value' => $suivi->commentaire);
+					$valeurs[] = array('value' => stripslashes( $suivi->commentaire ));
 					$valeurs[] = array('value' => $suivi->cost . '&euro;');
 				}
 				else {
-					$valeurs[] = array('value' => sprintf(__('Le <b>%s</b>, <b>%s</b> dit <i>%s</i>', 'evarisk'), mysql2date('d M Y (H:i:s)', $suivi->date_ajout, true), $user_lastname . ' ' . $user_firstname, $suivi->commentaire));
+					$valeurs[] = array('value' => sprintf(__('Le <b>%s</b>, <b>%s</b> dit <i>%s</i>', 'evarisk'), mysql2date('d M Y (H:i:s)', $suivi->date_ajout, true), $user_lastname . ' ' . $user_firstname, stripslashes( $suivi->commentaire )));
 				}
 				$valeurs[] = array('value' => (!empty($suivi->export) && ($suivi->export == 'yes')) ? __('Oui', 'evarisk')/* '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="publish_in_doc" title="' . sprintf( __('Ce commentaire sera publi&eacute; dans %s', 'evarisk'), $document_type_to_print ) . '" />' */ : __('Non', 'evarisk'));
-				$valeurs[] = array('value' => '<input type="hidden" value="' . $suivi->follow_up_type . '" id="digi_edit_follow_up_line_' . $suivi->id . '_folow_up_type" /><img src="' . PICTO_EDIT . '" alt="' . __('Edit this comment', 'evarisk') . '" class="digi_edit_follow_up_line" id="digi_edit_follow_up_line_' . $suivi->id . '" /><img src="' . PICTO_DELETE . '" alt="' . __('Delete this comment', 'evarisk') . '" class="digi_delete_follow_up_line" id="digi_delete_follow_up_line_' . $suivi->id . '" />');
+				if ( $edition_button ) {
+					$valeurs[] = array('value' => '<input type="hidden" value="' . $suivi->follow_up_type . '" id="digi_edit_follow_up_line_' . $suivi->id . '_folow_up_type" /><img src="' . PICTO_EDIT . '" alt="' . __('Edit this comment', 'evarisk') . '" class="digi_edit_follow_up_line" id="digi_edit_follow_up_line_' . $suivi->id . '" /><img src="' . PICTO_DELETE . '" alt="' . __('Delete this comment', 'evarisk') . '" class="digi_delete_follow_up_line" id="digi_delete_follow_up_line_' . $suivi->id . '" />');
+				}
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $tableElement . $idElement . 'suiviModification';
 			}

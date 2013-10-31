@@ -85,15 +85,46 @@ class eva_documentUnique {
 				$niveauSeuil = Risque::getSeuil($quotation);
 				$elementPrefix = '';
 
+				$date_shortcode = '';
+				$employer_date = null;
 				switch ($tableElement) {/*	Define the prefix for the current element looking on the type	*/
 					case TABLE_GROUPEMENT:
 						$element = EvaGroupement::getGroupement($idElement);
 						$elementPrefix = ELEMENT_IDENTIFIER_GP . $idElement . ' - ';
+
+						$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $idElement );
+						$current_groupement_infos = $wpdb->get_row( $query );
+						if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
+							$employer_date = $current_groupement_infos->creation_date_of_society;
+						}
+						else {
+							$employer_date = EvaGroupement::get_closest_employer( $idElement );
+						}
+
 					break;
 					case TABLE_UNITE_TRAVAIL:
 						$element = eva_UniteDeTravail::getWorkingUnit($idElement);
 						$elementPrefix = ELEMENT_IDENTIFIER_UT . $idElement . ' - ';
+
+						$query = $wpdb->prepare("SELECT id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $idElement);
+						$current_work_unit_parent = $wpdb->get_var( $query );
+						$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $current_work_unit_parent );
+						$current_groupement_infos = $wpdb->get_row( $query );
+						if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00 00:00:00')) {
+							$employer_date = $current_groupement_infos->creation_date_of_society;
+						}
+						else {
+							$employer_date = EvaGroupement::get_closest_employer( $current_work_unit_parent );
+						}
 					break;
+				}
+				if ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') ) {
+					$date_shortcode = ' / <input type="hidden" value="' . substr( $employer_date, 0, -3 ) . '" id="parent_date_for_risk_r_' . $risque[0]->id . '" /><span id="digi_use_parent_date_for_risk_r_' . $risque[0]->id . '" style="font-style: italic;cursor: pointer;" class="digi_use_parent_date_for_risk" >' . __('Date de cr&eacute;ation du groupement employeur', 'evarisk') . '</span>';
+				}
+
+				$is_closed = false;
+				if ( $risque[0]->risk_status == 'closed' ) {
+					$is_closed = true;
 				}
 
 				/*	Build the output array we the result	*/
@@ -144,27 +175,102 @@ class eva_documentUnique {
 					}
 
 					if ($outputInterfaceType == 'massUpdater') {/*	In case we are on the mass updater interface	*/
+						$tmpLigneDeValeurs[$quotation][$i][1] = array('value' => ELEMENT_IDENTIFIER_R . $risque[0]->id . ' - ' . ELEMENT_IDENTIFIER_E . $risque[0]->id_evaluation . '<br/><br/>' . $risque[0]->nomDanger, 'class' => '');
+						unset($tmpLigneDeValeurs[$quotation][$i][3]);
+
+						$dateDebut = '
+<label for="risq_date_debut_' . $risque[0]->id . '">' . __('Date d&eacute;but risque', 'evarisk') . '</label>
+<br/><input type="text" name="risqDate[' . $risque[0]->id . '][dateDebutRisque]"' . ($is_closed ? ' disabled="disabled"' : '' ). '  tabindex="100" value="' . substr( $risque[0]->dateDebutRisque, 0, -3) . '" id="risq_date_debut_' . $risque[0]->id . '" style="clear:both; width:90%;" class="digi_datetimepicker_massupdater risq_date_debut">' . ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateDebutRisque) && ( $risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateDebutRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) .
+						(!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_risq_date_debut_' . $risque[0]->id . '" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' . $date_shortcode : '');
+						$dateDebut .= '
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery("#risq_date_debut_' . $risque[0]->id . '").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+			showButtonPanel: false,' . (!empty($employer_date) ? 'minDate: "' . $employer_date . '",' : '') . '
+			onClose: function(selectedDate, input) {
+				if ( (jQuery(this).val() != "") && (jQuery("#parent_date_for_risk_r_' . $risque[0]->id . '").val() != undefined) && (jQuery("#parent_date_for_risk_r_' . $risque[0]->id . '").val() + ":00" > jQuery(this).val() + ":00" ) ) {
+					alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de d&eacute;but de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					jQuery(this).val( jQuery("#parent_date_for_risk_r_' . $risque[0]->id . '").val() );
+				}
+				if ( (jQuery(this).val() != "") && ( jQuery(this).val() != undefined ) ) {
+					var current_end_date = jQuery("#risq_date_fin_' . $risque[0]->id . '").val();
+					jQuery("#risq_date_fin_' . $risque[0]->id . '").datepicker("option", "minDate", jQuery(this).val());
+					jQuery("#risq_date_fin_' . $risque[0]->id . '").val( current_end_date );
+				}
+			}
+		});
+	});
+</script>';
+
+						$dateFin = '
+<label for="risq_date_fin_' . $risque[0]->id . '">' . __('Date Fin risque', 'evarisk') . '</label>
+<br/><input type="text" name="risqDate[' . $risque[0]->id . '][dateFinRisque]"' . ($is_closed ? ' disabled="disabled"' : '' ). ' tabindex="100" value="' . (!empty($risque[0]->dateFinRisque) && ($risque[0]->dateFinRisque != '0000-00-00 00:00:00') ? substr( $risque[0]->dateFinRisque, 0, -3) : '') . '" id="risq_date_fin_' . $risque[0]->id . '" style="clear:both; width:90%;" class="digi_datetimepicker_massupdater risq_fin_debut">'  . ( !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $risque[0]->dateDebutRisque )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" />' : ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) ) .
+						(!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_risq_date_fin_' . $risque[0]->id . '" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '');
+						$dateFin .= '
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery("#risq_date_fin_' . $risque[0]->id . '").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+			showButtonPanel: false,
+			' . (!empty($employer_date) ? 'minDate: "' . substr($employer_date, 0, 10) . '",' : (( !empty($risque[0]) && !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') ) ? 'minDate: "' . substr($risque[0]->dateDebutRisque, 0, 10) . '",' : '') ) . '
+			onClose: function(selectedDate, input) {
+				if ( (jQuery(this).val() != "") && (jQuery("#parent_date_for_risk_r_' . $risque[0]->id . '").val() != undefined) && ( jQuery("#parent_date_for_risk_r_' . $risque[0]->id . '").val() + ":00" > jQuery(this).val() + ":00" ) ) {
+					alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					jQuery(this).val( jQuery("#parent_date_for_risk_r_' . $risque[0]->id . '").val() );
+				}
+
+				if ( (jQuery(this).val() != "") && (jQuery(this).val() < jQuery("#risq_date_debut_' . $risque[0]->id . '").val()) ) {
+					alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" ) );
+					jQuery(this).val( jQuery("#risq_date_debut_' . $risque[0]->id . '").val() );
+				}
+			},
+		});
+	});
+</script>';
+
+						$tmpLigneDeValeurs[$quotation][$i][3] = array('value' => $dateDebut . '<br/><br/>' . $dateFin, 'class' => 'cellDatesMassUpdater');
+
 						/*	Add the risq comment input	*/
 						$follow_up_list = suivi_activite::getSuiviActivite(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation);
 						$follow_up_content = '';
+
 						if ( !empty($follow_up_list) ) {
 							foreach ( $follow_up_list as $follow_up ) {
-								$follow_up_content .= suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation, false, $follow_up->id, "risqComment[" . $risque[0]->id . "][" . $follow_up->id . "]", 'inline');
+								if ( !$is_closed ) {
+									$follow_up_content .= suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation, false, $follow_up->id, "risqComment[" . $risque[0]->id . "][" . $follow_up->id . "]", 'inline');
+								}
+								else {
+									$follow_up_content .= ELEMENT_IDENTIFIER_C . $follow_up->id . ' - ' . mysql2date('d/m/Y H:i', $follow_up->date_ajout, true) . ' - ' . sprintf( __('Exporter : %s', 'evarisk'), ($follow_up->export == 'yes' ? __('oui', 'evarisk') : __('non', 'evarisk')) ) . '<br/><br/>' . stripslashes($follow_up->commentaire) . '<br/>';
+								}
 							}
 						}
 						else {
-							$follow_up_content .= suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation, false, 0, "risqComment[" . $risque[0]->id . "][0]", 'inline');
+							if ( !$is_closed ) {
+								$follow_up_content .= suivi_activite::formulaireAjoutSuivi(TABLE_AVOIR_VALEUR, $risque[0]->id_evaluation, false, 0, "risqComment[" . $risque[0]->id . "][0]", 'inline');
+							}
+							else {
+								$follow_up_content .= ELEMENT_IDENTIFIER_C . $follow_up->id . ' - ' . mysql2date('d/m/Y H:i', $follow_up->date_ajout, true) . ' - ' . sprintf( __('Exporter : %s', 'evarisk'), ($follow_up->export == 'yes' ? __('oui', 'evarisk') : __('non', 'evarisk')) ) . '<br/><br/>' . stripslashes($follow_up->commentaire) . '<br/>';
+							}
 						}
-						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => $follow_up_content, 'class' => '');
+						$tmpLigneDeValeurs[$quotation][$i][4] = array('value' => $follow_up_content, 'class' => '');
 
 						/*	Add the prioritary action input	*/
 						if($contenuInput != '')
-							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<textarea class="risqPrioritaryCA" id="risqPrioritaryCA_' . $preconisationActionID . '" name="risqPrioritaryCA[' . $risque[0]->id . '][' . $preconisationActionID . ']" >' . $contenuInput . '</textarea>', 'class' => '');
+							$tmpLigneDeValeurs[$quotation][$i][5] = array('value' => (!$is_closed ? '<textarea class="risqPrioritaryCA" id="risqPrioritaryCA_' . $preconisationActionID . '" name="risqPrioritaryCA[' . $risque[0]->id . '][' . $preconisationActionID . ']" >' . $contenuInput . '</textarea>' : $contenuInput), 'class' => '');
 						else
-							$tmpLigneDeValeurs[$quotation][$i][] = array('value' => __('Aucune action pr&eacute;vue', 'evarisk'), 'class' => '');
+							$tmpLigneDeValeurs[$quotation][$i][5] = array('value' => __('Aucune action pr&eacute;vue', 'evarisk'), 'class' => '');
 
 						/*	Add the checkbox to define if this entry must be updated or not	*/
-						$tmpLigneDeValeurs[$quotation][$i][] = array('value' => '<input type="checkbox" id="checkboxRisqMassUpdater_' . $risque[0]->id . '" name="checkboxRisqMassUpdater[]" value="' . $risque[0]->id . '" class="checkboxRisqMassUpdater" /><input type="hidden" id="prioritaryActionMassUpdater_' . $risque[0]->id . '" value="' . $preconisationActionID . '" />', 'class' => '');
+						$tmpLigneDeValeurs[$quotation][$i][6] = array('value' => (!$is_closed ? '<input type="checkbox" id="checkboxRisqMassUpdater_' . $risque[0]->id . '" name="checkboxRisqMassUpdater[]" value="' . $risque[0]->id . '" class="checkboxRisqMassUpdater" /><input type="hidden" id="prioritaryActionMassUpdater_' . $risque[0]->id . '" value="' . $preconisationActionID . '" />' : '<img src="' . admin_url('images/lock.png') . '" />'), 'class' => '');
 					}
 					else if ( ($outputInterfaceType == 'exportActionPlan') || ($outputInterfaceType == 'export_risk_summary') ) {/*	In case we are creating a new DUER	*/
 						$query = $wpdb->prepare("SELECT TASK.id FROM ".TABLE_TACHE." AS TASK WHERE TASK.tableProvenance=%s AND idProvenance=%d", TABLE_RISQUE, $risque[0]->id);
@@ -550,42 +656,100 @@ class eva_documentUnique {
 				if($typeBilan == 'ligne') {
 					$idLignes = array();
 					foreach($lignesDeValeurs as $ligne_key => $ligne){
-						$idLignes[$ligne_key] = $ligne[1]['value'];
+						$idLignes[$ligne_key] = $ligne[0]['value'];
 					}
 
 					$idTable = 'tableBilanEvaluation' . $tableElement . $idElement . $outPut . $typeBilan;
 					$titres[] = __("&Eacute;l&eacute;ment", 'evarisk');
 					$titres[] = __("Id. risque", 'evarisk');
 					$titres[] = __("Quotation", 'evarisk');
-					$titres[] = ucfirst(strtolower(__("danger", 'evarisk')));
+					$titres[] = __("Dates", 'evarisk');
+// 					$titres[] = ucfirst(strtolower(__("danger", 'evarisk')));
 					$titres[] = ucfirst(strtolower(sprintf(__("commentaire %s", 'evarisk'), __("sur le risque", 'evarisk'))));
 					$titres[] = ucfirst(strtolower(sprintf(__("action prioritaire %s", 'evarisk'), __("pour le risque", 'evarisk'))));
 					$titres[] = '';
 					$classes[] = 'columnNomElementMassUpdater';
 					$classes[] = 'columnRIdMassUpdater';
 					$classes[] = 'columnQuotationMassUpdater';
-					$classes[] = 'columnNomDangerMassUpdater';
+					$classes[] = 'columnDatesMassUpdater';
+// 					$classes[] = 'columnNomDangerMassUpdater';
 					$classes[] = 'columnCommentaireRisqueMassUpdater';
 					$classes[] = 'columnActionPrioritaireRisqueMassUpdater';
 					$classes[] = 'columnCBRisqueMassUpdater';
 
+					$current_date = substr( current_time('mysql', 0), 0, -3 );
 					$scriptVoirRisque = '
 <script type="text/javascript">
 	digirisk(document).ready(function(){
-		digirisk("#' . $idTable . '").dataTable(
-		{
+
+		jQuery("#' . $idTable . '").dataTable({
 			"bPaginate": false,
 			"bLengthChange": false,
 			"bAutoWidth": false,
 			"bFilter": false,
 			"bInfo": false,
-			"aaSorting": [[2,"desc"]]
+			"aaSorting": [[2,"desc"]],
+		}).rowGrouping({	bExpandableGrouping: true, });
+
+		jQuery(".columnCommentaireRisqueMassUpdater").html(function(i, t) {
+			return t.replace("<br>", "");
 		});
-		digirisk("#' . $idTable . ' tfoot").remove();
+
+		var text = "' . __('&#77;aintenant', 'evarisk') . '";
+		jQuery.datepicker.regional["fr"] = {
+			monthNames: ["' . __('Janvier', 'evarisk') . '","' . __('F&eacute;vrier', 'evarisk') . '","' . __('Mars', 'evarisk') . '","' . __('Avril', 'evarisk') . '","' . __('Mai', 'evarisk') . '","' . __('Juin', 'evarisk') . '", "' . __('Juillet', 'evarisk') . '","' . __('Ao&ucirc;t', 'evarisk') . '","' . __('Septembre', 'evarisk') . '","' . __('Octobre', 'evarisk') . '","' . __('Novembre', 'evarisk') . '","' . __('D&eacute;cembre', 'evarisk') . '"],
+			monthNamesShort: ["Jan", "Fev", "Mar", "Avr", "Mai", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            dayNames: ["' . __('Dimanche', 'evarisk') . '", "' . __('Lundi', 'evarisk') . '", "' . __('Mardi', 'evarisk') . '", "' . __('Mercredi', 'evarisk') . '", "' . __('Jeudi', 'evarisk') . '", "' . __('Vendredi', 'evarisk') . '", "' . __('Samedi', 'evarisk') . '"],
+			dayNamesShort: ["' . __('Dim', 'evarisk') . '", "' . __('Lun', 'evarisk') . '", "' . __('Mar', 'evarisk') . '", "' . __('Mer', 'evarisk') . '", "' . __('Jeu', 'evarisk') . '", "' . __('Ven', 'evarisk') . '", "' . __('Sam', 'evarisk') . '"],
+			dayNamesMin: ["' . __('Di', 'evarisk') . '", "' . __('Lu', 'evarisk') . '", "' . __('Ma', 'evarisk') . '", "' . __('Me', 'evarisk') . '", "' . __('Je', 'evarisk') . '", "' . __('Ve', 'evarisk') . '", "' . __('Sa', 'evarisk') . '"],
+		}
+    	jQuery.datepicker.setDefaults(jQuery.datepicker.regional["fr"]);
+		jQuery.timepicker.regional["fr"] = {
+                timeText: "' . __('Heure', 'evarisk') . '",
+                hourText: "' . __('Heures', 'evarisk') . '",
+                minuteText: "' . __('Minutes', 'evarisk') . '",
+                amPmText: ["AM", "PM"],
+                currentText: text,
+                closeText: "' . __('OK', 'evarisk') . '",
+                timeOnlyTitle: "' . __('Choisissez l\'heure', 'evarisk') . '",
+                closeButtonText: "' . __('Fermer', 'evarisk') . '",
+                nowButtonText: text,
+                deselectButtonText: "' . __('D&eacute;s&eacute;lectionner', 'evarisk') . '",
+		}
+    	jQuery.timepicker.setDefaults(jQuery.timepicker.regional["fr"]);
+
+        jQuery(".digi_use_current_date_for_risk").click(function(){
+			var current_risk_line = jQuery(this).attr( "id" ).replace( "date_for_risq_date_debut_", "" ).replace( "date_for_risq_date_fin_", "" );
+			var put_date = true;
+			if ( jQuery("#parent_date_for_risk_r_" + current_risk_line).val() != undefined ) {
+				if ( jQuery("#parent_date_for_risk_r_" + current_risk_line).val() + ":00" > "' . $current_date . ':00" ) {
+					if ( jQuery( this ).attr( "id" ) == "date_for_risq_date_debut_" + current_risk_line ) {
+						alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de d&eacute;but de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					}
+					else if ( jQuery( this ).attr( "id" ) == "date_for_risq_date_fin_" + current_risk_line ) {
+						alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					}
+					put_date = false;
+				}
+			}
+
+			if ( (jQuery( this ).attr( "id" ).search( "date_for_digi_risk_end_start" )) && ( jQuery("#risq_date_debut_" + current_risk_line).val() + ":00" > "' . $current_date . ':00" ) ) {
+				alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date de fin de risque inf&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" ) );
+				put_date = false;
+			}
+
+			if ( put_date ) {
+				jQuery("#" + jQuery(this).attr("id").replace("date_for_", "") ).val( "' . $current_date . '" );
+			}
+		});
+
+		jQuery( ".digi_use_parent_date_for_risk" ).click( function(){
+			var current_risk_line = jQuery( this ).attr( "id" ).replace( "digi_use_parent_date_for_risk_r_", "");
+			jQuery( "#risq_date_debut_" + current_risk_line ).val( jQuery( "#parent_date_for_risk_r_" + current_risk_line ).val() );
+		});
 	});
 </script>';
-
-					$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque);
+					$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque, false);
 
 					return $recapitulatifRisque;
 				}

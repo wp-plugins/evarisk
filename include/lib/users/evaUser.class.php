@@ -37,15 +37,15 @@ class evaUser {
 	*
 	*	@return array $userlist An object containing the different subscriber
 	*/
-	function getCompleteUserList() {
+	function getCompleteUserList( $check_unhiring = true ) {
 		$listeComplete = array();
 
 		$listeUtilisateurs = evaUser::getUserList();
 		foreach($listeUtilisateurs as $utilisateurs){
 			if( $utilisateurs->ID != 1 ){
-				$user_unhiring_date = get_user_meta( $utilisateurs->ID, 'digi_unhiring_date', true );
+				$user_unhiring_date = trim( get_user_meta( $utilisateurs->ID, 'digi_unhiring_date', true ) );
 
-				if ( empty($user_unhiring_date) ) {
+				if ( ($check_unhiring && empty($user_unhiring_date)) || !$check_unhiring ) {
 					$user_info = get_userdata($utilisateurs->ID);
 
 					unset($valeurs);
@@ -86,7 +86,7 @@ class evaUser {
 		if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) )
 			$valeurs['user_lastname'] = $user_info->user_lastname;
 		else
-			$valeurs['user_lastname'] = '';
+			$valeurs['user_lastname'] = (isset($user_info->display_name) && ($user_info->display_name != '')) ? $user_info->display_name : '';
 
 		if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) )
 			$valeurs['user_firstname'] = $user_info->user_firstname;
@@ -605,13 +605,20 @@ $user_additionnal_field .= '
 							FROM " . TABLE_LIAISON_USER_ELEMENT . "
 							WHERE status = 'valid'
 						)
+						AND U.ID NOT IN (
+							SELECT U.ID
+							FROM {$wpdb->users} AS U
+								INNER JOIN {$wpdb->usermeta} AS UM ON (UM.user_id = U.ID)
+							WHERE UM.meta_key = 'digi_unhiring_date'
+								AND UM.meta_value != ''
+						)
 				) AS NOT_AFFECTED_USER,
 
 				(
 					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
 					FROM {$wpdb->users} AS U
 						INNER JOIN {$wpdb->usermeta} AS UM ON (UM.user_id = U.ID)
-					WHERE UM.meta_key = 'digi_hiring_date'
+					WHERE UM.meta_key = 'digi_unhiring_date'
 						AND UM.meta_value != ''
 				) AS USERS_OUT_OF_SOCIETY,
 
@@ -619,7 +626,7 @@ $user_additionnal_field .= '
 					SELECT GROUP_CONCAT( DISTINCT( U.ID ) )
 					FROM {$wpdb->users} AS U
 						INNER JOIN {$wpdb->usermeta} AS UM ON (UM.user_id = U.ID)
-					WHERE UM.meta_key = 'digi_hiring_date'
+					WHERE UM.meta_key = 'digi_unhiring_date'
 						AND UM.meta_value != ''
 						AND U.ID != 1
 						AND U.ID NOT IN (
@@ -1829,6 +1836,12 @@ $user_additionnal_field .= '
 		}
 
 	/**	Start output building	*/
+		add_thickbox();
+		$user_profil_content .= '
+<div class="clear alignright" >
+	<a href="' . admin_url('admin-ajax.php') . '?action=digi-mass-change-user-informations&amp;width=800&amp;height=600" class="thickbox" title="' . __('Changement en masse sur les utilisateurs', 'evarisk')  . '" >' . __('Changement en masse sur les utilisateurs', 'evarisk') . '</a>
+</div>';
+
 		/**	Add a field allowing user to change user for edition	*/
 		$user_profil_content .= '
 <div class="clear user_selector" >

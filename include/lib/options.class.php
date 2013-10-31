@@ -10,12 +10,11 @@
 */
 
 /**
-* Define the settings page, with the different field to output and field's validators
-* @package evarisk
-* @subpackage librairies
-*/
-class digirisk_options
-{
+ * Define the settings page, with the different field to output and field's validators
+ * @package evarisk
+ * @subpackage librairies
+ */
+class digirisk_options {
 	/**
 	*	Declare the different options for the plugin
 	*/
@@ -29,6 +28,10 @@ class digirisk_options
 			add_settings_section('digi_main_options', null, array('digirisk_options', 'main_options_output'), 'digirisk_options_general');
 			/*	Add the different field for current section	*/
 			add_settings_field('digi_activ_trash', __('Activer la corbeille', 'evarisk'), array('digirisk_options', 'digi_activ_trash'), 'digirisk_options_general', 'digi_main_options');
+
+			add_settings_field('digi_export_comment_in_doc', __('Cocher les cases d\'export des commentaires dans les documents (DUER / fiche d\'action) automatiquement', 'evarisk'), array('digirisk_options', 'digi_export_comment_in_doc'), 'digirisk_options_general', 'digi_main_options');
+
+			add_settings_field('digi_popin_size', __('Taille pour les boites de vue d\'ensemble', 'evarisk'), array('digirisk_options', 'digi_popin_size'), 'digirisk_options_general', 'digi_main_options');
 		}
 
 		{/* Declare the different options for the correctiv actions	*/
@@ -59,6 +62,9 @@ class digirisk_options
 			add_settings_field('digi_risk_advancedrisk_field', __('Activer l\'&eacute;valuation des risques avanc&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_advancedrisk_field'), 'digirisk_options_risk', 'digi_risk_options');
 			add_settings_field('digi_risk_penibility_level', __('Seuil de p&eacute;nibilit&eacute;', 'evarisk'), array('digirisk_options', 'digi_risk_penibility_level'), 'digirisk_options_risk', 'digi_risk_options');
 			add_settings_field('digi_risk_display_picture_in_listing', __('Afficher la photo associ&eacute;e au risque si existante', 'evarisk'), array('digirisk_options', 'digi_risk_display_picture_in_listing'), 'digirisk_options_risk', 'digi_risk_options');
+			add_settings_field('digi_risk_close_state_cotation_null', __('Cl&ocirc;turer le risque lorsque la cotation est &agrave; 0', 'evarisk'), array('digirisk_options', 'digi_risk_close_state_cotation_null'), 'digirisk_options_risk', 'digi_risk_options');
+			add_settings_field('digi_risk_close_state_end_date_filled', __('Cl&ocirc;turer le risque lorsque la date de fin est indiqu&eacute;e', 'evarisk'), array('digirisk_options', 'digi_risk_close_state_end_date_filled'), 'digirisk_options_risk', 'digi_risk_options');
+			add_settings_field('digi_risk_start_date', __('Date par d&eacute;faut &agrave; utiliser pour le d&eacute;but du risque', 'evarisk'), array('digirisk_options', 'digi_risk_start_date'), 'digirisk_options_risk', 'digi_risk_options');
 		}
 
 		{/*	Declare the different options for the work unit sheet	*/
@@ -102,7 +108,6 @@ class digirisk_options
 			// add_settings_field('digi_workunit_extra_field', __('Champs suppl&eacute;mentaires pour les unit&eacute;s de travail', 'evarisk'), array('digirisk_options', 'digi_workunit_extra_field'), 'digirisk_options_arbo', 'digi_tree_options');
 		}
 	}
-
 
 	/**
 	*	Validate the different data sent for the option
@@ -149,6 +154,9 @@ class digirisk_options
 	function digirisk_options_validator($input){
 		global $wpdb;
 		$newinput['digi_activ_trash'] = (!empty($input['digi_activ_trash'])?trim($input['digi_activ_trash']):'');
+		$newinput['digi_export_comment_in_doc'] = (!empty($input['digi_export_comment_in_doc'])?trim($input['digi_export_comment_in_doc']):'');
+		$newinput['digi_popin_size']['width'] = (!empty($input['digi_popin_size']['width'])?trim($input['digi_popin_size']['width']):'800');
+		$newinput['digi_popin_size']['height'] = (!empty($input['digi_popin_size']['height'])?trim($input['digi_popin_size']['height']):'600');
 
 		$newinput['responsable_Tache_Obligatoire'] = (!empty($input['responsable_Tache_Obligatoire'])?trim($input['responsable_Tache_Obligatoire']):'');
 		$newinput['responsable_Action_Obligatoire'] = (!empty($input['responsable_Action_Obligatoire'])?trim($input['responsable_Action_Obligatoire']):'');
@@ -171,6 +179,10 @@ class digirisk_options
 		$newinput['risques_avances'] = (!empty($input['risques_avances'])?trim($input['risques_avances']):'');
 		$newinput['digi_risk_penibility_level'] = (!empty($input['digi_risk_penibility_level'])?trim($input['digi_risk_penibility_level']):'');
 		$newinput['digi_risk_display_picture_in_listing'] = (!empty($input['digi_risk_display_picture_in_listing'])?trim($input['digi_risk_display_picture_in_listing']):'yes');
+		$newinput['digi_risk_close_state_cotation_null'] = (!empty($input['digi_risk_close_state_cotation_null'])?trim($input['digi_risk_close_state_cotation_null']):'non');
+		$newinput['digi_risk_close_state_end_date_filled'] = (!empty($input['digi_risk_close_state_end_date_filled'])?trim($input['digi_risk_close_state_end_date_filled']):'non');
+
+		$newinput['digi_risk_start_date'] = (!empty($input['digi_risk_start_date'])?trim($input['digi_risk_start_date']):'employerCreationDate');
 
 		$newinput['taille_photo_poste_fiche_de_poste'] = (!empty($input['taille_photo_poste_fiche_de_poste'])?trim($input['taille_photo_poste_fiche_de_poste']):'');
 
@@ -196,19 +208,41 @@ class digirisk_options
 
 	}
 	/**
-	*	Define the output fot the field. Get the option value to put the good value by default
-	*/
-	function digi_activ_trash()
-	{
+	 *	Define the output for the field. Get the option value to put the good value by default
+	 */
+	function digi_activ_trash() {
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
-		if(current_user_can('digi_edit_option'))
-		{
+		if (current_user_can('digi_edit_option')) {
 			echo EvaDisplayInput::createComboBox('digi_activ_trash', 'digirisk_options[digi_activ_trash]', $optionYesNoList, $options['digi_activ_trash']);
 		}
-		else
-		{
+		else {
 			echo $options['digi_activ_trash'];
+		}
+	}
+	/**
+	 * Define output for option allowing to manage export field
+	 */
+	function digi_export_comment_in_doc() {
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			echo EvaDisplayInput::createComboBox('digi_export_comment_in_doc', 'digirisk_options[digi_export_comment_in_doc]', $optionYesNoList, (!empty($options['digi_export_comment_in_doc']) ? $options['digi_export_comment_in_doc'] : 'oui') );
+		}
+		else {
+			echo $options['digi_export_comment_in_doc'];
+		}
+	}
+	/**
+	 * Define output for option allowing to manage popin size
+	 */
+	function digi_popin_size() {
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			echo __( 'Largeur', 'evarisk' ) . " <input id='digi_popin_size_width' name='digirisk_options[digi_popin_size][width]' size='5' type='text' value='" . (!empty($options['digi_popin_size']) && !empty($options['digi_popin_size']['width']) ? $options['digi_popin_size']['width'] : '') . "' /> " . __( 'px', 'evarisk') . '   ' . __( 'Hauteur', 'evarisk' ) . " <input id='digi_popin_size_height' name='digirisk_options[digi_popin_size][height]' size='5' type='text' value='" . (!empty($options['digi_popin_size']) && !empty($options['digi_popin_size']['height']) ? $options['digi_popin_size']['height'] : '') . "' /> " . __( 'px', 'evarisk');
+		}
+		else {
+			echo (!empty($options['digi_popin_size']) && !empty($options['digi_popin_size']['width']) ? $options['digi_popin_size']['width'] . ' x ' . __( 'px', 'evarisk') : '') . (!empty($options['digi_popin_size']) && !empty($options['digi_popin_size']['height']) ? $options['digi_popin_size']['height'] . ' ' . __( 'px', 'evarisk') : '') ;
 		}
 	}
 
@@ -620,6 +654,50 @@ class digirisk_options
 		}
 		else {
 			$output = $options['digi_risk_display_picture_in_listing'];
+		}
+
+		echo $output;
+	}
+
+	function digi_risk_close_state_cotation_null() {
+		$output = '';
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			$output = EvaDisplayInput::createComboBox('digi_risk_close_state_cotation_null', 'digirisk_options[digi_risk_close_state_cotation_null]', $optionYesNoList, (!empty($options['digi_risk_close_state_cotation_null']) ? strtolower($options['digi_risk_close_state_cotation_null']) : 'non'));
+		}
+		else {
+			$output = $options['digi_risk_close_state_cotation_null'];
+		}
+
+		echo $output;
+	}
+
+	function digi_risk_close_state_end_date_filled() {
+		$output = '';
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			$output = EvaDisplayInput::createComboBox('digi_risk_close_state_end_date_filled', 'digirisk_options[digi_risk_close_state_end_date_filled]', $optionYesNoList, (!empty($options['digi_risk_close_state_end_date_filled']) ? strtolower($options['digi_risk_close_state_end_date_filled']) : 'non'));
+		}
+		else {
+			$output = $options['digi_risk_close_state_end_date_filled'];
+		}
+
+		echo $output;
+	}
+	/**
+	 *	Define the output fot the field. Get the option value to put the good value by default
+	 */
+	function digi_risk_start_date() {
+		$output = '';
+
+		$options = get_option('digirisk_options');
+		if (current_user_can('digi_edit_option')) {
+			$output = EvaDisplayInput::createComboBox('digi_risk_start_date', 'digirisk_options[digi_risk_start_date]', array('dateOfDay' => __('Date du jour', 'evarisk'), 'employerCreationDate' => __('Date de cr&eacute;ation du groupement employeur', 'evarisk'),), (!empty($options['digi_risk_start_date']) ? $options['digi_risk_start_date'] : 'employerCreationDate'));
+		}
+		else {
+			$output = $options['digi_risk_start_date'];
 		}
 
 		echo $output;

@@ -433,3 +433,10 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	$digirisk_db_content_add[$digirisk_db_version][DIGI_DBT_ELEMENT_NOTIFICATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_TACHE, 'action' => 'delete_follow_up', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send);
 	$digirisk_db_content_add[$digirisk_db_version][DIGI_DBT_ELEMENT_NOTIFICATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'table_element' => TABLE_ACTIVITE, 'action' => 'delete_follow_up', 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send);
 }
+
+{/*	Version 86	*/
+	$digirisk_db_version = 86;
+
+	$digirisk_db_content_add[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('status' => 'valid', 'parDefaut' => 'oui', 'dateCreation' => current_time('mysql', 0), 'idCreateur' => 1, 'dateSuppression' => null, 'idSuppresseur' => 0, 'id_element' => 0, 'table_element' => 'all', 'categorie' => 'fiche_action', 'nom' => 'modele_default_fiche_action.odt', 'chemin' => 'uploads/modeles/planDActions/');
+}
+

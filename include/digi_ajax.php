@@ -169,6 +169,14 @@ add_action('wp_ajax_digi_ajax_load_activite_follow', 'digi_ajax_load_activite_fo
  *
  *
  */
+function display_form_mas_updater( $tableELement, $idElement ) {
+	return '<form method="post" id="form_mass_updater" action="' . admin_url('admin-ajax.php') . '" >
+		<input type="hidden" name="action" value="digi_ajax_save_mass_modification" />
+		<input type="hidden" name="tableElement" value="' . $tableELement . '" />
+		<input type="hidden" name="idElement" value="' . $idElement . '" />
+		' . eva_documentUnique::bilanRisque($tableELement, $idElement, 'ligne', 'massUpdater') . '
+	</form>';
+}
 /**
  * Load mass updater interface
  */
@@ -177,25 +185,21 @@ function digi_ajax_load_mass_modification() {
 <div id="ajax-response-massUpdater" class="hide" >&nbsp;</div>
 <div id="messageRisqMassUpdater" class="evaMessage hide fade updated" >&nbsp;</div>
 <div class="massUpdaterListing" >
-	<form method="post" id="form_mass_updater" action="' . admin_url('admin-ajax.php') . '" >
-		<input type="hidden" name="action" value="digi_ajax_save_mass_modification" />
-		<input type="hidden" name="tableElement" value="' . $_POST['tableElement'] . '" />
-		<input type="hidden" name="idElement" value="' . $_POST['idElement'] . '" />
-		' . eva_documentUnique::bilanRisque($_POST['tableElement'], $_POST['idElement'], 'ligne', 'massUpdater') . '
-	</form>
+	' . display_form_mas_updater($_POST['tableElement'], $_POST['idElement']) . '
 </div>
 
 <div id="mass_update_button_pane_helper" >
 	<div class="clear alignright" ><span id="checkAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout cocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="uncheckAllBoxMassUpdater" class="massUpdaterChecbkoxAction" >' . __('Tout d&eacutecocher', 'evarisk') . '</span>&nbsp;/&nbsp;<span id="reverseSelectionBoxMassUpdater" class="reverseSelectionBoxMassUpdater massUpdaterChecbkoxAction" >' . __('Inverser la s&eacute;lection', 'evarisk') . '</span><img src="' . EVA_ARROW_TOP . '" alt="arrow_top" class="checkboxRisqMassUpdaterSelector_bottom" /></div>
+	<div style="margin:9px 0 0; float:left; width:51%; text-align:right; cursor:pointer;  font-size:11px;" id="digi_use_parent_date_for_all" >' . __('Utiliser la date de l\'employeur pour les dates de d&eacute;but', 'evarisk') . '</div>
 	<div class="clear alignright risqMassUpdaterChooserExplanation" >' . __('Cochez les cases pour prendre en compte les modifications', 'evarisk') . '</div>
 </div>
 
 <script type="text/javascript" >
-	digirisk("#risqMassUpdater textarea").keypress(function(){
+	digirisk("#risqMassUpdater textarea, #risqMassUpdater input").keypress(function(){
 		var checkbox_for_current_line = jQuery(this).closest("tr").children(".columnCBRisqueMassUpdater").children("input[type=checkbox]").attr("id");
 		jQuery("#" + checkbox_for_current_line).prop("checked", "checked");
 	});
-	digirisk("#risqMassUpdater textarea").mousedown(function(){
+	digirisk("#risqMassUpdater textarea, #risqMassUpdater input").mousedown(function(){
 		var checkbox_for_current_line = jQuery(this).closest("tr").children(".columnCBRisqueMassUpdater").children("input[type=checkbox]").attr("id");
 		jQuery("#" + checkbox_for_current_line).prop("checked", "checked");
 	});
@@ -224,11 +228,22 @@ function digi_ajax_load_mass_modification() {
 		});
 	});
 	jQuery(document).ready(function(){
+		jQuery("#digi_use_parent_date_for_all").click(function(){
+			jQuery( ".digi_use_parent_date_for_risk" ).each( function(){
+				jQuery(this).click();
+			});
+		});
+
 		jQuery("#form_mass_updater").ajaxForm({
-			success: function(responseText, statusText, xhr, $form) {
-				jQuery("#messageRisqMassUpdater").html( responseText );
+			dataType: "json",
+			success: function(response) {
+				jQuery("#messageRisqMassUpdater").html( response["message"] );
 				jQuery("#messageRisqMassUpdater").show();
-			}
+				jQuery("#ongletVoirLesRisques").click();
+				jQuery(".checkboxRisqMassUpdater").each(function(){
+					jQuery(this).prop("checked", false);
+				});
+			},
 		});
 	});
 </script>';
@@ -272,6 +287,29 @@ function digi_ajax_save_mass_modification() {
 				}
 			}
 
+			/**	Save risk dates	*/
+			if ( !empty( $_POST['risqDate'] ) && !empty( $_POST['risqDate'][$risk_id] ) ) {
+				$params = array();
+				$dateDebutRisque = $dateFinRisque = null;
+				if ( !empty($_POST['risqDate'][$risk_id]['dateDebutRisque']) && ($_POST['risqDate'][$risk_id]['dateDebutRisque'] != '0000-00-00 00:00') ) {
+					$params['dateDebutRisque'] = $_POST['risqDate'][$risk_id]['dateDebutRisque'] ;
+				}
+				if ( !empty($_POST['risqDate'][$risk_id]['dateFinRisque']) && ($_POST['risqDate'][$risk_id]['dateFinRisque'] != '0000-00-00 00:00') ) {
+					$params['dateFinRisque'] = $_POST['risqDate'][$risk_id]['dateFinRisque'] ;
+					$params['risk_status'] = 'closed' ;
+				}
+				if ( !empty($params) ) {
+					$query = $wpdb->prepare( "SELECT dateDebutRisque, dateFinRisque FROM " . TABLE_RISQUE . " WHERE id = %d", $risk_id );
+					$current_date = $wpdb->get_row( $query );
+					$wpdb->insert( TABLE_RISQUE_HISTO, array('id_risque' => $risk_id, 'date' => current_time( 'mysql', 0), 'field' => 'dateDebutRisque', 'value' => $current_date->dateDebutRisque) );
+					if ( !empty($current_date->dateFinRisque) && ($current_date->dateFinRisque != '0000-00-00 00:00:00') ) {
+						$wpdb->insert( TABLE_RISQUE_HISTO, array('id_risque' => $risk_id, 'date' => current_time( 'mysql', 0), 'field' => 'dateFinRisque', 'value' => $current_date->dateFinRisque) );
+					}
+
+					$wpdb->update( TABLE_RISQUE, $params, array('id' => $risk_id) );
+				}
+			}
+
 		}
 	}
 
@@ -283,13 +321,13 @@ function digi_ajax_save_mass_modification() {
 	}
 
 	if ( $risk_comment_no_error === false ) {
-		$actions_message .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />' . __('Une ou plusieurs erreurs sont survenues lors de l\'enregistrement des corrections pour les actions prioritaires.', 'evarisk');
+		$actions_message .= '<br/><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />' . __('Une ou plusieurs erreurs sont survenues lors de l\'enregistrement des corrections pour les actions prioritaires.', 'evarisk');
 	}
 	else if ( $risk_comment_no_error === true ) {
-		$actions_message .= '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />' . __('Tous les actions prioritaire ont &eacute;t&eacute; mise &agrave; jour', 'evarisk');
+		$actions_message .= '<br/><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />' . __('Tous les actions prioritaire ont &eacute;t&eacute; mise &agrave; jour', 'evarisk');
 	}
 
-	echo $actions_message;
+	echo json_encode( array( "message" => $actions_message, "response" => display_form_mas_updater( $_POST['tableElement'], $_POST['idElement'] ), ));
 	die();
 }
 add_action('wp_ajax_digi_ajax_save_mass_modification', 'digi_ajax_save_mass_modification');
@@ -424,6 +462,75 @@ function digi_ajax_save_correctiv_actions_task() {
 }
 add_action('wp_ajax_digi_ajax_save_correctiv_actions_task', 'digi_ajax_save_correctiv_actions_task');
 
+function digi_ajax_save_correctiv_action_sheet() {
+	$tableElement = $_POST['tableElement'];
+	$idElement = $_POST['idElement'];
+
+	$response = actionsCorrectives::save_action_sheet( $tableElement, $idElement );
+	if ( !empty( $_POST['create_recursiv_sheet'] ) && ('true' == $_POST['create_recursiv_sheet']) ) {
+		$error = 0;
+		$file_to_zip = array();
+
+		if ( true === $response['status'] ) {
+			$file_to_zip[] = EVA_RESULTATS_PLUGIN_DIR . $response[ 'reponse' ];
+		}
+		else {
+			$error++;
+		}
+
+		$tache = new EvaTask( $idElement );
+		$tache->load();
+		$TasksAndSubTasks = $tache->getDescendants();
+		$TasksAndSubTasks->addTask($tache);
+		$TasksAndSubTasks = $TasksAndSubTasks->getTasks();
+		if ( $TasksAndSubTasks != null AND count($TasksAndSubTasks) > 0 ) {
+			foreach ( $TasksAndSubTasks as $task ) {
+				if ( $task->id != $tache->id ) {
+					$response = actionsCorrectives::save_action_sheet( TABLE_TACHE, $task->id );
+					if ( true === $response['status'] ) {
+						$file_to_zip[] = EVA_RESULTATS_PLUGIN_DIR . $response[ 'reponse' ];
+					}
+					else {
+						$error++;
+					}
+				}
+				$activities = $task->getActivitiesDependOn();
+				$activities = $activities->getActivities();
+				if ( ($activities != null) AND (count($activities) > 0) ) {
+					foreach ( $activities as $activity ) {
+						$response = actionsCorrectives::save_action_sheet( TABLE_ACTIVITE, $activity->id );
+						if ( true === $response['status'] ) {
+							$file_to_zip[] = EVA_RESULTATS_PLUGIN_DIR . $response[ 'reponse' ];
+						}
+						else {
+							$error++;
+						}
+					}
+				}
+			}
+		}
+
+		/*	ZIP THE FILE	*/
+		if ( !empty($file_to_zip) ) {
+			$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'planDActions/' . $tableElement . '/' . $idElement. '/';
+			if ( !is_dir($pathToZip) ) {
+				mkdir( $pathToZip, 0755, true);
+			}
+
+			$zipFileName = date('Ymd') . '_' . ELEMENT_IDENTIFIER_T . $idElement . '_fichesPlanDAction.zip';
+			$archive = new eva_Zip($zipFileName);
+			$archive->setFiles($file_to_zip);
+			$archive->compressToPath($pathToZip);
+			eva_gestionDoc::saveNewDoc('printed_fiche_action', $tableElement, $idElement, str_replace(EVA_RESULTATS_PLUGIN_DIR, '', $pathToZip . $zipFileName));
+		}
+	}
+
+	echo eva_gestionDoc::get_associated_document_list($tableElement, $idElement, 'printed_fiche_action', "dateCreation DESC, id DESC", EVA_RESULTATS_PLUGIN_DIR);
+	die();
+}
+add_action( 'wp_ajax_digi_ajax_save_correctiv_action_sheet', 'digi_ajax_save_correctiv_action_sheet' );
+
+
 /**
  *
  *
@@ -436,6 +543,19 @@ function digi_ajax_reload_unassociated_risk_to_pics() {
 	die();
 }
 add_action('wp_ajax_digi_ajax_reload_unassociated_risk_to_pics', 'digi_ajax_reload_unassociated_risk_to_pics');
+
+function digi_ajax_reload_current_risk_cotation(){
+	$score_risque = digirisk_tools::IsValid_Variable($_POST['score_risque']);
+	$date = digirisk_tools::IsValid_Variable($_REQUEST['date']);
+	$idMethode = digirisk_tools::IsValid_Variable($_REQUEST['idMethode']);
+
+	$response['cotation'] = Risque::getEquivalenceEtalon($idMethode, $score_risque, $date);
+	$response['seuil'] = (int)Risque::getSeuil( $response['cotation'] );
+
+	echo json_encode( $response );
+	die();
+}
+add_action('wp_ajax_digi_ajax_reload_current_risk_cotation', 'digi_ajax_reload_current_risk_cotation');
 
 /**
  *
@@ -573,6 +693,7 @@ function digi_ajax_save_single_recommandation() {
 	$response = '';
 
 	$id = (isset($_POST['recommandation_id']) && ($_POST['recommandation_id'] != '') && ($_POST['recommandation_id'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_id']) : '';
+	$ids = (isset($_POST['recommandation_ids']) && ($_POST['recommandation_ids'] != '') && ($_POST['recommandation_ids'] != '0')) ? $_POST['recommandation_ids'] : '';
 	$recommandationEfficiency = (isset($_POST['recommandation_efficiency']) && ($_POST['recommandation_efficiency'] != '') && ($_POST['recommandation_efficiency'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_efficiency']) : '0';
 	$recommandationComment = (isset($_POST['recommandation_comment']) && ($_POST['recommandation_comment'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_comment']) : '';
 	$id_element = (isset($_POST['id_element']) && ($_POST['id_element'] != '') && ($_POST['id_element'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['id_element']) : '';
@@ -582,32 +703,41 @@ function digi_ajax_save_single_recommandation() {
 	$recommandation_link_action = (isset($_POST['recommandation_action']) && ($_POST['recommandation_action'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_action']) : '';
 	$recommandation_link_id = (isset($_POST['recommandation_to_update']) && ($_POST['recommandation_to_update'] != '')) ? digirisk_tools::IsValid_Variable($_POST['recommandation_to_update']) : '';
 
-	$recommandationsinformations = array();
-	$recommandationsinformations['id_preconisation'] = $id;
-	$recommandationsinformations['efficacite'] = $recommandationEfficiency;
-	$recommandationsinformations['commentaire'] = $recommandationComment;
-	$recommandationsinformations['preconisation_type'] = $preconisation_type;
+	$has_error = false;
+	if ( is_array($ids) && !empty($ids) ) {
+		foreach ( $ids as $id ) {
+			$recommandationsinformations = array();
+			$recommandationsinformations['id_preconisation'] = $id;
+			$recommandationsinformations['efficacite'] = $recommandationEfficiency;
+			$recommandationsinformations['commentaire'] = $recommandationComment;
+			$recommandationsinformations['preconisation_type'] = $preconisation_type;
 
-	if ( $recommandation_link_action == 'update' ) {
-		$recommandationsinformations['date_update_affectation'] = current_time('mysql', 0);
-		$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandationsinformations, $recommandation_link_id);
-	}
-	else {
-		$recommandationsinformations['id_element'] = $id_element;
-		$recommandationsinformations['table_element'] = $table_element;
-		$recommandationsinformations['status'] = 'valid';
-		$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
-		$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+			if ( $recommandation_link_action == 'update' ) {
+				$recommandationsinformations['date_update_affectation'] = current_time('mysql', 0);
+				$recommandationActionResult = evaRecommandation::updateRecommandationAssociation($recommandationsinformations, $recommandation_link_id);
+			}
+			else {
+				$recommandationsinformations['id_element'] = $id_element;
+				$recommandationsinformations['table_element'] = $table_element;
+				$recommandationsinformations['status'] = 'valid';
+				$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
+				$recommandationActionResult = evaRecommandation::saveRecommandationAssociation($recommandationsinformations);
+			}
+
+			if ( $recommandationActionResult == 'error' ) {
+				$has_error = true;
+			}
+		}
 	}
 
 	$response[] = '#message' . TABLE_PRECONISATION . '-' . $table_element;
-	if ( $recommandationActionResult == 'error' ) {
+	if ( $has_error ) {
 		$response[] = false;
-		$response[] ='<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" class="messageIcone" alt="error" />' . __('Une erreur est survenue lors de l\'enregistrement de la pr&eacute;conisation. Merci de r&eacute;essayer.', 'evarisk');
+		$response[] ='<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" class="messageIcone" alt="error" />' . __('Une erreur est survenue lors de l\'enregistrement de la(des) pr&eacute;conisation(s). Merci de r&eacute;essayer.', 'evarisk');
 	}
 	else {
 		$response[] = true;
-		$response[] =  '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" class="messageIcone" alt="success" />' . __('La pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
+		$response[] =  '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" class="messageIcone" alt="success" />' . __('La(Les) pr&eacute;conisation(s) a(ont) correctement &eacute;t&eacute; enregistr&eacute;e(s).', 'evarisk');
 	}
 	$response[] = $id_element;
 	$response[] = $table_element;
@@ -663,3 +793,143 @@ function digi_ajax_regenerate_file() {
 	die();
 }
 add_action( 'wp_ajax_digi_ajax_regenerate_file', 'digi_ajax_regenerate_file' );
+
+function digi_mass_change_user_informations() {
+	$mass_user_form_content = '';
+	global $wpdb;
+
+	$query = $wpdb->prepare(
+	"SELECT U.ID
+	FROM {$wpdb->users} AS U
+		LEFT JOIN {$wpdb->usermeta} AS UMETA ON (UMETA.user_id = U.ID)
+	WHERE UMETA.meta_key = 'last_name'
+	ORDER BY UMETA.meta_value", '');
+	$userList = $wpdb->get_results($query);
+
+	foreach($userList as $utilisateurs){
+		if( $utilisateurs->ID != 1 ){
+
+			$user_info = get_userdata($utilisateurs->ID);
+
+			unset($valeurs);
+			$valeurs['user_id'] = $user_info->ID;
+			$valeurs['user_registered'] = $user_info->user_registered;
+			if( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) ){
+				$valeurs['user_lastname'] = $user_info->user_lastname;
+			}
+			else{
+				$valeurs['user_lastname'] = '';
+			}
+			if( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) ){
+				$valeurs['user_firstname'] = $user_info->user_firstname;
+			}
+			else{
+				$valeurs['user_firstname'] = $user_info->user_nicename;
+			}
+
+			$listeUtilisateurs[$user_info->ID] = $valeurs;
+		}
+	}
+
+	if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0)){
+		$mass_user_form_content .= '
+<table>
+	<tr>
+		<th>' . __('Identifiant', 'evarisk') . '</th>
+		<th>' . __('Nom', 'evarisk') . '</th>
+		<th>' . __('Prénom', 'evarisk') . '</th>
+		<th>' . __('Forcer MAJ', 'evarisk') . '</th>
+		<th>' . __('Date d\'embauche', 'evarisk') . '</th>
+		<th>' . __('Date de sortie', 'evarisk') . '</th>
+	</tr>';
+		foreach($listeUtilisateurs as $utilisateur){
+			$user_meta = get_user_meta($utilisateur['user_id'], 'digirisk_information', false);
+			$user_meta_hiring_date = get_user_meta($utilisateur['user_id'], 'digi_hiring_date', true);
+			$user_meta_unhiring_date = get_user_meta($utilisateur['user_id'], 'digi_unhiring_date', true);
+			$mass_user_form_content .= '
+	<tr>
+		<td>' . ELEMENT_IDENTIFIER_U . $utilisateur['user_id'] . '</td>
+		<td>' . $utilisateur['user_lastname'] . '</td>
+		<td>' . $utilisateur['user_firstname'] . '</td>
+		<td><input type="checkbox" value="' . $utilisateur['user_id'] . '" name="digi_user_force_update[]" /></td>
+		<td>
+			<input type="text" id="user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_hiring_date]" value="' . $user_meta_hiring_date . '" />
+			<script type="text/javascript" >
+				jQuery(document).ready(function(){
+					jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").datepicker({
+						dateFormat: "yy-mm-dd",
+						changeMonth: true,
+						changeYear: true,
+						navigationAsDateFormat: true,
+					});
+				});
+				jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").val("' . $user_meta_hiring_date . '");
+			</script>
+		</td>
+		<td>
+			<input type="text" class="user_date_input" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_unhiring_date]" value="' . $user_meta_unhiring_date . '" />
+		</td>
+	</tr>';
+		}
+		$mass_user_form_content .= '
+</table>';
+	}
+
+	echo '
+<div id="digi_user_mass_updater_message" class="updated digirisk_hide" style="width: 30%; margin: 0 auto; position: fixed; text-align:center;"></div>
+<form action="' . admin_url('admin-ajax.php') . '" id="digi-mass-user-updater-form" method="POST" style="margin-top: 30px;" >
+	<input type="hidden" name="action" value="digi-mass-user-update" />
+	' . $mass_user_form_content . '
+	<input type="submit" name="save-user-mass-modification" class="alignright button-primary" value="' . __('Enregistrer les changements', 'evarisk') . '" />
+</form>
+<script type="text/javascript" >
+	jQuery(document).ready(function(){
+		jQuery("#digi-mass-user-updater-form").ajaxForm({
+			dataType:  "json",
+			success: function( response){
+				jQuery("#digi_user_mass_updater_message").html( response["message"] );
+				jQuery("#digi_user_mass_updater_message").show();
+				setTimeout(function(){
+					jQuery("#digi_user_mass_updater_message").html( "" );
+					jQuery("#digi_user_mass_updater_message").hide();
+				}, "1500");
+			},
+		});
+		jQuery(".user_date_input").datepicker({
+			dateFormat: "yy-mm-dd",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+		});
+	});
+</script>';
+	die();
+}
+add_action( 'wp_ajax_digi-mass-change-user-informations', 'digi_mass_change_user_informations' );
+
+function digi_mass_user_update() {
+	$response = array(
+		'status' => true,
+		'message' => __('Les utilisateurs ont bien été mis à jour', 'evarisk'),
+	);
+	if ( !empty( $_POST['digi_user_single_meta'] ) ) {
+		foreach ( $_POST['digi_user_single_meta'] as $user_id => $user_informations_in_single_meta ) {
+			foreach ( $user_informations_in_single_meta as $meta_key => $meta_value ) {
+				if ( !empty($meta_value) || (!empty($_POST['digi_user_force_update']) && in_array( $user_id, $_POST['digi_user_force_update'] )) ) {
+					$meta_update_result = update_user_meta($user_id, $meta_key, $meta_value);
+// 					if ( false === $meta_update_result ) {
+// 						$response = array(
+// 							'status' => false,
+// 							'message' => __('Au moins une erreur a eu lieu lors de l\'enregistrement des utilisateurs, merci de vérifier vos modifications', 'evarisk'),
+// 						);
+// 					}
+				}
+			}
+		}
+	}
+
+	echo json_encode( $response );
+	die();
+}
+add_action( 'wp_ajax_digi-mass-user-update', 'digi_mass_user_update' );
+

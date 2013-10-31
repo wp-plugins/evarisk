@@ -159,20 +159,20 @@ class evaRecommandation
 							$checked =  ' checked="checked" ';
 							$selectedClass = 'recommandationSelected';
 							$selectedId = 'evarisk("#' . $specific_container . 'recommandation_id").val("' . $recommandation->id . '");
-		evarisk("#' . $specific_container . 'recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
+		evarisk("#' . $specific_container . 'recommandationNameIndication").html("<br/>' . ELEMENT_IDENTIFIER_P . $recommandation->id . ' - ' . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
 						else if ($i == 0) {
 							$checked =  ' checked="checked" ';
 							$selectedClass = 'recommandationSelected default';
 							$selectedId = 'evarisk("#' . $specific_container . 'recommandation_id").val("' . $recommandation->id . '");
-		evarisk("#' . $specific_container . 'recommandationNameIndication").html("' . __('pour ', 'evarisk') . ucfirst(strtolower($recommandation->nom)) . '");';
+		evarisk("#' . $specific_container . 'recommandationNameIndication").html("<br/>' . ELEMENT_IDENTIFIER_P . $recommandation->id . ' - ' . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
 						$recommandationMainPicture = '
 <div class="alignleft ' . $specific_container . 'recommandationBloc recommandationBloc ' . $selectedClass . '" >
 	<input type="hidden" name="preconisation_type" class="preconisation_type" id="' . $specific_container . 'preconisation_type_' . $recommandation->id . '" value="' . $recommandation->preconisation_type . '" />
-	<input class="' . $specific_container . 'recommandation" type="radio" ' . $checked . ' id="' . $specific_container . 'recommandation' . $recommandation->id . '" name="recommandation" value="' . $recommandation->id . '" />
+	<input class="' . $specific_container . 'recommandation" type="checkbox" ' . $checked . ' id="' . $specific_container . 'recommandation' . $recommandation->id . '" name="recommandation[]" value="' . $recommandation->id . '" />
 	<label for="' . $specific_container . 'recommandation' . $recommandation->id . '" >
-		<img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . '&nbsp;-&nbsp;' . ucfirst(strtolower($recommandation->nom)) . '" />
+		<img class="recommandationDefaultPictosList" src="' . $recommandationMainPicture . '" alt="' . ucfirst(strtolower($recommandation->nom)) . '" title="' . ELEMENT_IDENTIFIER_P . $recommandation->id . ' - ' . ucfirst(strtolower($recommandation->nom)) . '" />
 	</label>
 </div>';
 					}
@@ -194,13 +194,16 @@ class evaRecommandation
 		' . $selectedId . '
 
 		jQuery(".' . $specific_container . 'recommandation").click(function(){
-			jQuery(".' . $specific_container . 'recommandationBloc").each(function(){
-				jQuery(this).removeClass("recommandationSelected");
-			});
-			jQuery(this).parent("div").addClass("recommandationSelected");
+			if ( !jQuery( this ).is( ":checked" ) ) {
+				jQuery(this).parent( ".recommandationBloc" ).removeClass("recommandationSelected");
+				jQuery("#' . $specific_container . 'recommandationNameIndication").html( jQuery("#' . $specific_container . 'recommandationNameIndication").html().replace( "<br>" + jQuery(this).parent("div").children("label").children("img").attr("title"), "" ) );
+			}
+			else {
+				jQuery(this).parent("div").addClass("recommandationSelected");
+				jQuery("#' . $specific_container . 'recommandationNameIndication").append("<br>" + jQuery(this).parent("div").children("label").children("img").attr("title"));
+			}
 			jQuery("#' . $specific_container . 'recommandation_id").val( jQuery(this).attr("id").replace("' . $specific_container . 'recommandation", "") );
-			jQuery("#' . $specific_container . 'recommandationNameIndication").html("' . __('pour ', 'evarisk') . '" + jQuery(this).parent("div").children("label").children("img").attr("title"));
-			jQuery("#' . $specific_container . 'preconisation_type").val(jQuery(this).parent("div").children("input[type=hidden].preconisation_type").val());
+			jQuery("#' . $specific_container . 'preconisation_type").val( jQuery(this).parent("div").children("input[type=hidden].preconisation_type").val() );
 		});
 	});
 </script>';
@@ -244,7 +247,7 @@ class evaRecommandation
 
 
 /**************************************************************************************************************************************/
-/******************************					SETTERS																								*****************************************/
+/******************************					SETTERS										  *****************************************/
 /**************************************************************************************************************************************/
 
 /**
@@ -377,7 +380,7 @@ class evaRecommandation
 
 
 /**************************************************************************************************************************************/
-/******************************					OUTPUT																								*****************************************/
+/******************************					OUTPUT										  *****************************************/
 /**************************************************************************************************************************************/
 
 	/**
@@ -490,7 +493,7 @@ class evaRecommandation
 		' . $efficatiteForm . '
 		<label for="' . $specific_container . 'preconisation_type" >' . __('Type de pr&eacute;vention', 'evarisk') . '</label><br/>
 		' . EvaDisplayInput::createComboBox($specific_container . 'preconisation_type', 'preconisation_type', unserialize(DIGI_TYPE_PREVENTION), $preconisation_type) . '<br/>
-		<label for="' . $specific_container . 'commentaire_preconisation" >' . __('Commentaire', 'evarisk') . '&nbsp;<span id="' . $specific_container . 'recommandationNameIndication" >&nbsp;</span></label>
+		<label for="' . $specific_container . 'commentaire_preconisation" >' . __('Commentaire pour', 'evarisk') . '&nbsp;<div class="digi_recommandationNameIndication" id="' . $specific_container . 'recommandationNameIndication" >&nbsp;</div></label>
 		<textarea id="' . $specific_container . 'commentaire_preconisation" name="commentaire_preconisation" rows="3" cols="10" class="recommandationInput" >' . $commentaire_preconisation . '</textarea>
 		<div class="clear" >&nbsp;</div>';
 
@@ -538,9 +541,16 @@ class evaRecommandation
 			var id_element = jQuery("#idRisque").val();
 			var table_element = "' . TABLE_RISQUE . '";
 		}
+
+
+		var recommandation_to_save = new Array;
+		jQuery( ".' . $specific_container . 'recommandation:checked" ).each(function(){
+			recommandation_to_save.push( jQuery(this).val() );
+		});
 		var data = {
 			action: "digi_ajax_save_single_recommandation",
-			recommandation_id: jQuery("#' . $specific_container . 'recommandationContainer input[name=recommandation]:checked").val(),
+			//recommandation_id: jQuery("#' . $specific_container . 'recommandationContainer input[name=recommandation]:checked").val(),
+			recommandation_ids: recommandation_to_save,
 			recommandation_type: jQuery("#' . $specific_container . 'preconisation_type").val(),
 			recommandation_comment: jQuery("#' . $specific_container . 'commentaire_preconisation").val(),
 			id_element: id_element,
@@ -568,6 +578,7 @@ class evaRecommandation
 		return false;
 	});
 </script>';
+
 		return $recommandationAssociationOutput;
 	}
 
@@ -607,22 +618,17 @@ class evaRecommandation
 
 		unset($ligneDeValeurs);
 		$i=0;
-		if(count($recommandationList) > 0)
-		{
-			foreach($recommandationList as $recommandation)
-			{
+		if ( count($recommandationList) > 0 ) {
+			foreach ( $recommandationList as $recommandation ) {
 				$idLignes[] = 'recommandationLink-id-' . $recommandation->id;
 
 				$recommandationCategoryMainPicture = '';
 				$mainPicture = evaPhoto::getMainPhoto(TABLE_CATEGORIE_PRECONISATION, $recommandation->recommandation_category_id);
-				if($mainPicture != 'error')
-				{
-					if(is_file(EVA_HOME_DIR . $mainPicture))
-					{
+				if ( $mainPicture != 'error' ) {
+					if ( is_file(EVA_HOME_DIR . $mainPicture) ) {
 						$recommandationCategoryMainPicture = '<img class="recommandationCategoryDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_HOME_URL . $mainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_category_name) . '" />';
 					}
-					elseif(is_file(EVA_GENERATED_DOC_DIR . $mainPicture))
-					{
+					else if ( is_file(EVA_GENERATED_DOC_DIR . $mainPicture) ) {
 						$recommandationCategoryMainPicture = '<img class="recommandationCategoryDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . EVA_GENERATED_DOC_URL . $mainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_category_name) . '" />';
 					}
 				}
@@ -631,19 +637,16 @@ class evaRecommandation
 				$recommandationMainPicture = evaPhoto::checkIfPictureIsFile($recommandation->photo, TABLE_PRECONISATION);
 				$recommandationMainPicture = !$recommandationMainPicture ? '' : '<img class="recommandationDefaultPictosList" style="width:' . TAILLE_PICTOS . ';" src="' . $recommandationMainPicture . '" alt="' . sprintf(__('Photo par d&eacute;faut pour %s', 'evarisk'), $recommandation->recommandation_name) . '" />';
 
-				$lignesDeValeurs[$i][] = array('value' => (!empty($recommandation->commentaire) ? ELEMENT_IDENTIFIER_PA . $recommandation->id . ' ' : '') . $recommandationMainPicture, 'class' => '');
+				$lignesDeValeurs[$i][] = array('value' => ELEMENT_IDENTIFIER_PA . $recommandation->id . ' ' . $recommandationMainPicture, 'class' => '');
 				$lignesDeValeurs[$i][] = array('value' => '<span class="pointer recommandationNameManagement" >' . /* ELEMENT_IDENTIFIER_P . $recommandation->id_preconisation . '&nbsp;-&nbsp;' .  */ucfirst($recommandation->recommandation_name) . '</span>', 'class' => '');
 				$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->commentaire), 'class' => '');
-				if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui')
-				{
+				if ( digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui' ) {
 					$lignesDeValeurs[$i][] = array('value' => ucfirst($recommandation->efficacite), 'class' => '');
 				}
-				if($display_button && (current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement'])))
-				{
+				if ( $display_button && (current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement'])) ) {
 					$lignesDeValeurs[$i][] = array('value' => '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'delete_vs.png" alt="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" title="' . __('Supprimer cette pr&eacute;conisation', 'evarisk') . '" class="alignright deleteRecommandationLink" /><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'edit_vs.png" alt="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" title="' . __('&Eacute;diter cette pr&eacute;conisation', 'evarisk') . '" class="alignright editRecommandationLink" />', 'class' => '');
 				}
-				else
-				{
+				else {
 					$lignesDeValeurs[$i][] = array('value' => '&nbsp;', 'class' => '');
 				}
 				$i++;
@@ -654,7 +657,7 @@ class evaRecommandation
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			$lignesDeValeurs[$i][] = array('value' => __('Aucune pr&eacute;conisation n\'a &eacute;t&eacute; affect&eacute;e &agrave; cet &eacute;l&eacute;ment', 'evarisk'), 'class' => '');
-			if(digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui') {
+			if ( digirisk_options::getOptionValue('recommandation_efficiency_activ') == 'oui' ) {
 				$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
 			}
 			$lignesDeValeurs[$i][] = array('value' => '', 'class' => '');
