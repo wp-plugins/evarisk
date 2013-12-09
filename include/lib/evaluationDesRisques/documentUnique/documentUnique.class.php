@@ -743,13 +743,51 @@ class eva_documentUnique {
 			}
 		});
 
+		jQuery( ".fill-mass-date-with-decret-date" ).click(function(){
+			jQuery( ".risq_date_debut" ).each(function(){
+				jQuery( this ).val( "2013-01-02 00:00" );
+			});
+		});
+		jQuery( "#fill-mass-date-with-given-date-button" ).click(function(){
+			jQuery( ".risq_date_debut" ).each(function(){
+				jQuery( this ).val( jQuery( "#fill-mass-date-with-given-date" ).val() );
+			});
+		});
+		jQuery( ".fill-mass-date-with-decret-date-empty" ).click(function(){
+			jQuery( ".risq_date_debut" ).each(function(){
+						if ( jQuery( this ).val() == "" ) {
+				jQuery( this ).val( "2013-01-02 00:00" );
+						}
+			});
+		});
+		jQuery( "#fill-mass-date-with-given-date-button-empty" ).click(function(){
+			jQuery( ".risq_date_debut" ).each(function(){
+						if ( jQuery( this ).val() == "" ) {
+				jQuery( this ).val( jQuery( "#fill-mass-date-with-given-date" ).val() );
+						}
+			});
+		});
+
+		jQuery("#fill-mass-date-with-given-date").datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "hh:mm",
+			changeMonth: true,
+			changeYear: true,
+			navigationAsDateFormat: true,
+			showButtonPanel: false,
+		});
+
 		jQuery( ".digi_use_parent_date_for_risk" ).click( function(){
 			var current_risk_line = jQuery( this ).attr( "id" ).replace( "digi_use_parent_date_for_risk_r_", "");
 			jQuery( "#risq_date_debut_" + current_risk_line ).val( jQuery( "#parent_date_for_risk_r_" + current_risk_line ).val() );
 		});
 	});
 </script>';
-					$recapitulatifRisque = EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque, false);
+					$recapitulatifRisque = '<div style="width: 80%; margin: 15px auto;" >
+							<span class="fill-mass-date-with-decret-date" style="cursor:pointer;" >' . __( 'Remplir toutes les dates de d&eacute;but avec la date du d&eacute;cret', 'evarisk' ) . '</span><br/>
+							<span class="fill-mass-date-with-decret-date-empty" style="cursor:pointer;" >' . __( 'Remplir toutes les dates de d&eacute;but vide avec la date du d&eacute;cret', 'evarisk' ) . '</span><br/>
+							Appliquer <input type="text" value="" id="fill-mass-date-with-given-date" /> &agrave; toutes les dates de d&eacute;but <button id="fill-mass-date-with-given-date-button" >Appliquer à tous</button><button id="fill-mass-date-with-given-date-button-empty" >Appliquer à toutes les dates vides</button>
+					</div>' . EvaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptVoirRisque, false);
 
 					return $recapitulatifRisque;
 				}

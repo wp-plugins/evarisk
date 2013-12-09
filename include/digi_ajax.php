@@ -892,6 +892,7 @@ function digi_mass_change_user_informations() {
 				setTimeout(function(){
 					jQuery("#digi_user_mass_updater_message").html( "" );
 					jQuery("#digi_user_mass_updater_message").hide();
+					jQuery("#TB_closeWindowButton").click();
 				}, "1500");
 			},
 		});

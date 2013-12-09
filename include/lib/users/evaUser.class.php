@@ -37,7 +37,7 @@ class evaUser {
 	*
 	*	@return array $userlist An object containing the different subscriber
 	*/
-	function getCompleteUserList( $check_unhiring = true ) {
+	function getCompleteUserList( $check_unhiring = false ) {
 		$listeComplete = array();
 
 		$listeUtilisateurs = evaUser::getUserList();
@@ -1839,7 +1839,7 @@ $user_additionnal_field .= '
 		add_thickbox();
 		$user_profil_content .= '
 <div class="clear alignright" >
-	<a href="' . admin_url('admin-ajax.php') . '?action=digi-mass-change-user-informations&amp;width=800&amp;height=600" class="thickbox" title="' . __('Changement en masse sur les utilisateurs', 'evarisk')  . '" >' . __('Changement en masse sur les utilisateurs', 'evarisk') . '</a>
+	<a href="' . admin_url('admin-ajax.php') . '?action=digi-mass-change-user-informations&amp;width=500&amp;height=300" class="thickbox" title="' . __('Changement en masse sur les utilisateurs', 'evarisk')  . '" >' . __('Changement en masse sur les utilisateurs', 'evarisk') . '</a>
 </div>';
 
 		/**	Add a field allowing user to change user for edition	*/
