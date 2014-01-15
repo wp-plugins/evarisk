@@ -5,12 +5,12 @@
  * @author Evarisk
  * @version v5.0
  */
-	
+
 	function includesGestionGroupementUniteTravail($idElement, $chargement = 'tout')
-	{		
+	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'scriptPartieDroite.php');
 		require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/evaluationRisquesPostBox.php');
-		if($chargement == 'tout')
+		if($chargement == 'edit')
 		{
 			require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteTravail-new.php');
 			require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupement-new.php');

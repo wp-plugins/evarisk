@@ -32,7 +32,7 @@
 
 	/**
 	* Default pictogrammes define
-	*/ 
+	*/
 	DEFINE('ULTRASMALL_GROUP_PICTO', EVA_IMG_PICTOS_PLUGIN_URL . 'arborescenceSociete/societe_xs.png');
 	DEFINE('ULTRASMALL_WORKING_UNIT_PICTO', EVA_IMG_PICTOS_PLUGIN_URL . 'arborescenceSociete/unite_travail_xs.png');
 	DEFINE('DEFAULT_GROUP_PICTO', EVA_IMG_PICTOS_PLUGIN_URL . 'arborescenceSociete/societe.png');
@@ -41,7 +41,7 @@
 	DEFINE('DEFAULT_DANGER_PICTO', EVA_IMG_PICTOS_PLUGIN_URL . 'categorieDangers/dangerDefault.png');
 
 	/**
-	* Various Pictograms define 
+	* Various Pictograms define
 	*/
 	DEFINE('PICTO_GRILLE', EVA_IMG_DIVERS_PLUGIN_URL . 'picto_AffichageGrille.png');
 	DEFINE('PICTO_LISTE', EVA_IMG_DIVERS_PLUGIN_URL . 'picto_AffichageListe.png');
@@ -52,6 +52,7 @@
 	DEFINE('PICTO_EXPAND', EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-expand-dark.png');
 	DEFINE('PICTO_COLLAPSE', EVA_IMG_DIVERS_PLUGIN_URL . 'toggle-collapse-dark.png');
 	DEFINE('PICTO_LTL_EVAL_RISK', EVA_IMG_ICONES_PLUGIN_URL . 'evaluation_des_risques_s.png');
+	DEFINE('PICTO_LTL_PRINT_RISK_SUMMARY', EVA_IMG_ICONES_PLUGIN_URL . 'bilan_s.png');
 	DEFINE('PICTO_EDIT', EVA_IMG_ICONES_PLUGIN_URL . 'edit.png');
 	DEFINE('PICTO_VIEW', EVA_IMG_ICONES_PLUGIN_URL . 'view.png');
 
@@ -104,7 +105,7 @@
 
 	DEFINE('IMAGE_HEADER_PAGE_DOCUMENT_UNIQUE', EVA_IMG_DIVERS_PLUGIN_URL . 'banniereEvarisk.jpg');
 
-	
+
 	DEFINE('TAILLE_PICTOS_ARBRE', '100%'); // Between 25 and 48 (if px)
 	DEFINE('TAILLE_PICTOS_ARBRE_CONFIG', '30px'); // Between 25 and 48 (if px)
 	DEFINE('UNITE_TAILLE_PICTOS_MAX', 'px');

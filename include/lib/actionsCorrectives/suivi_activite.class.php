@@ -500,11 +500,11 @@ class suivi_activite {
 			$id_follow_up = digirisk_tools::IsValid_Variable($id_suivi);
 			$new_follow_up = suivi_activite::save($table_element, $id_element, $suivi_content_to_save);
 			$old_follow = $wpdb->update( TABLE_ACTIVITE_SUIVI, array('date_modification' => current_time('mysql', 0), 'status' => 'moderated', 'id_parent' => $new_follow_up[1]), array('id' => $id_follow_up) );
-			if( $old_follow !== false ){
+			if ( $old_follow !== false ) {
 				digirisk_user_notification::log_element_modification($table_element, $id_element, 'follow_update', '', $suivi_content_to_save['commentaire']);
 				$save_result = 'ok';
 			}
-			else{
+			else {
 				$save_result= 'error';
 			}
 		}
@@ -883,6 +883,7 @@ class suivi_activite {
 		$label = '<label for="' . $id . '"' . $start_date_label_class_status . ' >' . ucfirst(__("Date de d&eacute;but pr&eacute;vue", 'evarisk')) . '</label>';
 		$labelInput = '';
 		$nomChamps = "estimate_start_date";
+		$grise = false;
 		switch ( $tableElement ) {
 			case TABLE_TACHE:
 				$estimate_start_date = $label . (!empty($contenuInputEstimateStartDate) && ($contenuInputEstimateStartDate != '0000-00-00') ? '<div class="digi_action_estimate_start_date" >' . EvaDisplayInput::afficherInput('text', $id, $contenuInputEstimateStartDate, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date', '', '', '', true, '7', ' disabled="disabled"') . '</div>' : '<br/><span style="font-style: italic; margin-left: 10px;" >' . __('En attente d\'informations des sous-t&acirc;ches', 'evarisk') . '</span>');
@@ -899,6 +900,7 @@ class suivi_activite {
 		$label = '<label for="' . $id . '"' . $end_date_label_class_status . ' >' . ucfirst(__("Date de fin pr&eacute;vue", 'evarisk')) . '</label>';
 		$labelInput = '';
 		$nomChamps = "estimate_end_date";
+		$grise = false;
 		switch ( $tableElement ) {
 			case TABLE_TACHE:
 				$estimate_end_date = $label . (!empty($contenuInputEstimateEndDate) && ($contenuInputEstimateEndDate != '0000-00-00') ? '<div class="digi_action_estimate_end_date" >' . EvaDisplayInput::afficherInput('text', $id, $contenuInputEstimateEndDate, $contenuAideTitre, $labelInput, $nomChamps, $grise, true, 255, '', 'date', '', '', '', true, '10', ' disabled="disabled"') . '</div>' : '<br/><span style="font-style: italic; margin-left: 10px;" >' . __('En attente d\'informations des sous-t&acirc;ches', 'evarisk') . '</span>');
@@ -932,6 +934,7 @@ class suivi_activite {
 		$label = '<label for="' . $id . '"' . $cost_label_class_status . ' >' . __("Co&ucirc;t pr&eacute;vu", 'evarisk') . '</label> :';
 		$labelInput = '';
 		$nomChamps = "estimate_cost";
+		$grise = false;
 		switch ( $tableElement ) {
 			case TABLE_TACHE:
 				$estimate_cost = $label . (!empty($contenuInputEstimateCost) ? EvaDisplayInput::afficherInput('text', $id, $contenuInputEstimateCost, $contenuInputCout, $labelInput, $nomChamps, $grise, true, 255, '', '', '', '', '', true, '16', ' disabled="disabled"') : '<br/><span style="font-style: italic; margin-left: 10px;" >' . __('En attente d\'informations des sous-t&acirc;ches', 'evarisk') . '</span>');

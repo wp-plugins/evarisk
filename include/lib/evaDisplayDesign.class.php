@@ -655,7 +655,7 @@ class EvaDisplayDesign {
 				$subElements = EvaGroupement::getUnitesDuGroupement($racine->id);
 				$divDeChargement = 'message';
 				$titreInfo = __("Somme des risques", 'evarisk');
-				$actionSize = 5;
+				$actionSize = 6;
 				$actions = '
 							<td class="noPadding addMain" id="addMain' . $racine->id . '">';
 				if(current_user_can('digi_add_groupement'))
@@ -719,7 +719,7 @@ class EvaDisplayDesign {
 				$divDeChargement = 'message';
 				$titreInfo = __( 'Avancement', 'evarisk' );
 				$nomRacine = __( 'T&acirc;ches', 'evarisk' );
-				$actionSize = 4;
+				$actionSize = 7;
 				$actions = '
 						<td class="noPadding addMain" id="addMain' . $racine->id . '">';
 				if ( current_user_can('digi_add_task') ) {
@@ -1140,7 +1140,8 @@ class EvaDisplayDesign {
 				"partie": "right",
 				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
-				"expanded": expanded
+				"expanded": expanded,
+				"partition": "edit",
 			});
 		});
 
@@ -1163,19 +1164,79 @@ class EvaDisplayDesign {
 		});
 
 		//	The user click on the edit button of a leaf
-		digirisk("#' . $idTable . ' .risk-leaf").click(function(){
-			var leafId = digirisk(this).parent("td").parent("tr").attr("id").replace("leaf-", "");
+		digirisk("#' . $idTable . ' .summary-leaf").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
 			selectRowInTreeTable("' . $idTable . '");
 			digirisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
 			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
-			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post": "true",
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post": "true",
 				"table": "' . $sousTable . '",
 				"act": "edit",
 				"id": leafId,
 				"partie": "right",
 				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
+				"partition": "bilan",
+				"expanded": expanded
+			});
+		});
+
+		digirisk("#' . $idTable . ' .docmanager-leaf").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			digirisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post": "true",
+				"table": "' . $sousTable . '",
+				"act": "edit",
+				"id": leafId,
+				"partie": "right",
+				"menu": digirisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "docmanager",
+				"expanded": expanded
+			});
+		});
+
+		digirisk("#' . $idTable . ' .timepicker-leaf").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			digirisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post": "true",
+				"table": "' . $sousTable . '",
+				"act": "edit",
+				"id": leafId,
+				"partie": "right",
+				"menu": digirisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "timepicker",
+				"expanded": expanded
+			});
+		});
+
+		//	The user click on the edit button of a leaf
+		digirisk("#' . $idTable . ' .risk-leaf").click(function(){
+			var leafId = digirisk(this).parent("tr").attr("id").replace("leaf-", "");
+			selectRowInTreeTable("' . $idTable . '");
+			digirisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post": "true",
+				"table": "' . $sousTable . '",
+				"act": "edit",
+				"id": leafId,
+				"partie": "right",
+				"menu": digirisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "risq",
 				"expanded": expanded
 			});
 		});';
@@ -1219,13 +1280,13 @@ class EvaDisplayDesign {
 				"partie": "right",
 				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
-				"partition": "tout",
+				"partition": "edit",
 				"expanded": expanded
 			});
 		});
-		//	The user click on the delete button of a node
-		digirisk("#' . $idTable . ' .risq-node").click(function(){
-			var nodeId = digirisk(this).parent("td").parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+		//	The user click on the summary button of a node
+		digirisk("#' . $idTable . ' .summary-node").click(function(){
+			var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 			selectRowInTreeTable("' . $idTable . '");
 			digirisk("#menu").val("risq");
 			var expanded = reInitTreeTable();
@@ -1239,7 +1300,67 @@ class EvaDisplayDesign {
 				"partie": "right",
 				"menu": digirisk("#menu").val(),
 				"affichage": "affichageListe",
-				"partition": "tout",
+				"partition": "bilan",
+				"expanded": expanded
+			});
+		});
+
+		digirisk("#' . $idTable . ' .docmanager-node").click(function(){
+			var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+			selectRowInTreeTable("' . $idTable . '");
+			digirisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+			{
+				"post": "true",
+				"table": "' . $table . '",
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": digirisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "docmanager",
+				"expanded": expanded
+			});
+		});
+
+		digirisk("#' . $idTable . ' .timepicker-node").click(function(){
+			var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+			selectRowInTreeTable("' . $idTable . '");
+			digirisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+			{
+				"post": "true",
+				"table": "' . $table . '",
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": digirisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "timepicker",
+				"expanded": expanded
+			});
+		});
+		//	The user click on the risk button of a node
+		digirisk("#' . $idTable . ' .risq-node").click(function(){
+			var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
+			selectRowInTreeTable("' . $idTable . '");
+			digirisk("#menu").val("risq");
+			var expanded = reInitTreeTable();
+			digirisk("#partieEdition").html(digirisk("#loadingImg").html());
+			digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
+			{
+				"post": "true",
+				"table": "' . $table . '",
+				"act": "edit",
+				"id": nodeId,
+				"partie": "right",
+				"menu": digirisk("#menu").val(),
+				"affichage": "affichageListe",
+				"partition": "risq",
 				"expanded": expanded
 			});
 		});
@@ -1253,7 +1374,7 @@ class EvaDisplayDesign {
 					var nodeId = digirisk(this).parent("tr").attr("id").replace("node-' . $idTable . '-", "").replace("-name", "");
 				}
 				selectRowInTreeTable("' . $idTable . '");
-				digirisk("#menu").val("risq");
+				digirisk("#menu").val("all");
 				var expanded = reInitTreeTable();
 				digirisk("#partieEdition").html(digirisk("#loadingImg").html());
 				digirisk("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
@@ -1418,11 +1539,27 @@ class EvaDisplayDesign {
 							<td colspan="2">&nbsp;</td>';
 					if(current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $subElement->id)){
 						$tdSubEdit .= '
-							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" />
+							</td>
+							<td class="noPadding summary-leaf" id="summary-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_PRINT_RISK_SUMMARY . '" alt="' . __('Bilan', 'evarisk') . '" title="' . __('Bilan', 'evarisk') . '" />
+							</td>
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" />
+							</td>';
 					}
 					elseif(current_user_can('digi_view_detail_unite') || current_user_can('digi_view_detail_unite_' . $subElement->id)){
 						$tdSubEdit .= '
-							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" /></td><td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" /></td>';
+							<td style="' . $affichagePictoEvalRisque . '" class="noPadding risk-leaf" id="risq-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('de l\'unit&eacute; de travail', 'evarisk')) . '" />
+							</td>
+							<td class="noPadding summary-leaf" id="summary-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_PRINT_RISK_SUMMARY . '" alt="' . __('Bilan', 'evarisk') . '" title="' . __('Bilan', 'evarisk') . '" />
+							</td>
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('l\'unit&eacute; de travail', 'evarisk')) . '" />
+							</td>';
 					}
 					else{
 						$tdSubEdit .= '<td class="noPadding" >&nbsp;</td><td class="noPadding" >&nbsp;</td>';
@@ -1448,12 +1585,23 @@ class EvaDisplayDesign {
 				}
 				break;
 				case TABLE_TACHE :
-				{
 					$tdSubEdit = '
 							<td colspan="2">&nbsp;</td>';
-					if(current_user_can('digi_edit_action') || current_user_can('digi_edit_action_' . $subElement->id)){
+					if ( current_user_can('digi_edit_action') || current_user_can('digi_edit_action_' . $subElement->id) ) {
 						$tdSubEdit .= '
-							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" /></td>';
+							<td class="noPadding docmanager-leaf" id="docmanager-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/doc_add_s.png" alt="' . __('Gestion des documents', 'evarisk') . '" title="' . __('Gestion des documents', 'evarisk') . '" />
+							</td>
+							<td class="noPadding timepicker-leaf" id="timepicker-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'suivi_projet/chrono_vert_vs.png" alt="' . __('Pointage temps', 'evarisk') . '" title="' . __('Pointage temps', 'evarisk') . '" />
+							</td>
+							<td class="noPadding summary-leaf" id="summary-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_PRINT_RISK_SUMMARY . '" alt="' . __('Bilan', 'evarisk') . '" title="' . __('Bilan', 'evarisk') . '" />
+							</td>';
+						$tdSubEdit .= '
+							<td class="noPadding edit-leaf" id="edit-leaf' . $subElement->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('l\'action', 'evarisk')) . '" />
+							</td>';
 					}
 					elseif(current_user_can('digi_view_detail_action') || current_user_can('digi_view_detail_action_' . $subElement->id)){
 						$tdSubEdit .= '
@@ -1478,16 +1626,13 @@ class EvaDisplayDesign {
 					if(!current_user_can('digi_view_detail_action') && !current_user_can('digi_edit_action')){
 						$nomFeuilleClass = 'userForbiddenActionCursor';
 					}
-				}
 				break;
 				case TABLE_GROUPE_QUESTION :
-				{
 					$tdSubDelete = '
 							<td colspan="2">&nbsp;</td>
 							<td class="noPadding delete-leaf" id="delete-leaf-' . $subElement->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_DELETE . '" alt="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" title="' . sprintf(__('&Eacute;ffacer %s', 'evarisk'), __('la question', 'evarisk')) . '" /></td>';
 					$subAffichage = ELEMENT_IDENTIFIER_Q . $subElement->id . ' : ' . ucfirst($subElement->enonce);
 					$subActions = $tdSubDelete;
-				}
 				break;
 			}
 			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
@@ -1653,16 +1798,34 @@ class EvaDisplayDesign {
 							if(current_user_can('digi_edit_groupement') || current_user_can('digi_edit_groupement_' . $element->id))
 							{
 								$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
-								$tdEdit = '<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td><td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
+								$tdEdit = '
+									<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '">
+										<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . __('&Eacute;valuation des risques', 'evarisk') . '" title="' . __('&Eacute;valuation des risques', 'evarisk') . '" />
+									</td>
+									<td class="noPadding summary-node" id="summary-node' . $element->id . '">
+										<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_PRINT_RISK_SUMMARY . '" alt="' . __('Bilan', 'evarisk') . '" title="' . __('Bilan', 'evarisk') . '" />
+									</td>
+									<td class="noPadding edit-node" id="edit-node' . $element->id . '">
+										<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" />
+									</td>';
 							}
 							elseif(current_user_can('digi_view_detail_groupement') || current_user_can('digi_view_detail_groupement_' . $element->id))
 							{
 								$affichagePictoEvalRisque = (!AFFICHAGE_PICTO_EVAL_RISQUE) ? 'display:none;' : '';
-								$tdEdit = '<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" title="' . sprintf(__('Risques %s', 'evarisk'), __('du groupement', 'evarisk')) . '" /></td><td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" /></td>';
+								$tdEdit = '
+									<td style="' . $affichagePictoEvalRisque . '" class="noPadding risq-node" id="risq-node' . $element->id . '">
+										<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_EVAL_RISK . '" alt="' . __('&Eacute;valuation des risques', 'evarisk') . '" title="' . __('&Eacute;valuation des risques', 'evarisk') . '" />
+									</td>
+									<td class="noPadding summary-node" id="summary-node' . $element->id . '">
+										<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' .PICTO_LTL_PRINT_RISK_SUMMARY . '" alt="' . __('Bilan', 'evarisk') . '" title="' . __('Bilan', 'evarisk') . '" />
+									</td>
+									<td class="noPadding edit-node" id="edit-node' . $element->id . '">
+										<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" />
+									</td>';
 							}
 							else
 							{
-								$tdEdit = '<td class="noPadding" >&nbsp;</td><td class="noPadding" >&nbsp;</td>';
+								$tdEdit = '<td class="noPadding" >&nbsp;</td><td class="noPadding" >&nbsp;</td><td class="noPadding" >&nbsp;</td>';
 							}
 
 							/*	Bouton de suppression d'un groupement */
@@ -1729,7 +1892,22 @@ class EvaDisplayDesign {
 							$tdAddSecondary .= '</td>';
 
 							if(current_user_can('digi_edit_task') || current_user_can('digi_edit_task_' . $element->id)){
-								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
+								$tdEdit = '';
+
+
+								$tdEdit .= '
+							<td class="noPadding docmanager-node" id="docmanager-node' . $element->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'user_notifications/doc_add_s.png" alt="' . __('Gestion des documents', 'evarisk') . '" title="' . __('Gestion des documents', 'evarisk') . '" />
+							</td>
+							<td class="noPadding timepicker-node" id="timepicker-node' . $element->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'suivi_projet/chrono_vert_vs.png" alt="' . __('Temps consomm&eacute;', 'evarisk') . '" title="' . __('Temps consomm&eacute;', 'evarisk') . '" />
+							</td>
+							<td class="noPadding summary-node" id="summary-node' . $element->id . '">
+								<img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_LTL_PRINT_RISK_SUMMARY . '" alt="' . __('Bilan', 'evarisk') . '" title="' . __('Bilan', 'evarisk') . '" />
+							</td>
+
+										<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';"src="' .PICTO_EDIT . '" alt="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('&Eacute;diter %s', 'evarisk'), __('la t&acirc;che', 'evarisk')) . '" />';
+
 							}
 							elseif(current_user_can('digi_view_detail_task') || current_user_can('digi_view_detail_task_' . $element->id)){
 								$tdEdit = '<td class="noPadding edit-node" id="edit-node' . $element->id . '"><img style="width:' . TAILLE_PICTOS_ARBRE . ';" src="' . PICTO_VIEW . '" alt="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" title="' . sprintf(__('Voir %s', 'evarisk'), __('le groupement', 'evarisk')) . '" />';

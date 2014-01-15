@@ -22,6 +22,7 @@
 				}
 				digirisk_user_notification::user_notification_box_caller();
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/suiviModification.php');
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/comments.php');
 				if ( file_exists(EVA_TEMPLATES_PLUGIN_DIR . 'includesActionsCorrectivesPerso.php') ) {
 					include_once(EVA_TEMPLATES_PLUGIN_DIR . 'includesActionsCorrectivesPerso.php');
 				}
@@ -29,5 +30,22 @@
 
 				actionsCorrectives::corrective_actions_print_box();
 			}
+		}
+		else if ( $chargement == 'edit' && ( (int)$idElement != 0 ) ) {
+			require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/tache/tache-new.php');
+			require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/activite/activite-new.php');
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'hierarchie/hierarchiePostBox.php');
+		}
+		else if ( $chargement == 'timepicker' && ( (int)$idElement != 0 ) ) {
+			require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/suiviModification.php');
+			require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
+		}
+		else if ( $chargement == 'docmanager' && ( (int)$idElement != 0 ) ) {
+			eva_gestionDoc::document_box_caller();
+			require_once(EVA_METABOXES_PLUGIN_DIR . 'galeriePhotos/galeriePhotos.php');
+		}
+		else if ( $chargement == 'bilan' && ( (int)$idElement != 0 ) ) {
+				actionsCorrectives::corrective_actions_print_box();
+				require_once(EVA_METABOXES_PLUGIN_DIR . 'actionsCorrectives/comments.php');
 		}
 	}

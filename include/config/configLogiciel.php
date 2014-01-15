@@ -1,26 +1,26 @@
-<?php	
+<?php
 	DEFINE('STANDALONEVERSION', false);
 
 	DEFINE('AFFICHAGE_PICTO_CATEGORIE', true);
-	DEFINE('AFFICHAGE_PICTO_EVAL_RISQUE', false);
+	DEFINE('AFFICHAGE_PICTO_EVAL_RISQUE', true);
 	DEFINE('TAILLE_PICTOS_MAX', '25'); // Between 25 and 48 (if px)
 
 	/**
-	 * Géolocalisation
+	 * Gï¿½olocalisation
 	 */
 	{
 		DEFINE('GEOLOC_OBLIGATOIRE', false);
 		DEFINE('ZOOM_SCROLL_MAP', false);
 		DEFINE('CLEF_GOOGLE_MAPS', 'ABQIAAAAV24GLgNrS2xLKMCvbtBE4RR2Xs0hXoOUJbteCqQ4WXhB0mslnRTm5crPM7k4wvb2jqtGCRtKiuMsyg');
 	}
-	
+
 	/**
 	 * Risks Assessment
 	 */
 	{
 		//DEFINE('OPTIONS_AVANCEEES_EVALUATION_RISQUE', 'collapsed'); // 3 possibles values : collapsed / expanded / invisible
 	}
-	
+
 	/**
 	 * Forms
 	 */

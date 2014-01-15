@@ -132,8 +132,8 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 .treeTable td {	vertical-align:middle;	}
 .treeTableGroupInfoColumn, .treeTableInfoColumn {	cursor:pointer;	}
 
-.edit-leaf img, .risk-leaf img, .delete-leaf img{	cursor:pointer;	}
-.edit-node img, .risk-node img, .delete-node img, .addMain img, .addSecondary img{	cursor:pointer;	}
+.edit-leaf img, .risk-leaf img, .delete-leaf img, .summary-leaf img, .docmanager-leaf img, .timepicker-leaf img{	cursor:pointer;	}
+.edit-node img, .risk-node img, .risq-node img, .summary-node img, .delete-node img, .addMain img, .addSecondary img, .docmanager-node img, .timepicker-node img{	cursor:pointer;	}
 
 .actionForExistingElement{	margin:3px 0px;	}
 .existingElementMainExplanation{	font-size:10px; margin:0px 0px 15px;	}

@@ -836,7 +836,7 @@ function main_tree_action_node(table_identifier, element_type, delete_message){
 	});
 	/*	A click is detected on evaluation button	*/
 	jQuery("#" + table_identifier + " .risq-node").click(function(){
-		var nodeId = jQuery(this).parent("td").parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
+		var nodeId = jQuery(this).parent("tr").attr("id").replace("node-" + table_identifier + "-", "").replace("-name", "");
 		selectRowInTreeTable(table_identifier);
 		var expanded = reInitTreeTable();
 		jQuery("#digirisk_right_side").html(jQuery("#loadingImg").html());
