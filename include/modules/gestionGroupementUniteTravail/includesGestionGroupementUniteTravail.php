@@ -10,7 +10,7 @@
 	{
 		require_once(EVA_LIB_PLUGIN_DIR . 'scriptPartieDroite.php');
 		require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/evaluationRisquesPostBox.php');
-		if($chargement == 'edit')
+		if(($chargement == 'edit') || ($chargement == 'tout'))
 		{
 			require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/uniteDeTravail/uniteTravail-new.php');
 			require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/groupement-new.php');
