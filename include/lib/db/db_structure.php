@@ -1084,6 +1084,32 @@ CREATE TABLE {$t} (
   UNIQUE KEY `rubrique` (`rubrique`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
+
+/* Structure de la table `wp_eva__liaison_formulaire`	*/
+$t = TABLE_FORMULAIRE_LIAISON;
+$digirisk_db_table[$t] = "
+CREATE TABLE {$t} (
+	id int(10) unsigned NOT NULL auto_increment,
+	status enum('valid','moderated','deleted') collate utf8_unicode_ci NOT NULL default 'valid',
+	date_started datetime default NULL,
+	date_closed datetime default NULL,
+	user int(10) unsigned NOT NULL,
+	user_closed int(10) unsigned NOT NULL,
+	idFormulaire int(10) unsigned NOT NULL,
+	survey_id int(10) unsigned NOT NULL,
+	idElement int(10) unsigned NOT NULL,
+	tableElement char(255) collate utf8_unicode_ci NOT NULL,
+	state char(255) collate utf8_unicode_ci NOT NULL,
+PRIMARY KEY  (id),
+KEY idFormulaire (idFormulaire),
+KEY survey_id (survey_id),
+KEY idElement (idElement),
+KEY status (status),
+KEY state (state),
+KEY tableElement (tableElement)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Contain the different survey associated to digirisk element';";
+
+
 /*	Start the different creation and update plan	*/
 
 {/*	Version 0	*/
@@ -1848,4 +1874,11 @@ CREATE TABLE {$t} (
 	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_GED_DOCUMENTS_META][] = __('Table permettant de stocker les informations concernant les informations associ&eacute;es &agrave; un document', 'evarisk');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_RISQUE_HISTO][] = __('Table permettant d\'enregistrer un historique pour les informations concernant un risque', 'evarisk');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['ADD_TABLE'] = array( TABLE_GED_DOCUMENTS_META, TABLE_RISQUE_HISTO );
+}
+
+{/*	Version 87	*/
+	$digirisk_db_version = 87;
+	$digirisk_update_way[$digirisk_db_version] = 'structure';
+
+	$digirisk_db_table_list[$digirisk_db_version] = array( TABLE_FORMULAIRE_LIAISON );
 }

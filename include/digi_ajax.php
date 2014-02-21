@@ -934,3 +934,136 @@ function digi_mass_user_update() {
 }
 add_action( 'wp_ajax_digi-mass-user-update', 'digi_mass_user_update' );
 
+
+/***
+ *
+ *
+ * SUrevy management
+ *
+ *
+ */
+/**
+ * Create new evaluation form a survey
+ */
+add_action( 'wp_ajax_digi-ajax-final-survey-evaluation-result-view', 'digi_ajax_evaluation_answers_view' );
+function digi_ajax_evaluation_answers_view() {
+	check_ajax_referer( 'wpes-ajax-view-survey-results', 'wpes-ajax-survey-final-result-view-nonce' );
+	global $wpdb,
+				$wpes_survey;
+	$output = '';
+
+	$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND survey_id = %d AND state = %s ORDER BY date_started DESC LIMIT 1" , array( $_REQUEST[ 'tableElement' ], $_REQUEST[ 'idElement' ], $_REQUEST['final_survey_id'], 'closed') );
+	$element_evaluation[ 'closed' ] = $wpdb->get_row( $query, ARRAY_A );
+	if ( !empty($element_evaluation) && !empty($element_evaluation[ 'closed' ]) ) {
+		$preview = false;
+		$survey_id = $element_evaluation[ 'closed' ]['survey_id'];
+
+		$associated_item = $wpes_survey->issues->get_issues( $survey_id, '', $preview );
+		if ( $associated_item->have_posts() ) {
+			/**	Add each issue to display	*/
+			$sub_output = '';
+			foreach ( $associated_item->posts as $item ) {
+				$sub_output .= $wpes_survey->display_final_issue( $item, $_REQUEST[ 'post_id' ], $survey_id );
+			}
+		}
+
+		if ( !empty($sub_output) ) {
+			$output = $wpes_survey->display_final_survey_evaluation_result( $element_evaluation[ 'closed' ], $sub_output );
+		}
+		else {
+			$has_content = false;
+			$output = sprintf( __('There are no issues in this survey for the moment. %s', 'wp_easy_survey'), '<a href="' . admin_url('post.php') . '?post=' . $survey_id . '&amp;action=edit" >' . __('Edit survey', 'wp_easy_survey') . '</a>' );
+		}
+	}
+
+	echo $output;
+	die();
+}
+
+add_action( 'wp_ajax_digi-close-evaluation', 'digi_close_evaluation' );
+function digi_close_evaluation() {
+	check_ajax_referer( 'wpes-ajax-close-evaluation', 'wpes-ajax-close-evaluation' );
+	global $wpdb,
+				$wpes_survey;
+	$ancestors = get_post_ancestors( $_POST['survey_id'] );
+	$response = array(
+		'status'    => false,
+		'survey_id' => $ancestors[0],
+		'post_ID'   => $_POST['post_ID'],
+		'output'    => '',
+	);
+	$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE idFormulaire = %d AND state = %s LIMIT 1", $ancestors[0], "started" );
+	$current_evaluation = $wpdb->get_row( $query );
+	$wpdb->update( TABLE_FORMULAIRE_LIAISON, array( 'date_closed' => current_time( 'mysql', 0 ), 'user_closed' => get_current_user_id(), 'state' => 'closed'), array( 'id' => $current_evaluation->id, ) );
+
+	$response['status'] = true;
+	$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND idFormulaire = %d AND state = %s ORDER BY date_started LIMIT 1" , array( $current_evaluation->tableElement, $current_evaluation->idElement, $current_evaluation->idFormulaire, 'started') );
+	$current_element_evaluation[ 'in_progress' ] = $wpdb->get_row( $query, ARRAY_A );
+	$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND idFormulaire = %d AND state = %s ORDER BY date_started DESC" , array( $current_evaluation->tableElement, $current_evaluation->idElement, $current_evaluation->idFormulaire, 'closed') );
+
+	$current_element_evaluation[ 'closed' ] = $wpdb->get_results( $query, ARRAY_A );
+	$current_element_evaluation[ 'ajax_action' ] = "digi-ajax-final-survey-evaluation-result-view&amp;tableElement=" . $current_evaluation->tableElement . "&amp;idElement=" . $current_evaluation->idElement;
+	$final_survey = $wpes_survey->final_survey_display( $current_evaluation->idElement, $current_evaluation->idFormulaire, $current_element_evaluation );
+	$response['output'] = $final_survey[ 'content' ];
+
+	echo json_encode( $response );
+	die();
+}
+
+add_action( 'wp_ajax_digi-start-new-evaluation-for-wpes', 'digi_start_new_evaluation' );
+function digi_start_new_evaluation() {
+	check_ajax_referer( 'wpes-new-evaluation-start', 'wpes-ajax-new-evaluation-start' );
+	global $wpdb,
+				$wpes_survey;
+	$response = array(
+		'status'    => false,
+		'survey_id' => $_POST['survey_id'],
+		'post_ID'   => $_POST['post_ID'],
+		'output'    => '',
+	);
+
+	/**	Save the survey content for the current evaluation */
+	$new_survey_id = $wpes_survey->create_post_revision( $_POST['survey_id'] );
+
+	if ( is_int($new_survey_id) ) {
+		$wpes_survey->create_final_survey( $_POST['survey_id'], $new_survey_id );
+
+		$evaluation_id = $wpdb->insert( TABLE_FORMULAIRE_LIAISON, array(
+			'id' 			=> NULL,
+			'status' 		=> 'valid',
+			'date_started' 	=> current_time('mysql', 0),
+			'date_closed' 	=> '',
+			'user' 			=> get_current_user_id(),
+			'user_closed' 	=> '',
+			'idFormulaire' 	=> $_POST['survey_id'],
+			'survey_id' 	=> $new_survey_id,
+			'idELement' 	=> $_POST[ 'post_ID' ],
+			'tableElement' 	=> $_POST[ 'post_type' ],
+			'state' 		=> 'started',
+		) ) ;
+
+		if ( is_int( $evaluation_id ) ) {
+			$response['status'] = true;
+
+			$sub_output = '';
+			$has_content = true;
+
+			$preview = true;
+			$current_evaluation = null;
+			$parent_survey_id = $_POST['survey_id'];
+
+			$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND idFormulaire = %d AND state = %s ORDER BY date_started LIMIT 1" , array( $_POST[ 'post_type' ], $_POST[ 'post_ID' ], $_POST['survey_id'], 'started') );
+			$current_element_evaluation[ 'in_progress' ] = $wpdb->get_row( $query, ARRAY_A );
+			$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND idFormulaire = %d AND state = %s ORDER BY date_started DESC" , array( $_POST[ 'post_type' ], $_POST[ 'post_ID' ], $_POST['survey_id'], 'closed') );
+			$current_element_evaluation[ 'closed' ] = $wpdb->get_results( $query, ARRAY_A );
+			$current_element_evaluation[ 'ajax_action' ] = "digi-ajax-final-survey-evaluation-result-view&amp;tableElement=" . $_POST[ 'post_type' ] . "&amp;idElement=" . $_POST[ 'post_ID' ];
+			$final_survey = $wpes_survey->final_survey_display( $_POST[ 'post_ID' ], $_POST['survey_id'], $current_element_evaluation );
+			$response['output'] = $final_survey[ 'content' ];
+		}
+	}
+
+	echo json_encode( $response );
+	die();
+}
+
+?>

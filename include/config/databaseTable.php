@@ -98,6 +98,8 @@ DEFINE('PREFIXE_EVARISK_TRASH', $wpdb->prefix . "evatrash__");
 	DEFINE('TABLE_REPONSE', PREFIXE_VEILLE . "reponse");
 	DEFINE('TABLE_REPONSE_QUESTION', PREFIXE_VEILLE . "reponse_question");
 	DEFINE('TABLE_CONCERNE_PAR_TEXTE_REFERENCIEL', PREFIXE_VEILLE . "concerne_par_texte_referenciel");
+
+	DEFINE('TABLE_FORMULAIRE_LIAISON', PREFIXE_EVARISK . "liaison_formulaire");
 }
 
 {/*	Tables users	*/

@@ -1692,7 +1692,6 @@ class digirisk_permission
 			$permissionCap[$permission]['type'] = $permission_definition['permission_type'];
 			$permissionCap[$permission]['subtype'] = $permission_definition['permission_sub_type'];
 		}
-
 ?>
 <table class="form-table" >
 <?php
@@ -1731,11 +1730,11 @@ class digirisk_permission
 		<th>
 			<?php _e('permission_' . $module, 'evarisk'); ?>
 <?php
-				if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
+				//if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
 ?>
 			<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
 <?php
-				}
+				//}
 ?>
 		</th>
 		<td>
@@ -1753,11 +1752,11 @@ class digirisk_permission
 				</div>
 				<div class="sub_module_content" >
 <?php
-				if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
+				//if(($interface_provenance != 'digi_user_profile') && (!empty($elementToManage) && !empty($elementToManage->name) && ($elementToManage->name != 'administrator')) ){
 ?>
 					<div class="digi_permission_check_all" ><span id="check_selector_<?php echo $module . '_' . $subModuleName; ?>" class="checkall" ><?php _e('Tout cocher', 'evarisk'); ?></span>&nbsp;/&nbsp;<span id="uncheck_selector_<?php echo $module . '_' . $subModuleName; ?>" class="uncheckall" ><?php _e('Tout d&eacute;cocher', 'evarisk'); ?></span></div>
 <?php
-				}
+				//}
 				/*	Liste des permissions pour le module et le sous-module	*/
 				foreach($moduleContent as $permission){
 					$checked = $permissionNameClass = '';
