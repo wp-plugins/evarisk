@@ -8,7 +8,10 @@
 * @package digirisk
 * @subpackage librairies-db
 */
-$current_db_version = digirisk_options::getDbOption('base_evarisk');
+
+$digirisk_options = new digirisk_options();
+$current_db_version = $digirisk_options->getDbOption('base_evarisk');
+
 $digirisk_db_update = array();
 $digirisk_db_content_add = array();
 $digirisk_db_content_update = array();
@@ -119,7 +122,13 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	$digirisk_db_version = 37;
 
 	$digirisk_db_content_update[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('datas' => array('parDefaut' => 'oui'), 'where' => array('id_element' => '0', 'table_element' => 'all'));
-	$digirisk_db_content_update[$digirisk_db_version][TABLE_FP][] = array('datas' => array('id_model' => eva_gestionDoc::getDefaultDocument('fiche_de_poste')), 'where' => array());
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	$eva_gestionDoc = new eva_gestionDoc();	
+	$digirisk_db_content_update[$digirisk_db_version][TABLE_FP][] = array('datas' => array('id_model' => $eva_gestionDoc->getDefaultDocument('fiche_de_poste')), 'where' => array());
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+	//$digirisk_db_content_update[$digirisk_db_version][TABLE_FP][] = array('datas' => array('id_model' => eva_gestionDoc::getDefaultDocument('fiche_de_poste')), 'where' => array());
+
 }
 {/*	Version 38	*/
 	$digirisk_db_version = 38;
@@ -335,7 +344,9 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 		$inrs_danger_categories=unserialize(DIGI_INRS_DANGER_LIST);
 		foreach($inrs_danger_categories as $danger_cat){
 			if(!empty($danger_cat['version']) && ($danger_cat['version'] == $digirisk_db_version)){
-				$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom']);
+
+				$categorieDangers = new CategorieDangers();		
+				$new_danger_cat_id = $categorieDangers->saveNewCategorie($danger_cat['nom']);
 
 				/*	If user ask to add danger in categories	*/
 				$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
@@ -346,8 +357,10 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 				}
 
 				/*	Insert picture for danger categories	*/
-				$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
-				EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
+				
+				$evaPhoto = new EvaPhoto();
+				$new_cat_pict_id = $evaPhoto->saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
+				$evaPhoto->setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
 			}
 		}
 	}
@@ -378,18 +391,18 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	if($current_db_version<=$digirisk_db_version){/*	Insert picture for danger categories	*/
 		$query = $wpdb->prepare("SELECT id FROM ".TABLE_CATEGORIE_DANGER." WHERE LOWER(nom) = %s", strtolower(__('Circulations internes', 'evarisk')));
 		$cat_id = $wpdb->get_var($query);
-		$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/circulation.png');
-		EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
+		$new_cat_pict_id = $evaPhoto->saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/circulation.png');
+		$evaPhoto->setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
 
 		$query = $wpdb->prepare("SELECT id FROM ".TABLE_CATEGORIE_DANGER." WHERE LOWER(nom) = %s", strtolower(__('Rayonnements', 'evarisk')));
 		$cat_id = $wpdb->get_var($query);
-		$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rayonnement.png');
-		EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
+		$new_cat_pict_id = $evaPhoto->saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rayonnement.png');
+		$evaPhoto->setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
 
 		$query = $wpdb->prepare("SELECT id FROM ".TABLE_CATEGORIE_DANGER." WHERE LOWER(nom) = %s", strtolower(__('Risques psychosociaux', 'evarisk')));
 		$cat_id = $wpdb->get_var($query);
-		$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rps.png');
-		EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
+		$new_cat_pict_id = $evaPhoto->saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rps.png');
+		$evaPhoto->setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
 	}
 }
 
@@ -400,8 +413,8 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	if ( $current_db_version <= $digirisk_db_version ) {	/*	Insert picture for danger categories	*/
 		$query = $wpdb->prepare("SELECT id FROM ".TABLE_CATEGORIE_DANGER." WHERE LOWER(nom) = %s", __('Divers', 'evarisk') . ' ' . strtolower(__('Manutention manuelle', 'evarisk')));
 		$cat_id = $wpdb->get_var($query);
-		$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rps.png');
-		EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
+		$new_cat_pict_id = $evaPhoto->saveNewPicture(TABLE_CATEGORIE_DANGER, $cat_id, 'medias/images/Pictos/categorieDangers/rps.png');
+		$evaPhoto->setMainPhoto(TABLE_CATEGORIE_DANGER, $cat_id, $new_cat_pict_id, 'yes');
 	}
 }
 

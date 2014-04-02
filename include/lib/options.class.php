@@ -18,7 +18,7 @@ class digirisk_options {
 	/**
 	*	Declare the different options for the plugin
 	*/
-	function declare_options(){
+	public static function declare_options(){
 		register_setting('digirisk_options', 'digirisk_options', array('digirisk_options', 'digirisk_options_validator'));
 		register_setting('digirisk_options', 'digirisk_tree_options', array('digirisk_options', 'digirisk_tree_options_validator'));
 		register_setting('digirisk_options', 'digirisk_product_options', array('digirisk_options', 'digirisk_product_options_validator'));
@@ -85,6 +85,8 @@ class digirisk_options {
 			add_settings_field('digi_users_emaildomain_field', __('Domaine par d&eacute;faut pour les e-mail utilisateurs (sans @)', 'evarisk'), array('digirisk_options', 'digi_users_emaildomain_field'), 'digirisk_options_user', 'digi_users_options');
 			add_settings_field('digi_users_access_field', __('Permettre l\'acc&egrave;s &agrave; tous les utilisateurs : ', 'evarisk'), array('digirisk_options', 'digi_users_access_field'), 'digirisk_options_user', 'digi_users_options');
 			// add_settings_field('digi_users_digirisk_extra_field', __('Champs suppl&eacute;mentaires pour le logiciel Digirisk', 'evarisk'), array('digirisk_options', 'digi_users_digirisk_extra_field'), 'digirisk_options_user', 'digi_users_options');
+			add_settings_field('digi_users_activGroupsManagement_field', __('Activer la gestion des groupes d\'utilisateurs', 'evarisk'), array('digirisk_options', 'digi_users_activGroupsManagement_field'), 'digirisk_options_user', 'digi_users_options');
+			add_settings_field('digi_users_activRightsManagement_field', __('Activer la gestion des droits des utilisateurs dans les &eacute;l&eacute;ments', 'evarisk'), array('digirisk_options', 'digi_users_activRightsManagement_field'), 'digirisk_options_user', 'digi_users_options');
 		}
 
 		{/*	Declare the different options for the products if plugin exists and is active	*/
@@ -188,6 +190,8 @@ class digirisk_options {
 
 		$newinput['recommandation_efficiency_activ'] = (!empty($input['recommandation_efficiency_activ'])?trim($input['recommandation_efficiency_activ']):'');
 
+		$newinput['activRightsManagement'] = (!empty($input['activRightsManagement']) ? $input['activRightsManagement'] : '');
+		$newinput['activGroupsManagement'] = (!empty($input['activGroupsManagement']) ? $input['activGroupsManagement'] : '');
 		$newinput['emailDomain'] = (!empty($input['emailDomain'])?trim(str_replace('@', '', $input['emailDomain'])):'');
 		$newinput['digi_users_access_field'] = (!empty($input['digi_users_access_field'])?trim($input['digi_users_access_field']):'');
 		$newinput['identifiant_htpasswd'] = (!empty($input['identifiant_htpasswd'])?trim($input['identifiant_htpasswd']):'');
@@ -770,6 +774,38 @@ class digirisk_options {
 		}
 	}
 	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_users_activGroupsManagement_field(){
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		$digi_users_access_field = '';
+		if(current_user_can('digi_edit_option')){
+			$digi_users_access_field = "
+	" . EvaDisplayInput::createComboBox('activGroupsManagement', 'digirisk_options[activGroupsManagement]', $optionYesNoList, (!empty($options['activGroupsManagement']) ? $options['activGroupsManagement'] : ''));
+			echo $digi_users_access_field;
+		}
+		else{
+			echo $options['activGroupsManagement'];
+		}
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
+	function digi_users_activRightsManagement_field(){
+		global $optionYesNoList;
+		$options = get_option('digirisk_options');
+		$digi_users_access_field = '';
+		if(current_user_can('digi_edit_option')){
+			$digi_users_access_field = "
+	" . EvaDisplayInput::createComboBox('activRightsManagement', 'digirisk_options[activRightsManagement]', $optionYesNoList, (!empty($options['activRightsManagement']) ? $options['activRightsManagement'] : ''));
+			echo $digi_users_access_field;
+		}
+		else{
+			echo $options['activRightsManagement'];
+		}
+	}
+	/**
 	*
 	*/
 	function digi_users_access_field(){
@@ -1139,7 +1175,7 @@ class digirisk_options {
 	*
 	*	@return mixed $optionSubValue The value of the option
 	*/
-	function getDbOption($subOptionName)
+	public static function getDbOption($subOptionName)
 	{
 		$optionSubValue = -1;
 
@@ -1158,7 +1194,8 @@ class digirisk_options {
 		/*	Keep the old method to get plugin version because of update	*/
 		if($optionSubValue == -1){
 			global $wpdb;
-			$subOptionName = digirisk_tools::IsValid_Variable($subOptionName);
+			$digirisk_tools = new digirisk_tools();
+			$subOptionName = $digirisk_tools->IsValid_Variable($subOptionName);
 			if( $wpdb->get_var("show tables like '" . TABLE_VERSION . "'") == TABLE_VERSION){
 				$query = $wpdb->prepare("SELECT version
 					FROM " . TABLE_VERSION . "

@@ -45,6 +45,62 @@ function digi_ajax_repair_db_datas() {
 add_action('wp_ajax_digi_ajax_repair_db_datas', 'digi_ajax_repair_db_datas');
 
 
+
+
+
+
+
+
+function digi_ajax_delete_user_affectation() {
+	global $wpdb;
+
+	$deletion = $wpdb->update( TABLE_LIAISON_USER_ELEMENT, array( 'status' => 'deleted', 'date_desAffectation' => current_time( 'mysql', 0 ), 'id_desAttributeur' => get_current_user_id(), ), array( 'id' => $_POST[ 'affectation-id' ], ) );
+	$message = __( 'Affectation supprim&eacute;e avec succ&eacute;s', 'digirisk' );
+	if ( false === $deletion ) {
+		$message = __( 'Une erreur est survenue lors de la suppression de l\'affectation', 'digirisk' );
+	}
+	wp_die( json_encode( array( 'status' => $deletion, 'link_id' => $_POST[ 'affectation-id' ], 'message' => $message, ) ) );
+}
+add_action('wp_ajax_digi_ajax_delete_user_affectation', 'digi_ajax_delete_user_affectation');
+
+function digi_affect_users_to_evaluation() {
+	global $wpdb;
+	if ( !empty( $_POST ) && !empty( $_POST[ 'digi_user' ] ) && is_array( $_POST[ 'digi_user' ] ) ) {
+		$has_error = true;
+		foreach ( $_POST[ 'digi_user' ] as $user_id ) {
+			$date_addition = null;
+			if ( !empty( $_POST[ 'digi_user_time' ] ) || !empty( $_POST[ 'digi_user_time' ][ $user_id ] ) ) {
+				$date_addition[] = !empty( $_POST[ 'digi_user_time' ][ $user_id ][ 'hour' ] ) ? ' ' . $_POST[ 'digi_user_time' ][ $user_id ][ 'hour' ] . ' hours' : '';
+				$date_addition[] = !empty( $_POST[ 'digi_user_time' ][ $user_id ][ 'minutes' ] ) ? ' ' . $_POST[ 'digi_user_time' ][ $user_id ][ 'minutes' ] . ' minutes' : '';
+			}
+			else if ( !empty( $_POST[ 'digi-users-affectation-default-duration-hour' ] ) || !empty( $_POST[ 'digi-users-affectation-default-duration-minutes' ] ) ) {
+				$date_addition[] = !empty( $_POST[ 'digi-users-affectation-default-duration-hour' ] ) ? ' ' . $_POST[ 'digi-users-affectation-default-duration-hour' ] . ' hours' : '';
+				$date_addition[] = !empty( $_POST[ 'digi-users-affectation-default-duration-minutes' ] ) ? ' ' . $_POST[ 'digi-users-affectation-default-duration-minutes' ] . ' minutes' : '';
+			}
+			$date_desAffectation_reelle = !empty( $date_addition ) ? date( 'Y-m-d H:i:s', strtotime( '+' . implode( ' ', $date_addition ), strtotime( $_POST[ 'date_affectation_reelle' ] ) ) ) : '';
+			if ( !empty( $date_desAffectation_reelle ) ) {
+				$new_link = $wpdb->insert( TABLE_LIAISON_USER_ELEMENT, array(
+					'status' => 'valid',
+					'date_affectation' => current_time( 'mysql', 0 ),
+					'id_attributeur' => get_current_user_id(),
+					'id_user' => $user_id,
+					'id_element' => $_POST[ 'idElement' ],
+					'table_element' => $_POST[ 'tableElement' ],
+					'date_affectation_reelle' => $_POST[ 'date_affectation_reelle' ],
+					'date_desaffectation_reelle' => $date_desAffectation_reelle,
+				) );
+				$has_error = $has_error && (false === $new_link) ? $new_link : $has_error;
+			}
+		}
+	}
+
+	require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
+	getParticipantPostBoxBody( array( 'idElement' => $_POST[ 'idElement' ], 'tableElement' => $_POST[ 'tableElement' ] ), array( 'action_success' => $has_error, ) );
+	wp_die();
+}
+add_action('wp_ajax_digi_affect_users_to_evaluation', 'digi_affect_users_to_evaluation');
+
+
 /**
  *
  *
@@ -833,14 +889,20 @@ function digi_mass_change_user_informations() {
 
 	if(is_array($listeUtilisateurs) && (count($listeUtilisateurs) > 0)){
 		$mass_user_form_content .= '
-<table>
-	<tr>
-		<th>' . __('Identifiant', 'evarisk') . '</th>
-		<th>' . __('Nom', 'evarisk') . '</th>
-		<th>' . __('Prénom', 'evarisk') . '</th>
-		<th>' . __('Forcer MAJ', 'evarisk') . '</th>
-		<th>' . __('Date d\'embauche', 'evarisk') . '</th>
-		<th>' . __('Date de sortie', 'evarisk') . '</th>
+<table style="width: 100%;" >
+	<tr style="background-color: #DDD;" >
+		<th style="border:1px solid #CCC; padding: 5px;" >' . __('Id.', 'evarisk') . '</th>
+		<th style="border:1px solid #CCC; padding: 5px;" >' . __('Nom', 'evarisk') . '</th>
+		<th style="border:1px solid #CCC; padding: 5px;" >' . __('Prénom', 'evarisk') . '</th>
+		<th style="border:1px solid #CCC; padding: 5px; width: 2%;" >' . __('Forcer MAJ', 'evarisk') . '</th>
+		<th style="border:1px solid #CCC; padding: 5px;" >
+			' . __('Date d\'embauche', 'evarisk') . '
+			<br/><span style="font-size: 9px;" >' . __('YYYY-MM-DD ou DD/MM/YYYY', 'evarisk') . '</span>
+		</th>
+		<th style="border:1px solid #CCC; padding: 5px;" >
+			' . __('Date de sortie', 'evarisk') . '
+			<br/><span style="font-size: 9px;" >' . __('YYYY-MM-DD ou DD/MM/YYYY', 'evarisk') . '</span>
+		</th>
 	</tr>';
 		foreach($listeUtilisateurs as $utilisateur){
 			$user_meta = get_user_meta($utilisateur['user_id'], 'digirisk_information', false);
@@ -848,12 +910,12 @@ function digi_mass_change_user_informations() {
 			$user_meta_unhiring_date = get_user_meta($utilisateur['user_id'], 'digi_unhiring_date', true);
 			$mass_user_form_content .= '
 	<tr>
-		<td>' . ELEMENT_IDENTIFIER_U . $utilisateur['user_id'] . '</td>
-		<td>' . $utilisateur['user_lastname'] . '</td>
-		<td>' . $utilisateur['user_firstname'] . '</td>
-		<td><input type="checkbox" value="' . $utilisateur['user_id'] . '" name="digi_user_force_update[]" /></td>
-		<td>
-			<input type="text" id="user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_hiring_date]" value="' . $user_meta_hiring_date . '" />
+		<td style="border-bottom:1px solid #CCC; text-align: center;" >' . ELEMENT_IDENTIFIER_U . $utilisateur['user_id'] . '</td>
+		<td style="border-bottom:1px solid #CCC;" >' . $utilisateur['user_lastname'] . '</td>
+		<td style="border-bottom:1px solid #CCC;" >' . $utilisateur['user_firstname'] . '</td>
+		<td style="border-bottom:1px solid #CCC; text-align: center;" ><input type="checkbox" value="' . $utilisateur['user_id'] . '" name="digi_user_force_update[]" /></td>
+		<td style="border-bottom:1px solid #CCC; width: 165px;" >
+			<input type="text" style="text-align: center;" id="user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_hiring_date]" value="' . $user_meta_hiring_date . '" />
 			<script type="text/javascript" >
 				jQuery(document).ready(function(){
 					jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").datepicker({
@@ -866,8 +928,8 @@ function digi_mass_change_user_informations() {
 				jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").val("' . $user_meta_hiring_date . '");
 			</script>
 		</td>
-		<td>
-			<input type="text" class="user_date_input" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_unhiring_date]" value="' . $user_meta_unhiring_date . '" />
+		<td style="border-bottom:1px solid #CCC; width: 165px;" >
+			<input type="text" style="text-align: center;" class="user_date_input" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_unhiring_date]" value="' . $user_meta_unhiring_date . '" />
 		</td>
 	</tr>';
 		}
@@ -880,7 +942,6 @@ function digi_mass_change_user_informations() {
 <form action="' . admin_url('admin-ajax.php') . '" id="digi-mass-user-updater-form" method="POST" style="margin-top: 30px;" >
 	<input type="hidden" name="action" value="digi-mass-user-update" />
 	' . $mass_user_form_content . '
-	<input type="submit" name="save-user-mass-modification" class="alignright button-primary" value="' . __('Enregistrer les changements', 'evarisk') . '" />
 </form>
 <script type="text/javascript" >
 	jQuery(document).ready(function(){
@@ -897,7 +958,7 @@ function digi_mass_change_user_informations() {
 			},
 		});
 		jQuery(".user_date_input").datepicker({
-			dateFormat: "yy-mm-dd",
+
 			changeMonth: true,
 			changeYear: true,
 			navigationAsDateFormat: true,
@@ -917,6 +978,10 @@ function digi_mass_user_update() {
 		foreach ( $_POST['digi_user_single_meta'] as $user_id => $user_informations_in_single_meta ) {
 			foreach ( $user_informations_in_single_meta as $meta_key => $meta_value ) {
 				if ( !empty($meta_value) || (!empty($_POST['digi_user_force_update']) && in_array( $user_id, $_POST['digi_user_force_update'] )) ) {
+					if ( ( ( 'digi_hiring_date' == $meta_key ) || ( 'digi_unhiring_date' == $meta_key ) ) && ( $meta_value != date( 'Y-m-d', strtotime( $meta_value ) ) ) ) {
+						$date_components = explode( '/', $meta_value );
+						$meta_value = date( 'Y-m-d', strtotime( $date_components[ 2 ] . '-' . $date_components[ 1 ] . '-' . $date_components[ 0 ] ) );
+					}
 					$meta_update_result = update_user_meta($user_id, $meta_key, $meta_value);
 // 					if ( false === $meta_update_result ) {
 // 						$response = array(

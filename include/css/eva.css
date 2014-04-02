@@ -29,7 +29,7 @@ a{ cursor:pointer; }
 	cursor: pointer;
 }
 #follow_up_id_user_performer_chzn {
-	width: 80% !important;
+	width: 99% !important;
 }
 #follow_up_id_user_performer_chzn .chzn-drop{
 	width: 99% !important;
@@ -590,8 +590,13 @@ th.columnCommentaireRisque*/
 .risk_not_controlled_task_list{ width:100%;	}
 .risk_not_controlled_task_list_check{	width:3%;	}
 
-.risk_date_change {
-	margin: 30px 0;	
+.risk_date_change li {
+	display: inline-block;
+	width: 30%;
+}
+.risk_date_change li div {
+	margin: 0 auto;
+	width: 75%;	
 }
 
 .qr_current_risk{	width:70%; margin:30px auto; background-color: #CCCCCC;	}
@@ -770,7 +775,13 @@ td.details table{	margin:0px 0px 24px !important;	}
 	margin: 9px 0px 0px 0px;
 }
 #digi_ac_project_follow_up {
-	margin: 9px 0px 0px 0px;
+	float: left;
+}
+#digi_ac_project_follow_up .dataTables_scrollHead {
+	clear: both;
+}
+#digi_ac_project_follow_up td {
+	padding: 4px !important;
 }
 #digi_action_follow_up_elapsed_time {
 	font-style: italic;
@@ -778,6 +789,12 @@ td.details table{	margin:0px 0px 24px !important;	}
 #digi_action_follow_up_elapsed_time input, #cout_reel {
 	border: 0px solid #000000;
 	background-color: transparent !important;	
+}
+.digi_suivi_modif_heure {
+	width: 65px;
+}
+.digi_suivi_modif_action_col {
+	width: 50px;
 }
 
 label.digi_alert {
@@ -878,8 +895,8 @@ label.digi_alert {
 	font-size: 9px;
 }
 .digi_affected_user_list_options_container {
-	width: 35%;
-	padding: 0 0 0 5%;
+	width: 90%;
+	margin: 0 auto;
 }
 /* -- END LINK USER ELEMENT -- */
 
@@ -1216,6 +1233,25 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
 	margin: 0 32px;
 }
 
+#postBoxUtilisateursEvaluated div.giveHeight, #postBoxUtilisateursEvaluated div.dataTables_scroll{
+	clear: both;
+}
+#postBoxUtilisateursEvaluated div.dataTables_wrapper{
+	min-height: 0px !important;
+}
+#postBoxUtilisateursEvaluated div.dataTables_paginate{
+	margin: 0px !important;
+}
+#digi-users-affectation-wp_eva__groupement_evaluation_filter{
+	float: left !important;
+	margin-top: 45px;
+}
+.digi-opener{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: 0px -211px !important; width:16px; height:16px; margin:3px 0px; cursor: pointer;	}
+.digi-closer{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -16px -211px !important; width:16px; height:16px; margin:3px 0px; cursor: pointer;	}
+#userListwp_eva__groupement_evaluation_wrapper {
+	max-height: 250px;
+	overflow-y: scroll;
+}
 /* tr td:first-child > span:first-child:before {
     color: #000;
     content: "≡";

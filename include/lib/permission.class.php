@@ -807,7 +807,7 @@ class digirisk_permission
 	*	Update user right's. Check if there is a user id send by post method, if it is the case so we launch user rights' update process
 	*
 	*/
-	function user_permission_set() {
+	public static function user_permission_set() {
 		/*	V�rification qu'il existe bien un utilisateur � mettre � jour avant d'effectuer une action	*/
 		if ( empty($_POST['user_id']) ) return;
 		/*	R�cup�ration des informations concernant l'utilisateur en cours d'�dition	*/

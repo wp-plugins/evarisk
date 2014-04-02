@@ -192,7 +192,6 @@ class evaUserLinkElement {
 	<span class="alignright" ><a target="_blank" href="' . admin_url('users.php?page=digirisk_import_users') . '">' . __('Ajouter des utilisateurs', 'evarisk') . '</a></span>';
 		}
 
-
 		switch ( $tableElement ) {
 			case digirisk_groups::dbTable:
 				$more_script_affect = '
@@ -581,7 +580,7 @@ class evaUserLinkElement {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT *
+			"SELECT *, DATEDIFF( date_desaffectation_reelle, date_affectation_reelle ) AS duration_in_days, TIMEDIFF( date_desaffectation_reelle, date_affectation_reelle ) AS duration_in_hour
 			FROM " . TABLE_LIAISON_USER_ELEMENT . "
 			WHERE id_element = '%s'
 				AND table_element = '%s'

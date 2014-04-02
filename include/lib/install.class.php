@@ -1230,6 +1230,26 @@ class digirisk_install	{
 				$options['digi_export_comment_in_doc'] = 'oui';
 				update_option('digirisk_options', $options);
 			break;
+
+			case 88:
+				/**	Set option defining if users' groups must be displayed or not AND if users' rights must be displayed */
+				$options = get_option( 'digirisk_options' );
+				$options['activGroupsManagement'] = 'non';
+				$options['activRightsManagement'] = 'non';
+				update_option( 'digirisk_options', $options );
+
+				/**	Set the duration that users hes been viewed during evaluation	*/
+				$tables = array( TABLE_UNITE_TRAVAIL . '_evaluation', TABLE_GROUPEMENT . '_evaluation' );
+				$query = $wpdb->prepare( "SELECT id, date_affectation, date_desAffectation, date_affectation_reelle FROM " . TABLE_LIAISON_USER_ELEMENT . " WHERE table_element IN (".implode(', ', array_fill(0, count($tables), '%s')).")", $tables );
+				$affectations = $wpdb->get_results( $query );
+				if ( !empty( $affectations ) ) {
+					foreach ( $affectations as $affectation ) {
+						$new_end_date = !empty( $affectation->date_affectation_reelle ) ? date( 'Y-m-d H:i:s', strtotime( "+1 hour", mysql2date( 'U', $affectation->date_affectation_reelle ) ) )  : '';
+						$wpdb->update( TABLE_LIAISON_USER_ELEMENT, array( 'date_desaffectation_reelle' => $new_end_date, ), array( 'id' => $affectation->id, ) );
+					}
+				}
+			break;
+
 		}
 	}
 

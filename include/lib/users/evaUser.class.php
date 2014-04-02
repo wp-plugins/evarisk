@@ -1836,10 +1836,11 @@ $user_additionnal_field .= '
 		}
 
 	/**	Start output building	*/
-		add_thickbox();
+// 		add_thickbox();
 		$user_profil_content .= '
 <div class="clear alignright" >
-	<a href="' . admin_url('admin-ajax.php') . '?action=digi-mass-change-user-informations&amp;width=500&amp;height=300" class="thickbox" title="' . __('Changement en masse sur les utilisateurs', 'evarisk')  . '" >' . __('Changement en masse sur les utilisateurs', 'evarisk') . '</a>
+	<a href="#" id="digi-mass-change-user-informations-opener" >' . __('Changement en masse sur les utilisateurs', 'evarisk') . '</a>
+	<div id="digi-mass-change-user-informations" title="' . __('Changement en masse sur les utilisateurs', 'evarisk')  . '" ></div>
 </div>';
 
 		/**	Add a field allowing user to change user for edition	*/
@@ -1938,6 +1939,31 @@ $user_additionnal_field .= '
 				"element_infos": jQuery(this).attr("id").replace("digi_generate_FEP_", ""),
 				"id_model": jQuery("#modelListForGeneration_" + current_element_specs[0] + "_-digi-_" + current_element_specs[1] + " #modelToUse" + current_element_specs[0] + "_FEP").val(),
 			});
+		});
+
+
+
+		/*	Add the dialog box in order to make mass changes on users	*/
+		jQuery( "#digi-mass-change-user-informations-opener" ).click(function( e ){
+			e.preventDefault();
+			var data = {
+				action: "digi-mass-change-user-informations",
+			};
+			jQuery( "#digi-mass-change-user-informations" ).load( ajaxurl, data ).dialog("open");
+		});
+		jQuery("#digi-mass-change-user-informations").dialog({
+			"autoOpen":false,
+			"height":460,
+			"width":800,
+			"modal":true,
+			"buttons":  {
+				"' . __('Enregistrer les changements', 'evarisk') . '": function(){
+					jQuery( "#digi-mass-user-updater-form" ).submit();
+				},
+			},
+			"close":function(){
+				jQuery("#digi-mass-change-user-informations").html("");
+			}
 		});
 	});
 </script>';

@@ -74,7 +74,7 @@ class eva_GroupSheet
 
 		$groupInformations = EvaGroupement::getGroupement($idElement);
 		$formulaireDocumentUniqueParams['#NOMDOCUMENT#'] = date('Ymd') . '_' . ELEMENT_IDENTIFIER_GP . $idElement . '_' . sanitize_title(str_replace(' ', '_', $groupInformations->nom));
-		$groupementPere = EvaGroupement::getGroupement($groupInformations->id_groupement);
+		$groupementPere = EvaGroupement::getGroupement( $groupInformations->id );
 		$ancetres = Arborescence::getAncetre(TABLE_GROUPEMENT, $groupementPere);
 		$arborescence = '';
 		foreach($ancetres as $ancetre)
@@ -92,12 +92,13 @@ class eva_GroupSheet
 
 		$modelChoice = '';
 		$lastGroupSheet = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', '', 'fiche_de_groupement');
-		if(($lastGroupSheet->id_model != '') && ($lastGroupSheet->id_model != eva_gestionDoc::getDefaultDocument('fiche_de_groupement')))
-		{
+		$model_id_to_use = eva_gestionDoc::getDefaultDocument('fiche_de_groupement');
+		if( !empty($lastGroupSheet) && !empty($lastGroupSheet->id_model) && ($lastGroupSheet->id_model != $model_id_to_use)) {
 			$modelChoice = '
 			setTimeout(function(){
 				digirisk("#FGPmodelDefaut").click();
 			},100);';
+			$model_id_to_use = $lastGroupSheet->id_model;
 		}
 
 		$output = EvaDisplayDesign::feedTemplate(eva_GroupSheet::getGroupSheetForm(), $formulaireDocumentUniqueParams) . '
@@ -137,7 +138,7 @@ class eva_GroupSheet
 				if(!digirisk("#FGPmodelDefaut").is(":checked")){
 					digirisk("#GroupSheetResultContainer").html(\'<img src="' . EVA_IMG_DIVERS_PLUGIN_URL . 'loading.gif" alt="loading" />\');
 					digirisk("#GroupSheetResultContainer").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_DUER . '", "act":"loadNewModelForm", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '"});
-					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":"' . $lastGroupSheet->id_model . '"});
+					digirisk("#modelListForGeneration").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_GED_DOCUMENTS . '", "act":"load_model_combobox", "tableElement":"' . $tableElementForDoc . '", "idElement":"' . $idElement . '", "category":"fiche_de_groupement", "selection":"' . $model_id_to_use . '"});
 					digirisk("#modelListForGeneration").show();
 				}
 				else{

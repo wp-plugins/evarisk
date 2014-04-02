@@ -20,7 +20,7 @@ class digirisk_admin_notification{
 	*
 	*
 	*/
-	function admin_notification_define(){
+	public static function admin_notification_define(){
 		$notification = array();
 
 		{/*	V-5.1.5.4	*/
@@ -52,7 +52,7 @@ class digirisk_admin_notification{
 	/**
 	*
 	*/
-	function admin_notice_message_define(){
+	public static function admin_notice_message_define(){
 		$view_more = false;
 		$container_class = '';
 

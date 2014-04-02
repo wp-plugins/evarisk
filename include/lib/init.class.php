@@ -19,7 +19,7 @@ class digirisk_init
 	/**
 	*	Load the different element need to create the plugin environnement
 	*/
-	function digirisk_plugin_load(){
+	public static function digirisk_plugin_load(){
 		add_action( 'admin_notices', array('digirisk_admin_notification', 'admin_notice_message_define') );
 		wp_register_style('digirisk_admin_notif_css', EVA_INC_PLUGIN_URL . 'css/eva_admin_notification.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('digirisk_admin_notif_css');
@@ -60,7 +60,8 @@ class digirisk_init
 			add_action('admin_init', array('digirisk_doc', 'init_wysiwyg'));
 		}
 		/* On r�cup�re la liste des pages document�es afin de les comparer a la page courante */
-		$pages_list = digirisk_doc::get_doc_pages_name_array();
+		$digirisk_doc = new digirisk_doc();
+		$pages_list = $digirisk_doc->get_doc_pages_name_array();
 		if (isset($_GET['page']) && in_array($_GET['page'], $pages_list)) {
 			add_action('contextual_help', array('digirisk_doc', 'pippin_contextual_help'), 10, 3);
 		}
@@ -77,8 +78,9 @@ class digirisk_init
 	/**
 	*	Create the main left menu with different parts
 	*/
-	function digirisk_menu(){
+	public static function digirisk_menu(){
 
+		$options = get_option('digirisk_options');
 		/*	Add the options menu in the options section	*/
 		add_options_page(__('Options du logiciel digirisk', 'evarisk'), __('Digirisk', 'evarisk'), 'digi_view_options_menu', DIGI_URL_SLUG_MAIN_OPTION, array('digirisk_options', 'optionMainPage'));
 
@@ -110,7 +112,9 @@ class digirisk_init
 			add_users_page('Digirisk : ' . __('Import d\'utilisateurs pour l\'&eacute;valuation des risques', 'evarisk' ), __('Import Digirisk', 'evarisk'), 'digi_view_user_import_menu', 'digirisk_import_users', array('evaUser','importUserPage'));
 
 			// On cr�e le menu de gestion des groupes d'utilisateurs
-			add_users_page('Digirisk : ' . __('Gestion des groupes d\'utilisateurs', 'evarisk' ), __('Groupes Digirisk', 'evarisk'), 'digi_view_user_groups_menu', DIGI_URL_SLUG_USER_GROUP, array('digirisk_groups','elementMainPage'));
+			if ( !empty( $options ) && !empty( $options[ 'activGroupsManagement' ] ) && 'oui' == $options[ 'activGroupsManagement' ] ) {
+				add_users_page('Digirisk : ' . __('Gestion des groupes d\'utilisateurs', 'evarisk' ), __('Groupes Digirisk', 'evarisk'), 'digi_view_user_groups_menu', DIGI_URL_SLUG_USER_GROUP, array('digirisk_groups','elementMainPage'));
+			}
 
 			// On cr�e le menu de gestion des droits des utilisateurs
 			add_users_page('Digirisk : ' . __('Gestion des droits des utilisateurs', 'evarisk' ), __('Droits Digirisk', 'evarisk'), 'digi_user_right_management_menu', DIGI_URL_SLUG_USER_RIGHT, array('digirisk_permission','elementMainPage'));
@@ -150,6 +154,7 @@ class digirisk_init
 		wp_enqueue_script('eva_jq_galover', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.opacityrollover.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_jq_fieldselect', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery-fieldselection.js', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_script('eva_role_js', EVA_INC_PLUGIN_URL . 'js/role.js', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_script('eva_jq_numeric', EVA_INC_PLUGIN_URL . 'js/jquery-libs/jquery.numeric.js', '', EVA_PLUGIN_VERSION);
 
 		wp_enqueue_script('eva_jq_fileupload', EVA_INC_PLUGIN_URL . 'js/jquery-libs/fileuploader.js', '', EVA_PLUGIN_VERSION);
 

@@ -17,7 +17,8 @@
 				eva_gestionDoc::document_box_caller();
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'galeriePhotos/galeriePhotos.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
-				if (current_user_can('digi_manage_user_right')) {
+				$options = get_option('digirisk_options');
+				if ( ( !empty( $options ) && !empty( $options[ 'activRightsManagement' ] ) && 'oui' == $options[ 'activRightsManagement' ] ) && current_user_can('digi_manage_user_right') ) {
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/droitsUtilisateurs.php');
 				}
 				digirisk_user_notification::user_notification_box_caller();

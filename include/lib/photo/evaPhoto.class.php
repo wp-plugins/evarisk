@@ -55,9 +55,14 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
-		$idElement = digirisk_tools::IsValid_Variable($idElement);
-		$photo = digirisk_tools::IsValid_Variable(digirisk_tools::slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
+		$digirisk_tools = new digirisk_tools();
+		$tableElement = $digirisk_tools->IsValid_Variable($tableElement);
+
+		$digirisk_tools = new digirisk_tools();
+		$idElement = $digirisk_tools->IsValid_Variable($idElement);
+
+		$digirisk_tools = new digirisk_tools();
+		$photo = $digirisk_tools->IsValid_Variable($digirisk_tools->slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
 
 		/*	Check if the picture have already been inserted into database	*/
 		$query = $wpdb->prepare("SELECT id FROM ".TABLE_PHOTO." WHERE photo=%s", $photo);

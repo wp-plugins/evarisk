@@ -11,6 +11,8 @@
 		require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/evaluationRisquesPostBox.php');
 
 		if (((int)$idElement) != 0) {
+
+			$options = get_option('digirisk_options');
 			if ($chargement == 'tout') {
 
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'evaluationDesRisques/groupement/headerPartieDroiteGroupement.php');
@@ -18,8 +20,10 @@
 
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
-// 				require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonGroupesUtilisateursElement.php');
-				if (current_user_can('digi_manage_user_right')) {
+				if ( !empty( $options ) && !empty( $options[ 'activGroupsManagement' ] ) && 'oui' == $options[ 'activGroupsManagement' ] ) {
+					require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonGroupesUtilisateursElement.php');
+				}
+				if ( ( !empty( $options ) && !empty( $options[ 'activRightsManagement' ] ) && 'oui' == $options[ 'activRightsManagement' ] ) && current_user_can('digi_manage_user_right') ) {
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/droitsUtilisateurs.php');
 				}
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php' );
@@ -56,7 +60,7 @@
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'documentUnique/documentUnique.php' );
 				require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePoste.php' );
 
-				if (current_user_can('digi_manage_user_right')) {
+				if ( ( !empty( $options ) && !empty( $options[ 'activRightsManagement' ] ) && 'oui' == $options[ 'activRightsManagement' ] ) && current_user_can('digi_manage_user_right') ) {
 					require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/droitsUtilisateurs.php');
 				}
 			}

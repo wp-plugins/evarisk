@@ -1882,3 +1882,8 @@ KEY tableElement (tableElement)
 
 	$digirisk_db_table_list[$digirisk_db_version] = array( TABLE_FORMULAIRE_LIAISON );
 }
+
+{/*	Version 88	*/
+	$digirisk_db_version = 88;
+	$digirisk_update_way[$digirisk_db_version] = 'data';
+}

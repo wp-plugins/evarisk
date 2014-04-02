@@ -87,7 +87,7 @@ DEFINE('DIGI_TYPE_PREVENTION', serialize($type_prevention));
 
 }
 
-DEFINE('DIGI_DEBUG_MODE', true);
+DEFINE('DIGI_DEBUG_MODE', false);
 DEFINE('DIGI_DEBUG_MODE_ALLOWED_IP', serialize( array('127.0.0.1') ));
 
 DEFINE('DIGI_ALLOW_RISK_CATEGORY_CHANGE', false);

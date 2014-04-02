@@ -880,11 +880,11 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			$idBouttonEnregistrerEtCloturer = 'enregistreretcloturerFormRisque' . $formId;
 			$options = get_option('digirisk_options');
 			$check_risk_cotation_not_empty = $check_risk_cotation_empty = '';
-			if (strtolower($options['digi_risk_close_state_cotation_null']) == strtolower(__('Oui', 'evarisk'))) {
+			if ( !empty($options) && !empty($options['digi_risk_close_state_cotation_null']) && strtolower($options['digi_risk_close_state_cotation_null']) == strtolower(__('Oui', 'evarisk'))) {
 				$check_risk_cotation_not_empty .= '(jQuery("#current_qr").val() > 0)';
 				$check_risk_cotation_empty .= '(jQuery("#current_qr").val() == 0)';
 			}
-			if (strtolower($options['digi_risk_close_state_end_date_filled']) == strtolower(__('Oui', 'evarisk'))) {
+			if (!empty($options) && !empty($options['digi_risk_close_state_end_date_filled']) && strtolower($options['digi_risk_close_state_end_date_filled']) == strtolower(__('Oui', 'evarisk'))) {
 				$check_risk_cotation_not_empty .= (!empty($check_risk_cotation_not_empty) ? ' && ' : '') . '(jQuery("#digi_risk_end_start").val() == "")';
 				$check_risk_cotation_empty .= (!empty($check_risk_cotation_empty) ? ' || ' : '') . '(jQuery("#digi_risk_end_start").val() != "")';
 			}
@@ -909,8 +909,8 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 			$formRisque .= '
 		<div class="clear" >
-			<input id="' . $idBouttonEnregistrerEtCloturer . '" class="button-secondary alignright saveRiskFormButton" type="button" name="save_and_close" value="' . __('Enregistrer et cloturer', 'evarisk') . '" >&nbsp;&nbsp;
 			<input id="' . $idBouttonEnregistrer . '" class="button-primary alignright saveRiskFormButton" type="button" name="save_and_close" value="' . __('Enregistrer', 'evarisk') . '" >
+			<input id="' . $idBouttonEnregistrerEtCloturer . '" class="button-secondary alignright saveRiskFormButton" type="button" name="save_and_close" value="' . __('Enregistrer et cloturer', 'evarisk') . '" >&nbsp;&nbsp;
 		</div>';
 		}
 		else {

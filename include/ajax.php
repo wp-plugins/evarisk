@@ -1418,60 +1418,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$niveauSeuil = Risque::getSeuil($quotation);
 						$affichage .= '<input type="hidden" value="' . $niveauSeuil . '" id="niveau_seuil_courant" /><input type="hidden" value="' . $quotation . '" id="current_qr" /><div class="qr_current_risk" ><div class="alignleft" >' . __('Q. risque', 'evarisk') . '&nbsp;:</div><div class="qr_risk Seuil_' . $niveauSeuil . '" >' . $quotation . '</div><div class="clear" ></div></div>';
 
-						/**	Add possibility to define a date for risk evaluation	*/
-						$date_shortcode = '';
-						$employer_date = null;
-						switch ( $tableElement ) {
-							case TABLE_GROUPEMENT:
-								$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $idElement );
-								$current_groupement_infos = $wpdb->get_row( $query );
-								if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
-									$employer_date = $current_groupement_infos->creation_date_of_society;
-								}
-								else {
-									$employer_date = EvaGroupement::get_closest_employer( $idElement );
-								}
-							break;
-							case TABLE_UNITE_TRAVAIL:
-								$query = $wpdb->prepare("SELECT id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $idElement);
-								$current_work_unit_parent = $wpdb->get_var( $query );
-								$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $current_work_unit_parent );
-								$current_groupement_infos = $wpdb->get_row( $query );
-								if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
-									$employer_date = $current_groupement_infos->creation_date_of_society;
-								}
-								else {
-									$employer_date = EvaGroupement::get_closest_employer( $current_work_unit_parent );
-								}
-							break;
-						}
-						if ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') ) {
-							$date_shortcode = ' / <input type="hidden" value="' . substr( $employer_date, 0, -3 ) . '" id="digi_parent_creation_date" /><span id="digi_use_parent_date_for_risk" style="font-style: italic;cursor: pointer;" >' . __('Date de cr&eacute;ation du groupement employeur', 'evarisk') . '</span>';
-						}
-						$affichage .= '
-<div class="risk_date_change" >
-	' . __('Date de début du risque', 'evarisk') . '
-	<div>
-		<input type="text" name="digi_risk_date_start" id="digi_risk_date_start" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
-		' . ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateDebutRisque) && ( $risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateDebutRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_date_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' . $date_shortcode : '') . '
-	</div>
-</div>
-				<!--
-<div class="risk_date_change" >
-	' . __('Date d\'&eacute;valuation du risque', 'evarisk') . '
-	<div>
-		<input type="text" name="digi_risk_evaluation_date" id="digi_risk_evaluation_date" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
-		' . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_evaluation_date" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
-	</div>
-</div>
-				-->
-<div class="risk_date_change" >
-	' . __('Date de fin du risque', 'evarisk') . '
-	<div>
-		<input type="text" name="digi_risk_end_start" id="digi_risk_end_start" value=""' . ($is_closed ? ' disabled="disabled"' : '' ) . ' />
-		' . ( !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $risque[0]->dateDebutRisque )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" />' : ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_end_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
-	</div>
-</div>';
 
 						/*	START - Get the explanation picture if exist - START	*/
 						$methodExplanationPicture = '';
@@ -1520,6 +1466,66 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 	</div>
 </div>';
 						}
+
+						/**	Add possibility to define a date for risk evaluation	*/
+						$date_shortcode = '';
+						$employer_date = null;
+						switch ( $tableElement ) {
+							case TABLE_GROUPEMENT:
+								$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $idElement );
+								$current_groupement_infos = $wpdb->get_row( $query );
+								if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
+									$employer_date = $current_groupement_infos->creation_date_of_society;
+								}
+								else {
+									$employer_date = EvaGroupement::get_closest_employer( $idElement );
+								}
+								break;
+							case TABLE_UNITE_TRAVAIL:
+								$query = $wpdb->prepare("SELECT id_groupement FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $idElement);
+								$current_work_unit_parent = $wpdb->get_var( $query );
+								$query = $wpdb->prepare( "SELECT typeGroupement, creation_date_of_society FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $current_work_unit_parent );
+								$current_groupement_infos = $wpdb->get_row( $query );
+								if ( ($current_groupement_infos->typeGroupement == 'employer') && !empty($current_groupement_infos->creation_date_of_society) && ($current_groupement_infos->creation_date_of_society != '0000-00-00')) {
+									$employer_date = $current_groupement_infos->creation_date_of_society;
+								}
+								else {
+									$employer_date = EvaGroupement::get_closest_employer( $current_work_unit_parent );
+								}
+								break;
+						}
+						if ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') ) {
+							$date_shortcode = ' / <input type="hidden" value="' . substr( $employer_date, 0, -3 ) . '" id="digi_parent_creation_date" /><span id="digi_use_parent_date_for_risk" style="font-style: italic;cursor: pointer;" >' . __('Date de cr&eacute;ation du groupement employeur', 'evarisk') . '</span>';
+						}
+						echo '
+<div class="clear" ></div>
+<ul class="risk_date_change">
+	<li>
+		<div>
+			' . __('Date de début du risque', 'evarisk') . '<br/>
+			<input type="text" name="digi_risk_date_start" id="digi_risk_date_start" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
+			' . ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateDebutRisque) && ( $risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateDebutRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_date_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' . $date_shortcode : '') . '
+		</div>
+	</li>
+					<!--
+	<li>
+		<div>
+			' . __('Date d\'&eacute;valuation du risque', 'evarisk') . '<br/>
+			<input type="text" name="digi_risk_evaluation_date" id="digi_risk_evaluation_date" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
+			' . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_evaluation_date" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
+		</div>
+	</li>
+					-->
+	<li>
+		<div>
+			' . __('Date de fin du risque', 'evarisk') . '<br/>
+			<input type="text" name="digi_risk_end_start" id="digi_risk_end_start" value=""' . ($is_closed ? ' disabled="disabled"' : '' ) . ' />
+			' . ( !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $risque[0]->dateDebutRisque )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" />' : ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_end_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
+		</div>
+	</li>
+</ul>';
+
+
 						$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
 						$locale = ($locale == 'en') ? '' : $locale;
 
