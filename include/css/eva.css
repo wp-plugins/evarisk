@@ -1242,7 +1242,7 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
 #postBoxUtilisateursEvaluated div.dataTables_paginate{
 	margin: 0px !important;
 }
-#digi-users-affectation-wp_eva__groupement_evaluation_filter{
+#digi-users-affectation-wp_eva__groupement_evaluation_filter, #digi-users-affectation-wp_eva__unite_travail_evaluation_filter{
 	float: left !important;
 	margin-top: 45px;
 }

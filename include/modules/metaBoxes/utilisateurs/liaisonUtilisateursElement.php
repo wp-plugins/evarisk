@@ -72,10 +72,11 @@
 		echo '
 	<table style="width: 100%; border: 1px solid #DDD;" id="userList' . $tableElement . '" >
 		<thead>
-			<th>' . __( 'Date', 'digirisk' ) . '</th>
-			<th>' . __( 'Heure', 'digirisk' ) . '</th>
-			<th>' . __( 'Personne', 'digirisk' ) . '</th>
-			<th>' . __( 'Dur&eacute;e', 'digirisk' ) . '</th>
+
+			<th>' . __( 'Date - Heure', 'digirisk' ) . '</th>
+			<th style="text-align: left;" >' . __( 'Nom', 'digirisk' ) . '</th>
+			<th style="text-align: left;" >' . __( 'Pr&eacute;nom', 'digirisk' ) . '</th>
+			<th style="text-align: left;" >' . __( 'Dur&eacute;e', 'digirisk' ) . '</th>
 			<th style="width: 25px;" ></th>
 		</thead>
 
@@ -87,6 +88,8 @@
 				$currentUser = evaUser::getUserInformation( $theUser->id_user );
 				$final_tabs[ mysql2date( get_option( 'date_format' ) , $theUser->date_affectation_reelle ) ][ mysql2date( get_option( 'time_format' ) , $theUser->date_affectation_reelle ) ][] = array(
 					'user_name' 		=> $currentUser[ $theUser->id_user ][ 'user_lastname' ] . ' ' . $currentUser[ $theUser->id_user ][ 'user_firstname' ],
+					'user_lastname' 	=> $currentUser[ $theUser->id_user ][ 'user_lastname' ],
+					'user_firstname' 	=> $currentUser[ $theUser->id_user ][ 'user_firstname' ],
 					'user_viewed_time'  => $theUser->duration_in_hour,
 					'user_id' 			=> $theUser->id_user,
 					'link_id' 			=> $theUser->id,
@@ -98,9 +101,9 @@
 					foreach ( $theUsers as $theUser ) {
 						echo '
 					<tr id="digi-user-affectation-' . $theUser[ 'link_id' ] . '" >
-						<td style="text-align: right;" >' . $theDate . '</td>
-						<td style="text-align: right;" >' . $theTime . '</td>
-						<td style="text-align: center;" >' . $theUser[ 'user_name' ] . '</td>
+						<td style="text-align: right;" >' . $theDate . ' - ' . $theTime . '</td>
+						<td style="text-align: center;" >' . $theUser[ 'user_lastname' ] . '</td>
+						<td style="text-align: center;" >' . $theUser[ 'user_firstname' ] . '</td>
 						<td style="text-align: center;" >' . $theUser[ 'user_viewed_time' ] . '</td>
 						<td style="width: 25px; text-align: middle;" class="digi-user-affectation-actions" id="digi-user-affectation-' . $theUser[ 'link_id' ] . '" ><img style="cursor: pointer;" src="' . PICTO_DELETE_VSMALL . '" alt="' . __( 'Supprimer', 'digirisk' ) . '" /></td>
 					</tr>';
@@ -199,37 +202,12 @@
 				"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
 			},
 		});
-		oTable = digirisk("#userList' . $tableElement . '").dataTable({
-	        "fnDrawCallback": function ( oSettings ) {
-	            if ( oSettings.aiDisplay.length == 0 ) {
-	                return;
-	            }
 
-	            var nTrs = digirisk("#userList' . $tableElement . ' tbody tr");
-	            var iColspan = nTrs[0].getElementsByTagName("td").length;
-	            var sLastGroup = "";
-	            for ( var i=0 ; i<nTrs.length ; i++ ) {
-	                var iDisplayIndex = oSettings._iDisplayStart + i;
-	                var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
-	                if ( sGroup != sLastGroup ) {
-	                    var nGroup = document.createElement( "tr" );
-	                    var nCell = document.createElement( "td" );
-	                    nCell.colSpan = iColspan;
-	                    nCell.className = "group";
-	                    nCell.innerHTML = sGroup;
-	                    nGroup.appendChild( nCell );
-	                    nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
-	                    sLastGroup = sGroup;
-	                }
-	            }
-	        },
+		oTable = digirisk("#userList' . $tableElement . '").dataTable({
 	        "aoColumnDefs": [
-	            { "bVisible": false, "aTargets": [ 0 ] },
 	            { "bSortable": false, "aTargets": [ 4 ] },
 	        ],
-	        "aaSortingFixed": [[ 0, "asc" ]],
 	        "aaSorting": [[ 1, "asc" ]],
-	        "sDom": \'lfr<"giveHeight"t>ip\',
 	        "oLanguage":{
 				"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
 			},

@@ -628,11 +628,14 @@ class eva_gestionDoc {
 			case TABLE_UNITE_TRAVAIL:
 			case TABLE_UNITE_TRAVAIL . '_RS':
 				$element = ELEMENT_IDENTIFIER_UT;
+				$status_to_get = "'valid', 'deleted', 'moderated' ";
 				if ($informations['document_type'] == 'listing_des_risques') {
 					$element = ELEMENT_IDENTIFIER_FSUT;
+					$status_to_get = "'valid'";
 				}
 				elseif ($informations['document_type'] == 'fiche_exposition_penibilite') {
 					$element = ELEMENT_IDENTIFIER_FEP;
+					$status_to_get = "'valid'";
 				}
 				$current_element = eva_UniteDeTravail::getWorkingUnit($idElement);
 				$element_identifier = ELEMENT_IDENTIFIER_UT;
@@ -645,21 +648,29 @@ class eva_gestionDoc {
 
 		/** Retrieve informations about users and groups associated to an element	*/
 		$affectedUserTmp = array();
-		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement, $idElement);
+		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement, $idElement, $status_to_get);
 		foreach ($affectedUserList as $user) {
-			$affectedUserTmp[] = evaUser::getUserInformation( $user->id_user );
+			$theUser = evaUser::getUserInformation( $user->id_user );
+			$theUser[ $user->id_user ][ 'status' ] = $user->status;
+			$theUser[ $user->id_user ][ 'dateAffectation' ] = mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $user->date_affectation_reelle, true );
+			$theUser[ $user->id_user ][ 'dateDesaffectation' ] = mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $user->date_desaffectation_reelle, true );
+			$affectedUserTmp[] = $theUser;
 		}
-		$affectedUser = serialize($affectedUserTmp);
-		$affectedUserGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_employee'));
+		$affectedUser = serialize( $affectedUserTmp );
+		$affectedUserGroups = serialize( digirisk_groups::getBindGroupsWithInformations( $idElement, $tableElement . '_employee' ) );
 
 		/** Retrieve informations about evaluators users and groups asociated to an element	*/
 		$affectedUserTmp = array();
-		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement . '_evaluation', $idElement);
+		$affectedUserList = evaUserLinkElement::getAffectedUser($tableElement . '_evaluation', $idElement, $status_to_get);
 		foreach ($affectedUserList as $user) {
-			$affectedUserTmp[] = evaUser::getUserInformation($user->id_user);
+			$theUser = evaUser::getUserInformation( $user->id_user );
+			$theUser[ $user->id_user ][ 'status' ] = $user->status;
+			$theUser[ $user->id_user ][ 'dateEntretien' ] = mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $user->date_affectation_reelle, true );
+			$theUser[ $user->id_user ][ 'dureeEntretien' ] = $user->duration_in_hour;
+			$affectedUserTmp[] = $theUser;
 		}
-		$affectedEvaluators = serialize($affectedUserTmp);
-		$affectedEvaluatorsGroups = serialize(digirisk_groups::getBindGroupsWithInformations($idElement, $tableElement . '_evaluator'));
+		$affectedEvaluators = serialize( $affectedUserTmp );
+		$affectedEvaluatorsGroups = serialize( digirisk_groups::getBindGroupsWithInformations( $idElement, $tableElement . '_evaluator' ) );
 
 		/** Get the main picture for current element	*/
 		$defaultPicture = evaPhoto::getMainPhoto($tableElement, $idElement);
@@ -1806,18 +1817,48 @@ class eva_gestionDoc {
 							{
 								foreach($element AS $elementInfos)
 								{
-									$affectedUsers->setVars('idUtilisateur', ELEMENT_IDENTIFIER_U . $elementInfos['user_id'], true, 'UTF-8');
-									$elementInfos['nomUtilisateur'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
-									$affectedUsers->setVars('nomUtilisateur', $elementInfos['user_lastname'], true, 'UTF-8');
-									$elementInfos['prenomUtilisateur'] = str_replace('<br />', "
-		", digirisk_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
-									$affectedUsers->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
+									if ( empty( $elementInfos['status'] ) || ( "valid" == $elementInfos['status'] ) ) {
+										$affectedUsers->setVars('idUtilisateur', ELEMENT_IDENTIFIER_U . $elementInfos['user_id'], true, 'UTF-8');
+										$elementInfos['nomUtilisateur'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
+										$affectedUsers->setVars('nomUtilisateur', $elementInfos['user_lastname'], true, 'UTF-8');
+										$elementInfos['prenomUtilisateur'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
+										$affectedUsers->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
 
-									$affectedUsers->merge();
+										$affectedUsers->setVars('dateAffectationUtilisateur', $elementInfos['dateAffectation'], true, 'UTF-8');
+
+										$affectedUsers->merge();
+									}
 								}
 							}
 							$odf->mergeSegment($affectedUsers);
+						}
+
+						$unAffectedUsers = $odf->setSegment('utilisateursDesaffectes');
+						if($unAffectedUsers)
+						{
+							foreach($listeUser AS $element)
+							{
+								foreach($element AS $elementInfos)
+								{
+									if ( empty( $elementInfos['status'] ) || ( "deleted" == $elementInfos['status'] ) || ( "moderated" == $elementInfos['status'] ) ) {
+										$unAffectedUsers->setVars('idUtilisateur', ELEMENT_IDENTIFIER_U . $elementInfos['user_id'], true, 'UTF-8');
+										$elementInfos['nomUtilisateur'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent($elementInfos['nomUtilisateur']));
+										$unAffectedUsers->setVars('nomUtilisateur', $elementInfos['user_lastname'], true, 'UTF-8');
+										$elementInfos['prenomUtilisateur'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
+										$unAffectedUsers->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
+
+										$unAffectedUsers->setVars('dateAffectationUtilisateur', $elementInfos['dateAffectation'], true, 'UTF-8');
+										$unAffectedUsers->setVars('dateDesaffectationUtilisateur', $elementInfos['dateDesaffectation'], true, 'UTF-8');
+
+										$unAffectedUsers->merge();
+									}
+								}
+							}
+							$odf->mergeSegment($unAffectedUsers);
 						}
 					}
 
@@ -1839,6 +1880,9 @@ class eva_gestionDoc {
 									$elementInfos['prenomUtilisateur'] = str_replace('<br />', "
 		", digirisk_tools::slugify_noaccent($elementInfos['prenomUtilisateur']));
 									$affectedEvaluators->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
+
+									$affectedEvaluators->setVars('dateEntretien', $elementInfos['dateEntretien'], true, 'UTF-8');
+									$affectedEvaluators->setVars('dureeEntretien', $elementInfos['dureeEntretien'], true, 'UTF-8');
 
 									$affectedEvaluators->merge();
 								}

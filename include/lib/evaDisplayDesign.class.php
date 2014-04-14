@@ -907,10 +907,10 @@ class EvaDisplayDesign {
 							<th >' . $nomRacine . '</th>';
 		if($titreInfo != null)
 		{
-			$tableArborescente .= '<th class="infoList">' . $titreInfo . '</th>';
-			$infoRacine = EvaDisplayDesign::getInfoArborescence($table, $racine->id);
-			$infoRacine = '
-							<td id ="info-' . $racine->id . '" class="' . $infoRacine['class'] . '"></td>';
+			//$tableArborescente .= '<th class="infoList">' . $titreInfo . '</th>';
+			$infoRacine = '';//EvaDisplayDesign::getInfoArborescence($table, $racine->id);
+// 			$infoRacine = '
+// 							<td id ="info-' . $racine->id . '" class="' . $infoRacine['class'] . '"></td>';
 		}
 		if($outputAction)
 		{
@@ -1635,12 +1635,12 @@ class EvaDisplayDesign {
 					$subActions = $tdSubDelete;
 				break;
 			}
-			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
+			$info = '';//EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id);
 			$monCorpsSubElements .= '
 				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddFeuilleClass . '">
 					<td id="leaf-' . $subElement->id . '-name" class="' . $nomFeuilleClass . '" >' . $subAffichage . '</td>';
 				if($titreInfo != null) {
-					$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
+					$monCorpsSubElements = $monCorpsSubElements; // . '<td class="' . $info['class'] . '">' . $info['value'] . '</td>';
 				}
 				$monCorpsSubElements .= $subActions . '
 				</tr>';
@@ -1951,8 +1951,8 @@ class EvaDisplayDesign {
 					$info = '';
 					if($titreInfo != null)
 					{
-						$info = EvaDisplayDesign::getInfoArborescence($table, $element->id);
-						$info = '<td id="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
+						$info = '';//EvaDisplayDesign::getInfoArborescence($table, $element->id);
+						//$info = '<td id="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
 					}
 					$monCorpsTable .= '
 						<tr id="node-' . $idTable . '-' . $element->id . '" class="child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddNoeudClass . ' parent">
@@ -2015,7 +2015,7 @@ class EvaDisplayDesign {
 		foreach($subElements as $subElement){
 			$ddFeuilleClass = '';
 			$nomFeuilleClass = 'nomFeuilleArbre';
-			$info = EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id, $moreInfo);
+			$info = '';//EvaDisplayDesign::getInfoArborescence($sousTable, $subElement->id, $moreInfo);
 			$monCorpsSubElements .= '
 				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddFeuilleClass . '">
 					<td id="leaf-' . $subElement->id . '-name" class="' . $nomFeuilleClass . '" >' . ELEMENT_IDENTIFIER_ST . $subElement->id . '&nbsp;-&nbsp;' . $subElement->nom . '</td>';
@@ -2083,7 +2083,7 @@ class EvaDisplayDesign {
 
 					$info = '';
 					if($titreInfo != null){
-						$info = EvaDisplayDesign::getInfoArborescence($table, $element->id, $moreInfo);
+						$info = '';//EvaDisplayDesign::getInfoArborescence($table, $element->id, $moreInfo);
 						$info = '<td id="info-' . $element->id . '" class="' . $info['class'] . '">' . $info['value'] . '</td>';
 					}
 

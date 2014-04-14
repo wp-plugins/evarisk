@@ -334,22 +334,22 @@ tr.odd td.sorting_1 {
 }
 
 tr.odd td.sorting_2 {
-	background-color: #DADCFF;
+	/*background-color: #DADCFF; */
 }
 
 tr.odd td.sorting_3 {
-	background-color: #E0E2FF;
+	/*background-color: #E0E2FF; */
 }
 
 tr.even td.sorting_1 {
 }
 
 tr.even td.sorting_2 {
-	background-color: #F2F3FF;
+	/*background-color: #F2F3FF; */
 }
 
 tr.even td.sorting_3 {
-	background-color: #F9F9FF;
+	/*background-color: #F9F9FF; */
 }
 
 
