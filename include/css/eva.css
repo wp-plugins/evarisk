@@ -121,6 +121,7 @@ tr.odd td.check-column, tr.even td.check-column { padding: 7px; }
 	text-align : right; 
 	padding-top : 1px; 
 	padding-right : 3px;
+	margin-left: 7px;
 }
 .digi_question_penibilite{	font-weight:bold; text-decoration:underline; }
 .choixDangerDefaut{	vertical-align:middle !important; }
@@ -925,8 +926,8 @@ label.digi_alert {
 /* -- End options -- */
 
 /* -- Recommandation -- */
-.recommandationIconColumn{	width:30px !important; text-align:right !important;	}
-.recommandationActionColumn{	width:40px !important;	}
+.recommandationIconColumn{	width:45px !important; text-align:right !important;	}
+.recommandationActionColumn{	width:52px !important;	}
 .recommandationEfficiencyColumn{	width:40px !important; text-align:center !important;		}
 #recommandationForm label, #recommandationForm input{	display:block;	}
 #recommandationForm fieldset { padding:0; border:0; margin-top:0px; }

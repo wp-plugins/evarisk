@@ -1242,7 +1242,7 @@ class eva_gestionDoc {
 		}
 
 		if ( !is_dir(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin) ) {
-			mkdir( EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin, 0755, true);
+			wp_mkdir_p( EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin );
 		}
 		$odf->saveToDisk(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin . $last_document->nom);
 	}

@@ -265,6 +265,8 @@ $inrs_danger_categories[] = array('version' => 73, 'nom' => __('Manutention manu
 $inrs_danger_categories[] = array('version' => 73, 'nom' => __('Postures penibles', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/posturePenible.png', 'position' => 20);
 $inrs_danger_categories[] = array('version' => 73, 'nom' => __('Vibrations', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/vibrations.png', 'position' => 21);
 
+$inrs_danger_categories[] = array('version' => 89, 'nom' => __('Amiante', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/amiante.png', 'position' => 22);
+
 $inrs_danger_categories[] = array('nom' => __('Autres', 'evarisk'), 'picture' => 'medias/images/Pictos/categorieDangers/autre_PictoCategorie.png', 'risks' => array(__('Manque de formation', 'evarisk'), __('Soci&eacute;t&eacute; ext&eacute;rieure', 'evarisk')), 'position' => 18);
 
 DEFINE('DIGI_INRS_DANGER_LIST', serialize($inrs_danger_categories));

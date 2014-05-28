@@ -107,11 +107,15 @@ class categorieDangers {
 		return $resultat;
 	}
 
-	function saveNewCategorie($nom) {
+	function saveNewCategorie($nom, $position = 0 ) {
 		global $wpdb;
 
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_CATEGORIE_DANGER);
-		$wpdb->insert(TABLE_CATEGORIE_DANGER, array('nom'=>$nom, 'Status'=>'Valid', 'limiteGauche'=>$lim, 'limiteDroite'=>($lim+1)));
+		$new_cat_default_args = array('nom' => $nom, 'Status' => 'Valid', 'limiteGauche' => $lim, 'limiteDroite' =>($lim+1) );
+		if ( !empty( $position ) ) {
+			$new_cat_default_args[ 'position' ] = $position;
+		}
+		$wpdb->insert(TABLE_CATEGORIE_DANGER, $new_cat_default_args);
 		$new_category = $wpdb->insert_id;
 		$wpdb->update(TABLE_CATEGORIE_DANGER, array('limiteDroite'=>($lim + 2)), array('nom'=>'Categorie Racine'));
 

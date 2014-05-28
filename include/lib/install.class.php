@@ -1250,6 +1250,50 @@ class digirisk_install	{
 				}
 			break;
 
+			case 89:
+				/**	Create new method for Amiante	*/
+				$wpdb->insert(TABLE_METHODE, array('nom' => __('Amiante', 'evarisk'), 'Status' => 'Valid'));
+				$methode_amiante_id = $wpdb->insert_id;
+
+				/**	Create the new danger categories	*/
+				$inrs_danger_categories = unserialize(DIGI_INRS_DANGER_LIST);
+				foreach ($inrs_danger_categories as $danger_cat) {
+					if (!empty($danger_cat['version']) && ($danger_cat['version'] == $version)) {
+						$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom'], $danger_cat['position']);
+
+						/*	If user ask to add danger in categories	*/
+						$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
+						if ( !empty($danger_cat['risks']) && is_array($danger_cat['risks']) ) {
+							foreach ( $danger_cat['risks'] as $risk_to_create ) {
+								$wpdb->insert(TABLE_DANGER, array('nom' => $risk_to_create, 'id_categorie' => $new_danger_cat_id, 'methode_eva_defaut' => $methode_amiante_id, ));
+							}
+						}
+
+						/*	Insert picture for danger categories	*/
+						if ( !empty($danger_cat['picture']) ) {
+							$new_cat_pict_id = EvaPhoto::saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
+							EvaPhoto::setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
+						}
+					}
+				}
+
+				/**	Add the new var for amiante method	*/
+				$question_amiante[] = array('question'=>__('Aucune exposition', 'evarisk'), 'seuil' => 0, );
+				$question_amiante[] = array('question'=>__('Exposition niveau 1: Inférieur à 100 Fibres/litres', 'evarisk'), 'seuil' => 48, );
+				$question_amiante[] = array('question'=>__('Exposition niveau 2 : Entre 100 et 6000 Fibres/litres', 'evarisk'), 'seuil' => 51, );
+				$question_amiante[] = array('question'=>__('Exposition niveau 3 : Entre 6000 et 25000Fibres/litres', 'evarisk'), 'seuil' => 80, );
+				$wpdb->insert(TABLE_VARIABLE, array('nom' => __('Amiante', 'evarisk'), 'Status' => 'Valid', 'min'=>0, 'max'=>3, 'annotation'=>__('Risque noir si exposition entre 6000 et 25000 Fibres/litres\nRisque rouge si exposition entre 100 et 6000 Fibres/litres\nRisque orange si exposition inférieur à 100 FIbrers/litres\nRisque blanc si aucune exposition', 'evarisk'), 'affichageVar'=>'checkbox', 'questionVar'=>serialize($question_amiante), 'questionTitre'=>__('Exposition à l\'amiante', 'evarisk')));
+				$amiante_var_id = $wpdb->insert_id;
+
+				/** Set link between var and method */
+				$link_between_method_and_var = $wpdb->insert( TABLE_AVOIR_VARIABLE, array( 'id_methode' => $methode_amiante_id, 'id_variable' => $amiante_var_id, 'ordre' => 1, 'date' => current_time('mysql',0), 'Status'=>'Valid', ) );
+
+				/*	Amiante	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>0, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+			break;
 		}
 	}
 

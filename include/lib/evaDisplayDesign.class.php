@@ -2019,7 +2019,7 @@ class EvaDisplayDesign {
 			$monCorpsSubElements .= '
 				<tr id="leaf-' . $subElement->id . '" class="cursormove child-of-node-' . $idTable . '-' . $elementPere->id . ' ' . $ddFeuilleClass . '">
 					<td id="leaf-' . $subElement->id . '-name" class="' . $nomFeuilleClass . '" >' . ELEMENT_IDENTIFIER_ST . $subElement->id . '&nbsp;-&nbsp;' . $subElement->nom . '</td>';
-			if($titreInfo != null){
+			if($titreInfo != null && !empty($info)){
 				$monCorpsSubElements = $monCorpsSubElements . '<td class="' . $info['class'] . '" >' . $info['value'] . '</td>';
 			}
 			$monCorpsSubElements .= '
