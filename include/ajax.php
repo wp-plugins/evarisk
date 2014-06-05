@@ -769,7 +769,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
                                 if(in_array("defaut", $tableau)) {
                                     $nomDangerDefaut = $danger;
 								}
-                                if ( in_array("penibilite", $tableau) ) {
+                                if ( !empty( $danger->methode_eva_defaut ) ) {
                                     $methode = $danger->methode_eva_defaut;
                                 }
 							}
@@ -779,9 +779,10 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
                        $script .= '
 <script type="text/javascript">
 jQuery(document).ready(function(){
+	jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val() );
+	digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val(), "idRisque": "0"});
 	jQuery("#dangerFormRisque").change(function(){
 		jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery(this).val()).val() );
-
 		digirisk("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
 		digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery(this).val()).val(), "idRisque": "0"});
 	});
@@ -4207,7 +4208,6 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					}
 					break;
 					case 'loadRecomandationLink':
-					{
 						$recommandation_link_id = (isset($_REQUEST['recommandation_link_id']) && ($_REQUEST['recommandation_link_id'] != '') && ($_REQUEST['recommandation_link_id'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandation_link_id']) : '0';
 						$recommandation_link_action = (isset($_REQUEST['recommandation_link_action']) && ($_REQUEST['recommandation_link_action'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['recommandation_link_action']) : '';
 						$outputMode = (isset($_REQUEST['outputMode']) && ($_REQUEST['outputMode'] != '')) ? digirisk_tools::IsValid_Variable($_REQUEST['outputMode']) : '';
@@ -4215,8 +4215,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$id_element = (isset($_REQUEST['id_element']) && ($_REQUEST['id_element'] != '') && ($_REQUEST['id_element'] != '0')) ? digirisk_tools::IsValid_Variable($_REQUEST['id_element']) : '0';
 						$selectRecommandation = '';
 
-						if(($recommandation_link_action == 'update') && ($recommandation_link_id > 0))
-						{
+						if ( ( $recommandation_link_action == 'update' ) && ( $recommandation_link_id > 0 ) ) {
 							$selectedRecommandation = evaRecommandation::getRecommandationListForElement($table_element, $id_element, $recommandation_link_id);
 							$selectRecommandation['id_categorie_preconisation'] = $selectedRecommandation[0]->recommandation_category_id;
 							$selectRecommandation['id_preconisation'] = $selectedRecommandation[0]->id_preconisation;
@@ -4225,8 +4224,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$selectRecommandation['preconisation_type'] = $selectedRecommandation[0]->preconisation_type;
 						}
 
-						echo evaRecommandation::recommandationAssociation($outputMode, $selectRecommandation, array('form_container' => 'single_preco') );
-					}
+						echo evaRecommandation::recommandationAssociation( $outputMode, $selectRecommandation, array( 'tableElement' => $table_element, 'idElement' => $id_element, 'form_container' => TABLE_RISQUE == $table_element ? TABLE_RISQUE . '_' . $id_element . '_reco_container' : 'single_preco') );
 					break;
 				}
 				break;

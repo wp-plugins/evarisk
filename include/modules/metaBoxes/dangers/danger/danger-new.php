@@ -81,7 +81,7 @@ function getDangerGeneralInformationPostBoxBody($arguments)
 	{
 		$check_danger_defaut = (!empty($tabParams) && in_array("defaut", $tabParams)) ? ' checked="checked"' : '';
 		$check_danger_penible = '';
-		 $digi_penibilite_method_selector_class = ' class="digirisk_hide"';
+		// $digi_penibilite_method_selector_class = ' class="digirisk_hide"';
 			if (!empty($tabParams) && in_array("penibilite", $tabParams)) {
 				$check_danger_penible = ' checked="checked"';
 				$digi_penibilite_method_selector_class = '';

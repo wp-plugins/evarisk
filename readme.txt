@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 3.9.1
-Stable tag: 5.1.8.3
+Stable tag: 5.1.8.4
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,19 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.8.4 = 
+
+Am&eacute;liorations
+
+* ST468 - Possibilit&eacute; d'&eacute;diter/supprimer les pr&eacute;conisations li&eacute;es aux risques (http://www.evarisk.com/forums/topic/suppression-de-preconisations)
+* ST471 - S&eacute;lection automatique de la m&eacute;thode "Amiante" lors du choix du danger "Amiante" (Modification de l'image du danger)
+
+Corrections
+
+* ST459 - Suppression d'une pr&eacute;conisation (La suppression est lanc&eacute;e mais ne semble pas fonctionner)
+* ST472 - Correction du mod&egrave;le par d&eacute;faut du document unique
+
 
 = Version 5.1.8.3 = 
 

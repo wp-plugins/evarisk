@@ -570,7 +570,7 @@ function digi_ajax_save_correctiv_action_sheet() {
 		if ( !empty($file_to_zip) ) {
 			$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'planDActions/' . $tableElement . '/' . $idElement. '/';
 			if ( !is_dir($pathToZip) ) {
-				mkdir( $pathToZip, 0755, true);
+				wp_mkdir_p( $pathToZip );
 			}
 
 			$zipFileName = date('Ymd') . '_' . ELEMENT_IDENTIFIER_T . $idElement . '_fichesPlanDAction.zip';
@@ -786,7 +786,7 @@ function digi_ajax_save_single_recommandation() {
 		}
 	}
 
-	$response[] = '#message' . TABLE_PRECONISATION . '-' . $table_element;
+	$response[] = (isset($_POST['message_container']) && ($_POST['message_container'] != '')) ? $_POST['message_container'] : '#message' . TABLE_PRECONISATION . '-' . $table_element;
 	if ( $has_error ) {
 		$response[] = false;
 		$response[] ='<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" class="messageIcone" alt="error" />' . __('Une erreur est survenue lors de l\'enregistrement de la(des) pr&eacute;conisation(s). Merci de r&eacute;essayer.', 'evarisk');
