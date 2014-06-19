@@ -1,6 +1,40 @@
 var evarisk = jQuery.noConflict();
 var digirisk = jQuery.noConflict();
 
+jQuery( document ).ready( function(){
+	/**	Add listener on export link	*/
+	jQuery( document ).off( "click", ".wpes-final-survey-evaluation-view-export-button" );
+	jQuery( document ).on( "click", ".wpes-survey-current-state .wpes-final-survey-evaluation-view-export-button", function( e ){
+		e.preventDefault();
+		jQuery( "#wpes-final-survey-evaluation-export-message-" + jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-final-survey-id]" ).val() ).html( "" );
+		jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "img.wpes-loading-picture" ).show();
+
+		var export_type = jQuery( this ).closest( "li" ).attr( "class" ).replace( "wpes-final-survey-evaluation-view-export-to-", "" );
+		var data = {
+			action: "digi-ajax-final-survey-evaluation-result-export",
+			survey_id: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-survey-id]" ).val(),
+			final_survey_id: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-final-survey-id]" ).val(),
+			evaluation_state: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-evaluation-state]" ).val(),
+			evaluation_id: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-evaluation-id]" ).val(),
+			element_id: jQuery( "#post_ID" ).val(),
+			element_type: jQuery( "#post_type" ).val(),
+			export_type: export_type,
+		};
+		jQuery.post( ajaxurl, data, function( response ){
+			jQuery( "img.wpes-loading-picture-" + response[ "final_survey_id" ] ).hide();
+			if ( (true == response[ "status" ]) && ( "" != response[ "output" ] ) )  {
+				jQuery( ".wpes-existing-export-container-" + response[ "final_survey_id" ] ).html( response[ "output" ] );
+			}
+			jQuery( "#wpes-final-survey-evaluation-export-message-" + response[ "final_survey_id" ] ).html( response[ "message" ] );
+			setTimeout(function(){
+				jQuery( "#wpes-final-survey-evaluation-export-message-" + response[ "final_survey_id" ] ).html( "" );
+			}, "2500");
+		}, "json");
+
+	} );
+} );
+
+
 function digi_html_accent_for_js(text){
 	text = text.replace(/&Agrave;/g, "\300");
 	text = text.replace(/&Aacute;/g, "\301");

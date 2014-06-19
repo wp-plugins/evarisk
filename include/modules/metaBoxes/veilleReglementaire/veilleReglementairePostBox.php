@@ -32,9 +32,13 @@
 
 		$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND idFormulaire = %d AND state = %s ORDER BY date_started LIMIT 1" , array( $current_element[ 'tableElement' ], $current_element[ 'idElement' ], $args['args']['parent_element_id'], 'started') );
 		$current_element_evaluation[ 'in_progress' ] = $wpdb->get_row( $query, ARRAY_A );
+
 		$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND idFormulaire = %d AND state = %s ORDER BY date_started DESC" , array( $current_element[ 'tableElement' ], $current_element[ 'idElement' ], $args['args']['parent_element_id'], 'closed') );
 		$current_element_evaluation[ 'closed' ] = $wpdb->get_results( $query, ARRAY_A );
+
 		$current_element_evaluation[ 'ajax_action' ] = "digi-ajax-final-survey-evaluation-result-view&amp;tableElement=" . $current_element[ 'tableElement' ] . "&amp;idElement=" . $current_element[ 'idElement' ];
+		$current_element_evaluation[ 'element_type' ] = $current_element[ 'tableElement' ];
+
 		$final_survey = $wpes_survey->final_survey_display( $current_element[ 'idElement' ], $args['args']['parent_element_id'], $current_element_evaluation );
 
 		echo '<div id="digi-survey-content" >' . $final_survey['content'] . '</div>

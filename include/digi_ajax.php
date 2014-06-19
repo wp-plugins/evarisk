@@ -1010,6 +1010,182 @@ add_action( 'wp_ajax_digi-mass-user-update', 'digi_mass_user_update' );
 /**
  * Create new evaluation form a survey
  */
+add_action( 'wp_ajax_digi-ajax-final-survey-evaluation-result-export', 'digi_ajax_evaluation_export' );
+/**
+ * AJAX - Save a file with an export of the survey audit by file format
+ */
+function digi_ajax_evaluation_export() {
+	global $wpdb, $wpes_survey;
+	$response = array(
+		'status' => true,
+	);
+
+	$export_type = !empty( $_POST[ 'export_type' ] ) ? $_POST[ 'export_type' ] : null;
+	$element_type = !empty( $_POST[ 'element_type' ] ) ? $_POST[ 'element_type' ] : null;
+	$element_id = !empty( $_POST[ 'element_id' ] ) ? $_POST[ 'element_id' ] : null;
+	$evaluation_state = !empty( $_POST[ 'evaluation_state' ] ) && ( "in_progress" == $_POST[ 'evaluation_state' ] ) ? 'started' : 'closed';
+	$survey_id = !empty( $_POST[ 'survey_id' ] ) ? $_POST[ 'survey_id' ] : null;
+	$evaluation_id = isset( $_POST[ 'evaluation_id' ] ) && ( 0 <= $_POST[ 'evaluation_id' ] ) ? $_POST[ 'evaluation_id' ] : null;
+	$final_survey_id = !empty( $_POST[ 'final_survey_id' ] ) ? $_POST[ 'final_survey_id' ] : null;
+
+	$survey_print_history = array();
+
+	if ( !empty( $element_id ) && !empty( $survey_id ) && !empty( $final_survey_id ) ) {
+		/**	Get survey informations	*/
+		$survey = get_post( $survey_id );
+
+		/** Get the element associated to the survey */
+		switch ( $element_type ) {
+			case TABLE_GROUPEMENT:
+				$element = EvaGroupement::getGroupement( $element_id );
+				$element_name = $element->nom;
+				$element_modified[ 'post_title' ] = ELEMENT_IDENTIFIER_GP . $element_id . ' - ' . $element->nom;
+				break;
+			case TABLE_UNITE_TRAVAIL;
+				$element = eva_UniteDeTravail::getWorkingUnit( $element_id );
+				$element_name = $element->nom;
+				$element_modified[ 'post_title' ] = ELEMENT_IDENTIFIER_UT . $element_id . ' - ' . $element->nom;
+				break;
+			default:
+				$element_name = '';
+				$element_modified = null;
+				break;
+		}
+
+		/**	Get the current element survey print history for the current survey	*/
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM " . TABLE_GED_DOCUMENTS . " AS D
+				INNER JOIN " . TABLE_GED_DOCUMENTS_META . " AS DMETA ON ( DMETA.document_id = D.id )
+			WHERE table_element = %s
+				AND D.id_element = %d
+				AND D.categorie = %s
+				AND D.status = %s
+				AND DMETA.meta_key = %s"
+			, $element_type, $element_id, 'survey-export', 'valid', '_wpes_survey_print_history_' . $survey_id
+		);
+		$get_survey_print_history = $wpdb->get_results( $query );
+		if ( !empty( $get_survey_print_history ) ) {
+			foreach ( $get_survey_print_history as $export ) {
+				if ( !empty( $export ) && !empty( $export->meta_value ) ) {
+					$document_meta = maybe_unserialize( $export->meta_value );
+					if ( !empty( $document_meta ) && is_array( $document_meta ) ) {
+						foreach ( $document_meta as $date => $survey_export_infos ) {
+							foreach ( $survey_export_infos as $the_final_survey_id => $final_survey_export_infos ) {
+								if ( $the_final_survey_id == $final_survey_id ) {
+									$survey_print_history[ $date ][ $the_final_survey_id ][] = $final_survey_export_infos;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+// 		echo '<pre>';print_r($survey_print_history);echo '</pre>';
+
+		/**	Define the filename	*/
+		$version_number = !empty( $survey_print_history ) && !empty( $survey_print_history[ mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ) ] ) && !empty( $survey_print_history[ mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ) ][ $final_survey_id ] ) ? ( count( $survey_print_history[ mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ) ][ $final_survey_id ] ) + 1 ) : 1;
+
+		/**	Define the filename	*/
+		$filename = sprintf(
+			$wpes_survey->export_file_name,
+			mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ),
+			$element_id,
+			sanitize_title( $element_name ),
+			$survey_id,
+			$final_survey_id,
+			$version_number
+		);
+
+		switch ( $export_type ) {
+			case 'odt':
+				$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND survey_id = %d AND state = %s ORDER BY date_started DESC LIMIT 1" , array( $element_type, $element_id, $final_survey_id, $evaluation_state) );
+				$element_evaluation[] = $wpdb->get_row( $query, ARRAY_A );
+				$response = $wpes_survey->save_odt_file( $element_id, $survey_id, $final_survey_id, $element_evaluation, $filename . '.odt', $element_modified);
+				break;
+			case 'pdf':
+			default:
+				$response = $wpes_survey->save_pdf_file( $element_id, $survey_id, $final_survey_id, $evaluation_id, $filename . '.pdf', $element_modified );
+				break;
+		}
+
+		$response[ 'output' ] = '';
+		/**	Add file print into history	*/
+		if ( !empty( $response ) && !empty( $response[ 'status' ] ) ) {
+			$survey_print_history[ mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ) ][ $final_survey_id ][] = $final_survey_export_infos;
+
+			$doc_params = array('status' => 'valid', 'dateCreation' => current_time( 'mysql', 0 ), 'idCreateur' => get_current_user_id(), 'id_element' => $element_id, 'table_element' => $element_type, 'categorie' => 'survey-export', 'nom' => $filename . '.' . $export_type, 'chemin' => $wpes_survey->export_directory);
+			$new_sheet = $wpdb->insert( TABLE_GED_DOCUMENTS, $doc_params );
+			$the_document_id = $wpdb->insert_id;
+
+			$new_survey_print_history[ mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ) ][ $final_survey_id ] = array( 'file' => $filename . '.' . $export_type, 'user' => get_current_user_id(), 'date' => current_time( 'mysql', 0 ) );
+			$survey_print_history[ mysql2date( 'Ymd', current_time( 'mysql', 0 ), true ) ][ $final_survey_id ][] = array( 'file' => $filename . '.' . $export_type, 'user' => get_current_user_id(), 'date' => current_time( 'mysql', 0 ) );
+
+			$doc_meta = array( 'id' => null, 'status' => 'valid', 'document_id' => $the_document_id, 'meta_key' => '_wpes_survey_print_history_' . $survey_id, 'meta_value' => serialize( $new_survey_print_history ) );
+			$wpdb->insert( TABLE_GED_DOCUMENTS_META, $doc_meta );
+		}
+
+// 		echo '<pre>';print_r($survey_print_history);echo '</pre>';
+		$current_element_survey_directory = $wpes_survey->export_directory . $element_id . '/' . $survey_id;
+		if ( !empty( $survey_print_history ) && !empty( $survey_print_history ) ) {
+			krsort( $survey_print_history );
+			foreach ( $survey_print_history as $date => $printed_file ) {
+				if ( !empty( $printed_file ) && !empty( $printed_file[ $final_survey_id ] ) && is_array( $printed_file[ $final_survey_id ] ) ) {
+					krsort( $printed_file[ $final_survey_id ] );
+					foreach ( $printed_file[ $final_survey_id ] as $file_infos ) {
+						if ( !empty( $file_infos ) && !empty( $file_infos[ 'file' ] ) && is_file( $current_element_survey_directory . '/' . $file_infos[ 'file' ] ) ) {
+							$response[ 'output' ] .= "<a target='wpes-expoort' href='" . $wpes_survey->export_directory_url . $element_id . '/' . $survey_id . "/" . $file_infos[ 'file' ] . "' >" . $file_infos[ 'file' ] . "</a><br/>";
+						}
+					}
+				}
+			}
+		}
+	}
+	else {
+		$response[ 'status' ] = false;
+		$response[ 'message' ] = sprintf( __( 'One of those information is missing: Element id.%s / Survey id.%s / Final survey id.%s', 'wp_easy_survey' ), $element_id, $survey_id, $final_survey_id );
+	}
+
+	$response[ 'final_survey_id' ] = $final_survey_id;
+
+	wp_die( json_encode( $response ) );
+}
+
+add_filter( 'wpes-final-survey-export-file-list-filter', 'overwrite_easy_survey_file_list_getter', 10, 5 );
+function overwrite_easy_survey_file_list_getter( $current_value, $element_id, $survey_id, $final_survey_id, $element_type ) {
+	global $wpdb;
+
+	/**	Get the current element survey print history for the current survey	*/
+	$query = $wpdb->prepare( "
+			SELECT *
+			FROM " . TABLE_GED_DOCUMENTS . " AS D
+				INNER JOIN " . TABLE_GED_DOCUMENTS_META . " AS DMETA ON ( DMETA.document_id = D.id )
+			WHERE table_element = %s
+				AND D.id_element = %d
+				AND D.categorie = %s
+				AND D.status = %s
+				AND DMETA.meta_key = %s"
+			, $element_type, $element_id, 'survey-export', 'valid', '_wpes_survey_print_history_' . $survey_id
+	);
+	$get_survey_print_history = $wpdb->get_results( $query );
+	if ( !empty( $get_survey_print_history ) ) {
+		foreach ( $get_survey_print_history as $export ) {
+			if ( !empty( $export ) && !empty( $export->meta_value ) ) {
+				$document_meta = maybe_unserialize( $export->meta_value );
+				if ( !empty( $document_meta ) && is_array( $document_meta ) ) {
+					foreach ( $document_meta as $date => $survey_export_infos ) {
+						foreach ( $survey_export_infos as $the_final_survey_id => $final_survey_export_infos ) {
+							$current_value[ $date ][ $the_final_survey_id ][] = $final_survey_export_infos;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return $current_value;
+}
+
 add_action( 'wp_ajax_digi-ajax-final-survey-evaluation-result-view', 'digi_ajax_evaluation_answers_view' );
 function digi_ajax_evaluation_answers_view() {
 	check_ajax_referer( 'wpes-ajax-view-survey-results', 'wpes-ajax-survey-final-result-view-nonce' );
@@ -1019,21 +1195,54 @@ function digi_ajax_evaluation_answers_view() {
 
 	$query = $wpdb->prepare( "SELECT * FROM " . TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idElement = %d AND survey_id = %d AND state = %s ORDER BY date_started DESC LIMIT 1" , array( $_REQUEST[ 'tableElement' ], $_REQUEST[ 'idElement' ], $_REQUEST['final_survey_id'], 'closed') );
 	$element_evaluation[ 'closed' ] = $wpdb->get_row( $query, ARRAY_A );
-	if ( !empty($element_evaluation) && !empty($element_evaluation[ 'closed' ]) ) {
+	if ( !empty( $element_evaluation ) && !empty( $element_evaluation[ 'closed' ] ) ) {
 		$preview = false;
 		$survey_id = $element_evaluation[ 'closed' ]['survey_id'];
+		$element_evaluation[ 'closed' ]['element_type'] = $_REQUEST[ 'tableElement' ];
 
 		$associated_item = $wpes_survey->issues->get_issues( $survey_id, '', $preview );
 		if ( $associated_item->have_posts() ) {
 			/**	Add each issue to display	*/
 			$sub_output = '';
 			foreach ( $associated_item->posts as $item ) {
-				$sub_output .= $wpes_survey->display_final_issue( $item, $_REQUEST[ 'post_id' ], $survey_id );
+				$sub_output .= $wpes_survey->display_final_issue( $item, $_REQUEST[ 'post_id' ], $survey_id, 'final_display' );
 			}
 		}
 
 		if ( !empty($sub_output) ) {
-			$output = $wpes_survey->display_final_survey_evaluation_result( $element_evaluation[ 'closed' ], $sub_output );
+			$output = '
+<script type="text/javascript" >
+	/**	Add listener on export link	*/
+	jQuery( ".wpes-final-survey-evaluation-view-export-button" ).unbind( "click" );
+	jQuery( "#TB_ajaxContent .wpes-final-survey-evaluation-view-export-button" ).click( function( e ){
+		e.preventDefault();
+		jQuery( "#wpes-final-survey-evaluation-export-message-" + jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-final-survey-id]" ).val() ).html( "" );
+		jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "img.wpes-loading-picture" ).show();
+
+		var export_type = jQuery( this ).closest( "li" ).attr( "class" ).replace( "wpes-final-survey-evaluation-view-export-to-", "" );
+		var data = {
+			action: "digi-ajax-final-survey-evaluation-result-export",
+			survey_id: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-survey-id]" ).val(),
+			final_survey_id: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-final-survey-id]" ).val(),
+			evaluation_state: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-evaluation-state]" ).val(),
+			evaluation_id: jQuery(this).closest( "div.wpes-audit-result-export-container" ).children( "input[name=wpes-final-survey-evaluation-view-evaluation-id]" ).val(),
+			element_id: "' . $_REQUEST[ 'idElement' ] . '",
+			element_type: "' . $_REQUEST[ 'tableElement' ] . '",
+			export_type: export_type,
+		};
+		jQuery.post( ajaxurl, data, function( response ){
+			jQuery( "img.wpes-loading-picture-" + response[ "final_survey_id" ] ).hide();
+			if ( (true == response[ "status" ]) && ( "" != response[ "output" ] ) )  {
+				jQuery( ".wpes-existing-export-container-" + response[ "final_survey_id" ] ).html( response[ "output" ] );
+			}
+			jQuery( "#wpes-final-survey-evaluation-export-message-" + response[ "final_survey_id" ] ).html( response[ "message" ] );
+			setTimeout(function(){
+				jQuery( "#wpes-final-survey-evaluation-export-message-" + response[ "final_survey_id" ] ).html( "" );
+			}, "2500");
+		}, "json");
+
+	} );
+</script>' . $wpes_survey->display_final_survey_evaluation_result( $element_evaluation[ 'closed' ], $sub_output );
 		}
 		else {
 			$has_content = false;
@@ -1044,6 +1253,7 @@ function digi_ajax_evaluation_answers_view() {
 	echo $output;
 	die();
 }
+
 
 add_action( 'wp_ajax_digi-close-evaluation', 'digi_close_evaluation' );
 function digi_close_evaluation() {

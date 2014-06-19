@@ -1266,3 +1266,7 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
     width: 30px;
     cursor: move;
 } */
+
+.digirisk_page_digirisk_risk_evaluation .wpes-existing-export-container, .digirisk_page_digirisk_risk_evaluation .wpes-audit-result-export-container {
+    width: 100% !important;
+}
