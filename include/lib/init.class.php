@@ -73,6 +73,21 @@ class digirisk_init
 			add_action('wp_head', array('digirisk_init', 'frontend_js_output'));
 			add_action('init', array('digirisk_init', 'frontend_js'));
 		}
+
+		add_filter( 'manage_users_columns', array( 'digirisk_init', 'column_register_wpse_101322' ) );
+		add_filter( 'manage_users_custom_column', array( 'digirisk_init', 'column_display_wpse_101322' ) , 10, 3 );
+	}
+
+	public static function column_register_wpse_101322( $columns ) {
+		$columns['uid'] = 'ID';
+		return $columns;
+	}
+
+	public static function column_display_wpse_101322(  $empty, $column_name, $user_id  ) {
+		if ( 'uid' != $column_name )
+			return $empty;
+
+		return "<strong>" . ELEMENT_IDENTIFIER_U . $user_id . "</strong>";
 	}
 
 	/**

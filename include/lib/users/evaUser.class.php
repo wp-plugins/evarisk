@@ -880,17 +880,58 @@ $user_additionnal_field .= '
 	function display_user_list( $user_list_2_display ) {
 		$done_users = array();
 		$output =  '
-<ul class="digi_stats_user_list" >';
+<table style="width:100%;" id="user_list_table"  >
+	<thead>
+		<tr>
+			<th style="text-align:left; " >' . __( 'Id.', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Pr&eacute;nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Entr&eacute;e', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Sortie', 'evarisk' ) . '</th>
+			<th style="text-align:right; " >-</th>
+		</tr>
+	</thead>
+	<tbody>';
 		foreach ( $user_list_2_display as $user_id ) {
 			if ( !in_array( $user_id, $done_users ) ) {
 				$user_info = evaUser::getUserInformation( $user_id );
+				$user_hiring_date = get_user_meta( $user_id, 'digi_hiring_date', true);
+				$user_unhiring_date = get_user_meta( $user_id, 'digi_unhiring_date', true);
 				$output .= '
-	<li><a href="' . admin_url('users.php?page=digirisk_users_profil&amp;user_to_edit=' . $user_id) . '" target="digi_user_profil" >' . ELEMENT_IDENTIFIER_U . $user_id . ' - ' . $user_info[$user_id]['user_lastname'] . ' ' . $user_info[$user_id]['user_firstname'] . '</a></li>';
+	<tr>
+		<td>' . ELEMENT_IDENTIFIER_U . $user_id . '</td>
+		<td>' . $user_info[$user_id]['user_lastname'] . '</td>
+		<td>' . $user_info[$user_id]['user_firstname'] . '</td>
+		<td>' . ( !empty( $user_hiring_date ) ? mysql2date( 'd/m/Y', $user_hiring_date, true ) : '-' ) . '</td>
+		<td>' . ( !empty( $user_unhiring_date ) ? mysql2date( 'd/m/Y', $user_unhiring_date, true ) : '-' ) . '</td>
+		<td><a href="' . admin_url('users.php?page=digirisk_users_profil&amp;user_to_edit=' . $user_id) . '" target="digi_user_profil" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'view_vs.png" alt="' . __( 'Voir la fiche de l\'utiilsateur', 'evarisk' ) . '" title="' . __( 'Voir la fiche de l\'utiilsateur', 'evarisk' ) . '" /></a></td>
+	</tr>';
 				$done_users[] = $user_id;
 			}
 		}
 		$output .= '
-</ul>';
+	</tbody>
+	<tfoot>
+		<tr>
+			<th style="text-align:left; " >' . __( 'Id.', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Pr&eacute;nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Entr&eacute;e', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Sortie', 'evarisk' ) . '</th>
+			<th style="text-align:right; " >-</th>
+		</tr>
+	</tfoot>
+</table>
+<script type="text/javascript" >
+	jQuery( document ).ready( function(){
+		var table = jQuery( "#user_list_table" ).dataTable( {
+			"bAutoWidth": false,
+			"bInfo": false,
+			"bPaginate": false,
+			"bFilter": false,
+	    });
+	});
+</script>';
 
 		return $output;
 	}
@@ -1972,6 +2013,11 @@ $user_additionnal_field .= '
 		if($user_to_edit == $current_user->ID){
 			$page_title = sprintf(__('Votre profil utilisateur : %s', 'evarisk'), ELEMENT_IDENTIFIER_U . $user_to_edit . '&nbsp;-&nbsp;' . $user_infos['user_lastname'] . '&nbsp;' . $user_infos['user_firstname']);
 		}
+
+		$user_hiring_date = get_user_meta( $user_to_edit, 'digi_hiring_date', true);
+		$user_unhiring_date = get_user_meta( $user_to_edit, 'digi_unhiring_date', true);
+		$page_title .= ( !empty( $user_hiring_date ) ? '<br/>' . __( 'Entr&eacute;e', 'evarisk' ) . ' : ' .  mysql2date( 'd m Y', $user_hiring_date, true ) : '' );
+		$page_title .= ( !empty( $user_unhiring_date ) ? '<br/>' .__( 'Sortie', 'evarisk' ) . ' : ' .  mysql2date( 'd m Y', $user_unhiring_date, true ) : '' );
 
 		$user_profil_page = digirisk_display::start_page($page_title, '', '', '', '', false, '', false, true, 'id="icon-users"') . $user_profil_content .	digirisk_display::end_page();
 

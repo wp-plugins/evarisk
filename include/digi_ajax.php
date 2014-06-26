@@ -911,25 +911,25 @@ function digi_mass_change_user_informations() {
 			$mass_user_form_content .= '
 	<tr>
 		<td style="border-bottom:1px solid #CCC; text-align: center;" >' . ELEMENT_IDENTIFIER_U . $utilisateur['user_id'] . '</td>
-		<td style="border-bottom:1px solid #CCC;" >' . $utilisateur['user_lastname'] . '</td>
-		<td style="border-bottom:1px solid #CCC;" >' . $utilisateur['user_firstname'] . '</td>
+		<td style="border-bottom:1px solid #CCC;" ><input type="text" id="digi_username_input_' . $utilisateur['user_id'] . '" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][last_name]" value="' . $utilisateur['user_lastname'] . '" /><img class="alignright pointer digi-inverte-username-and-firstname" src="' . EVA_IMG_PICTOS_PLUGIN_URL . 'inserer.png" alt="' . __( 'Inverser les noms et pr&eacute;noms', 'evarisk' ) . '" title="' . __( 'Inverser les noms et pr&eacute;noms', 'evarisk' ) . '" /></td>
+		<td style="border-bottom:1px solid #CCC;" ><input type="text" id="digi_username_input_' . $utilisateur['user_id'] . '" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][first_name]" value="' . $utilisateur['user_firstname'] . '" /></td>
 		<td style="border-bottom:1px solid #CCC; text-align: center;" ><input type="checkbox" value="' . $utilisateur['user_id'] . '" name="digi_user_force_update[]" /></td>
 		<td style="border-bottom:1px solid #CCC; width: 165px;" >
 			<input type="text" style="text-align: center;" id="user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_hiring_date]" value="' . $user_meta_hiring_date . '" />
 			<script type="text/javascript" >
 				jQuery(document).ready(function(){
-					jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").datepicker({
+				/* 	jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").datepicker({
 						dateFormat: "yy-mm-dd",
 						changeMonth: true,
 						changeYear: true,
 						navigationAsDateFormat: true,
-					});
+					});, */
 				});
 				jQuery("#user_date_input_digi_hiring_date_' . $utilisateur['user_id'] . '").val("' . $user_meta_hiring_date . '");
 			</script>
 		</td>
 		<td style="border-bottom:1px solid #CCC; width: 165px;" >
-			<input type="text" style="text-align: center;" class="user_date_input" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_unhiring_date]" value="' . $user_meta_unhiring_date . '" />
+			<input type="text" style="text-align: center;" name="digi_user_single_meta[' . $utilisateur['user_id'] . '][digi_unhiring_date]" value="' . $user_meta_unhiring_date . '" />
 		</td>
 	</tr>';
 		}
@@ -957,6 +957,14 @@ function digi_mass_change_user_informations() {
 				}, "1500");
 			},
 		});
+
+		jQuery( ".digi-inverte-username-and-firstname" ).click( function(){
+			var current_nom = jQuery( this ).closest( "tr" ).children( "td:nth-child( 2 )" ).children( "input" ).val();
+			var current_prenom = jQuery( this ).closest( "tr" ).children( "td:nth-child( 3 )" ).children( "input" ).val();
+			jQuery( this ).closest( "tr" ).children( "td:nth-child( 2 )" ).children( "input" ).val( current_prenom );
+			jQuery( this ).closest( "tr" ).children( "td:nth-child( 3 )" ).children( "input" ).val( current_nom );
+		});
+
 		jQuery(".user_date_input").datepicker({
 
 			changeMonth: true,
@@ -978,7 +986,7 @@ function digi_mass_user_update() {
 		foreach ( $_POST['digi_user_single_meta'] as $user_id => $user_informations_in_single_meta ) {
 			foreach ( $user_informations_in_single_meta as $meta_key => $meta_value ) {
 				if ( !empty($meta_value) || (!empty($_POST['digi_user_force_update']) && in_array( $user_id, $_POST['digi_user_force_update'] )) ) {
-					if ( ( ( 'digi_hiring_date' == $meta_key ) || ( 'digi_unhiring_date' == $meta_key ) ) && ( $meta_value != date( 'Y-m-d', strtotime( $meta_value ) ) ) ) {
+					if ( ( ( 'digi_hiring_date' == $meta_key ) || ( 'digi_unhiring_date' == $meta_key ) ) && ( !empty( $meta_value ) ) && ( $meta_value != date( 'Y-m-d', strtotime( $meta_value ) ) ) ) {
 						$date_components = explode( '/', $meta_value );
 						$meta_value = date( 'Y-m-d', strtotime( $date_components[ 2 ] . '-' . $date_components[ 1 ] . '-' . $date_components[ 0 ] ) );
 					}

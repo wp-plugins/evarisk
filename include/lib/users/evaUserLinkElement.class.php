@@ -44,11 +44,12 @@ class evaUserLinkElement {
 				if(isset($listeUtilisateursLies[$utilisateur['user_id']])){
 					$moreLineClass = 'userIsLinked';
 				}
+				$user_hiring_date = get_user_meta( $utilisateur['user_id'], 'digi_hiring_date', true );
 				$valeurs[] = array('value'=>'<span id="actionButton' . $tableElement . 'UserLink' . $utilisateur['user_id'] . '" class="buttonActionUserLinkList ' . $moreLineClass . '  ui-icon pointer" >&nbsp;</span>');
 				$valeurs[] = array('value'=>ELEMENT_IDENTIFIER_U . $utilisateur['user_id']);
 				$valeurs[] = array('value'=>$utilisateur['user_lastname']);
 				$valeurs[] = array('value'=>$utilisateur['user_firstname']);
-				$valeurs[] = array('value'=>mysql2date('d M Y', $utilisateur['user_registered'], true));
+				$valeurs[] = array('value' => !empty( $user_hiring_date ) ? mysql2date('d M Y', $user_hiring_date, true) . '<input type="hidden" value="' . $user_hiring_date . ' 00:00:00" name="digi-user-hiring-date" id="digi-user-hiring-date-' . $utilisateur['user_id'] . '" />' : mysql2date('d M Y', $utilisateur['user_registered'], true) );
 				$lignesDeValeurs[] = $valeurs;
 				$idLignes[] = $idLigne;
 			}
@@ -78,7 +79,8 @@ class evaUserLinkElement {
 			default:
 				$more_script_affect = '
 				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
-				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });';
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
+				jQuery("#digi_dialog_affect_user_' . $tableElement . '").children( "input" ).val( jQuery( "#digi-user-hiring-date-" + currentId ).val() );';
 
 				$more_script_unaffect = '
  				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("open");
@@ -94,7 +96,7 @@ class evaUserLinkElement {
 			"bInfo": false,
 			"bPaginate": false,
 			"bFilter": false,
-			"aaSorting": [[4,"desc"]]
+			"aaSorting": [[4,"asc"]]
 		});
 		digirisk("#' . $idTable . '").children("tfoot").remove();
 		digirisk("#' . $idTable . '").removeClass("dataTables_wrapper");
