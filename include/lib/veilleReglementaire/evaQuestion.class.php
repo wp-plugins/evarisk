@@ -21,7 +21,7 @@ class EvaQuestion {
 	static function getQuestion($id)
 	{
 		global $wpdb;
-		$id = mysql_real_escape_string(digirisk_tools::IsValid_Variable($id));
+		$id = (digirisk_tools::IsValid_Variable($id));
 		$id = (int) $id;
 		
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_QUESTION . " WHERE id = " . $id);
@@ -36,7 +36,7 @@ class EvaQuestion {
 	static function getQuestionByStatement($enonce)
 	{
 		global $wpdb;
-		$enonce = mysql_real_escape_string(digirisk_tools::IsValid_Variable($enonce));
+		$enonce = (digirisk_tools::IsValid_Variable($enonce));
 		
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_QUESTION . " WHERE enonce='" . $enonce . "'");
 		return $resultat;
@@ -50,8 +50,8 @@ class EvaQuestion {
 	  */
 	static function getQuestions($where = "1", $order = "code ASC") {
 		global $wpdb;
-		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
+		$where = (digirisk_tools::IsValid_Variable($where));
+		$order = (digirisk_tools::IsValid_Variable($order));
 		
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_QUESTION . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
@@ -66,8 +66,8 @@ class EvaQuestion {
 	static function getQuestionsDuGroupeQuestions($idGroupeQuestion, $order="code ASC")
 	{
 		global $wpdb;
-		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idGroupeQuestion));
-		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
+		$idGroupeQuestion = (digirisk_tools::IsValid_Variable($idGroupeQuestion));
+		$order = (digirisk_tools::IsValid_Variable($order));
 		
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_GROUPE_QUESTION . " WHERE id IN (SELECT id_groupe_question FROM " . TABLE_POSSEDE_QUESTION . " WHERE id_groupe_question =" . $idGroupeQuestion . ") ORDER BY ". $order);
 		return $resultat;
@@ -84,9 +84,9 @@ class EvaQuestion {
 	static function saveNewQuestion($enonce, $code, $idGroupeQuestions)
 	{
 		global $wpdb;
-		$enonce = mysql_real_escape_string(digirisk_tools::IsValid_Variable($enonce));
-		$code = mysql_real_escape_string(digirisk_tools::IsValid_Variable($code));
-		$nomGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($nomGroupeQuestion));
+		$enonce = (digirisk_tools::IsValid_Variable($enonce));
+		$code = (digirisk_tools::IsValid_Variable($code));
+		$nomGroupeQuestion = (digirisk_tools::IsValid_Variable($nomGroupeQuestion));
 		$enonce = str_replace("[retourALaLigne]","\n", $enonce);
 		
 		/* Question table filling */
@@ -122,7 +122,7 @@ class EvaQuestion {
 		$idQuestion = digirisk_tools::IsValid_Variable($idQuestion);
 		$idGroupeQuestions = digirisk_tools::IsValid_Variable($idGroupeQuestions);
 		$idGroupeQuestionsOriginel = digirisk_tools::IsValid_Variable($idGroupeQuestionsOriginel);
-		$sql = "UPDATE " . TABLE_POSSEDE_QUESTION . " set `id_groupe_question`=" . mysql_real_escape_string($idGroupeQuestions) . " WHERE `id_question`=" . mysql_real_escape_string($idQuestion) . " AND `id_groupe_question`=" . $idGroupeQuestionsOriginel;
+		$sql = "UPDATE " . TABLE_POSSEDE_QUESTION . " set `id_groupe_question`=" . ($idGroupeQuestions) . " WHERE `id_question`=" . ($idQuestion) . " AND `id_groupe_question`=" . $idGroupeQuestionsOriginel;
 		$wpdb->query($sql);
 	}
 	
@@ -133,7 +133,7 @@ class EvaQuestion {
 	{
 		global $wpdb;
 		
-		$sql = "UPDATE " . TABLE_POSSEDE_QUESTION . " set `Status`='Deleted' WHERE `id_question`=" .  mysql_real_escape_string($idQuestion) . " AND `id_groupe_question`=" .  mysql_real_escape_string($idGroupeQuestions);
+		$sql = "UPDATE " . TABLE_POSSEDE_QUESTION . " set `Status`='Deleted' WHERE `id_question`=" .  ($idQuestion) . " AND `id_groupe_question`=" .  ($idGroupeQuestions);
 		$wpdb->query($sql);
 	}
 }

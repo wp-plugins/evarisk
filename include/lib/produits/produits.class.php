@@ -440,8 +440,8 @@ if(current_user_can('wpshop_edit_product')){
 		global $wpdb;
 		$bindedElement = array();
 
-		$idElement = mysql_real_escape_string($idElement);
-		$tableElement = mysql_real_escape_string($tableElement);
+		$idElement = ($idElement);
+		$tableElement = ($tableElement);
 
 		$query = $wpdb->prepare(
 		"SELECT ELT_LINK.*

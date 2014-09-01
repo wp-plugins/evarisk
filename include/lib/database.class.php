@@ -36,11 +36,11 @@ class eva_database
 				if($operation == 'creation')
 				{
 					$preparedFields['fields'][] = $field;
-					$preparedFields['values'][] = "'" . mysql_real_escape_string($value) . "'";
+					$preparedFields['values'][] = "'" . ($value) . "'";
 				}
 				elseif($operation == 'update')
 				{
-					$preparedFields['values'][] = $field . " = '" . mysql_real_escape_string($value) . "'";
+					$preparedFields['values'][] = $field . " = '" . ($value) . "'";
 				}
 			}
 		}

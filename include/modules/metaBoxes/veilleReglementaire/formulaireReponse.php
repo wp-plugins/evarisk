@@ -226,7 +226,7 @@ function getFormulaireReponse($idElement, $tableElement, $summary = false)
 			"SELECT REPONSE.* 
 			FROM " . TABLE_REPONSE . " AS REPONSE 
 				INNER JOIN " . TABLE_ACCEPTE_REPONSE . " AS REPONSEACCEPTEE ON (REPONSEACCEPTEE.id_reponse = REPONSE.id)
-			WHERE REPONSEACCEPTEE.id_question = '" . mysql_real_escape_string($id_question) . "' ";
+			WHERE REPONSEACCEPTEE.id_question = '" . ($id_question) . "' ";
 		$resultat = $wpdb->get_results( $sql );
 
 		if( count($resultat) > 0 )

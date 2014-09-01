@@ -154,6 +154,8 @@
 			{
 				$renduPage .= $nomUniteTravail;
 			}
+			$locale = preg_replace('/([^_]+).+/', '$1', get_locale());
+			$locale = ($locale == 'en') ? '' : $locale;
 			$renduPage .= '
 					</div>
 					<div class="mainInfosDiv">
@@ -168,6 +170,123 @@
 								<span class="bold" >' . __('Somme des risques', 'evarisk') . '</span>&nbsp;:&nbsp;<span id="riskSum' . $tableElement . $idElement . '" >' . $scoreRisqueUniteTravail . '</span><br/>
 								<span class="bold" >' . __('Nombre de risques', 'evarisk') . '</span>&nbsp;:&nbsp;<span id="riskNb' . $tableElement . $idElement . '" >' . $nombreRisqueUniteTravail . '</span>
 							</p>
+						</div>
+					</div>
+					<div class="digi-workUnit-extra-actions clear" >
+						<div class="digi-workUnit-duplicate-container" style="width:50%;" >
+							<div id="digi-workUnit-duplication-message-container" ></div>
+							<button name="digi-launch-workUnit-duplication-button" class="button button-secondary" >' . __( 'Dupliquer cette unit&eacute; de travail', 'evarisk' ) . '</button>
+							<div class="digirisk_hide" id="digi-duplicate-workUnit-form-container" >
+								<form action="' . admin_url( 'admin-ajax.php' ) . '" method="post" id="digi-duplicate-workunit-form" >
+									<input type="hidden" name="action" value="digi-duplicate-workUnit" />
+									<input type="hidden" name="id_element" value="' . $arguments[ 'idElement' ] . '" />
+
+									<fieldset>
+										<legend>' . __( 'Parent de l\'unit&eacute; de travail', 'evarisk' ) . '</legend>
+										<div id="digi-workUnit-duplication-tree-container" ><img src="' . admin_url( 'images/loading.gif' ) . '" alt="loading in progress pleas wait" /></div>
+									</fieldset>
+
+									<fieldset>
+										<legend>' . __( '&Eacute;l&eacute;ments &agrave; copier dans l\'unit&eacute; de travail', 'evarisk' ) . '</legend>
+
+										<label ><input type="checkbox" value="risks" name="duplication-element[]" /> ' . __( 'Dupliquer les risques associés', 'evarisk' ) . '</label>
+										<div class="digirisk_hide" id="digi-workUnit-duplication-associated-risks" >
+											' . __( 'Date de d&eacute;but du risque', 'evarisk' ) . '<input type="text" class="digi-workUnit-duplication-date" name="duplication-elements[risks][start_date]" value="" />
+											<br/>' . __( 'Date de fin du risque', 'evarisk' ) . '<input type="text" class="digi-workUnit-duplication-date" name="duplication-elements[risks][end_date]" value="" />
+										</div>
+										<br class="clear" />
+										<label ><input type="checkbox" value="users" name="duplication-element[]" /> ' . __( 'Dupliquer les personnes associéss', 'evarisk' ) . '</label>
+										<div class="digirisk_hide" id="digi-workUnit-duplication-associated-users" >
+											' . __( 'Date d\'affectation &agrave; utiliser', 'evarisk' ) . '<input type="text" class="digi-workUnit-duplication-date" name="duplication-elements[users][date]" value="" />
+										</div>
+										<br class="clear" />
+										<label ><input type="checkbox" value="recommandation" name="duplication-element[]" /> ' . __( 'Dupliquer les préconisations associéss', 'evarisk' ) . '</label>
+										<div class="digirisk_hide" id="digi-workUnit-duplication-associated-recommandation" ></div>
+									</fieldset>
+
+									<div class="alignright" >
+										<label class="alignright" ><input type="checkbox" checked="checked" name="wp_digi_auto_redirect_to_new_work_unit" value="autoredirect" />' . __( 'Aller vers la nouvelle unit&eacute; cr&eacute;&eacute;e', 'evarisk' ) . '</label><br/>
+										<button class="button button-primary alignright" >' . __( 'Dupliquer cette unit&eacute; de travail', 'evarisk' ) . '</button>
+									</div>
+								</form>
+							</div>
+							<script type="text/javascript" >
+								jQuery( document ).ready( function(){
+									jQuery( "button[name=digi-launch-workUnit-duplication-button]" ).click( function(){
+										jQuery( "#digi-duplicate-workUnit-form-container" ).slideDown();
+										jQuery( this ).hide();
+
+										jQuery( "#digi-workUnit-duplication-tree-container" ).load( ajaxurl, {
+											action: "digi_load_list_groupement",
+										});
+									});
+
+									jQuery( "#digi-duplicate-workunit-form input[type=checkbox]" ).click( function(){
+										if ( jQuery( this ).is( ":checked" ) ) {
+											jQuery( "#digi-workUnit-duplication-associated-" + jQuery( this ).val() ).show();
+										}
+										else {
+											jQuery( "#digi-workUnit-duplication-associated-" + jQuery( this ).val() ).hide();
+										}
+									});
+
+									jQuery(".digi-workUnit-duplication-date").datepicker( jQuery.datepicker.regional["' . $locale . '"] );
+									jQuery(".digi-workUnit-duplication-date").datepicker( "option", "dateFormat", "yy-mm-dd");
+									jQuery(".digi-workUnit-duplication-date").datepicker( "option", "changeMonth", true);
+									jQuery(".digi-workUnit-duplication-date").datepicker( "option", "changeYear", true);
+									jQuery(".digi-workUnit-duplication-date").datepicker( "option", "navigationAsDateFormat", true);
+									jQuery(".digi-workUnit-duplication-date").datepicker( "setDate", "' . current_time( 'mysql', 0 ) . '" );
+
+									jQuery( "#digi-duplicate-workunit-form" ).ajaxForm({
+										dataType: "json",
+										success: function( response ){
+											jQuery( "#digi-workUnit-duplication-message-container" ).html( response[ "message" ] );
+											jQuery( "#digi-duplicate-workunit-form input[type=checkbox]:checked" ).click();
+
+											jQuery("#partieGauche").load(EVA_AJAX_FILE_URL,{
+												"post": "true",
+												"table": "' . TABLE_UNITE_TRAVAIL . '",
+												"act": "edit",
+												"id": response[ "new_element_id" ],
+												"partie": "left",
+												"menu": "risq",
+												"affichage": "affichageListe",
+												"expanded": response[ "new_element_tree" ]
+											});
+
+											if ( response[ "auto_redirect" ] ) {
+												jQuery("#partieEdition").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+													"post": "true",
+													"table": "' . TABLE_UNITE_TRAVAIL . '",
+													"act": "edit",
+													"id": response[ "new_element_id" ],
+													"partie": "right",
+													"menu": jQuery("#menu").val(),
+													"affichage": "affichageListe",
+													"expanded": response[ "new_element_tree" ]
+												});
+											}
+										}
+									});
+
+									jQuery( document ).on( "click", ".digi-view-duplicated-workUnit", function( event ){
+										event.preventDefault();
+
+										var expanded = reInitTreeTable();
+										jQuery("#partieEdition").html(jQuery("#loadingImg").html());
+										jQuery("#partieEdition").load(EVA_AJAX_FILE_URL,{
+											"post": "true",
+											"table": "' . TABLE_UNITE_TRAVAIL . '",
+											"act": "edit",
+											"id": jQuery( this ).attr( "id" ).replace( "digi-view-duplicated-workUnit-", "" ),
+											"partie": "right",
+											"menu": "risq",
+											"affichage": "affichageListe",
+											"expanded": expanded
+										});
+									});
+								});
+							</script>
 						</div>
 					</div>
 				</div>

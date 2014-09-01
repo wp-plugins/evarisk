@@ -322,9 +322,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					break;
 					case 'updateByField':
 					{
-						$id_Groupement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['id']));
-						$whatToUpdate = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['whatToUpdate']));
-						$whatToSet = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['whatToSet']));
+						$id_Groupement = (digirisk_tools::IsValid_Variable($_REQUEST['id']));
+						$whatToUpdate = (digirisk_tools::IsValid_Variable($_REQUEST['whatToUpdate']));
+						$whatToSet = (digirisk_tools::IsValid_Variable($_REQUEST['whatToSet']));
 
 						switch($whatToUpdate){
 							case 'nom':
@@ -572,9 +572,9 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					break;
 					case 'updateByField':
 					{
-						$id_unite = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['id']));
-						$whatToUpdate = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['whatToUpdate']));
-						$whatToSet = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['whatToSet']));
+						$id_unite = (digirisk_tools::IsValid_Variable($_REQUEST['id']));
+						$whatToUpdate = (digirisk_tools::IsValid_Variable($_REQUEST['whatToUpdate']));
+						$whatToSet = (digirisk_tools::IsValid_Variable($_REQUEST['whatToSet']));
 
 						switch($whatToUpdate){
 							case 'nom':
@@ -3613,7 +3613,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 							$workUnitAdress = new EvaBaseAddress($workUnitinformations->id_adresse);
 							$workUnitAdress->load();
-							$_POST['adresse'] = trim($workUnitAdress->getFirstLine() . " " . $workUnitAdress->getSecondLine() . " " . $workUnitAdress->getPostalCode() . " " . $workUnitAdress->getCity());
+
+							$_POST['adresse'] = serialize( array( 'adresse' => trim( $workUnitAdress->getFirstLine() . " " . $workUnitAdress->getSecondLine() ), 'codePostal' => trim($workUnitAdress->getPostalCode()), 'ville' => trim($workUnitAdress->getPostalCode()) ) );
 
 							require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
 						}

@@ -25,9 +25,9 @@ class EvaAnswerToQuestion {
 	{
 		global $wpdb;
 		
-		$idQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idQuestion));
-		$tableElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($tableElement));
-		$idElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idElement));
+		$idQuestion = (digirisk_tools::IsValid_Variable($idQuestion));
+		$tableElement = (digirisk_tools::IsValid_Variable($tableElement));
+		$idElement = (digirisk_tools::IsValid_Variable($idElement));
 		
 		$resultat = $wpdb->get_row
 		(
@@ -62,11 +62,11 @@ class EvaAnswerToQuestion {
 	{
 		global $wpdb;
 		
-		$tableElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($tableElement));
-		$idElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idElement));
-		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
-		$date = mysql_real_escape_string(digirisk_tools::IsValid_Variable($date));
+		$tableElement = (digirisk_tools::IsValid_Variable($tableElement));
+		$idElement = (digirisk_tools::IsValid_Variable($idElement));
+		$where = (digirisk_tools::IsValid_Variable($where));
+		$order = (digirisk_tools::IsValid_Variable($order));
+		$date = (digirisk_tools::IsValid_Variable($date));
 		$sql = "SELECT * 
 			FROM " . TABLE_REPONSE_QUESTION . "
 			WHERE date = '" . $date . "'
@@ -88,8 +88,8 @@ class EvaAnswerToQuestion {
 	{
 		global $wpdb;
 		
-		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
+		$where = (digirisk_tools::IsValid_Variable($where));
+		$order = (digirisk_tools::IsValid_Variable($order));
 		
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_REPONSE_QUESTION . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;
@@ -175,7 +175,7 @@ class EvaAnswerToQuestion {
 			}
 			else
 			{
-				$valeur = " '" . mysql_real_escape_string($valeur) . "' ";
+				$valeur = " '" . ($valeur) . "' ";
 			}
 			if(($observation == null) || ($observation == ''))
 			{
@@ -183,7 +183,7 @@ class EvaAnswerToQuestion {
 			}
 			else
 			{
-				$observation = " '" . mysql_real_escape_string($observation) . "' ";
+				$observation = " '" . ($observation) . "' ";
 			}
 			if(($limiteValidite == null) || ($limiteValidite == ''))
 			{
@@ -191,10 +191,10 @@ class EvaAnswerToQuestion {
 			}
 			else
 			{
-				$limiteValidite = " '" . mysql_real_escape_string($limiteValidite) . "' ";
+				$limiteValidite = " '" . ($limiteValidite) . "' ";
 			}
 
-			$sql = "INSERT INTO " . TABLE_REPONSE_QUESTION . " (id_question, id_element, nomTableElement, id_reponse, date, valeur, observation, limiteValidite, Status) VALUES ('" .  mysql_real_escape_string($idQuestion) . "', '" .  mysql_real_escape_string($idElement) . "', '" .  mysql_real_escape_string($tableElement) . "', '" .  mysql_real_escape_string($idReponse) . "', '" .  mysql_real_escape_string($date) . "', " . $valeur . ", " .  $observation . ", " .  $limiteValidite . ", 'Valid')";
+			$sql = "INSERT INTO " . TABLE_REPONSE_QUESTION . " (id_question, id_element, nomTableElement, id_reponse, date, valeur, observation, limiteValidite, Status) VALUES ('" .  ($idQuestion) . "', '" .  ($idElement) . "', '" .  ($tableElement) . "', '" .  ($idReponse) . "', '" .  ($date) . "', " . $valeur . ", " .  $observation . ", " .  $limiteValidite . ", 'Valid')";
 			if($wpdb->query($sql))
 			{
 				$status = 'ok';
@@ -239,7 +239,7 @@ class EvaAnswerToQuestion {
 		}
 		else
 		{
-			$valeur = " '" . mysql_real_escape_string($valeur) . "' ";
+			$valeur = " '" . ($valeur) . "' ";
 		}
 		if(($observation == null) || ($observation == ''))
 		{
@@ -247,7 +247,7 @@ class EvaAnswerToQuestion {
 		}
 		else
 		{
-			$observation = " '" . mysql_real_escape_string($observation) . "' ";
+			$observation = " '" . ($observation) . "' ";
 		}
 		if(($limiteValidite == null) || ($limiteValidite == ''))
 		{
@@ -255,14 +255,14 @@ class EvaAnswerToQuestion {
 		}
 		else
 		{
-			$limiteValidite = " '" . mysql_real_escape_string($limiteValidite) . "' ";
+			$limiteValidite = " '" . ($limiteValidite) . "' ";
 		}
 		
-		$sql = "UPDATE " . TABLE_REPONSE_QUESTION . " SET id_reponse='" . mysql_real_escape_string($idReponse) . "', valeur=" . $valeur . ", observation=" . $observation . ", limiteValidite=" . $limiteValidite . "
-		WHERE id_question = '" . mysql_real_escape_string($idQuestion) . "'
-		AND nomTableElement = '" . mysql_real_escape_string($tableElement) . "'
-		AND id_element = '" . mysql_real_escape_string($idElement) . "'
-		AND date = '" . mysql_real_escape_string($date) . "'";
+		$sql = "UPDATE " . TABLE_REPONSE_QUESTION . " SET id_reponse='" . ($idReponse) . "', valeur=" . $valeur . ", observation=" . $observation . ", limiteValidite=" . $limiteValidite . "
+		WHERE id_question = '" . ($idQuestion) . "'
+		AND nomTableElement = '" . ($tableElement) . "'
+		AND id_element = '" . ($idElement) . "'
+		AND date = '" . ($date) . "'";
 		if( ($wpdb->query($sql)) )
 		{
 			$status = 'ok';
@@ -281,10 +281,10 @@ class EvaAnswerToQuestion {
 	static function deleteAnswerToQuestion($idQuestion, $tableElement, $idElement, $date)
 	{
 		global $wpdb;
-		$idQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idQuestion));
-		$tableElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($tableElement));
-		$idElement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($idElement));
-		$date = mysql_real_escape_string(digirisk_tools::IsValid_Variable($date));
+		$idQuestion = (digirisk_tools::IsValid_Variable($idQuestion));
+		$tableElement = (digirisk_tools::IsValid_Variable($tableElement));
+		$idElement = (digirisk_tools::IsValid_Variable($idElement));
+		$date = (digirisk_tools::IsValid_Variable($date));
 		
 		$sql = "UPDATE " . TABLE_REPONSE_QUESTION . " set Status='Delete' 
 		WHERE id_question = '" . $idQuestion . "'

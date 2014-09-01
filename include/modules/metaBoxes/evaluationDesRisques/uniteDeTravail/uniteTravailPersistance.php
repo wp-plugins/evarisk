@@ -11,8 +11,8 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 if($_REQUEST['act'] == 'save')
 {
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
-	$idGroupementPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
+	$idGroupementPere = (digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
 
 	$groupement = EvaGroupement::getGroupement($idGroupementPere);
 	$groupementDescendant = Arborescence::getDescendants(TABLE_GROUPEMENT, $groupement);
@@ -40,8 +40,8 @@ echo '
 if($_REQUEST['act'] == 'update')
 {
 	$id_unite_travail = $_REQUEST['id'];
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
-	$idGroupementPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
+	$idGroupementPere = (digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
 
 	$uniteTravailUpdate = eva_UniteDeTravail::getWorkingUnitByName($nom);
 
@@ -55,17 +55,17 @@ if($_REQUEST['act'] == 'update')
 	$address->save();
 	$idAdresse = $address->getId();
 
-	$effectif = mysql_real_escape_string(!empty($_REQUEST['effectif']) ? digirisk_tools::IsValid_Variable($_REQUEST['effectif']) : '');
+	$effectif = (!empty($_REQUEST['effectif']) ? digirisk_tools::IsValid_Variable($_REQUEST['effectif']) : '');
 	if($effectif == '')
 	{
 		$effectif = null;
 	}
-	$description = mysql_real_escape_string(!empty($_REQUEST['description']) ? digirisk_tools::IsValid_Variable($_REQUEST['description']) : '');
+	$description = (!empty($_REQUEST['description']) ? digirisk_tools::IsValid_Variable($_REQUEST['description']) : '');
 	if($description == '')
 	{
 		$description = null;
 	}
-	$telephone = mysql_real_escape_string(!empty($_REQUEST['telephone']) ? digirisk_tools::IsValid_Variable($_REQUEST['telephone']) : '');
+	$telephone = (!empty($_REQUEST['telephone']) ? digirisk_tools::IsValid_Variable($_REQUEST['telephone']) : '');
 	if($telephone == '')
 	{
 		$telephone = null;

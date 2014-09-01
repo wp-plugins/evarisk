@@ -12,14 +12,14 @@ $search = "Status='Valid' AND nom<>'Groupement Racine'";
 $groupement = EvaGroupement::getGroupements($search);
 
 if ($_REQUEST['act'] == 'save') {
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
 	EvaGroupement::saveNewGroupement($nom);
 	$_REQUEST['id'] = $wpdb->insert_id;
 	$_REQUEST['act'] = 'update';
 }
 if ($_REQUEST['act'] == 'update') {
 	$id_groupement = $_REQUEST['id'];
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_groupement']));
 
 	$groupementUpdate = EvaGroupement::getGroupementByName($nom);
 	$ligne1 = $_REQUEST['adresse_ligne_1'];
@@ -32,24 +32,24 @@ if ($_REQUEST['act'] == 'update') {
 	$address->save();
 	$idAdresse = $address->getId();
 
-	$idGroupementPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
-	$typeGroupement = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['typeGroupement']));
-	$siren = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['siren']));
-	$siret = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['siret']));
-	$social_activity_number = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['social_activity_number']));
-	$creation_date_of_society = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['creation_date_of_society']));
+	$idGroupementPere = (digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$typeGroupement = (digirisk_tools::IsValid_Variable($_REQUEST['typeGroupement']));
+	$siren = (digirisk_tools::IsValid_Variable($_REQUEST['siren']));
+	$siret = (digirisk_tools::IsValid_Variable($_REQUEST['siret']));
+	$social_activity_number = (digirisk_tools::IsValid_Variable($_REQUEST['social_activity_number']));
+	$creation_date_of_society = (digirisk_tools::IsValid_Variable($_REQUEST['creation_date_of_society']));
 
-	$effectif = !empty($_REQUEST['effectif']) ? mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['effectif'])): '';
+	$effectif = !empty($_REQUEST['effectif']) ? (digirisk_tools::IsValid_Variable($_REQUEST['effectif'])): '';
 	if($effectif == '')
 	{
 		$effectif = null;
 	}
-	$description = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['description']));
+	$description = (digirisk_tools::IsValid_Variable($_REQUEST['description']));
 	if($description == '')
 	{
 		$description = null;
 	}
-	$telephone = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['telephone']));
+	$telephone = (digirisk_tools::IsValid_Variable($_REQUEST['telephone']));
 	if($telephone == '')
 	{
 		$telephone = null;

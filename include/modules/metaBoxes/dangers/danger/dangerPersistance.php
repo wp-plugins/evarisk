@@ -8,8 +8,8 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 if($_REQUEST['act'] == 'save')
 {
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_danger']));
-	$idCategorieMere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['categorieMere']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_danger']));
+	$idCategorieMere = (digirisk_tools::IsValid_Variable($_REQUEST['categorieMere']));
 
 	EvaDanger::saveNewDanger($nom, $idCategorieMere);
 
@@ -19,8 +19,8 @@ if($_REQUEST['act'] == 'save')
 if($_REQUEST['act'] == 'update')
 {
 	$id_danger = $_REQUEST['id'];
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['nom_danger']));
-	$idCategorieMere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['categorieMere']));
+	$nom = (digirisk_tools::IsValid_Variable($_POST['nom_danger']));
+	$idCategorieMere = (digirisk_tools::IsValid_Variable($_POST['categorieMere']));
 	$description = $_REQUEST['description'];
 	$id_methode_eva = $_REQUEST['selectionMethode'];
         $penibilite = $_REQUEST['choix_penibilite'];

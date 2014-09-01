@@ -11,10 +11,10 @@
 
 
 /**
-* Define the different method to manage the different document into the plugin
-* @package Digirisk
-* @subpackage librairies
-*/
+ * Define the different method to manage the different document into the plugin
+ * @package Digirisk
+ * @subpackage librairies
+ */
 class eva_gestionDoc {
 
 	/**
@@ -1803,8 +1803,14 @@ class eva_gestionDoc {
 ", digirisk_tools::slugify_noaccent($lastDocument->description)));
 					$odf->setVars('telephone', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($lastDocument->telephone)));
-					$odf->setVars('adresse', str_replace('<br />', "
-", digirisk_tools::slugify_noaccent($lastDocument->adresse)));
+
+					$serialized_address = unserialize( $lastDocument->adresse );
+					$odf->setVars( 'adresse', str_replace( '<br />', "
+", ( !empty( $serialized_address ) && !empty( $serialized_address[ 'adresse' ] ) ? digirisk_tools::slugify_noaccent( $serialized_address[ 'adresse' ] ) : 'NC' ) ) );
+					$odf->setVars( 'codePostal', str_replace( '<br />', "
+", ( !empty( $serialized_address ) && !empty( $serialized_address[ 'codePostal' ] ) ? digirisk_tools::slugify_noaccent( $serialized_address[ 'codePostal' ] ) : 'NC' ) ) );
+					$odf->setVars( 'ville', str_replace( '<br />', "
+", ( !empty( $serialized_address ) && !empty( $serialized_address[ 'ville' ] ) ? digirisk_tools::slugify_noaccent( $serialized_address[ 'ville' ] ) : 'NC' ) ) );
 
 					{/*	Remplissage du template pour les utilisateurs affectes	*/
 						$listeUser = array();
@@ -1949,7 +1955,7 @@ class eva_gestionDoc {
 									if($recommandationCategory[0]['impressionRecommandation'] == 'pictureonly')
 									{
 										$recommandation['recommandation_name'] = '';
-										$recommandation['commentaire'] = '';
+// 										$recommandation['commentaire'] = '';
 									}
 
 									if($recommandation['commentaire'] != '') {
@@ -2222,7 +2228,7 @@ class eva_gestionDoc {
 					$element['nomDanger'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent_no_utf8decode($element['nomDanger']));
 					$element['commentaireRisque'] = str_replace('<br />', "
-", digirisk_tools::slugify_noaccent_no_utf8decode($element['commentaireRisque']));
+", digirisk_tools::slugify_noaccent_no_utf8decode( stripslashes( $element['commentaireRisque'] )));
 					$element['actionPrevention'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
 					$element['methodeElement'] = str_replace('<br />', "

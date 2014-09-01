@@ -10,7 +10,7 @@ $categories_danger = categorieDangers::getCategoriesDanger($search);
 
 if($_REQUEST['act'] == 'save')
 {
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_categorie']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_categorie']));
 	categorieDangers::saveNewCategorie($nom);
 	
 	$_REQUEST['act'] = 'update';
@@ -19,9 +19,9 @@ if($_REQUEST['act'] == 'save')
 if($_REQUEST['act'] == 'update')
 {
 	$id_categorie = $_REQUEST['id'];
-	$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['nom_categorie']));
-	$description = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['description']));
-	$idCategorieMere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_REQUEST['categorieMere']));
+	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_categorie']));
+	$description = (digirisk_tools::IsValid_Variable($_REQUEST['description']));
+	$idCategorieMere = (digirisk_tools::IsValid_Variable($_REQUEST['categorieMere']));
 	categorieDangers::updateCategorie($id_categorie, $nom, $description, $idCategorieMere);
 }
 if($_REQUEST['act'] == 'delete')

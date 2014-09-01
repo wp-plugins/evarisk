@@ -23,7 +23,7 @@ class EvaReferentialText {
 		global $wpdb;
 		$id = digirisk_tools::IsValid_Variable($id);
 		$id = (int) $id;
-		$result = $wpdb->get_row( "SELECT * FROM " . TABLE_TEXTE_REFERENCIEL . " WHERE id = " . mysql_real_escape_string($id));
+		$result = $wpdb->get_row( "SELECT * FROM " . TABLE_TEXTE_REFERENCIEL . " WHERE id = " . ($id));
 		return $result;
 	}
 	
@@ -36,7 +36,7 @@ class EvaReferentialText {
 	{
 		global $wpdb;
 		$rubric = digirisk_tools::IsValid_Variable($rubric);
-		$result = $wpdb->get_row( "SELECT * FROM " . TABLE_TEXTE_REFERENCIEL . " WHERE rubrique='" . mysql_real_escape_string($rubric) . "'");
+		$result = $wpdb->get_row( "SELECT * FROM " . TABLE_TEXTE_REFERENCIEL . " WHERE rubrique='" . ($rubric) . "'");
 		return $result;
 	}
 	
@@ -53,7 +53,7 @@ class EvaReferentialText {
 		$where =digirisk_tools::IsValid_Variable($where);
 		$order = digirisk_tools::IsValid_Variable($order);
 		$status =digirisk_tools::IsValid_Variable($status);
-		$results = $wpdb->get_results( "SELECT * FROM " . TABLE_TEXTE_REFERENCIEL . " WHERE " .  mysql_real_escape_string($where) . " AND status='" . mysql_real_escape_string($status) . "' ORDER BY " .  mysql_real_escape_string($order));
+		$results = $wpdb->get_results( "SELECT * FROM " . TABLE_TEXTE_REFERENCIEL . " WHERE " .  ($where) . " AND status='" . ($status) . "' ORDER BY " .  ($order));
 		return $results;
 	}
 	
@@ -83,7 +83,7 @@ class EvaReferentialText {
 		global $wpdb;
 		$id = digirisk_tools::IsValid_Variable($id);
 		
-		$sql = "UPDATE " . TABLE_TEXTE_REFERENCIEL . " set `Status`='Deleted' WHERE `id`=" . mysql_real_escape_string($id);
+		$sql = "UPDATE " . TABLE_TEXTE_REFERENCIEL . " set `Status`='Deleted' WHERE `id`=" . ($id);
 		$wpdb->query($sql);
 	}
 }

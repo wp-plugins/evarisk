@@ -236,11 +236,11 @@ class EvaBaseAddress
 		//Query creation
 		if($id == 0)
 		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_ADRESSE . " (`ligne1`, `ligne2`, `ville`, `codePostal`,  `latitude`,  `longitude`, `Status`) VALUES ('" . mysql_real_escape_string($firstLine) . "', '" . mysql_real_escape_string($secondLine) . "', '" . mysql_real_escape_string($city) . "', '" . mysql_real_escape_string($codePostal) . "', '" . mysql_real_escape_string($latitude) . "', '" . mysql_real_escape_string($longitude) . "', '" . mysql_real_escape_string($status) . "')";
+			$sql = "INSERT INTO " . TABLE_ADRESSE . " (`ligne1`, `ligne2`, `ville`, `codePostal`,  `latitude`,  `longitude`, `Status`) VALUES ('" . ($firstLine) . "', '" . ($secondLine) . "', '" . ($city) . "', '" . ($codePostal) . "', '" . ($latitude) . "', '" . ($longitude) . "', '" . ($status) . "')";
 		}
 		else
 		{//Update of the data base
-			$sql = "UPDATE " . TABLE_ADRESSE . " set `ligne1`='" . mysql_real_escape_string($firstLine) . "', `ligne2`='" . mysql_real_escape_string($secondLine) . "', `ville`='" . mysql_real_escape_string($city) . "', `codePostal`='" . mysql_real_escape_string($codePostal) . "', `latitude`='" . mysql_real_escape_string($latitude) . "', `longitude`='" . mysql_real_escape_string($longitude) . "', `Status`='" . mysql_real_escape_string($status) . "' WHERE `id`=" . mysql_real_escape_string($id);
+			$sql = "UPDATE " . TABLE_ADRESSE . " set `ligne1`='" . ($firstLine) . "', `ligne2`='" . ($secondLine) . "', `ville`='" . ($city) . "', `codePostal`='" . ($codePostal) . "', `latitude`='" . ($latitude) . "', `longitude`='" . ($longitude) . "', `Status`='" . ($status) . "' WHERE `id`=" . ($id);
 		}
 		
 		//Query execution

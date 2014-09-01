@@ -20,7 +20,7 @@ class EvaAnswer {
 	static function getAnswer($id)
 	{
 		global $wpdb;
-		$id = mysql_real_escape_string(digirisk_tools::IsValid_Variable($id));
+		$id = (digirisk_tools::IsValid_Variable($id));
 		$id = (int) $id;
 		
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_REPONSE . " WHERE id = " . $id);
@@ -35,7 +35,7 @@ class EvaAnswer {
 	static function getAnswerByName($nom)
 	{
 		global $wpdb;
-		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($nom));
+		$nom = (digirisk_tools::IsValid_Variable($nom));
 		
 		$resultat = $wpdb->get_row( "SELECT * FROM " . TABLE_REPONSE . " WHERE nom='" . $nom . "'");
 		return $resultat;
@@ -49,8 +49,8 @@ class EvaAnswer {
 	  */
 	static function getAnswers($where = "1", $order = "id ASC") {
 		global $wpdb;
-		$where = mysql_real_escape_string(digirisk_tools::IsValid_Variable($where));
-		$order = mysql_real_escape_string(digirisk_tools::IsValid_Variable($order));
+		$where = (digirisk_tools::IsValid_Variable($where));
+		$order = (digirisk_tools::IsValid_Variable($order));
 		
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_REPONSE . " WHERE " . $where . " ORDER BY " . $order);
 		return $resultat;

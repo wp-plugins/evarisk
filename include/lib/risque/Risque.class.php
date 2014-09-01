@@ -188,7 +188,7 @@ class Risque {
 			FROM " . TABLE_RISQUE . " tableRisque
 				LEFT JOIN " . TABLE_AVOIR_VALEUR . " tableAvoirValeur ON (tableAvoirValeur.Status = 'Valid' AND tableAvoirValeur.id_risque=tableRisque.id),
 				" . TABLE_DANGER . " tableDanger
-			WHERE tableRisque.id=" . mysql_real_escape_string($id) . "
+			WHERE tableRisque.id=" . ($id) . "
 				AND tableRisque.id_danger=tableDanger.id", "");
 		$resultat = $wpdb->get_results($query);
 
@@ -208,10 +208,10 @@ class Risque {
 
 		$tableElement = $idElement = "1";
 		if($nomTableElement != 'all'){
-			$tableElement = "tableRisque.nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' ";
+			$tableElement = "tableRisque.nomTableElement='" . ($nomTableElement) . "' ";
 		}
 		if($idTableElement != 'all'){
-			$idElement = "tableRisque.id_element = '" . mysql_real_escape_string($idTableElement) . "' ";
+			$idElement = "tableRisque.id_element = '" . ($idTableElement) . "' ";
 		}
 
 		$query = $wpdb->prepare(
@@ -244,7 +244,7 @@ class Risque {
 				INNER JOIN " . TABLE_DANGER . " D ON (D.id = R.id_danger)
 				INNER JOIN " . TABLE_AVOIR_VALEUR . " VR ON (VR.id_risque = R.id)
 				INNER JOIN " . TABLE_LIAISON_TACHE_ELEMENT . " LTE ON ((LTE.id_element = VR.id_evaluation) AND (LTE.table_element = '" . TABLE_AVOIR_VALEUR . "') AND (LTE.wasLinked = '" . $beforeAfter . "') AND (LTE.id_tache = '" . $id_tache . "'))
-			WHERE VR.id_risque = '" . mysql_real_escape_string($idRisque) . "'
+			WHERE VR.id_risque = '" . ($idRisque) . "'
 				AND VR.Status != 'Deleted' ";
 		$listeVariableAvecValeur = $wpdb->get_results( $query );
 
@@ -261,7 +261,7 @@ class Risque {
 		else{
 			$status = "Status = '" . $status . "'";
 		}
-		$resultat = $wpdb->get_row( "SELECT count(id) nombreRisques FROM " . TABLE_RISQUE . " WHERE id_element=" . mysql_real_escape_string($idElement) . " AND nomTableElement='" . mysql_real_escape_string($nomTableElement) . "' AND " . $status . " AND " . mysql_real_escape_string($where) . " ORDER BY " . mysql_real_escape_string($order));
+		$resultat = $wpdb->get_row( "SELECT count(id) nombreRisques FROM " . TABLE_RISQUE . " WHERE id_element=" . ($idElement) . " AND nomTableElement='" . ($nomTableElement) . "' AND " . $status . " AND " . ($where) . " ORDER BY " . ($order));
 		return $resultat->nombreRisques;
 	}
 

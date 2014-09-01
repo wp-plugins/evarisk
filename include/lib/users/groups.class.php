@@ -549,8 +549,8 @@ digirisk(document).ready(function(){
 	{
 		global $wpdb;
 
-		$idElement = mysql_real_escape_string($idElement);
-		$tableElement = mysql_real_escape_string($tableElement);
+		$idElement = ($idElement);
+		$tableElement = ($tableElement);
 
 		$query = $wpdb->prepare(
 		"SELECT GP_LINK.*

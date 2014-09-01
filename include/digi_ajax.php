@@ -1349,4 +1349,176 @@ function digi_start_new_evaluation() {
 	die();
 }
 
+/**
+ * Duplicate a work unit from a place into the tree to another one
+ */
+add_action( 'wp_ajax_digi_load_list_groupement', 'digi_load_list_groupement' );
+function digi_load_list_groupement() {
+	$output = '';
+
+	$output = digi_read_tree( );
+
+	wp_die( $output );
+}
+function digi_read_tree( $parent = null, $expander = '' ) {
+	$sub_output = '';
+
+	$parent_is_root = false;
+	if ( empty( $parent ) ) {
+		$parent = Arborescence::getRacine( TABLE_GROUPEMENT );
+		$parent_is_root = true;
+	}
+
+	$element_list = Arborescence::getFils( TABLE_GROUPEMENT, $parent );
+	if ( !empty( $element_list ) ) {
+		foreach ( $element_list as $element ) {
+			$sub_element = digi_read_tree( $element, $expander . '&nbsp;' );
+			$disable = !empty( $sub_element ) ? ' disabled="disabled"' : '';
+			$sub_output .= '<option' . $disable . ' value="' . $element->id . '" >' . $expander . ELEMENT_IDENTIFIER_GP . $element->id . ' - ' . $element->nom . '</option>' . $sub_element;
+
+		}
+
+		if ( $parent_is_root ) {
+			$sub_output = '<select name="digi-duplicated-workUnit-new-parent" >' . $sub_output . '</select>';
+		}
+	}
+
+	return $sub_output;
+}
+
+/**
+ * Duplicate a work unit from a place into the tree to another one
+ */
+add_action( 'wp_ajax_digi-duplicate-workUnit', 'digi_duplicate_work_unit' );
+function digi_duplicate_work_unit() {
+	global $wpdb;
+
+	$response = array(
+		'status' => true,
+		'auto_redirect' => false,
+	);
+
+	/**	Create the new work unit */
+	$query = $wpdb->prepare( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $_POST[ 'id_element' ] );
+	$current_work_unit = $wpdb->get_row( $query, ARRAY_A );
+	$current_work_unit[ 'id' ] = null;
+	$current_work_unit[ 'id_groupement' ] = $_POST[ 'digi-duplicated-workUnit-new-parent' ];
+	$wpdb->insert( TABLE_UNITE_TRAVAIL, $current_work_unit );
+	$new_work_unit = $wpdb->insert_id;
+
+	/**	Check what element to duplicate from original work unit */
+	if ( !empty( $new_work_unit ) ) {
+		$sub_status = true;
+		$response[ 'new_element_id' ] = $new_work_unit;
+
+		if ( !empty( $_POST[ 'wp_digi_auto_redirect_to_new_work_unit' ] ) && "autoredirect" == $_POST[ 'wp_digi_auto_redirect_to_new_work_unit' ] ) {
+			$response[ 'auto_redirect' ] = true;
+		}
+
+		/**	Get new element parent tree	*/
+		$response[ 'new_element_tree' ] = array();
+		$direct_parent = EvaGroupement::getGroupement( $_POST[ 'digi-duplicated-workUnit-new-parent' ]);
+		$new_element_parent_ancester = Arborescence::getAncetre( TABLE_GROUPEMENT, $direct_parent);
+		if ( !empty( $new_element_parent_ancester ) ) {
+			foreach ( $new_element_parent_ancester as $element ) {
+				$response[ 'new_element_tree' ][] = 'node-mainTable-' . $element->id;
+			}
+		}
+		$response[ 'new_element_tree' ][] = 'node-mainTable-' . $_POST[ 'digi-duplicated-workUnit-new-parent' ];
+
+		/**	Duplicate risks from existing to new created	*/
+		if ( !empty( $_POST[ 'duplication-element' ] ) && in_array( 'risks', $_POST[ 'duplication-element' ] ) ) {
+			$current_risks = Risque::getRisques( TABLE_UNITE_TRAVAIL, $_POST[ 'id_element' ], "Valid" );
+			$risks = array();
+			if ( !empty( $current_risks ) ) {
+				foreach ( $current_risks as $risk_index => $risk ) {
+					$risks[ $risk->id_risque ][ 'id_danger' ] = $risk->id_danger;
+					$risks[ $risk->id_risque ][ 'id_methode' ] = $risk->id_methode;
+					$risks[ $risk->id_risque ][ 'comment' ] = $risk->commentaire;
+					$risks[ $risk->id_risque ][ 'risk_evaluation' ][ $risk->id_variable ] = $risk->valeur;
+				}
+			}
+
+			/**	Put date for risk	*/
+			$date_debut = current_time( 'mysql', 0 );
+			$date_fin = current_time( 'mysql', 0 );
+			if ( !empty( $_POST[ 'duplication-elements' ] ) && !empty( $_POST[ 'duplication-elements' ][ 'risks' ] ) ) {
+				if ( !empty( $_POST[ 'duplication-elements' ][ 'risks' ][ 'start_date' ] ) ) {
+					$date_debut = mysql2date( "Y-m-d H:i:s", $_POST[ 'duplication-elements' ][ 'risks' ][ 'start_date' ], true);
+				}
+				if ( !empty( $_POST[ 'duplication-elements' ][ 'risks' ][ 'end_date' ] ) ) {
+					$date_fin = mysql2date( "Y-m-d H:i:s", $_POST[ 'duplication-elements' ][ 'risks' ][ 'end_date' ], true);
+				}
+			}
+
+			if ( !empty( $risks ) ) {
+				foreach ( $risks as $risk_id => $risk_infos ) {
+					$variables = $risk_infos[ 'risk_evaluation' ];
+
+					/**	Save the risk	*/
+					ob_start();
+					Risque::saveNewRisk( null, $risk_infos[ 'id_danger' ], $risk_infos[ 'id_methode' ], TABLE_UNITE_TRAVAIL, $new_work_unit, $variables, $risk_infos[ 'comment' ], false, $date_debut, $date_fin, current_time( 'mysql', 0 ) );
+					$message = ob_get_contents();
+					ob_end_clean();
+				}
+			}
+		}
+
+		/**	Duplicate user from existing to new created	*/
+		if ( !empty( $_POST[ 'duplication-element' ] ) && in_array( 'users', $_POST[ 'duplication-element' ] ) ) {
+			$currently_affected_user = evaUserLinkElement::getAffectedUser( TABLE_UNITE_TRAVAIL, $_POST[ 'id_element' ] );
+			$user_list_to_affect = array();
+			foreach ( $currently_affected_user as $affected_user ) {
+				$user_list_to_affect[] = $affected_user->id_user;
+			}
+			$affectation_date = current_time( 'mysql', 0 );
+			if ( !empty( $_POST[ 'duplication-elements' ] ) && !empty( $_POST[ 'duplication-elements' ][ 'users' ] ) && !empty( $_POST[ 'duplication-elements' ][ 'users' ][ 'date' ] ) ) {
+				$affectation_date = mysql2date( "Y-m-d H:i:s", $_POST[ 'duplication-elements' ][ 'users' ][ 'date' ], true);
+			}
+
+			ob_start();
+			evaUserLinkElement::setLinkUserElement( TABLE_UNITE_TRAVAIL, $new_work_unit, implode(", ", $user_list_to_affect ), true, $affectation_date);
+			$message = ob_get_contents();
+			ob_end_clean();
+		}
+
+		/**	Duplicate recommandation from existing to new created */
+		if ( !empty( $_POST[ 'duplication-element' ] ) && in_array( 'recommandation', $_POST[ 'duplication-element' ] ) ) {
+			$recommandationList = evaRecommandation::getRecommandationListForElement( TABLE_UNITE_TRAVAIL, $_POST[ 'id_element' ] );
+			if ( !empty( $recommandationList ) ) {
+				foreach ( $recommandationList as $recommandation ) {
+					$recommandationsinformations = array();
+					$recommandationsinformations['id_preconisation'] = $recommandation->id_preconisation;
+					$recommandationsinformations['efficacite'] = $recommandation->efficacite;
+					$recommandationsinformations['commentaire'] = $recommandation->commentaire;
+					$recommandationsinformations['preconisation_type'] = $recommandation->preconisation_type;
+					$recommandationsinformations['id_element'] = $new_work_unit;
+					$recommandationsinformations['table_element'] = TABLE_UNITE_TRAVAIL;
+					$recommandationsinformations['status'] = 'valid';
+					$recommandationsinformations['date_affectation'] = current_time('mysql', 0);
+					ob_start();
+					evaRecommandation::saveRecommandationAssociation( $recommandationsinformations );
+					$message = ob_get_contents();
+					ob_end_clean();
+				}
+			}
+		}
+
+		if ( !$sub_status ) {
+			$response[ 'status' ] = false;
+			$response[ 'message' ] = __( 'Une erreur est survenue lors de la duplication d\'un &eacute;l&eacute;ment associ&eacute; &agrave; l\'unit&eacute; de travail. Merci de r&eacute;essayer ou de contacter le support', 'evarisk' );
+		}
+		else {
+			$response[ 'status' ] = true;
+			$response[ 'message' ] = sprintf( __( 'L\'unit&eacute; de travail a bien &eacute;t&eacute; dupliqu&eacute;e. %sVoir la nouvelle unit&eacute;%s', 'evarisk' ), '<a href="#" id="digi-view-duplicated-workUnit-' . $new_work_unit . '" class="digi-view-duplicated-workUnit" >', '</a>' );
+		}
+	}
+	else {
+		$response[ 'status' ] = false;
+		$response[ 'message' ] = __( 'Une erreur est survenue lors de la duplication de l\'unit&eacute; de travail. Merci de r&eacute;essayer ou de contacter le support', 'evarisk' );
+	}
+
+	wp_die( json_encode( $response ) );
+}
+
 ?>

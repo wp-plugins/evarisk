@@ -7,20 +7,20 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 switch($_POST['act'])
 {
 	case 'save' :
-		$enonce = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['enonce']));
-		$code = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['code']));
-		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
+		$enonce = (digirisk_tools::IsValid_Variable($_POST['enonce']));
+		$code = (digirisk_tools::IsValid_Variable($_POST['code']));
+		$idGroupeQuestion = (digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
 		EvaQuestion::saveNewQuestion($enonce, $code, $idGroupeQuestion);
 		break;
 	case 'update' :
-		$idQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['id']));
-		$enonce = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['enonce']));
-		$code = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['code']));
+		$idQuestion = (digirisk_tools::IsValid_Variable($_POST['id']));
+		$enonce = (digirisk_tools::IsValid_Variable($_POST['enonce']));
+		$code = (digirisk_tools::IsValid_Variable($_POST['code']));
 		EvaQuestion::updateQuestion($idQuestion, $enonce, $code);
 		break;
 	case 'delete':
-		$idQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idQuestion']));
-		$idGroupeQuestions = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idGroupeQuestions']));
+		$idQuestion = (digirisk_tools::IsValid_Variable($_POST['idQuestion']));
+		$idGroupeQuestions = (digirisk_tools::IsValid_Variable($_POST['idGroupeQuestions']));
 		EvaQuestion::deleteQuestion($idQuestion, $idGroupeQuestions);
 		break;
 }

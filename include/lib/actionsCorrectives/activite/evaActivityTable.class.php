@@ -128,100 +128,100 @@ class EvaActivityTable extends evaBaseActivity
 			$sql = "SELECT * FROM " . TABLE_TACHE . " WHERE 1";
 			if($name != '')
 			{
-				$sql = $sql . " AND " . self::name . " = '" . mysql_real_escape_string($name) . "'";
+				$sql = $sql . " AND " . self::name . " = '" . ($name) . "'";
 			}
 			if($relatedTaskId != 0)
 			{
-				$sql = $sql . " AND " . self::relatedTaskId . " = " . mysql_real_escape_string($relatedTaskId);
+				$sql = $sql . " AND " . self::relatedTaskId . " = " . ($relatedTaskId);
 			}
 			if($description != '')
 			{
-				$sql = $sql . " AND " . self::description . " = '" . mysql_real_escape_string($description) . "'";
+				$sql = $sql . " AND " . self::description . " = '" . ($description) . "'";
 			}
 			if($startDate != '' && $startDate != '0000-00-00')
 			{
-				$sql = $sql . " AND " . self::startDate . " = '" . mysql_real_escape_string($startDate) . "'";
+				$sql = $sql . " AND " . self::startDate . " = '" . ($startDate) . "'";
 			}
 			if($finishDate != '' && $finishDate != '0000-00-00')
 			{
-				$sql = $sql . " AND " . self::finishDate . " = '" . mysql_real_escape_string($finishDate) . "'";
+				$sql = $sql . " AND " . self::finishDate . " = '" . ($finishDate) . "'";
 			}
 			if($place != '')
 			{
-				$sql = $sql . " AND " . self::place . " = '" . mysql_real_escape_string($place) . "'";
+				$sql = $sql . " AND " . self::place . " = '" . ($place) . "'";
 			}
 			if($cout != '')
 			{
-				$sql = $sql . " AND " . self::cout . " = '" . mysql_real_escape_string($cout) . "'";
+				$sql = $sql . " AND " . self::cout . " = '" . ($cout) . "'";
 			}
 			if($progression != 0)
 			{
-				$sql = $sql . " AND " . self::progression . " = " . mysql_real_escape_string($progression);
+				$sql = $sql . " AND " . self::progression . " = " . ($progression);
 			}
 			if($status != '')
 			{
-				$sql = $sql . " AND " . self::status . " = '" . mysql_real_escape_string($status) . "'";
+				$sql = $sql . " AND " . self::status . " = '" . ($status) . "'";
 			}
 			if($idCreateur != '')
       {
-        $sql = $sql . " AND " . self::idCreateur . " = '" . mysql_real_escape_string($idCreateur) . "'";
+        $sql = $sql . " AND " . self::idCreateur . " = '" . ($idCreateur) . "'";
       }
 			if($idSoldeur != '')
       {
-        $sql = $sql . " AND " . self::idSoldeur . " = '" . mysql_real_escape_string($idSoldeur) . "'";
+        $sql = $sql . " AND " . self::idSoldeur . " = '" . ($idSoldeur) . "'";
       }
 			if($idSoldeurChef != '')
       {
-        $sql = $sql . " AND " . self::idSoldeurChef . " = '" . mysql_real_escape_string($idSoldeurChef) . "'";
+        $sql = $sql . " AND " . self::idSoldeurChef . " = '" . ($idSoldeurChef) . "'";
       }
 			if($idResponsable != '')
       {
-        $sql = $sql . " AND " . self::idResponsable . " = '" . mysql_real_escape_string($idResponsable) . "'";
+        $sql = $sql . " AND " . self::idResponsable . " = '" . ($idResponsable) . "'";
       }
 			if($ProgressionStatus != '')
       {
-        $sql = $sql . " AND " . self::ProgressionStatus . " = '" . mysql_real_escape_string($ProgressionStatus) . "'";
+        $sql = $sql . " AND " . self::ProgressionStatus . " = '" . ($ProgressionStatus) . "'";
       }
 			if($dateSolde != '')
       {
-        $sql = $sql . " AND " . self::dateSolde . " = '" . mysql_real_escape_string($dateSolde) . "'";
+        $sql = $sql . " AND " . self::dateSolde . " = '" . ($dateSolde) . "'";
       }
 			if($idPhotoAvant != '')
       {
-        $sql = $sql . " AND " . self::idPhotoAvant . " = '" . mysql_real_escape_string($idPhotoAvant) . "'";
+        $sql = $sql . " AND " . self::idPhotoAvant . " = '" . ($idPhotoAvant) . "'";
       }
 			if($idPhotoApres != '')
       {
-        $sql = $sql . " AND " . self::idPhotoApres . " = '" . mysql_real_escape_string($idPhotoApres) . "'";
+        $sql = $sql . " AND " . self::idPhotoApres . " = '" . ($idPhotoApres) . "'";
       }
 			if($nom_exportable_plan_action != '')
       {
-        $sql = $sql . " AND " . self::nom_exportable_plan_action . " = '" . mysql_real_escape_string($nom_exportable_plan_action) . "'";
+        $sql = $sql . " AND " . self::nom_exportable_plan_action . " = '" . ($nom_exportable_plan_action) . "'";
       }
 			if($description_exportable_plan_action != '')
       {
-        $sql = $sql . " AND " . self::description_exportable_plan_action . " = '" . mysql_real_escape_string($description_exportable_plan_action) . "'";
+        $sql = $sql . " AND " . self::description_exportable_plan_action . " = '" . ($description_exportable_plan_action) . "'";
       }
 			if($cout_reel != '')
 		      {
-		        $sql = $sql . " AND " . self::cout_reel . " = '" . mysql_real_escape_string($cout_reel) . "'";
+		        $sql = $sql . " AND " . self::cout_reel . " = '" . ($cout_reel) . "'";
 		      }
 			if($planned_time != '')
 		      {
-		        $sql = $sql . " AND " . self::planned_time . " = '" . mysql_real_escape_string($planned_time) . "'";
+		        $sql = $sql . " AND " . self::planned_time . " = '" . ($planned_time) . "'";
 		      }
 			if($elapsed_time != '')
 		      {
-		        $sql = $sql . " AND " . self::elapsed_time . " = '" . mysql_real_escape_string($elapsed_time) . "'";
+		        $sql = $sql . " AND " . self::elapsed_time . " = '" . ($elapsed_time) . "'";
 		      }
 
 			if($real_start_date != '')
 		      {
-		        $sql = $sql . " AND " . self::real_start_date . " = '" . mysql_real_escape_string($real_start_date) . "'";
+		        $sql = $sql . " AND " . self::real_start_date . " = '" . ($real_start_date) . "'";
 		      }
 			if($real_end_date != '')
 		      {
-		        $sql = $sql . " AND " . self::real_end_date . " = '" . mysql_real_escape_string($real_end_date) . "'";
+		        $sql = $sql . " AND " . self::real_end_date . " = '" . ($real_end_date) . "'";
 		      }
 		}
 

@@ -355,8 +355,8 @@ $user_additionnal_field .= '
 	{
 		global $wpdb;
 
-		$elementId = mysql_real_escape_string($elementId);
-		$elementTable = mysql_real_escape_string($elementTable);
+		$elementId = ($elementId);
+		$elementTable = ($elementTable);
 
 		$queryCleanGroupBind = $wpdb->prepare("SELECT id_user FROM " . TABLE_LIAISON_USER_ELEMENT . " WHERE table_element = '%s' AND id_element = %d and status='valid'", $elementTable, $elementId);
 
@@ -1103,7 +1103,7 @@ $user_additionnal_field .= '
 							$errors[] = sprintf(__('L\'adresse email <b>' . $userInfosComponent[4] . '</b> de la ligne %s n\'est <b>pas valide</b>', 'evarisk'), $userInfos);
 							$checkErrors++;
 						}
-						$checkIfMailExist = $wpdb->get_row("SELECT user_email FROM " . $wpdb->users . " WHERE user_email = '" . mysql_real_escape_string($userInfosComponent[4]) . "'");
+						$checkIfMailExist = $wpdb->get_row("SELECT user_email FROM " . $wpdb->users . " WHERE user_email = '" . ($userInfosComponent[4]) . "'");
 						if($checkIfMailExist){
 							$errors[] = sprintf(__('L\'adresse email <b>' . $userInfosComponent[4] . '</b> de la ligne %s est <b>d&eacute;j&agrave; utilis&eacute;</b>', 'evarisk'), $userInfos);
 							$checkErrors++;

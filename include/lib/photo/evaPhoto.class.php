@@ -30,8 +30,8 @@ class EvaPhoto {
 			"SELECT PICTURE.*, PICTURE_LINK.isMainPicture
 			FROM " . TABLE_PHOTO . " AS PICTURE
 				INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
-			WHERE PICTURE_LINK.tableElement='" . mysql_real_escape_string($tableElement) . "'
-				AND PICTURE_LINK.idElement='" . mysql_real_escape_string($idElement) . "'
+			WHERE PICTURE_LINK.tableElement='" . ($tableElement) . "'
+				AND PICTURE_LINK.idElement='" . ($idElement) . "'
 				AND PICTURE_LINK.status = 'valid'
 				AND " . $where . "
 			ORDER BY " . $order, "");

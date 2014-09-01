@@ -10,30 +10,30 @@ switch($_POST['act'])
 {
 
 	case 'addExtrait' :
-		$id = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
+		$id = (digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
 		$groupeQuestions = EvaGroupeQuestions::getGroupeQuestions($id);
 		$idGroupeQuestion = $groupeQuestions->id;
-		$extrait = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['extrait']));
+		$extrait = (digirisk_tools::IsValid_Variable($_POST['extrait']));
 		EvaGroupeQuestions::updateExtraitGroupeQuestions($idGroupeQuestion, $extrait);
 		break;
 
 	case 'save' :
-		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['nom']));
+		$nom = (digirisk_tools::IsValid_Variable($_POST['nom']));
 		EvaGroupeQuestions::saveNewGroupeQuestions($nom);
 		$nouveauGroupeQuestions = EvaGroupeQuestions::getGroupeQuestionsByName($nom);
 		$_POST['id'] =  $nouveauGroupeQuestions->id;
 	case 'update' :
-		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['id']));
-		$nom = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['nom']));
-		$code = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['code']));
-		$idGroupeQuestionPere = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idPere']));
+		$idGroupeQuestion = (digirisk_tools::IsValid_Variable($_POST['id']));
+		$nom = (digirisk_tools::IsValid_Variable($_POST['nom']));
+		$code = (digirisk_tools::IsValid_Variable($_POST['code']));
+		$idGroupeQuestionPere = (digirisk_tools::IsValid_Variable($_POST['idPere']));
 		if( !empty($_POST['extrait']) ) {
-			$extrait = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['extrait']));
+			$extrait = (digirisk_tools::IsValid_Variable($_POST['extrait']));
 		}
 		EvaGroupeQuestions::updateGroupeQuestions($idGroupeQuestion, $nom, $code, $idGroupeQuestionPere, $extrait);
 		break;
 	case 'delete':
-		$idGroupeQuestion = mysql_real_escape_string(digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
+		$idGroupeQuestion = (digirisk_tools::IsValid_Variable($_POST['idGroupeQuestion']));
 		EvaGroupeQuestions::deleteGroupeQuestions($idGroupeQuestion);
 		break;
 }

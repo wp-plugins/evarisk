@@ -111,7 +111,7 @@ class EvaDanger {
 		$nom = digirisk_tools::IsValid_Variable($nom);
 		$idCategorieMere = digirisk_tools::IsValid_Variable($idCategorieMere);
 
-		$sql = "INSERT INTO " . TABLE_DANGER . " (`nom`, `id_categorie`, `Status`) VALUES ('" . mysql_real_escape_string($nom) . "', '" . mysql_real_escape_string($idCategorieMere) . "', 'Valid')";
+		$sql = "INSERT INTO " . TABLE_DANGER . " (`nom`, `id_categorie`, `Status`) VALUES ('" . ($nom) . "', '" . ($idCategorieMere) . "', 'Valid')";
 		$wpdb->query($sql);
 	}
 
@@ -125,7 +125,7 @@ class EvaDanger {
 		$description = digirisk_tools::IsValid_Variable($description);
 		$id_methode_eva = digirisk_tools::IsValid_Variable($id_methode_eva);
 
-		$sql = "UPDATE " . TABLE_DANGER . " set `nom`='" . mysql_real_escape_string($nom) . "', `id_categorie`='" . mysql_real_escape_string($idCategorieMere) . "', description='" . mysql_real_escape_string($description) . "'  , choix_danger='" . $tab . "' , methode_eva_defaut='" . mysql_real_escape_string($id_methode_eva) . "' WHERE `id`=" . mysql_real_escape_string($id);
+		$sql = "UPDATE " . TABLE_DANGER . " set `nom`='" . ($nom) . "', `id_categorie`='" . ($idCategorieMere) . "', description='" . ($description) . "'  , choix_danger='" . $tab . "' , methode_eva_defaut='" . ($id_methode_eva) . "' WHERE `id`=" . ($id);
 		$wpdb->query($sql);
 	}
 
