@@ -404,18 +404,22 @@ class digirisk_install	{
 	function make_specific_operation_on_update($version) {
 		global $wpdb, $standard_message_subject_to_send, $standard_message_to_send;
 
+		$do_changes_for_specific = false;
 		switch($version){/*	Check different version for specific action	*/
 			case 17:{
 				$sql = "UPDATE " . TABLE_DUER . " SET groupesUtilisateursAffectes = groupesUtilisateurs ";
 				$wpdb->query($sql);
+				$do_changes_for_specific = true;
 			}break;
 			case 19:{
 				$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET idEvaluateur = '1' ";
 				$wpdb->query($sql);
+				$do_changes_for_specific = true;
 			}break;
 			case 20:{
 				$sql = "UPDATE " . TABLE_AVOIR_VALEUR . " SET Status = 'Moderated' WHERE Status != 'Valid' ";
 				$wpdb->query($sql);
+				$do_changes_for_specific = true;
 			}break;
 			case 21:{
 				$sql = "SELECT GROUP_CONCAT( id ) as LIST FROM " . TABLE_AVOIR_VALEUR . " GROUP BY id_risque, DATE";
@@ -427,10 +431,12 @@ class digirisk_install	{
 					$sql = $wpdb->prepare("UPDATE " . TABLE_AVOIR_VALEUR . " SET id_evaluation = '%d' WHERE id IN (" . $listID->LIST . ")", $newId->newId);
 					$wpdb->query($sql);
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 25:{
 				$sql = $wpdb->prepare("INSERT INTO " . TABLE_LIAISON_USER_ELEMENT . " SELECT '', status, date, 1, '', 0, id_user, id_element, table_element FROM " . TABLE_LIAISON_USER_EVALUATION ."", "");
 				$wpdb->query($sql);
+				$do_changes_for_specific = true;
 			}break;
 			case 26:{
 				$sql = "UPDATE " . TABLE_DUER . " SET id_model = '1'";
@@ -439,10 +445,12 @@ class digirisk_install	{
 				if(is_dir(EVA_MODELES_PLUGIN_OLD_DIR) && !is_dir(EVA_MODELES_PLUGIN_DIR)){
 					rename(EVA_MODELES_PLUGIN_OLD_DIR, EVA_MODELES_PLUGIN_DIR);
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 29:{
 				$sql = "INSERT INTO " . TABLE_PHOTO_LIAISON . " SELECT '', status, isMainPicture, id, idDestination, tableDestination FROM " . TABLE_PHOTO . ";";
 				$wpdb->query($sql);
+				$do_changes_for_specific = true;
 			}break;
 			case 35:{
 				digirisk_tools::make_recursiv_dir(EVA_GENERATED_DOC_DIR);
@@ -454,6 +462,7 @@ class digirisk_install	{
 				if(is_dir(EVA_RESULTATS_PLUGIN_OLD_DIR) && !is_dir(EVA_RESULTATS_PLUGIN_DIR)){
 					digirisk_tools::copyEntireDirectory(EVA_RESULTATS_PLUGIN_OLD_DIR, EVA_RESULTATS_PLUGIN_DIR);
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 41:{
 				$sql = "SELECT * FROM " . TABLE_UTILISE_EPI;
@@ -489,6 +498,7 @@ class digirisk_install	{
 					}
 					$wpdb->insert(TABLE_LIAISON_PRECONISATION_ELEMENT, array('status' => 'valid', 'id_preconisation' => $newEpiId, 'id_element' => $epi_utilise->elementId, 'table_element' => $epi_utilise->elementTable));
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 44:{
 				if( $wpdb->get_var("show tables like '" . TABLE_VERSION . "'") == TABLE_VERSION ){/*	Deplacement de la gestion des version	*/
@@ -624,6 +634,7 @@ class digirisk_install	{
 					$query = $wpdb->prepare("RENAME TABLE " . TABLE_EVA_EVALUATOR_GROUP_DETAILS . " TO " . TRASH_DIGI_DBT_EVALUATOR_GROUP_DETAILS, "");
 					$wpdb->query($query);
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 66:{
 				$deleted_grpt_list = EvaGroupement::getGroupements("Status = 'deleted'");
@@ -645,6 +656,7 @@ class digirisk_install	{
 						}
 					}
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 67:{
 				$query = $wpdb->prepare("SELECT action FROM " . DIGI_DBT_ELEMENT_NOTIFICATION, "");
@@ -652,6 +664,7 @@ class digirisk_install	{
 				foreach($action_list as $action){
 					$wpdb->update(DIGI_DBT_ELEMENT_NOTIFICATION, array('last_update_date' => current_time('mysql', 0), 'action_title' => __($action->action, 'evarisk'), 'message_to_send' => $standard_message_to_send, 'message_subject' => $standard_message_subject_to_send), array('action' => $action->action));
 				}
+				$do_changes_for_specific = true;
 			}break;
 			case 69:{
 				$user_list = evaUser::getUserList();
@@ -661,6 +674,7 @@ class digirisk_install	{
 						$user->has_cap('digi_ask_action_front');
 					}
 				}
+				$do_changes_for_specific = true;
 			}break;
 
 			case '73':
@@ -859,6 +873,7 @@ class digirisk_install	{
 				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Vibrations', 'evarisk')));
 				$risque_vibrations = $wpdb->get_var($query);
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode_vibration_main_bras), array('id' => $risque_vibrations));
+				$do_changes_for_specific = true;
 			break;
 
 			case 74:
@@ -887,11 +902,13 @@ class digirisk_install	{
 						}
 					}
 				}
+				$do_changes_for_specific = true;
 			break;
 
 			case 76:
 				$wpdb->update(TABLE_FP, array('document_type' => 'fiche_de_groupement'), array('table_element' => TABLE_GROUPEMENT));
 				$wpdb->update(TABLE_FP, array('document_type' => 'fiche_de_poste'), array('table_element' => TABLE_UNITE_TRAVAIL));
+				$do_changes_for_specific = true;
 			break;
 
 			case 77:
@@ -916,6 +933,7 @@ class digirisk_install	{
 						$wpdb->update(TABLE_AVOIR_VALEUR, array('commentaire' => $risk->commentaire), array('id' => $risk->id));
 					}
 				}
+				$do_changes_for_specific = true;
 			break;
 
 			case 79:
@@ -1035,7 +1053,8 @@ class digirisk_install	{
 				$query = $wpdb->prepare("SELECT id FROM " . TABLE_DANGER . " WHERE nom = %s ", __('Divers', 'evarisk') . ' ' . strtolower(__('Activit&eacute; physique', 'evarisk')));
 				$risque_categorie = $wpdb->get_var($query);
 				$wpdb->update(TABLE_DANGER, array('choix_danger' => serialize(array('penibilite')), 'methode_eva_defaut' => $methode), array('id' => $risque_categorie));
-				break;
+					$do_changes_for_specific = true;
+			break;
 
 			case 80:
 				/**	Update real affectation date with affectation date defined by the click on the user	*/
@@ -1067,7 +1086,8 @@ class digirisk_install	{
 							$wpdb->insert(TABLE_ACTIVITE_SUIVI, array('id' => null, 'status' => 'Valid', 'date' => current_time('mysql', 0), 'id_user' => $evaluation_infos->idEvaluateur, 'id_element' => $evaluation_infos->id_evaluation, 'table_element' => TABLE_AVOIR_VALEUR, 'commentaire' => $evaluation_infos->commentaire, 'date_ajout' => $evaluation_infos->date, 'export' => 'yes'));
 					}
 				}
-				break;
+					$do_changes_for_specific = true;
+			break;
 			case 81:
 				/**	Add a position to the danger categories	*/
 				$wpdb->update(TABLE_CATEGORIE_DANGER, array('position' => 1), array( 'nom' => __('Accident de plain-pied', 'evarisk') ));
@@ -1158,6 +1178,7 @@ class digirisk_install	{
 					$query = $wpdb->prepare( "SELECT id FROM " . TABLE_METHODE . " WHERE nom = %s", __('Travail en &eacute;quipe successives alternantes', 'evarisk') );
 					$methode_id = $wpdb->get_var( $query );
 				$wpdb->update(TABLE_AVOIR_VARIABLE, array('id_variable'=>$var_id, 'ordre'=>1, 'date'=>current_time('mysql',0)), array('id_methode'=>$methode_id));
+				$do_changes_for_specific = true;
 			break;
 
 			case 82:
@@ -1168,6 +1189,7 @@ class digirisk_install	{
 				$options['digi_ac_task_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
 				$options['digi_ac_activity_default_exportable_plan_action'] = array('name' => 'oui', 'description' => 'oui');
 				update_option('digirisk_options', $options);
+				$do_changes_for_specific = true;
 			break;
 
 			case 83:
@@ -1193,11 +1215,13 @@ class digirisk_install	{
 						}
 					}
 				}
+				$do_changes_for_specific = true;
 			break;
 
 			case 84:
 				$wpdb->update( TABLE_GED_DOCUMENTS, array('categorie' => 'fiche_exposition_penibilite'), array('categorie' => 'fiches_de_penibilite') );
 				$wpdb->update( TABLE_FP, array('document_type' => 'fiche_exposition_penibilite'), array('document_type' => 'fiches_de_penibilite') );
+				$do_changes_for_specific = true;
 			break;
 
 			case 85:
@@ -1206,6 +1230,7 @@ class digirisk_install	{
 				foreach ( $user_to_unassociate as $user_meta ) {
 					$update_user = $wpdb->update( TABLE_LIAISON_USER_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'date_desaffectation_reelle' => $user_meta->meta_value, 'id_desAttributeur' => get_current_user_id()), array('id_user' => $user_meta->user_id, 'status' => 'valid') );
 				}
+				$do_changes_for_specific = true;
 			break;
 
 			case 86:
@@ -1229,6 +1254,7 @@ class digirisk_install	{
 				$options['digi_popin_size']['height'] = '600';
 				$options['digi_export_comment_in_doc'] = 'oui';
 				update_option('digirisk_options', $options);
+				$do_changes_for_specific = true;
 			break;
 
 			case 88:
@@ -1248,6 +1274,7 @@ class digirisk_install	{
 						$wpdb->update( TABLE_LIAISON_USER_ELEMENT, array( 'date_desaffectation_reelle' => $new_end_date, ), array( 'id' => $affectation->id, ) );
 					}
 				}
+				$do_changes_for_specific = true;
 			break;
 
 			case 89:
@@ -1293,8 +1320,19 @@ class digirisk_install	{
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$methode_amiante_id, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
+				$do_changes_for_specific = true;
 			break;
-		}
+
+			case 90:
+				$wpdb->delete( TABLE_AVOIR_VARIABLE, array( 'id_methode' => 0 ) );
+
+				/**	Clean database for method vars not used	*/
+				$query = $wpdb->prepare( "DELETE FROM " . TABLE_VARIABLE . " WHERE id NOT IN ( SELECT id_variable FROM " . TABLE_AVOIR_VARIABLE . ") ", array() );
+				$wpdb->query( $query );
+			break;
+	}
+
+		return $do_changes_for_specific;
 	}
 
 }

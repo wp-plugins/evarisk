@@ -514,7 +514,7 @@ class suivi_activite {
 
 			$date_input = '<input id="date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '" type="text" value="' . $selected_date . '" name="' . (!empty($specific_name_for_input) ? $specific_name_for_input . '[date_ajout]' : 'date_ajout') . '">';
 			$export_input = '<input' . $export_state . ' type="checkbox" name="' . (!empty($specific_name_for_input) ? $specific_name_for_input . '[export]' : 'export') . '" value="yes" id="digi_print_comment_in_doc_note' . $tableElement . $idElement .'_' . $specific_follow_up .  '" /> <label for="digi_print_comment_in_doc_note' . $tableElement . $idElement .'_' . $specific_follow_up .  '" >' . sprintf( __('Imprimer dans %s', 'evarisk'), $document_type_to_print ) . '</label>';
-			$comment_input = EvaDisplayInput::afficherInput('textarea', 'commentaire' . $tableElement . $idElement . '_' . $specific_follow_up, $comment, '', '', (!empty($specific_name_for_input) ? $specific_name_for_input . '[commentaire]' : 'commentaire'), false, true, 3);
+			$comment_input = EvaDisplayInput::afficherInput('textarea', 'commentaire' . $tableElement . $idElement . '_' . $specific_follow_up, $comment, '', '', (!empty($specific_name_for_input) ? $specific_name_for_input . '[commentaire]' : 'commentaire'), false, true, 7);
 
 			if ( !empty($output_type) && ( $output_type == 'inline' ) ) {
 				$output .= $date_input . '<br/>' . $export_input . $comment_input;
@@ -534,17 +534,10 @@ class suivi_activite {
 				$output .= '
 	<table summary="" cellpadding="0" cellspacing="0" style="width:100%;" >
 		<tr>
-			<td style="width:10%;" >&nbsp;</td>
-			<td style="width:80%;" >' . __('Commentaire', 'evarisk') . '</td>
-			<td style="width:10%;" ></td>
-		</tr>
-		<tr>
-			<td style="vertical-align:top; "  >
-				' . $date_input . '<br/><br/>
-				' . $export_input . '
-			</td>
-			<td >' . $comment_input . '</td>
-			<td style="vertical-align:top; " >';
+			<td style="width:20%;" >' . __('Commentaire', 'evarisk') . '</td>
+			<td style="width:40%;" >' . $date_input . '<span title="' . __( 'Maintenant', 'evarisk' ) . '" style="font-style: italic;cursor: pointer;" class="digi_use_current_date" >' . __('M', 'evarisk') . '</span></td>
+			<td style="width:40%;" >' . $export_input . '</td>
+			<td rowspan="2" >';
 
 				if ( $complete_interface ) {
 					$output .=
@@ -557,6 +550,9 @@ class suivi_activite {
 				$output .=
 			'</td>
 		</tr>
+		<tr>
+			<td colspan="3" >' . $comment_input . '</td>
+		</tr>
 	</table>';
 
 				if ( !empty($output_type) && ( $output_type != 'no_form' ) ) {
@@ -564,6 +560,7 @@ class suivi_activite {
 <form>';
 				}
 			}
+						$current_date = substr( current_time('mysql', 0), 0, -3 );
 
 			$output .= '
 <div title="' . __('Modification d\'un commentaire', 'evarisk') . '" id="digi_follow_up_update_box" ></div>
@@ -576,6 +573,20 @@ class suivi_activite {
 			regional: "fr_FR",
 		});
 		jQuery("#date_ajout' . $tableElement . $idElement .'_' . $specific_follow_up .  '").blur();
+
+		jQuery(".digi_use_current_date").click(function(){
+			var put_date = true;
+			if ( jQuery("#digi_parent_creation_date").val() != undefined ) {
+				if ( jQuery( "#digi_parent_creation_date" ).val() + ":00" > "' . $current_date . ':00" ) {
+					alert( digi_html_accent_for_js( "' . __('Vous ne pouvez pas mettre une date inf&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" ) );
+					put_date = false;
+				}
+			}
+
+			if ( put_date ) {
+				jQuery( "#date_ajout' . $tableElement . $idElement . '_' . $specific_follow_up . '" ).val( "' . $current_date . '" );
+			}
+		});
 
 		jQuery("#digi_follow_up_update_box").dialog({
 			autoOpen: false,

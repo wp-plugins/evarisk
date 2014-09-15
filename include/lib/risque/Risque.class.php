@@ -10,7 +10,7 @@ include_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');
 
 class Risque {
 
-	function getScoreRisque($risque, $method_option = ''){
+	function getScoreRisque( $risque, $method_option = '' ) {
 		$date_to_take = $risque[0]->date;
 		/*	Add option allowing to modify method behavior */
 		if(is_array($method_option)){
@@ -42,7 +42,7 @@ class Risque {
 
 		$listeOperateursComplexe = MethodeEvaluation::getOperateursMethode($methode->id, $date_to_take);
 		unset($listeOperateurs);$listeOperateurs = array();
-		foreach($listeOperateursComplexe as $operateurComplexe){
+		foreach ( $listeOperateursComplexe as $operateurComplexe ) {
 			$listeOperateurs[] = $operateurComplexe->operateur;
 		}
 		$listeValeursSimples;

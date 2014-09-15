@@ -290,15 +290,9 @@ class evaRecommandation
 	{
 		global $wpdb;
 
-		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'creation');
-		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_LIAISON_PRECONISATION_ELEMENT . "
-			(" . implode(', ', $whatToUpdate['fields']) . ")
-			VALUES
-			(" . implode(', ', $whatToUpdate['values']) . ") ", ""
-		);
+		$create = $wpdb->insert( TABLE_LIAISON_PRECONISATION_ELEMENT, $recommandationsinformations );
 
-		if( $wpdb->query($query) )
+		if( $create )
 		{
 			$reponseRequete = 'done';
 		}

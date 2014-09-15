@@ -591,13 +591,18 @@ th.columnCommentaireRisque*/
 .risk_not_controlled_task_list{ width:100%;	}
 .risk_not_controlled_task_list_check{	width:3%;	}
 
+.risk_date_change {
+	margin: 0 0 4px 0!important;
+}
 .risk_date_change li {
 	display: inline-block;
 	width: 30%;
 }
-.risk_date_change li div {
-	margin: 0 auto;
-	width: 75%;	
+.digi_use_current_date, .digi_use_current_date_for_risk {
+	padding: 0 4px 0 2px;
+	border: 2px solid #000;
+	border-radius: 13px;
+	margin: 0 4px;
 }
 
 .qr_current_risk{	width:70%; margin:30px auto; background-color: #CCCCCC;	}

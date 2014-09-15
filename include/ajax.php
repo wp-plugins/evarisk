@@ -1496,16 +1496,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 								break;
 						}
 						if ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') ) {
-							$date_shortcode = ' / <input type="hidden" value="' . substr( $employer_date, 0, -3 ) . '" id="digi_parent_creation_date" /><span id="digi_use_parent_date_for_risk" style="font-style: italic;cursor: pointer;" >' . __('Date de cr&eacute;ation du groupement employeur', 'evarisk') . '</span>';
+							$date_shortcode = ' / <input type="hidden" value="' . substr( $employer_date, 0, -3 ) . '" id="digi_parent_creation_date" /><span id="digi_use_parent_date_for_risk" style="font-style: italic;cursor: pointer;" title="' . __('Date de cr&eacute;ation du groupement employeur', 'evarisk') . '" >' . __('C', 'evarisk') . '</span>';
 						}
 						echo '
 <div class="clear" ></div>
 <ul class="risk_date_change">
 	<li>
 		<div>
-			' . __('Date de début du risque', 'evarisk') . '<br/>
-			<input type="text" name="digi_risk_date_start" id="digi_risk_date_start" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />
-			' . ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateDebutRisque) && ( $risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateDebutRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_date_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' . $date_shortcode : '') . '
+			' . __('Début du risque', 'evarisk') . '<br/>
+			<input type="text" name="digi_risk_date_start" id="digi_risk_date_start" value=""' . ($is_closed ? ' disabled="disabled" class="digi_input_date_disable" ' : '' ) . ' />' . (!$is_closed ? '<span title="' . __( 'Maintenant', 'evarisk' ) . '" style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_date_start" class="digi_use_current_date_for_risk" >' . __('M', 'evarisk') . '</span>' . $date_shortcode : '') . '
+			' . ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateDebutRisque) && ( $risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateDebutRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ). '
 		</div>
 	</li>
 					<!--
@@ -1519,9 +1519,9 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					-->
 	<li>
 		<div>
-			' . __('Date de fin du risque', 'evarisk') . '<br/>
-			<input type="text" name="digi_risk_end_start" id="digi_risk_end_start" value=""' . ($is_closed ? ' disabled="disabled"' : '' ) . ' />
-			' . ( !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $risque[0]->dateDebutRisque )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" />' : ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) ) . (!$is_closed ? '<br/><span style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_end_start" class="digi_use_current_date_for_risk" >' . __('Maintenant', 'evarisk') . '</span>' : '') . '
+			' . __('Fin du risque', 'evarisk') . '<br/>
+			<input type="text" name="digi_risk_end_start" id="digi_risk_end_start" value=""' . ($is_closed ? ' disabled="disabled"' : '' ) . ' />' . (!$is_closed ? '<span title="' . __( 'Maintenant', 'evarisk' ) . '" style="font-style: italic;cursor: pointer;" id="date_for_digi_risk_end_start" class="digi_use_current_date_for_risk" >' . __('M', 'evarisk') . '</span>' : '') . '
+			' . ( !empty($risque[0]->dateDebutRisque) && ($risque[0]->dateDebutRisque != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $risque[0]->dateDebutRisque )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de d&eacute;but du risque', 'evarisk') . '" />' : ( !empty($employer_date) && ($employer_date != '0000-00-00 00:00:00') && !empty($risque[0]->dateFinRisque) && ( $risque[0]->dateFinRisque != '0000-00-00 00:00:00') && (strtotime( $risque[0]->dateFinRisque ) < strtotime( $employer_date )) ? '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-no-reponse.gif" alt="' . __('La date de fin de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" title="' . __('La date de d&eacute;but de risque est sup&eacute;rieure &agrave; la date de cr&eacute;ation du groupement employeur', 'evarisk') . '" />' : '' ) ) . '
 		</div>
 	</li>
 </ul>';

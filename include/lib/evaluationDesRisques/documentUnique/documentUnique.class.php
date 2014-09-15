@@ -85,6 +85,34 @@ class eva_documentUnique {
 				$niveauSeuil = Risque::getSeuil($quotation);
 				$elementPrefix = '';
 
+				/**	Get method and vars definition	*/
+				$methode_info = MethodeEvaluation::getMethod($risque[0]->id_methode);
+				$listeVariables = MethodeEvaluation::getVariablesMethode($risque[0]->id_methode, $risque[0]->date);
+				unset($listeIdVariables);
+				$listeIdVariables = array();
+				foreach ( $listeVariables as $ordre => $variable ) {
+					$listeIdVariables[ '"' . $variable->id . '"' ][ ]=$ordre;
+				}
+
+				if ( __( 'Amiante', 'evarisk' ) == $methode_info->nom ) {
+					foreach ($risque as $ligneRisque) {
+						$date_to_take = $risque[0]->date;
+						if (!empty($listeIdVariables) && !empty($listeIdVariables['"' . $ligneRisque->id_variable . '"']) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
+							foreach ($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre) {
+								$var_infos = eva_Variable::getVariable($ligneRisque->id_variable);
+								$var_name_to_output = $var_infos->nom;
+								$var_value_to_output = Eva_variable::getValeurAlternative( $ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take );
+								if ( ( "checkbox" == $var_infos->affichageVar ) && ( $var_value_to_output == $ligneRisque->valeur ) ) {
+									$var_question_def = unserialize( $var_infos->questionVar );
+									$var_value_to_output = $var_question_def[ $ligneRisque->valeur ][ 'question' ];
+									$var_name_to_output = $var_infos->questionTitre;
+								}
+								$quotation .= ' - ' . $var_value_to_output;
+							}
+						}
+					}
+				}
+
 				$date_shortcode = '';
 				$employer_date = null;
 				switch ($tableElement) {/*	Define the prefix for the current element looking on the type	*/
@@ -330,20 +358,21 @@ class eva_documentUnique {
 					}
 
 					$methode_details = '';
-					$methode_info = MethodeEvaluation::getMethod($risque[0]->id_methode);
-					$listeVariables = MethodeEvaluation::getVariablesMethode($risque[0]->id_methode, $risque[0]->date);
-					unset($listeIdVariables);
-					$listeIdVariables = array();
-					foreach ($listeVariables as $ordre => $variable) {
-						$listeIdVariables['"' . $variable->id . '"'][]=$ordre;
-					}
+
 					unset($listeValeurs);
 					foreach ($risque as $ligneRisque) {
 						$date_to_take = $risque[0]->date;
 						if (!empty($listeIdVariables) && !empty($listeIdVariables['"' . $ligneRisque->id_variable . '"']) && is_array($listeIdVariables['"' . $ligneRisque->id_variable . '"'])) {
 							foreach ($listeIdVariables['"' . $ligneRisque->id_variable . '"'] as $ordre) {
 								$var_infos = eva_Variable::getVariable($ligneRisque->id_variable);
-								$listeValeurs[$ordre] = '<br />' . ELEMENT_IDENTIFIER_V . $ligneRisque->id_variable . ' - ' . $var_infos->nom . ' : ' . Eva_variable::getValeurAlternative($ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take);
+								$var_name_to_output = $var_infos->nom;
+								$var_value_to_output = Eva_variable::getValeurAlternative( $ligneRisque->id_variable, $ligneRisque->valeur, $date_to_take );
+								if ( ( "checkbox" == $var_infos->affichageVar ) && ( $var_value_to_output == $ligneRisque->valeur ) ) {
+									$var_question_def = unserialize( $var_infos->questionVar );
+									$var_value_to_output = $var_question_def[ $ligneRisque->valeur ][ 'question' ];
+									$var_name_to_output = $var_infos->questionTitre;
+								}
+								$listeValeurs[$ordre] = '<br />' . ELEMENT_IDENTIFIER_V . $ligneRisque->id_variable . ' - ' . $var_name_to_output . ' : ' . $var_value_to_output;
 							}
 						}
 					}
@@ -823,8 +852,10 @@ class eva_documentUnique {
 						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['photoAssociee'] = $informationsRisque[7]['value'];
 						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['methodeElement'] = $informationsRisque[8]['value'];
 					}
-					else
+					else {
 						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
+						$listeRisque[SEUIL_BAS_INACCEPTABLE][$informationsRisque[$indexQuotation]['value']][$key]['infoQuotationRisque'] = $informationsRisque[6]['value'];
+					}
 				}
 				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_ATRAITER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_ATRAITER)){
 					$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
@@ -839,8 +870,10 @@ class eva_documentUnique {
 						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['photoAssociee'] = $informationsRisque[7]['value'];
 						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['methodeElement'] = $informationsRisque[8]['value'];
 					}
-					else
+					else {
 						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
+						$listeRisque[SEUIL_BAS_ATRAITER][$informationsRisque[$indexQuotation]['value']][$key]['infoQuotationRisque'] = $informationsRisque[6]['value'];
+					}
 				}
 				elseif(($informationsRisque[$indexQuotation]['value'] >= SEUIL_BAS_APLANIFIER) && ($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_APLANIFIER)){
 					$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
@@ -855,8 +888,10 @@ class eva_documentUnique {
 						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['photoAssociee'] = $informationsRisque[5]['value'];
 						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['methodeElement'] = $informationsRisque[8]['value'];
 					}
-					else
+					else {
 						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
+						$listeRisque[SEUIL_BAS_APLANIFIER][$informationsRisque[$indexQuotation]['value']][$key]['infoQuotationRisque'] = $informationsRisque[6]['value'];
+					}
 				}
 				elseif(($informationsRisque[$indexQuotation]['value'] <= SEUIL_HAUT_FAIBLE)){
 					$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['nomElement'] = $informationsRisque[0]['value'];
@@ -871,8 +906,10 @@ class eva_documentUnique {
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['photoAssociee'] = $informationsRisque[7]['value'];
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['methodeElement'] = $informationsRisque[8]['value'];
 					}
-					else
+					else {
 						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['commentaireRisque'] = $informationsRisque[4]['value'];
+						$listeRisque[SEUIL_BAS_FAIBLE][$informationsRisque[$indexQuotation]['value']][$key]['infoQuotationRisque'] = $informationsRisque[6]['value'];
+					}
 				}
 			}
 			if(!empty($listeRisque[SEUIL_BAS_FAIBLE]) && is_array($listeRisque[SEUIL_BAS_FAIBLE]))krsort($listeRisque[SEUIL_BAS_FAIBLE]);

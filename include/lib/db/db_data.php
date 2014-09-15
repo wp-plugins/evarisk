@@ -123,9 +123,9 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 
 	$digirisk_db_content_update[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('datas' => array('parDefaut' => 'oui'), 'where' => array('id_element' => '0', 'table_element' => 'all'));
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	$eva_gestionDoc = new eva_gestionDoc();	
+	$eva_gestionDoc = new eva_gestionDoc();
 	$digirisk_db_content_update[$digirisk_db_version][TABLE_FP][] = array('datas' => array('id_model' => $eva_gestionDoc->getDefaultDocument('fiche_de_poste')), 'where' => array());
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//$digirisk_db_content_update[$digirisk_db_version][TABLE_FP][] = array('datas' => array('id_model' => eva_gestionDoc::getDefaultDocument('fiche_de_poste')), 'where' => array());
 
@@ -164,7 +164,7 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 
 		$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Protection obligatoire des mains', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/obligations/obligationMains_s.png', 'yes', TABLE_PRECONISATION, 'Protection obligatoire des mains')), 'parent_element' => '&eacute;quipements de protection individuelle');
 
-		$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'rotection obligatoire du corps', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/obligations/obligationCorps_s.png', 'yes', TABLE_PRECONISATION, 'rotection obligatoire du corps')), 'parent_element' => '&eacute;quipements de protection individuelle');
+		$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Protection obligatoire du corps', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/obligations/obligationCorps_s.png', 'yes', TABLE_PRECONISATION, 'rotection obligatoire du corps')), 'parent_element' => '&eacute;quipements de protection individuelle');
 
 		$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Protection obligatoire de la figure', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/obligations/obligationFigure_s.png', 'yes', TABLE_PRECONISATION, 'Protection obligatoire de la figure')), 'parent_element' => '&eacute;quipements de protection individuelle');
 
@@ -345,7 +345,7 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 		foreach($inrs_danger_categories as $danger_cat){
 			if(!empty($danger_cat['version']) && ($danger_cat['version'] == $digirisk_db_version)){
 
-				$categorieDangers = new CategorieDangers();		
+				$categorieDangers = new CategorieDangers();
 				$new_danger_cat_id = $categorieDangers->saveNewCategorie($danger_cat['nom']);
 
 				/*	If user ask to add danger in categories	*/
@@ -357,7 +357,7 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 				}
 
 				/*	Insert picture for danger categories	*/
-				
+
 				$evaPhoto = new EvaPhoto();
 				$new_cat_pict_id = $evaPhoto->saveNewPicture(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $danger_cat['picture']);
 				$evaPhoto->setMainPhoto(TABLE_CATEGORIE_DANGER, $new_danger_cat_id, $new_cat_pict_id, 'yes');
@@ -453,3 +453,12 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	$digirisk_db_content_add[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('status' => 'valid', 'parDefaut' => 'oui', 'dateCreation' => current_time('mysql', 0), 'idCreateur' => 1, 'dateSuppression' => null, 'idSuppresseur' => 0, 'id_element' => 0, 'table_element' => 'all', 'categorie' => 'fiche_action', 'nom' => 'modele_default_fiche_action.odt', 'chemin' => 'uploads/modeles/planDActions/');
 }
 
+{
+	$digirisk_db_version = 90;
+
+	$digirisk_db_content_update[$digirisk_db_version][TABLE_CATEGORIE_PRECONISATION][] = array('datas' => array('nom' => 'Protection obligatoire du corps'), 'where' => array('nom' => 'rotection obligatoire du corps'));
+
+	$digirisk_db_content_add[$digirisk_db_version][TABLE_CATEGORIE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => '&Eacute;quipement de protection collective', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/epc/preconisations_epc_s.png', 'yes', TABLE_CATEGORIE_PRECONISATION, '&Eacute;quipement de protection collective')));
+
+	$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Divers &eacute;quipement de protection collective', '	preconisation_type' => 'collectives', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/epc/preconisations_epc_s.png', 'yes', TABLE_PRECONISATION, 'Divers &eacute;quipement de protection collective')), 'parent_element' => '&Eacute;quipement de protection collective');
+}

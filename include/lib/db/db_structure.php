@@ -1892,3 +1892,9 @@ KEY tableElement (tableElement)
 	$digirisk_db_version = 89;
 	$digirisk_update_way[$digirisk_db_version] = 'data';
 }
+
+
+{/*	Version 90	*/
+	$digirisk_db_version = 90;
+	$digirisk_update_way[$digirisk_db_version] = 'data';
+}

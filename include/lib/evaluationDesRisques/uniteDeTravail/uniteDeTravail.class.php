@@ -270,12 +270,20 @@ class eva_UniteDeTravail {
 	* @param string $idAdresse Identifier of the address working unit name in the Adress Table.
 	* @param string $idGroupementPere  father group id.
 	*/
-	function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere)
-	{
+	function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere) {
 		global $wpdb;
 
-		$sql = "UPDATE `" . TABLE_UNITE_TRAVAIL . "` SET `nom`='" . $nom . "', `description`='" . $description . "', `telephoneUnite`='" . $telephone . "', `effectif`='" . $effectif . "', `id_adresse`='" . $idAdresse . "', `id_groupement`='" . $idGroupementPere . "', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`='" . $id_unite . "'";
-		return $wpdb->query($sql);
+		$work_unit = array();
+		$work_unit[ 'nom' ] = $nom;
+		$work_unit[ 'description' ] = $description;
+		$work_unit[ 'telephoneUnite' ] = $telephone;
+		$work_unit[ 'effectif' ] = $effectif;
+		$work_unit[ 'id_adresse' ] = $idAdresse;
+		$work_unit[ 'id_groupement' ] = $idGroupementPere;
+		$work_unit[ 'lastupdate_date' ] = current_time('mysql', 0);
+
+		$update_result = $wpdb->update( TABLE_UNITE_TRAVAIL, $work_unit, array( 'id' => $id_unite, ) );
+		return $update_result;
 	}
 
 	/**

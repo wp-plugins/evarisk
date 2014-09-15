@@ -2113,7 +2113,7 @@ class eva_gestionDoc {
 													foreach ( $info_content_value as $preco ) {
 														if ($info_content_value['impressionRecommandation'] == 'pictureonly') {
 															$preco['recommandation_name'] = '';
-															$preco['commentaire'] = '';
+															//$preco['commentaire'] = '';
 														}
 
 														if ($preco['commentaire'] != '') {
@@ -2233,6 +2233,8 @@ class eva_gestionDoc {
 ", digirisk_tools::slugify_noaccent_no_utf8decode($element['actionPrevention']));
 					$element['methodeElement'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent_no_utf8decode($element['methodeElement']));
+					$element['infoQuotationRisque'] = str_replace('<br />', "
+", digirisk_tools::slugify_noaccent_no_utf8decode($element['infoQuotationRisque']));
 
 					$risque->setVars('nomElement', $element['nomElement'], true, 'UTF-8');
 					$risque->setVars('identifiantRisque', $element['identifiantRisque'], true, 'UTF-8');
@@ -2241,6 +2243,7 @@ class eva_gestionDoc {
 					$risque->setVars('commentaireRisque', $element['commentaireRisque'], true, 'UTF-8');
 					$risque->setVars('actionPrevention', $element['actionPrevention'], true, 'UTF-8');
 					$risque->setVars('methodeElement', $element['methodeElement'], true, 'UTF-8');
+					$risque->setVars('infoQuotationRisque', ( !empty( $element['infoQuotationRisque'] ) ? ' - ' . $element['infoQuotationRisque'] : '' ), true, 'UTF-8');
 
 					if(is_file(EVA_GENERATED_DOC_DIR . $element['photoAssociee'])){
 						$risque->setImage('photoAssociee', EVA_GENERATED_DOC_DIR . $element['photoAssociee'], digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
