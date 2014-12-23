@@ -369,7 +369,7 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Accident de plain-pied', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Chute de plain-pied', 'evarisk')) . "'";
 	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Activit&eacute; physique', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Manutention manuelle', 'evarisk')) . "'";
 	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Produits, &eacute;missions et d&eacute;chets', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Produits chimiques, d&eacute;chets', 'evarisk')) . "'";
-	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Agents biologique', 'evarisk') . "' WHERE LOWER(nom) = '" . $wpdb->escape(strtolower(__('Manque d\'hygi&egrave;ne', 'evarisk'))) . "'";
+	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('Agents biologique', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Manque d\'hygi&egrave;ne', 'evarisk')) . "'";
 	$digirisk_db_update[$digirisk_db_version][TABLE_CATEGORIE_DANGER][] = "UPDATE " . TABLE_CATEGORIE_DANGER . " SET nom = '" . __('&Eacute;quipements de travail', 'evarisk') . "' WHERE LOWER(nom) = '" . strtolower(__('Machines et outils', 'evarisk')) . "'";
 
 	/*	Rename danger and transfer to another category	*/
@@ -453,12 +453,13 @@ Vous recevez cette e-mail car vous &ecirc;tes affect&eacute; &agrave; l\'&eacute
 	$digirisk_db_content_add[$digirisk_db_version][TABLE_GED_DOCUMENTS][] = array('status' => 'valid', 'parDefaut' => 'oui', 'dateCreation' => current_time('mysql', 0), 'idCreateur' => 1, 'dateSuppression' => null, 'idSuppresseur' => 0, 'id_element' => 0, 'table_element' => 'all', 'categorie' => 'fiche_action', 'nom' => 'modele_default_fiche_action.odt', 'chemin' => 'uploads/modeles/planDActions/');
 }
 
-{
+{/*	Version 90	*/
 	$digirisk_db_version = 90;
 
-	$digirisk_db_content_update[$digirisk_db_version][TABLE_CATEGORIE_PRECONISATION][] = array('datas' => array('nom' => 'Protection obligatoire du corps'), 'where' => array('nom' => 'rotection obligatoire du corps'));
-
+	$digirisk_db_content_update[$digirisk_db_version][TABLE_PRECONISATION][] = array('datas' => array('nom' => 'Protection obligatoire du corps'), 'where' => array('nom' => 'rotection obligatoire du corps'));
 	$digirisk_db_content_add[$digirisk_db_version][TABLE_CATEGORIE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => '&Eacute;quipement de protection collective', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/epc/preconisations_epc_s.png', 'yes', TABLE_CATEGORIE_PRECONISATION, '&Eacute;quipement de protection collective')));
+}
 
-	$digirisk_db_content_add[$digirisk_db_version][TABLE_PRECONISATION][] = array('status' => 'valid', 'creation_date' => current_time('mysql', 0), 'nom' => 'Divers &eacute;quipement de protection collective', '	preconisation_type' => 'collectives', 'dependance' => array(TABLE_PHOTO =>  array('medias/images/Pictos/preconisations/epc/preconisations_epc_s.png', 'yes', TABLE_PRECONISATION, 'Divers &eacute;quipement de protection collective')), 'parent_element' => '&Eacute;quipement de protection collective');
+{/*	Version 91	*/
+	$digirisk_db_version = 91;
 }

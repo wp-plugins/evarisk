@@ -80,7 +80,9 @@ class evaUserLinkElement {
 				$more_script_affect = '
 				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("open");
 				jQuery("#digi_dialog_affect_user_' . $tableElement . '").dialog("option", "position", { my: "center", at: "center", of: jQuery("#userList' . $tableElement . '") });
-				jQuery("#digi_dialog_affect_user_' . $tableElement . '").children( "input" ).val( jQuery( "#digi-user-hiring-date-" + currentId ).val() );';
+				if ( undefined != jQuery( "#digi-user-hiring-date-" + currentId ).val() ) {
+					jQuery("#digi_dialog_affect_user_' . $tableElement . '").children( "input" ).val( jQuery( "#digi-user-hiring-date-" + currentId ).val() );
+				}';
 
 				$more_script_unaffect = '
  				jQuery("#digi_dialog_unaffect_user_' . $tableElement . '").dialog("open");
@@ -239,10 +241,10 @@ class evaUserLinkElement {
 
 <div id="userBlocContainer" class="clear hide" ><div onclick="javascript:userDeletion(digirisk(this).attr(\'id\'), \'' . $tableElement . '\');" class="selecteduserOP" title="' . __('Cliquez pour supprimer', 'evarisk') . '" >#USERNAME#<span class="ui-icon deleteUserFromList" >&nbsp;</span><div class="user_affectation_date" >#USERDATEAFFECTATION#</div></div></div>
 <div title="' . __('Affectation d\'un utilisateur', 'evarisk') . '" class="digi_affect_user_to_element" id="digi_dialog_affect_user_' . $tableElement . '" >
-	<label for="date_ajout' . $tableElement . $idElement . '" >' . __('Date d\'affectation', 'evarisk') . '</label> <input id="date_ajout' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_ajout" />
+	<label for="date_ajout' . $tableElement . $idElement . '" >' . __('Date d\'affectation', 'evarisk') . '</label> <input id="date_ajout' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, 16) . '" name="date_ajout" />
 </div>
 <div title="' . __('D&eacute;s-affectation d\'un utilisateur', 'evarisk') . '" class="digi_unaffect_user_to_element" id="digi_dialog_unaffect_user_' . $tableElement . '" >
-	<label for="date_suppression' . $tableElement . $idElement . '" >' . __('Date de d&eacute;saffectation', 'evarisk') . '</label> <input id="date_suppression' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, -3) . '" name="date_suppression" />
+	<label for="date_suppression' . $tableElement . $idElement . '" >' . __('Date de d&eacute;saffectation', 'evarisk') . '</label> <input id="date_suppression' . $tableElement . $idElement . '" type="text" value="' . substr(current_time('mysql', 0), 0, 16) . '" name="date_suppression" />
 </div>
 <input type="hidden" name="user_date_of_affectation_action" id="user_date_of_affectation_action" value="" />
 <input type="hidden" name="user_name_info_for_affectation" id="user_name_info_for_affectation" value="" />
@@ -293,13 +295,17 @@ class evaUserLinkElement {
 		jQuery("#date_ajout' . $tableElement . $idElement . '").datetimepicker({
 			dateFormat: "yy-mm-dd",
 			timeFormat: "hh:mm",
+			defaultTime: "' . substr( current_time('mysql', 0), 12, 5) . '",
+			defaultDate: "' . substr( current_time('mysql', 0), 0, 10) . '",
 		});
-		jQuery("#date_ajout' . $tableElement . $idElement . '").val( "' . substr(current_time('mysql', 0), 0, -3) . '" );
+	//	jQuery("#date_ajout' . $tableElement . $idElement . '").val( "' . substr(current_time('mysql', 0), 0, 10) . '" );
 		jQuery("#date_suppression' . $tableElement . $idElement . '").datetimepicker({
 			dateFormat: "yy-mm-dd",
 			timeFormat: "hh:mm",
+			defaultTime: "' . substr( current_time('mysql', 0), 12, 5) . '",
+			defaultDate: "' . substr( current_time('mysql', 0), 0, 10) . '",
 		});
-		jQuery("#date_suppression' . $tableElement . $idElement . '").val( "' . substr(current_time('mysql', 0), 0, -3) . '" );
+		//jQuery("#date_suppression' . $tableElement . $idElement . '").val( "' . substr(current_time('mysql', 0), 0, 16) . '" );
 
 		/*	Action when click on delete button	*/
 		jQuery("#userList' . $tableElement . ' .selecteduserOP").click(function(){
@@ -330,7 +336,7 @@ class evaUserLinkElement {
 					jQuery("#user_date_of_affectation_action").val( jQuery("#date_ajout' . $tableElement . $idElement . '").val() );
 					if ( jQuery("#affectation_type").val() == "single_user" ) {
 						cleanUserIdFiedList(jQuery("#user_id_for_affectation").val(), jQuery("#table_element_user_affectation").val());
-						addUserIdFieldList(jQuery("#user_name_info_for_affectation").val(), jQuery("#user_id_for_affectation").val(), jQuery("#table_element_user_affectation").val(), jQuery("#user_date_of_affectation_action").val());
+						//addUserIdFieldList(jQuery("#user_name_info_for_affectation").val(), jQuery("#user_id_for_affectation").val(), jQuery("#table_element_user_affectation").val(), jQuery("#user_date_of_affectation_action").val());
 					}
 					else if ( jQuery("#affectation_type").val() == "select_all" ) {
 						jQuery("#completeUserList' . $tableElement . ' .buttonActionUserLinkList").each(function() {
@@ -340,13 +346,13 @@ class evaUserLinkElement {
 								jQuery("#user_name_info_for_affectation").val("' . ELEMENT_IDENTIFIER_U . '" + jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", "") + " - " + lastname + " " + firstname);
 
 								cleanUserIdFiedList(jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), jQuery("#table_element_user_affectation").val());
-								addUserIdFieldList(jQuery("#user_name_info_for_affectation").val(), jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), jQuery("#table_element_user_affectation").val(), jQuery("#user_date_of_affectation_action").val());
+								//addUserIdFieldList(jQuery("#user_name_info_for_affectation").val(), jQuery(this).attr("id").replace("actionButton' . $tableElement . 'UserLink", ""), jQuery("#table_element_user_affectation").val(), jQuery("#user_date_of_affectation_action").val());
 							}
 						});
 					}
 
 					checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-					jQuery("#' . $idBoutonEnregistrer . '").click();
+					//jQuery("#' . $idBoutonEnregistrer . '").click();
 					jQuery(this).dialog("close");
 				},
 				"' . __('Annuler', 'evarisk') . '": function(){
@@ -399,7 +405,7 @@ class evaUserLinkElement {
 
 					if ( launch_action ) {
 						checkUserListModification("' . $tableElement . '", "' . $idBoutonEnregistrer . '");
-						jQuery("#' . $idBoutonEnregistrer . '").click();
+						//jQuery("#' . $idBoutonEnregistrer . '").click();
 						jQuery(this).dialog("close");
 					}
 				},

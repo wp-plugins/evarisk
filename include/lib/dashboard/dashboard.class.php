@@ -9,12 +9,28 @@ class dashboard {
 	{
 ?>
 	<div class="wrap">
-	<div id="evaDashboardIntro" >
-		<h2><b>EVARISK </b>: Progiciel gratuit d'aide &agrave; l'&eacute;valuation des risques professionnels</h2>
-		<p><b>Evarisk est specialis&eacute;e dans l'&eacute;tude m&eacute;thodologique de la pr&eacute;vention des risques.</b></p>
-		<p>Il d&eacute;coule de cette activit&eacute; la r&eacute;daction du document unique et les d&eacute;marches de pr&eacute;vention n&eacute;cessaires &agrave; la r&eacute;duction des risques.</p>
-		<p><b>Evarisk</b> vous propose le premier logiciel libre d'aide &agrave; la r&eacute;daction du document unique. Gr&acirc;ce &agrave; ce logiciel gratuit en Open Source, vous pourrez g&eacute;rer la totalit&eacute; des acteurs, des unit&eacute;s, et des dangers que vous devez recenser dans votre document unique.</p>
+
+	<div id="welcome-panel" class="welcome-panel digi-welcome-panel" >
+		<div class="welcome-panel-content">
+			<h3><?php _e( 'Bienvenue dans Digirisk', 'evarisk'); ?></h3>
+			<p class="about-description"><?php _e( 'Progiciel gratuit d\'aide &agrave; l\'&eacute;valuation des risques professionnels', 'evarisk'); ?></p>
+
+			<div class="welcome-panel-column-container">
+				<div class="welcome-panel-column">
+					<h4><?php printf( __( '%sEvarisk%s est une soci&eacute;t&eacute; specialis&eacute;e dans l\'&eacute;tude m&eacute;thodologique de la pr&eacute;vention des risques.', 'evarisk'), '<a href="http://www.evarisk.com" target="_blank" >', '</a>'); ?></h4>
+					<p><?php _e( 'Evarisk vous propose le premier logiciel libre d\'aide &agrave; la r&eacute;daction du document unique. Gr&acirc;ce &agrave; ce logiciel gratuit en Open Source, vous pourrez g&eacute;rer la totalit&eacute; des acteurs, des unit&eacute;s, et des dangers que vous devez recenser dans votre document unique.', 'evarisk' ); ?></p>
+				</div>
+				<div class="welcome-panel-column">
+					<h4><?php _e( 'Plus d\'informations', 'evarisk'); ?></h4>
+					<ul>
+						<li><div class="dashicons dashicons-book-alt"></div><?php printf( __( 'Plus d\'informations sur le logiciel Digirisk %s ou %s', 'evarisk'), sprintf( __( 'avec %sla documentation en ligne%s', 'evarisk'), '<a target="_blank" href="http://www.evarisk.com/document-unique-logiciel/documentation" >', '</a>'), sprintf( __( '%sle forum%s', 'evarisk'), '<a target="_blank" href="http://www.evarisk.com/forums" >', '</a>') ); ?></li>
+						<li><div class="dashicons dashicons-admin-plugins"></div><?php printf( __( 'Visitez notre %sboutique%s. Nous vous proposons des affiches, supports de formations ainsi que des illustrations', 'evarisk'), '<a target="_blank" href="http://www.evarisk.com/boutique" >', '</a>'); ?></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 	</div>
+
 	<div class="metabox-holder clear">
 		<script type="text/javascript">
 			digirisk(document).ready( function() {

@@ -185,7 +185,7 @@ CREATE TABLE {$t} (
   id_user_performer bigint(20) NOT NULL,
   id_element int(10) NOT NULL,
   table_element varchar(255) collate utf8_unicode_ci NOT NULL,
-  commentaire varchar(255) collate utf8_unicode_ci NOT NULL,
+  commentaire longtext collate utf8_unicode_ci NOT NULL,
   elapsed_time int(10) collate utf8_unicode_ci NOT NULL,
   cost float default NULL,
   PRIMARY KEY (id),
@@ -1897,4 +1897,16 @@ KEY tableElement (tableElement)
 {/*	Version 90	*/
 	$digirisk_db_version = 90;
 	$digirisk_update_way[$digirisk_db_version] = 'data';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_CATEGORIE_PRECONISATION][] = __('Ajout de la cat&eacute;gorie de pr&eacute;conisation: &Eacute;quipement de protection collective', 'evarisk');
+	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_PRECONISATION][] = __('Ajout de la pr&eacute;conisation: &Eacute;quipement de protection collective', 'evarisk');
+}
+
+{/*	Version 91	*/
+	$digirisk_db_version = 91;
+	$digirisk_update_way[$digirisk_db_version] = 'structure';
+
+	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_ACTIVITE_SUIVI] = array(array('field' => 'commentaire', 'type' => "longtext"));
+
+	$digirisk_db_table_list[$digirisk_db_version] = array( TABLE_ACTIVITE_SUIVI, TABLE_PRECONISATION, TABLE_CATEGORIE_PRECONISATION);
 }

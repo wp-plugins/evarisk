@@ -44,7 +44,11 @@ class digirisk_tools
 </div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
-		jQuery("#tools_tabs").tabs();
+		jQuery("#tools_tabs").tabs({
+			load: function( event, ui ){
+				jQuery("#digirisk_tools_tab_container").html( "" );
+			},
+		});
 		jQuery(".loading_pic_on_select a").click(function(){
 			jQuery("#digirisk_tools_tab_container").html(jQuery("#loadingImg").html());
 			jQuery("#digi_option_submit_button").hide();
@@ -191,7 +195,7 @@ class digirisk_tools
 		exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
 	}
 
-	function copyEntireDirectory($sourceDirectory, $destinationDirectory)
+	public static function copyEntireDirectory($sourceDirectory, $destinationDirectory)
 	{
 		if(is_dir($sourceDirectory))
 		{

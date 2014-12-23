@@ -22,7 +22,7 @@ class digirisk_permission
 	*/
 	const dbTable = DIGI_DBT_PERMISSION_ROLE;
 
-	function permission_list(){
+	public static function permission_list(){
 		{/*	Menu permission	*/
 		$permission['digi_view_dashboard_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'dashboard', 'permission_sub_module' => 'menu');
 		$permission['digi_view_recommandation_menu'] = array('set_by_default' => 'no', 'permission_type' => 'read', 'permission_sub_type' => '', 'permission_module' => 'recommandation', 'permission_sub_module' => 'menu');
@@ -190,15 +190,13 @@ class digirisk_permission
 	/**
 	*	Initialise permission for the administrator when installing the plugin
 	*/
-	function digirisk_init_permission()
-	{
+	public static function digirisk_init_permission() {
 		/*	R�cup�ration du r�le administrateur	*/
 		$role = get_role('administrator');
 
 		/*	R�cup�ration des "anciens" droits	*/
 		$droits = digirisk_permission::getDroitdigirisk();
-		foreach($droits as $droit => $appellation)
-		{/*	Lecture des "anciens" droits pour les retirer � l'administrateur	*/
+		foreach($droits as $droit => $appellation) {/*	Lecture des "anciens" droits pour les retirer � l'administrateur	*/
 			if(($role != null) && $role->has_cap($droit))
 			{
 				$role->remove_cap($droit);
@@ -1444,7 +1442,7 @@ class digirisk_permission
 	 *
 	 *	@return array The different right previously added by the plugin (before version 5.1.3.1)
 	 */
-	function getDroitdigirisk()
+	public static function getDroitdigirisk()
 	{
 		return array(
 			'Evarisk_:_utiliser_le_plugin' => __('utiliser le plugin','evarisk'),
@@ -1693,7 +1691,7 @@ class digirisk_permission
 			$permissionCap[$permission]['subtype'] = $permission_definition['permission_sub_type'];
 		}
 ?>
-<table class="form-table" >
+<table class="form-table" id="digi-user-right-table" >
 <?php
 		if(!empty($_REQUEST['user_id'])){
 ?>

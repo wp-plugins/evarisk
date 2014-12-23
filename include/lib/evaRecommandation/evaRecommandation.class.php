@@ -162,10 +162,10 @@ class evaRecommandation
 		evarisk("#' . $specific_container . 'recommandationNameIndication").html("<br/>' . ELEMENT_IDENTIFIER_P . $recommandation->id . ' - ' . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
 						else if (($i == 0) && empty($selectedRecommandation)) {
-							$checked =  ' checked="checked" ';
-							$selectedClass = 'recommandationSelected default';
-							$selectedId = 'evarisk("#' . $specific_container . 'recommandation_id").val("' . $recommandation->id . '");
-		evarisk("#' . $specific_container . 'recommandationNameIndication").html("<br/>' . ELEMENT_IDENTIFIER_P . $recommandation->id . ' - ' . ucfirst(strtolower($recommandation->nom)) . '");';
+// 							$checked =  ' checked="checked" ';
+// 							$selectedClass = 'recommandationSelected default';
+// 							$selectedId = 'evarisk("#' . $specific_container . 'recommandation_id").val("' . $recommandation->id . '");
+// 		evarisk("#' . $specific_container . 'recommandationNameIndication").html("<br/>' . ELEMENT_IDENTIFIER_P . $recommandation->id . ' - ' . ucfirst(strtolower($recommandation->nom)) . '");';
 						}
 						$recommandationMainPicture = '
 <div class="alignleft ' . $specific_container . 'recommandationBloc recommandationBloc ' . $selectedClass . '" >
@@ -547,6 +547,7 @@ class evaRecommandation
 		jQuery("#' . $specific_container . 'recommandationContainer").html(evarisk("#loadingImg").html());
 		jQuery.post(ajaxurl, {action: "digi_ajax_load_recommandation_from_category", outputMode :"' . $outputMode . '", id_categorie_preconisation: evarisk(this).val(), specific_container: "' . $arguments['form_container'] . '"}, function(response) {
 			jQuery("#' . $specific_container . 'recommandationContainer").html( response[0] );
+			jQuery("#' . $specific_container . 'associationFormContainer").children( "#recommandationFormContent" ).children( "textarea" ).show();
 		}, "json");
 
 		jQuery("#' . $specific_container . 'associationFormContainer").show();

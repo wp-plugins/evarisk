@@ -144,7 +144,7 @@ class eva_WorkUnitSheet {
 				</div>
 				<div id="modelListForGeneration" style="display:none;" >&nbsp;</div>
 			</div>
-			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches de postes', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" />
+			<input type="button" class="clear button-primary" value="' . __('G&eacute;n&eacute;rer les fiches des unit&eacute;s de travail', 'evarisk') . '" id="saveWorkUnitSheetForGroupement" />
 		</td>
 		<td id="documentModelContainer" >&nbsp;</td>
 	</tr>

@@ -100,6 +100,34 @@ class EvaDisplayDesign {
 				<span style="display:none;" id="equilize" class="enlarging"></span>
 				<span style="" id="leftEnlarging" class="leftEnlarging"></span>
 			</div>';
+
+			if ( false && TABLE_TACHE == $table ) {
+				$tasks_status = array( 'notStarted','inProgress','Done','DoneByChief' );
+				$debutPage .= '
+				<fieldset class="clear" id="digi-tree-options-container" >
+					<legend>' . __( 'Options d\'affichage de l\'arbre', 'evarisk' ) . '</legend>
+					<div class="digi-tree-options-content" >
+						<div class="digi-tree-options-task-status" >
+							<label>
+								' . __( 'Affichez uniquement les éléments ayant le statut :', 'evarisk' ) . '<br/>
+								<select id="digi-tree-element-status" multiple="multiple" >';
+				foreach ( $tasks_status as $status ) {
+				$debutPage .= '
+									<option value="' . $status . '" selected="selected" >' . __( $status, 'evarisk' ) . '</option>';
+				}
+				$debutPage .= '
+								</select>
+							</label>
+						</div>
+					</div>
+				</fieldset>
+				<script type="text/javascript" >
+					jQuery( document ).ready( function(){
+
+					});
+				</script>';
+			}
+
 		}
 		$debutPage .= '<div id="message" class="fade below-h2 evaMessage">' . $messageInfo . '</div>';
 		return $debutPage;

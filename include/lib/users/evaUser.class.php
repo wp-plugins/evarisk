@@ -594,6 +594,8 @@ $user_additionnal_field .= '
 						   )
 				) AS EVALUATED_USER,
 
+				1 AS NOT_EVALUATED_USER_SINCE,
+
 				1 AS NOT_EVALUATED_USER,
 
 				(
@@ -664,8 +666,13 @@ $user_additionnal_field .= '
 						$id = 'full_user_list';
 					break;
 					case 'EVALUATED_USER':
-						$statName = __('Utilisateur ayant particip&eacute; &agrave; l\'audit', 'evarisk');
+						$statName = __('Utilisateur ayant particip&eacute; au moins une fois &agrave; l\'audit', 'evarisk');
 						$id = 'user_affected_to_evaluation';
+					break;
+					case 'NOT_EVALUATED_USER_SINCE':
+						$statName = __('Utilisateur n\'ayant pas particip&eacute; &agrave; un audit depuis un certains temps', 'evarisk');
+						$id = 'user_not_affected_to_evaluation_SINCE';
+						$statValue = 'none';
 					break;
 					case 'NOT_EVALUATED_USER':
 						$statName = __('Utilisateur absent lors de l\'audit', 'evarisk');
@@ -833,6 +840,10 @@ $user_additionnal_field .= '
 				$title = __('Export de la liste du personnel au format csv', 'wpshop');
 				$_POST['list_to_display'] = '';
 			break;
+			case 'user_not_affected_to_evaluation_SINCE':
+				$title = __('Voir la liste des personnes absentes des audits depuis une date donn&eacute;e', 'wpshop');
+				$_POST['list_to_display'] = '';
+			break;
 		}
 
 		/**	Display user list asked for the current interface	*/
@@ -868,6 +879,30 @@ $user_additionnal_field .= '
 		}
 		else if ( $_POST['type'] == 'users_export' ) {
 
+		}
+		else if ( $_POST['type'] == 'user_not_affected_to_evaluation_SINCE' ) {
+			$from_date = '<input type="text" id="users_not_present_since" name="users_not_present_since" class="digi_users_not_present_since_datepicker" value="" />';
+			$get_mouvement_button = '<button id="view_users_not_present_since" >' . __('Voir', 'evarisk') . '</button>';
+			$output .= sprintf( __('Personnes n\'ayant pas particip&eacute;e a un audit depuis %s %s', 'evarisk'), $from_date, $get_mouvement_button ) . '
+<div id="digi_users_not_present_since" ></div>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery(".digi_users_not_present_since_datepicker").datepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: "yy-mm-dd",
+		});
+		jQuery("#view_users_not_present_since").click(function(){
+			var data = {
+				action: "digi_ajax_load_user_not_present_since_date",
+				date_from: jQuery("#users_not_present_since").val(),
+			};
+			jQuery.post("' . admin_url( 'admin-ajax.php' ) . '", data, function(response) {
+				jQuery("#digi_users_not_present_since").html( response);
+			});
+		});
+	});
+</script>';
 		}
 		else if ( !$output_from_another_way ) {
 			$output = $empty_list_message;
@@ -934,6 +969,123 @@ $user_additionnal_field .= '
 </script>';
 
 		return $output;
+	}
+
+	function digi_ajax_load_user_not_present_since_date() {
+		global $wpdb;
+		$output = '';
+
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
+			WHERE date_affectation_reelle < %s
+				AND ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') OR (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
+						OR (
+							(USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "')
+							AND (USER_LINK_EVALUATION.id_element IN (
+								SELECT DISTINCT USER_LINK_GROUP.id_group
+								FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
+								WHERE USER_LINK_GROUP.status = 'valid'
+							))
+						   )
+				AND id_user NOT IN (
+					SELECT id_user
+					FROM " . TABLE_LIAISON_USER_ELEMENT . " AS USER_LINK_EVALUATION
+					WHERE date_affectation_reelle > %s
+						AND ((USER_LINK_EVALUATION.table_element = '" . TABLE_UNITE_TRAVAIL . "_evaluation') OR (USER_LINK_EVALUATION.table_element = '" . TABLE_GROUPEMENT . "_evaluation'))
+						OR (
+							(USER_LINK_EVALUATION.table_element = '" . DIGI_DBT_USER_GROUP . "')
+							AND (USER_LINK_EVALUATION.id_element IN (
+								SELECT DISTINCT USER_LINK_GROUP.id_group
+								FROM " . DIGI_DBT_LIAISON_USER_GROUP . " AS USER_LINK_GROUP
+								WHERE USER_LINK_GROUP.status = 'valid'
+							))
+						   )
+				)
+			GROUP BY id_user
+			ORDER BY date_affectation_reelle
+		" , $_POST[ "date_from" ], $_POST[ "date_from" ]);
+		$user_list = $wpdb->get_results( $query );
+
+		$output .= '<fieldset style="margin:36px 0 0 0;" ><legend>' . sprintf( __('Personnel n\'ayant pas &eacute;t&eacute; revu depuis le %s', 'evarisk'), mysql2date( 'd/m/Y', $_POST[ "date_from" ], true ) ) . '</legend>';
+		if ( !empty($user_list) ) {
+
+			$output .=  '
+<table style="width:100%;" id="user_list_table"  >
+	<thead>
+		<tr>
+			<th style="text-align:left; " >' . __( 'Id.', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Pr&eacute;nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Derni&eacute;re &eacute;valuation', 'evarisk' ) . '</th>
+			<th style="text-align:right; " >-</th>
+		</tr>
+	</thead>
+	<tbody>';
+			foreach ( $user_list as $user ) {
+				if ( !in_array( $user->id_user, $done_users ) ) {
+					$user_info = evaUser::getUserInformation( $user->id_user );
+					$element_datas = '';
+					switch ( $user->table_element ) {
+						case TABLE_GROUPEMENT . '_evaluation':
+							$query = $wpdb->prepare( "SELECT nom FROM " . TABLE_GROUPEMENT . " WHERE id = %d", $user->id_element );
+							$nom_groupement = $wpdb->get_var( $query );
+							$element_datas = ELEMENT_IDENTIFIER_GP . $user->id_element . ' - ' . $nom_groupement;
+							break;
+						case TABLE_UNITE_TRAVAIL . '_evaluation':
+							$query = $wpdb->prepare( "SELECT nom FROM " . TABLE_UNITE_TRAVAIL . " WHERE id = %d", $user->id_element );
+							$nom_unite = $wpdb->get_var( $query );
+							$element_datas = ELEMENT_IDENTIFIER_GP . $user->id_element . ' - ' . $nom_unite;
+							break;
+						case DIGI_DBT_LIAISON_USER_GROUP:
+
+							break;
+					}
+					$output .= '
+	<tr>
+		<td>' . ELEMENT_IDENTIFIER_U . $user->id_user . '</td>
+		<td>' . $user_info[$user->id_user]['user_lastname'] . '</td>
+		<td>' . $user_info[$user->id_user]['user_firstname'] . '</td>
+		<td>' . sprintf( __( 'Sur %s le %s', 'evarisk' ), $element_datas, mysql2date( 'd/m/Y H:i', $user->date_affectation_reelle, true ) ) . '</td>
+		<td><a href="' . admin_url('users.php?page=digirisk_users_profil&amp;user_to_edit=' . $user->id_user) . '" target="digi_user_profil" ><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'view_vs.png" alt="' . __( 'Voir la fiche de l\'utiilsateur', 'evarisk' ) . '" title="' . __( 'Voir la fiche de l\'utiilsateur', 'evarisk' ) . '" /></a></td>
+	</tr>';
+					$done_users[] = $user_id;
+				}
+			}
+			$output .= '
+	</tbody>
+	<tfoot>
+		<tr>
+			<th style="text-align:left; " >' . __( 'Id.', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Pr&eacute;nom', 'evarisk' ) . '</th>
+			<th style="text-align:left; " >' . __( 'Derni&eacute;re &eacute;valuation', 'evarisk' ) . '</th>
+			<th style="text-align:right; " >-</th>
+		</tr>
+	</tfoot>
+</table>
+<script type="text/javascript" >
+	jQuery( document ).ready( function(){
+		var table = jQuery( "#user_list_table" ).dataTable( {
+			"bAutoWidth": false,
+			"bInfo": false,
+			"bPaginate": false,
+			"bFilter": false,
+	    });
+	});
+</script>';
+
+
+
+
+
+		}
+		else {
+			$output .= __("Aucun utilisateur entrant uniquement sur cette p&eacute;riode", 'evarisk');
+		}
+		$output .= '</fieldset>';
+
+		wp_die($output);
 	}
 
 	function digi_ajax_mouvement_between_dates() {
@@ -1502,7 +1654,26 @@ $user_additionnal_field .= '
 
 		{/*	Get user right	*/
 			$user_roles = '  ';
-			$digiPermissionForm='';
+			$digiPermissionForm = '
+				<div class="digi-profil-utilisateur-links-to-permission-editor" >
+					<span class="digi_alert" >' . __( 'ATTENTION! Cette interface ne permet que la visualisation des droits de l\'utilisateur. Pour modifier ces permissions utilisez un des liens ci-dessous', 'evarisk' ) . '</span>
+					<ul>
+						<li><a href="' . admin_url( 'users.php?page=digirisk_user_right&action=edit&role=' . $user->roles[ 0 ] ) . '" target="_digi_edit_user_role" >' . __( '&Eacute;dition des droits du r&ocirc;le de l\'utilisateur', 'evarisk' ) . '</a></li>
+						<li>';
+
+			if ( $user_to_edit != $current_user->ID ) {
+				$digiPermissionForm .= '
+							<a href="' . admin_url( 'user-edit.php?user_id=' . $user_to_edit . '#digi-user-right-table' ) . '" target="_digi_edit_user_specific_permission" >' . __( '&Eacute;dition des droits sp&eacute;cifique &agrave; l\'utilisateur', 'evarisk' ) . '</a>';
+			}
+			else {
+				$digiPermissionForm .=	__( 'Vous ne pouvez pas &eacute;diter vos propres permissions', 'evarisk' );
+			}
+
+			$digiPermissionForm .= '
+						</li>
+					</ul>
+				</div>
+			';
 			foreach($user->roles as $role){
 				$user_roles .= translate_user_role($role) . ', ';
 			}

@@ -53,7 +53,9 @@ class digirisk_options {
 			add_settings_field('digi_ac_allow_front_ask', __('Autoriser la demande d\'actions correctives depuis la partie front du portail', 'evarisk'), array('digirisk_options', 'digi_ac_allow_front_ask'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_front_ask_parent_task_id', '', array('digirisk_options', 'digi_ac_front_ask_parent_task_id'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_front_ask_create_parent_task', '', array('digirisk_options', 'digi_ac_front_ask_create_parent_task'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_front_ask_must_be_logged_in', '', array('digirisk_options', 'digi_ac_front_ask_must_be_logged_in'), 'digirisk_options_correctivaction', 'digi_options_ac');
 			add_settings_field('digi_ac_control_action_affectation', __('Affecter les actions de contr&ocirc;le &agrave; la t&acirc;che', 'evarisk'), array('digirisk_options', 'digi_ac_control_action_affectation'), 'digirisk_options_correctivaction', 'digi_options_ac');
+			add_settings_field('digi_ac_control_create_parent_task', '', array('digirisk_options', 'digi_ac_control_create_parent_task'), 'digirisk_options_correctivaction', 'digi_options_ac');
 		}
 
 		{/*	Declare the different options for the risks	*/
@@ -70,7 +72,7 @@ class digirisk_options {
 		{/*	Declare the different options for the work unit sheet	*/
 			add_settings_section('digi_fp_options', null, array('digirisk_options', 'options_output_fp'), 'digirisk_options_worksheet');
 			/*	Add the different field for current section	*/
-			add_settings_field('digi_fp_picsize_field', __('Taille de la photo dans la fiche de poste (cm)', 'evarisk'), array('digirisk_options', 'digi_fp_picsize_field'), 'digirisk_options_worksheet', 'digi_fp_options');
+			add_settings_field('digi_fp_picsize_field', __('Taille de la photo dans la fiche d\'unit&eacute; de travail (cm)', 'evarisk'), array('digirisk_options', 'digi_fp_picsize_field'), 'digirisk_options_worksheet', 'digi_fp_options');
 		}
 
 		{/*	Declare the different options for the recommandation	*/
@@ -139,8 +141,8 @@ class digirisk_options {
 	function digirisk_product_options_validator($input)
 	{
 
-		$newinput['product_categories'] = serialize($input['product_categories']);
-		$newinput['product_status'] = serialize($input['product_status']);
+		$newinput['product_categories'] = ($input['product_categories']);
+		$newinput['product_status'] = ($input['product_status']);
 		$newinput['digi_product_uncategorized_field'] = $input['digi_product_uncategorized_field'];
 
 		return $newinput;
@@ -174,7 +176,9 @@ class digirisk_options {
 		$newinput['digi_ac_allow_front_ask'] = (!empty($input['digi_ac_allow_front_ask'])?$input['digi_ac_allow_front_ask']:'');
 		$newinput['digi_ac_front_ask_parent_task_id'] = (!empty($input['digi_ac_front_ask_parent_task_id'])?$input['digi_ac_front_ask_parent_task_id']:'');
 		$newinput['digi_ac_front_ask_create_parent_task'] = (!empty($input['digi_ac_front_ask_create_parent_task']) ? $input['digi_ac_front_ask_create_parent_task'] : '');
+		$newinput['digi_ac_front_ask_must_be_logged_in'] = (!empty($input['digi_ac_front_ask_must_be_logged_in']) ? $input['digi_ac_front_ask_must_be_logged_in'] : '');
 		$newinput['digi_ac_control_action_affectation'] = (!empty($input['digi_ac_control_action_affectation'])?$input['digi_ac_control_action_affectation']:'');
+		$newinput['digi_ac_control_create_parent_task'] = (!empty($input['digi_ac_control_create_parent_task']) ? $input['digi_ac_control_create_parent_task'] : '');
 		$newinput['digi_ac_task_default_exportable_plan_action'] = (!empty($input['digi_ac_task_default_exportable_plan_action']) ? $input['digi_ac_task_default_exportable_plan_action'] : '');
 		$newinput['digi_ac_activity_default_exportable_plan_action'] = (!empty($input['digi_ac_activity_default_exportable_plan_action']) ? $input['digi_ac_activity_default_exportable_plan_action'] : '');
 
@@ -466,6 +470,15 @@ class digirisk_options {
 	/**
 	*	Define the output fot the field. Get the option value to put the good value by default
 	*/
+	function digi_ac_control_create_parent_task(){
+
+	}
+	function digi_ac_front_ask_must_be_logged_in(){
+
+	}
+	/**
+	*	Define the output fot the field. Get the option value to put the good value by default
+	*/
 	function digi_ac_allow_front_ask() {
 		global $optionYesNoList;
 		$options = get_option('digirisk_options');
@@ -480,11 +493,12 @@ class digirisk_options {
 			$task_to_associate->load();
 			$task_to_associate_label = ELEMENT_IDENTIFIER_T . $task_to_associate->getId() . ' - ' . $task_to_associate->getName();
 		}
-		if(current_user_can('digi_edit_option')){
+		if (current_user_can('digi_edit_option')) {
 			/* <br/><input type="checkbox" value="yes"' . (!empty($options['digi_ac_front_ask_create_parent_task']) && ($options['digi_ac_front_ask_create_parent_task'] == 'yes') ? ' checked="checked"' : '') . ' name="digirisk_options[digi_ac_front_ask_create_parent_task]" id="digi_ac_front_ask_create_parent_task" /> <label for="digi_ac_front_ask_create_parent_task" >' . __('Cr&eacute;er uniquement les sous-t&acirc;ches pour les demandes? (Si vous cochez cette case, les demandes seront stock&eacute;es directement dans la t&acirc;che indiqu&eacute;e ci-dessus)', 'evarisk') . '</label>  */
 			echo EvaDisplayInput::createComboBox('digi_ac_allow_front_ask', 'digirisk_options[digi_ac_allow_front_ask]', $optionYesNoList, $options['digi_ac_allow_front_ask']) . '<div id="associated_task_container" ' . $load_class . ' >' . __('T&acirc;che a associer', 'evarisk') . '&nbsp;:&nbsp;<input type="hidden" value="' . (!empty($options['digi_ac_front_ask_parent_task_id']) ? $options['digi_ac_front_ask_parent_task_id'] : '') . '" name="digirisk_options[digi_ac_front_ask_parent_task_id]" id="digi_ac_front_ask_parent_task_id" /><input type="text" value="" placeholder="' . (!empty($task_to_associate_label) ? $task_to_associate_label : __('Rechercher une t&acirc;che pour affectation', 'evarisk')) . '" name="digirisk_options[digi_ac_front_ask_parent_task_id_chooser]" id="digi_ac_front_ask_parent_task_id_chooser" class="auto-search-input" placeholder="' . __('Rechercher dans la liste des &eacute;l&eacute;ments', 'evarisk') . '" /><span title="' . __('D&eacute;saffecter la t&acirc;che aux demandes du frontend', 'evarisk') . '" id="digi_option_delete_associated_task_to_frontend_form" >X</span>
 			<div class="digi_ac_allow_front_ask_code_container" >' . __('Code &agrave; ins&eacute;rer dans votre page', 'evarisk') . '&nbsp;: [digirisk_correctiv_action]</div>
-			<div class="digi_ac_create_only_task" ><input type="checkbox" name="digirisk_options[digi_ac_front_ask_create_parent_task]"' . (!empty($options['digi_ac_front_ask_create_parent_task']) ? ' checked="checked"' : '') . ' value="yes" id="digi_ac_front_ask_create_parent_task" /> <label for="digi_ac_front_ask_create_parent_task">' . __('Cr&eacute;er uniquement une sous-t&acirc;che pour les demandes', 'evarisk') . '</label></div></div>
+			<div class="digi_ac_create_only_task" ><input type="checkbox" name="digirisk_options[digi_ac_front_ask_create_parent_task]"' . (!empty($options['digi_ac_front_ask_create_parent_task']) ? ' checked="checked"' : '') . ' value="yes" id="digi_ac_front_ask_create_parent_task" /> <label for="digi_ac_front_ask_create_parent_task">' . __('Cr&eacute;er uniquement une sous-t&acirc;che pour les demandes', 'evarisk') . '</label></div>
+			<div class="digi_ac_only_logged_in_people" ><input type="checkbox" name="digirisk_options[digi_ac_front_ask_must_be_logged_in]"' . (!empty($options['digi_ac_front_ask_must_be_logged_in']) ? ' checked="checked"' : '') . ' value="yes" id="digi_ac_front_ask_must_be_logged_in" /> <label for="digi_ac_front_ask_must_be_logged_in">' . __('Obligation d\'&ecirc;tre connect&eacute; &agrave; son compte pour effectuer une demande dans la partie front end ', 'evarisk') . '</label></div></div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		jQuery("#digi_ac_allow_front_ask").change(function(){
@@ -542,6 +556,7 @@ class digirisk_options {
 		}
 		if (current_user_can('digi_edit_option')) {
 			echo '<input type="hidden" value="' . (!empty($options['digi_ac_control_action_affectation']) ? $options['digi_ac_control_action_affectation'] : '') . '" name="digirisk_options[digi_ac_control_action_affectation]" id="digi_ac_control_action_affectation" /><input type="text" value="" name="digirisk_options[digi_ac_control_action_affectation_chooser]" id="digi_ac_control_action_affectation_chooser" class="auto-search-input" placeholder="' . (!empty($task_to_associate_label) ? $task_to_associate_label : __('Rechercher une t&acirc;che pour affectation', 'evarisk')) . '" /><span title="' . __('D&eacute;saffecter la t&acirc;che aux demandes du frontend', 'evarisk') . '" id="digi_option_delete_associated_task_to_control_task" >X</span>
+			<div class="digi_ac_create_only_task_for_control" ><input type="checkbox" name="digirisk_options[digi_ac_control_create_parent_task]"' . (!empty($options['digi_ac_control_create_parent_task']) ? ' checked="checked"' : '') . ' value="yes" id="digi_ac_control_create_parent_task" /> <label for="digi_ac_control_create_parent_task">' . __('Cr&eacute;er uniquement une sous-t&acirc;che pour les actions de contr&ocirc;le. (Ne sera effectif que si les actions de contr&ocirc;le sont affect&eacute;es &agrave; une t&acirc;che ci-dessus)', 'evarisk') . '</label></div>
 <script type="text/javascript" >
 	digirisk(document).ready(function(){
 		/*	Tree-element Search autocompletion	*/
@@ -1350,7 +1365,11 @@ Require valid-user';
 	</div>
 	<script type="text/javascript" >
 		digirisk(document).ready(function(){
-			jQuery("#options_tabs").tabs();
+			jQuery("#options_tabs").tabs({
+				load: function( event, ui ){
+					jQuery("#digirisk_configurations_tab").html( "" );
+				},
+			});
 			jQuery("#options_tabs ul li a").click(function(){
 				jQuery("#option_form").attr("action", "options.php" + jQuery(this).attr("href"));
 				jQuery("#digi_option_submit_button").show();

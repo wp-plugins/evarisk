@@ -250,7 +250,7 @@ class EvaActivity extends EvaBaseActivity
 			$ask_argument['provenance'] = 'ask_correctiv_action';
 			$ask_argument['output_mode'] = 'return';
 			$ask_argument['requested_action'] = 'ask_correctiv_action';
-			if(current_user_can('digi_ask_action_front')){
+			if( empty( $main_options['digi_ac_front_ask_must_be_logged_in'] ) || ( is_user_logged_in() && current_user_can( 'digi_ask_action_front' ) ) ) {
 				$task_asker = '
 	<div id="message' . $ask_argument['tableProvenance'] . '" class="digirisk_hide" >&nbsp;</div>
 	<div class="clear" >' .

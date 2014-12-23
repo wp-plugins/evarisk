@@ -746,9 +746,9 @@ td.details table{	margin:0px 0px 24px !important;	}
 	float: left;
 	margin: 0px 15px;
 }
-.digi_ac_allow_front_ask_code_container, .digi_ac_create_only_task {
+/* .digi_ac_allow_front_ask_code_container, .digi_ac_create_only_task {
 	margin: 0px -70px;
-}
+} */
 #digi_ac_front_ask_parent_task_id_chooser {
 	width: 40%;
 	float: none;
@@ -803,11 +803,7 @@ td.details table{	margin:0px 0px 24px !important;	}
 	width: 50px;
 }
 
-label.digi_alert {
-	color: red;
-	font-weight: bold;
-}
-.digi_alert label {
+label.digi_alert, .digi_alert label, span.digi_alert {
 	color: red;
 	font-weight: bold;
 }
@@ -868,7 +864,7 @@ label.digi_alert {
 .userListOutput{	height:230px;	width:100%;	overflow:auto;	padding:3px 0px; margin:6px 0px;	}
 .deleteduserOP{	min-width:150px; padding:3px 6px; background-color:#E09E9E; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
 .selecteduserOP{	min-width:150px; padding:3px 6px; background-color:#DDDDDD; margin:0px 6px 3px; white-space:no-wrap; float:left;	-webkit-border-radius:1em;	-moz-border-radius:1em;	border-radius:1em;}
-.selecteduserOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
+.unSelecteduserOP, .selecteduserOP:hover{	text-decoration:line-through; cursor:pointer; color:#CC0000;	}
 .deleteUserFromList{	float:right; background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 .deleteUserFromList:hover{	float:right; background: url("../../medias/jquery_pics/ui-icons_cd0a0a_256x240.png") !important; background-position: -80px -128px !important; width:16px; height:16px;	}
 
@@ -922,6 +918,11 @@ label.digi_alert {
 .digirisk_options_categories_list{	margin-left: 1.3em;	}
 .evarisk_options_explanation{	font-weight:bold; font-style:italic;	}
 #options_tabs{	border:0px;	}
+#options_tabs:after{
+	content: "";
+	display: table;
+	clear: both;
+}
 
 .digi_allowed_extension_for_AC_fieldset{	border:1px solid #C0C0C0;	width:60%; }
 .add_new_extension_to_allow, .delete_allowed_extension_for_ac_docs{	vertical-align:middle; width:20px;	}
@@ -1239,10 +1240,10 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
 	margin: 0 32px;
 }
 
-#postBoxUtilisateursEvaluated div.giveHeight, #postBoxUtilisateursEvaluated div.dataTables_scroll{
+#postBoxUtilisateursEvaluated div.giveHeight, #postBoxUtilisateursEvaluated div.dataTables_scroll, #postBoxUtilisateurs div.giveHeight, #postBoxUtilisateurs div.dataTables_scroll{
 	clear: both;
 }
-#postBoxUtilisateursEvaluated div.dataTables_wrapper{
+#postBoxUtilisateursEvaluated div.dataTables_wrapper, #postBoxUtilisateurs div.dataTables_wrapper{
 	min-height: 0px !important;
 }
 #postBoxUtilisateursEvaluated div.dataTables_paginate{
@@ -1251,6 +1252,9 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
 #digi-users-affectation-wp_eva__groupement_evaluation_filter, #digi-users-affectation-wp_eva__unite_travail_evaluation_filter{
 	float: left !important;
 	margin-top: 45px;
+}
+#digi-users-affectation-wp_eva__groupement_filter{
+	float: left !important;
 }
 .digi-opener{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: 0px -211px !important; width:16px; height:16px; margin:3px 0px; cursor: pointer;	}
 .digi-closer{	background: url("../../medias/jquery_pics/ui-icons_222222_256x240.png") !important; background-position: -16px -211px !important; width:16px; height:16px; margin:3px 0px; cursor: pointer;	}
@@ -1274,4 +1278,36 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
 
 .digirisk_page_digirisk_risk_evaluation .wpes-existing-export-container, .digirisk_page_digirisk_risk_evaluation .wpes-audit-result-export-container {
     width: 100% !important;
+}
+.digirisk_page_digirisk_risk_evaluation div.ui-widget-overlay.ui-front, .digirisk_page_digirisk_correctiv_actions div.ui-widget-overlay.ui-front, .settings_page_digirisk_options div.ui-widget-overlay.ui-front {
+	z-index: 3;
+}
+.digirisk_page_digirisk_risk_evaluation div.ui-dialog.ui-widget, .digirisk_page_digirisk_correctiv_actions div.ui-dialog.ui-widget, .settings_page_digirisk_options div.ui-dialog.ui-widget {
+	z-index: 5;
+}
+.digirisk_page_digirisk_risk_evaluation div.ui-slider.ui-slider-horizontal {
+	z-index: 1;
+}
+
+.digi-welcome-panel .welcome-panel-content {
+	width: 99% !important;	
+	max-width: initial;	
+}
+.digi-welcome-panel .welcome-panel-column {
+	width: 49% !important;
+}
+.digi-profil-utilisateur-links-to-permission-editor {
+	width: 65%;
+	margin: 0 auto;
+	border-radius: 10px;
+	border: 1px solid #000;
+	text-align: center;
+}
+.digi-profil-utilisateur-links-to-permission-editor ul {
+    margin: 20px auto;
+    text-align: left;
+    width: 30%;
+}
+.digi-profil-utilisateur-links-to-permission-editor ul li {
+	list-style-type: circle;
 }

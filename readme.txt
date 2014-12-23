@@ -3,8 +3,8 @@ Contributors: Evarisk
 Tags: Evaluation des risques, document unique, risques professionnels, audit risques, risques humains
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
-Tested up to: 3.4.0
-Stable tag: 5.1.8.8
+Tested up to: 4.1
+Stable tag: 5.1.8.9
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,22 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.8.9 =
+
+Am&eacute;liorations / Improvments
+
+* ST486 - Modification du type de champs pour les commentaires ( varchar -&gt; longtext ) / Comment field size have been changed from varchar to longtext
+* ST488 - Am&eacute;liorations de la s&eacute;curit&eacute; sur l'envoie des fichiers, images, etc / Security improvment on files, pictures, and so on upload
+* ST489 - Ajout d'une option pour d&eacute;finir si les utilisateurs doivent &ecirc;tre connect&eacute; ou non pour demander une action / Adding an option to define if user have to be connected or not for asking a task
+* ST490 - Cr&eacute;ation automatique des t&acirc;ches pour l'association aux demandes du front et les t&acirc;ches de contr&ocirc;le / Automatically create task for frontend asking and control task
+* ST491 - Possibilit&eacute; de voir la liste des personnnes n'ayant pas &eacute;t&eacute; vu durant les audits depuis une date donn&eacute;e / Add capability to view list of user that have not been present for evaluation since a given date
+
+Corrections
+
+* ST469 - Lors de l'affectation d'un utilisateur la date du jour est prise sauf si une date d'embauche est d&eacute;finie / When linking a user to an element the adte of the day is taken unless an hiring date is setted into user account
+* ST487 - Affichage des popins (dialogue box) quand un plugin utilisant ce module jquery est activ&eacute; / Dialog box were hidden when some ohters plugin were activated and using the same jquery addons with custom styles (la popin pouvait &ecirc;tre masqu&eacute;e par un &eacute;cran gris)
+* ST492 - Cr&eacute;ation de la pr&eacute;conisation par d&eacute;faut pour les &eacute;quipements de protection collective / Default recommendation for collective protective equipment
 
 = Version 5.1.8.8 =
 

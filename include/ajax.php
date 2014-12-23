@@ -2336,6 +2336,21 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						$messageInfo = '<script type="text/javascript">';
 						if($tache->getStatus() != 'error'){
+							/**	Get options for checking if current deleted task is setted as parent task for frontend asking or for control task association	*/
+							$digirisk_options = get_option( 'digirisk_options' );
+							$save_option_for_tasks_association = false;
+							if ( !empty( $digirisk_options ) && !empty( $digirisk_options[ 'digi_ac_front_ask_parent_task_id' ] ) && ( $_REQUEST['id'] == $digirisk_options[ 'digi_ac_front_ask_parent_task_id' ] ) ) {
+								unset( $digirisk_options[ 'digi_ac_front_ask_parent_task_id' ] );
+								$save_option_for_tasks_association = true;
+							}
+							if ( !empty( $digirisk_options ) && !empty( $digirisk_options[ 'digi_ac_control_action_affectation' ] ) && ( $_REQUEST['id'] == $digirisk_options[ 'digi_ac_control_action_affectation' ] ) ) {
+								unset( $digirisk_options[ 'digi_ac_control_action_affectation' ] );
+								$save_option_for_tasks_association = true;
+							}
+							if ( digi_ac_control_action_affectation ) {
+								update_option( 'digirisk_options', $digirisk_options );
+							}
+
 							/*	Log modification on element and notify user if user subscribe	*/
 							digirisk_user_notification::log_element_modification(TABLE_TACHE, $_REQUEST['id'], 'delete', '', '');
 
@@ -3069,8 +3084,17 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					case 'add_control':
 					case 'add_control_picture':
 					{
+						$options = get_option('digirisk_options');
+						$create_task_and_subtask = ( !empty( $options['digi_ac_control_action_affectation'] ) && !empty( $options['digi_ac_control_create_parent_task'] ) && ( 'yes' == $options['digi_ac_control_create_parent_task'] ) ) ? true : false;
+
 						$original_request_act = $_REQUEST['act'];
-						$_POST['parentTaskId'] = evaTask::saveNewTask();
+
+						if ( !$create_task_and_subtask ) {
+							$_POST['parentTaskId'] = evaTask::saveNewTask();
+						}
+						else {
+							$_POST['parentTaskId'] = $options['digi_ac_control_action_affectation'];
+						}
 						$actionSave = evaActivity::saveNewActivity();
 
 						if(isset($_REQUEST['variables']) && (count($_REQUEST['variables']) > 0)){
@@ -3477,7 +3501,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 <div class="clear" id="summaryGeneratedDocumentSlector" >
 	<div class="alignleft selected" id="generatedDUER" >' . __('Document unique', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
-	<div class="alignleft" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+	<div class="alignleft" id="generatedFP" >' . __('Fiches des unit&eacute;s de travail', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
 </div>';
@@ -3492,7 +3516,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						<div class="FGPContainer" >' . eva_GroupSheet::getGroupSheetCollectionHistory($tableElement, $idElement) . '</div></div>';
 
 						/*	Start work unit sheet part	*/
-						$output .= '<div class="hide generatedDocContainer" id="generatedFPContainer" ><div class="clear bold" >' . __('Fiches de poste pour le groupement', 'evarisk') . '</div>
+						$output .= '<div class="hide generatedDocContainer" id="generatedFPContainer" ><div class="clear bold" >' . __('Fiches des unit&eacute;s de travail du groupement', 'evarisk') . '</div>
 						<div class="FPContainer" >' . eva_WorkUnitSheet::getWorkUnitSheetCollectionHistory($tableElement, $idElement) . '</div></div>';
 
 						/*	Start risk listing summary part	*/
@@ -3626,11 +3650,11 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 						$output = '
 <div class="clear" id="summaryGeneratedDocumentSlector" >
-	<div class="alignleft selected" id="generatedFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+	<div class="alignleft selected" id="generatedFP" >' . __('Fiches de l\'unit&eacute; de travail', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
 	<div class="alignleft" id="generatedFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
 </div>
-<div id="generatedFPContainer" class="generatedDocContainer" ><div class="clear bold" >' . __('Fiches de poste', 'evarisk') . '</div><div class="DUERContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_de_poste') . '</div></div>
+<div id="generatedFPContainer" class="generatedDocContainer" ><div class="clear bold" >' . __('Fiches de l\'unit&eacute; de travail', 'evarisk') . '</div><div class="DUERContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_de_poste') . '</div></div>
 <div class="hide generatedDocContainer" id="generatedRSContainer" ><div class="clear bold" >' . __('Fiches de synth&egrave;se des risques', 'evarisk') . '</div><div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'listing_des_risques') . '</div></div>
 <div class="hide generatedDocContainer" id="generatedFEPContainer" ><div class="clear bold" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div><div class="RSContainer" >' . eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'list', '', 'fiche_exposition_penibilite') . '</div></div>
 <div><a href="' . LINK_TO_DOWNLOAD_OPEN_OFFICE . '" target="OOffice" >' . __('T&eacute;l&eacute;charger Open Office', 'evarisk') . '</a></div>
@@ -3682,8 +3706,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$groupementParent = EvaGroupement::getGroupement($idElement);
 						$arbre = arborescence::getCompleteUnitList($tableElement, $idElement);
 						$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'documentUnique/' . $tableElement . '/' . $idElement. '/';
-						$dir_with_files = $pathToZip . date('YmdHis') . '_fichesDePoste';
-						mkdir($dir_with_files);
+						$dir_with_files = $pathToZip . date('YmdHis') . '_fichesDesUnitesDeTravail';
+						wp_mkdir_p($dir_with_files);
 						foreach ( $arbre as $workUnit ) {
 							$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($workUnit['id']);
 							$_POST['description'] = $workUnitinformations->description;
@@ -3716,16 +3740,16 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						digirisk_tools::make_recursiv_dir($pathToZip);
 						if ( count($file_to_zip) > 0 ) {
 							/*	ZIP THE FILE	*/
-							$zipFileName = date('YmdHis') . '_fichesDePoste.zip';
+							$zipFileName = date('YmdHis') . '_fichesDesUnitesDeTravail.zip';
 							$archive = new eva_Zip($zipFileName);
 							$archive->setFiles($file_to_zip);
 							$archive->compressToPath($pathToZip);
 							$saveWorkSheetUnitStatus = eva_gestionDoc::saveNewDoc('fiche_de_poste_groupement', $mainTableElement, $mainIDElement, str_replace(EVA_GENERATED_DOC_DIR, '', $pathToZip . $zipFileName));
 							if ( $saveWorkSheetUnitStatus == 'error' ) {
-								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches de postes pour ce groupement', 'evarisk');
+								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Une erreur est survenue lors de l\'enregistrement des fiches des unit&eacute; de travail pour ce groupement', 'evarisk');
 							}
 							else {
-								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les fiches de poste ont correctement &eacute;t&eacute; enregistr&eacute;es.', 'evarisk');
+								$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('Les fiches des unit&eacute;s de travail ont correctement &eacute;t&eacute; enregistr&eacute;es.', 'evarisk');
 								rmdir($dir_with_files);
 							}
 						$saveZipFileActionMessage = '
@@ -5093,7 +5117,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				/*
 				 * Execution des action specifiques pour certaines version
 				 */
-				$version_to_make = array(73, 79, 80, 81);
+				$version_to_make = array(73, 79, 80, 81, 86, 89, 90, 91);
 				foreach($version_to_make as $version_number){
 					digirisk_install::make_specific_operation_on_update($version_number);
 				}
@@ -6569,14 +6593,14 @@ switch($tableProvenance)
 													}
 												}
 												else{
-													$deleted_table_result = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Table has not been deleted', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_deleted_table_check" />';
-													$warning_nb++;
-													if ( !empty($warning_list[$plugin_db_version]) ) {
-														$warning_list[$plugin_db_version] += 1;
-													}
-													else {
-														$warning_list[$plugin_db_version] = 1;
-													}
+// 													$deleted_table_result = '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'warning_vs.gif" alt="' . __('Table has not been deleted', 'evarisk') . '" title="' . __('Table has not been renamed', 'evarisk') . '" class="db_deleted_table_check" />';
+// 													$warning_nb++;
+// 													if ( !empty($warning_list[$plugin_db_version]) ) {
+// 														$warning_list[$plugin_db_version] += 1;
+// 													}
+// 													else {
+// 														$warning_list[$plugin_db_version] = 1;
+// 													}
 												}
 												$sub_modif .= $deleted_table_result;
 											}

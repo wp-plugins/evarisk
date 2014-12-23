@@ -111,33 +111,25 @@ function changementPage(partie, table, page, idPere, affichage, option){
 		var partContainer = 'partieGauche';
 	}
 
+	var query_data = {
+		"post": "true",
+		"table": table,
+		"act": "changementPage",
+		"page": page,
+		"idPere": idPere,
+		"partie": partie,
+		"affichage": affichage,
+		"expanded": option,
+		"menu": digirisk("#menu").val()
+	};
+
+	if ( undefined != jQuery( "#digi-tree-element-status" ).val() ) {
+		query_data['tree-options'] = new Array();
+		query_data['tree-options']['task-progression-status'] = jQuery( "#digi-tree-element-status" ).val();
+	}
+
 	digirisk("#" + partContainer).html(digirisk("#loadingImg").html());
-	if(affichage == 'affichageTable'){
-		digirisk("#" + partContainer).load(EVA_AJAX_FILE_URL,{
-			"post": "true",
-			"table": table,
-			"act": "changementPage",
-			"page": page,
-			"idPere": idPere,
-			"partie": partie,
-			"affichage": affichage,
-			"partition": option,
-			"menu": digirisk("#menu").val()
-		});
-	}
-	else{
-		digirisk("#" + partContainer).load(EVA_AJAX_FILE_URL,{
-			"post": "true",
-			"table": table,
-			"act": "changementPage",
-			"page": page,
-			"idPere": idPere,
-			"partie": partie,
-			"affichage": affichage,
-			"expanded": option,
-			"menu": digirisk("#menu").val()
-		});
-	}
+	digirisk("#" + partContainer).load(EVA_AJAX_FILE_URL, query_data );
 }
 
 function commonTabChange(boxId, divId, tabId){
@@ -375,7 +367,8 @@ function cleanUserIdFiedList(id, tableElement){
 function deleteUserIdFiedList(id, tableElement){
 	var actualAffectedUserList = digirisk("#affectedUserIdList" + tableElement).val().replace(id + ", ", "");
 	digirisk("#affectedUserIdList" + tableElement).val( actualAffectedUserList );
-	digirisk("#affectedUser" + tableElement + id).remove();
+	//digirisk("#affectedUser" + tableElement + id).remove();
+	digirisk("#affectedUser" + tableElement + id).addClass( 'unSelecteduserOP' );
 
 	digirisk("#actionButton" + tableElement + "UserLink" + id).removeClass("userIsLinked");
 	digirisk("#actionButton" + tableElement + "UserLink" + id).addClass("userIsNotLinked");

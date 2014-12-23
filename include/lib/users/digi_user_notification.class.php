@@ -454,13 +454,13 @@ WHERE LUN.status = 'valid'
 	}
 
 	/**
-	*	Read information about modification made on different element and return an output with the different element
-	*
-	*	@param string|array $modification_datas The data to transform into user readable output
-	*	@param string $action The action corresponding to the data. Allows to define the output shape to create
-	*
-	*	@return string $modification The modification content transformed to be user readable
-	*/
+	 * Read information about modification made on different element and return an output with the different element
+	 *
+	 * @param string|array $modification_datas The data to transform into user readable output
+	 * @param string $action The action corresponding to the data. Allows to define the output shape to create
+	 *
+	 * @return string $modification The modification content transformed to be user readable
+	 */
 	function read_modification_details($modification_datas, $table_element, $action){
 		global $wpdb;
 		$modification_content = '';
@@ -735,8 +735,8 @@ Description: %s', 'evarisk'), $element_identifier, $modification_datas[2], $modi
 	}
 
 	/**
-	*
-	*/
+	 *
+	 */
 	function log_element_modification($table_element, $id_element, $action, $old_content, $new_content){
 		global $wpdb, $current_user;
 

@@ -567,9 +567,9 @@ class eva_gestionDoc {
 			FROM " . TABLE_GED_DOCUMENTS . "
 			WHERE parDefaut = 'oui'
 				AND status = 'valid'
-				AND categorie = '" . $category . "'
+				AND categorie = %s
 			ORDER BY dateCreation
-			LIMIT 1", ""
+			LIMIT 1", $category
 		);
 		$documentDefaultId = $wpdb->get_row($query);
 		if(!empty($documentDefaultId))
@@ -727,7 +727,7 @@ class eva_gestionDoc {
 			}
 			$recommandation = serialize($recommandationList);
 			$model_shape = 'fiche_de_poste';
-			$document_final_name = '_ficheDePoste_';
+			$document_final_name = '_ficheUniteDeTravail_';
 		}
 		else if ( $informations['sheet_type'] == 'digi_risk_listing' ) {
 			$recommandation = '';
@@ -1833,6 +1833,7 @@ class eva_gestionDoc {
 										$affectedUsers->setVars('prenomUtilisateur', $elementInfos['user_firstname'], true, 'UTF-8');
 
 										$affectedUsers->setVars('dateAffectationUtilisateur', $elementInfos['dateAffectation'], true, 'UTF-8');
+										$affectedUsers->setVars('dateDesAffectationUtilisateur', $elementInfos['dateDesaffectation'], true, 'UTF-8');
 
 										$affectedUsers->merge();
 									}

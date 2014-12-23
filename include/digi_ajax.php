@@ -63,42 +63,66 @@ function digi_ajax_delete_user_affectation() {
 }
 add_action('wp_ajax_digi_ajax_delete_user_affectation', 'digi_ajax_delete_user_affectation');
 
-function digi_affect_users_to_evaluation() {
+function digi_affect_users_to_element() {
 	global $wpdb;
+
 	if ( !empty( $_POST ) && !empty( $_POST[ 'digi_user' ] ) && is_array( $_POST[ 'digi_user' ] ) ) {
 		$has_error = true;
 		foreach ( $_POST[ 'digi_user' ] as $user_id ) {
-			$date_addition = null;
-			if ( !empty( $_POST[ 'digi_user_time' ] ) || !empty( $_POST[ 'digi_user_time' ][ $user_id ] ) ) {
-				$date_addition[] = !empty( $_POST[ 'digi_user_time' ][ $user_id ][ 'hour' ] ) ? ' ' . $_POST[ 'digi_user_time' ][ $user_id ][ 'hour' ] . ' hours' : '';
-				$date_addition[] = !empty( $_POST[ 'digi_user_time' ][ $user_id ][ 'minutes' ] ) ? ' ' . $_POST[ 'digi_user_time' ][ $user_id ][ 'minutes' ] . ' minutes' : '';
+			$user_update_args = array(
+				'status'						=> 'valid',
+				'date_affectation'				=> current_time( 'mysql', 0 ),
+				'id_attributeur'				=> get_current_user_id(),
+				'id_user'						=> $user_id,
+				'id_element'					=> $_POST[ 'idElement' ],
+				'table_element'					=> $_POST[ 'tableElement' ],
+				'date_affectation_reelle'		=> $_POST[ 'date_affectation_reelle' ],
+			);
+
+			switch ( $_POST[ 'tableElement' ] ) {
+				case TABLE_GROUPEMENT :
+				case TABLE_UNITE_TRAVAIL :
+					if ( ( empty( $_POST[ 'verwrite_hiring_date' ] ) || ( 'yes' != $_POST[ 'verwrite_hiring_date' ] ) ) && ( !empty( $_POST[ "date_embauche" ] ) && !empty( $_POST[ "date_embauche" ][ $user_id ] ) ) ) {
+						$user_update_args[ 'date_affectation_reelle' ] = $_POST[ "date_embauche" ][ $user_id ];
+					}
+				break;
+
+				case TABLE_GROUPEMENT . '_evaluation' :
+				case TABLE_UNITE_TRAVAIL . '_evaluation' :
+					$date_addition = null;
+					if ( !empty( $_POST[ 'digi_user_time' ] ) || !empty( $_POST[ 'digi_user_time' ][ $user_id ] ) ) {
+						$date_addition[] = !empty( $_POST[ 'digi_user_time' ][ $user_id ][ 'hour' ] ) ? ' ' . $_POST[ 'digi_user_time' ][ $user_id ][ 'hour' ] . ' hours' : '';
+						$date_addition[] = !empty( $_POST[ 'digi_user_time' ][ $user_id ][ 'minutes' ] ) ? ' ' . $_POST[ 'digi_user_time' ][ $user_id ][ 'minutes' ] . ' minutes' : '';
+					}
+					else if ( !empty( $_POST[ 'digi-users-affectation-default-duration-hour' ] ) || !empty( $_POST[ 'digi-users-affectation-default-duration-minutes' ] ) ) {
+						$date_addition[] = !empty( $_POST[ 'digi-users-affectation-default-duration-hour' ] ) ? ' ' . $_POST[ 'digi-users-affectation-default-duration-hour' ] . ' hours' : '';
+						$date_addition[] = !empty( $_POST[ 'digi-users-affectation-default-duration-minutes' ] ) ? ' ' . $_POST[ 'digi-users-affectation-default-duration-minutes' ] . ' minutes' : '';
+					}
+					$user_update_args[ 'date_desaffectation_reelle' ] = !empty( $date_addition ) ? date( 'Y-m-d H:i:s', strtotime( '+' . implode( ' ', $date_addition ), strtotime( $_POST[ 'date_affectation_reelle' ] ) ) ) : '';
+				break;
 			}
-			else if ( !empty( $_POST[ 'digi-users-affectation-default-duration-hour' ] ) || !empty( $_POST[ 'digi-users-affectation-default-duration-minutes' ] ) ) {
-				$date_addition[] = !empty( $_POST[ 'digi-users-affectation-default-duration-hour' ] ) ? ' ' . $_POST[ 'digi-users-affectation-default-duration-hour' ] . ' hours' : '';
-				$date_addition[] = !empty( $_POST[ 'digi-users-affectation-default-duration-minutes' ] ) ? ' ' . $_POST[ 'digi-users-affectation-default-duration-minutes' ] . ' minutes' : '';
-			}
-			$date_desAffectation_reelle = !empty( $date_addition ) ? date( 'Y-m-d H:i:s', strtotime( '+' . implode( ' ', $date_addition ), strtotime( $_POST[ 'date_affectation_reelle' ] ) ) ) : '';
-			if ( !empty( $date_desAffectation_reelle ) ) {
-				$new_link = $wpdb->insert( TABLE_LIAISON_USER_ELEMENT, array(
-					'status' => 'valid',
-					'date_affectation' => current_time( 'mysql', 0 ),
-					'id_attributeur' => get_current_user_id(),
-					'id_user' => $user_id,
-					'id_element' => $_POST[ 'idElement' ],
-					'table_element' => $_POST[ 'tableElement' ],
-					'date_affectation_reelle' => $_POST[ 'date_affectation_reelle' ],
-					'date_desaffectation_reelle' => $date_desAffectation_reelle,
-				) );
-				$has_error = $has_error && (false === $new_link) ? $new_link : $has_error;
-			}
+
+			$new_link = $wpdb->insert( TABLE_LIAISON_USER_ELEMENT, $user_update_args );
+			$has_error = $has_error && (false === $new_link) ? $new_link : $has_error;
 		}
 	}
 
 	require_once(EVA_METABOXES_PLUGIN_DIR . 'utilisateurs/liaisonUtilisateursElement.php');
-	getParticipantPostBoxBody( array( 'idElement' => $_POST[ 'idElement' ], 'tableElement' => $_POST[ 'tableElement' ] ), array( 'action_success' => $has_error, ) );
+	switch ( $_POST[ 'tableElement' ] ) {
+		case TABLE_GROUPEMENT :
+		case TABLE_UNITE_TRAVAIL :
+			getUtilisateursPostBoxBody( array( 'idElement' => $_POST[ 'idElement' ], 'tableElement' => $_POST[ 'tableElement' ] ), array( 'action_success' => $has_error, ) );
+			break;
+
+		case TABLE_GROUPEMENT . '_evaluation' :
+		case TABLE_UNITE_TRAVAIL . '_evaluation' :
+			getParticipantPostBoxBody( array( 'idElement' => $_POST[ 'idElement' ], 'tableElement' => $_POST[ 'tableElement' ] ), array( 'action_success' => $has_error, ) );
+			break;
+	}
+
 	wp_die();
 }
-add_action('wp_ajax_digi_affect_users_to_evaluation', 'digi_affect_users_to_evaluation');
+add_action('wp_ajax_digi_affect_users_to_element', 'digi_affect_users_to_element');
 
 
 /**
@@ -724,6 +748,7 @@ add_action( 'wp_ajax_digi_ajax_export_csv_file', array('eva_gestionDoc', 'digi_a
 add_action( 'wp_ajax_digi_ajax_stats_user', array('evaUser', 'digi_ajax_stats_user') );
 add_action( 'wp_ajax_digi_ajax_load_user_stat', array('evaUser', 'digi_ajax_load_user_stat') );
 add_action( 'wp_ajax_digi_ajax_load_user_stat_mouvement_between_dates', array('evaUser', 'digi_ajax_mouvement_between_dates') );
+add_action( 'wp_ajax_digi_ajax_load_user_not_present_since_date', array('evaUser', 'digi_ajax_load_user_not_present_since_date') );
 /**	Risk stats tab on dashboard*/
 add_action( 'wp_ajax_digi_ajax_risk_stats', array('Risque', 'digi_ajax_risk_stats') );
 
@@ -823,8 +848,7 @@ function digi_ajax_load_recommandation_from_category() {
 	$id_categorie_preconisation = (isset($_POST['id_categorie_preconisation']) && ($_POST['id_categorie_preconisation'] != '') && ($_POST['id_categorie_preconisation'] != '0')) ? digirisk_tools::IsValid_Variable($_POST['id_categorie_preconisation']) : '';
 	$arguments['form_container'] = !empty($_POST['specific_container']) ? digirisk_tools::IsValid_Variable( $_POST['specific_container'] ) : '';
 
-	echo json_encode( array(evaRecommandation::getRecommandationListByCategory($id_categorie_preconisation, $outputMode, '', $arguments)) );
-	die();
+	wp_die(  json_encode( array(evaRecommandation::getRecommandationListByCategory($id_categorie_preconisation, $outputMode, '', $arguments)) ) );
 }
 add_action( 'wp_ajax_digi_ajax_load_recommandation_from_category', 'digi_ajax_load_recommandation_from_category' );
 

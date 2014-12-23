@@ -26,11 +26,11 @@ if(($_POST['act'] == 'saveFichePoste') || ($_POST['act'] == 'saveWorkUnitSheetFo
 
 	if ( $_POST['act'] != 'saveWorkUnitSheetForGroupement' ) {
 		if ( $sauvegardeFicheDePoste['result'] != 'error' ) {
-			$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La fiche de poste &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
+			$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('La fiche d\'unit&eacute; de travail &agrave; bien &eacute;t&eacute; sauvegard&eacute;e.', 'evarisk');
 			$moremessageInfo = 'digirisk("#ongletHistoriqueFicheDePoste").click();';
 		}
 		else {
-			$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('La fiche de poste n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
+			$messageToOutput = "<img src='" . EVA_MESSAGE_ERROR . "' alt='error' class='messageIcone' />" . __('La fiche d\'unit&eacute; de travail n\'a pas pu &ecirc;tre sauvegard&eacute;e', 'evarisk');
 		}
 
 		$messageInfo = '

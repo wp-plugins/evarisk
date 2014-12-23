@@ -21,8 +21,6 @@ class digirisk_init
 	*/
 	public static function digirisk_plugin_load(){
 		add_action( 'admin_notices', array('digirisk_admin_notification', 'admin_notice_message_define') );
-		wp_register_style('digirisk_admin_notif_css', EVA_INC_PLUGIN_URL . 'css/eva_admin_notification.css', '', EVA_PLUGIN_VERSION);
-		wp_enqueue_style('digirisk_admin_notif_css');
 
 		/*	Call function to create the main left menu	*/
 		add_action('admin_menu', array('digirisk_init', 'digirisk_menu') );
@@ -135,7 +133,8 @@ class digirisk_init
 			add_users_page('Digirisk : ' . __('Gestion des droits des utilisateurs', 'evarisk' ), __('Droits Digirisk', 'evarisk'), 'digi_user_right_management_menu', DIGI_URL_SLUG_USER_RIGHT, array('digirisk_permission','elementMainPage'));
 
 			add_management_page(__('Outils pour le logiciel Digirisk', 'evarisk'), __('Digirisk - Outils', 'evarisk'), 'digi_tools_menu', 'digirisk_tools', array('digirisk_tools', 'main_page'));
-			add_management_page(__('Documentation pour le logiciel Digirisk', 'evarisk'), __('Digirisk - Doc', 'evarisk'), 'digi_documentation_management_menu', 'digirisk_doc', array('digirisk_doc', 'mydoc'));
+
+// 			add_management_page(__('Documentation pour le logiciel Digirisk', 'evarisk'), __('Digirisk - Doc', 'evarisk'), 'digi_documentation_management_menu', 'digirisk_doc', array('digirisk_doc', 'mydoc'));
 
 			// On cr�e le menu de cr�ation de veille r�glementaire
 // 			add_submenu_page('digirisk_dashboard', 'Digirisk : ' . __('Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), __( 'Cr&eacute;ation de r&eacute;f&eacute;renciel', 'evarisk' ), 'digi_view_regulatory_monitoring_menu', 'digirisk_referentials', array('veilleReglementaire','veilleReglementaireMainPage'));
@@ -216,7 +215,7 @@ class digirisk_init
 	/**
 	*	Admin javascript "frontend" part definition
 	*/
-	function frontend_js(){
+	public static function frontend_js(){
 		global $wp_version;
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
@@ -234,6 +233,9 @@ class digirisk_init
 	*	Define the css to include in each page
 	*/
 	function digirisk_admin_css(){
+		wp_register_style('digirisk_admin_notif_css', EVA_INC_PLUGIN_URL . 'css/eva_admin_notification.css', '', EVA_PLUGIN_VERSION);
+		wp_enqueue_style('digirisk_admin_notif_css');
+
 		wp_register_style('eva_jquery_ui', EVA_INC_PLUGIN_URL . 'css/jquery-libs/jquery-ui.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('eva_jquery_ui');
 

@@ -1333,7 +1333,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 <div class="clear" id="summaryDocumentGeneratorSlector" >
 	<div class="alignleft selected" id="generateDUER" >' . __('Document unique', 'evarisk') . '</div>
 	<div class="alignleft" id="generateFGP" >' . __('Fiches de groupement', 'evarisk') . '</div>
-	<div class="alignleft" id="generateFP" >' . __('Fiches de poste', 'evarisk') . '</div>
+	<div class="alignleft" id="generateFP" >' . __('Fiches des unit&eacute;s de travail', 'evarisk') . '</div>
 	<div class="alignleft" id="generateRS" >' . __('Synth&egrave;se des risques', 'evarisk') . '</div>
 	<div class="alignleft" id="generateFEP" >' . __('Fiches de p&eacute;nibilit&eacute;', 'evarisk') . '</div>
 </div>

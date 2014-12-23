@@ -1,6 +1,6 @@
 <?php
 	//Postbox definition
-	$postBoxTitle = __('Fiche de poste', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
+	$postBoxTitle = __('Fiche d\'unit&eacute; de travail', 'evarisk') . (!empty($_REQUEST['table']) && !empty($_REQUEST['id']) ? Arborescence::display_element_main_infos( $_REQUEST['table'], $_REQUEST['id'] ) : '');
 	$postBoxId = 'postBoxFicheDePoste';
 	$postBoxCallbackFunction = 'getWorkUnitSheetPostBoxBody';
 	add_meta_box($postBoxId, $postBoxTitle, $postBoxCallbackFunction, PAGE_HOOK_EVARISK_UNITES_DE_TRAVAIL, 'rightSide', 'default');
@@ -27,7 +27,7 @@
 	if ( current_user_can('digi_edit_unite') || current_user_can('digi_edit_unite_' . $arguments['idElement']) ) {
 		$userNotAllowed = '';
 		$corpsPostBoxRisque .= '
-	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de poste', 'evarisk'))) . '</label></li>
+	<li id="ongletImpressionFicheDePoste" class="tabs selected_tab" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de l\'unit&eacute; de travail', 'evarisk'))) . '</label></li>
 	<li id="ongletImpressionListingRisque" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Synth&eacute;se des risques', 'evarisk'))) . '</label></li>
 	<li id="ongletImpressionFichesPenibilite" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="1">' . ucfirst(strtolower( __('Fiches de p&eacute;nibilit&eacute;', 'evarisk'))) . '</label></li>';
 	}
@@ -35,7 +35,7 @@
 		$userNotAllowed = 'digirisk("#ongletHistoriqueDocument").click();';
 	}
 	$corpsPostBoxRisque .= '
-	<li id="ongletHistoriqueDocument" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Historique des fiches de poste', 'evarisk'))) . '</label></li>
+	<li id="ongletHistoriqueDocument" class="tabs" style="display:inline; margin-left:0.4em;"><label tabindex="2">' . ucfirst(strtolower( __('Historique des fiches de l\'unit&eacute; de travail', 'evarisk'))) . '</label></li>
 </ul>
 <div id="divImpressionFicheDePoste" class="eva_tabs_panel">' . eva_WorkUnitSheet::getWorkUnitSheetGenerationForm($tableElement, $idElement) . '</div>
 <div id="divImpressionListingRisque" class="eva_tabs_panel" style="display:none"></div>

@@ -85,3 +85,5 @@ require_once(EVA_LIB_PLUGIN_DIR . 'db/db_data.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'db/db_structure.php');
 
 require_once(EVA_INC_PLUGIN_DIR . 'digi_ajax.php');
+
+require_once(EVA_MODULES_PLUGIN_DIR . 'evarisk_datas_transfert/evarisk_datas_transfert.php');

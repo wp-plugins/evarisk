@@ -142,7 +142,7 @@ class digirisk_install	{
 	/**
 	 *	Method called when plugin is loaded for database update. This method allows to update the database structure, insert default content.
 	 */
-	function update_digirisk($version_to_launch = -1){
+	public static function update_digirisk($version_to_launch = -1){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_table_structure_change, $digirisk_db_update, $standard_message_subject_to_send, $standard_message_to_send, $digirisk_db_table_operation_list;
 
 		/** 	Initialisation des permissions (Lancement a chaque chargement du plugin) */
@@ -204,7 +204,7 @@ class digirisk_install	{
 						foreach($digirisk_db_update[$i] as $table_name => $def){
 							foreach($def as $information_index => $table_information){
 								$query = $wpdb->prepare($table_information, '');
-								$wpdb->query($table_information);
+								$wpdb->query( $query );
 								$do_changes = true;
 							}
 						}
@@ -1288,8 +1288,16 @@ class digirisk_install	{
 					if (!empty($danger_cat['version']) && ($danger_cat['version'] == $version)) {
 						$new_danger_cat_id = categorieDangers::saveNewCategorie($danger_cat['nom'], $danger_cat['position']);
 
+						$query = $wpdb->prepare( "SELECT id FROM " .TABLE_DANGER . " WHERE nom = %s", __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']) );
+						$existing_amiante_danger_id = $wpdb->get_var( $query );
+						if ( empty( $existing_amiante_danger_id ) ) {
+							$wpdb->insert( TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id, 'methode_eva_defaut' => $methode_amiante_id, ) );
+						}
+						else {
+							$wpdb->update( TABLE_DANGER, array( 'methode_eva_defaut' => $methode_amiante_id, ), array( 'id' => $existing_amiante_danger_id, ) );
+						}
+
 						/*	If user ask to add danger in categories	*/
-						$wpdb->insert(TABLE_DANGER, array('nom' => __('Divers', 'evarisk') . ' ' . strtolower($danger_cat['nom']), 'id_categorie' => $new_danger_cat_id));
 						if ( !empty($danger_cat['risks']) && is_array($danger_cat['risks']) ) {
 							foreach ( $danger_cat['risks'] as $risk_to_create ) {
 								$wpdb->insert(TABLE_DANGER, array('nom' => $risk_to_create, 'id_categorie' => $new_danger_cat_id, 'methode_eva_defaut' => $methode_amiante_id, ));
@@ -1329,8 +1337,65 @@ class digirisk_install	{
 				/**	Clean database for method vars not used	*/
 				$query = $wpdb->prepare( "DELETE FROM " . TABLE_VARIABLE . " WHERE id NOT IN ( SELECT id_variable FROM " . TABLE_AVOIR_VARIABLE . ") ", array() );
 				$wpdb->query( $query );
+				$do_changes_for_specific = true;
 			break;
-	}
+
+			case 91:
+				/**	Creation des categories et préconisations par défaut pour les équipeemnts de protection collectives, si ceux ci n'ont pas été créés auparavant	*/
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_PRECONISATION . " WHERE nom LIKE '%%quipement de protection collective'", "" );
+				$equipement_protection_collective = $wpdb->get_var( $query );
+				$query = $wpdb->prepare( "SELECT id FROM " . TABLE_CATEGORIE_PRECONISATION . " WHERE nom LIKE '%%quipement de protection collective'", "" );
+				$equipement_protection_collective_categorie = $wpdb->get_var( $query );
+				if ( empty( $equipement_protection_collective_categorie ) ) {
+					$wpdb->insert( TABLE_CATEGORIE_PRECONISATION, array( 'nom' => __( 'Divers &eacute;quipement de protection collective', 'evarisk' ), 'creation_date' => current_time( 'mysql', 0 ), ) );
+					$equipement_protection_collective_categorie = $wpdb->insert_id;
+					$new_cat_pict_id = EvaPhoto::saveNewPicture( TABLE_CATEGORIE_PRECONISATION, $equipement_protection_collective_categorie, 'medias/images/Pictos/preconisations/epc/preconisations_epc_s.png' );
+					EvaPhoto::setMainPhoto( TABLE_CATEGORIE_PRECONISATION, $equipement_protection_collective_categorie, $new_cat_pict_id, 'yes');
+				}
+				if ( empty( $equipement_protection_collective ) && !empty( $equipement_protection_collective_categorie ) ) {
+					$wpdb->insert( TABLE_PRECONISATION, array( 'nom' => __( 'Divers &eacute;quipement de protection collective', 'evarisk' ), 'creation_date' => current_time( 'mysql', 0 ), 'id_categorie_preconisation' => $equipement_protection_collective_categorie, 'preconisation_type' => 'collectives', ) );
+					$equipement_protection_collective = $wpdb->insert_id;
+
+					$new_cat_pict_id = EvaPhoto::saveNewPicture( TABLE_PRECONISATION, $equipement_protection_collective, 'medias/images/Pictos/preconisations/epc/preconisations_epc_s.png' );
+					EvaPhoto::setMainPhoto( TABLE_PRECONISATION, $equipement_protection_collective, $new_cat_pict_id, 'yes');
+				}
+
+				/**	Vérification des options pour l'affectation des demandes dans le front et pour l'affectation des taches de controle	*/
+				$options = get_option( 'digirisk_options' );
+				if ( empty( $options[ 'digi_ac_control_action_affectation' ] ) ) {
+					$control_task = new EvaTask();
+					$control_task->setName( __( 'T&acirc;che de controle', 'evarisk' ) );
+					$control_task->setDescription(  __( 'T&acirc;che contenant toutes les tacirc;ches de controle', 'evarisk' )  );
+					$control_task->setProgressionStatus( 'notStarted' );
+					$control_task->setnom_exportable_plan_action( 'no' );
+					$control_task->setdescription_exportable_plan_action( 'no' );
+					$control_task->save();
+					$control_task->transfert( 1 );
+					$control_task->load();
+					$the_task_id = $control_task->getId();
+					$options['digi_ac_control_action_affectation'] = $the_task_id;
+					update_option( 'digirisk_options', $options );
+				}
+
+				if ( empty( $options[ 'digi_ac_front_ask_parent_task_id' ] ) ) {
+					$ask_task = new EvaTask();
+					$ask_task->setName( __( 'T&acirc;che de demande frontend', 'evarisk' ) );
+					$ask_task->setDescription(  __( 'T&acirc;che contenant toutes les tacirc;ches demand&eacute;e dans la partie frontend', 'evarisk' )  );
+					$ask_task->setProgressionStatus( 'notStarted' );
+					$ask_task->setnom_exportable_plan_action( 'no' );
+					$ask_task->setdescription_exportable_plan_action( 'no' );
+					$ask_task->save();
+					$ask_task->transfert( 1 );
+					$ask_task->load();
+					$the_task_id = $ask_task->getId();
+					$options['digi_ac_front_ask_parent_task_id'] = $the_task_id;
+					update_option( 'digirisk_options', $options );
+				}
+
+				$do_changes_for_specific = true;
+			break;
+
+		}
 
 		return $do_changes_for_specific;
 	}
