@@ -42,6 +42,7 @@ if($_REQUEST['act'] == 'update')
 	$id_unite_travail = $_REQUEST['id'];
 	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_unite_travail']));
 	$idGroupementPere = (digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
+	$idResponsable = (digirisk_tools::IsValid_Variable($_REQUEST['responsable_unite']));
 
 	$uniteTravailUpdate = eva_UniteDeTravail::getWorkingUnitByName($nom);
 
@@ -71,7 +72,7 @@ if($_REQUEST['act'] == 'update')
 		$telephone = null;
 	}
 
-	$workingUnitResult = eva_UniteDeTravail::updateWorkingUnit($id_unite_travail, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere);
+	$workingUnitResult = eva_UniteDeTravail::updateWorkingUnit($id_unite_travail, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $idResponsable);
 }
 if($_REQUEST['act'] == 'delete')
 {

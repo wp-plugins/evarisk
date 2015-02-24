@@ -9,18 +9,18 @@ class digirisk_doc{
 	/* ------------------- */
 	function mydoc() {
 		global $wpdb;
-		
+
 		/* Traitement de la soumission */
 		if(isset($_POST['submit_doc'])) {
 			if(!empty($_POST['doc_page_name']) && !empty($_POST['doc_url']) && !empty($_POST['content'])) {
-				if(!empty($_POST['doc_id']) && is_numeric($_POST['doc_id']) && $_POST['doc_id']>0) {	
-					
+				if(!empty($_POST['doc_id']) && is_numeric($_POST['doc_id']) && $_POST['doc_id']>0) {
+
 					$result = $wpdb->update($wpdb->prefix.self::prefix.'__documentation', array(
-						'doc_page_name' => $_POST['doc_page_name'], 
+						'doc_page_name' => $_POST['doc_page_name'],
 						'doc_html' => $_POST['content'],
 						'doc_url' => substr(strstr($_POST['doc_url'], '='),1)
 					), array('doc_id' => $_POST['doc_id']));
-					
+
 					if($result) {
 						$_SESSION[self::doc_slug . '_result'] = array('updated', __('Documentation modifi&eacute;e avec succ&eacute;s', 'evarisk'));
 						header('Location: ?page=' . self::doc_slug . ''); exit;
@@ -29,12 +29,12 @@ class digirisk_doc{
 				}
 				else {
 					$result = $wpdb->insert($wpdb->prefix.self::prefix.'__documentation', array(
-						'doc_page_name' => $_POST['doc_page_name'], 
+						'doc_page_name' => $_POST['doc_page_name'],
 						'doc_html' => $_POST['content'],
 						'doc_url' => substr(strstr($_POST['doc_url'], '='),1),
 						'doc_creation_date' => current_time('mysql', 0)
 					));
-					
+
 					if($result) {
 						$_SESSION[self::doc_slug . '_result'] = array('updated', __('Documentation ajout&eacute;e avec succ&eacute;s', 'evarisk'));
 						header('Location: ?page=' . self::doc_slug . ''); exit;
@@ -46,9 +46,8 @@ class digirisk_doc{
 		}
 		elseif(isset($_POST['delete_doc'])) {
 			if(!empty($_POST['doc_id']) && is_numeric($_POST['doc_id']) && $_POST['doc_id']>0) {
-				$query = 'UPDATE '.$wpdb->prefix.self::prefix.'__documentation SET doc_active="deleted" WHERE doc_id='.$_POST['doc_id'];
-				$result = $wpdb->query($query);
-				if($result) {
+				$result  = $wpdb->update( $wpdb->prefix . digirisk_doc::prefix . '__documentation', array( 'doc_active' => 'deleted', ), array( 'doc_id' => $_POST['doc_id'], ) );
+				if( false !== $result ) {
 					$_SESSION[self::doc_slug . '_result'] = array('updated', __('Documentation supprim&eacute;e avec succ&eacute;s', 'evarisk'));
 					header('Location: ?page=' . self::doc_slug . ''); exit;
 				}
@@ -56,18 +55,18 @@ class digirisk_doc{
 			}
 			else $_SESSION[self::doc_slug . '_result'] = array('error', __('Impossible de supprimer cette documentation', 'evarisk'));
 		}
-		
+
 		echo '
 <div class="wrap">
 	<div id="icon-tools" class="icon32"><br /></div>';
-	
+
 	if(!empty($_SESSION[self::doc_slug . '_result'])) {
 		echo '<div id="message" class="'.$_SESSION[self::doc_slug . '_result'][0].'">'.$_SESSION[self::doc_slug . '_result'][1].'</div>';
 	}
 	$_SESSION[self::doc_slug . '_result'] = array();
-	
+
 	echo '<form method="post" action="">';
-	
+
 		if(empty($_GET['action'])) {
 			self::liste_doc();
 		}
@@ -77,28 +76,28 @@ class digirisk_doc{
 		elseif($_GET['action']=='delete') {
 			self::delete_doc();
 		}
-		
+
 		echo '
 		</form>
 	</div>';
 	}
 	/* FIN Fonction principale */
-	
+
 	/* ------------------------ */
 	/* Liste des documentations */
 	/* ------------------------ */
 	function liste_doc() {
 		global $wpdb;
-		
+
 		$query = 'SELECT * FROM '.$wpdb->prefix.self::prefix.'__documentation WHERE doc_active="active"';
 		$data = $wpdb->get_results($query);
-		
+
 		echo '
-			<h2>'.__('G&eacute;rer la documentation','evarisk').' 
+			<h2>'.__('G&eacute;rer la documentation','evarisk').'
 				<a class="add-new-h2" href="?page=' . self::doc_slug . '&amp;action=edit&amp;d=0">'.__('Ajouter','evarisk').'</a>
 			</h2>
 			<p>'.__('Cette page vous permet d\'associer de la documentation &agrave; certaines pages de vos extensions.','evarisk').'</p>
-	
+
 			<table id="tableauUser" class="wp-list-table widefat fixed users">
 				<thead>
 					<tr>
@@ -135,10 +134,10 @@ class digirisk_doc{
 	</table>';
 	}
 	/* FIN Liste des documentations */
-	
+
 	function edit_doc() {
 		global $wpdb;
-		
+
 		if(!empty($_GET['d']) && is_numeric($_GET['d']) && $_GET['d']>0) {
 			$title = '&Eacute;diter une documentation';
 			$submit_value = 'Enregistrer les modifications';
@@ -157,7 +156,7 @@ class digirisk_doc{
 			$doc_html = isset($_POST['content'])?$_POST['content']:null;
 			$doc_url = isset($_POST['doc_url'])?$_POST['doc_url']:null;
 		}
-		
+
 		echo '
 			<h2>'.$title.' <a class="add-new-h2" href="?page=' . self::doc_slug . '">'.__('Revenir &agrave; la liste','evarisk').'</a></h2>
 			<p>'.$desc.'</p>
@@ -168,7 +167,7 @@ class digirisk_doc{
 					<p>'.__('Correspond au nom de la page &agrave; documenter','evarisk').'</p>
 				</div>
 			</div>
-			
+
 			<div class="stuffbox metabox-holder" style="padding-top:0;margin-bottom:20px;">
 				<h3 style="display:block;height:17px;"><label for="doc_url">'.__('URL de la page','evarisk').'</label></h3>
 				<div class="inside" style="margin-top:12px;">
@@ -184,26 +183,26 @@ class digirisk_doc{
 					</p>
 				</div>
 			</div>
-	
+
 			<div id="poststuff" class="metabox" style="margin-bottom:20px;">';
 				the_editor($doc_html);
 			echo '</div>
-	
+
 			<input type="hidden" name="doc_id" value="'.((!empty($_GET['d']) && is_numeric($_GET['d']) && $_GET['d']>0)?$_GET['d']:0).'" />
 			<input class="button-primary" type="submit" value="'.$submit_value.'" name="submit_doc" />';
 	}
-	
+
 	function delete_doc() {
 		global $wpdb;
-		
+
 		if(!empty($_GET['d']) && is_numeric($_GET['d']) && $_GET['d']>0) {
 			$query = 'SELECT doc_page_name FROM '.$wpdb->prefix.self::prefix.'__documentation WHERE doc_id='.$_GET['d'];
 			$data = $wpdb->get_results($query);
 			$doc_page_name = $data[0]->doc_page_name;
 		}
-		
+
 		echo '
-			<h2>'.__('Suppression d\'une documentation','evarisk').' 
+			<h2>'.__('Suppression d\'une documentation','evarisk').'
 				<a class="add-new-h2" href="?page=' . self::doc_slug . '">'.__('Revenir &agrave; la liste','evarisk').'</a>
 			</h2>
 			<p>'.__('Cette page vous permet de supprimer une documentation.','evarisk').'</p>
@@ -217,7 +216,7 @@ class digirisk_doc{
 			<input class="button-primary" type="submit" value="'.__('Confirmer la suppression','evarisk').'" name="delete_doc" />
 			<a href="?page=' . self::doc_slug . '" class="button-secondary">'.__('Annuler', 'evarisk').'</a>';
 	}
-	
+
 	/*
 	** Retourne les infos sur une documentation
 	** @return array
@@ -231,7 +230,7 @@ class digirisk_doc{
 			$array[]=$d->doc_url;
 		return $array;
 	}
-	
+
 	/*
 	** Retourne la liste des pages a documenter
 	** @return array
@@ -251,7 +250,7 @@ class digirisk_doc{
 	}
 
 	/*
-	** Initiation du bloc d'édition WYSIWYG
+	** Initiation du bloc d'ï¿½dition WYSIWYG
 	** @return void
 	*/
 	function init_wysiwyg(){

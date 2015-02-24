@@ -35,13 +35,13 @@
 		}
 		else
 		{//En-t�te
-			$responsables = null;
+			$responsable = null;
 			if($idElement!=null)
 			{
 				$groupement = EvaGroupement::getGroupement($idElement);
 				$nomGroupement = $groupement->nom;
 				$groupementPere = Arborescence::getPere($tableElement, $groupement);
-				// $responsables[] = '';
+				$responsable = $groupement->id_responsable;
 
 				$scoreRisqueGroupement = 0;
 				$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
@@ -65,23 +65,14 @@
 					$miniFilAriane = $miniFilAriane . $ancetre->nom . ' &raquo; ';
 				}
 			}
-			$nomResponsables = '';
-			if(count($responsables) > 0)
-			{
-				foreach($responsables as $responsable)
-				{
-						$nomResponsables = $nomResponsables . $responsable->prenom . ' ' . $responsable->nom . ', ';
-				}
+
+			$nomResponsable = '';
+			$texteResponsable = __('Responsable', 'evarisk');
+			if ( !empty( $responsable ) ) {
+				$responsible = evaUser::getUserInformation( $responsable );
+				$nomResponsable = ELEMENT_IDENTIFIER_U . $responsable . '&nbsp;-&nbsp;' . $responsible[ $responsable ]['user_lastname'] . ' ' . $responsible[ $responsable ]['user_firstname'];
 			}
-			$nomResponsables = substr($nomResponsables, 0, strlen($nomResponsables) - 2);
-			if(count($responsables) > 1)
-			{
-				$texteResponsable = __('Responsables', 'evarisk');
-			}
-			else
-			{
-				$texteResponsable = __('Responsable', 'evarisk');
-			}
+
 			if($groupementPere->nom != "Groupement Racine")
 				$miniFilAriane = $miniFilAriane . $groupementPere->nom;
 			$renduPage = '<div id="enTeteDroite">
@@ -162,7 +153,7 @@
 						<div class="mainInfos1 alignleft" style="width: 68%">
 							<p>
 								<span id="miniFilAriane">' . __('Hi&eacute;rarchie', 'evarisk') . ' : ' . $miniFilAriane . '</span><br />
-								' . $texteResponsable . ' : <strong>' . $nomResponsables . '</strong><br />
+								' . $texteResponsable . ' : <strong>' . $nomResponsable . '</strong><br />
 							</p>
 						</div>
 						<div class="alignleft" style="width: 30%">

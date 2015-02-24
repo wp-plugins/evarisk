@@ -234,10 +234,7 @@ add_action('wp_ajax_digi_ajax_save_activite_follow', 'digi_ajax_save_activite_fo
  */
 function digi_ajax_load_activite_follow() {
 	check_ajax_referer( 'digi_ajax_load_activite_follow', 'digi_ajax_nonce' );
-
-	echo suivi_activite::tableauSuiviActivite($_POST['tableElement'], $_POST['idElement'], $_POST['follow_up_type']);
-
-	die();
+	wp_die( suivi_activite::tableauSuiviActivite($_POST['tableElement'], $_POST['idElement'], $_POST['follow_up_type']) );
 }
 add_action('wp_ajax_digi_ajax_load_activite_follow', 'digi_ajax_load_activite_follow');
 
@@ -496,9 +493,7 @@ function digi_ajax_save_correctiv_actions_task() {
 		if ( $tache->getnom_exportable_plan_action() == 'no' ) {
 
 			/*	Set subtask exportble status	*/
-			$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $tache->getId() );
-			$wpdb->query( $query );
-
+			$wpdb->update( TABLE_ACTIVITE, array( 'nom_exportable_plan_action' => 'no', 'description_exportable_plan_action' => 'no', ), array( 'id_tache' => $tache->getId(), ) );
 			/*	Change the sub task exportable status if no is selected for the current element	*/
 			$task_children = $tache->getDescendants();
 			if ( !empty ( $task_children->tasks ) ) {
@@ -507,8 +502,7 @@ function digi_ajax_save_correctiv_actions_task() {
 					$sub_task->load();
 
 					$sub_task->setnom_exportable_plan_action('no');
-					$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $task_id );
-					$wpdb->query( $query );
+					$wpdb->update( TABLE_ACTIVITE, array( 'nom_exportable_plan_action' => 'no', 'description_exportable_plan_action' => 'no', ), array( 'id_tache' => $task_id, ) );
 					$sub_task->save();
 				}
 			}

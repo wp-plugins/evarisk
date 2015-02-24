@@ -25,6 +25,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$saufGroupement = $groupement->nom;
 		$contenuInputTitre = $groupement->nom;
 		$contenuInputDescription = $groupement->description;
+		$contenuInputResponsable = $groupement->id_responsable;
 		$contenuInputType = $groupement->typeGroupement;
 		$contenuInputSiren = $groupement->siren;
 		$contenuInputSiret = $groupement->siret;
@@ -61,6 +62,7 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 	else
 	{
 		$contenuInputTitre = '';
+		$contenuInputResponsable = '';
 		$contenuInputDescription = '';
 		$contenuInputLigne1 = '';
 		$contenuInputLigne2 = '';
@@ -132,6 +134,68 @@ function getGroupGeneralInformationPostBoxBody($arguments){
 		$nomChamps = "nom_groupement";
 		$idTitre = "nom_groupement";
 		$groupement_new .= EvaDisplayInput::afficherInput('text', $idTitre, $contenuInputTitre, '', $labelInput, $nomChamps, $grise, true, 255, 'titleInput');
+	}
+	{//Responsable
+	$contenuAideDescription = "";
+	$labelInput = __("Responsable", 'evarisk') . ' : ';
+	$id = $arguments['tableElement'] . 'responsible';
+	$nomChamps = "responsable_groupement";
+
+	$groupement_new .= '<br/><label for="search_user_responsable_' . $arguments['tableElement'] . '" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false);
+	$search_input_state = '';
+	$change_input_state = 'hide';
+	if($contenuInputResponsable > 0){
+		$search_input_state = 'hide';
+		$change_input_state = '';
+		$responsible = evaUser::getUserInformation($contenuInputResponsable);
+		$groupement_new .= '<div id="responsible_name" >' . ELEMENT_IDENTIFIER_U . $contenuInputResponsable . '&nbsp;-&nbsp;' . $responsible[$contenuInputResponsable]['user_lastname'] . ' ' . $responsible[$contenuInputResponsable]['user_firstname'];
+	}
+	else{
+		$groupement_new .= '<div id="responsible_name" class="hide" >&nbsp;';
+	}
+	$groupement_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '&nbsp;/&nbsp;</span><span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
+			jQuery(".completeUserListActionResponsible").show();
+		});
+		/*	Autocomplete search	*/
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $arguments['tableElement'] . '&id_element=' . $arguments['idElement'] . '",
+			select: function( event, ui ){
+					alert( "'.$id.'" );
+				jQuery("#' . $id . '").val(ui.item.value);
+				jQuery("#responsible_name").html(ui.item.label);
+					jQuery("#responsible_name").show();
+
+				jQuery(".completeUserListActionResponsible").hide();
+				jQuery(".searchUserToAffect").hide();
+				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+				jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
+
+				setTimeout(function(){
+					jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val("");
+					jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur();
+				}, 2);
+			}
+		});
+
+		jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
+			jQuery(this).hide();
+		});
+		jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#responsable_tache").val("");
+			jQuery("#responsible_name").html("&nbsp;");
+				jQuery("#responsible_name").hide();
+			jQuery(this).hide();
+			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").hide();
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").hide();
+		});
+	});
+</script><br class="clear" />';
 	}
 	{//Type du groupement
 		$labelInput = ucfirst(strtolower(sprintf(__("Type %s", 'evarisk'), __("du groupement", 'evarisk')))) . ' :';

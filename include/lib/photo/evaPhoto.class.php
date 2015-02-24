@@ -55,40 +55,36 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		$digirisk_tools = new digirisk_tools();
-		$tableElement = $digirisk_tools->IsValid_Variable($tableElement);
+		if ( current_user_can( 'upload_files' )) {
+			$digirisk_tools = new digirisk_tools();
+			$tableElement = $digirisk_tools->IsValid_Variable($tableElement);
 
-		$digirisk_tools = new digirisk_tools();
-		$idElement = $digirisk_tools->IsValid_Variable($idElement);
+			$digirisk_tools = new digirisk_tools();
+			$idElement = $digirisk_tools->IsValid_Variable($idElement);
 
-		$digirisk_tools = new digirisk_tools();
-		$photo = $digirisk_tools->IsValid_Variable($digirisk_tools->slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
+			$digirisk_tools = new digirisk_tools();
+			$photo = $digirisk_tools->IsValid_Variable($digirisk_tools->slugify(str_replace(str_replace('\\', '/', EVA_GENERATED_DOC_DIR), '', $photo)));
 
-		/*	Check if the picture have already been inserted into database	*/
-		$query = $wpdb->prepare("SELECT id FROM ".TABLE_PHOTO." WHERE photo=%s", $photo);
-		$picture_id = $wpdb->get_var($query);
-		if(empty($picture_id)){
-			$query =
-				$wpdb->prepare(
-					"INSERT INTO " . TABLE_PHOTO . "
-						(id, photo)
-					VALUES
-						('', '%s')"
-					, $photo);
-			if($wpdb->query($query)){
-				$picture_id = $wpdb->insert_id;
-				$status = evaPhoto::associatePicture($tableElement, $idElement, $picture_id);
-				switch($tableElement){
-					case TABLE_ACTIVITE:
-					case TABLE_TACHE:
-						/*	Log modification on element and notify user if user subscribe	*/
-						digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', $picture_id);
-					break;
+			/*	Check if the picture have already been inserted into database	*/
+			$query = $wpdb->prepare("SELECT id FROM ".TABLE_PHOTO." WHERE photo=%s", $photo);
+			$picture_id = $wpdb->get_var($query);
+			if(empty($picture_id)){
+				$insert_picture_query = $wpdb->insert( TABLE_PHOTO, array( 'id' => null, 'photo' => $photo ) );
+				if ( false !== $insert_picture_query ) {
+					$picture_id = $wpdb->insert_id;
+					$status = evaPhoto::associatePicture($tableElement, $idElement, $picture_id);
+					switch($tableElement){
+						case TABLE_ACTIVITE:
+						case TABLE_TACHE:
+							/*	Log modification on element and notify user if user subscribe	*/
+							digirisk_user_notification::log_element_modification($tableElement, $idElement, 'picture_add', '', $picture_id);
+						break;
+					}
 				}
 			}
-		}
-		else{
-			$status = evaPhoto::associatePicture($tableElement, $idElement, $picture_id);
+			else{
+				$status = evaPhoto::associatePicture($tableElement, $idElement, $picture_id);
+			}
 		}
 
 		return $status;
@@ -108,15 +104,10 @@ class EvaPhoto {
 		$tableElement = digirisk_tools::IsValid_Variable($tableElement);
 		$idElement = digirisk_tools::IsValid_Variable($idElement);
 
-		$query =
-			$wpdb->prepare(
-				"INSERT INTO " . TABLE_PHOTO_LIAISON . "
-					(id, status, isMainPicture, idPhoto, idElement, tableElement)
-				VALUES
-					('', 'valid', 'no', '%d', '%d', '%s')"
-				, $pictureId, $idElement, $tableElement);
-		if($wpdb->query($query))
+		$picture_accociation_query = $wpdb->insert( TABLE_PHOTO_LIAISON, array( 'id' => null, 'status' => 'valid', 'isMainPicture' => 'no', 'idPhoto' => $pictureId, 'idElement' => $idElement, 'tableElement' => $tableElement, )  );
+		if ( false !== $picture_accociation_query ) {
 			$status = $pictureId;
+		}
 
 		return $status;
 	}
@@ -133,16 +124,12 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		$query =
-			$wpdb->prepare(
-				"UPDATE " . TABLE_PHOTO_LIAISON . "
-				SET status = 'deleted'
-				WHERE tableElement = '%s'
-					AND idElement = '%d'
-					AND idPhoto = '%d' "
-				, $tableElement, $idElement, $idPhoto);
-		if($wpdb->query($query))
-		{
+		$dissociate_picture = $wpdb->update(
+			TABLE_PHOTO_LIAISON,
+			array( 'status' => 'deleted', ),
+			array( 'tableElement' => $tableElement, 'idElement' => $idElement, 'idPhoto' => $idPhoto, )
+		);
+		if( false !== $dissociate_picture ){
 			$status = 'ok';
 		}
 
@@ -587,30 +574,22 @@ class EvaPhoto {
 		global $wpdb;
 		$status = 'error';
 
-		if($isMainPicture == 'yes')
-		{
-		/*	Delete the old main photo	*/
-			$query =
-				$wpdb->prepare(
-					"UPDATE " . TABLE_PHOTO_LIAISON . "
-						SET isMainPicture = 'no'
-						WHERE tableElement = '%s'
-							AND idElement = '%d' "
-					, $tableElement, $idElement);
-			$wpdb->query($query);
+		if ( $isMainPicture == 'yes' ) {
+			/*	Delete the old main photo	*/
+			$dissociate_picture = $wpdb->update(
+				TABLE_PHOTO_LIAISON,
+				array( 'isMainPicture' => 'no', ),
+				array( 'tableElement' => $tableElement, 'idElement' => $idElement, )
+			);
 		}
 
 		/*	Set the main photo	*/
-		$query =
-			$wpdb->prepare(
-				"UPDATE " . TABLE_PHOTO_LIAISON . "
-					SET isMainPicture = '%s'
-					WHERE tableElement = '%s'
-						AND idElement = '%d'
-						AND idPhoto = '%d' "
-				, $isMainPicture, $tableElement, $idElement, $idPhoto);
-		if($wpdb->query($query))
-		{
+		$set_main_picture = $wpdb->update(
+			TABLE_PHOTO_LIAISON,
+			array( 'isMainPicture' => $isMainPicture, ),
+			array( 'tableElement' => $tableElement, 'idElement' => $idElement, 'idPhoto' => $idPhoto, )
+		);
+		if ( false !== $set_main_picture ) {
 			$status = 'ok';
 		}
 

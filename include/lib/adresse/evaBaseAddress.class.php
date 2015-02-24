@@ -40,7 +40,7 @@ class EvaBaseAddress
 	 * @var string The Address status
 	 */
 	var $status;
-	
+
 /*
  *	Constructeur et accesseurs
  */
@@ -66,7 +66,7 @@ class EvaBaseAddress
 		$this->longitude = $longitude;
 		$this->status = $status;
 	}
-	
+
 	/**
 	 * Returns the Address identifier
 	 * @return int The identifier
@@ -75,7 +75,7 @@ class EvaBaseAddress
 	{
 		return $this->id;
 	}
-	
+
 	/**
 	 * Set the Address identifier
 	 * @param int $id The identifier to set
@@ -84,7 +84,7 @@ class EvaBaseAddress
 	{
 		$this->id = $id;
 	}
-	
+
 	/**
 	 * Returns the Address first line
 	 * @return string The first line
@@ -210,7 +210,7 @@ class EvaBaseAddress
 	{
 		$this->status = $status;
 	}
-	
+
 /*
  * Persistance
  */
@@ -221,7 +221,7 @@ class EvaBaseAddress
 	function save()
 	{
 		global $wpdb;
-		
+
 		{//Variables cleaning
 			$id = (int) digirisk_tools::IsValid_Variable($this->getId());
 			$firstLine = digirisk_tools::IsValid_Variable($this->getFirstLine());
@@ -232,33 +232,39 @@ class EvaBaseAddress
 			$longitude = (float) digirisk_tools::IsValid_Variable($this->getLongitude());
 			$status = digirisk_tools::IsValid_Variable($this->getStatus());
 		}
-		
+
+		$address_args = array(
+			'ligne1' => $firstLine,
+			'ligne2' => $secondLine,
+			'ville' => $city,
+			'codePostal' => $codePostal,
+			'latitude' => $latitude,
+			'longitude' => $longitude,
+			'Status' => $status,
+		);
+
 		//Query creation
-		if($id == 0)
-		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_ADRESSE . " (`ligne1`, `ligne2`, `ville`, `codePostal`,  `latitude`,  `longitude`, `Status`) VALUES ('" . ($firstLine) . "', '" . ($secondLine) . "', '" . ($city) . "', '" . ($codePostal) . "', '" . ($latitude) . "', '" . ($longitude) . "', '" . ($status) . "')";
+		$address_query_treatment = false;
+		if($id == 0) {// Insert in data base
+			$address_query_treatment = $wpdb->insert( TABLE_ADRESSE, $address_args );
 		}
-		else
-		{//Update of the data base
-			$sql = "UPDATE " . TABLE_ADRESSE . " set `ligne1`='" . ($firstLine) . "', `ligne2`='" . ($secondLine) . "', `ville`='" . ($city) . "', `codePostal`='" . ($codePostal) . "', `latitude`='" . ($latitude) . "', `longitude`='" . ($longitude) . "', `Status`='" . ($status) . "' WHERE `id`=" . ($id);
+		else {//Update of the data base
+			$address_query_treatment = $wpdb->update( TABLE_ADRESSE, $address_args, array( 'id' => $id, ) );
 		}
-		
+
 		//Query execution
-		if($wpdb->query($sql))
-		{//Their is no trouble
+		if ( false !== $address_query_treatment ) {//Their is no trouble
 			$id = $wpdb->insert_id;
-			if($this->getId() == null)
-			{
+			if($this->getId() == null) {
 				$this->setId($id);
 			}
 		}
-		else
-		{//Their is some troubles
+		else {//Their is some troubles
 			$this->setStatus("error");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Load the Address with identifier key
 	 */
@@ -269,7 +275,7 @@ class EvaBaseAddress
 		if($id != 0)
 		{
 			$wpdbAddress = $wpdb->get_row( "SELECT * FROM " . TABLE_ADRESSE . " WHERE id = " . $id);
-			
+
 			if($wpdbAddress != null)
 			{
 				$this->setId($wpdbAddress->id);

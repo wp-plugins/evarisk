@@ -49,78 +49,55 @@ class EvaActivity extends EvaBaseActivity
 			$real_end_date = digirisk_tools::IsValid_Variable($this->getreal_end_date());
 		}
 
-		//Query creation
-		if($id == 0)
-		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_ACTIVITE . " (" . self::relatedTaskId . ", " . self::name . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::cout . ", " . self::progression . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",   " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ",  " . self::dateSolde . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::planned_time . ", " . self::elapsed_time . ", " . self::cout_reel . ", " . self::real_start_date . ", " . self::real_end_date . ", " . self::firstInsert . ")
-				VALUES ('" . ($relatedTaskId) . "',
-								'" . ($name) . "',
-								'" . ($description) . "',
-								'" . ($startDate) . "',
-								'" . ($finishDate) . "',
-								'" . ($place) . "',
-								'" . ($cout) . "',
-								'" . ($progression) . "',
-								'" . ($status) . "',
-								'" . ($idCreateur) . "',
-								'" . ($idResponsable) . "',
-								'" . ($idSoldeur) . "',
-								'" . ($idSoldeurChef) . "',
-								'" . ($ProgressionStatus) . "',
-								'" . ($dateSolde) . "',
-								'" . ($idPhotoAvant) . "',
-								'" . ($idPhotoApres) . "',
-								'" . ($nom_exportable_plan_action) . "',
-								'" . ($description_exportable_plan_action) . "',
-								'" . ($planned_time) . "',
-								'" . ($elapsed_time) . "',
-								'" . ($cout_reel) . "',
-								'" . ($real_start_date) . "',
-								'" . ($real_end_date) . "',
-								'" . current_time('mysql', 0) . "')";
+		/**		Build action information for database insertion	*/
+		$activite_main_args = array(
+			self::relatedTaskId => $relatedTaskId,
+			self::name => $name,
+			self::description => $description,
+			self::startDate => $startDate,
+			self::finishDate => $finishDate,
+			self::place => $place,
+			self::cout => $cout,
+			self::progression => $progression,
+			self::status => $status,
+			self::idResponsable => $idResponsable,
+			self::idSoldeur => $idSoldeur,
+			self::idSoldeurChef => $idSoldeurChef,
+			self::ProgressionStatus => $ProgressionStatus,
+			self::dateSolde => $dateSolde,
+			self::idPhotoAvant => $idPhotoAvant,
+			self::idPhotoApres => $idPhotoApres,
+			self::nom_exportable_plan_action => $nom_exportable_plan_action,
+			self::description_exportable_plan_action => $description_exportable_plan_action,
+			self::planned_time => $planned_time,
+			self::elapsed_time => $elapsed_time,
+			self::cout_reel => $cout_reel,
+			self::real_start_date => $real_start_date,
+			self::real_end_date => $real_end_date,
+		);
+		/**		Laucnh query to database	*/
+		$activite_save_operation = false;
+		if( $id == 0 ) {
+			$activite_creation_action = wp_parse_args( array(
+				self::firstInsert => current_time('mysql', 0),
+				self::idCreateur => $idCreateur,
+			), $activite_main_args );
+			$activite_save_operation = $wpdb->insert( TABLE_ACTIVITE, $activite_creation_action );
 		}
-		else
-		{//Update of the data base
-			$sql = "UPDATE " . TABLE_ACTIVITE . " set
-				" . self::relatedTaskId . " = '" . ($relatedTaskId) . "',
-				" . self::name . " = '" . ($name) . "',
-				" . self::description . " = '" . ($description) . "',
-				" . self::startDate . " = '" . ($startDate) . "',
-				" . self::finishDate . " = '" . ($finishDate) . "',
-				" . self::place . " = '" . ($place) . "',
-				" . self::cout . " = '" . ($cout) . "',
-				" . self::progression . " = '" . ($progression) . "',
-				" . self::status . " = '" . ($status) . "' ,
-				" . self::idResponsable . " = '" . ($idResponsable) . "' ,
-				" . self::idSoldeur . " = '" . ($idSoldeur) . "' ,
-				" . self::idSoldeurChef . " = '" . ($idSoldeurChef) . "' ,
-				" . self::ProgressionStatus . " = '" . ($ProgressionStatus) . "' ,
-				" . self::idPhotoAvant . " = '" . ($idPhotoAvant) . "' ,
-				" . self::idPhotoApres . " = '" . ($idPhotoApres) . "' ,
-				" . self::nom_exportable_plan_action . " = '" . ($nom_exportable_plan_action) . "' ,
-				" . self::description_exportable_plan_action . " = '" . ($description_exportable_plan_action) . "' ,
-				" . self::planned_time . " = '" . ($planned_time) . "',
-				" . self::elapsed_time . " = '" . ($elapsed_time) . "',
-				" . self::cout_reel . " = '" . ($cout_reel) . "',
-				" . self::dateSolde . " = '" . ($dateSolde) . "',
-				" . self::real_start_date . " = '" . ($real_start_date) . "',
-				" . self::real_end_date . " = '" . ($real_end_date) . "'
-			WHERE " . self::id . " = " . ($id);
+		else {//Update of the data base
+			$activite_save_operation = $wpdb->update( TABLE_ACTIVITE, $activite_main_args, array( self::id => $id, ) );
 		}
 
 		//Query execution
 		/* We use identity (===) because query can return both, 0 and false
 		 * if 0 is return, their is no change but no trouble in database
 	 	 */
-		if($wpdb->query($sql) === false)
-		{//Their is some troubles
+		if ( $activite_save_operation === false ) {//Their is some troubles
 			$this->setStatus('error');
 		}
-		else
-		{//Their is no trouble
-			$id = $wpdb->insert_id;
-			if($this->getId() == null)
-			{
+		else {//Their is no trouble
+			if ( $this->getId() == null ) {
+				$id = $wpdb->insert_id;
 				$this->setId($id);
 			}
 		}
@@ -153,10 +130,9 @@ class EvaActivity extends EvaBaseActivity
 	* @param int $newRelatedTaskId New relative task identifier
 	*
 	*/
-	function transfert($newRelatedTaskId)
-	{
+	function transfert($newRelatedTaskId) {
 		global $wpdb;
-		$wpdb->query("UPDATE " . TABLE_ACTIVITE . " SET " . self::relatedTaskId . " = " . $newRelatedTaskId . " WHERE " . self::id . " = " . $this->getId());
+		$wpdb->update( TABLE_ACTIVITE, array( self::relatedTaskId => $newRelatedTaskId, ), array( self::id => $this->getId(), ) );
 	}
 
 	/**

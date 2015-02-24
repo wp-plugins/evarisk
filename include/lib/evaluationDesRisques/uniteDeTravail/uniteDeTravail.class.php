@@ -252,12 +252,16 @@ class eva_UniteDeTravail {
 	* @param string $nom Working unit name.
 	* @param string $idGroupementPere Father group id.
 	*/
-  function saveNewWorkingUnit($nom, $idGroupementPere)
-	{
+  	function saveNewWorkingUnit($nom, $idGroupementPere) {
 		global $wpdb;
-
-		$sql = "INSERT INTO " . TABLE_UNITE_TRAVAIL . " (`nom`, `id_groupement`, `Status`, creation_date) VALUES ('" . $nom . "', '" . $idGroupementPere . "', 'Valid', '" . current_time('mysql', 0) . "')";
-		return $wpdb->query($sql);
+		$new_work_unit_args = array(
+			'nom' => $nom,
+			'id_groupement' => $idGroupementPere,
+			'Status' => 'Valid',
+			'creation_date' => current_time('mysql', 0),
+		);
+		$new_work_unit = $wpdb->insert( TABLE_UNITE_TRAVAIL, $new_work_unit_args );
+		return $new_work_unit;
 	}
 
 	/**
@@ -270,7 +274,7 @@ class eva_UniteDeTravail {
 	* @param string $idAdresse Identifier of the address working unit name in the Adress Table.
 	* @param string $idGroupementPere  father group id.
 	*/
-	function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere) {
+	function updateWorkingUnit($id_unite, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $idResponsable) {
 		global $wpdb;
 
 		$work_unit = array();
@@ -280,6 +284,7 @@ class eva_UniteDeTravail {
 		$work_unit[ 'effectif' ] = $effectif;
 		$work_unit[ 'id_adresse' ] = $idAdresse;
 		$work_unit[ 'id_groupement' ] = $idGroupementPere;
+		$work_unit[ 'id_responsable' ] = $idResponsable;
 		$work_unit[ 'lastupdate_date' ] = current_time('mysql', 0);
 
 		$update_result = $wpdb->update( TABLE_UNITE_TRAVAIL, $work_unit, array( 'id' => $id_unite, ) );
@@ -293,19 +298,12 @@ class eva_UniteDeTravail {
 	* @param string $whatToUpdate The wordking unit information we want to update
 	* @param string $whatToSet The value of the information we want to update
 	*/
-	function updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet)
-	{
+	function updateWorkingUnitByField($id_unite, $whatToUpdate, $whatToSet) {
 		global $wpdb;
 
-		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_UNITE_TRAVAIL . "
-				SET " . $whatToUpdate . " = '%s',
-					lastupdate_date = %s
-			WHERE id='" . $id_unite . "'",
-			 $whatToSet, current_time('mysql', 0)
-		);
+		$update_work_unit = $wpdb->update( TABLE_UNITE_TRAVAIL, array( $whatToUpdate => $whatToSet, 'lastupdate_date' => current_time('mysql', 0), ), array( 'id' => $id_unite, ) );
 
-		return $wpdb->query($query);
+		return $update_work_unit;
 	}
 	/**
 	* Transfer an working unit from a group to an other
@@ -315,49 +313,33 @@ class eva_UniteDeTravail {
 	function transfertUnit($idUnite, $idGroupementPere)
 	{
 		global $wpdb;
-
-		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `id_groupement`='" . $idGroupementPere . "', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`=" . $idUnite;
-		$wpdb->query($sql);
+		$update_work_unit = $wpdb->update( TABLE_UNITE_TRAVAIL, array( 'id_groupement' => $idGroupementPere, 'lastupdate_date' => current_time('mysql', 0), ), array( 'id' => $idUnite, ) );
 	}
 	/**
 	* Set the status of the  working unit wich is the identifier to Delete
 	* @param int $id Working unit identifier
 	*/
-	function deleteWorkingUnit($id)
-	{
+	function deleteWorkingUnit($id) {
 		global $wpdb;
 
-		$sql = "UPDATE " . TABLE_UNITE_TRAVAIL . " set `Status`='Deleted', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE `id`=" . $id;
-		if($wpdb->query($sql))
-		{
-			echo
-				'<script type="text/javascript">
-					digirisk(document).ready(function(){
-						digirisk("#message").addClass("updated");
-						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						digirisk("#message").show();
-						setTimeout(function(){
-							digirisk("#message").removeClass("updated");
-							digirisk("#message").hide();
-						},7500);
-					});
-				</script>';
+		$delete_work_unit = $wpdb->update( TABLE_UNITE_TRAVAIL, array( 'Status' => 'Deleted', 'lastupdate_date' => current_time('mysql', 0), ), array( 'id' => $id, ) );
+		if ( false !== $delete_work_unit ) {
+			$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; a bien &eacute;t&eacute; supprim&eacute;e', 'evarisk') . '</strong></p>');
 		}
-		else
-		{
-			echo
-				'<script type="text/javascript">
-					digirisk(document).ready(function(){
-						digirisk("#message").addClass("updated");
-						digirisk("#message").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>') . '");
-						digirisk("#message").show();
-						setTimeout(function(){
-							digirisk("#message").removeClass("updated");
-							digirisk("#message").hide();
-						},7500);
-					});
-				</script>';
+		else {
+			$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('L\'unit&eacute; n\'a pas pu &ecirc;tre supprim&eacute;e', 'evarisk') . '</strong></p>');
 		}
+		echo '<script type="text/javascript">
+				digirisk(document).ready(function(){
+					digirisk("#message").addClass("updated");
+					digirisk("#message").html("' . $message . '");
+					digirisk("#message").show();
+					setTimeout(function(){
+						digirisk("#message").removeClass("updated");
+						digirisk("#message").hide();
+					},7500);
+				});
+			</script>';
 	}
 
 }

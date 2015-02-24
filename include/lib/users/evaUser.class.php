@@ -506,7 +506,7 @@ $user_additionnal_field .= '
 				$user_more_action = '
 				var lastname = digirisk(this).children("td:nth-child(3)").html();
 				var firstname = digirisk(this).children("td:nth-child(4)").html();
-				jQuery("#responsable_activite").val(currentId);
+				jQuery("#' . $tableElement . '").val(currentId);
 				jQuery(".completeUserListActionResponsible").hide();
 				jQuery(".searchUserToAffect").hide();
 				jQuery("#responsible_name").html("' . ELEMENT_IDENTIFIER_U . '" + currentId + " - " + lastname + " " + firstname);

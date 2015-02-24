@@ -32,6 +32,7 @@ if ($_REQUEST['act'] == 'update') {
 	$address->save();
 	$idAdresse = $address->getId();
 
+	$idResponsable = (digirisk_tools::IsValid_Variable($_REQUEST['responsable_groupement']));
 	$idGroupementPere = (digirisk_tools::IsValid_Variable($_REQUEST['groupementPere']));
 	$typeGroupement = (digirisk_tools::IsValid_Variable($_REQUEST['typeGroupement']));
 	$siren = (digirisk_tools::IsValid_Variable($_REQUEST['siren']));
@@ -54,7 +55,7 @@ if ($_REQUEST['act'] == 'update') {
 	{
 		$telephone = null;
 	}
-	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number, $creation_date_of_society);
+	EvaGroupement::updateGroupement($id_groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number, $creation_date_of_society, $idResponsable);
 }
 if ($_REQUEST['act'] == 'delete') {
 	EvaGroupement::deleteGroupement($_REQUEST['id']);

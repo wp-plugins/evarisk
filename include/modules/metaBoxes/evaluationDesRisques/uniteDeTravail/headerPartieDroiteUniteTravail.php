@@ -33,13 +33,13 @@
 		else
 		{
 			$nomUniteTravail = __('Nouvelle unit&eacute; de travail', 'evarisk');
-			$responsables = null;
+			$responsable = null;
 			if($idElement!=null)
 			{
 				$uniteTravail = eva_UniteDeTravail::getWorkingUnit($idElement);
 				$nomUniteTravail = $uniteTravail->nom;
 				$groupementPere = EvaGroupement::getGroupement($uniteTravail->id_groupement);
-				// $responsables = eva_UniteDeTravail::getResponsables($idElement);
+				$responsable = $uniteTravail->id_responsable;
 
 				$scoreRisqueUniteTravail = 0;
 				$riskAndSubRisks = eva_documentUnique::listRisk($tableElement, $idElement);
@@ -62,23 +62,13 @@
 					$miniFilAriane = $miniFilAriane . $ancetre->nom . ' &raquo; ';
 				}
 			}
-			$nomResponsables = '';
-			if(count($responsables) > 0)
-			{
-				foreach($responsables as $responsable)
-				{
-						$nomResponsables = $nomResponsables . $responsable->prenom . ' ' . $responsable->nom . ', ';
-				}
+			$nomResponsable = '';
+			$texteResponsable = __('Responsable', 'evarisk');
+			if ( !empty( $responsable ) ) {
+				$responsible = evaUser::getUserInformation( $responsable );
+				$nomResponsable = ELEMENT_IDENTIFIER_U . $responsable . '&nbsp;-&nbsp;' . $responsible[ $responsable ]['user_lastname'] . ' ' . $responsible[ $responsable ]['user_firstname'];
 			}
-			if(count($responsables) > 1)
-			{
-				$texteResponsable = __('Responsables', 'evarisk');
-			}
-			else
-			{
-				$texteResponsable = __('Responsable', 'evarisk');
-			}
-			$nomResponsables = substr($nomResponsables, 0, strlen($nomResponsables) - 2);
+
 			if($groupementPere->nom != "Groupement Racine")
 				$miniFilAriane = $miniFilAriane . $groupementPere->nom;
 			$renduPage =
@@ -162,7 +152,7 @@
 						<div class="mainInfos1 alignleft" style="width: 68%">
 							<p class="">
 								<span id="miniFilAriane">' . $miniFilAriane . '</span><br />
-								' . $texteResponsable . ' : <strong>' . $nomResponsables . '</strong><br />
+								' . $texteResponsable . ' : <strong>' . $nomResponsable . '</strong><br />
 							</p>
 						</div>
 						<div class="mainInfos2 alignleft" style="width: 30%">

@@ -170,15 +170,14 @@ class Arborescence {
 		sort($tableauElements);
 		for ($i=0; $i<count($tableauElements); $i++) {
 			if($tableauElements[$i][1] == 'g') {
-				$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . $i . "' WHERE `id` = '" . $tableauElements[$i][2] . "'";
+				$wpdb->update( $table, array( 'limiteGauche' => $i, ), array( 'id' => $tableauElements[$i][2], ) );
 			}
 			else {
 				if($tableauElements[$i][2] == $elementDestination->id) {
 					$limiteDroiteDestination = $i;
 				}
-				$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . $i . "' WHERE `id` = '" . $tableauElements[$i][2] . "'";
+				$wpdb->update( $table, array( 'limiteDroite' => $i, ), array( 'id' => $tableauElements[$i][2], ) );
 			}
-			$wpdb->query($sql);
 		}
 
 		/**
@@ -189,8 +188,7 @@ class Arborescence {
 		// Tout �l�ment dont les limites sont comprises entre $limiteDroiteDestination et la limite droite de la racine est un �l�ment dont les deux limites doivent �tre d�plac� de $ecart
 		$elements = Arborescence::getByLimites($table, $limiteDroiteDestination, $racine->limiteDroite);
 		foreach($elements as $element) {
-			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche + $ecart) . "', `limiteDroite`= '" . ($element->limiteDroite + $ecart) . "' WHERE`id` = '" . $element->id . "'";
-			$wpdb->query($sql);
+			$wpdb->update( $table, array( 'limiteGauche' => ($element->limiteGauche + $ecart), 'limiteDroite' => ($element->limiteDroite + $ecart), ), array( 'id' => $element->id, ) );
 		}
 		// Tout �l�ment dont la limite droite est comprise entre $limiteDroiteDestination et la limite droite de la racine
 		// et la limite gauche est avant $limiteDroiteDestination est un �l�ment dont la limite droite doit �tre d�plac� de $ecart
@@ -206,25 +204,21 @@ class Arborescence {
 			// Tout �l�ment qui n'est ni avant ni apr�s $limiteDroiteDestination la chevauche (donc un �l�m�nt � modifier)
 			if (!empty($elementsAvant) && !empty($elementsApres)) {
 				if((!(in_array($elementArbre->id, $elementsAvant))) && (!(in_array($elementArbre->id, $elementsApres)))) {
-					$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
-					$wpdb->query($sql);
+					$wpdb->update( $table, array( 'limiteDroite' => ($elementArbre->limiteDroite + $ecart), ), array( 'id' => $elementArbre->id, ) );
 				}
 			}
 			elseif( !empty($elementsAvant) ) {
 				if(!(in_array($elementArbre->id, $elementsAvant))) {
-					$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
-					$wpdb->query($sql);
+					$wpdb->update( $table, array( 'limiteDroite' => ($elementArbre->limiteDroite + $ecart), ), array( 'id' => $elementArbre->id, ) );
 				}
 			}
 			elseif( !empty($elementsApres) ) {
 				if(!(in_array($elementArbre->id, $elementsApres))) {
-					$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
-					$wpdb->query($sql);
+					$wpdb->update( $table, array( 'limiteDroite' => ($elementArbre->limiteDroite + $ecart), ), array( 'id' => $elementArbre->id, ) );
 				}
 			}
 			else {
-				$sql = "UPDATE " . $table . " SET `limiteDroite`= '" . ($elementArbre->limiteDroite + $ecart) . "' WHERE`id` = '" . $elementArbre->id . "'";
-				$wpdb->query($sql);
+					$wpdb->update( $table, array( 'limiteDroite' => ($elementArbre->limiteDroite + $ecart), ), array( 'id' => $elementArbre->id, ) );
 			}
 		}
 
@@ -232,8 +226,7 @@ class Arborescence {
 		$elements = Arborescence::getByLimites($table, ($limiteGauche - $decrement ), ($limiteDroite - $decrement ));
 		$ecartAuNouvelEmplacement = ($limiteDroiteDestination - ($limiteDroite - $decrement ) + $ecart - 1);
 		foreach ($elements as $element) {
-			$sql = "UPDATE " . $table . " SET `limiteGauche`= '" . ($element->limiteGauche + $ecartAuNouvelEmplacement) . "', `limiteDroite`= '" . ($element->limiteDroite + $ecartAuNouvelEmplacement) . "' WHERE`id` = '" . $element->id . "'";
-			$wpdb->query($sql);
+			$wpdb->update( $table, array( 'limiteGauche' => ($element->limiteGauche + $ecartAuNouvelEmplacement), 'limiteDroite' => ($element->limiteDroite + $ecartAuNouvelEmplacement), ), array( 'id' => $element->id, ) );
 		}
 	}
 

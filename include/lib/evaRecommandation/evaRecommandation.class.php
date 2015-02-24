@@ -316,20 +316,17 @@ class evaRecommandation
 		global $wpdb;
 		$reponseRequete = '';
 
-		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'update');
-		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_LIAISON_PRECONISATION_ELEMENT . "
-			SET " . implode(', ', $whatToUpdate['values']) . "
-			WHERE id = '%s' ",
-			$id
-		);
+		foreach($recommandationsinformations as $field => $value) {
+			if ($field != 'id') {
+				$recommandation_query_args[ $field ] = $value;
+			}
+		}
+		$recommandation_query = $wpdb->update( TABLE_LIAISON_PRECONISATION_ELEMENT, $recommandation_query_args, array( 'id' => $id, ) );
 
-		if( $wpdb->query($query) )
-		{
+		if ( false !== $recommandation_query ) {
 			$reponseRequete = 'done';
 		}
-		elseif( $wpdb->query($query) == 0 )
-		{
+		elseif( $recommandation_query == 0 ){
 			$reponseRequete = 'nothingToUpdate';
 		}
 		else
@@ -350,15 +347,14 @@ class evaRecommandation
 	function saveRecommandation($recommandationsinformations){
 		global $wpdb;
 
-		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'creation');
-		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_PRECONISATION . "
-			(" . implode(', ', $whatToUpdate['fields']) . ")
-			VALUES
-			(" . implode(', ', $whatToUpdate['values']) . ") ", ""
-		);
+		foreach($recommandationsinformations as $field => $value) {
+			if ($field != 'id') {
+				$recommandation_query_args[ $field ] = $value;
+			}
+		}
+		$recommandation_query = $wpdb->insert( TABLE_PRECONISATION, $recommandation_query_args );
 
-		if($wpdb->query($query)){
+		if ( false !== $recommandation_query ) {
 			$reponseRequete = $wpdb->insert_id;
 		}
 		else{
@@ -379,18 +375,17 @@ class evaRecommandation
 		global $wpdb;
 		$reponseRequete = '';
 
-		$whatToUpdate = eva_database::prepareQuery($recommandationsinformations, 'update');
-		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_PRECONISATION . "
-			SET " . implode(', ', $whatToUpdate['values']) . "
-			WHERE id = '%s' ",
-			$id
-		);
+		foreach($recommandationsinformations as $field => $value) {
+			if ($field != 'id') {
+				$recommandation_query_args[ $field ] = $value;
+			}
+		}
+		$recommandation_query = $wpdb->update( TABLE_PRECONISATION, $recommandation_query_args, array( 'id' => $id, ) );
 
-		if($wpdb->query($query)){
+		if ( false !== $recommandation_query ) {
 			$reponseRequete = 'done';
 		}
-		elseif($wpdb->query($query) == 0){
+		elseif( $recommandation_query == 0 ){
 			$reponseRequete = 'nothingToUpdate';
 		}
 		else{

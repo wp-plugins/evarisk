@@ -2190,8 +2190,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 										$sub_task = new EvaTask($task_id);
 										$sub_task->load();
 										$sub_task->setnom_exportable_plan_action('no');
-										$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $task_id );
-										$wpdb->query( $query );
+										$wpdb->update( TABLE_ACTIVITE, array( 'nom_exportable_plan_action' => 'no', 'description_exportable_plan_action' => 'no', ), array( 'id_tache' => $task_id, ) );
 										$sub_task->save();
 									}
 								}
@@ -2216,8 +2215,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 
 							/*	Check the state of export checkboxes in order to update sub element of current element	*/
 							if ( $relatedTask->getnom_exportable_plan_action() == 'no' ) {
-								$query = $wpdb->prepare( "UPDATE " . TABLE_ACTIVITE . " SET nom_exportable_plan_action = 'no', description_exportable_plan_action = 'no' WHERE id_tache = %d", $relatedTask->getId() );
-								$wpdb->query( $query );
+								$wpdb->update( TABLE_ACTIVITE, array( 'nom_exportable_plan_action' => 'no', 'description_exportable_plan_action' => 'no', ), array( 'id_tache' => $relatedTask->getId(), ) );
 							}
 
 							$relatedTask->computeProgression();
@@ -3600,8 +3598,8 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						$tableElement = $_REQUEST['tableElement'];
 						$idElement = $_REQUEST['idElement'];
 						$idDocument = $_REQUEST['idDocument'];
-						$query = $wpdb->prepare("UPDATE " . TABLE_DUER . " SET status = 'deleted' WHERE id= %d", $idDocument);
-						if( $wpdb->query($query) )
+						$delete_document = $wpdb->update( TABLE_DUER, array( 'status' => 'deleted', ), array( 'id' => $idDocument, ) );
+						if( false !== $delete_document )
 						{
 							$messageToOutput = "<img src='" . EVA_MESSAGE_SUCCESS . "' alt='success' class='messageIcone' />" . __('Le document unique &agrave; bien &eacute;t&eacute; supprim&eacute;.', 'evarisk');
 							echo
@@ -3638,7 +3636,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 							$workUnitAdress = new EvaBaseAddress($workUnitinformations->id_adresse);
 							$workUnitAdress->load();
 
-							$_POST['adresse'] = serialize( array( 'adresse' => trim( $workUnitAdress->getFirstLine() . " " . $workUnitAdress->getSecondLine() ), 'codePostal' => trim($workUnitAdress->getPostalCode()), 'ville' => trim($workUnitAdress->getPostalCode()) ) );
+							$_POST['adresse'] = serialize( array( 'adresse' => trim( $workUnitAdress->getFirstLine() . " " . $workUnitAdress->getSecondLine() ), 'codePostal' => trim($workUnitAdress->getPostalCode()), 'ville' => trim($workUnitAdress->getCity()) ) );
 
 							require_once(EVA_METABOXES_PLUGIN_DIR . 'ficheDePoste/ficheDePostePersistance.php');
 						}
@@ -4281,10 +4279,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; supprim&eacute;e.', 'evarisk');
 							$moreRecommandationScript = '
-	digirisk("#digirisk_configurations_tab div").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-		"post":"true",
-		"nom":"configuration",
-		"action":"recommandation",
+	jQuery("#main_tree_container").load(EVA_AJAX_FILE_URL,{
+		"post": "true",
+		"act": "reload_config_tree",
+		"table": "' . TABLE_CATEGORIE_PRECONISATION . '",
+		"idPere": "1",
+		"elt": "",
+		"expanded": "",
 	});';
 						}
 
@@ -4342,10 +4343,13 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						{
 							$recommandationCategoryActionMessage = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png\' class=\'messageIcone\' alt=\'succes\' />' . __('La famille de pr&eacute;conisation a correctement &eacute;t&eacute; enregistr&eacute;e.', 'evarisk');
 							$moreRecommandationCategoryScript .= '
-	digirisk("#digirisk_configurations_tab div").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-		"post":"true",
-		"nom":"configuration",
-		"action":"recommandation",
+	jQuery("#main_tree_container").load(EVA_AJAX_FILE_URL,{
+		"post": "true",
+		"act": "reload_config_tree",
+		"table": "' . TABLE_CATEGORIE_PRECONISATION . '",
+		"idPere": "1",
+		"elt": "",
+		"expanded": "",
 	});';
 						}
 

@@ -936,15 +936,7 @@ digirisk(document).ready(function(){
 		{
 			if(is_array($newElementList) && !in_array($elements->id_group, $newElementList))
 			{
-				$query = $wpdb->prepare(
-					"UPDATE " . DIGI_DBT_LIAISON_USER_GROUP . "
-					SET status = 'deleted',
-						date_desAffectation = %s,
-						id_desAttributeur = %d
-					WHERE id = %d",
-					current_time('mysql', 0), $current_user->ID, $elements->id
-				);
-				$wpdb->query($query);
+				$wpdb->update( DIGI_DBT_LIAISON_USER_GROUP, array( 'status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID, ), array( 'id' => $elements->id, ) );
 			}
 		}
 		if(is_array($newElementList) && (count($newElementList) > 0))

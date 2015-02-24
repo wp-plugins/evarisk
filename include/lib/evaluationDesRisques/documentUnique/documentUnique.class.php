@@ -1144,21 +1144,42 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 		$plan_d_action['unaffected'] = actionsCorrectives::get_correctiv_action_for_duer();
 
 		{	/*	Enregistrement d'un document unique	*/
-			$query =
-				"INSERT INTO " . TABLE_DUER . "
-					(id, element, elementId, id_model, referenceDUER, dateGenerationDUER, nomDUER, dateDebutAudit, dateFinAudit, nomSociete, telephoneFixe, telephonePortable, telephoneFax, emetteurDUER, destinataireDUER, revisionDUER, planDUER, groupesUtilisateurs, groupesUtilisateursAffectes, risquesUnitaires, risquesParUnite, methodologieDUER, sourcesDUER, alerteDUER, conclusionDUER, plan_d_action)
-				VALUES
-					('', '" . mysql_escape_string($tableElement) . "', '" . mysql_escape_string($idElement) . "', '" . mysql_escape_string($informationDocumentUnique['id_model']) . "', '" . mysql_escape_string($referenceDUER) . "', '" . mysql_escape_string($informationDocumentUnique['dateCreation']) . "', '" . mysql_escape_string($informationDocumentUnique['nomDuDocument']) . "', '" . mysql_escape_string($informationDocumentUnique['dateDebutAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['dateFinAudit']) . "', '" . mysql_escape_string($informationDocumentUnique['nomEntreprise']) . "', '" . mysql_escape_string($informationDocumentUnique['telephoneFixe']) . "', '" . mysql_escape_string($informationDocumentUnique['telephonePortable']) . "', '" . mysql_escape_string($informationDocumentUnique['numeroFax']) . "', '" . mysql_escape_string($informationDocumentUnique['emetteur']) . "', '" . mysql_escape_string($informationDocumentUnique['destinataire']) . "', '" . mysql_escape_string($revisionDocumentUnique) . "', '" . ($informationDocumentUnique['localisation']) . "', '" . mysql_escape_string(serialize(digirisk_groups::getElement('', "'valid'", 'employee'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'affectedUserGroup'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print'))) . "', '" . mysql_escape_string(serialize(eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement'))) . "', '" . $wpdb->escape($informationDocumentUnique['methodologie']) . "', '" . mysql_escape_string($informationDocumentUnique['sources']) . "', '" . mysql_escape_string($informationDocumentUnique['alerte']) . "', '', '" . mysql_escape_string(serialize($plan_d_action)) . "')";
-			if($wpdb->query($query) === false)
-			{
+			$new_duer_args = array(
+				'id' => null,
+				'element' => $tableElement,
+				'elementId' => $idElement,
+				'id_model' => $informationDocumentUnique['id_model'],
+				'referenceDUER' => $referenceDUER,
+				'dateGenerationDUER' => $informationDocumentUnique['dateCreation'],
+				'nomDUER' => $informationDocumentUnique['nomDuDocument'],
+				'dateDebutAudit' => $informationDocumentUnique['dateDebutAudit'],
+				'dateFinAudit' => $informationDocumentUnique['dateFinAudit'],
+				'nomSociete' => $informationDocumentUnique['nomEntreprise'],
+				'telephoneFixe' => $informationDocumentUnique['telephoneFixe'],
+				'telephonePortable' => $informationDocumentUnique['telephonePortable'],
+				'telephoneFax' => $informationDocumentUnique['numeroFax'],
+				'emetteurDUER' => $informationDocumentUnique['emetteur'],
+				'destinataireDUER' => $informationDocumentUnique['destinataire'],
+				'revisionDUER' => $revisionDocumentUnique,
+				'planDUER' => $informationDocumentUnique['localisation'],
+				'groupesUtilisateurs' => serialize(digirisk_groups::getElement('', "'valid'", 'employee')),
+				'groupesUtilisateursAffectes' => serialize(eva_documentUnique::exportData($tableElement, $idElement, 'affectedUserGroup')),
+				'risquesUnitaires' => serialize(eva_documentUnique::bilanRisque($tableElement, $idElement, 'ligne', 'print')),
+				'risquesParUnite' => serialize(eva_documentUnique::exportData($tableElement, $idElement, 'riskByElement')),
+				'methodologieDUER' => $informationDocumentUnique['methodologie'],
+				'sourcesDUER' => $informationDocumentUnique['sources'],
+				'alerteDUER' => $informationDocumentUnique['alerte'],
+				'conclusionDUER' => '',
+				'plan_d_action' => serialize($plan_d_action),
+			);
+			if ( $wpdb->insert( TABLE_DUER, $new_duer_args ) === false ) {
 				$status['result'] = 'error';
 				$status['errors']['query_error'] = __('Une erreur est survenue lors de l\'enregistrement', 'evarisk');
 			}
-			else
-			{
+			else {
 				$status['result'] = 'ok';
 				/*	Save the odt file	*/
-				eva_gestionDoc::generateSummaryDocument($tableElement, $idElement, 'odt');
+				eva_gestionDoc::generateSummaryDocument( $tableElement, $idElement, 'odt');
 			}
 		}
 

@@ -365,15 +365,7 @@ if(current_user_can('wpshop_edit_product')){
 		/*	Read the product list already linked for checking if they are again into the list or if we have to delete them form the list	*/
 		foreach($linkedElementCheckList as $elements){
 			if(is_array($newElementList) && !in_array($elements->id_product, $newElementList)){
-				$query = $wpdb->prepare(
-					"UPDATE " . DIGI_DBT_LIAISON_PRODUIT_ELEMENT . "
-					SET status = 'deleted',
-						date_desAffectation = %s,
-						id_desAttributeur = %d
-					WHERE id = %d",
-					current_time('mysql', 0), $current_user->ID, $elements->id
-				);
-				$wpdb->query($query);
+				$wpdb->update( DIGI_DBT_LIAISON_PRODUIT_ELEMENT, array( 'status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID), array( 'id' => $elements->id, ) );
 
 				if(trim($elements->id_product) != ''){
 					/*	Save product informations into digirisk database	*/

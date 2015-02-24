@@ -11,10 +11,8 @@ if($_REQUEST['act'] == 'save')
 	$nom = (digirisk_tools::IsValid_Variable($_REQUEST['nom_danger']));
 	$idCategorieMere = (digirisk_tools::IsValid_Variable($_REQUEST['categorieMere']));
 
-	EvaDanger::saveNewDanger($nom, $idCategorieMere);
-
 	$_REQUEST['act'] = 'update';
-	$_REQUEST['id'] = $wpdb->insert_id;
+	$_REQUEST['id'] = EvaDanger::saveNewDanger($nom, $idCategorieMere);
 }
 if($_REQUEST['act'] == 'update')
 {

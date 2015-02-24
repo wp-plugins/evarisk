@@ -55,92 +55,62 @@ class EvaTask extends EvaBaseTask
 			$elapsed_time = $this->getelapsed_time();
 		}
 
-		//Query creation
-		if($id == 0)
-		{// Insert in data base
-			$sql = "INSERT INTO " . TABLE_TACHE . " (" . self::name . ", " . self::leftLimit . ", " . self::rightLimit . ", " . self::description . ", " . self::startDate . ",	" . self::finishDate . ", " . self::place . ", " . self::progression . ", " . self::cost . ", " . self::idFrom . ", " . self::tableFrom . ", " . self::status . ", " . self::idCreateur . ", " . self::idResponsable . ", " . self::idSoldeur . ",  " . self::idSoldeurChef . ",  " . self::ProgressionStatus . ", " . self::dateSolde . ", " . self::hasPriority . ", " . self::efficacite . ", " . self::idPhotoAvant . ", " . self::idPhotoApres . ", " . self::nom_exportable_plan_action . ", " . self::description_exportable_plan_action . ", " . self::is_readable_from_external . ", " . self::real_start_date . ", " . self::real_end_date . ", " . self::estimate_cost . ", " . self::real_cost . ", " . self::planned_time . ", " . self::elapsed_time . ", " . self::firstInsert . ")
-				VALUES ('" . ($name) . "',
-								'" . ($leftLimit) . "',
-								'" . ($rightLimit) . "',
-								'" . ($description) . "',
-								'" . ($startDate) . "',
-								'" . ($finishDate) . "',
-								'" . ($place) . "',
-								'" . ($progression) . "',
-								'" . ($cost) . "',
-								'" . ($idFrom) . "',
-								'" . ($tableFrom) . "',
-								'" . ($status) . "',
-								'" . ($idCreateur) . "',
-								'" . ($idResponsable) . "',
-								'" . ($idSoldeur) . "',
-								'" . ($idSoldeurChef) . "',
-								'" . ($ProgressionStatus) . "',
-								'" . ($dateSolde) . "',
-								'" . ($hasPriority) . "',
-								'" . ($efficacite) . "',
-								'" . ($idPhotoAvant) . "',
-								'" . ($idPhotoApres) . "',
-								'" . ($nom_exportable_plan_action) . "',
-								'" . ($description_exportable_plan_action) . "',
-								'" . ($is_readable_from_external) . "',
-								'" . ($real_start_date) . "',
-								'" . ($real_end_date) . "',
-								'" . ($estimate_cost) . "',
-								'" . ($real_cost) . "',
-								'" . ($planned_time) . "',
-								'" . ($elapsed_time) . "',
-								'" . current_time('mysql', 0) . "')";
+		/**		Build action information for database insertion	*/
+		$tache_main_args = array(
+			self::name => $name,
+			self::leftLimit => $leftLimit,
+			self::rightLimit => $rightLimit,
+			self::description => $description,
+			self::startDate => $startDate,
+			self::finishDate => $finishDate,
+			self::place => $place,
+			self::progression => $progression,
+			self::cost => $cost,
+			self::idFrom => $idFrom,
+			self::tableFrom => $tableFrom,
+			self::status => $status,
+			self::idResponsable => $idResponsable,
+			self::idSoldeur => $idSoldeur,
+			self::idSoldeurChef => $idSoldeurChef,
+			self::ProgressionStatus => $ProgressionStatus,
+			self::dateSolde => $dateSolde,
+			self::hasPriority => $hasPriority,
+			self::efficacite => $efficacite,
+			self::idPhotoAvant => $idPhotoAvant,
+			self::idPhotoApres => $idPhotoApres,
+			self::nom_exportable_plan_action => $nom_exportable_plan_action,
+			self::description_exportable_plan_action => $description_exportable_plan_action,
+			self::is_readable_from_external => $is_readable_from_external,
+			self::real_start_date => $real_start_date,
+			self::real_end_date => $real_end_date,
+			self::estimate_cost => $estimate_cost,
+			self::real_cost => $real_cost,
+			self::planned_time => $planned_time,
+			self::elapsed_time => $elapsed_time,
+		);
+		/**		Laucnh query to database	*/
+		$tache_save_operation = false;
+		if( $id == 0 ) {
+			$activite_creation_action = wp_parse_args( array(
+				self::firstInsert => current_time('mysql', 0),
+				self::idCreateur => $idCreateur,
+			), $tache_main_args );
+			$tache_save_operation = $wpdb->insert( TABLE_TACHE, $activite_creation_action );
 		}
-		else
-		{//Update of the data base
-			$sql = "UPDATE " . TABLE_TACHE . " set
-				" . self::name . " = '" . ($name) . "',
-				" . self::leftLimit . " = '" . ($leftLimit) . "',
-				" . self::rightLimit . " = '" . ($rightLimit) . "',
-				" . self::description . " = '" . ($description) . "',
-				" . self::startDate . " = '" . ($startDate) . "',
-				" . self::finishDate . " = '" . ($finishDate) . "',
-				" . self::place . " = '" . ($place) . "',
-				" . self::progression . " = '" . ($progression) . "',
-				" . self::cost . " = '" . ($cost) . "',
-				" . self::idPhotoAvant . " = '" . ($idPhotoAvant) . "' ,
-				" . self::idPhotoApres . " = '" . ($idPhotoApres) . "' ,
-				" . self::idFrom . " = '" . ($idFrom) . "',
-				" . self::tableFrom . " = '" . ($tableFrom) . "',
-				" . self::status . " = '" . ($status) . "',
-				" . self::idResponsable . " = '" . ($idResponsable) . "',
-				" . self::idSoldeur . " = '" . ($idSoldeur) . "' ,
-				" . self::idSoldeurChef . " = '" . ($idSoldeurChef) . "' ,
-				" . self::ProgressionStatus . " = '" . ($ProgressionStatus) . "' ,
-				" . self::dateSolde . " = '" . ($dateSolde) . "' ,
-				" . self::hasPriority . " = '" . ($hasPriority) . "' ,
-				" . self::nom_exportable_plan_action . " = '" . ($nom_exportable_plan_action) . "' ,
-				" . self::description_exportable_plan_action . " = '" . ($description_exportable_plan_action) . "' ,
-				" . self::is_readable_from_external . " = '" . ($is_readable_from_external) . "' ,
-				" . self::efficacite . " = '" . ($efficacite) . "',
-				" . self::real_start_date . " = '" . ($real_start_date) . "',
-				" . self::real_end_date . " = '" . ($real_end_date) . "',
-				" . self::estimate_cost . " = '" . ($estimate_cost) . "',
-				" . self::real_cost . " = '" . ($real_cost) . "',
-				" . self::planned_time . " = '" . ($planned_time) . "',
-				" . self::elapsed_time . " = '" . ($elapsed_time) . "'
-			WHERE " . self::id . " = " . ($id);
+		else {//Update of the data base
+			$tache_save_operation = $wpdb->update( TABLE_TACHE, $tache_main_args, array( self::id => $id, ) );
 		}
 
 		//Query execution
 		/* We use identity (===) because query can return both, 0 and false
 		 * if 0 is return, their is no change but no trouble in database
 	 	 */
-		if($wpdb->query($sql) === false)
-		{//Their is some troubles
+		if ( $tache_save_operation === false ) {//Their is some troubles
 			$this->setStatus('error');
 		}
-		else
-		{//Their is no trouble
-			$id = $wpdb->insert_id;
-			if($this->getId() == null)
-			{
+		else {//Their is no trouble
+			if ( $this->getId() == null ) {
+				$id = $wpdb->insert_id;
 				$this->setId($id);
 			}
 		}

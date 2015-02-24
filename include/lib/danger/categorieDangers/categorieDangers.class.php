@@ -143,10 +143,8 @@ class categorieDangers {
 	function deleteCategorie($id)
 	{
 		global $wpdb;
-
-		$sql = "UPDATE " . TABLE_CATEGORIE_DANGER . " set Status='Deleted' WHERE id=" . $id;
-		if($wpdb->query($sql))
-		{
+		$delete_danger_cat = $wpdb->update( TABLE_CATEGORIE_DANGER, array( 'Status' => 'Deleted', ), array( 'id' => $id, ) );
+		if ( false !== $delete_danger_cat ) {
 			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
@@ -160,8 +158,7 @@ class categorieDangers {
 					});
 				</script>';
 		}
-		else
-		{
+		else {
 			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
@@ -252,23 +249,7 @@ class categorieDangers {
 		digirisk("#' . $formId . 'divCategorieDangerFormRisque").hide();
 		digirisk("#' . $formId . 'cat' . $selectionCategorie . '").click();
 		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";';
-				if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
-					$categoryResult['script'] .= '
-		digirisk("' . $formIdSelector . '.categoriesDangers").click(function(){
-			var ' . $formId . 'newCatId = (digirisk(this).attr("id")).replace("' . $formId . 'cat","");
-			if (' . $formId . 'oldCatId != ' . $formId . 'newCatId) {
-				digirisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
-				digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",{
-					"post":"true",
-					"table":"' . TABLE_CATEGORIE_DANGER . '",
-					"act":"reloadComboDangers",
-					"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
-					"formId":"' . $formId . '"
-				});
-				' . $formId . 'oldCatId = ' . $formId . 'newCatId;
-			}
-		});';
-				}
+
 			}
 		}
 		$categoryResult['list'] .= '<input type="hidden" id="valeurPenibilite" value="0"/>

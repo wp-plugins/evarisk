@@ -34,5 +34,6 @@
 	else{
 		$result["success"] = false;
 	}
-	
+
 	echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+?>

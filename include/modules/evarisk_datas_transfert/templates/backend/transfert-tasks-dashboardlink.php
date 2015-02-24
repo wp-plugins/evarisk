@@ -1,0 +1,1 @@
+<a class="wpeotm-dashboard-link" href="<?php echo admin_url( 'admin.php?page=wpeotm-dashboard' ) . ( 4 >= $current_step ? '&amp;wpeotm-ignore-transfert=ignore' : '' ); ?>" ><?php printf( __( '%sGo on task manager dashboard', 'wpeotm-i18n' ), ( 4 >= $current_step ? __( 'Ignore transfert - ', 'wp-digi-dtrans-i18n' ) : '' ) ); ?></a>

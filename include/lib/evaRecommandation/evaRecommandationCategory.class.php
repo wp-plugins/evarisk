@@ -78,24 +78,20 @@ class evaRecommandationCategory
 *
 *	@return string $reponseRequete A message that allows to know if the recommandation category creation has been done correctly or not
 */
-	function saveRecommandationCategory($categoryRecommandationInformations)
-	{
+	function saveRecommandationCategory($categoryRecommandationInformations) {
 		global $wpdb;
 
-		$whatToUpdate = eva_database::prepareQuery($categoryRecommandationInformations, 'creation');
-		$query = $wpdb->prepare(
-			"INSERT INTO " . TABLE_CATEGORIE_PRECONISATION . "
-			(" . implode(', ', $whatToUpdate['fields']) . ")
-			VALUES
-			(" . implode(', ', $whatToUpdate['values']) . ") "
-		);
+		foreach($categoryRecommandationInformations as $field => $value) {
+			if ($field != 'id') {
+				$category_recommandation_query_args[ $field ] = $value;
+			}
+		}
+		$category_recommandation_query = $wpdb->insert( TABLE_CATEGORIE_PRECONISATION, $category_recommandation_query_args );
 
-		if( $wpdb->query($query) )
-		{
+		if ( false !== $category_recommandation_query ) {
 			$reponseRequete = 'done';
 		}
-		else
-		{
+		else {
 			$reponseRequete = 'error';
 		}
 
@@ -114,24 +110,20 @@ class evaRecommandationCategory
 		global $wpdb;
 		$reponseRequete = '';
 
-		$whatToUpdate = eva_database::prepareQuery($categoryRecommandationInformations, 'update');
-		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_CATEGORIE_PRECONISATION . "
-			SET " . implode(', ', $whatToUpdate['values']) . "
-			WHERE id = '%s' ",
-			$id
-		);
+		foreach($categoryRecommandationInformations as $field => $value) {
+			if ($field != 'id') {
+				$categoryRecommandation_query_args[ $field ] = $value;
+			}
+		}
+		$category_recommandation_query = $wpdb->update( TABLE_PRECONISATION, $categoryRecommandation_query_args, array( 'id' => $id, ) );
 
-		if( $wpdb->query($query) )
-		{
+		if ( false !== $category_recommandation_query ) {
 			$reponseRequete = 'done';
 		}
-		elseif( $wpdb->query($query) == 0 )
-		{
+		elseif( $category_recommandation_query == 0 ){
 			$reponseRequete = 'nothingToUpdate';
 		}
-		else
-		{
+		else {
 			$reponseRequete = 'error';
 		}
 

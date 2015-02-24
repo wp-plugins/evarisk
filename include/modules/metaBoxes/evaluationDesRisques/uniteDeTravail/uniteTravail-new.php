@@ -32,6 +32,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 			$saufUniteTravail = $uniteTravail->nom;
 			$groupementPere = EvaGroupement::getGroupement($uniteTravail->id_groupement);
 			$contenuInputTitre = $uniteTravail->nom;
+			$contenuInputResponsable = $uniteTravail->id_responsable;
 			$contenuInputDescription = $uniteTravail->description;
 			if($uniteTravail->id_adresse != 0 AND $uniteTravail->id_adresse != null)
 			{
@@ -64,6 +65,7 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		{
 			$contenuInputTitre = '';
 			$contenuInputDescription = '';
+			$contenuInputResponsable = '';
 			$contenuInputLigne1 = '';
 			$contenuInputLigne2 = '';
 			$contenuInputCodePostal = '';
@@ -157,6 +159,68 @@ function getWorkingUnitGeneralInformationPostBoxBody($arguments)
 		$nomChamps = "description";
 		$rows = 5;
 		$uniteDeTravail_new = $uniteDeTravail_new . EvaDisplayInput::afficherInput('textarea', $idChamps, $contenuInputDescription, '', $labelInput, $nomChamps, $grise, DESCRIPTION_UNITE_TRAVAIL_OBLIGATOIRE, $rows);
+	}
+	{//Responsable
+	$contenuAideDescription = "";
+	$labelInput = __("Responsable", 'evarisk') . ' : ';
+	$id = $arguments['tableElement'] . 'responsible';
+	$nomChamps = "responsable_unite";
+
+	$uniteDeTravail_new .= '<br/><label for="search_user_responsable_' . $arguments['tableElement'] . '" >' . $labelInput . '</label>' . EvaDisplayInput::afficherInput('hidden', $id, $contenuInputResponsable, '', null, $nomChamps, false, false);
+	$search_input_state = '';
+	$change_input_state = 'hide';
+	if($contenuInputResponsable > 0){
+		$search_input_state = 'hide';
+		$change_input_state = '';
+		$responsible = evaUser::getUserInformation($contenuInputResponsable);
+		$uniteDeTravail_new .= '<div id="responsible_name" >' . ELEMENT_IDENTIFIER_U . $contenuInputResponsable . '&nbsp;-&nbsp;' . $responsible[$contenuInputResponsable]['user_lastname'] . ' ' . $responsible[$contenuInputResponsable]['user_firstname'];
+	}
+	else{
+		$uniteDeTravail_new .= '<div id="responsible_name" class="hide" >&nbsp;';
+	}
+	$uniteDeTravail_new .= '</div>&nbsp;<span id="change_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' change_ac_responsible" >' . __('Changer', 'evarisk') . '&nbsp;/&nbsp;</span><span id="delete_responsible_' . $arguments['tableElement'] . 'responsible" class="' . $change_input_state . ' delete_ac_responsible" >' . __('Enlever le responsable', 'evarisk') . '</span><input class="searchUserToAffect ac_responsable ' . $search_input_state . '" type="text" name="responsable_name_' . $arguments['tableElement'] . '" id="search_user_responsable_' . $arguments['tableElement'] . '" placeholder="' . __('Rechercher dans la liste des utilisateurs', 'evarisk') . '" /><div id="completeUserList' . $arguments['tableElement'] . 'responsible" class="completeUserList completeUserListActionResponsible hide clear" >' . evaUser::afficheListeUtilisateurTable_SimpleSelection($arguments['tableElement'] . 'responsible', $arguments['idElement']) . '</div>
+<script type="text/javascript" >
+	digirisk(document).ready(function(){
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").click(function(){
+			jQuery(".completeUserListActionResponsible").show();
+		});
+		/*	Autocomplete search	*/
+		jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").autocomplete({
+			source: "' . EVA_INC_PLUGIN_URL . 'liveSearch/searchUsers.php?table_element=' . $arguments['tableElement'] . '&id_element=' . $arguments['idElement'] . '",
+			select: function( event, ui ){
+					alert( "'.$id.'" );
+				jQuery("#' . $id . '").val(ui.item.value);
+				jQuery("#responsible_name").html(ui.item.label);
+					jQuery("#responsible_name").show();
+
+				jQuery(".completeUserListActionResponsible").hide();
+				jQuery(".searchUserToAffect").hide();
+				jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").show();
+				jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").show();
+
+				setTimeout(function(){
+					jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").val("");
+					jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").blur();
+				}, 2);
+			}
+		});
+
+		jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").show();
+			jQuery(this).hide();
+		});
+		jQuery("#delete_responsible_' . $arguments['tableElement'] . 'responsible").click(function(){
+			jQuery("#responsable_tache").val("");
+			jQuery("#responsible_name").html("&nbsp;");
+				jQuery("#responsible_name").hide();
+			jQuery(this).hide();
+			jQuery("#change_responsible_' . $arguments['tableElement'] . 'responsible").hide();
+			jQuery("#search_user_responsable_' . $arguments['tableElement'] . '").show();
+			jQuery("#completeUserList' . $arguments['tableElement'] . 'responsible").hide();
+		});
+	});
+</script><br class="clear" />';
 	}
 	{//Adresse
 		$uniteDeTravail_new = $uniteDeTravail_new . '<div id="adresseUnite' . $id . '">';

@@ -104,19 +104,17 @@ class EvaDanger {
 	/*
 	Persistance
 	*/
-	function saveNewDanger($nom, $idCategorieMere)
-	{
+	function saveNewDanger($nom, $idCategorieMere) {
 		global $wpdb;
 
 		$nom = digirisk_tools::IsValid_Variable($nom);
 		$idCategorieMere = digirisk_tools::IsValid_Variable($idCategorieMere);
 
-		$sql = "INSERT INTO " . TABLE_DANGER . " (`nom`, `id_categorie`, `Status`) VALUES ('" . ($nom) . "', '" . ($idCategorieMere) . "', 'Valid')";
-		$wpdb->query($sql);
+		$danger_creation = $wpdb->insert( TABLE_DANGER, array( 'nom' => $nom, 'id_categorie' => $idCategorieMere, 'Status' => 'Valid', ) );
+		return $wpdb->insert_id;
 	}
 
-	function updateDanger($id, $nom, $idCategorieMere, $description, $tab, $id_methode_eva)
-	{
+	function updateDanger($id, $nom, $idCategorieMere, $description, $tab, $id_methode_eva) {
 		global $wpdb;
 
 		$id = digirisk_tools::IsValid_Variable($id);
@@ -125,8 +123,7 @@ class EvaDanger {
 		$description = digirisk_tools::IsValid_Variable($description);
 		$id_methode_eva = digirisk_tools::IsValid_Variable($id_methode_eva);
 
-		$sql = "UPDATE " . TABLE_DANGER . " set `nom`='" . ($nom) . "', `id_categorie`='" . ($idCategorieMere) . "', description='" . ($description) . "'  , choix_danger='" . $tab . "' , methode_eva_defaut='" . ($id_methode_eva) . "' WHERE `id`=" . ($id);
-		$wpdb->query($sql);
+		$wpdb->update( TABLE_DANGER, array( 'nom' => $nom, 'id_categorie' => $idCategorieMere, 'description' => $description, 'choix_danger' => $tab, 'methode_eva_defaut' => $id_methode_eva, ), array( 'id' => $id, ));
 	}
 
 	/**
@@ -134,21 +131,17 @@ class EvaDanger {
 	* @param int $idDanger Working unit to transfer identifier
 	* @param int $idCategorieMere Group which receive the transfer identifier
 	*/
-	function transfertDanger($idDanger, $idCategorieMere)
-	{
+	function transfertDanger($idDanger, $idCategorieMere) {
 		global $wpdb;
 
-		$sql = "UPDATE " . TABLE_DANGER . " set `id_categorie`='" . $idCategorieMere . "' WHERE `id`=" . $idDanger;
-		$wpdb->query($sql);
+		$wpdb->update( TABLE_DANGER, array( 'id_categorie' => $idCategorieMere, ), array( 'id' => $idDanger, ));
 	}
 
-	function deleteDanger($id)
-	{
+	function deleteDanger($id) {
 		global $wpdb;
 
-		$sql = "UPDATE " . TABLE_DANGER . " set `Status`='Deleted' WHERE `id`=" . $id;
-		if($wpdb->query($sql))
-		{
+		$danger_deletion = $wpdb->update( TABLE_DANGER, array( 'Status' => 'Deleted', ), array( 'id' => $id, ));
+		if ( false !== $danger_deletion ) {
 			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){
@@ -162,8 +155,7 @@ class EvaDanger {
 					});
 				</script>';
 		}
-		else
-		{
+		else {
 			echo
 				'<script type="text/javascript">
 					digirisk(document).ready(function(){

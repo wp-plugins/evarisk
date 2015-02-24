@@ -136,227 +136,7 @@ class suivi_activite {
 </form>
 <div id="digi_ac_project_follow_up" >';
 			if ( $complete_interface ) {
-				$listSuivi = suivi_activite::getSuiviActivite($tableElement, $idElement, 'follow_up');
-				$follow_up_type = 'follow_up';
-
-				if( !empty($listSuivi) ) {
-					switch ($tableElement) {
-						case TABLE_TACHE:
-						case TABLE_ACTIVITE:
-							$document_type_to_print = __('le plan d\'action', 'evarisk');
-							$follow_up_container = 'project_follow_up_summary_';
-							break;
-
-						case TABLE_UNITE_TRAVAIL:
-						case TABLE_UNITE_TRAVAIL:
-						case TABLE_AVOIR_VALEUR:
-							$saveButtonOuput = 'yes';
-							$document_type_to_print = __('Le DUER', 'evarisk');
-							$follow_up_container = 'digi_content_note_';
-							break;
-					}
-
-					$idTable = 'tableauSuiviModification' . $tableElement . $idElement . $follow_up_type;
-
-					$titres[] = __('Date', 'evarisk');
-					$titres[] = __('Heure', 'evarisk');
-// 					$titres[] = __('Dur&eacute;e', 'evarisk');
-					$titres[] = __('Ressources / Dur&eacute;e / Description', 'evarisk');
-// 					$titres[] = __('Ressources', 'evarisk');
-					$titres[] = __('Impression', 'evarisk'); // sprintf( __('Publier dans %s', 'evarisk'), $document_type_to_print );
-
-						$titres[] = __('Actions', 'evarisk');
-
-
-
-					$classes[] = 'digi_suivi_modif_date';
-					$classes[] = 'digi_suivi_modif_heure';
-// 					$classes[] = 'digi_suivi_modif_elapsed_time_col';
-					$classes[] = 'digi_suivi_modif_contenu';
-// 					$classes[] = '';
-					$classes[] = 'digi_suivi_modif_export_col';
-
-						$classes[] = 'digi_suivi_modif_action_col';
-
-
-					unset($lignesDeValeurs);
-					foreach ($listSuivi as $suivi) {
-						unset($valeurs);
-						$user_id_to_use = !empty($suivi->id_user_performer) ? $suivi->id_user_performer : $suivi->id_user;
-						$user_info = get_userdata($user_id_to_use);
-						$user_lastname = '';
-						if ( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) ) {
-							$user_lastname = $user_info->user_lastname;
-						}
-						$user_firstname = $user_info->user_nicename;
-						if ( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) ) {
-							$user_firstname = $user_info->user_firstname;
-						}
-
-						$valeurs[] = array('value' => mysql2date( get_option( 'date_format' ), $suivi->date_ajout, true ));
-						$valeurs[] = array('value' => mysql2date( get_option( 'time_format' ), $suivi->date_ajout, true ));
-
-						$elapsed_time = $suivi->elapsed_time;
-						$elapsed_time_hour = floor( $suivi->elapsed_time / 60 );
-						$elapsed_time_hour = ($elapsed_time_hour < 10) ? '0' . $elapsed_time_hour : $elapsed_time_hour;
-						$elapsed_time_minutes = $suivi->elapsed_time % 60;
-						$elapsed_time_minutes = ($elapsed_time_minutes < 10) ? '0' . $elapsed_time_minutes : $elapsed_time_minutes;
-// 						$valeurs[] = array('value' => sprintf( __('%s H %s Minutes <br/>(%s)', 'evarisk'), (!empty($elapsed_time_hour) ? $elapsed_time_hour : 0), (!empty($elapsed_time_minutes) ? $elapsed_time_minutes : 0), $suivi->cost . '&euro;' ) );
-						$valeurs[] = array('value' => $user_lastname . ' ' . $user_firstname . ' - ' . sprintf( __('%s H %s Minutes', 'evarisk'), (!empty($elapsed_time_hour) ? $elapsed_time_hour : 0), (!empty($elapsed_time_minutes) ? $elapsed_time_minutes : 0), $suivi->cost . '&euro;' ) . '<br/>' . stripslashes( $suivi->commentaire ));
-// 						$valeurs[] = array('value' => $user_lastname . ' ' . $user_firstname);
-						$valeurs[] = array('value' => (!empty($suivi->export) && ($suivi->export == 'yes')) ? __('Oui', 'evarisk')/* '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="publish_in_doc" title="' . sprintf( __('Ce commentaire sera publi&eacute; dans %s', 'evarisk'), $document_type_to_print ) . '" />' */ : __('Non', 'evarisk'));
-
-							$valeurs[] = array('value' => '<input type="hidden" value="' . $suivi->follow_up_type . '" id="digi_edit_follow_up_line_' . $suivi->id . '_folow_up_type" /><img src="' . PICTO_EDIT . '" alt="' . __('Edit this comment', 'evarisk') . '" class="digi_edit_follow_up_line" id="digi_edit_follow_up_line_' . $suivi->id . '" /><img src="' . PICTO_DELETE . '" alt="' . __('Delete this comment', 'evarisk') . '" class="digi_delete_follow_up_line" id="digi_delete_follow_up_line_' . $suivi->id . '" />');
-
-						$lignesDeValeurs[] = $valeurs;
-						$idLignes[] = $tableElement . $idElement . 'suiviModification';
-					}
-
-					$scriptTableauSuiviModification =
-					'<script type="text/javascript">
-						/* Formating function for row details */
-						function fnFormatDetails ( oTable, nTr ){
-						    var aData = oTable.fnGetData( nTr );
-						    var sOut = \'<table cellpadding="7" cellspacing="0" border="0" style="padding-left:50px;">\';
-						    sOut += \'<tr><td>' . __( 'Ressource', 'digirisk' ) . '</td><td>\'+aData[5]+\'</td></tr>\';
-						    sOut += \'<tr><td>' . __( 'Impression dans le plan d action', 'digirisk' ) . '</td><td>\'+aData[6]+\'</td></tr>\';
-						    sOut += \'</table>\';
-
-						    return sOut;
-						}
-						digirisk(document).ready(function() {
-
-
-
-						    /* Add event listener for opening and closing details
-						     * Note that the indicator for showing which row is open is not controlled by DataTables,
-						     * rather it is done here
-						     */
-						    digirisk( document ).on("click", "#' . $idTable . ' tbody td img", function () {
-						        var nTr = digirisk(this).parents("tr")[0];
-						        if ( oTable.fnIsOpen(nTr) )
-						        {
-						            /* This row is already open - close it */
-						            this.src = "' . EVA_IMG_ICONES_PLUGIN_URL . 'details_open.png";
-						            oTable.fnClose( nTr );
-						        }
-						        else
-						        {
-						            /* Open this row */
-						            this.src = "' . EVA_IMG_ICONES_PLUGIN_URL . 'details_close.png";
-						            oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), "details" );
-						        }
-						    } );
-
-							oTable = digirisk("#' . $idTable . '").dataTable({
-						        "fnDrawCallback": function ( oSettings ) {
-						            if ( oSettings.aiDisplay.length == 0 ) {
-						                return;
-						            }
-
-						            var nTrs = digirisk("#' . $idTable . ' tbody tr");
-						            var iColspan = nTrs[0].getElementsByTagName("td").length;
-						            var sLastGroup = "";
-						            for ( var i=0 ; i<nTrs.length ; i++ ) {
-						                var iDisplayIndex = oSettings._iDisplayStart + i;
-						                var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
-						                if ( sGroup != sLastGroup ) {
-						                    var nGroup = document.createElement( "tr" );
-						                    var nCell = document.createElement( "td" );
-						                    nCell.colSpan = iColspan;
-						                    nCell.className = "group";
-						                    nCell.innerHTML = sGroup;
-						                    nGroup.appendChild( nCell );
-						                    nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
-						                    sLastGroup = sGroup;
-						                }
-						            }
-						        },
-						        "aoColumnDefs": [
-						            { "bVisible": false, "aTargets": [ 0, 3 ] },
-			          				{ "bSortable": false, "aTargets": [ 4 ] },
-						        ],
-						        "aaSortingFixed": [[ 0, "asc" ]],
-						        "aaSorting": [[ 1, "asc" ]],
-						        "sDom": \'lfr<"giveHeight"t>ip\',
-						        "oLanguage":{
-									"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
-								},
-
-						        "bPaginate": false,
-						        "bScrollCollapse": true,
-						        "bLengthChange": false,
-						        "bInfo": false,
-						    });
-							digirisk("#' . $idTable . '").children("tfoot").remove();
-
-							jQuery(".digi_delete_follow_up_line").unbind("click");
-							jQuery(".digi_delete_follow_up_line").click(function(){
-								if ( confirm(digi_html_accent_for_js("' . __('Etes vous s&ucirc;r de vouloir supprimer ce commentaire?', 'evarisk') . '")) ) {
-									jQuery.post("' . admin_url('admin-ajax.php') . '", {
-										"action":"digi_ajax_save_activite_follow",
-										"digi_ajax_nonce":"' . wp_create_nonce("digi_ajax_save_activite_follow") . '",
-										"specific_follow_up": jQuery(this).attr("id").replace("digi_delete_follow_up_line_", ""),
-										"sub_action": "delete",
-										"tableElement": "' . $tableElement . '",
-										"idElement": "' . $idElement . '",
-									}, function (response) {
-										if ( response[0] == "ok" ) {
-											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('&Eacute;l&eacute;ment supprim&eacute; avec succ&eacute;s', 'evarisk') . '</strong></p>') . '");
-											jQuery("#digi_ac_project_follow_up").load("' . admin_url('admin-ajax.php') . '", {action:"digi_ajax_load_activite_follow",digi_ajax_nonce:"' .  wp_create_nonce("digi_ajax_load_activite_follow") . '",tableElement:"' . $tableElement . '",idElement:"' . $idElement .'",follow_up_type:"follow_up"});
-
-											if ( jQuery("#' . $follow_up_container . $tableElement . '_' . $idElement . '") && (response[1] != "") ) {
-												jQuery("#' . $follow_up_container . $tableElement . '_' . $idElement . '").html(response[1]);
-											}
-										}
-										else {
-											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La suppression de l\'&eacute;l&eacute;ment a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>"') . '");
-										}
-
-										jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").show();
-										jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").addClass("updated");
-										setTimeout(function(){
-											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").removeClass("updated");
-											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").hide();
-										},7500);
-									}, "json");
-								}
-							});
-							jQuery(".digi_edit_follow_up_line").unbind("click");
-							jQuery(".digi_edit_follow_up_line").click(function(){
-								if ( jQuery("#" + jQuery(this).attr("id") + "_folow_up_type").val() == "note") {
-									jQuery("#digi_follow_up_update_box").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-										"post":"true",
-										"table":"' . TABLE_ACTIVITE_SUIVI . '",
-										"act":"load_follow_up_edition_form",
-										"table_element": "' . $tableElement . '",
-										"id_element": "' . $idElement . '",
-										"follow_up_type": jQuery("#" + jQuery(this).attr("id") + "_folow_up_type").val(),
-										"follow_up_2_edit": jQuery(this).attr("id").replace("digi_edit_follow_up_line_", ""),
-									});
-									jQuery("#digi_follow_up_update_box").dialog("open");
-								}
-								else {
-									jQuery("#digi_project_follow_up_update_box").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-										"post":"true",
-										"table":"' . TABLE_ACTIVITE_SUIVI . '",
-										"act":"load_follow_up_edition_form",
-										"table_element": "' . $tableElement . '",
-										"id_element": "' . $idElement . '",
-										"follow_up_type": jQuery("#" + jQuery(this).attr("id") + "_folow_up_type").val(),
-										"follow_up_2_edit": jQuery(this).attr("id").replace("digi_edit_follow_up_line_", ""),
-									});
-									jQuery("#digi_project_follow_up_update_box").dialog("open");
-									jQuery("#project_commentaire' . $tableElement . '' . $idElement . '_" + jQuery(this).attr("id").replace("digi_edit_follow_up_line_", "")).click();
-								}
-							});
-						});
-					</script>';
-
-					$output .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptTableauSuiviModification);
-				}
-
-// 				$output .= suivi_activite::tableauSuiviActivite($tableElement, $idElement, 'follow_up');
+				$output .= suivi_activite::tableauSuiviActivite($tableElement, $idElement, 'follow_up');
 			}
 			$output .=
 '</div>
@@ -684,7 +464,7 @@ class suivi_activite {
 		}
 
 		if ( $complete_interface ) {
-			$output .= suivi_activite::tableauSuiviActivite($tableElement, $idElement);
+			$output .= suivi_activite::tableauSuiviActivite($tableElement, $idElement, ( !empty( $specific_name_for_input ) && ( TABLE_ACTIVITE_SUIVI == $specific_name_for_input ) ? 'note' : 'follow_up' ));
 		}
 
 		return $output;
@@ -824,7 +604,232 @@ class suivi_activite {
 		return array($elapsed_time_output, $class);
 	}
 
-	function tableauSuiviActivite($tableElement, $idElement, $follow_up_type = 'note', $edition_button = true) {
+	function tableauSuiviActivite ( $tableElement, $idElement, $follow_up_type = 'follow_up' ) {
+		$output = '';
+
+		$listSuivi = suivi_activite::getSuiviActivite($tableElement, $idElement, $follow_up_type);
+
+		if( !empty($listSuivi) ) {
+			switch ($tableElement) {
+				case TABLE_TACHE:
+				case TABLE_ACTIVITE:
+					$document_type_to_print = __('le plan d\'action', 'evarisk');
+					$follow_up_container = 'project_follow_up_summary_';
+					break;
+
+				case TABLE_UNITE_TRAVAIL:
+				case TABLE_UNITE_TRAVAIL:
+				case TABLE_AVOIR_VALEUR:
+					$saveButtonOuput = 'yes';
+					$document_type_to_print = __('Le DUER', 'evarisk');
+					$follow_up_container = 'digi_content_note_';
+					break;
+			}
+
+			$idTable = 'tableauSuiviModification' . $tableElement . $idElement . $follow_up_type;
+
+			$titres[] = __('Date', 'evarisk');
+			$titres[] = __('Heure', 'evarisk');
+			// 					$titres[] = __('Dur&eacute;e', 'evarisk');
+			$titres[] = __('Ressources / Dur&eacute;e / Description', 'evarisk');
+			// 					$titres[] = __('Ressources', 'evarisk');
+			$titres[] = __('Impression', 'evarisk'); // sprintf( __('Publier dans %s', 'evarisk'), $document_type_to_print );
+
+			$titres[] = __('Actions', 'evarisk');
+
+
+
+			$classes[] = 'digi_suivi_modif_date';
+			$classes[] = 'digi_suivi_modif_heure';
+			// 					$classes[] = 'digi_suivi_modif_elapsed_time_col';
+			$classes[] = 'digi_suivi_modif_contenu';
+			// 					$classes[] = '';
+			$classes[] = 'digi_suivi_modif_export_col';
+
+			$classes[] = 'digi_suivi_modif_action_col';
+
+
+			unset($lignesDeValeurs);
+			foreach ($listSuivi as $suivi) {
+				unset($valeurs);
+				$user_id_to_use = !empty($suivi->id_user_performer) ? $suivi->id_user_performer : $suivi->id_user;
+				$user_info = get_userdata($user_id_to_use);
+				$user_lastname = '';
+				if ( (isset($user_info->user_lastname) && ($user_info->user_lastname != '')) ) {
+					$user_lastname = $user_info->user_lastname;
+				}
+				$user_firstname = $user_info->user_nicename;
+				if ( (isset($user_info->user_firstname) && ($user_info->user_firstname != '')) ) {
+					$user_firstname = $user_info->user_firstname;
+				}
+
+				$valeurs[] = array('value' => mysql2date( get_option( 'date_format' ), $suivi->date_ajout, true ));
+				$valeurs[] = array('value' => mysql2date( get_option( 'time_format' ), $suivi->date_ajout, true ));
+
+				$elapsed_time = $suivi->elapsed_time;
+				$elapsed_time_hour = floor( $suivi->elapsed_time / 60 );
+				$elapsed_time_hour = ($elapsed_time_hour < 10) ? '0' . $elapsed_time_hour : $elapsed_time_hour;
+				$elapsed_time_minutes = $suivi->elapsed_time % 60;
+				$elapsed_time_minutes = ($elapsed_time_minutes < 10) ? '0' . $elapsed_time_minutes : $elapsed_time_minutes;
+				// 						$valeurs[] = array('value' => sprintf( __('%s H %s Minutes <br/>(%s)', 'evarisk'), (!empty($elapsed_time_hour) ? $elapsed_time_hour : 0), (!empty($elapsed_time_minutes) ? $elapsed_time_minutes : 0), $suivi->cost . '&euro;' ) );
+				$valeurs[] = array('value' => $user_lastname . ' ' . $user_firstname . ' - ' . sprintf( __('%s H %s Minutes', 'evarisk'), (!empty($elapsed_time_hour) ? $elapsed_time_hour : 0), (!empty($elapsed_time_minutes) ? $elapsed_time_minutes : 0), $suivi->cost . '&euro;' ) . '<br/>' . stripslashes( $suivi->commentaire ));
+				// 						$valeurs[] = array('value' => $user_lastname . ' ' . $user_firstname);
+				$valeurs[] = array('value' => (!empty($suivi->export) && ($suivi->export == 'yes')) ? __('Oui', 'evarisk')/* '<img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'veille-reponse.gif" alt="publish_in_doc" title="' . sprintf( __('Ce commentaire sera publi&eacute; dans %s', 'evarisk'), $document_type_to_print ) . '" />' */ : __('Non', 'evarisk'));
+
+				$valeurs[] = array('value' => '<input type="hidden" value="' . $suivi->follow_up_type . '" id="digi_edit_follow_up_line_' . $suivi->id . '_folow_up_type" /><img src="' . PICTO_EDIT . '" alt="' . __('Edit this comment', 'evarisk') . '" class="digi_edit_follow_up_line" id="digi_edit_follow_up_line_' . $suivi->id . '" /><img src="' . PICTO_DELETE . '" alt="' . __('Delete this comment', 'evarisk') . '" class="digi_delete_follow_up_line" id="digi_delete_follow_up_line_' . $suivi->id . '" />');
+
+				$lignesDeValeurs[] = $valeurs;
+				$idLignes[] = $tableElement . $idElement . 'suiviModification';
+			}
+
+			$scriptTableauSuiviModification =
+			'<script type="text/javascript">
+						/* Formating function for row details */
+						function fnFormatDetails ( oTable, nTr ){
+						    var aData = oTable.fnGetData( nTr );
+						    var sOut = \'<table cellpadding="7" cellspacing="0" border="0" style="padding-left:50px;">\';
+						    sOut += \'<tr><td>' . __( 'Ressource', 'digirisk' ) . '</td><td>\'+aData[5]+\'</td></tr>\';
+						    sOut += \'<tr><td>' . __( 'Impression dans le plan d action', 'digirisk' ) . '</td><td>\'+aData[6]+\'</td></tr>\';
+						    sOut += \'</table>\';
+
+						    return sOut;
+						}
+						digirisk(document).ready(function() {
+
+
+
+						    /* Add event listener for opening and closing details
+						     * Note that the indicator for showing which row is open is not controlled by DataTables,
+						     * rather it is done here
+						     */
+						    digirisk( document ).on("click", "#' . $idTable . ' tbody td img", function () {
+						        var nTr = digirisk(this).parents("tr")[0];
+						        if ( oTable.fnIsOpen(nTr) )
+						        {
+						            /* This row is already open - close it */
+						            this.src = "' . EVA_IMG_ICONES_PLUGIN_URL . 'details_open.png";
+						            oTable.fnClose( nTr );
+						        }
+						        else
+						        {
+						            /* Open this row */
+						            this.src = "' . EVA_IMG_ICONES_PLUGIN_URL . 'details_close.png";
+						            oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), "details" );
+						        }
+						    } );
+
+							oTable = digirisk("#' . $idTable . '").dataTable({
+						        "fnDrawCallback": function ( oSettings ) {
+						            if ( oSettings.aiDisplay.length == 0 ) {
+						                return;
+						            }
+
+						            var nTrs = digirisk("#' . $idTable . ' tbody tr");
+						            var iColspan = nTrs[0].getElementsByTagName("td").length;
+						            var sLastGroup = "";
+						            for ( var i=0 ; i<nTrs.length ; i++ ) {
+						                var iDisplayIndex = oSettings._iDisplayStart + i;
+						                var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
+						                if ( sGroup != sLastGroup ) {
+						                    var nGroup = document.createElement( "tr" );
+						                    var nCell = document.createElement( "td" );
+						                    nCell.colSpan = iColspan;
+						                    nCell.className = "group";
+						                    nCell.innerHTML = sGroup;
+						                    nGroup.appendChild( nCell );
+						                    nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+						                    sLastGroup = sGroup;
+						                }
+						            }
+						        },
+						        "aoColumnDefs": [
+						            { "bVisible": false, "aTargets": [ 0, 3 ] },
+			          				{ "bSortable": false, "aTargets": [ 4 ] },
+						        ],
+						        "aaSortingFixed": [[ 0, "asc" ]],
+						        "aaSorting": [[ 1, "asc" ]],
+						        "sDom": \'lfr<"giveHeight"t>ip\',
+						        "oLanguage":{
+									"sUrl": "' . EVA_INC_PLUGIN_URL . 'js/dataTable/jquery.dataTables.common_translation.txt"
+								},
+
+						        "bPaginate": false,
+						        "bScrollCollapse": true,
+						        "bLengthChange": false,
+						        "bInfo": false,
+						    });
+							digirisk("#' . $idTable . '").children("tfoot").remove();
+
+							jQuery(".digi_delete_follow_up_line").unbind("click");
+							jQuery(".digi_delete_follow_up_line").click(function(){
+								if ( confirm(digi_html_accent_for_js("' . __('Etes vous s&ucirc;r de vouloir supprimer ce commentaire?', 'evarisk') . '")) ) {
+									jQuery.post("' . admin_url('admin-ajax.php') . '", {
+										"action":"digi_ajax_save_activite_follow",
+										"digi_ajax_nonce":"' . wp_create_nonce("digi_ajax_save_activite_follow") . '",
+										"specific_follow_up": jQuery(this).attr("id").replace("digi_delete_follow_up_line_", ""),
+										"sub_action": "delete",
+										"tableElement": "' . $tableElement . '",
+										"idElement": "' . $idElement . '",
+									}, function (response) {
+										if ( response[0] == "ok" ) {
+											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('&Eacute;l&eacute;ment supprim&eacute; avec succ&eacute;s', 'evarisk') . '</strong></p>') . '");
+											jQuery("#digi_ac_project_follow_up").load("' . admin_url('admin-ajax.php') . '", {action:"digi_ajax_load_activite_follow",digi_ajax_nonce:"' .  wp_create_nonce("digi_ajax_load_activite_follow") . '",tableElement:"' . $tableElement . '",idElement:"' . $idElement .'",follow_up_type:"follow_up"});
+
+											if ( jQuery("#' . $follow_up_container . $tableElement . '_' . $idElement . '") && (response[1] != "") ) {
+												jQuery("#' . $follow_up_container . $tableElement . '_' . $idElement . '").html(response[1]);
+											}
+										}
+										else {
+											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").html("' . addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('La suppression de l\'&eacute;l&eacute;ment a &eacute;chou&eacute;e', 'evarisk') . '</strong></p>"') . '");
+										}
+
+										jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").show();
+										jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").addClass("updated");
+										setTimeout(function(){
+											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").removeClass("updated");
+											jQuery("#project_follow_up_message_' . $tableElement . $idElement . '").hide();
+										},7500);
+									}, "json");
+								}
+							});
+							jQuery(".digi_edit_follow_up_line").unbind("click");
+							jQuery(".digi_edit_follow_up_line").click(function(){
+								if ( jQuery("#" + jQuery(this).attr("id") + "_folow_up_type").val() == "note") {
+									jQuery("#digi_follow_up_update_box").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										"post":"true",
+										"table":"' . TABLE_ACTIVITE_SUIVI . '",
+										"act":"load_follow_up_edition_form",
+										"table_element": "' . $tableElement . '",
+										"id_element": "' . $idElement . '",
+										"follow_up_type": jQuery("#" + jQuery(this).attr("id") + "_folow_up_type").val(),
+										"follow_up_2_edit": jQuery(this).attr("id").replace("digi_edit_follow_up_line_", ""),
+									});
+									jQuery("#digi_follow_up_update_box").dialog("open");
+								}
+								else {
+									jQuery("#digi_project_follow_up_update_box").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+										"post":"true",
+										"table":"' . TABLE_ACTIVITE_SUIVI . '",
+										"act":"load_follow_up_edition_form",
+										"table_element": "' . $tableElement . '",
+										"id_element": "' . $idElement . '",
+										"follow_up_type": jQuery("#" + jQuery(this).attr("id") + "_folow_up_type").val(),
+										"follow_up_2_edit": jQuery(this).attr("id").replace("digi_edit_follow_up_line_", ""),
+									});
+									jQuery("#digi_project_follow_up_update_box").dialog("open");
+									jQuery("#project_commentaire' . $tableElement . '' . $idElement . '_" + jQuery(this).attr("id").replace("digi_edit_follow_up_line_", "")).click();
+								}
+							});
+						});
+					</script>';
+
+			$output .= evaDisplayDesign::getTable($idTable, $titres, $lignesDeValeurs, $classes, $idLignes, $scriptTableauSuiviModification);
+		}
+
+		return $output;
+	}
+
+	function tableauSuiviActivite1 ($tableElement, $idElement, $follow_up_type = 'note', $edition_button = true) {
 		$listSuivi = suivi_activite::getSuiviActivite($tableElement, $idElement, $follow_up_type);
 		$outputSuivi = '';
 

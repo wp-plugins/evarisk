@@ -380,15 +380,12 @@ class EvaGroupement {
 	* Save a new group
 	* @param string $nom group unit name
 	*/
-	function saveNewGroupement($nom)
-	{
+	function saveNewGroupement($nom) {
 		global $wpdb;
 
 		$lim = Arborescence::getMaxLimiteDroite(TABLE_GROUPEMENT);
 		$wpdb->insert(TABLE_GROUPEMENT, array('nom' => $nom, 'Status' => 'Valid', 'limiteGauche' => $lim, 'limiteDroite' => ($lim+1), 'creation_date' => current_time('mysql', 0)), '%s');
-
-		$sql = "UPDATE " . TABLE_GROUPEMENT . " SET `limiteDroite`= '" . ($lim + 2)  . "' WHERE`nom` = 'Groupement Racine'";
-		$wpdb->query($sql);
+		$wpdb->update( TABLE_GROUPEMENT, array( 'limiteDroite' => ( $lim + 2 ),  ), array( 'nom' => 'Groupement Racine') );
 	}
 
 	/**
@@ -401,14 +398,14 @@ class EvaGroupement {
 	* @param string $idAdresse Identifier of the address group name in the Adress Table
 	* @param string $idGroupementPere  father group id
 	*/
-	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number, $creation_date_of_society)
+	function updateGroupement($id_Groupement, $nom, $description, $telephone, $effectif, $idAdresse, $idGroupementPere, $typeGroupement, $siren, $siret, $social_activity_number, $creation_date_of_society, $idResponsable)
 	{
 		global $wpdb;
 		if($typeGroupement == ''){
 			$typeGroupement = 'none';
 		}
-		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => current_time('mysql', 0), 'creation_date_of_society' => $creation_date_of_society);
-		$wpdb->update(TABLE_GROUPEMENT, $groupementInformations, array( 'id' => $id_Groupement ), '%s', array('%d') );
+		$groupementInformations = array('nom' => $nom, 'description' => $description, 'telephoneGroupement' => $telephone, 'effectif' => $effectif, 'id_adresse' => $idAdresse, 'typeGroupement' => $typeGroupement, 'siren' => $siren, 'siret' => $siret, 'social_activity_number' => $social_activity_number, 'lastupdate_date' => current_time('mysql', 0), 'creation_date_of_society' => $creation_date_of_society, 'id_responsable' => $idResponsable, );
+		$wpdb->update(TABLE_GROUPEMENT, $groupementInformations, array( 'id' => $id_Groupement )  );
 
 		$groupementFils =  EvaGroupement::getGroupement($id_Groupement);
 		$groupementDestination =  EvaGroupement::getGroupement($idGroupementPere);
@@ -427,19 +424,12 @@ class EvaGroupement {
 	* @param string $whatToUpdate The group information we want to update
 	* @param string $whatToSet The value of the information we want to update
 	*/
-	function updateGroupementByField($id_Groupement, $whatToUpdate, $whatToSet)
-	{
+	function updateGroupementByField($id_Groupement, $whatToUpdate, $whatToSet){
 		global $wpdb;
 
-		$query = $wpdb->prepare(
-			"UPDATE " . TABLE_GROUPEMENT . "
-				SET " . $whatToUpdate . " = '%s'
-				, lastupdate_date = %s
-			WHERE id='" . $id_Groupement . "'",
-			 $whatToSet, current_time('mysql', 0)
-		);
+		$update_groupement = $wpdb->update( TABLE_GROUPEMENT, array( $whatToUpdate => $whatToSet, 'lastupdate_date' => current_time('mysql', 0), ), array( 'id' => $id_Groupement, ) );
 
-		return $wpdb->query($query);
+		return $update_groupement;
 	}
 
 	/**
@@ -448,8 +438,9 @@ class EvaGroupement {
 	function deleteGroupement($id){
 		global $wpdb;
 
-		$sql = "UPDATE " . TABLE_GROUPEMENT . " set Status = 'Deleted', lastupdate_date = '" . current_time('mysql', 0) . "' WHERE id = " . $id;
-		if($wpdb->query($sql)){
+
+		$delete_groupement = $wpdb->update( TABLE_GROUPEMENT, array( 'Status' => 'Deleted', 'lastupdate_date' => current_time('mysql', 0), ), array( 'id' => $id, ) );
+		if ( false !== $delete_groupement ) {
 			$message = addslashes('<p><img src="' . EVA_IMG_ICONES_PLUGIN_URL . 'success_vs.png" alt="response" style="vertical-align:middle;" />&nbsp;<strong>' . __('Le groupement a bien &eacute;t&eacute; supprim&eacute;', 'evarisk') . '</strong></p>');
 			$class = 'updated';
 			$listeUnitesDeTravail = EvaGroupement::getUnitesEtGroupementDescendants($id);

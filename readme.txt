@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 4.1
-Stable tag: 5.1.9.0
+Stable tag: 5.1.9.1
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,20 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.9.1 =
+
+Am&eacute;liorations / Improvments
+
+* T17851 - Am&eacute;lioration de la s&eacute;curit&eacute; sur l'envoie de fichiers / Improve security on file upload
+* T16997 - Possiblit&eacute; de demander une action corrective dans le front sans etre connect&eacute; / Add possibility to any not connected user to ask correctiv action from frontend
+
+Correction
+
+* T17854 - Affichage listing notes et suivi de projet / Display notes listing and project follow up listing
+* T17713 - Champs ville dans fiche de poste / City field into work unit sheet
+* T17177 - (ST494) Enregistrement des &eacute;l&eacute;ments avec des caract&egrave;res sp&eacute;ciaux / Saving elements with special chars
+* T17179 - Champs responsable groupement et unit&eacute; de travail / Responsible field for groups and work units
 
 = Version 5.1.9.0 =
 

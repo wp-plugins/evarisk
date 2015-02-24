@@ -662,15 +662,8 @@ class evaUserLinkElement {
 		$deleted_user_list = array();
 		foreach($listeUtilisateursLies as $utilisateurs){
 			if(is_array($newUserList) && !in_array($utilisateurs->id_user, $newUserList)){
-				$query = $wpdb->prepare(
-"UPDATE " . TABLE_LIAISON_USER_ELEMENT . "
-SET status = 'deleted',
-	date_desaffectation_reelle = %s,
-	date_desAffectation = %s,
-	id_desAttributeur = %d
-WHERE id = %d",
-(!empty($date) ? $date : current_time('mysql', 0)), current_time('mysql', 0), $current_user->ID, $utilisateurs->id);
-				$done_element += $wpdb->query($query);
+				$dissociate_user_of_element = $wpdb->update( TABLE_LIAISON_USER_ELEMENT, array( 'status' => 'deleted', 'date_desaffectation_reelle' => (!empty($date) ? $date : current_time('mysql', 0)), 'date_desAffectation' => current_time('mysql', 0), 'id_desAttributeur' => $current_user->ID,), array( 'id' => $utilisateurs->id, ) );
+				$done_element += $dissociate_user_of_element;
 				if(($tableElement == TABLE_TACHE) || ($tableElement == TABLE_ACTIVITE)){
 					$wpdb->update(DIGI_DBT_LIAISON_USER_NOTIFICATION_ELEMENT, array('status' => 'deleted', 'date_desAffectation' => current_time('mysql', 0), 'date_desaffectation_reelle' => (!empty($date) ? $date : current_time('mysql', 0)), 'id_desAttributeur' => $current_user->ID), array('id_user' => $utilisateurs->id_user, 'id_element' => $idElement, 'table_element' => $tableElement));
 				}
