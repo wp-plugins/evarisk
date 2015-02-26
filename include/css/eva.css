@@ -54,6 +54,9 @@ a{ cursor:pointer; }
 	font-size: 16px;
 	font-weight: bold;
 }
+#mainPostBox {
+	margin-right: 10px;
+}
 .main_loading_pic_container{	margin:0px auto; width:90%; text-align:center;	}
 
 /*	Start standard page	*/
@@ -1005,7 +1008,7 @@ label.digi_alert, .digi_alert label, span.digi_alert {
 
 
 /* -- Notes -- */
-#noteTaker{	float:right; margin:15px; }
+#noteTaker{	float:right; margin: 0 50px 0 15px ; }
 #digiNotes{	text-align:center; }
 .noteTakerPic{	max-width:18px; cursor:pointer;	}
 .noteInput {	width:99%; height:93%; padding: .4em; }
@@ -1310,4 +1313,15 @@ input#digi_risk_date_start:disabled, input#digi_risk_end_start:disabled, input.r
 }
 .digi-profil-utilisateur-links-to-permission-editor ul li {
 	list-style-type: circle;
+}
+
+.wpdigi-risk-eval-options {
+	display: none;
+}
+.wpdigi-riskeval-switcher {
+	text-decoration: none;
+}
+.wpdigi-riskeval-switcher i {
+	font-size: 15px;
+	margin-top: 4px;
 }

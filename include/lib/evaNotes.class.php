@@ -1,15 +1,15 @@
 <?php
 /**
  * Notes management file
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
 
- 
+
 /**
  * Notes management class
- * 
+ *
  * @author Evarisk
  * @version v5.0
  */
@@ -24,7 +24,7 @@ class evaNotes
 	{
 		$noteDialog = '
 		<div id="noteTaker" >
-			<img class="noteTakerPic" src="' . EVA_IMG_ICONES_PLUGIN_URL . 'notes.png" alt="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '" title="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '" />
+			<i class="noteTakerPic dashicons dashicons-welcome-write-blog" alt="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '" title="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '"  ></i>
 			<div id="digiNotes" class="hide" title="' . __('Prise rapide de notes', 'evarisk') . '" >&nbsp;</div>
 		</div>';
 
@@ -51,7 +51,7 @@ class evaNotes
 		}
 		$noteContent = stripslashes($noteContent);
 
-		$dialogFrom = 
+		$dialogFrom =
 				'<div id="noteSaverMessage" >&nbsp;</div>
 <textarea rows="3" cols="10" name="digiNotesInput" id="digiNotesInput" class="noteInput" >' . $noteContent . '</textarea>';
 
@@ -69,7 +69,7 @@ class evaNotes
 				digirisk("#digiNotes").html(digirisk("#loadingImg").html());
 				digirisk("#noteTaker").click(function(){
 					digirisk("#digiNotes").dialog("open");
-					digirisk("#digiNotes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+					digirisk("#digiNotes").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 					{
 						"post":"true",
 						"act":"loadDiginote"
@@ -86,7 +86,7 @@ class evaNotes
 							digirisk(this).dialog("close");
 						},
 						"' . __('Enregistrer', 'evarisk') . '": function(){
-							digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", 
+							digirisk("#ajax-response").load("' . EVA_INC_PLUGIN_URL . 'ajax.php",
 							{
 								"post":"true",
 								"act":"saveDigiNote",
@@ -126,7 +126,7 @@ class evaNotes
 			$messageInfo = '<img src=\'' . EVA_IMG_ICONES_PLUGIN_URL . 'error_vs.png\' class=\'messageIcone\' alt=\'error\' />' . __('Les notes n\'ont pas pu &ecirc;tre enregistr&eacute;es', 'evarisk');
 		}
 
-echo 
+echo
 '<script type="text/javascript">
 	digirisk(document).ready(function(){
 		actionMessageShow("#noteSaverMessage", "' . $messageInfo . '");

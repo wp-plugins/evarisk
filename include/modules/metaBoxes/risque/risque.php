@@ -666,7 +666,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			<img id="' . $formId . 'divDangerContainerSwitchPic" src="' . PICTO_EXPAND . '" alt="' . __('collapsor', 'evarisk') . '" style="vertical-align:middle;" />
 			<span style="vertical-align:middle;" >' . __('Voir les dangers', 'evarisk') . '</span>
 		</div>
-		<div id="' . $formId . 'divDangerContainer" ' . $divDangerContainerStyle . ' >' . $categorieDanger['list'] . $ListDanger['list'] . '</div>
+<div id="' . $formId . 'divDangerContainer" ' . $divDangerContainerStyle . ' >' . $categorieDanger['list'] . $ListDanger['list'] . '</div>
 	</div>';
 		}
 		else {
@@ -803,7 +803,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 		/**	Add recommandation on the risk	*/
 		$recommandation_linked_to_risk = !$is_closed ? evaRecommandation::recommandationAssociation('pictos', '', array('idElement' => $idRisque, 'tableElement' => TABLE_RISQUE, 'hide_save_button' => true, 'form_container' => 'digi_risk_eval_' . TABLE_RISQUE . '_' . $idRisque . '_reco_container')) : '';
 		$formRisque .= '<div class="digi_clear" ></div>
-		<fieldset>
+		<fieldset class="wpdigi-risk-eval-recommandation wpdigi-risk-eval-options" >
 			<legend>' . __('Pr&eacute;conisations', 'evarisk') . '</legend>
 			<div id="digi_risk_eval_' . TABLE_RISQUE . '_' . $idRisque . '_reco_container" class="digi_recommandation_form_container" >
 				' . $recommandation_linked_to_risk . evaRecommandation::getRecommandationListForElementOutput(TABLE_RISQUE, $idRisque, false) . '
@@ -851,7 +851,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 			$correctiv_action_linked_to_risk .= '<div id="' . $idElement . 'divPreconisationExistante" class="clear" >&nbsp;</div>';
 		}
 		if ( !empty($correctiv_action_linked_to_risk) ) {
-			$formRisque .= '<div class="digi_clear" ></div><fieldset><legend>' . __('Actions correctives', 'evarisk') . '</legend>' . $correctiv_action_linked_to_risk . '</fieldset>';
+			$formRisque .= '<div class="digi_clear" ></div><fieldset class="wpdigi-risk-eval-correctivactions wpdigi-risk-eval-options" ><legend>' . __('Actions correctives', 'evarisk') . '</legend>' . $correctiv_action_linked_to_risk . '</fieldset>';
 		}
 
 		if(($sub_action != 'control_asked_action') || ($task_to_associate <= 0)){
@@ -915,6 +915,7 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 
 			$formRisque .= '
 		<div class="clear" >
+			<a class="wpdigi-riskeval-switcher" href="#"><i class="dashicons dashicons-plus"></i>' . __( 'Plus d\'option', 'evarisk' ) . '</a>
 			<input id="' . $idBouttonEnregistrer . '" class="button-primary alignright saveRiskFormButton" type="button" name="save_and_close" value="' . __('Enregistrer', 'evarisk') . '" >
 			<input id="' . $idBouttonEnregistrerEtCloturer . '" class="button-secondary alignright saveRiskFormButton" type="button" name="save_and_close" value="' . __('Enregistrer et cloturer', 'evarisk') . '" >&nbsp;&nbsp;
 		</div>';
@@ -941,6 +942,18 @@ EvaDisplayInput::afficherInput('hidden', $formId . 'idRisque', $idRisque, '', nu
 EvaDisplayInput::fermerForm($formId . 'formRisque-') . '
 <script type="text/javascript">
 	digirisk(document).ready(function(){
+
+		jQuery( ".wpdigi-riskeval-switcher" ).click( function( e ){
+			e.preventDefault();
+			if ( jQuery( this ).children( "i" ).hasClass( "dashicons-plus" ) ) {
+				jQuery( ".wpdigi-risk-eval-options" ).show();
+			}
+			else {
+				jQuery( ".wpdigi-risk-eval-options" ).hide();
+			}
+			jQuery( this ).children( "i" ).toggleClass( "dashicons-plus dashicons-minus" );
+		});
+
 		//	Change the state of the danger container
 		digirisk("#' . $formId . 'divDangerContainerSwitch").click(function(){
 			if(digirisk("#' . $formId . 'divDangerContainerSwitchPic").attr("src") == "' . PICTO_EXPAND . '"){

@@ -780,11 +780,11 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 <script type="text/javascript">
 jQuery(document).ready(function(){
 	jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val() );
-	digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val(), "idRisque": "0"});
+	//digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val(), "idRisque": "0", "formId":"' . $formId . '"});
 	jQuery("#dangerFormRisque").change(function(){
 		jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery(this).val()).val() );
 		digirisk("#' . $formId . 'divVariablesFormRisque").html(digirisk("#loadingImg").html());
-		digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery(this).val()).val(), "idRisque": "0"});
+		//digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery(this).val()).val(), "idRisque": "0", "formId":"' . $formId . '"});
 	});
 })
 </script>';
@@ -1500,7 +1500,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 						echo '
 <div class="clear" ></div>
-<ul class="risk_date_change">
+<ul class="risk_date_change wpdigi-risk-eval-rsiksdate wpdigi-risk-eval-options" >
 	<li>
 		<div>
 			' . __('Début du risque', 'evarisk') . '<br/>

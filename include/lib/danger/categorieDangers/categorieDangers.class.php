@@ -250,20 +250,32 @@ class categorieDangers {
 		digirisk("#' . $formId . 'cat' . $selectionCategorie . '").click();
 		var ' . $formId . 'oldCatId = "' . $selectionCategorie . '";';
 
+				if ( empty($risque) || DIGI_ALLOW_RISK_CATEGORY_CHANGE ) {
+					$categoryResult['script'] .= '
+		digirisk("' . $formIdSelector . '.categoriesDangers").click(function(){
+			var ' . $formId . 'newCatId = (digirisk(this).attr("id")).replace("' . $formId . 'cat","");
+			if (' . $formId . 'oldCatId != ' . $formId . 'newCatId) {
+				digirisk("#' . $formId . 'categorieDangerFormRisque").val(' . $formId . 'newCatId);
+				digirisk("#' . $formId . 'categorieDangerFormRisque").change();
+				' . $formId . 'oldCatId = ' . $formId . 'newCatId;
+			}
+		});';
+				}
+
 			}
 		}
 		$categoryResult['list'] .= '<input type="hidden" id="valeurPenibilite" value="0"/>
 		<div id="' . $formId . 'divCategorieDangerFormRisque" >' . EvaDisplayInput::afficherComboBoxArborescente($categorieRacine, TABLE_CATEGORIE_DANGER, $formId . 'categorieDangerFormRisque', __('Cat&eacute;gorie de dangers', 'evarisk') . ' : ', 'categorieDangers', ucfirst(strtolower(sprintf(__("choisissez %s", 'evarisk'), __("une cat&eacute;gorie de dangers", 'evarisk')))), $selectionCategorie) . '</div>';
 		$categoryResult['script'] .= '
 		digirisk("#' . $formId . 'categorieDangerFormRisque").change(function(){
-		digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
-			"post":"true",
-			"table":"' . TABLE_CATEGORIE_DANGER . '",
-			"act":"reloadComboDangers",
-			"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
-			"formId":"' . $formId . '"
-		});
-	});';
+			digirisk("#' . $formId . 'divDangerFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {
+				"post":"true",
+				"table":"' . TABLE_CATEGORIE_DANGER . '",
+				"act":"reloadComboDangers",
+				"idElement":digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
+				"formId":"' . $formId . '"
+			});
+		});';
 
 		return $categoryResult;
 	}
