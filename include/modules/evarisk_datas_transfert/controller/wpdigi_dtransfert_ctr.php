@@ -148,19 +148,34 @@ class wpdigi_dtransfert_ctr {
 
 		/**	Get the number of element that will be transfered for the given element type	*/
 		$query = $wpdb->prepare( "SELECT (
-				SELECT COUNT( DISTINCT( id ) ) FROM {$main_element_type} WHERE id != 1
-		) AS main_element_nb, (
-		SELECT COUNT( DISTINCT( id ) ) FROM {$sub_element_type}
-		) AS sub_element_nb, (
-		SELECT COUNT( DISTINCT( id ) ) FROM " . TABLE_PHOTO_LIAISON . " WHERE tableElement IN ( '{$main_element_type}', '{$sub_element_type}' )
-		) AS nb_pictures, (
-		SELECT COUNT( DISTINCT( id ) ) FROM " . TABLE_GED_DOCUMENTS . " WHERE table_element = %s AND categorie = %s
-		) AS nb_documents_main_elements, (
-			SELECT COUNT( DISTINCT( id ) ) FROM " . TABLE_GED_DOCUMENTS . " WHERE table_element = %s AND categorie = %s
-		) AS nb_documents_sub_elements", array( $main_element_type, $main_element_type, $sub_element_type, $sub_element_type ) );
-			$nb_element_to_transfert = $wpdb->get_row( $query );
 
-			/**	Check if there has already been transfer done	*/
+			SELECT COUNT( DISTINCT( id ) )
+			FROM {$main_element_type}
+			WHERE id != 1
+
+		) AS main_element_nb, (
+
+			SELECT COUNT( DISTINCT( id ) )
+			FROM {$sub_element_type}
+
+		) AS sub_element_nb, (
+
+			SELECT COUNT( DISTINCT( id ) )
+			FROM " . TABLE_PHOTO_LIAISON . "
+			WHERE tableElement IN ( '{$main_element_type}', '{$sub_element_type}' )
+
+		) AS nb_pictures, (
+
+			SELECT COUNT( DISTINCT( id ) )
+			FROM " . TABLE_GED_DOCUMENTS . "
+			WHERE table_element  IN ( '{$main_element_type}', '{$sub_element_type}' )
+
+		) AS nb_documents", array() );
+
+		/**	get the element number from database	*/
+		$nb_element_to_transfert = $wpdb->get_row( $query );
+
+		/**	Check if there has already been transfer done	*/
 		$digirisk_transfert_options = get_option( 'wpeotm-digirisk-dtransfert', array() );
 
 		return array(
@@ -201,27 +216,31 @@ class wpdigi_dtransfert_ctr {
 		$main_element_already_moved = !empty( $element_count[ 'allready_transfered' ][ $main_element_type ] ) ? count( $element_count[ 'allready_transfered' ][ $main_element_type ] ) : 0;
 		$sub_element_already_moved = !empty( $element_count[ 'allready_transfered' ][ $sub_element_type ] ) ? count( $element_count[ 'allready_transfered' ][ $sub_element_type ] ) : 0;
 		$heavy_docs_already_done = 0;
+		$heavy_docs_unable_to_do = 0;
 		if ( !empty( $element_count[ 'allready_transfered' ][ 'pictures' ] ) ) {
-			$heavy_docs_already_done += count( $element_count[ 'allready_transfered' ][ 'pictures' ]['ok'] );
+			$heavy_docs_already_done += !empty( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'ok' ] ) ? count( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'ok' ] ) : 0;
+			if ( !empty( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'nok' ] ) ) {
+				$heavy_docs_unable_to_do += count( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'nok' ] );
+			}
 		}
-		if ( !empty( $element_count[ 'allready_transfered' ][ 'nb_documents_main_elements' ] ) ) {
-			$heavy_docs_already_done += count( $element_count[ 'allready_transfered' ][ 'nb_documents_main_elements' ] );
-		}
-		if ( !empty( $element_count[ 'allready_transfered' ][ 'nb_documents_sub_elements' ] ) ) {
-			$heavy_docs_already_done += count( $element_count[ 'allready_transfered' ][ 'nb_documents_sub_elements' ] );
+		if ( !empty( $element_count[ 'allready_transfered' ][ 'documents' ] ) ) {
+			$heavy_docs_already_done += count( $element_count[ 'allready_transfered' ][ 'documents' ][ 'ok' ] );
+			if ( !empty( $element_count[ 'allready_transfered' ][ 'documents' ][ 'nok' ] ) ) {
+				$heavy_docs_unable_to_do += count( $element_count[ 'allready_transfered' ][ 'documents' ][ 'nok' ] );
+			}
 		}
 
 		/**	Get already done element */
 		$digirisk_transfert_options = get_option( 'wpeotm-digirisk-dtransfert', array() );
-		if ( empty( $digirisk_transfert_options ) || empty( $digirisk_transfert_options[ 'state' ] ) || ( !empty( $digirisk_transfert_options[ 'state' ] ) && !empty( $digirisk_transfert_options[ $main_element_type ][ 'state' ] ) && ( 'second_step_complete' != $digirisk_transfert_options[ $main_element_type ][ 'state' ] ) )  ) {
+		if ( empty( $digirisk_transfert_options ) || empty( $digirisk_transfert_options[ 'state' ] ) || ( !empty( $digirisk_transfert_options[ 'state' ] ) && ( 'second_step_complete' != $digirisk_transfert_options[ 'state' ] ) )  ) {
 			$current_step = 1;
 			$element_type_to_transfer = $main_element_type;
 			if ( ( $main_element_already_moved >= $nb_element_to_transfert->main_element_nb ) && ( $sub_element_already_moved >= $nb_element_to_transfert->sub_element_nb ) ) {
-				$current_step = 3;
+				$current_step = DIGI_DTRANS_MEDIAN_MAX_STEP;
 			}
 		}
 		else {
-			$current_step = 5;
+			$current_step = DIGI_DTRANS_MAX_STEP;
 		}
 
 		require( self::get_template_part( DIGI_DTRANS_DIR, DIGI_DTRANS_TEMPLATES_MAIN_DIR, "backend", "transfert", $file_to_include ) );
@@ -316,6 +335,38 @@ class wpdigi_dtransfert_ctr {
 
 		if ( !empty( $element_type ) ) {
 
+			$current_log_settings = get_option( '_wpeo_log_settings', array() );
+			$current_log_settings[ 'my_services' ][ 'digirisk-datas-transfert-document' ] = array(
+					'service_active' 		=> 1,
+					'service_name' 			=> 'digirisk-datas-transfert-document',
+					'service_size' 			=> 999999999999,
+					'service_size_format' 	=> oc,
+					'service_rotate' 		=> false,
+			);
+			$current_log_settings[ 'my_services' ][ 'digirisk-datas-transfert-picture' ] = array(
+					'service_active' 		=> 1,
+					'service_name' 			=> 'digirisk-datas-transfert-picture',
+					'service_size' 			=> 999999999999,
+					'service_size_format' 	=> oc,
+					'service_rotate' 		=> false,
+			);
+			$current_log_settings[ 'my_services' ][ 'digirisk-datas-transfert-wp_eva__actions_correctives_tache' ] = array(
+					'service_active' 		=> 1,
+					'service_name' 			=> 'digirisk-datas-transfert-wp_eva__actions_correctives_tache',
+					'service_size' 			=> 999999999999,
+					'service_size_format' 	=> oc,
+					'service_rotate' 		=> false,
+			);
+			$current_log_settings[ 'my_services' ][ 'digirisk-datas-transfert-wp_eva__actions_correctives_actions' ] = array(
+					'service_active' 		=> 1,
+					'service_name' 			=> 'digirisk-datas-transfert-wp_eva__actions_correctives_actions',
+					'service_size' 			=> 999999999999,
+					'service_size_format' 	=> oc,
+					'service_rotate' 		=> false,
+			);
+			update_option( '_wpeo_log_settings', $current_log_settings );
+
+
 			/**	Launch transfer for current element direct children of subtype	*/
 			switch( $element_type ) {
 				case TABLE_TACHE:
@@ -401,7 +452,7 @@ class wpdigi_dtransfert_ctr {
 			}
 
 			/**	In case that all element have been transfered (Main and Sub) stop the script	*/
-			if ( ( $main_element_already_moved == $nb_element_to_transfert->main_element_nb ) && ( $sub_element_already_moved == $nb_element_to_transfert->sub_element_nb ) ) {
+			if ( ( $main_element_already_moved + $sub_element_already_moved ) == ( $nb_element_to_transfert->main_element_nb + $nb_element_to_transfert->sub_element_nb ) ) {
 				$response[ 'reload_transfert' ] = false;
 				$response[ 'message' ] = __( 'All elements have been transfered to new storage way into wordpress database. Now heavy datas will be transfered.', 'wp-digi-dtrans-i18n' );
 				$response[ 'buttonText' ] = __( 'Move documents and pictures', 'wp-digi-dtrans-i18n' );
@@ -441,29 +492,34 @@ class wpdigi_dtransfert_ctr {
 
 		/**	Get already done element */
 		$digirisk_transfert_options = get_option( 'wpeotm-digirisk-dtransfert', array() );
+
+		/**
+		 *
+		 * Pictures treatment
+		 *
+		 */
 		if ( !empty( $digirisk_transfert_options ) && !empty( $digirisk_transfert_options[ 'pictures' ] ) && is_array( $digirisk_transfert_options[ 'pictures' ] ) ) {
 			$pictures_to_check = array();
 			if ( !empty( $digirisk_transfert_options[ 'pictures' ][ 'ok' ] ) && is_array( $digirisk_transfert_options[ 'pictures' ][ 'ok' ] ) ) {
 				$pictures_to_check = array_merge( $pictures_to_check, $digirisk_transfert_options[ 'pictures' ][ 'ok' ] );
 			}
 			if ( !empty( $digirisk_transfert_options[ 'pictures' ][ 'nok' ] ) && is_array( $digirisk_transfert_options[ 'pictures' ][ 'nok' ] ) ) {
-				$pictures_to_check = array_merge( $pictures_to_check, $digirisk_transfert_options[ 'pictures' ][ 'nok' ] );
+				foreach ( $digirisk_transfert_options[ 'pictures' ][ 'nok' ] as $id => $file ) {
+					$pictures_to_check[] = $id;
+				}
 			}
 			$where .= "AND PICTURE.id NOT IN ( '" . implode( "', '", $pictures_to_check ) . "' )";
 		}
-
-		/**	Get pictures to treat	*/
+		$pics_are_done = true;
 		$query = $wpdb->prepare(
 			"SELECT PICTURE.*, PICTURE_LINK.isMainPicture, PICTURE_LINK.idElement, PICTURE_LINK.tableElement
 			FROM " . TABLE_PHOTO . " AS PICTURE
 				INNER JOIN " . TABLE_PHOTO_LIAISON . " AS PICTURE_LINK ON (PICTURE_LINK.idPhoto = PICTURE.id)
 			WHERE PICTURE_LINK.tableElement IN ( '{$main_element_type}', '{$sub_element_type}' )
-				AND PICTURE_LINK.status = 'valid'
 				{$where}
 			ORDER BY PICTURE.id ASC
 			LIMIT " . DIGI_DTRANS_NB_ELMT_PER_PAGE, ""
 		);
-
 		$pictures = $wpdb->get_results($query);
 		if ( !empty( $pictures ) ) {
 			foreach ( $pictures as $picture ) {
@@ -479,17 +535,66 @@ class wpdigi_dtransfert_ctr {
 						AND PMTYPE.meta_value = %d
 				", array( '_wpdigi_elt_old_type', $picture->tableElement, '_wpdigi_elt_old_id', $picture->idElement ) );
 				$new_element_id = $wpdb->get_var( $query );
+
 				$this->transfer_document( $picture, $new_element_id, 'picture' );
 			}
-		}
-		else {
-			$all_heavy_element_done = true;
+			$pics_are_done = false;
 		}
 
-		if ( $all_heavy_element_done ) {
+		/**
+		 *
+		 *	Documents treatment
+		 *
+		 */
+		$where = "";
+		if ( !empty( $digirisk_transfert_options ) && !empty( $digirisk_transfert_options[ 'documents' ] ) && is_array( $digirisk_transfert_options[ 'documents' ] ) ) {
+			$documents_to_check = array();
+			if ( !empty( $digirisk_transfert_options[ 'documents' ][ 'ok' ] ) && is_array( $digirisk_transfert_options[ 'documents' ][ 'ok' ] ) ) {
+				$documents_to_check = array_merge( $documents_to_check, $digirisk_transfert_options[ 'documents' ][ 'ok' ] );
+			}
+			if ( !empty( $digirisk_transfert_options[ 'documents' ][ 'nok' ] ) && is_array( $digirisk_transfert_options[ 'documents' ][ 'nok' ] ) ) {
+				foreach ( $digirisk_transfert_options[ 'documents' ][ 'nok' ] as $id => $file ) {
+					$documents_to_check[] = $id;
+				}
+			}
+			$where .= "AND DOCUMENT.id NOT IN ( '" . implode( "', '", $documents_to_check ) . "' )";
+		}
+		$docs_are_done = true;
+		$query = $wpdb->prepare(
+			"SELECT *
+			FROM " . TABLE_GED_DOCUMENTS . " AS DOCUMENT
+			WHERE DOCUMENT.table_element IN ( '{$main_element_type}', '{$sub_element_type}' )
+				{$where}
+			ORDER BY DOCUMENT.id ASC
+			LIMIT " . DIGI_DTRANS_NB_ELMT_PER_PAGE, ""
+		);
+		$documents = $wpdb->get_results($query);
+		if ( !empty( $documents ) ) {
+			foreach ( $documents as $document ) {
+				$query = $wpdb->prepare( "
+					SELECT P.ID
+					FROM {$wpdb->posts} AS P
+						INNER JOIN {$wpdb->postmeta} AS PMID ON ( PMID.post_id = P.ID )
+						INNER JOIN {$wpdb->postmeta} AS PMTYPE ON ( PMTYPE.post_id = P.ID )
+					WHERE
+						PMID.meta_key = %s
+						AND PMID.meta_value = %s
+						AND PMTYPE.meta_key = %s
+						AND PMTYPE.meta_value = %d
+				", array( '_wpdigi_elt_old_type', $document->table_element, '_wpdigi_elt_old_id', $document->id_element ) );
+				$new_element_id = $wpdb->get_var( $query );
+
+				$this->transfer_document( $document, $new_element_id, 'document' );
+			}
+			$docs_are_done = false;
+		}
+
+		/**	In case all pictures and documents have been treated	*/
+		if ( $pics_are_done && $docs_are_done ) {
+			unset($response[ 'reload_transfert' ]);
 			$response[ 'reload_transfert' ] = false;
 
-			$current_step = 3;
+			$current_step = DIGI_DTRANS_MEDIAN_MAX_STEP;
 			ob_start();
 			require( self::get_template_part( DIGI_DTRANS_DIR, DIGI_DTRANS_TEMPLATES_MAIN_DIR, "backend", "transfert", "tasks-dashboardlink" ) );
 			$response[ 'dashboard_link' ] = ob_get_contents();
@@ -497,9 +602,30 @@ class wpdigi_dtransfert_ctr {
 
 			/**	Get already done element */
 			$digirisk_transfert_options = get_option( 'wpeotm-digirisk-dtransfert', array() );
-			$digirisk_transfert_options[ $main_element_type ][ 'state' ] = 'second_step_complete';
+			$digirisk_transfert_options[ 'state' ] = 'second_step_complete';
 			update_option( 'wpeotm-digirisk-dtransfert', $digirisk_transfert_options );
 		}
+
+		/**	Build element to transfert count	*/
+		$element_count = $this->get_element_count( $main_element_type, $sub_element_type );
+		$moved_docs = $element_count[ 'elements_to_transfer' ]->nb_pictures + $element_count[ 'elements_to_transfer' ]->nb_documents;
+
+		$heavy_docs_already_done = 0;
+		$heavy_docs_unable_to_do = 0;
+		if ( !empty( $element_count[ 'allready_transfered' ][ 'pictures' ] ) ) {
+			$heavy_docs_already_done += !empty( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'ok' ] ) ? count( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'ok' ] ) : 0;
+			if ( !empty( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'nok' ] ) ) {
+				$heavy_docs_unable_to_do += count( $element_count[ 'allready_transfered' ][ 'pictures' ][ 'nok' ] );
+			}
+		}
+		if ( !empty( $element_count[ 'allready_transfered' ][ 'documents' ] ) ) {
+			$heavy_docs_already_done += count( $element_count[ 'allready_transfered' ][ 'documents' ][ 'ok' ] );
+			if ( !empty( $element_count[ 'allready_transfered' ][ 'documents' ][ 'nok' ] ) ) {
+				$heavy_docs_unable_to_do += count( $element_count[ 'allready_transfered' ][ 'documents' ][ 'nok' ] );
+			}
+		}
+
+		$response[ 'moved_text' ] = $heavy_docs_already_done . ' (' . $heavy_docs_unable_to_do . ') / ' . $moved_docs;
 
 		wp_die( json_encode( $response ) );
 	}
@@ -517,13 +643,24 @@ class wpdigi_dtransfert_ctr {
 		$main_element_type = !empty( $_POST ) && !empty( $_POST[ 'element' ] ) ?  $_POST[ 'element' ] : null;
 
 		if ( !empty( $main_element_type ) ) {
-			$response = array_merge( $this->buil_element_transfert_number( $main_element_type ), $response );
+
+			$current_transfert_nb = $this->buil_element_transfert_number( $main_element_type );
+			$response = wp_parse_args( $current_transfert_nb, $response );
 
 			wp_die( json_encode( $response ) );
 		}
 	}
 
+	/**
+	 * get the number of treated and not treated element in order to display them to user
+	 *
+	 * @param string $main_element_type THe element tyoe currently being transfered into wordpress storage
+	 *
+	 * @return array The response
+	 */
 	function buil_element_transfert_number( $main_element_type ) {
+		$response = array();
+
 		switch ( $main_element_type ) {
 			case TABLE_TACHE:
 				$sub_element_type = TABLE_ACTIVITE;
@@ -542,8 +679,8 @@ class wpdigi_dtransfert_ctr {
 		$response['transfert'][0][ 'type' ] = $main_element_type;
 		$response['transfert'][0][ 'text' ] = ( $main_element_already_moved + $sub_element_already_moved ) . ' / ' . ( $nb_element_to_transfert->main_element_nb + $nb_element_to_transfert->sub_element_nb );
 
-		if ( ( $main_element_already_moved >= $nb_element_to_transfert->main_element_nb ) && ( $sub_element_already_moved >= $nb_element_to_transfert->sub_element_nb ) ) {
-			$response[ "auto_reload" ] = false;
+		if ( ( $main_element_already_moved + $sub_element_already_moved ) >= ( $nb_element_to_transfert->main_element_nb + $nb_element_to_transfert->sub_element_nb ) ) {
+			$response[ 'auto_reload' ] = false;
 		}
 
 		return $response;
@@ -623,7 +760,7 @@ class wpdigi_dtransfert_ctr {
 			/**	In case insertion has been successfull, read children in order to do same treatment and save extras informations into meta for the moment	*/
 			if ( is_int( $element_id ) ) {
 				/**	Log creation	*/
-				$this->transfer_log[ 'creation' ][ 'created' ][ $element_id ] = array();
+				wpeologs_ctr::log_datas_in_files( 'digirisk-datas-transfert-' . $element_type_being_transfered, array( 'object_id' => $element_being_transfered->id, 'message' => sprintf( __( 'Transfered from evarisk on post having id. %d', 'wp-digi-dtrans-i18n' ), $element_id), ), 0 );
 
 				/**	Store an option to avoid multiple transfer	*/
 				$digirisk_transfer_options[ $element_type_being_transfered ][] = $element_being_transfered->id;
@@ -635,10 +772,14 @@ class wpdigi_dtransfert_ctr {
 				/**	Start transfering user notification if exists	*/
 				$this->transfer_notification( $element_being_transfered->id, $element_type_being_transfered, $element_id, '' );
 
+				/**	Start transfering survey that have been done with wp-easy-survey	*/
+				$this->transfer_surveys( $element_being_transfered->id, $element_type_being_transfered, $element_id, '' );
+
 				/**	Check curren type of element to launch specific transfer	*/
 				switch( $element_type_being_transfered ) {
 					case TABLE_TACHE:
 					case TABLE_ACTIVITE:
+						/**	Transfert follow up of tasks	*/
 						$this->transfer_follow_up( $element_being_transfered->id, $element_type_being_transfered, $element_id );
 
 						/**	Build the array that will be stored into database	*/
@@ -654,6 +795,10 @@ class wpdigi_dtransfert_ctr {
 							case TABLE_TACHE:
 								$task_planning[ 'estimate_cost' ] = $element_being_transfered->estimate_cost;
 								$task_planning[ 'real_cost' ] = $element_being_transfered->real_cost;
+
+								/**	Transfer link between tasks and other elements	*/
+								$this->transfer_link_between_tasks_and_element( $element_being_transfered->id, $element_type_being_transfered, $element_id );
+
 								break;
 							case TABLE_ACTIVITE:
 								$task_planning[ 'estimate_cost' ] = $element_being_transfered->cout;
@@ -715,7 +860,7 @@ class wpdigi_dtransfert_ctr {
 				}
 			}
 			else {
-				$this->transfer_log[ 'creation' ][ 'failed' ][ $element_type_being_transfered ][] = $element_id;
+				wpeologs_ctr::log_datas_in_files( 'digirisk-datas-transfert-' . $element_type_being_transfered, array( 'object_id' => $element_being_transfered->id, 'message' => __( 'Error transferring from evarisk to post.', 'wp-digi-dtrans-i18n' ), ), 2 );
 			}
 		}
 
@@ -777,11 +922,12 @@ class wpdigi_dtransfert_ctr {
 
 		$digirisk_transfert_options = get_option( 'wpeotm-digirisk-dtransfert', array() );
 		/**	Get the file content - force error ignore	*/
-		$the_file_content = @file_get_contents( EVA_GENERATED_DOC_DIR . ( 'document' == $document_origin ? $document->chemin . $document->nom : $document->$field_name ) );
+		$file = EVA_GENERATED_DOC_DIR . ( 'document' == $document_origin ? ( 'printed_fiche_action' == $document->categorie ? 'results/' : '' ) . $document->chemin . $document->nom : $document->$field_name );
+		$the_file_content = @file_get_contents( $file );
 		/**	Check if file is a vlid one	*/
 		if ( $the_file_content !== FALSE ) {
 			/**	Start by coping picture into wordpress uploads directory	*/
-			$upload_result = wp_upload_bits( basename( EVA_GENERATED_DOC_DIR . ( 'document' == $document_origin ? $document->chemin . $document->nom : $document->$field_name ) ), null, file_get_contents( EVA_GENERATED_DOC_DIR . ( 'document' == $document_origin ? $document->chemin . $document->nom : $document->$field_name ) ));
+			$upload_result = wp_upload_bits( basename( $file ), null, file_get_contents( $file ) );
 
 			/**	Get informations about the picture	*/
 			$filetype = wp_check_filetype( basename( $upload_result[ 'file' ] ), null );
@@ -802,6 +948,7 @@ class wpdigi_dtransfert_ctr {
 						$idCreateur = $_POST[ 'wp_new_user' ][ $idCreateur ];
 					}
 					$attachment[ 'post_author' ] = $idCreateur;
+					$attachment[ 'post_date' ] = $document->dateCreation;
 				break;
 			}
 
@@ -817,29 +964,48 @@ class wpdigi_dtransfert_ctr {
 				set_post_thumbnail( $new_element_id, $attach_id );
 			}
 
-			$associate_document_list[] = $attach_id;
+			if ( 'valid' == $document->status ) {
+				$associate_document_list[] = $attach_id;
+			}
 
 			/**	Get associated picture list	*/
 			switch ( $document_origin ) {
 				case 'document':
-					update_post_meta( $attach_id, '_wpeo_digidoc_old_id', $document );
+					update_post_meta( $attach_id, '_wpeo_digidoc_old', $document );
 				break;
 			}
 
-			$this->transfer_log[ 'creation' ][ 'created' ][ $new_element_id ][ $document_origin ][] = $attach_id;
-
+			wpeologs_ctr::log_datas_in_files( 'digirisk-datas-transfert-' . $document_origin, array( 'object_id' => $document->id, 'message' => sprintf( __( '%s transfered from evarisk on post having to element #%d', 'wp-digi-dtrans-i18n' ), $document_origin, $new_element_id), ), 0 );
 			$digirisk_transfert_options[ $document_origin . 's' ][ 'ok' ][] = $document->id;
 		}
 		else {
-			$digirisk_transfert_options[ $document_origin . 's' ][ 'nok' ][] = $document->id;
-			$this->transfer_log[ 'creation' ][ $document_origin ][ 'failed' ][] = ( 'document' == $document_origin ? $document->chemin . $document->nom : $document->$field_name );
+			$digirisk_transfert_options[ $document_origin . 's' ][ 'nok' ][ $document->id ][ 'file' ] = $file;
+			$tocheck = $document->table_element;
+			if ( 'picture' == $document_origin ) {
+				$tocheck = $document->tableElement;
+			}
+			switch ( $tocheck ) {
+				case TABLE_TACHE:
+					$old_evarisk_element = ELEMENT_IDENTIFIER_T . ( 'picture' == $document_origin  ? $document->idElement : $document->id_element );
+					break;
+				case TABLE_ACTIVITE:
+					$old_evarisk_element = ELEMENT_IDENTIFIER_ST . ( 'picture' == $document_origin  ? $document->idElement : $document->id_element );
+					break;
+				case TABLE_GROUPEMENT:
+					$old_evarisk_element = ELEMENT_IDENTIFIER_GP . ( 'picture' == $document_origin  ? $document->idElement : $document->id_element );
+					break;
+				case TABLE_UNITE_TRAVAIL:
+					$old_evarisk_element = ELEMENT_IDENTIFIER_UT . ( 'picture' == $document_origin  ? $document->idElement : $document->id_element );
+					break;
+			}
+			wpeologs_ctr::log_datas_in_files( 'digirisk-datas-transfert-' . $document_origin, array( 'object_id' => $document->id, 'message' => sprintf( __( '%s could not being transfered to wordpress element. Filename: %s. Wordpress element: %d. Evarisk old element: %s', 'wp-digi-dtrans-i18n' ), $document_origin, $file, $new_element_id, $old_evarisk_element ), ), 2 );
 		}
 		/**	Set the new list of element treated	*/
 		update_option( 'wpeotm-digirisk-dtransfert', $digirisk_transfert_options );
 
 		/**	Set the picture gallery for current element	*/
-		if ( ( 'picture' == $document_origin ) && !empty( $associate_document_list ) ) {
-			update_post_meta( $new_element_id, '_wpeo_pictures', $associate_document_list );
+		if ( !empty( $associate_document_list ) ) {
+			update_post_meta( $new_element_id, '_wpeofiles_associated', $associate_document_list );
 		}
 	}
 
@@ -889,6 +1055,46 @@ class wpdigi_dtransfert_ctr {
 			update_post_meta( $new_element_id, '_wpeo_itrack_associated_users', $currently_affected_user );
 		}
 	}
+
+	/**
+	 * TRANSFER -> ASSOCIATED ELEMENT - Get associated survey and transfer
+	 *
+	 * @param integer $old_element_id The element identifier into digirisk V5.X
+	 * @param string $old_element_type The element type into digirisk V5.X
+	 * @param integer $new_element_id The new element created into wordpress corresponding to the previous element into digirisk V5.0
+	 */
+	function transfer_surveys( $old_element_id, $old_element_type, $new_element_id, $user_role = '' ) {
+		global $wpdb;
+		$survey_results = array();
+
+		/**	Get existing surveys	*/
+		$query = $wpdb->prepare( "SELECT * FROM " .  TABLE_FORMULAIRE_LIAISON . " WHERE tableElement = %s AND idELement = %d ", $old_element_type, $old_element_id );
+		$surveys = $wpdb->get_results( $query );
+
+		/**	Check if there are surveys to transfer from evarisk storage way to wordpress storage way	*/
+		if ( !empty( $surveys ) ) {
+			foreach ( $surveys as $survey ) {
+				$survey_results[ $survey->idFormulaire ][ $survey->state ][] = array(
+					'date_started' => $survey->date_started,
+					'date_closed' => $survey->date_closed,
+					'state' => $survey->state,
+					'user' => $survey->user,
+					'user_closed' => $survey->user_closed,
+					'survey_id' => $survey->survey_id,
+				);
+			}
+		}
+
+		/**	Save survey datas into the associated element	*/
+		if ( !empty( $survey_results ) ) {
+			foreach ( $survey_results as $original_survey_id => $final_survey ) {
+				update_post_meta( $new_element_id, '_wpes_audit_' . $original_survey_id, $final_survey );
+				wpeologs_ctr::log_datas_in_files( 'digirisk-datas-transfert-survey', array( 'object_id' => $original_survey_id, 'message' => __( 'Survey association have been transfered to normal way', 'wp-digi-dtrans-i18n' ), ), 0 );
+			}
+		}
+	}
+
+
 
 	/**
 	 * SPECIFIC TRANSFER -> TASKS' NOTES - Transfer follow up into wordpress comment database table
@@ -964,28 +1170,65 @@ class wpdigi_dtransfert_ctr {
 		/**	If there are notification setted transfer them to new element	*/
 		if ( !empty( $current_user_notification_list ) ) {
 			$notifications = array();
+			$n = 0;
 			foreach ( $current_user_notification_list as $notification ) {
-				$notifications[ 'status' ] = $notification->status;
-				$notifications[ 'date_affectation' ] = $notification->date_affectation;
+				$notifications[ $n ][ 'status' ] = $notification->status;
+				$notifications[ $n ][ 'date_affectation' ] = $notification->date_affectation;
 
-				$idAttributeur = ( 0 == $follow_up->id_attributeur ) ? 1 : $follow_up->id_attributeur;
+				$idAttributeur = ( 0 == $notification->id_attributeur ) ? 1 : $notification->id_attributeur;
 				if ( empty( $_POST[ 'wpdigi-dtrans-userid-behaviour' ] ) && !empty( $_POST[ 'wp_new_user' ] ) && !empty( $_POST[ 'wp_new_user' ][ $idAttributeur ] ) ) {
 					$idAttributeur = $_POST[ 'wp_new_user' ][ $idAttributeur ];
 				}
-				$notifications[ 'id_attributeur' ] = $idAttributeur;
-				$notifications[ 'date_desAffectation' ] = $notification->date_desAffectation;
+				$notifications[ $n ][ 'id_attributeur' ] = $idAttributeur;
+				$notifications[ $n ][ 'date_desAffectation' ] = $notification->date_desAffectation;
 
-				$idDesAttributeur = ( 0 == $follow_up->id_desAttributeur ) ? 1 : $follow_up->id_desAttributeur;
+				$idDesAttributeur = ( 0 == $notification->id_desAttributeur ) ? 1 : $notification->id_desAttributeur;
 				if ( empty( $_POST[ 'wpdigi-dtrans-userid-behaviour' ] ) && !empty( $_POST[ 'wp_new_user' ] ) && !empty( $_POST[ 'wp_new_user' ][ $idDesAttributeur ] ) ) {
 					$idDesAttributeur = $_POST[ 'wp_new_user' ][ $idDesAttributeur ];
 				}
-				$notifications[ 'id_desAttributeur' ] = $idDesAttributeur;
-				$notifications[ 'id_user' ] = $notification->id_user;
-				$notifications[ 'id_notification' ] = $notification->id_notification;
+				$notifications[ $n ][ 'id_desAttributeur' ] = $idDesAttributeur;
+				$notifications[ $n ][ 'id_user' ] = $notification->id_user;
+				$notifications[ $n ][ 'id_notification' ] = $notification->id_notification;
 			}
 			update_post_meta( $new_element_id, '_wpeo_element_notification', $notifications );
 		}
 	}
+
+	/**
+	 * SPECIFIC TRANSFER -> TASKS' ELEMENT LINK - Transfer links between task and other elements
+	 *
+	 * @param integer $old_element_id The element identifier into digirisk V5.X
+	 * @param string $old_element_type The element type into digirisk V5.X
+	 * @param integer $new_element_id The new element created into wordpress corresponding to the previous element into digirisk V5.0
+	 */
+	function transfer_link_between_tasks_and_element( $old_element_id, $old_element_type, $new_element_id ) {
+		global $wpdb;
+
+		/**	Get lined element with current task	*/
+		$query = $wpdb->prepare( "SELECT * FROM " . TABLE_LIAISON_TACHE_ELEMENT . " WHERE id_tache = %d ORDER BY id_tache, date", $old_element_id );
+		$existing_links = $wpdb->get_results( $query );
+
+		if ( !empty( $existing_links ) ) {
+			$links = array();
+			foreach ( $existing_links as $link ) {
+				$links[] = array(
+					$link->table_element,
+					$link->id_element,
+					$link->date,
+					$link->wasLinked,
+				);
+			}
+
+			if ( !empty( $links ) ) {
+				update_post_meta( $new_element_id, '_wpeo_element_links', $links );
+			}
+			else {
+				wpeologs_ctr::log_datas_in_files( 'digirisk-datas-transfert-' . $old_element_type . '-association-error', array( 'object_id' => $old_element_id, 'message' => sprintf( __( 'Element linked to this %s have not been transfered to %d', 'wp-digi-dtrans-i18n' ), $old_element_type, $new_element_id ), ), 2 );
+			}
+		}
+
+	}
+
 
 }
 

@@ -7,17 +7,20 @@
 		</div>
 		<div class="wpdigi-dtransfert-step-container wpdigi-dtransfert-step-container-2<?php echo ( 2 == $current_step ? ' wpdigi-dtransfert-step-current' : '' ); ?>" >
 			<i class="wpeo-circlerounded">2</i><span><?php echo _e( 'Documents and pictures', 'wp-digi-dtrans-i18n'); ?></span>
-			<span class="wpdigi-dtransfert-step-progression" id="digi-datas-transfert-progression-container-<?php echo $sub_element_type; ?>" ><?php echo $heavy_docs_already_done; ?> / <?php echo ( $nb_element_to_transfert->nb_pictures + $nb_element_to_transfert->nb_documents_main_elements + $nb_element_to_transfert->nb_documents_sub_elements ); ?></span>
+			<span class="wpdigi-dtransfert-step-progression" id="digi-datas-transfert-progression-container-documents" >
+				<?php echo $heavy_docs_already_done; ?> / <?php echo ( $nb_element_to_transfert->nb_pictures + $nb_element_to_transfert->nb_documents ); ?>
+				<?php if ( !empty( $heavy_docs_unable_to_do ) ) : echo '<br/>' . $heavy_docs_unable_to_do; endif; ?>
+			</span>
 		</div>
-		<div class="wpdigi-dtransfert-step-container wpdigi-dtransfert-step-container-3<?php echo ( 3 == $current_step ? ' wpdigi-dtransfert-step-current' : '' ); ?>" >
+		<div class="wpdigi-dtransfert-step-container wpdigi-dtransfert-step-container-3<?php echo ( DIGI_DTRANS_MEDIAN_MAX_STEP == $current_step ? ' wpdigi-dtransfert-step-current' : '' ); ?>" >
 			<i class="wpeo-circlerounded">3</i><span><?php echo _e( 'Start using task manager', 'wp-digi-dtrans-i18n'); ?></span>
 		</div>
 	</div>
 
 	<div class="wpdigi-dtransfert-form-container wpdigi-dtransfert-form-container-step-<?php echo $current_step; ?>" >
-		<?php if ( 5 > $current_step ) : ?>
+		<?php if ( DIGI_DTRANS_MAX_STEP > $current_step ) : ?>
 			<form action="<?php echo admin_url( 'admin-ajax.php' ); ?>" method="post" class="wpdigi-datas-transfert-form" >
-				<input type="hidden" name="action" value="<?php echo ( 3 == $current_step ? 'wpdigi-heavydatas-transfert' : 'wpdigi-datas-transfert' ); ?>" />
+				<input type="hidden" name="action" value="<?php echo ( DIGI_DTRANS_MEDIAN_MAX_STEP == $current_step ? 'wpdigi-heavydatas-transfert' : 'wpdigi-datas-transfert' ); ?>" />
 				<input type="hidden" name="element_type_to_transfert" value="<?php echo $element_type_to_transfer; ?>" />
 				<input type="hidden" name="number_per_page" value="<?php echo DIGI_DTRANS_NB_ELMT_PER_PAGE; ?>" />
 				<input type="hidden" name="autoreload" value="<?php echo ( $main_element_already_moved < $nb_element_to_transfert->main_element_nb ) ? 'no' : 'yes'; ?>" />
@@ -32,7 +35,7 @@
 					</div>
 				</fieldset>
 
-				<button type="submit" class="button button-primary" name="wpeo_itrack_digi_transfer_submitter" ><?php echo ( 3 == $current_step ? __( 'Move documents and pictures', 'wp-digi-dtrans-i18n' ) : __( 'Move tasks', 'wp-digi-dtrans-i18n' ) ); ?></button>
+				<button type="submit" class="button button-primary" name="wpeo_itrack_digi_transfer_submitter" ><?php echo ( DIGI_DTRANS_MEDIAN_MAX_STEP == $current_step ? __( 'Move documents and pictures', 'wp-digi-dtrans-i18n' ) : __( 'Move tasks', 'wp-digi-dtrans-i18n' ) ); ?></button>
 			</form>
 			<div id="digi-datas-transfert-progression-container" ></div>
 		<?php else: ?>

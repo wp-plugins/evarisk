@@ -33,6 +33,8 @@ load_plugin_textdomain( 'wp-digi-dtrans-i18n', false, dirname( plugin_basename( 
 /**	Define the templates directories	*/
 DEFINE( 'DIGI_DTRANS_TEMPLATES_MAIN_DIR', DIGI_DTRANS_PATH . DIGI_DTRANS_DIR . '/templates/' );
 DEFINE( 'DIGI_DTRANS_NB_ELMT_PER_PAGE', 10 );
+DEFINE( 'DIGI_DTRANS_MEDIAN_MAX_STEP', 3 );
+DEFINE( 'DIGI_DTRANS_MAX_STEP', 4 );
 
 /**	Controllers	*/
 require_once( DIGI_DTRANS_PATH . DIGI_DTRANS_DIR . '/controller/wpdigi_dtransfert_ctr.php' );

@@ -290,7 +290,7 @@ class digirisk_init
 	 *
 	 * @return string The new list of element available for association
 	 */
-	function digi_survey_association( $current_possible_association_list, $current_association ) {
+	public static function digi_survey_association( $current_possible_association_list, $current_association ) {
 		$display = new wpes_display();
 
 		/**	Add Society to available list	*/

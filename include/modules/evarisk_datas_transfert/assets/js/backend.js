@@ -17,6 +17,9 @@ jQuery( document ).ready( function(){
 				jQuery( "#digi-datas-transfert-progression-container-" + responseText[ 'type' ] ).html( responseText[ 'nb' ]);
 				$form.children( "input[name=autoreload]" ).val( "yes" );
 				$form.children( "button" ).click( );
+				if ( ( "wpdigi-heavydatas-transfert" == current_action ) && ( "" != responseText[ "moved_text" ] ) ) {
+					jQuery( "#digi-datas-transfert-progression-container-documents" ).html( responseText[ 'moved_text' ]);
+				}
 			}
 			else {
 				if ( "wpdigi-datas-transfert" == current_action ) {

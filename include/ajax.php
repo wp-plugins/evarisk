@@ -730,6 +730,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
 					}
 					break;
 					case 'reloadComboDangers':
+
 						$formId = digirisk_tools::IsValid_Variable($_REQUEST['formId']);
 						$idElement = digirisk_tools::IsValid_Variable($_REQUEST['idElement']);
 						$dangers = categorieDangers::getDangersDeLaCategorie($idElement, 'Status="Valid"');
@@ -779,7 +780,7 @@ if(!empty($_REQUEST['post']) && ($_REQUEST['post'] == 'true')){
                        $script .= '
 <script type="text/javascript">
 jQuery(document).ready(function(){
-	jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val() );
+	//jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val() );
 	//digirisk("#' . $formId . 'divVariablesFormRisque").load("' . EVA_INC_PLUGIN_URL . 'ajax.php", {"post":"true", "table":"' . TABLE_METHODE . '", "act":"reloadVariables", "idMethode":jQuery("#methode_danger_" + jQuery("#dangerFormRisque").val()).val(), "idRisque": "0", "formId":"' . $formId . '"});
 	jQuery("#dangerFormRisque").change(function(){
 		jQuery("#methodeFormRisque").val( jQuery("#methode_danger_" + jQuery(this).val()).val() );
@@ -1019,7 +1020,7 @@ jQuery(document).ready(function(){
 					break;
 					case 'reloadRiskForm' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');
-						echo getFormulaireCreationRisque($_REQUEST['tableElement'], $_REQUEST['idElement'], $_REQUEST['idRisque']);
+						echo getFormulaireCreationRisque($_REQUEST['tableElement'], $_REQUEST['idElement']);
 					break;
 					case 'loadAdvancedRiskForm' :
 						require_once(EVA_METABOXES_PLUGIN_DIR . 'risque/risque.php');

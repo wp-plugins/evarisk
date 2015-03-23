@@ -614,7 +614,7 @@ th.columnCommentaireRisque*/
 
 .eval_method_var{ width:30%; float:left; /* min-height:250px; */	}
 .eval_method_explanation{	width:70%; float:right; text-align:center; padding:13px 0px;	}
-.digi_eval_pic{	width:100%;	}
+.digi_eval_pic{	width:100%;	max-height: 260px; }
 
 .evaluation_var_slider_container{	margin-bottom:12px;	}
 
@@ -642,7 +642,7 @@ th.columnCommentaireRisque*/
 
 
 /* -- Tabs -- */
-.eva_tabs_panel	{		border-color:#DFDFDF;		border-style:solid;		border-width:1px;		overflow:auto;		padding:0px;		margin:0px;	}
+.eva_tabs_panel	{		border-color:#DFDFDF;		border-style:solid;		border-width:1px;		overflow-y:auto; overflow-x: hidden;		padding:0px;		margin:0px;	}
 ul.eva_tabs	{		margin-top:12px;	}
 ul.eva_tabs li	{		border-style:solid solid none;		-webkit-border-radius:3px 3px 0 0;		-moz-border-radius:3px 3px 0 0;		border-radius:3px 3px 0 0;		padding:5px 8px;		border-color:#DFDFDF;		background-color : #E6E6E6;		border-width:1px 1px 0;		margin-bottom:3px;		margin-top:12px;	}
 ul.eva_tabs li label	{		font-weight:bold;		text-decoration:none;	}

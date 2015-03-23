@@ -464,7 +464,11 @@ class suivi_activite {
 		}
 
 		if ( $complete_interface ) {
-			$output .= suivi_activite::tableauSuiviActivite($tableElement, $idElement, ( !empty( $specific_name_for_input ) && ( TABLE_ACTIVITE_SUIVI == $specific_name_for_input ) ? 'note' : 'follow_up' ));
+			$type = 'follow_up';
+			if ( ( !empty( $specific_name_for_input ) && ( TABLE_ACTIVITE_SUIVI == $specific_name_for_input ) ) || ( TABLE_AVOIR_VALEUR == $tableElement ) ) {
+				$type = 'note';
+			}
+			$output .= suivi_activite::tableauSuiviActivite($tableElement, $idElement, $type );
 		}
 
 		return $output;

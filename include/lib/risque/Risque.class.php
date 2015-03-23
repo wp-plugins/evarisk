@@ -633,7 +633,29 @@ class Risque {
 				$risque = Risque::getRisque($risk->id);
 				$score = Risque::getEquivalenceEtalon($risk->id_methode, Risque::getScoreRisque($risque), $risk->date);
 
-				$output .= '<div class="clear" id="loadRiskId' . $risk->id . '" ><span class="riskAssociatedToPicture" >-&nbsp;' . evaDanger::getDanger($risk->id_danger)->nom . '&nbsp;(' . $score . ')&nbsp;:&nbsp;' . $risk->commentaire . '</span><span id="deleteRiskId' . $risk->id . '" class="ui-icon deleteLinkBetweenRiskAndPicture alignright" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span></div>';
+				$last_comment_output = '';
+				$query = $wpdb->prepare("SELECT date_ajout, commentaire, date FROM " . TABLE_ACTIVITE_SUIVI . " WHERE status = 'valid' AND table_element = %s AND id_element IN (SELECT id_evaluation FROM " . TABLE_AVOIR_VALEUR . " WHERE id_risque = %d) ORDER BY date_ajout DESC", TABLE_AVOIR_VALEUR, $risque[0]->id);
+				$last_comments = $wpdb->get_results($query);
+				if ( !empty($last_comments) ) {
+					$first_comment = $other_comments = '';
+					$i = 1;
+					foreach ( $last_comments as $last_comment ) {
+						if ( $i == 1 ) {
+							$first_comment = '<span class="digi_risk_comment_date" >' . mysql2date('d F Y', $last_comment->date_ajout, true) . '</span> : ' . nl2br( stripslashes( $last_comment->commentaire )) . '<br/>';
+						}
+						else {
+							$other_comments .= '<span class="digi_risk_comment_date" >' . mysql2date('d F Y', ($last_comment->date_ajout != '0000-00-00 00:00:00' ? $last_comment->date_ajout : $last_comment->date), true) . '</span> : ' . nl2br( stripslashes($last_comment->commentaire ) ) . '<br/>';
+						}
+						$i++;
+					}
+					$last_comment_output = $first_comment .(!empty($other_comments) ? '<div class="other_comment_display" ><div class="alignright pointer" ><span class="ui-icon alignleft comment_display_state_icon" style="background-position: 0px -192px;" ></span>' . __('Voir les autres commentaires', 'evarisk') . '</div><div class="clear hide close other_comment_container">' . $other_comments . '</div></div>' : '');
+				}
+
+				$output .= '
+						<div class="clear" id="loadRiskId' . $risk->id . '" >
+							<span class="alignleft riskAssociatedToPicture" >-&nbsp;' . evaDanger::getDanger($risk->id_danger)->nom . '&nbsp;(' . $score . ')&nbsp;:&nbsp;' . $last_comment_output . '</span>
+							<span id="deleteRiskId' . $risk->id . '" class="ui-icon deleteLinkBetweenRiskAndPicture alignright" title="' . __('Supprimer cette liaison', 'evarisk') . '" >&nbsp;</span>
+						</div>';
 			}
 
 			$script = '
