@@ -268,9 +268,7 @@ class categorieDangers {
 					"idElement": digirisk("#' . $formId . 'categorieDangerFormRisque").val(),
 					"formId":"' . $formId . '"
 				});
-			});
-
-							';
+			});';
 					}
 			}
 		}

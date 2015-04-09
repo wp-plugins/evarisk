@@ -104,7 +104,8 @@ function twentyeleven_setup() {
 	add_theme_support( 'post-formats', array( 'aside', 'link', 'gallery', 'status', 'quote', 'image' ) );
 
 	// Add support for custom backgrounds
-	add_custom_background();
+// 	add_custom_background();
+	add_theme_support( 'custom-background' );
 
 	// This theme uses Featured Images (also known as post thumbnails) for per-post/per-page Custom Header images
 	add_theme_support( 'post-thumbnails' );
@@ -137,6 +138,7 @@ function twentyeleven_setup() {
 	// Add a way for the custom header to be styled in the admin panel that controls
 	// custom headers. See twentyeleven_admin_header_style(), below.
 	add_custom_image_header( 'twentyeleven_header_style', 'twentyeleven_admin_header_style', 'twentyeleven_admin_header_image' );
+// 	add_theme_support( 'custom-header', $args );
 
 	// ... and thus ends the changeable header business.
 

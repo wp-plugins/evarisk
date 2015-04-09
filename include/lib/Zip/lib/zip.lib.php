@@ -106,7 +106,7 @@ class eva_zipfile
         $fr   .= "\x08\x00";            // compression method
         $fr   .= $hexdtime;             // last mod time and date
 
-        // "local file header" segment
+        // "local file header" digi_segment
         $unc_len = strlen($data);
         $crc     = crc32($data);
         $zdata   = gzcompress($data);
@@ -119,10 +119,10 @@ class eva_zipfile
         $fr      .= pack('v', 0);                // extra field length
         $fr      .= $name;
 
-        // "file data" segment
+        // "file data" digi_segment
         $fr .= $zdata;
 
-        // "data descriptor" segment (optional but necessary if archive is not
+        // "data descriptor" digi_segment (optional but necessary if archive is not
         // served as file)
         // nijel(2004-10-19): this seems not to be needed at all and causes
         // problems in some cases (bug #1037737)

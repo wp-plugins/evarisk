@@ -7,7 +7,7 @@
 		</div>
 		<div class="wpdigi-dtransfert-step-container wpdigi-dtransfert-step-container-2<?php echo ( 2 == $current_step ? ' wpdigi-dtransfert-step-current' : '' ); ?>" >
 			<i class="wpeo-circlerounded">2</i><span><?php echo _e( 'Documents and pictures', 'wp-digi-dtrans-i18n'); ?></span>
-			<span class="wpdigi-dtransfert-step-progression" id="digi-datas-transfert-progression-container-documents" >
+			<span class="wpdigi-dtransfert-step-progression" id="digi-datas-transfert-progression-container-<?php echo $sub_element_type; ?>" >
 				<?php echo $heavy_docs_already_done; ?> / <?php echo ( $nb_element_to_transfert->nb_pictures + $nb_element_to_transfert->nb_documents ); ?>
 				<?php if ( !empty( $heavy_docs_unable_to_do ) ) : echo '<br/>' . $heavy_docs_unable_to_do; endif; ?>
 			</span>

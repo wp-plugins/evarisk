@@ -41,7 +41,7 @@ require_once( DIGI_DTRANS_PATH . DIGI_DTRANS_DIR . '/controller/wpdigi_dtransfer
 
 /** Plugin initialisation */
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-if ( is_plugin_active( "wp-my-time/wp-my-time.php" ) ) {
+if ( is_plugin_active( "WPMyTime/wp-my-time.php" ) ) {
 	$wpdigi_dtransfert = new wpdigi_dtransfert_ctr( true );
 	add_filter( 'wpdigi-display-datas-transfert-interface', array( $wpdigi_dtransfert, 'display_transfert_interface' ), 10, 2 );
 }

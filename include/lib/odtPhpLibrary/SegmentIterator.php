@@ -1,19 +1,19 @@
 <?php
 /**
- * Segments iterator
+ * digiSegments iterator
  * You need PHP 5.2 at least
- * You need Zip Extension or PclZip library
+ * You need Zip Extension or digiPclZip library
  * Encoding : ISO-8859-1
  * Last commit by $Author: neveldo $
  * Date - $Date: 2009-06-17 11:11:57 +0200 (mer., 17 juin 2009) $
  * SVN Revision - $Rev: 42 $
- * Id : $Id: SegmentIterator.php 42 2009-06-17 09:11:57Z neveldo $
+ * Id : $Id: digiSegmentIterator.php 42 2009-06-17 09:11:57Z neveldo $
  *
  * @copyright  GPL License 2008 - Julien Pauli - Cyril PIERRE de GEYER - Anaska (http://www.anaska.com)
  * @license    http://www.gnu.org/copyleft/gpl.html  GPL License
  * @version 1.3
  */
-class SegmentIterator implements RecursiveIterator
+class digiSegmentIterator implements RecursiveIterator
 {
     private $ref;
     private $key;
@@ -25,7 +25,7 @@ class SegmentIterator implements RecursiveIterator
     }
     public function hasChildren()
     {
-        return $this->valid() && $this->current() instanceof Segment;
+        return $this->valid() && $this->current() instanceof digiSegment;
     }
     public function current()
     {

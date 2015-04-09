@@ -222,7 +222,7 @@ class eva_UniteDeTravail {
 	* @param string $id Working unit identifier
 	* @return the marker informations for the google maps
 	*/
-	function getMarkersGeoLoc($id)
+	public static function getMarkersGeoLoc($id)
 	{
 		global $wpdb;
 		if($id == null)

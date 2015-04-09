@@ -3,7 +3,7 @@
 class evaluationDesRisques
 {
 
-	function evaluationDesRisquesMainPage()
+	public static function evaluationDesRisquesMainPage()
 	{
 		$messageInfo = '';
 

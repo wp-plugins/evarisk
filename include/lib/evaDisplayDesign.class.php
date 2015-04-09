@@ -672,7 +672,7 @@ class EvaDisplayDesign {
 	 * @param string $nomRacine Text to be displayed in the root of the table.
 	 * @return string HTML code of the table.
 	 */
-	function getTableArborescence($racine, $table, $idTable, $nomRacine, $draggable = true, $outputAction = true)
+	public static function getTableArborescence($racine, $table, $idTable, $nomRacine, $draggable = true, $outputAction = true)
 	{
 		$elements = $monCorpsTable = $class = $infoRacine = $tableArborescente = '';
 		$showTrashUtilities = false;
@@ -1486,7 +1486,7 @@ class EvaDisplayDesign {
 	 * @param string $table Father element table name.
 	 * @return string HTML code of the inner table.
 	 */
-	function getCorpsTableArborescence($elementsFils, $elementPere, $table, $titreInfo, $idTable)
+	public static function getCorpsTableArborescence($elementsFils, $elementPere, $table, $titreInfo, $idTable)
 	{
 		$monCorpsTable = $monCorpsSubElements = '';
 		$ddFeuilleClass = 'feuilleArbre';

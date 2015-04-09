@@ -149,7 +149,7 @@ class EvaDisplayInput {
 	* @param string $float Where must float the div : right or left.
 	* @return string The input.
 	*/
-	function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false, $tabindex = '100', $field_option = ""){
+	public static function afficherInput($type, $id, $contenuInput, $contenuAide, $labelInput, $nomChamps, $grise=false, $obligatoire=false, $taille = 255, $classe='', $limitation='', $width='100%', $script='', $float='', $withoutClear=false, $tabindex = '100', $field_option = ""){
 		$input = '';
 		if ($obligatoire) {
 			$classe = 'input_required ' . $classe;

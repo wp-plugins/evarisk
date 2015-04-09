@@ -1223,7 +1223,7 @@ Les 5 crit&egrave;res d'&eacute;valuation qui constituerons la cotation du risqu
 	*
 	*	@return mixed $outputListeDocumentUnique An html code with the list or a message if no document were generated
 	*/
-	function getDUERList($tableElement, $idElement)
+	public static function getDUERList($tableElement, $idElement)
 	{
 		global $wpdb;
 		$isteDocumentUnique = array();

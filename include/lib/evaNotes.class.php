@@ -20,7 +20,7 @@ class evaNotes
 	*
 	*	@return mixed $noteDialog The html output for the note dialog box
 	*/
-	function noteDialogMaker()
+	public static function noteDialogMaker()
 	{
 		$noteDialog = '
 		<div id="noteTaker" >
@@ -63,7 +63,7 @@ class evaNotes
 	*
 	*	@return mixed $noteDialogScript The script output to transform a box into a dialog box
 	*/
-	function noteDialogScriptMaker()
+	public static function noteDialogScriptMaker()
 	{
 		$noteDialogScript = '
 				digirisk("#digiNotes").html(digirisk("#loadingImg").html());

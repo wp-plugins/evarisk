@@ -1138,7 +1138,7 @@ class eva_gestionDoc {
 
 	function generate_task_odt($tableElement, $idElement, $idDocument) {
 		global $wpdb;
-		require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
+		require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/Odf.php');
 		ini_set("memory_limit","256M");
 
 		/**	Get the document to create	*/
@@ -1172,7 +1172,7 @@ class eva_gestionDoc {
 		switch ($tableElement) {
 			case TABLE_ACTIVITE:
 			case TABLE_TACHE:
-				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'planDActions/modele_default_fiche_action.odt';
+				$DigiOdfModelFile = EVA_MODELES_PLUGIN_DIR . 'planDActions/modele_default_fiche_action.odt';
 			break;
 		}
 
@@ -1180,11 +1180,11 @@ class eva_gestionDoc {
 			'PATH_TO_TMP' => EVA_RESULTATS_PLUGIN_DIR . 'tmp'
 		);
 		/**	Get the default model regarding on the element type we are on	*/
-		$odf = new odf($odfModelFile, $config);
+		$DigiOdf = new DigiOdf($DigiOdfModelFile, $config);
 		/**	Get the last used model	*/
 		if( !empty($last_document) && !empty($document_infos) && !empty($document_infos[ '_digi_doc_model' ]) && ( $document_infos[ '_digi_doc_model' ] != 'default' ) ) {
 			$pathToModelFile = eva_gestionDoc::getDocumentPath( $document_infos[ '_digi_doc_model' ] );
-			$odf = new odf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
+			$DigiOdf = new DigiOdf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
 		}
 
 		foreach ( $document_infos as $main_key => $content ) {
@@ -1192,50 +1192,50 @@ class eva_gestionDoc {
 				foreach ( $content as $key => $value ) {
 					if ( $key == 'photoPrincipale' ) {
 						if( $value != 'noDefaultPicture' && is_file(EVA_GENERATED_DOC_DIR . $value)){
-							$odf->setImage('photoPrincipale', EVA_GENERATED_DOC_DIR . $value, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
+							$DigiOdf->setImage('photoPrincipale', EVA_GENERATED_DOC_DIR . $value, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
 						}
 						else{
-							$odf->setVars('photoPrincipale', html_entity_decode( __('Aucun photo d&eacute;finie', 'evarisk')) );
+							$DigiOdf->setVars('photoPrincipale', html_entity_decode( __('Aucun photo d&eacute;finie', 'evarisk')) );
 						}
 					}
 					else if ( $key == 'photoAssocieeAction' ) {
-						$segment_content = $odf->setSegment( $key );
-						if ( is_object($segment_content) ) {
-							foreach ( $value as $the_segment_content ) {
-								foreach ( $the_segment_content as $info_key => $info ) {
+						$digi_segment_content = $DigiOdf->setdigiSegment( $key );
+						if ( is_object($digi_segment_content) ) {
+							foreach ( $value as $the_digi_segment_content ) {
+								foreach ( $the_digi_segment_content as $info_key => $info ) {
 									if( $info_key == 'photo' ) {
 										if ( is_file(EVA_GENERATED_DOC_DIR . $info) ){
-											$segment_content->setImage($info_key, EVA_GENERATED_DOC_DIR . $info, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
+											$digi_segment_content->setImage($info_key, EVA_GENERATED_DOC_DIR . $info, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
 										}
 										else{
-											$segment_content->setVars($info_key, html_entity_decode( __('Impossible de trouver l\'image', 'evarisk')) );
+											$digi_segment_content->setVars($info_key, html_entity_decode( __('Impossible de trouver l\'image', 'evarisk')) );
 										}
 									}
 									else{
-										$segment_content->setVars($info_key, html_entity_decode( stripslashes( $info ) ) );
+										$digi_segment_content->setVars($info_key, html_entity_decode( stripslashes( $info ) ) );
 									}
 								}
-								$segment_content->merge();
+								$digi_segment_content->merge();
 							}
-							$odf->mergeSegment( $segment_content );
+							$DigiOdf->mergedigiSegment( $digi_segment_content );
 						}
 					}
 					else if ( is_array( $value ) ) {
-						$segment_content = $odf->setSegment( $key );
-						if ( is_object($segment_content) ) {
-							foreach ( $value as $index_test => $the_segment_content ) {
-								if ( is_array( $the_segment_content ) ) {
-									foreach ( $the_segment_content as $info_key => $info ) {
-										$segment_content->setVars( $info_key, html_entity_decode( stripslashes( $info )) );
+						$digi_segment_content = $DigiOdf->setdigiSegment( $key );
+						if ( is_object($digi_segment_content) ) {
+							foreach ( $value as $index_test => $the_digi_segment_content ) {
+								if ( is_array( $the_digi_segment_content ) ) {
+									foreach ( $the_digi_segment_content as $info_key => $info ) {
+										$digi_segment_content->setVars( $info_key, html_entity_decode( stripslashes( $info )) );
 									}
 								}
-								$segment_content->merge();
+								$digi_segment_content->merge();
 							}
-							$odf->mergeSegment( $segment_content );
+							$DigiOdf->mergedigiSegment( $digi_segment_content );
 						}
 					}
 					else {
-						$odf->setVars( $key , html_entity_decode( stripslashes( $value ) ) );
+						$DigiOdf->setVars( $key , html_entity_decode( stripslashes( $value ) ) );
 					}
 				}
 			}
@@ -1244,7 +1244,7 @@ class eva_gestionDoc {
 		if ( !is_dir(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin) ) {
 			wp_mkdir_p( EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin );
 		}
-		$odf->saveToDisk(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin . $last_document->nom);
+		$DigiOdf->saveToDisk(EVA_RESULTATS_PLUGIN_DIR . $last_document->chemin . $last_document->nom);
 	}
 
 	/**
@@ -1287,45 +1287,45 @@ class eva_gestionDoc {
 				$documentUniqueParam['#DISPODESPLANS#'] = $lastDocument->planDUER;
 				$documentUniqueParam['#ALERTE#'] = $lastDocument->alerteDUER;
 
-				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'documentUnique/modeleDefaut.odt';
+				$DigiOdfModelFile = EVA_MODELES_PLUGIN_DIR . 'documentUnique/modeleDefaut.odt';
 			break;
 			case TABLE_UNITE_TRAVAIL:
 				/**	Get the last summary document generated for the current element OR Get a given generated summary document	*/
 				$lastDocument = eva_gestionDoc::getGeneratedDocument($tableElement, $idElement, 'last', $idDocument, 'fiche_de_poste');
-				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/modeleDefaut.odt';
+				$DigiOdfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDePoste/modeleDefaut.odt';
 			break;
 			case TABLE_GROUPEMENT . '_FGP' :
 				/**	Get the last summary document generated for the current element OR Get a given generated summary document	*/
 				$lastDocument = eva_gestionDoc::getGeneratedDocument(str_replace('_FGP', '', $tableElement), $idElement, 'last', $idDocument, 'fiche_de_groupement');
-				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/modeleDefaut_groupement.odt';
+				$DigiOdfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDeGroupement/modeleDefaut_groupement.odt';
 			break;
 			case TABLE_GROUPEMENT . '_RS' :
 			case TABLE_UNITE_TRAVAIL . '_RS' :
 				/**	Get the last summary document generated for the current element OR Get a given generated summary document	*/
 				$lastDocument = eva_gestionDoc::getGeneratedDocument(str_replace('_RS', '', $tableElement), $idElement, 'last', $idDocument, 'listing_des_risques');
-				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'listingRisque/modeleDefault_listing_risque.odt';
+				$DigiOdfModelFile = EVA_MODELES_PLUGIN_DIR . 'listingRisque/modeleDefault_listing_risque.odt';
 			break;
 			case TABLE_GROUPEMENT . '_FEP' :
 			case TABLE_UNITE_TRAVAIL . '_FEP' :
 				/**	Get the last summary document generated for the current element OR Get a given generated summary document	*/
 				$lastDocument = eva_gestionDoc::getGeneratedDocument(str_replace('_FEP', '', $tableElement), $idElement, 'last', $idDocument, 'fiche_exposition_penibilite');
-				$odfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDeRisques/modeleDefault_fiche_penibilite.odt';
+				$DigiOdfModelFile = EVA_MODELES_PLUGIN_DIR . 'ficheDeRisques/modeleDefault_fiche_penibilite.odt';
 			break;
 		}
 
 		/**	If user ask for an "odt" file we include different librairies and model	*/
 		if($outputType == 'odt') {
-			require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
+			require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/Odf.php');
 
 			$config = array(
 				'PATH_TO_TMP' => EVA_RESULTATS_PLUGIN_DIR . 'tmp'
 			);
 			/**	Get the default model regarding on the element type we are on	*/
-			$odf = new odf($odfModelFile, $config);
+			$DigiOdf = new DigiOdf($DigiOdfModelFile, $config);
 			/**	Get the last used model	*/
 			if(!empty($lastDocument) && is_object($lastDocument) && $lastDocument->id_model > 1) {
 				$pathToModelFile = eva_gestionDoc::getDocumentPath($lastDocument->id_model);
-				$odf = new odf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
+				$DigiOdf = new DigiOdf(EVA_GENERATED_DOC_DIR . $pathToModelFile, $config);
 			}
 		}
 
@@ -1581,31 +1581,31 @@ class eva_gestionDoc {
 				{
 					$documentUniqueParam['#NOMENTREPRISE#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#NOMENTREPRISE#']));
-					$odf->setVars('nomEntreprise', $documentUniqueParam['#NOMENTREPRISE#']);
+					$DigiOdf->setVars('nomEntreprise', $documentUniqueParam['#NOMENTREPRISE#']);
 
 					$documentUniqueParam['#NOMPRENOMEMETTEUR#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMEMETTEUR#']));
-					$odf->setVars('emetteurDUER', $documentUniqueParam['#NOMPRENOMEMETTEUR#']);
+					$DigiOdf->setVars('emetteurDUER', $documentUniqueParam['#NOMPRENOMEMETTEUR#']);
 
 					$documentUniqueParam['#NOMPRENOMDESTINATAIRE#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#NOMPRENOMDESTINATAIRE#']));
-					$odf->setVars('destinataireDUER', $documentUniqueParam['#NOMPRENOMDESTINATAIRE#']);
+					$DigiOdf->setVars('destinataireDUER', $documentUniqueParam['#NOMPRENOMDESTINATAIRE#']);
 
 					$documentUniqueParam['#TELFIXE#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#TELFIXE#']));
-					$odf->setVars('telephone', $documentUniqueParam['#TELFIXE#']);
+					$DigiOdf->setVars('telephone', $documentUniqueParam['#TELFIXE#']);
 
 					$documentUniqueParam['#TELMOBILE#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#TELMOBILE#']));
-					$odf->setVars('portable', $documentUniqueParam['#TELMOBILE#']);
+					$DigiOdf->setVars('portable', $documentUniqueParam['#TELMOBILE#']);
 
 					$documentUniqueParam['#TELFAX#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#TELFAX#']));
-					$odf->setVars('fax', $documentUniqueParam['#TELFAX#']);
+					$DigiOdf->setVars('fax', $documentUniqueParam['#TELFAX#']);
 
-					$odf->setVars('dateGeneration', $documentUniqueParam['#DATE#']);
+					$DigiOdf->setVars('dateGeneration', $documentUniqueParam['#DATE#']);
 					$finAudit = '';if(($documentUniqueParam['#FINAUDIT#'] != '') && ($documentUniqueParam['#FINAUDIT#'] != $documentUniqueParam['#DEBUTAUDIT#'])){$finAudit = __(' au ', 'evarisk') . $documentUniqueParam['#FINAUDIT#'];}
-					$odf->setVars('dateAudit', $documentUniqueParam['#DEBUTAUDIT#'] . $finAudit);
+					$DigiOdf->setVars('dateAudit', $documentUniqueParam['#DEBUTAUDIT#'] . $finAudit);
 
 					$documentUniqueParam['#DISPODESPLANS#'] = str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#']));
@@ -1613,15 +1613,15 @@ class eva_gestionDoc {
 						$documentUniqueParam['#DISPODESPLANS#'] = __('La localisation n\'a pas &eacute;t&eacute; pr&eacute;cis&eacute;e', 'evarisk');
 					}
 
-					$odf->setVars('methodologie', str_replace('<br />', "
+					$DigiOdf->setVars('methodologie', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#METHODOLOGIE#'])));
-					$odf->setVars('dispoDesPlans', str_replace('<br />', "
+					$DigiOdf->setVars('dispoDesPlans', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#DISPODESPLANS#'])));
 
-					$odf->setVars('remarqueImportante', str_replace('<br />', "
+					$DigiOdf->setVars('remarqueImportante', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#ALERTE#'])));
 
-					$odf->setVars('sources', str_replace('<br />', "
+					$DigiOdf->setVars('sources', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($documentUniqueParam['#SOURCES#'])));
 
 					{/*	Remplissage du template pour les groupes d'utilisateurs	*/
@@ -1629,7 +1629,7 @@ class eva_gestionDoc {
 						$listeDesGroupes = unserialize($lastDocument->groupesUtilisateurs);
 						$listeUserGroupe = digirisk_groups::outputGroupListing($listeDesGroupes, 'print');
 
-						$userGroup = $odf->setSegment('groupesUtilisateurs');
+						$userGroup = $DigiOdf->setdigiSegment('groupesUtilisateurs');
 						if($userGroup)
 						{
 							foreach($listeUserGroupe AS $element)
@@ -1646,7 +1646,7 @@ class eva_gestionDoc {
 								$userGroup->listeUtilisateur($element['userGroupUsers']);
 								$userGroup->merge();
 							}
-							$odf->mergeSegment($userGroup);
+							$DigiOdf->mergedigiSegment($userGroup);
 						}
 					}
 
@@ -1655,7 +1655,7 @@ class eva_gestionDoc {
 						$listeDesGroupesAffectes = unserialize($lastDocument->groupesUtilisateursAffectes);
 						$listeUserGroupe = eva_documentUnique::readExportedDatas($listeDesGroupesAffectes, 'affectedUserGroup', '', 'print');
 
-						$userGroupAffected = $odf->setSegment('groupesUtilisateursAffectes');
+						$userGroupAffected = $DigiOdf->setdigiSegment('groupesUtilisateursAffectes');
 						if($userGroupAffected)
 						{
 							foreach($listeUserGroupe AS $element)
@@ -1667,7 +1667,7 @@ class eva_gestionDoc {
 								$userGroupAffected->listeGroupes(digirisk_tools::slugify_noaccent($element['listeGroupes']));
 								$userGroupAffected->merge();
 							}
-							$odf->mergeSegment($userGroupAffected);
+							$DigiOdf->mergedigiSegment($userGroupAffected);
 						}
 					}
 
@@ -1677,9 +1677,9 @@ class eva_gestionDoc {
 
 					/*	Lecture des types de risques existants	*/
 					foreach ($typeRisque as $riskTypeIdentifier => $riskTypeValue) {
-						$risque = $odf->setSegment($riskTypeIdentifier);
+						$risque = $DigiOdf->setdigiSegment($riskTypeIdentifier);
 						if($risque) {
-							$odf->mergeSegment(self::transform_risk_listing ($listeRisque[$riskTypeValue], $risque));
+							$DigiOdf->mergedigiSegment(self::transform_risk_listing ($listeRisque[$riskTypeValue], $risque));
 						}
 					}
 
@@ -1688,7 +1688,7 @@ class eva_gestionDoc {
 						$bilanParUnite = unserialize($lastDocument->risquesParUnite);
 						$listeGroupement = eva_documentUnique::readExportedDatas($bilanParUnite, 'riskByElement', '', 'print');
 
-						$risqueParFiche = $odf->setSegment('risqueFiche');
+						$risqueParFiche = $DigiOdf->setdigiSegment('risqueFiche');
 						if($risqueParFiche)
 						{
 							foreach($listeGroupement AS $element)
@@ -1701,7 +1701,7 @@ class eva_gestionDoc {
 
 								$risqueParFiche->merge();
 							}
-							$odf->mergeSegment($risqueParFiche);
+							$DigiOdf->mergedigiSegment($risqueParFiche);
 						}
 					}
 
@@ -1711,7 +1711,7 @@ class eva_gestionDoc {
 
 						/*	Lecture des types de risques existants pour construction du plan d'action	*/
 						foreach($typeRisquePlanAction as $riskTypeIdentifier => $riskTypeValue){
-							$planDactionR = $odf->setSegment($riskTypeIdentifier);
+							$planDactionR = $DigiOdf->setdigiSegment($riskTypeIdentifier);
 							if($planDactionR){
 								if( is_array($storedPlanDaction[$riskTypeValue]) ){
 									foreach($storedPlanDaction[$riskTypeValue] AS $elements){
@@ -1737,11 +1737,11 @@ class eva_gestionDoc {
 										}
 									}
 								}
-								$odf->mergeSegment($planDactionR);
+								$DigiOdf->mergedigiSegment($planDactionR);
 							}
 						}
 
-						$planDactionUA = $odf->setSegment('planDaction');
+						$planDactionUA = $DigiOdf->setdigiSegment('planDaction');
 						if ( $planDactionUA ) {
 							if ( is_array($planDaction['unaffected']) ) {
 								foreach ( $planDaction['unaffected'] AS $element ) {
@@ -1771,7 +1771,7 @@ class eva_gestionDoc {
 									$planDactionUA->merge();
 								}
 							}
-							$odf->mergeSegment($planDactionUA);
+							$DigiOdf->mergedigiSegment($planDactionUA);
 						}
 					}
 
@@ -1785,38 +1785,38 @@ class eva_gestionDoc {
 					if ($tableElement == TABLE_GROUPEMENT . '_FGP') {
 						$workUnitinformations = EvaGroupement::getGroupement($idElement);
 
-						$odf->setVars('reference', ELEMENT_IDENTIFIER_GP . $idElement);
-						$odf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
+						$DigiOdf->setVars('reference', ELEMENT_IDENTIFIER_GP . $idElement);
+						$DigiOdf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeGroupement/' . TABLE_GROUPEMENT . '/' . $idElement . '/';
 					}
 					else {
 						$workUnitinformations = eva_UniteDeTravail::getWorkingUnit($idElement);
 
-						$odf->setVars('referenceUnite', ELEMENT_IDENTIFIER_UT . $idElement);
-						$odf->setVars('nomUnite', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
-						$odf->setVars('reference', ELEMENT_IDENTIFIER_UT . $idElement);
-						$odf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
+						$DigiOdf->setVars('referenceUnite', ELEMENT_IDENTIFIER_UT . $idElement);
+						$DigiOdf->setVars('nomUnite', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
+						$DigiOdf->setVars('reference', ELEMENT_IDENTIFIER_UT . $idElement);
+						$DigiOdf->setVars('nom', digirisk_tools::slugify_noaccent($workUnitinformations->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDePoste/' . $tableElement . '/' . $idElement . '/';
 					}
 
-					$odf->setVars('description', str_replace('<br />', "
+					$DigiOdf->setVars('description', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($lastDocument->description)));
-					$odf->setVars('telephone', str_replace('<br />', "
+					$DigiOdf->setVars('telephone', str_replace('<br />', "
 ", digirisk_tools::slugify_noaccent($lastDocument->telephone)));
 
 					$serialized_address = unserialize( $lastDocument->adresse );
-					$odf->setVars( 'adresse', str_replace( '<br />', "
+					$DigiOdf->setVars( 'adresse', str_replace( '<br />', "
 ", ( !empty( $serialized_address ) && !empty( $serialized_address[ 'adresse' ] ) ? digirisk_tools::slugify_noaccent( $serialized_address[ 'adresse' ] ) : 'NC' ) ) );
-					$odf->setVars( 'codePostal', str_replace( '<br />', "
+					$DigiOdf->setVars( 'codePostal', str_replace( '<br />', "
 ", ( !empty( $serialized_address ) && !empty( $serialized_address[ 'codePostal' ] ) ? digirisk_tools::slugify_noaccent( $serialized_address[ 'codePostal' ] ) : 'NC' ) ) );
-					$odf->setVars( 'ville', str_replace( '<br />', "
+					$DigiOdf->setVars( 'ville', str_replace( '<br />', "
 ", ( !empty( $serialized_address ) && !empty( $serialized_address[ 'ville' ] ) ? digirisk_tools::slugify_noaccent( $serialized_address[ 'ville' ] ) : 'NC' ) ) );
 
 					{/*	Remplissage du template pour les utilisateurs affectes	*/
 						$listeUser = array();
 						$listeUser = unserialize($lastDocument->users);
 
-						$affectedUsers = $odf->setSegment('utilisateursAffectes');
+						$affectedUsers = $DigiOdf->setdigiSegment('utilisateursAffectes');
 						if($affectedUsers)
 						{
 							foreach($listeUser AS $element)
@@ -1839,10 +1839,10 @@ class eva_gestionDoc {
 									}
 								}
 							}
-							$odf->mergeSegment($affectedUsers);
+							$DigiOdf->mergedigiSegment($affectedUsers);
 						}
 
-						$unAffectedUsers = $odf->setSegment('utilisateursDesaffectes');
+						$unAffectedUsers = $DigiOdf->setdigiSegment('utilisateursDesaffectes');
 						if($unAffectedUsers)
 						{
 							foreach($listeUser AS $element)
@@ -1865,7 +1865,7 @@ class eva_gestionDoc {
 									}
 								}
 							}
-							$odf->mergeSegment($unAffectedUsers);
+							$DigiOdf->mergedigiSegment($unAffectedUsers);
 						}
 					}
 
@@ -1873,7 +1873,7 @@ class eva_gestionDoc {
 						$listeUser = array();
 						$listeUser = unserialize($lastDocument->evaluators);
 
-						$affectedEvaluators = $odf->setSegment('utilisateursPresents');
+						$affectedEvaluators = $DigiOdf->setdigiSegment('utilisateursPresents');
 						if($affectedEvaluators)
 						{
 							foreach($listeUser AS $element)
@@ -1894,7 +1894,7 @@ class eva_gestionDoc {
 									$affectedEvaluators->merge();
 								}
 							}
-							$odf->mergeSegment($affectedEvaluators);
+							$DigiOdf->mergedigiSegment($affectedEvaluators);
 						}
 					}
 
@@ -1902,9 +1902,9 @@ class eva_gestionDoc {
 						$listeDesGroupesAffectes = array();
 						$listeDesGroupesAffectes = unserialize($lastDocument->userGroups);
 
-						$userGroupAffected = $odf->setSegment('gpUserAffected');
+						$userGroupAffected = $DigiOdf->setdigiSegment('gpUserAffected');
 						if ($userGroupAffected) {
-							$odf->mergeSegment( self::transform_users_group($listeDesGroupesAffectes, $userGroupAffected) );
+							$DigiOdf->mergedigiSegment( self::transform_users_group($listeDesGroupesAffectes, $userGroupAffected) );
 						}
 
 					/*	Remplissage du template pour les risques unitaires	*/
@@ -1913,9 +1913,9 @@ class eva_gestionDoc {
 
 						/*	Lecture des types de risques existants	*/
 						foreach ($typeRisque as $riskTypeIdentifier => $riskTypeValue) {
-							$risque = $odf->setSegment($riskTypeIdentifier);
+							$risque = $DigiOdf->setdigiSegment($riskTypeIdentifier);
 							if($risque) {
-								$odf->mergeSegment(self::transform_risk_listing($listeRisque[$riskTypeValue], $risque));
+								$DigiOdf->mergedigiSegment(self::transform_risk_listing($listeRisque[$riskTypeValue], $risque));
 							}
 						}
 
@@ -1923,7 +1923,7 @@ class eva_gestionDoc {
 						$listePreconisationsAffectees = array();
 						$listePreconisationsAffectees = unserialize($lastDocument->recommandation);
 
-						$afffectedRecommandation = $odf->setSegment('affectedRecommandation');
+						$afffectedRecommandation = $DigiOdf->setdigiSegment('affectedRecommandation');
 						if($afffectedRecommandation)
 						{
 							foreach($listePreconisationsAffectees AS $recommandationCategory)
@@ -1984,15 +1984,15 @@ class eva_gestionDoc {
 
 								$afffectedRecommandation->merge();
 							}
-							$odf->mergeSegment($afffectedRecommandation);
+							$DigiOdf->mergedigiSegment($afffectedRecommandation);
 						}
 					}
 
 					if(is_file(EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath)){
-						$odf->setImage('photoDefault', EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
+						$DigiOdf->setImage('photoDefault', EVA_GENERATED_DOC_DIR . $lastDocument->defaultPicturePath, digirisk_options::getOptionValue('taille_photo_poste_fiche_de_poste'));
 					}
 					else{
-						$odf->setVars('photoDefault', digirisk_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
+						$DigiOdf->setVars('photoDefault', digirisk_tools::slugify_noaccent(__('Aucun photo d&eacute;finie', 'evarisk')));
 					}
 
 					$fileName = str_replace(' ', '',$lastDocument->name) . '_V' . $lastDocument->revision;
@@ -2011,8 +2011,8 @@ class eva_gestionDoc {
 							$element_identifier = ELEMENT_IDENTIFIER_UT;
 							$element_directory = TABLE_UNITE_TRAVAIL;
 						}
-						$odf->setVars('reference', $element_identifier . $idElement);
-						$odf->setVars('nom', digirisk_tools::slugify_noaccent($current_element->nom));
+						$DigiOdf->setVars('reference', $element_identifier . $idElement);
+						$DigiOdf->setVars('nom', digirisk_tools::slugify_noaccent($current_element->nom));
 						$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'listingRisque/' . $element_directory . '/' . $idElement . '/';
 
 						/*	Remplissage du template pour les risques unitaires	*/
@@ -2021,9 +2021,9 @@ class eva_gestionDoc {
 
 						/*	Lecture des types de risques existants	*/
 						foreach ($typeRisque as $riskTypeIdentifier => $riskTypeValue) {
-							$risque = $odf->setSegment($riskTypeIdentifier);
+							$risque = $DigiOdf->setdigiSegment($riskTypeIdentifier);
 							if($risque) {
-								$odf->mergeSegment(self::transform_risk_listing($listeRisque[$riskTypeValue], $risque));
+								$DigiOdf->mergedigiSegment(self::transform_risk_listing($listeRisque[$riskTypeValue], $risque));
 							}
 						}
 
@@ -2034,19 +2034,19 @@ class eva_gestionDoc {
 				case TABLE_UNITE_TRAVAIL . '_FEP' :
 					$doc_user = unserialize( $lastDocument->users );
 
-					$odf->setVars('identifiantIndividu', ELEMENT_IDENTIFIER_U  . $doc_user['user_informations']['user_id']);
-					$odf->setVars('nomIndividu', str_replace('<br />', "
+					$DigiOdf->setVars('identifiantIndividu', ELEMENT_IDENTIFIER_U  . $doc_user['user_informations']['user_id']);
+					$DigiOdf->setVars('nomIndividu', str_replace('<br />', "
 ", remove_accents($doc_user['user_informations']['user_lastname'])));
-					$odf->setVars('prenomIndividu', str_replace('<br />', "
+					$DigiOdf->setVars('prenomIndividu', str_replace('<br />', "
 ", remove_accents($doc_user['user_informations']['user_firstname'])));
-					$odf->setVars('posteOccupeIndividu', str_replace('<br />', "
+					$DigiOdf->setVars('posteOccupeIndividu', str_replace('<br />', "
 ", !empty($doc_user['user_informations']['digirisk_information']) && !empty($doc_user['user_informations']['digirisk_information']['user_profession']) ? remove_accents( html_entity_decode($doc_user['user_informations']['digirisk_information']['user_profession'])) : ''));
 
 					$affectations = $doc_user;
 					unset( $affectations['user_informations'] );
 
 					if ( !empty($affectations) ) {
-						$affectation_list = $odf->setSegment( 'listAffectationUtilisateur' );
+						$affectation_list = $DigiOdf->setdigiSegment( 'listAffectationUtilisateur' );
 						krsort($affectations);
 						foreach ( $affectations as $affectation_id => $affectation_infos) {
 							foreach ( $affectation_infos as $key => $value) {
@@ -2056,7 +2056,7 @@ class eva_gestionDoc {
 							}
 							$affectation_list->merge();
 						}
-						$odf->mergeSegment($affectation_list);
+						$DigiOdf->mergedigiSegment($affectation_list);
 					}
 
 					$idUniteDeTravailIndividu = $lastDocument->id_element;
@@ -2068,14 +2068,14 @@ class eva_gestionDoc {
 							$idUniteDeTravailIndividu = ELEMENT_IDENTIFIER_UT . $idUniteDeTravailIndividu;
 						break;
 					}
-					$odf->setVars('identifiantUniteDeTravail', str_replace('<br />', "
+					$DigiOdf->setVars('identifiantUniteDeTravail', str_replace('<br />', "
 ", remove_accents($idUniteDeTravailIndividu)));
-					$odf->setVars('uniteDeTravailIndividu', str_replace('<br />', "
+					$DigiOdf->setVars('uniteDeTravailIndividu', str_replace('<br />', "
 ", remove_accents( html_entity_decode($lastDocument->societyName))));
 
 					$risk_list = unserialize($lastDocument->unitRisk);
 					foreach ( $risk_list as $risk_type_line => $risk_detail ) {
-						$risque_line = $odf->setSegment($risk_type_line);
+						$risque_line = $DigiOdf->setdigiSegment($risk_type_line);
 						foreach ( $risk_detail as $risk_id => $risk_line_detail ) {
 							if($risque_line) {
 								foreach ( $risk_line_detail as $info_key => $info_content ) {
@@ -2147,7 +2147,7 @@ class eva_gestionDoc {
 								$risque_line->merge();
 							}
 						}
-						$odf->mergeSegment($risque_line);
+						$DigiOdf->mergedigiSegment($risque_line);
 					}
 
 					$finalDir = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeRisques/' . $lastDocument->document_final_dir;
@@ -2158,7 +2158,7 @@ class eva_gestionDoc {
 			if(!is_dir($finalDir)){
 				digirisk_tools::make_recursiv_dir($finalDir);
 			}
-			$odf->saveToDisk($finalDir . $fileName . '.odt');
+			$DigiOdf->saveToDisk($finalDir . $fileName . '.odt');
 
 			return $finalDir . $fileName . '.odt';
 		}
@@ -2168,10 +2168,10 @@ class eva_gestionDoc {
 	 * Transform output for users group
 	 *
 	 * @param array $liste_groupes The users group list to read and to put into
-	 * @param object $odf_element The element part to fill into document
+	 * @param object $DigiOdf_element The element part to fill into document
 	 * @return object
 	 */
-	function transform_users_group($liste_groupes, $odf_element) {
+	function transform_users_group($liste_groupes, $DigiOdf_element) {
 
 		foreach ($liste_groupes AS $element) {
 			$element['name'] = str_replace('<br />', "
@@ -2180,9 +2180,9 @@ class eva_gestionDoc {
 			$element['description'] = str_replace('<br />', "
 	", digirisk_tools::slugify_noaccent($element['description']));
 			$element['description'] = str_replace('&nbsp;', '�', $element['description']);
-			$odf_element->idGroupe(digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_GPU . $element['id']));
-			$odf_element->nomGroupe(digirisk_tools::slugify_noaccent($element['name']));
-			$odf_element->descriptionGroupe(digirisk_tools::slugify_noaccent($element['description']));
+			$DigiOdf_element->idGroupe(digirisk_tools::slugify_noaccent(ELEMENT_IDENTIFIER_GPU . $element['id']));
+			$DigiOdf_element->nomGroupe(digirisk_tools::slugify_noaccent($element['name']));
+			$DigiOdf_element->descriptionGroupe(digirisk_tools::slugify_noaccent($element['description']));
 			$userList = '';
 			if ($element['userList'] == '') {
 				$element['userNumber'] = '0';
@@ -2200,12 +2200,12 @@ class eva_gestionDoc {
 					}
 				}
 			}
-			$odf_element->nombreUtilisateur($element['userNumber']);
-			$odf_element->listeUtilisateur($userList);
-			$odf_element->merge();
+			$DigiOdf_element->nombreUtilisateur($element['userNumber']);
+			$DigiOdf_element->listeUtilisateur($userList);
+			$DigiOdf_element->merge();
 		}
 
-		return $odf_element;
+		return $DigiOdf_element;
 	}
 
 	/**

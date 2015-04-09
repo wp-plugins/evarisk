@@ -37,15 +37,60 @@ table.wpeologs tr th.wpeologs-user-column {
 .margin-top-3 { margin-top: 3px; }
 
 /* Css settings log */
-.wpeo-logs-service li {
-	border: solid black 1px;
+.wpeo-logs-italic {
+	font-style: italic;
+}
+.wpeo-logs-bloc-add {
+	display: none;
+}
+.wpeo-logs-service .margin-bottom-20 {
+	margin-bottom: 20px;
+}
+.wpeo-bloc-service {
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 20px;
 	display: block;
+	padding: 20px;
+	background-color: #0074a2;
+	width: 29%;
+	color: white;
+	min-height: 240px;
+	position: relative;
 }
-.wpeo-border-left {
-	border-left: solid black 1px;
+.wpeo-bloc-service .wpeo-logs-state-service {
+	position: absolute;
+	bottom: 0px;
+	right: 10px;
 }
-.wpeo-border-right {
-	border-right: solid black 1px;
+.wpeo-bloc-service:nth-child(odd) {
+	background-color: #005476;
+}
+.wpeo-bloc-service label {
+	display: block;
+	margin-bottom: 10px;
+}
+.wpeo-bloc-service .wpeo-label {
+	display: block;
+	float: left;
+	width: 200px;
+}
+.wpeo-bloc-service input[type="text"], .wpeo-logs-service .wpeo-bloc-service input[type="number"],
+.wpeo-bloc-service select {
+	width: 45%;
+}
+.wpeo-bloc-service .wpeo-service-add {
+	color: white !important;
+	text-decoration: none;
+	
+	-webkit-transition: color 0.5s ease-in;
+	-moz-transition: color 0.5s ease-in;
+	-ms-transition: color 0.5s ease-in;
+	-o-transition: color 0.5s ease-in;
+	transition: color 0.5s ease-in;
+}
+.wpeo-bloc-service .wpeo-service-add:hover {
+	color: #0e0e0e !important;
 }
 
 /* Css tools log */

@@ -39,7 +39,7 @@ if(!class_exists("wpeologs_settings_ctr")) {
 		 *	Wordpress hook - admin_menu - Add page settings
 		 */
 		public function admin_menu() {
-			add_options_page( __('Log', 'wpeologs-i18n'), __('Log', 'wpeologs-i18n'), 'manage_options', 'wpeo-log', array( &$this, 'render_page') );
+			add_options_page( __('Logs', 'wpeologs-i18n'), __('Logs', 'wpeologs-i18n'), 'manage_options', 'wpeo-log', array( &$this, 'render_page') );
 		}
 	
 	  	/**
@@ -85,7 +85,7 @@ if(!class_exists("wpeologs_settings_ctr")) {
 	 	 * @return multitype:string
 	 	 */ 
 		function get_array_size_format() {
-	 		return array('oc' => 'Octet', 'ko' => 'Ko', 'mo' => 'Mo', 'go' => 'Go');
+	 		return array('oc' => 'Octets', 'ko' => 'Ko', 'mo' => 'Mo', 'go' => 'Go');
 		}
 	
 		/**
@@ -104,8 +104,11 @@ if(!class_exists("wpeologs_settings_ctr")) {
 	    	$service_slug = !empty($_POST['service_slug']) ? $_POST['service_slug'] : sanitize_title($_POST['service_name']);
 	    
 	    	// Add to option
-	    	if(!empty($_POST['service_active']))
+	    	if(!empty($_POST['service_active'])) {
 				$current_option['my_services'][$service_slug]['service_active'] = ($_POST['service_active'] == "true") ? 1 : 0;
+				// For render
+				$_POST['service_active'] = ($_POST['service_active'] == "true") ? 1 : 0;
+	    	}
 	    
 	    	if(!empty($_POST['service_name']))
 	    		$current_option['my_services'][$service_slug]['service_name'] = $_POST['service_name'];
@@ -119,11 +122,16 @@ if(!class_exists("wpeologs_settings_ctr")) {
 	   	 	if(!empty($_POST['service_file']))
 	    		$current_option['my_services'][$service_slug]['service_file'] = $_POST['service_file'];
 	    
-	    	if(!empty($_POST['service_rotate']))
+	    	if(!empty($_POST['service_rotate'])) {
 	    		$current_option['my_services'][$service_slug]['service_rotate'] = ($_POST['service_rotate'] == "true") ? 1 : 0;
+	    		// For render
+	    		$_POST['service_rotate'] = ($_POST['service_rotate'] == "true") ? 1 : 0;
+	    	}
 	    
-	    	if(!empty($_POST['service_size']) && !empty($_POST['service_size_format']))
+	    	if(!empty($_POST['service_size']) && !empty($_POST['service_size_format'])) {
 	    		$current_option['my_services'][$service_slug]['service_size'] = $this->convert_to($_POST['service_size'], $_POST['service_size_format']);
+	    		$_POST['service_size'] = $this->convert_to($_POST['service_size'], $_POST['service_size_format']);
+	    	}
 	    
 		    // Save option
 		    update_option('_wpeo_log_settings', $current_option);

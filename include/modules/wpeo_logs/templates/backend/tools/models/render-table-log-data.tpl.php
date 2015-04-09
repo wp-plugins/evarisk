@@ -10,7 +10,7 @@
         <th id="severity" class="header-order manage-column column-severity" style="" scope="col"><?php _e('Severity', 'wpeologs-i18n'); ?></th>
         <th id="object-id" class="header-order manage-column column-object-id" style="" scope="col"><?php _e('Object ID', 'wpeologs-i18n'); ?></th>
         <th style='width: 50%;' id="message" class="header-order manage-column column-message" style="" scope="col"><?php _e('Message', 'wpeologs-i18n'); ?></th>
-        <th id="date" class="header-order manage-column column-date sortable <?php echo $order; ?>" style="" scope="col">
+        <th id="date" class="header-order manage-column column-date sortable <?php echo (!empty($order)) ? $order : ""; ?>" style="" scope="col">
             <span>Date</span>
         </th>
       </tr>

@@ -4,7 +4,7 @@ Tags: Evaluation des risques, document unique, risques professionnels, audit ris
 Donate link: http://www.evarisk.com/document-unique-logiciel
 Requires at least: 3.0.4
 Tested up to: 4.1.1
-Stable tag: 5.1.9.3
+Stable tag: 5.1.9.4
 
 Avec le plugin "Evarisk" vous pourrez r&eacute;aliser, de fa&ccedil;on simple et intuitive, le ou les documents uniques de vos entreprises
 
@@ -73,6 +73,13 @@ Nous n'avons pas pr&eacute;vu cet import facilement si vous souhaitez plus de re
 == Changelog ==
 
 * Veillez &agrave; bien sauvegarder vos donn&eacute;es avant d'effectuer une mise &agrave; jour du plugin
+
+= Version 5.1.9.4 =
+
+Correction
+
+* T18627 - Tester conflit entre evarisk et wp-easy-survey
+* T18891 - Installation neuve
 
 = Version 5.1.9.3 =
 
@@ -859,7 +866,7 @@ Corrections
 
 * Remplacer les br dans l'interface de vue d'ensemble 
 * L'activation de l'efficacit&eacute; dans les pr&eacute;conisations d&eacute;sactive tous les clics(Lorsque l'option "efficacit&eacute; pour les pr&eacute;conisations" &eacute;tait activ&eacute;e alors on ne pouvait plus ajouter de pr&eacute;conisations/La prise en compte de l'efficacit&eacute; lors de la modification de la pr&eacute;conisation ne se faisait pas) 
-* Erreur fatale lanc&eacute;e &agrave; la g&eacute;n&eacute;ration d'un document (DUER ou fiche de poste) due &agrave; la suppression d'un segment du fichier (Modification de la librairie odt) 
+* Erreur fatale lanc&eacute;e &agrave; la g&eacute;n&eacute;ration d'un document (DUER ou fiche de poste) due &agrave; la suppression d'un digi_segment du fichier (Modification de la librairie odt) 
 * Suppression d'un utilisateur de la liste des utilisateurs(L'hirondelle ne disparaissait pas) 
 
 
@@ -1185,7 +1192,7 @@ M&eacute;thode d'&eacute;valuation :
 La mise en place des dangers :
 
 * Cette nouvelle version vous permettra de g&eacute;rer tous vos dangers et leur cat&eacute;gories
-* Vous retrouverez, la segmentation de l'INRS dans l'ED840
+* Vous retrouverez, la digi_segmentation de l'INRS dans l'ED840
 
 La gestion multi-soci&eacute;t&eacute; ou multi-services :
 

@@ -48,6 +48,19 @@ if(!class_exists("wpeologs_ctr")) {
 
 			/**	Call administration style definition	*/
 			add_action( 'admin_enqueue_scripts', array( &$this, 'admin_scripts' ) );
+			/** When switch theme */
+			add_action( 'switch_theme', array( &$this, 'switch_theme' ) );
+			/** get all plugins active */
+// 			$array_plugins = get_option("active_plugins");
+// 			foreach($array_plugins as $plugin) {
+// 				/** register_activation_hook */
+// 				register_activation_hook($plugin, array( &$this, "register_activation_hook" ) );
+// 				/** register_deactivation_hook */
+// 				register_deactivation_hook($plugin, array( &$this, "register_deactivation_hook" ) );
+// 			}
+			add_action( 'activate_plugin', array( &$this, 'activated_plugin' ), 10, 2 );
+			add_action( 'deactivate_plugin', array( &$this, 'deactivated_plugin' ), 10, 2 );
+			//echo"<pre>";print_r($array_plugins);echo"</pre>";
 		}
 
 		/**
@@ -66,17 +79,17 @@ if(!class_exists("wpeologs_ctr")) {
 		*/
 		private function init_array_criticality() {
 			/** init array */
-			$this->array_criticality[WPEO_CRITICALITY_INFORMATIONS] = array(
+			$this->array_criticality[0] = array(
 				'dashicons' => 'info',
 				'message' 	=> __('Information', 'wpeologs-i18n')
 			);
 
-			$this->array_criticality[WPEO_CRITICALITY_WARNING] = array(
+			$this->array_criticality[1] = array(
 				'dashicons' => 'carrot',
 				'message' 	=> __('Warning', 'wpeologs-i18n')
 			);
 
-			$this->array_criticality[WPEO_CRITICALITY_CRITICAL] = array(
+			$this->array_criticality[2] = array(
 				'dashicons' => 'no',
 				'message' 	=> __('Critical', 'wpeologs-i18n')
 			);
@@ -224,7 +237,6 @@ if(!class_exists("wpeologs_ctr")) {
 							unlink($upload_dir[ 'basedir' ] . '/wpeologs/' . $file_name[0] . '.csv');
 						}
 					}
-
 					rename( $file_link, $file_explode[0] . '_1.' . $file_explode[1]);
 
 					//self::log_datas_in_files("rotate", array("object_id" => 1, "message" => "Rotate"), 0);
@@ -265,7 +277,7 @@ if(!class_exists("wpeologs_ctr")) {
 		 */
 		public function install_service() {
 			$option_name = "_wpeo_log_settings";
-			$option_value = 'a:2:{s:11:"my_services";a:2:{s:4:"post";a:6:{s:14:"service_active";i:1;s:12:"service_name";s:4:"post";s:12:"service_size";i:8192;s:19:"service_size_format";s:2:"ko";s:12:"service_file";s:1:"5";s:14:"service_rotate";i:1;}s:4:"page";a:6:{s:14:"service_active";i:1;s:12:"service_name";s:4:"page";s:12:"service_size";i:8192;s:19:"service_size_format";s:2:"ko";s:12:"service_file";s:1:"5";s:14:"service_rotate";i:1;}}s:9:"file_size";i:0;}';
+			$option_value = 'a:2:{s:11:"my_services";a:4:{s:4:"post";a:6:{s:14:"service_active";i:1;s:12:"service_name";s:4:"post";s:12:"service_size";i:8192;s:19:"service_size_format";s:2:"ko";s:12:"service_file";s:1:"5";s:14:"service_rotate";i:1;}s:4:"page";a:6:{s:14:"service_active";i:1;s:12:"service_name";s:4:"page";s:12:"service_size";i:8192;s:19:"service_size_format";s:2:"ko";s:12:"service_file";s:1:"5";s:14:"service_rotate";i:1;}s:6:"themes";a:6:{s:14:"service_active";i:1;s:12:"service_name";s:6:"themes";s:12:"service_size";i:8192;s:19:"service_size_format";s:2:"ko";s:12:"service_file";s:1:"5";s:14:"service_rotate";i:1;}s:7:"plugins";a:6:{s:14:"service_active";i:1;s:12:"service_name";s:7:"plugins";s:12:"service_size";i:8192;s:19:"service_size_format";s:2:"ko";s:12:"service_file";s:1:"5";s:14:"service_rotate";i:1;}}s:9:"file_size";i:0;}';
 
 			// Insert in wp_options
 			$option = get_option($option_name);
@@ -274,6 +286,29 @@ if(!class_exists("wpeologs_ctr")) {
 				update_option($option_name, unserialize($option_value));
 		}
 
+		/**
+		 * switch_theme - When switch theme
+		 * @param string $name_theme - The name of theme
+		 */
+		public function switch_theme($name_theme) {
+			$i = self::new_instance();
+			if(!empty($i->wpeologs_settings['my_services']["themes"]) && $i->wpeologs_settings['my_services']["themes"]['service_active'])
+				self::log_datas_in_files("themes", array("object_id" => $name_theme, "message" => __('The theme ' . $name_theme . ' is activated')), 0);
+		}
+		/**
+		 * activate_plugins_loaded - call log_datas_in_files for all plugins activate
+		 */
+		public function activated_plugin($plugin, $network_activation) {
+			$i = self::new_instance();
+			if(!empty($i->wpeologs_settings['my_services']["plugins"]) && $i->wpeologs_settings['my_services']["plugins"]['service_active'])
+				self::log_datas_in_files("plugins", array("object_id" => $plugin, "message" => __('The plugin ' . $plugin . ' is activated')), 0);
+		}
+		
+		public function deactivated_plugin($plugin, $network_activation) {
+			$i = self::new_instance();
+			if(!empty($i->wpeologs_settings['my_services']["plugins"]) && $i->wpeologs_settings['my_services']["plugins"]['service_active'])
+				self::log_datas_in_files("plugins", array("object_id" => $plugin, "message" => __('The plugin ' . $plugin . ' is deactivated')), 0);
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------
-// PclZip 2.8.2 - readme.txt
+// digiPclZip 2.8.2 - readme.txt
 // --------------------------------------------------------------------------------
 // License GNU/LGPL - August 2009
 // Vincent Blavet - vincent@phpconcept.net
@@ -25,9 +25,9 @@
 1 - Introduction
 ================
 
-  PclZip is a library that allow you to manage a Zip archive.
+  digiPclZip is a library that allow you to manage a Zip archive.
 
-  Full documentation about PclZip can be found here : http://www.phpconcept.net/pclzip
+  Full documentation about digiPclZip can be found here : http://www.phpconcept.net/pclzip
 
 2 - What's new
 ==============
@@ -43,7 +43,7 @@
 
   Version 2.8.1 :
     - Move option PCLZIP_OPT_BY_EREG to PCLZIP_OPT_BY_PREG because ereg() is
-      deprecated in PHP 5.3. When using option PCLZIP_OPT_BY_EREG, PclZip will
+      deprecated in PHP 5.3. When using option PCLZIP_OPT_BY_EREG, digiPclZip will
       automatically replace it by PCLZIP_OPT_BY_PREG.
   
   Version 2.8 :
@@ -58,7 +58,7 @@
 
   Version 2.7 :
     - Improve creation of zip archive for large files :
-      PclZip will now autosense the configured memory and use temporary files
+      digiPclZip will now autosense the configured memory and use temporary files
       when large file is suspected.
       This feature can also ne triggered by manual options in create() and add()
       methods. 'PCLZIP_OPT_ADD_TEMP_FILE_ON' force the use of temporary files,
@@ -72,8 +72,8 @@
         Zip "tmporary-files" : 23sec (max_execution_time=30, memory_limit=30Mo)
     - Replace use of mktime() by time() to limit the E_STRICT error messages.
     - Bug correction : When adding files with full windows path (drive letter)
-      PclZip is now working. Before, if the drive letter is not the default
-      path, PclZip was not able to add the file.
+      digiPclZip is now working. Before, if the drive letter is not the default
+      path, digiPclZip was not able to add the file.
 
   Version 2.6 :
     - Code optimisation
@@ -104,13 +104,13 @@
       . Compatible with global options
     - New attributes : PCLZIP_ATT_FILE_NAME, PCLZIP_ATT_FILE_NEW_SHORT_NAME, PCLZIP_ATT_FILE_NEW_FULL_NAME
     - New error code : PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE
-    - Add a security control feature. PclZip can extract any file in any folder
+    - Add a security control feature. digiPclZip can extract any file in any folder
       of a system. People may use this to upload a zip file and try to override
       a system file. The PCLZIP_OPT_EXTRACT_DIR_RESTRICTION will give the
       ability to forgive any directory transversal behavior.
     - New PCLZIP_OPT_EXTRACT_DIR_RESTRICTION : check extraction path
     - New error code : PCLZIP_ERR_DIRECTORY_RESTRICTION
-    - Modification in PclZipUtilPathInclusion() : dir and path beginning with ./ will be prepend
+    - Modification in digiPclZipUtilPathInclusion() : dir and path beginning with ./ will be prepend
       by current path (getcwd())
   
   Version 2.4 :
@@ -119,10 +119,10 @@
       the case in 2.3. This is corrected in 2.4.
     - Correct a bug in path_inclusion function. When the path has several '../../', the
       result was bad.
-    - Add a check for magic_quotes_runtime configuration. If enabled, PclZip will 
+    - Add a check for magic_quotes_runtime configuration. If enabled, digiPclZip will 
       disable it while working and det it back to its original value.
       This resolve a lots of bad formated archive errors.
-    - Bug correction : PclZip now correctly unzip file in some specific situation,
+    - Bug correction : digiPclZip now correctly unzip file in some specific situation,
       when compressed content has same size as uncompressed content.
     - Bug correction : When selecting option 'PCLZIP_OPT_REMOVE_ALL_PATH', 
       directories are not any more created.
@@ -144,12 +144,12 @@
       error code PCLZIP_ERR_UNSUPPORTED_ENCRYPTION.
     - Corrected : Bad "version need to extract" field in local file header
     - Add private method privCheckFileHeaders() in order to check local and central
-      file headers. PclZip is now supporting purpose bit flag bit 3. Purpose bit flag bit 3 gives
+      file headers. digiPclZip is now supporting purpose bit flag bit 3. Purpose bit flag bit 3 gives
       the ability to have a local file header without size, compressed size and crc filled.
     - Add a generic status 'error' for file status
-    - Add control of compression type. PclZip only support deflate compression method.
-      Before v2.2, PclZip does not check the compression method used in an archive while
-      extracting. With v2.2 PclZip returns a new error status for a file using an unsupported
+    - Add control of compression type. digiPclZip only support deflate compression method.
+      Before v2.2, digiPclZip does not check the compression method used in an archive while
+      extracting. With v2.2 digiPclZip returns a new error status for a file using an unsupported
       compression method. New status is "unsupported_compression". New error code is
       PCLZIP_ERR_UNSUPPORTED_COMPRESSION.
     - Add optional attribute PCLZIP_OPT_STOP_ON_ERROR. This will stop the extract of files
@@ -160,10 +160,10 @@
       replacement of the file, even if a  newer version of the file exists.
       Note that today if a file with the same name already exists but is older it will be
       replaced by the extracted one.
-    - Improve PclZipUtilOption()
-    - Support of zip archive with trailing bytes. Before 2.2, PclZip checks that the central
+    - Improve digiPclZipUtilOption()
+    - Support of zip archive with trailing bytes. Before 2.2, digiPclZip checks that the central
       directory structure is the last data in the archive. Crypt encryption/decryption of
-      zip archive put trailing 0 bytes after decryption. PclZip is now supporting this.
+      zip archive put trailing 0 bytes after decryption. digiPclZip is now supporting this.
 
   Version 2.1 :
     - Add the ability to abort the extraction by using a user callback function.
@@ -178,7 +178,7 @@
     - When merging two archives, the comments are not any more lost, but merged, with a 
       blank space separator.
     - Corrected bug : Files are not deleted when all files are asked to be deleted.
-    - Corrected bug : Folders with name '0' made PclZip to abort the create or add feature.
+    - Corrected bug : Folders with name '0' made digiPclZip to abort the create or add feature.
 
 
   Version 2.0 :
@@ -255,7 +255,7 @@
       'skipped' is used when a call-back function ask for skipping the file.
       'filename_too_long' is used while adding a file with a too long filename to archive (the file is
       not added)
-    - Adding the function PclZipUtilPathInclusion(), that check the inclusion of a path into
+    - Adding the function digiPclZipUtilPathInclusion(), that check the inclusion of a path into
       a directory.
     - Add a check of the presence of the archive file before some actions (like list, ...)
     - Add the initialisation of field "index" in header array. This means that by
@@ -270,7 +270,7 @@
 
   Version 1.1.2 :
 
-    - Changing the license of PclZip. PclZip is now released under the GNU / LGPL license
+    - Changing the license of digiPclZip. digiPclZip is now released under the GNU / LGPL license
       (see License section).
     - Adding the optional support of a static temporary directory. You will need to configure
       the constant PCLZIP_TEMPORARY_DIR if you want to use this feature.
@@ -319,7 +319,7 @@
 
   Corrected in Version 1.1.2 :
 
-    - Corrected : Winzip is unable to delete or add new files in a PclZip created archives.
+    - Corrected : Winzip is unable to delete or add new files in a digiPclZip created archives.
 
   Corrected in Version 1.1.1 :
 
@@ -343,8 +343,8 @@
     http://sourceforge.net/tracker/?group_id=40254&atid=427564
 
   In Version 2.x :
-    - PclZip does only support file uncompressed or compressed with deflate (compression method 8)
-    - PclZip does not support password protected zip archive
+    - digiPclZip does only support file uncompressed or compressed with deflate (compression method 8)
+    - digiPclZip does not support password protected zip archive
     - Some concern were seen when changing mtime of a file while archiving. 
       Seems to be linked to Daylight Saving Time (PclTest_changing_mtime).
 
@@ -355,8 +355,8 @@
   In Version 1.1 :
 
     - Limitation : Using 'extract' fields in the file header in the zip archive is not supported.
-    - WinZip is unable to delete a single file in a PclZip created archive. It is also unable to
-      add a file in a PclZip created archive. (Corrected in v.1.2)
+    - WinZip is unable to delete a single file in a digiPclZip created archive. It is also unable to
+      add a file in a digiPclZip created archive. (Corrected in v.1.2)
 
   In Version 1.0.1 :
 
@@ -364,10 +364,10 @@
       creation. (Corrected in V.1.1).
     - Path given to methods must be in the unix format (/) and not the Windows format (\).
       Workaround : Use only / directory separators.
-    - PclZip is using temporary files that are sometime the name of the file with a .tmp or .gz
+    - digiPclZip is using temporary files that are sometime the name of the file with a .tmp or .gz
       added suffix. Files with these names may already exist and may be overwritten.
       Workaround : none.
-    - PclZip does not check if the zlib extension is present. If it is absent, the zip
+    - digiPclZip does not check if the zlib extension is present. If it is absent, the zip
       file is not created and the lib abort without warning.
       Workaround : enable the zlib extension on the php install
 
@@ -381,18 +381,18 @@
 5 - License
 ===========
 
-  Since version 1.1.2, PclZip Library is released under GNU/LGPL license.
+  Since version 1.1.2, digiPclZip Library is released under GNU/LGPL license.
   This library is free, so you can use it at no cost.
 
   HOWEVER, if you release a script, an application, a library or any kind of
-  code using PclZip library (or a part of it), YOU MUST :
+  code using digiPclZip library (or a part of it), YOU MUST :
   - Indicate in the documentation (or a readme file), that your work
-    uses PclZip Library, and make a reference to the author and the web site
+    uses digiPclZip Library, and make a reference to the author and the web site
     http://www.phpconcept.net
-  - Gives the ability to the final user to update the PclZip libary.
+  - Gives the ability to the final user to update the digiPclZip libary.
 
   I will also appreciate that you send me a mail (vincent@phpconcept.net), just to
-  be aware that someone is using PclZip.
+  be aware that someone is using digiPclZip.
 
   For more information about GNU/LGPL license : http://www.gnu.org
 
@@ -406,7 +406,7 @@
 
 7 - Documentation
 =================
-  PclZip User Manuel is available in English on PhpConcept : http://www.phpconcept.net/pclzip/man/en/index.php
+  digiPclZip User Manuel is available in English on PhpConcept : http://www.phpconcept.net/pclzip/man/en/index.php
   A Russian translation was done by Feskov Kuzma : http://php.russofile.ru/ru/authors/unsort/zip/
 
 8 - Author
@@ -416,6 +416,6 @@
 
 9 - Contribute
 ==============
-  If you want to contribute to the development of PclZip, please contact vincent@phpconcept.net.
+  If you want to contribute to the development of digiPclZip, please contact vincent@phpconcept.net.
   If you can help in financing PhpConcept hosting service, please go to
   http://www.phpconcept.net/soutien.php

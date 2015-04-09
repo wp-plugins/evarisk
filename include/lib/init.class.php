@@ -144,7 +144,7 @@ class digirisk_init
 	/**
 	*	Define the javascript to include in each page
 	*/
-	function digirisk_admin_js(){
+	public static function digirisk_admin_js(){
 		global $wp_version;
 		wp_enqueue_script('jquery');
 
@@ -193,7 +193,7 @@ class digirisk_init
 	/**
 	 *
 	 */
-	function digirisk_add_admin_js(){
+	public static function digirisk_add_admin_js(){
 		echo '<script type="text/javascript" >
 			var EVA_AJAX_FILE_URL = "' . EVA_INC_PLUGIN_URL . 'ajax.php";
 			var DIGI_CHOSEN_NO_RESULT = "' . __('Aucun r&eacute;sultat trouv&eacute;', 'evarisk') . '";
@@ -232,7 +232,7 @@ class digirisk_init
 	/**
 	*	Define the css to include in each page
 	*/
-	function digirisk_admin_css(){
+	public static function digirisk_admin_css(){
 		wp_register_style('digirisk_admin_notif_css', EVA_INC_PLUGIN_URL . 'css/eva_admin_notification.css', '', EVA_PLUGIN_VERSION);
 		wp_enqueue_style('digirisk_admin_notif_css');
 

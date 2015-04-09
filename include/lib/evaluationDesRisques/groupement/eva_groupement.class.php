@@ -142,7 +142,7 @@ class EvaGroupement {
 	* @param string $order The SQL order condition
 	* @return the working units  belonging to the group witch is identifier
 	*/
-	function getUnitesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
+	public static function getUnitesDuGroupement($idGroupement, $where = "1", $order="nom ASC")
 	{
 		global $wpdb;
 		$resultat = $wpdb->get_results( "SELECT * FROM " . TABLE_UNITE_TRAVAIL . " WHERE id_Groupement =" . $idGroupement . " AND " . $where . " AND Status = 'Valid' ORDER BY ". $order);
@@ -336,7 +336,7 @@ class EvaGroupement {
 	* @param string $id Group identifier
 	* @return the marker informations for the google maps
 	*/
-	function getMarkersGeoLoc($id){
+	public static function getMarkersGeoLoc($id){
 		global $wpdb;
 		$geoLoc = null;
 

@@ -182,9 +182,9 @@ window.Chart = function(context){
 			scaleBackdropColor : "rgba(255,255,255,0.75)",
 			scaleBackdropPaddingY : 2,
 			scaleBackdropPaddingX : 2,
-			segmentShowStroke : true,
-			segmentStrokeColor : "#fff",
-			segmentStrokeWidth : 2,
+			digi_segmentShowStroke : true,
+			digi_segmentStrokeColor : "#fff",
+			digi_segmentStrokeWidth : 2,
 			animation : true,
 			animationSteps : 100,
 			animationEasing : "easeOutBounce",
@@ -245,9 +245,9 @@ window.Chart = function(context){
 	
 	this.Pie = function(data,options){
 		chart.Pie.defaults = {
-			segmentShowStroke : true,
-			segmentStrokeColor : "#fff",
-			segmentStrokeWidth : 2,
+			digi_segmentShowStroke : true,
+			digi_segmentStrokeColor : "#fff",
+			digi_segmentStrokeWidth : 2,
 			animation : true,
 			animationSteps : 100,
 			animationEasing : "easeOutBounce",
@@ -264,9 +264,9 @@ window.Chart = function(context){
 	this.Doughnut = function(data,options){
 	
 		chart.Doughnut.defaults = {
-			segmentShowStroke : true,
-			segmentStrokeColor : "#fff",
-			segmentStrokeWidth : 2,
+			digi_segmentShowStroke : true,
+			digi_segmentStrokeColor : "#fff",
+			digi_segmentStrokeWidth : 2,
 			percentageInnerCutout : 50,
 			animation : true,
 			animationSteps : 100,
@@ -382,7 +382,7 @@ window.Chart = function(context){
 		scaleHop = maxSize/(calculatedScale.steps);
 
 		//Wrap in an animation loop wrapper
-		animationLoop(config,drawScale,drawAllSegments,ctx);
+		animationLoop(config,drawScale,drawAlldigiSegments,ctx);
 
 		function calculateDrawingSizes(){
 			maxSize = (Min([width,height])/2);
@@ -435,7 +435,7 @@ window.Chart = function(context){
 				}
 			}
 		}
-		function drawAllSegments(animationDecimal){
+		function drawAlldigiSegments(animationDecimal){
 			var startAngle = -Math.PI/2,
 			angleStep = (Math.PI*2)/data.length,
 			scaleAnimation = 1,
@@ -458,9 +458,9 @@ window.Chart = function(context){
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 
-				if(config.segmentShowStroke){
-					ctx.strokeStyle = config.segmentStrokeColor;
-					ctx.lineWidth = config.segmentStrokeWidth;
+				if(config.digi_segmentShowStroke){
+					ctx.strokeStyle = config.digi_segmentStrokeColor;
+					ctx.lineWidth = config.digi_segmentStrokeWidth;
 					ctx.stroke();
 				}
 				startAngle += rotateAnimation*angleStep;
@@ -693,19 +693,19 @@ window.Chart = function(context){
 	}
 
 	var Pie = function(data,config,ctx){
-		var segmentTotal = 0;
+		var digi_segmentTotal = 0;
 		
 		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
 		var pieRadius = Min([height/2,width/2]) - 5;
 		
 		for (var i=0; i<data.length; i++){
-			segmentTotal += data[i].value;
+			digi_segmentTotal += data[i].value;
 		}
 		
 		
-		animationLoop(config,null,drawPieSegments,ctx);
+		animationLoop(config,null,drawPiedigiSegments,ctx);
 				
-		function drawPieSegments (animationDecimal){
+		function drawPiedigiSegments (animationDecimal){
 			var cumulativeAngle = -Math.PI/2,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
@@ -718,26 +718,26 @@ window.Chart = function(context){
 				}
 			}
 			for (var i=0; i<data.length; i++){
-				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+				var digi_segmentAngle = rotateAnimation * ((data[i].value/digi_segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
-				ctx.arc(width/2,height/2,scaleAnimation * pieRadius,cumulativeAngle,cumulativeAngle + segmentAngle);
+				ctx.arc(width/2,height/2,scaleAnimation * pieRadius,cumulativeAngle,cumulativeAngle + digi_segmentAngle);
 				ctx.lineTo(width/2,height/2);
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 				
-				if(config.segmentShowStroke){
-					ctx.lineWidth = config.segmentStrokeWidth;
-					ctx.strokeStyle = config.segmentStrokeColor;
+				if(config.digi_segmentShowStroke){
+					ctx.lineWidth = config.digi_segmentStrokeWidth;
+					ctx.strokeStyle = config.digi_segmentStrokeColor;
 					ctx.stroke();
 				}
-				cumulativeAngle += segmentAngle;
+				cumulativeAngle += digi_segmentAngle;
 			}			
 		}		
 	}
 
 	var Doughnut = function(data,config,ctx){
-		var segmentTotal = 0;
+		var digi_segmentTotal = 0;
 		
 		//In case we have a canvas that is not a square. Minus 5 pixels as padding round the edge.
 		var doughnutRadius = Min([height/2,width/2]) - 5;
@@ -745,14 +745,14 @@ window.Chart = function(context){
 		var cutoutRadius = doughnutRadius * (config.percentageInnerCutout/100);
 		
 		for (var i=0; i<data.length; i++){
-			segmentTotal += data[i].value;
+			digi_segmentTotal += data[i].value;
 		}
 		
 		
-		animationLoop(config,null,drawPieSegments,ctx);
+		animationLoop(config,null,drawPiedigiSegments,ctx);
 		
 		
-		function drawPieSegments (animationDecimal){
+		function drawPiedigiSegments (animationDecimal){
 			var cumulativeAngle = -Math.PI/2,
 			scaleAnimation = 1,
 			rotateAnimation = 1;
@@ -765,20 +765,20 @@ window.Chart = function(context){
 				}
 			}
 			for (var i=0; i<data.length; i++){
-				var segmentAngle = rotateAnimation * ((data[i].value/segmentTotal) * (Math.PI*2));
+				var digi_segmentAngle = rotateAnimation * ((data[i].value/digi_segmentTotal) * (Math.PI*2));
 				ctx.beginPath();
-				ctx.arc(width/2,height/2,scaleAnimation * doughnutRadius,cumulativeAngle,cumulativeAngle + segmentAngle,false);
-				ctx.arc(width/2,height/2,scaleAnimation * cutoutRadius,cumulativeAngle + segmentAngle,cumulativeAngle,true);
+				ctx.arc(width/2,height/2,scaleAnimation * doughnutRadius,cumulativeAngle,cumulativeAngle + digi_segmentAngle,false);
+				ctx.arc(width/2,height/2,scaleAnimation * cutoutRadius,cumulativeAngle + digi_segmentAngle,cumulativeAngle,true);
 				ctx.closePath();
 				ctx.fillStyle = data[i].color;
 				ctx.fill();
 				
-				if(config.segmentShowStroke){
-					ctx.lineWidth = config.segmentStrokeWidth;
-					ctx.strokeStyle = config.segmentStrokeColor;
+				if(config.digi_segmentShowStroke){
+					ctx.lineWidth = config.digi_segmentStrokeWidth;
+					ctx.strokeStyle = config.digi_segmentStrokeColor;
 					ctx.stroke();
 				}
-				cumulativeAngle += segmentAngle;
+				cumulativeAngle += digi_segmentAngle;
 			}			
 		}			
 		
