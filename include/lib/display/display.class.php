@@ -34,7 +34,7 @@ class digirisk_display
 	*
 	* @return string HTML code of the header display.
 	*/
-	function start_page($titrePage, $icone, $titreIcone, $altIcon, $element_type, $boutonAjouter=true, $messageInfo='', $choixAffichage=false, $affichageNotes = true, $page_icon_id = ''){
+	public static function start_page($titrePage, $icone, $titreIcone, $altIcon, $element_type, $boutonAjouter=true, $messageInfo='', $choixAffichage=false, $affichageNotes = true, $page_icon_id = ''){
 		$debutPage = '';
 
 		ob_start();
@@ -110,7 +110,7 @@ class digirisk_display
 	* @see start_page
 	* @return  the closure.
 	*/
-	function end_page(){
+	public static function end_page(){
 		$end_page = '';
 
 		ob_start();
@@ -1268,7 +1268,7 @@ class digirisk_display
 					}
 				}
 			}
-			if(!in_array('node-main_table_' . $_REQUEST['table'] . '-' . $_REQUEST['idPere'] . '-name', $_REQUEST['expanded'])){
+			if( !empty( $_REQUEST['expanded'] ) && is_array( $_REQUEST['expanded'] ) && !in_array('node-main_table_' . $_REQUEST['table'] . '-' . $_REQUEST['idPere'] . '-name', $_REQUEST['expanded'])){
 				$tableArborescente .= '
 		jQuery("#node-main_table_' . $_REQUEST['table'] . '-' . $_REQUEST['idPere'] . '-name").children("span.expander").click();';
 			}

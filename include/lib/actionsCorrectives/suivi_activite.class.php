@@ -543,7 +543,7 @@ class suivi_activite {
 		return $save_result;
 	}
 
-	function getSuiviActivite($tableElement, $idElement, $type = 'note', $specific_follow_up = 0) {
+	public static function getSuiviActivite($tableElement, $idElement, $type = 'note', $specific_follow_up = 0) {
 		global $wpdb;
 
 		$more_query = '';

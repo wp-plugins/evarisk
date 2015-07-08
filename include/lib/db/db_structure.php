@@ -1867,7 +1867,7 @@ KEY tableElement (tableElement)
 	$digirisk_db_version = 86;
 	$digirisk_update_way[$digirisk_db_version] = 'multiple';
 
-	$digirisk_db_table_list[$digirisk_db_version] = array(TABLE_RISQUE, TABLE_GED_DOCUMENTS_META, TABLE_GROUPEMENT, TABLE_RISQUE_HISTO);
+	$digirisk_db_table_list[$digirisk_db_version] = array( TABLE_RISQUE, TABLE_GED_DOCUMENTS_META, TABLE_GROUPEMENT, TABLE_RISQUE_HISTO );
 
 	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_GROUPEMENT][] = __('Ajout d\'un champs pour la date de la cr&eacute;ation de la soci&eacute;t&eacute;', 'evarisk');
 	$digirisk_db_table_operation_list[$digirisk_db_version]['DATA_EXPLANATION'][TABLE_RISQUE][] = __('Ajout des champs permettant de gérer les dates de début et de fin des risques', 'evarisk');
@@ -1909,4 +1909,10 @@ KEY tableElement (tableElement)
 	$digirisk_db_table_operation_list[$digirisk_db_version]['FIELD_CHANGE'][TABLE_ACTIVITE_SUIVI] = array(array('field' => 'commentaire', 'type' => "longtext"));
 
 	$digirisk_db_table_list[$digirisk_db_version] = array( TABLE_ACTIVITE_SUIVI, TABLE_PRECONISATION, TABLE_CATEGORIE_PRECONISATION);
+}
+
+
+{/*	Version 92	*/
+	$digirisk_db_version = 92;
+	$digirisk_update_way[$digirisk_db_version] = 'data';
 }

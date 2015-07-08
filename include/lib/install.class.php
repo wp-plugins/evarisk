@@ -19,7 +19,7 @@ class digirisk_install	{
 	/**
 	 *	Define the main installation form
 	 */
-	function installation_form(){
+	public static function installation_form(){
 		global $evaluation_method_operator, $evaluation_main_vars;
 		$installation_form = '';
 
@@ -142,7 +142,7 @@ class digirisk_install	{
 	/**
 	 *	Method called when plugin is loaded for database update. This method allows to update the database structure, insert default content.
 	 */
-	public static function update_digirisk($version_to_launch = -1){
+	public static function update_digirisk( $version_to_launch = -1 ){
 		global $wpdb, $digirisk_db_table, $digirisk_db_table_list, $digirisk_update_way, $digirisk_db_content_add, $digirisk_db_content_update, $digirisk_db_options_add, $digirisk_table_structure_change, $digirisk_db_update, $standard_message_subject_to_send, $standard_message_to_send, $digirisk_db_table_operation_list;
 
 		/** 	Initialisation des permissions (Lancement a chaque chargement du plugin) */
@@ -156,13 +156,13 @@ class digirisk_install	{
 
 		/**	Creation du dossier temporatire permettant de creer les documents au format odt (Lancement a chaque chargement du plugin) */
 		if(!is_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp')){
-			digirisk_tools::make_recursiv_dir(EVA_RESULTATS_PLUGIN_DIR . 'tmp');
+			wp_mkdir_p( EVA_RESULTATS_PLUGIN_DIR . 'tmp' );
 		}
 
 		$current_db_version = digirisk_options::getDbOption('base_evarisk');
 
 		$current_def_max_version = (string)max(array_keys($digirisk_update_way));
-		if($version_to_launch >= 0){
+		if( !empty( $version_to_launch ) ||  ( $version_to_launch === 0 ) ) {
 			$current_def_max_version = $version_to_launch;
 		}
 		$new_version = $current_def_max_version + 1;
@@ -177,6 +177,7 @@ class digirisk_install	{
 			$lowest_version_to_execute = (($current_def_max_version - $version_nb_delta) < 0) ? 0 : ($current_def_max_version - $version_nb_delta);
 
 			for($i = $lowest_version_to_execute; $i <= $current_def_max_version; $i++){
+
 				/*	Check if there are modification to do	*/
 				if(isset($digirisk_update_way[$i])){
 					$dependance_list = '';
@@ -213,7 +214,7 @@ class digirisk_install	{
 			/*****************************************************/
 			/*	Call specific data insertion for current version */
 			/*****************************************************/
-					self::make_specific_operation_on_update($i);
+					$do_changes = self::make_specific_operation_on_update($i);
 
 			/******************************************************/
 			/*		Make special operation on database structure		*/
@@ -453,7 +454,7 @@ class digirisk_install	{
 				$do_changes_for_specific = true;
 			}break;
 			case 35:{
-				digirisk_tools::make_recursiv_dir(EVA_GENERATED_DOC_DIR);
+				wp_mkdir_p(EVA_GENERATED_DOC_DIR);
 				/*	Move the directory containing the different models	*/
 				if(is_dir(EVA_UPLOADS_PLUGIN_OLD_DIR) && !is_dir(EVA_UPLOADS_PLUGIN_DIR)){
 					digirisk_tools::copyEntireDirectory(EVA_UPLOADS_PLUGIN_OLD_DIR, EVA_UPLOADS_PLUGIN_DIR);
@@ -1391,6 +1392,41 @@ class digirisk_install	{
 					$options['digi_ac_front_ask_parent_task_id'] = $the_task_id;
 					update_option( 'digirisk_options', $options );
 				}
+
+				$do_changes_for_specific = true;
+			break;
+
+			case 92:
+				/**	Create new method for Amiante	*/
+				$wpdb->insert( TABLE_METHODE, array('nom' => __('Seirich', 'evarisk'), 'Status' => 'Valid') );
+				$seirich_method = $wpdb->insert_id;
+
+				/**	Add the new var for amiante method	*/
+				$question_seirich = array();
+				$question_seirich[] = array('question'=>__('Faible ( 0 )', 'evarisk'), 'seuil' => 0, );
+				$question_seirich[] = array('question'=>__('Modéré ( Entre 1 et 99 )', 'evarisk'), 'seuil' => 48, );
+				$question_seirich[] = array('question'=>__('Préoccupant ( Entre 100 et 9999 )', 'evarisk'), 'seuil' => 51, );
+				$question_seirich[] = array('question'=>__('Sérieux ( Entre 10000 et 999999 )', 'evarisk'), 'seuil' => 80, );
+				$wpdb->insert( TABLE_VARIABLE, array(
+					'nom' => __('Seirich', 'evarisk'),
+					'Status' => 'Valid',
+					'min'=>0,
+					'max'=>3,
+					'annotation'=>__('Risque faible 0. Risque modéré entre 1 et 99. Risque préoccupant entre 100 et 9999. Risque sérieux entre 10000 et 999999', 'evarisk'),
+					'affichageVar'=>'checkbox',
+					'questionVar'=>serialize( $question_seirich ),
+					'questionTitre'=>__( 'Echelle de notation Seirich', 'evarisk' )
+				));
+				$seirich_var = $wpdb->insert_id;
+
+				/** Set link between var and method */
+				$link_between_method_and_var = $wpdb->insert( TABLE_AVOIR_VARIABLE, array( 'id_methode' => $seirich_method, 'id_variable' => $seirich_var, 'ordre' => 1, 'date' => current_time('mysql',0), 'Status'=>'Valid', ) );
+
+				/*	Amiante	*/
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$seirich_method, 'id_valeur_etalon'=>0, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>0, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$seirich_method, 'id_valeur_etalon'=>48, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>1, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$seirich_method, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
+				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$seirich_method, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
 
 				$do_changes_for_specific = true;
 			break;

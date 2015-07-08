@@ -9,6 +9,8 @@
 */
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
+include_once( WPDIGI_PATH . '/core/module_management/module_management.php');
+
 require_once(EVA_LIB_PLUGIN_DIR . 'outils/tools.class.php' );
 
 require_once(EVA_LIB_PLUGIN_DIR . 'methode/eva_variable.class.php');
@@ -85,6 +87,3 @@ require_once(EVA_LIB_PLUGIN_DIR . 'db/db_data.php');
 require_once(EVA_LIB_PLUGIN_DIR . 'db/db_structure.php');
 
 require_once(EVA_INC_PLUGIN_DIR . 'digi_ajax.php');
-
-require_once(EVA_MODULES_PLUGIN_DIR . 'wpeo_logs/wpeo_logs.php');
-require_once(EVA_MODULES_PLUGIN_DIR . 'evarisk_datas_transfert/evarisk_datas_transfert.php');

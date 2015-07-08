@@ -1150,7 +1150,7 @@ class digirisk_options {
 	*
 	*	@return mixed The option value
 	*/
-	function getOptionValue($optionName, $option = 'digirisk_options'){
+	public static function getOptionValue($optionName, $option = 'digirisk_options'){
 		$digirisk_options = get_option($option);
 		$option_value='';
 
@@ -1336,6 +1336,7 @@ Require valid-user';
 				<li class="loading_pic_on_select tabOptions_Evaluation_method" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=evaluation_method" title="digirisk_configurations_tab" ><?php _e('M&eacute;thodes d\'&eacute;valuation', 'evarisk'); ?></a></li>
 				<li class="loading_pic_on_select tabOptions_Danger" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=danger" title="digirisk_configurations_tab" ><?php _e('Dangers', 'evarisk'); ?></a></li>
 				<!-- <li class="loading_pic_on_select tabOptions_Menu" ><a href="<?php echo  EVA_INC_PLUGIN_URL; ?>ajax.php?post=true&amp;nom=configuration&amp;action=menu" title="digirisk_configurations_tab" ><?php _e('Menu', 'evarisk'); ?></a></li> -->
+				<?php apply_filters( 'digi-settings-tab', null ); ?>
 			</ul>
 			<div id="digirisk_options_general" ><?php do_settings_sections('digirisk_options_general'); ?></div>
 			<div id="digirisk_options_user" ><?php do_settings_sections('digirisk_options_user'); ?></div>
@@ -1352,6 +1353,7 @@ Require valid-user';
 	endif;
 	?>
 			<div id="digirisk_configurations_tab" >&nbsp;</div>
+			<?php apply_filters( 'digi-settings-tab-content', null ); ?>
 		</div>
 	<?php
 			settings_fields('digirisk_options');

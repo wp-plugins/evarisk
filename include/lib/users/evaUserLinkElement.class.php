@@ -583,8 +583,7 @@ class evaUserLinkElement {
 	*
 	*	@return object A wordpress object with the user list affected to the given element
 	*/
-	function getAffectedUser($tableElement, $idElement, $link_status = "'valid'", $return_data_type = 'OBJECT')
-	{
+	public static function getAffectedUser($tableElement, $idElement, $link_status = "'valid'", $return_data_type = 'OBJECT') {
 		global $wpdb;
 
 		$query = $wpdb->prepare(

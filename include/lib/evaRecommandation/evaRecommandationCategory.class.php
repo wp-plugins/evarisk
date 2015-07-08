@@ -115,7 +115,7 @@ class evaRecommandationCategory
 				$categoryRecommandation_query_args[ $field ] = $value;
 			}
 		}
-		$category_recommandation_query = $wpdb->update( TABLE_PRECONISATION, $categoryRecommandation_query_args, array( 'id' => $id, ) );
+		$category_recommandation_query = $wpdb->update( TABLE_CATEGORIE_PRECONISATION, $categoryRecommandation_query_args, array( 'id' => $id, ) );
 
 		if ( false !== $category_recommandation_query ) {
 			$reponseRequete = 'done';

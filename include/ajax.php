@@ -3736,7 +3736,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 
 						$saveZipFileActionMessage = '';
-						digirisk_tools::make_recursiv_dir($pathToZip);
+						wp_mkdir_p($pathToZip);
 						if ( count($file_to_zip) > 0 ) {
 							/*	ZIP THE FILE	*/
 							$zipFileName = date('YmdHis') . '_fichesDesUnitesDeTravail.zip';
@@ -3826,7 +3826,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 						}
 
 						$saveZipFileActionMessage = '';
-						digirisk_tools::make_recursiv_dir($pathToZip);
+						wp_mkdir_p($pathToZip);
 						if(count($file_to_zip) > 0)
 						{
 							/*	ZIP THE FILE	*/
@@ -3914,7 +3914,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 									}
 
 									$saveZipFileActionMessage = '';
-									digirisk_tools::make_recursiv_dir($pathToZip);
+									wp_mkdir_p($pathToZip);
 									if ( !empty($file_to_zip) ) {
 										/*	ZIP THE FILE	*/
 										$zipFileName = date('YmdHis') . '_ficheDeRisques.zip';
@@ -5305,8 +5305,7 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 				echo $messageInfo;
 			}
 			break;
-			case "loadFieldsNewVariable":
-			{
+			case "loadFieldsNewVariable": {
 				$var_id = digirisk_tools::IsValid_Variable($_REQUEST['var_id'], 0);
 				$choixTypeAffichage = digirisk_tools::IsValid_Variable($_REQUEST['choixTypeAffichage']);
 				$alternativ_vars = array();
@@ -5323,20 +5322,19 @@ WHERE R.id = %d", $_REQUEST['id_risque']);
 					$labelInput = sprintf(__('Valeur r&eacute;el de la variable quand elle vaut %d : ', 'evarisk'), $i);
 
 					if ( $choixTypeAffichage == "checkbox" ) {
-							$query = $wpdb->get_row("SELECT questionVar FROM " . TABLE_VARIABLE. " WHERE id = ".$var_id." ");
-							$tableauVar = unserialize($query->questionVar);
+						$query = $wpdb->get_row("SELECT questionVar FROM " . TABLE_VARIABLE. " WHERE id = ".$var_id." ");
+						$tableauVar = unserialize($query->questionVar);
 
-							$nomChampsQuestion = 'varQuestion[' . $i . ']';
-							$nomChampsSeuil = 'varSeuil[' . $i . ']';
-							$labelInputQuestion = sprintf(__('Question n %s &agrave; poser : ', 'evarisk'), $i);
-							$labelInputSeuil = sprintf(__('Valeur du Seuil n %s : ', 'evarisk'), $i);
+						$nomChampsQuestion = 'varQuestion[' . $i . ']';
+						$nomChampsSeuil = 'varSeuil[' . $i . ']';
+						$labelInputQuestion = sprintf(__('Question n %s &agrave; poser : ', 'evarisk'), $i);
+						$labelInputSeuil = sprintf(__('Valeur du Seuil n %s : ', 'evarisk'), $i);
 
 
-							echo '<div style="background : #F3F3F3; padding : 10px 5px 10px 5px; margin-bottom : 15px;">';
-							echo EvaDisplayInput::afficherInput('text', 'newVarSeuil'.$i, $tableauVar[$i-1]['seuil'], '', $labelInputSeuil, $nomChampsSeuil, true, false, 100, '', 'Float');
-							echo EvaDisplayInput::afficherInput('text', 'newVarQuestion'.$i, $tableauVar[$i-1]['question'], '', $labelInputQuestion,$nomChampsQuestion, true, false, 100, '');
-							echo '</div>';
-
+						echo '<div style="background : #F3F3F3; padding : 10px 5px 10px 5px; margin-bottom : 15px;">';
+						echo EvaDisplayInput::afficherInput('text', 'newVarSeuil'.$i, $tableauVar[$i-1]['seuil'], '', $labelInputSeuil, $nomChampsSeuil, true, false, 100, '', 'Float');
+						echo EvaDisplayInput::afficherInput('text', 'newVarQuestion'.$i, $tableauVar[$i-1]['question'], '', $labelInputQuestion,$nomChampsQuestion, true, false, 100, '');
+						echo '</div>';
 					}
 					else {
 						echo EvaDisplayInput::afficherInput('text', $idInput, (!empty($alternativ_vars[$i]) ? $alternativ_vars[$i] : ''), '', $labelInput, $nomChamps, true, false, 100, '', 'Float');

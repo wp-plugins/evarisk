@@ -24,7 +24,7 @@ class evaNotes
 	{
 		$noteDialog = '
 		<div id="noteTaker" >
-			<i class="noteTakerPic dashicons dashicons-welcome-write-blog" alt="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '" title="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '"  ></i>
+			<i class="noteTakerPic dashicons dashicons-welcome-write-blog" title="' . __('Cliquez ici pour prendre des notes', 'evarisk') . '"  ></i>
 			<div id="digiNotes" class="hide" title="' . __('Prise rapide de notes', 'evarisk') . '" >&nbsp;</div>
 		</div>';
 
@@ -43,7 +43,7 @@ class evaNotes
 
 		if(!is_dir(EVA_NOTES_PLUGIN_DIR))
 		{
-			digirisk_tools::make_recursiv_dir(EVA_NOTES_PLUGIN_DIR);
+			wp_mkdir_p(EVA_NOTES_PLUGIN_DIR);
 		}
 		elseif(is_file(EVA_NOTES_PLUGIN_DIR . 'user-' . $current_user->ID . '_Notes.txt'))
 		{
@@ -113,7 +113,7 @@ class evaNotes
 		/*	Check if the dir exist, if not create it before trying to save file	*/
 		if(!is_dir(EVA_NOTES_PLUGIN_DIR))
 		{
-			digirisk_tools::make_recursiv_dir(EVA_NOTES_PLUGIN_DIR);
+			wp_mkdir_p(EVA_NOTES_PLUGIN_DIR);
 		}
 
 		/*	Write the text file with the user notes	*/

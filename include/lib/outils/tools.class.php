@@ -188,13 +188,6 @@ class digirisk_tools
 		return $newString;
 	}
 
-	function make_recursiv_dir($directory){
-		if(!is_dir($directory)){
-			mkdir($directory, 0755, true);
-		}
-		exec('chmod -R 755 ' . EVA_GENERATED_DOC_DIR);
-	}
-
 	public static function copyEntireDirectory($sourceDirectory, $destinationDirectory)
 	{
 		if(is_dir($sourceDirectory))

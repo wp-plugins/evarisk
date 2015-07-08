@@ -208,7 +208,7 @@ WHERE status = 'valid'
 	*
 	*	@return object $notification_list A wordpress database object containing the list for the given element
 	*/
-	function get_link_user_notification_list($table_element, $id_element, $action = ''){
+	public static function get_link_user_notification_list($table_element, $id_element, $action = ''){
 		global $wpdb;
 		$notification_list = '';
 

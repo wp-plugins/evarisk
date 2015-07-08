@@ -1122,7 +1122,7 @@ class eva_gestionDoc {
 
 			if ( !empty($file_to_zip) ) {
 				$pathToZip = EVA_RESULTATS_PLUGIN_DIR . 'ficheDeRisques/' . $user_id . '/';
-				digirisk_tools::make_recursiv_dir($pathToZip);
+				wp_mkdir_p($pathToZip);
 				/*	ZIP THE FILE	*/
 				$zipFileName = date('YmdHis') . '_ficheDeRisques.zip';
 				$archive = new eva_Zip($zipFileName);
@@ -1138,7 +1138,7 @@ class eva_gestionDoc {
 
 	function generate_task_odt($tableElement, $idElement, $idDocument) {
 		global $wpdb;
-		require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/Odf.php');
+		require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
 		ini_set("memory_limit","256M");
 
 		/**	Get the document to create	*/
@@ -1315,7 +1315,7 @@ class eva_gestionDoc {
 
 		/**	If user ask for an "odt" file we include different librairies and model	*/
 		if($outputType == 'odt') {
-			require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/Odf.php');
+			require_once(EVA_LIB_PLUGIN_DIR . 'odtPhpLibrary/odf.php');
 
 			$config = array(
 				'PATH_TO_TMP' => EVA_RESULTATS_PLUGIN_DIR . 'tmp'
@@ -2156,7 +2156,7 @@ class eva_gestionDoc {
 			}
 
 			if(!is_dir($finalDir)){
-				digirisk_tools::make_recursiv_dir($finalDir);
+				wp_mkdir_p($finalDir);
 			}
 			$DigiOdf->saveToDisk($finalDir . $fileName . '.odt');
 
