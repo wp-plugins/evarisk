@@ -1398,7 +1398,7 @@ class digirisk_install	{
 
 			case 92:
 				/**	Create new method for Amiante	*/
-				$wpdb->insert( TABLE_METHODE, array('nom' => __('Seirich', 'evarisk'), 'Status' => 'Valid') );
+				$wpdb->insert( TABLE_METHODE, array('nom' => __('Résultats Seirich', 'evarisk'), 'Status' => 'Valid') );
 				$seirich_method = $wpdb->insert_id;
 
 				/**	Add the new var for amiante method	*/
@@ -1408,7 +1408,7 @@ class digirisk_install	{
 				$question_seirich[] = array('question'=>__('Préoccupant ( Entre 100 et 9999 )', 'evarisk'), 'seuil' => 51, );
 				$question_seirich[] = array('question'=>__('Sérieux ( Entre 10000 et 999999 )', 'evarisk'), 'seuil' => 80, );
 				$wpdb->insert( TABLE_VARIABLE, array(
-					'nom' => __('Seirich', 'evarisk'),
+					'nom' => __('Résultats Seirich', 'evarisk'),
 					'Status' => 'Valid',
 					'min'=>0,
 					'max'=>3,
@@ -1428,6 +1428,14 @@ class digirisk_install	{
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$seirich_method, 'id_valeur_etalon'=>51, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>2, 'Status'=>'Valid'));
 				$wpdb->insert(TABLE_EQUIVALENCE_ETALON, array('id_methode'=>$seirich_method, 'id_valeur_etalon'=>100, 'date'=>current_time('mysql', 0), 'valeurMaxMethode'=>3, 'Status'=>'Valid'));
 
+				$do_changes_for_specific = true;
+			break;
+			case 93:
+				$wpdb->update( TABLE_METHODE, array( 'nom' => __('Résultats Seirich', 'evarisk'),  ), array( 'nom' => __('Seirich', 'evarisk'), ) );
+				$wpdb->update( TABLE_VARIABLE, array( 'nom' => __('Résultats Seirich', 'evarisk'),  ), array( 'nom' => __('Seirich', 'evarisk'), ) );
+
+				$methode_picture = $wpdb->insert( TABLE_PHOTO, array( 'id' => null, 'photo' => 'uploads/' . TABLE_METHODE . '/14/resultat_seirich.jpg' ) );
+				$wpdb->insert( TABLE_PHOTO_LIAISON, array( 'status' => 'valid', 'isMainPicture' => true, 'idPhoto' => $wpdb->insert_id, 'idElement' => 14, 'tableElement' => TABLE_METHODE, ) );
 				$do_changes_for_specific = true;
 			break;
 
