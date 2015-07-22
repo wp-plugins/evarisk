@@ -49,7 +49,7 @@ class wp_digirisk {
 	 * Inclusion des scripts permettant l'utilisation de Angular JS dans le module / Include scripts for using Angular JS into module
 	 */
 	public function common_js() {
-		wp_enqueue_script( 'wpdigi-angularjs', WPDIGI_URL . 'assets/js/angular.js', '', WPDIGI_VERSION, false );
+		//wp_enqueue_script( 'wpdigi-angularjs', WPDIGI_URL . 'assets/js/angular.js', '', WPDIGI_VERSION, false );
 	}
 
 	/**
